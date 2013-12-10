@@ -26,8 +26,6 @@ void Delay(volatile uint32_t nCount);
 #define res_offset 0.64577
 #define pwm_scale 0.8
 #define sin_res 1024
-#define min_cur = 0.1
-#define max_cur = 1
 
 #define NO 0
 #define YES 1
@@ -54,8 +52,28 @@ volatile int res_avg;
 
 volatile int followe;
 
-float p;
-float p_i;
+// pid para
+float pid_p;
+float pid_i;
+float pid_d;
+float pid_i_limit;
+float pid_error_limit;
+float pid_output_limit;
+float pid_periode;
+
+// pid cur para
+float cur_p;
+float cur_min;
+float cur_max;
+
+// pid storage
+float pid_error;
+float pid_error_old;
+float pid_error_old_old;
+float pid_error_sum;
+float pid_in;
+float pid_in_old;
+float pid_in_old_old;
 
 float freq;
 float step;
@@ -93,37 +111,66 @@ void output_pwm(){
     TIM4->CCR3 = (sine(mag_pos + offsetc) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
 }
 
+void init_pid(){
+	// pid para
+	pid_periode = 1/10000.0;
+	pid_p = 10.0;
+	pid_i = 100.0 * pid_periode;
+	pid_d = 0.001 / pid_periode;
+	pid_i_limit = 2 * pi / pole_count / 4 * 100;
+	pid_error_limit = DEG(90);
+	pid_output_limit = 2 * pi / pole_count / 4;
+
+// pid cur para
+	cur_p = 1 / (2 * pi / pole_count / 4);
+	cur_min = 0;
+	cur_max = 1;
+
+// pid storage
+	pid_error = 0;
+	pid_error_old = 0;
+	pid_error_old_old = 0;
+	pid_error_sum = 0;
+	pid_in = 0;
+	pid_in_old = 0;
+	pid_in_old_old = 0;
+}
+
+
 void pid(){
-    //mag_pos = mag_pos + step;
-//ist: res_pos
-//soll: mot_pos
-//ctr: mag_pos
-
-//0 error: mag_pos = (res_pos + res_offset) * pole_count
-//error = mot_pos - res_pos;
-//mag_pos += p * error
-
-    float error = 0;
     float ctr_mag = 0;
     float ctr_cur = 0;
+		float error_der = 0;
 
     mag_pos = (minus(res_pos, res_offset) * pole_count);
-    mot_pos = DEG((float)UB_ENCODER_TIM3_ReadPos()/2000.0*360.0);
-    error = minus(mot_pos, res_pos);
-    if(ABS(error) > DEG(90)){//schleppfehler
+
+		// calc pid storage
+		pid_in_old_old = pid_in_old;
+		pid_in_old = pid_in;
+		pid_in = mot_pos;
+
+		pid_error_old_old = pid_error_old;
+		pid_error_old = pid_error;
+		pid_error = minus(mot_pos, res_pos);
+
+
+    if(ABS(pid_error) > pid_error_limit){//schleppfehler
         followe = YES;
     }
 
-    ctr_mag = p * error;
-    ctr_cur = ABS(p_i * error);
+		// calc pid
+		pid_error_sum = CLAMP(pid_error_sum + pid_error, -pid_i_limit, pid_i_limit);
+    error_der = pid_error - pid_error_old;
 
+    ctr_mag = CLAMP(pid_p * pid_error + pid_i * pid_error_sum + pid_d * error_der, -pid_output_limit, pid_output_limit);
+
+    ctr_cur = (cur_p * cur_p * cur_p * cur_p * ctr_mag * ctr_mag * ctr_mag * ctr_mag) * (cur_max - cur_min) + cur_min;
+
+
+		// output pid
     mag_pos += CLAMP(ctr_mag, -maxdiff, maxdiff);
-    current_scale = CLAMP(ABS(ctr_cur), 0.1, 1);
+    current_scale = CLAMP(ABS(ctr_cur), 0, 1);
 
-    if(ABS(error) < DEG(5)){//deadband
-        //error = 0;
-        current_scale = 0;
-    }
 
     if(mag_pos < -pi){
         mag_pos += 2.0 * pi;
@@ -164,7 +211,7 @@ void TIM7_IRQHandler(void){//DAC int handler
     if(dacpos == 25 + 4 + 1){
 				res_neg_pos = atan2f(res1_neg, res2_neg);
         //res_pos = (res_pos_pos + res_neg_pos) / 2.0;
-				res_pos = res_pos_pos + minus(res_pos_pos, res_neg_pos) / 2.0;
+				res_pos = res_pos_pos;// + minus(res_pos_pos, res_neg_pos) / 2.0;
         res1_neg = 0;
         res2_neg = 0;
         //pid();
@@ -201,13 +248,12 @@ void ADC_IRQHandler(void)
 int main(void)
 {
     dacpos = 31;
+		init_pid();
     setup();
     mag_pos = 0;
     mot_pos = 0;
     followe = NO;
     current_scale = 1;
-    p = 20;
-    p_i = 1.0 / (maxdiff);
     freq = 0;
     step = freq / 10000 * pi * 2.0;
     /* TIM4 enable counter */
@@ -233,7 +279,7 @@ int main(void)
             //printf_("soll = %f, ist = %f, error = %f, ctr = %f,current_scale=%f\n", RAD(mot_pos), RAD(res_pos), RAD((mot_pos - res_pos)), RAD(mag_pos),current_scale);
             //printf_("res_pos_pos = %f, res_neg_pos = %f\n", res_pos_tmp, res_pos);
             //printf_("%i\n",UB_ENCODER_TIM3_ReadPos());
-						printf_("pos_pos = %f\tneg_pos = %f\tres_pos = %f\tmot_pos = %f\tenc_pos = %i\n", res_pos_pos, res_neg_pos, res_pos, mot_pos, UB_ENCODER_TIM3_ReadPos());
+						printf_("res_pos = %f\tpos_diff = %f\terror = %f\n", res_pos, minus(res_pos_pos, res_neg_pos), minus(mot_pos, res_pos));
             Delay(100000);
         }
         if(stlinky_avail(&g_stlinky_term) != 0){
