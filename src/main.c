@@ -106,6 +106,7 @@ void pid(){
     float ctr_cur = 0;
     
     mag_pos = (minus(res_pos, res_offset) * pole_count);
+    mot_pos = DEG((float)UB_ENCODER_TIM3_ReadPos()/2000.0*360.0);
     error = minus(mot_pos, res_pos);
     if(ABS(error) > DEG(90)){//schleppfehler
         followe = YES;
@@ -117,7 +118,7 @@ void pid(){
     mag_pos += CLAMP(ctr_mag, -maxdiff, maxdiff);
     current_scale = CLAMP(ABS(ctr_cur), 0.1, 1);
     
-    if(ABS(error) < DEG(10)){//deadband
+    if(ABS(error) < DEG(5)){//deadband
         //error = 0;
         current_scale = 0;
     }
@@ -228,7 +229,8 @@ int main(void)
     {
         if(stlinky_todo(&g_stlinky_term) == 0){
             //printf_("soll = %f, ist = %f, error = %f, ctr = %f,current_scale=%f\n", RAD(mot_pos), RAD(res_pos), RAD((mot_pos - res_pos)), RAD(mag_pos),current_scale);
-            printf_("res_pos_pos = %f, res_neg_pos = %f\n", res_pos_tmp, res_pos);
+            //printf_("res_pos_pos = %f, res_neg_pos = %f\n", res_pos_tmp, res_pos);
+            printf_("%i\n",UB_ENCODER_TIM3_ReadPos());
             Delay(10000);
         }
         if(stlinky_avail(&g_stlinky_term) != 0){

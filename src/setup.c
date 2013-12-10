@@ -14,6 +14,10 @@ void setup(){
     UB_DAC_DMA_SetWaveform2(DAC_WAVE1_SINUS);
     UB_DAC_DMA_SetFrq2(0,1312);
     
+    //PC6 PB5
+    UB_ENCODER_TIM3_Init(ENC_T3_MODE_4AB, ENC_T3_A, 2000);
+    
+    
     //TIM4:PWM
     //TIM2:int
     
