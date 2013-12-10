@@ -117,13 +117,13 @@ void init_pid(){
 	pid_p = 10.0;
 	pid_i = 100.0 * pid_periode;
 	pid_d = 0.001 / pid_periode;
-	pid_i_limit = 2 * pi / pole_count / 4 * 100;
+	pid_i_limit = maxdiff * 100;
 	pid_error_limit = DEG(90);
-	pid_output_limit = 2 * pi / pole_count / 4;
+	pid_output_limit = maxdiff;
 
 // pid cur para
-	cur_p = 1 / (2 * pi / pole_count / 4);
-	cur_min = 0;
+	cur_p = 1 / (maxdiff);
+	cur_min = 0.1;
 	cur_max = 1;
 
 // pid storage
