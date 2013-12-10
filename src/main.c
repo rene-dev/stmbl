@@ -39,12 +39,17 @@ void Delay(volatile uint32_t nCount);
 volatile float mag_pos;
 volatile float mot_pos;
 volatile float res_pos;
+volatile float res_pos_tmp;
+
 volatile int res1_tmp;
 volatile int res2_tmp;
 
-volatile float res1_pos;
-volatile float res2_pos;
-volatile float res3_pos;
+volatile int res1_pos;
+volatile int res2_pos;
+volatile int res1_neg;
+volatile int res2_neg;
+volatile int res_avg;
+
 volatile int followe;
 
 float p;
@@ -79,31 +84,6 @@ float minus(float a, float b){
 	}
 }
 
-void ADC_IRQHandler(void)
-{
-    int t1, t2, t3;
-    while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
-    while(!ADC_GetFlagStatus(ADC3, ADC_FLAG_EOC));
-    ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
-    t1 = ADC_GetConversionValue(ADC1);
-    t2 = ADC_GetConversionValue(ADC2);
-    t3 = ADC_GetConversionValue(ADC3);
-
-    t1 -= t3;
-    t2 -= t3;
-    
-    if(t1 < 820 && t1 > -820 && t2 < 820 && t2 > -820){
-        if(dacpos > 22 && dacpos < 32){
-            res1_tmp -= t1;
-            res2_tmp -= t2;
-        }
-        else{
-            res1_tmp += t1;
-            res2_tmp += t2;
-        }
-    }
-    GPIO_ResetBits(GPIOD,GPIO_Pin_11);
-}
 
 void output_pwm(){
     TIM4->CCR1 = (sine(mag_pos + offseta) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
@@ -161,32 +141,66 @@ void TIM2_IRQHandler(void){//PWM int handler
 void TIM7_IRQHandler(void){//DAC int handler
     TIM_ClearITPendingBit(TIM7, TIM_IT_Update);
     dacpos++;//DMA fragen?
-    if(dacpos == 32){
+    if(dacpos >= 32){
         dacpos = 0;
     }
-    if((dacpos > 6 && dacpos < 16) || (dacpos > 22 && dacpos < 32)){//hier resolver einlesen
+
+    if((dacpos >= 9-4 && dacpos <= 9+4) || (dacpos >= 25-4 && dacpos <= 25+4)){// phase shift 2
         GPIO_SetBits(GPIOD,GPIO_Pin_11);
         ADC_SoftwareStartConv(ADC1);
         ADC_SoftwareStartConv(ADC2);
         ADC_SoftwareStartConv(ADC3);
     }
-    if(dacpos == 25){
-        res_pos = atan2f(res1_tmp, res2_tmp);
-
-        res1_tmp = 0;
-        res2_tmp = 0;
+    if(dacpos == 9 + 4 + 1){
+        res_pos_tmp = atan2f(res1_pos, res2_pos);
+        res1_pos = 0;
+        res2_pos = 0;
+        //pid();
+        //output_pwm();
     }
-    
+    if(dacpos == 25 + 4 + 1){
 
+        res_pos = (res_pos_tmp + atan2f(res1_neg, res2_neg)) / 2.0;
+        //res_pos = atan2f(res1_neg, res2_neg);
+        res1_neg = 0;
+        res2_neg = 0;
+        //pid();
+        //output_pwm();
+    }
+}
+
+void ADC_IRQHandler(void)
+{
+    int t1, t2, t3;
+    while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
+    while(!ADC_GetFlagStatus(ADC3, ADC_FLAG_EOC));
+    ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
+    t1 = ADC_GetConversionValue(ADC1);
+    t2 = ADC_GetConversionValue(ADC2);
+    t3 = ADC_GetConversionValue(ADC3);
+    
+    t1 -= t3;
+    t2 -= t3;
+    
+    if(t1 < 820 && t1 > -820 && t2 < 820 && t2 > -820){
+        if(dacpos >= 9-4 && dacpos <= 9+4){
+            res1_pos += t1;
+            res2_pos += t2;
+        }
+        else if(dacpos >= 25-4 && dacpos <= 25+4){
+            res1_neg -= t1;
+            res2_neg -= t2;
+        }
+    }
+    GPIO_ResetBits(GPIOD,GPIO_Pin_11);
 }
 
 int main(void)
 {
-
+    dacpos = 31;
     setup();
     mag_pos = 0;
     mot_pos = 0;
-    dacpos = 0;
     followe = NO;
     current_scale = 1;
     p = 20;
@@ -213,7 +227,8 @@ int main(void)
     while(1)  // Do not exit
     {
         if(stlinky_todo(&g_stlinky_term) == 0){
-            printf_("soll = %f, ist = %f, error = %f, ctr = %f,current_scale=%f\n", RAD(mot_pos), RAD(res_pos), RAD((mot_pos - res_pos)), RAD(mag_pos),current_scale);
+            //printf_("soll = %f, ist = %f, error = %f, ctr = %f,current_scale=%f\n", RAD(mot_pos), RAD(res_pos), RAD((mot_pos - res_pos)), RAD(mag_pos),current_scale);
+            printf_("res_pos_pos = %f, res_neg_pos = %f\n", res_pos_tmp, res_pos);
             Delay(10000);
         }
         if(stlinky_avail(&g_stlinky_term) != 0){
@@ -255,14 +270,14 @@ int main(void)
 */
 
 
-        if(followe){
+        /*if(followe){
             GPIO_ResetBits(GPIOD,GPIO_Pin_15);//disable
             TIM4->CCR1 = 0;
             TIM4->CCR2 = 0;
             TIM4->CCR3 = 0;
             TIM_Cmd(TIM4, DISABLE);//PWM
             TIM_Cmd(TIM2, DISABLE);//int
-        }
+        }*/
     }
 }
 
