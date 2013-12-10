@@ -39,7 +39,9 @@ void Delay(volatile uint32_t nCount);
 volatile float mag_pos;
 volatile float mot_pos;
 volatile float res_pos;
-volatile float res_pos_tmp;
+volatile float res_pos_pos;
+volatile float res_neg_pos;
+
 
 volatile int res1_tmp;
 volatile int res2_tmp;
@@ -96,33 +98,33 @@ void pid(){
 //ist: res_pos
 //soll: mot_pos
 //ctr: mag_pos
-    
+
 //0 error: mag_pos = (res_pos + res_offset) * pole_count
 //error = mot_pos - res_pos;
 //mag_pos += p * error
-    
+
     float error = 0;
     float ctr_mag = 0;
     float ctr_cur = 0;
-    
+
     mag_pos = (minus(res_pos, res_offset) * pole_count);
     mot_pos = DEG((float)UB_ENCODER_TIM3_ReadPos()/2000.0*360.0);
     error = minus(mot_pos, res_pos);
     if(ABS(error) > DEG(90)){//schleppfehler
         followe = YES;
     }
-    
+
     ctr_mag = p * error;
     ctr_cur = ABS(p_i * error);
-    
+
     mag_pos += CLAMP(ctr_mag, -maxdiff, maxdiff);
     current_scale = CLAMP(ABS(ctr_cur), 0.1, 1);
-    
+
     if(ABS(error) < DEG(5)){//deadband
         //error = 0;
         current_scale = 0;
     }
-    
+
     if(mag_pos < -pi){
         mag_pos += 2.0 * pi;
     }
@@ -153,16 +155,16 @@ void TIM7_IRQHandler(void){//DAC int handler
         ADC_SoftwareStartConv(ADC3);
     }
     if(dacpos == 9 + 4 + 1){
-        res_pos_tmp = atan2f(res1_pos, res2_pos);
+        res_pos_pos = atan2f(res1_pos, res2_pos);
         res1_pos = 0;
         res2_pos = 0;
         //pid();
         //output_pwm();
     }
     if(dacpos == 25 + 4 + 1){
-
-        res_pos = (res_pos_tmp + atan2f(res1_neg, res2_neg)) / 2.0;
-        //res_pos = atan2f(res1_neg, res2_neg);
+				res_neg_pos = atan2f(res1_neg, res2_neg);
+        //res_pos = (res_pos_pos + res_neg_pos) / 2.0;
+				res_pos = res_pos_pos + minus(res_pos_pos, res_neg_pos) / 2.0;
         res1_neg = 0;
         res2_neg = 0;
         //pid();
@@ -179,10 +181,10 @@ void ADC_IRQHandler(void)
     t1 = ADC_GetConversionValue(ADC1);
     t2 = ADC_GetConversionValue(ADC2);
     t3 = ADC_GetConversionValue(ADC3);
-    
+
     t1 -= t3;
     t2 -= t3;
-    
+
     if(t1 < 820 && t1 > -820 && t2 < 820 && t2 > -820){
         if(dacpos >= 9-4 && dacpos <= 9+4){
             res1_pos += t1;
@@ -216,22 +218,23 @@ int main(void)
     TIM_Cmd(TIM4, ENABLE);//PWM
     TIM_Cmd(TIM2, ENABLE);//int
     GPIO_SetBits(GPIOD,GPIO_Pin_15);//enable
-    
-    
+
+
     int buffer_pos = 0;
     int i = 0;
     int scan = 0;
     char buf[STLINKY_BSIZE];
     char c;
     float f;
-    
+
     while(1)  // Do not exit
     {
         if(stlinky_todo(&g_stlinky_term) == 0){
             //printf_("soll = %f, ist = %f, error = %f, ctr = %f,current_scale=%f\n", RAD(mot_pos), RAD(res_pos), RAD((mot_pos - res_pos)), RAD(mag_pos),current_scale);
             //printf_("res_pos_pos = %f, res_neg_pos = %f\n", res_pos_tmp, res_pos);
-            printf_("%i\n",UB_ENCODER_TIM3_ReadPos());
-            Delay(10000);
+            //printf_("%i\n",UB_ENCODER_TIM3_ReadPos());
+						printf_("pos_pos = %f\tneg_pos = %f\tres_pos = %f\tmot_pos = %f\tenc_pos = %i\n", res_pos_pos, res_neg_pos, res_pos, mot_pos, UB_ENCODER_TIM3_ReadPos());
+            Delay(100000);
         }
         if(stlinky_avail(&g_stlinky_term) != 0){
             stlinky_rx(&g_stlinky_term, buf, STLINKY_BSIZE);
@@ -258,13 +261,13 @@ int main(void)
                     mag_pos -= 10 * pi / 180.0;
                 }
             }
-            
+
             //scanf_("%c = %f\n", &c, &f);
 
         }
-        
+
         //GPIO_ResetBits(GPIOD,GPIO_Pin_11);
-/* 
+/*
         if(stlinky_todo(&g_stlinky_term) == 0){
             //stlinky_tx(&g_stlinky_term, buf, sizeof(buf));
             printf_("step %f : %i\n", step, i++);
