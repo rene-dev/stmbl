@@ -47,7 +47,7 @@ again: clean all
 
 # Flash the STM32F4
 burn: main.elf
-	st-flash write $(PROJ_NAME).bin 0x8000000
+	st-flash --reset write $(PROJ_NAME).bin 0x8000000
 
 # Create tags; assumes ctags exists
 ctags:
@@ -57,6 +57,9 @@ lib:
 	$(MAKE) -C lib
 
 proj: 	$(PROJ_NAME).elf
+	
+term:	$(PROJ_NAME).elf
+	st-term `arm-none-eabi-nm main.elf | grep stlinky_term | awk '{print $$1}'`
 
 $(PROJ_NAME).elf: $(SRCS)
 	$(CC) $(CFLAGS) $^ -o $@ -Llib -lstm32f4
