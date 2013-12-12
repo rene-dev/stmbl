@@ -235,6 +235,11 @@ int vfprintf_(char *buffer, const char* str,  va_list arp){
 						buffer[buffer_pos++] = '\t';
 						state = 0;
 					break;
+					
+                    case 'r': // "\t"
+						buffer[buffer_pos++] = '\r';
+						state = 0;
+					break;
                     
 					case '\'': // "\'"
 						buffer[buffer_pos++] = '\'';

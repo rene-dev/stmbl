@@ -248,7 +248,8 @@ void ADC_IRQHandler(void)
 int main(void)
 {
     dacpos = 31;
-		init_pid();
+	init_pid();
+	param_init();
     setup();
     mag_pos = 0;
     mot_pos = 0;
@@ -267,59 +268,103 @@ int main(void)
 
 
     int buffer_pos = 0;
+	int obuf_pos = 0;
+	int line_pos = 0;
     int i = 0;
     int scan = 0;
+	int histpos = 0;
     char buf[STLINKY_BSIZE];
+	char outbuf[STLINKY_BSIZE];
+	char history[10][STLINKY_BSIZE];
+	char backspace[] = {0x8,0x20,0x8};
+	char ansiright[] = {0x1b,'[','C'};
+	char ansileft[] = {0x1b,'[','D'};
+	char ansierase[] = {0x1b,'[','2','K'};
+	//int ansistate = 0;
+    enum{init,ansi,bracket,letter}ansistate;
+	//char line[STLINKY_BSIZE];
     char c;
     float f;
-
+	ansistate = init;
+	register_float('p',&pid_p);
     while(1)  // Do not exit
     {
-        if(stlinky_todo(&g_stlinky_term) == 0){
-            //printf_("soll = %f, ist = %f, error = %f, ctr = %f,current_scale=%f\n", RAD(mot_pos), RAD(res_pos), RAD((mot_pos - res_pos)), RAD(mag_pos),current_scale);
-            //printf_("res_pos_pos = %f, res_neg_pos = %f\n", res_pos_tmp, res_pos);
-            //printf_("%i\n",UB_ENCODER_TIM3_ReadPos());
-						printf_("res_pos = %f\tpos_diff = %f\terror = %f\n", res_pos, minus(res_pos_pos, res_neg_pos), minus(mot_pos, res_pos));
-            Delay(100000);
-        }
-        if(stlinky_avail(&g_stlinky_term) != 0){
-            stlinky_rx(&g_stlinky_term, buf, STLINKY_BSIZE);
-            i = 0;
-            scan = 0;
-            while(buffer_pos < SCANF_BSIZE - 1 && i < STLINKY_BSIZE && buf[i] != '\0'){
-                scanf_buffer[buffer_pos] = buf[i];
-                if(buf[i] == '\n'){
-                    scan = 1;
-                }
-                i++;
-                buffer_pos++;
-            }
-            scanf_buffer[buffer_pos] = '\0';
-            if(scan){
-                c = ' ';
-                f = 0;
-                scanf_("%c = %f \n", &c, &f);
-                buffer_pos = 0;
-                if(c == 'p'){
-                    mag_pos += 10 * pi / 180.0;
-                }
-                if(c == 'm'){
-                    mag_pos -= 10 * pi / 180.0;
-                }
-            }
-
-            //scanf_("%c = %f\n", &c, &f);
-
-        }
-
-        //GPIO_ResetBits(GPIOD,GPIO_Pin_11);
-/*
-        if(stlinky_todo(&g_stlinky_term) == 0){
-            //stlinky_tx(&g_stlinky_term, buf, sizeof(buf));
-            printf_("step %f : %i\n", step, i++);
-        }
-*/
-
+		if(stlinky_todo(&g_stlinky_term) == 0 && obuf_pos > 0){
+			stlinky_tx(&g_stlinky_term, outbuf, obuf_pos);
+			obuf_pos = 0;
+		}
+		buffer_pos = stlinky_avail(&g_stlinky_term);
+		if(buffer_pos > 0){
+			buffer_pos = stlinky_rx(&g_stlinky_term, buf, STLINKY_BSIZE);
+			for(i = 0;i<buffer_pos;i++){
+				if(buf[i] == 127){//backspace
+					stlinky_tx(&g_stlinky_term, backspace, 3);
+					line_pos = CLAMP(line_pos-1, 0, SCANF_BSIZE);
+				}else if(buf[i] == 27){//ANSI control
+					ansistate = bracket;
+				}else if(buf[i] == '[' && ansistate == bracket){
+					ansistate = letter;
+				}else if(buf[i] == 'A' && ansistate == letter){//up
+					stlinky_tx(&g_stlinky_term, ansierase, 4);
+					if(histpos == 0)
+						histpos = 9;
+					else
+						histpos = histpos-1;
+					printf_("\r%s",history[histpos]);
+					ansistate = init;
+				}else if(buf[i] == 'B' && ansistate == letter){//down
+					stlinky_tx(&g_stlinky_term, ansierase, 4);
+					histpos = (histpos+1)%10;
+					printf_("\r%s",history[histpos]);
+					ansistate = init;
+				}else if(buf[i] == 'C' && ansistate == letter){//right
+					stlinky_tx(&g_stlinky_term, ansiright, 3);
+					line_pos = CLAMP(line_pos+1, 0, SCANF_BSIZE);
+					ansistate = init;
+				}else if(buf[i] == 'D' && ansistate == letter){//left
+					stlinky_tx(&g_stlinky_term, ansileft, 3);
+					line_pos = CLAMP(line_pos-1, 0, SCANF_BSIZE);
+					ansistate = init;
+				}else if(ansistate == letter){
+					ansistate = init;
+				}else if(buf[i] == '\t'){
+				}else if(buf[i] == '\n'){
+					outbuf[obuf_pos] = buf[i];
+					obuf_pos++;
+					scanf_buffer[line_pos+1] = '\n';
+					scanf_buffer[line_pos+2] = 0;
+					history[histpos][line_pos] = 0;
+					//printf_("saved %s at %i",history[histpos],histpos);
+					histpos = (histpos+1)%10;
+					//printf_("hier, parsen und so: %s",scanf_buffer);
+					if(scanf_("%c = %f", &c, &f) == 7){
+						if(set_float(c,f))
+							printf_("\nOK");
+						//printf_("\nsetting %c to %f",c,f);
+					}else if(scanf_("%c", &c) == 2){
+						printf_("\n%c: %f",c,get_float(c));
+					}
+					line_pos = 0;
+				}else{
+					outbuf[obuf_pos] = buf[i];
+					obuf_pos++;
+					scanf_buffer[line_pos] = buf[i];
+					history[histpos][line_pos] = scanf_buffer[line_pos];
+					line_pos = line_pos = CLAMP(line_pos+1, 0, SCANF_BSIZE);
+				}
+			}
+		}
+		
+        //if(stlinky_todo(&g_stlinky_term) == 0){
+		//if(stlinky_avail(&g_stlinky_term) != 0)
+        //buffer_pos = stlinky_tx(&g_stlinky_term, buf, buffer_pos);
+		//if(stlinky_todo(&g_stlinky_term) == 0)
+		//buffer_pos = stlinky_rx(&g_stlinky_term, buf, buffer_pos);
+			//}else{
+			//}
+			
+    		
+			//buffer_pos = 0;
 
         /*if(followe){
             GPIO_ResetBits(GPIOD,GPIO_Pin_15);//disable
