@@ -22,6 +22,8 @@ struct param{
 		int param_count;
 } PARAMS;
 
+void param_init();
+
 int register_float(char name, float *f);
 
 float get_float(char name);

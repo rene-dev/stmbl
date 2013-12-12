@@ -7,6 +7,7 @@
 #include "printf.h"
 #include "scanf.h"
 #include "stlinky.h"
+#include "param.h"
 #include "stm32_ub_dac_dma.h"
 #include "setup.h"
 #include <math.h>
@@ -283,10 +284,16 @@ int main(void)
 	//int ansistate = 0;
     enum{init,ansi,bracket,letter}ansistate;
 	//char line[STLINKY_BSIZE];
-    char c;
-    float f;
+  char c;
+  float f;
+	float p1 = 0;
+	float p2 = 0;
+	int scanf_ret = 0;
 	ansistate = init;
 	register_float('p',&pid_p);
+	register_float('a', &p1);
+	register_float('b', &p2);
+
     while(1)  // Do not exit
     {
 		if(stlinky_todo(&g_stlinky_term) == 0 && obuf_pos > 0){
@@ -337,12 +344,25 @@ int main(void)
 					//printf_("saved %s at %i",history[histpos],histpos);
 					histpos = (histpos+1)%10;
 					//printf_("hier, parsen und so: %s",scanf_buffer);
-					if(scanf_("%c = %f", &c, &f) == 7){
-						if(set_float(c,f))
-							printf_("\nOK");
-						//printf_("\nsetting %c to %f",c,f);
-					}else if(scanf_("%c", &c) == 2){
-						printf_("\n%c: %f",c,get_float(c));
+					scanf_ret = scanf_("%c = %f", &c, &f);
+					if(scanf_ret == 7){ // write
+						if(set_float(c,f)){
+							printf_("OK\n");
+						}
+						else{
+							printf_("%c not found\n", c);
+						}
+					}
+					else{ // read
+						printf_("\n");
+						if(c == '?'){
+							for(int j = 0; j < PARAMS.param_count; j++){
+								printf_("%c = %f\n", PARAMS.names[j], *(PARAMS.data[j]));
+							}
+						}
+						else{
+							printf_("%c = %f\n", c, get_float(c));
+						}
 					}
 					line_pos = 0;
 				}else{
@@ -350,11 +370,11 @@ int main(void)
 					obuf_pos++;
 					scanf_buffer[line_pos] = buf[i];
 					history[histpos][line_pos] = scanf_buffer[line_pos];
-					line_pos = line_pos = CLAMP(line_pos+1, 0, SCANF_BSIZE);
+					line_pos = CLAMP(line_pos+1, 0, SCANF_BSIZE);
 				}
 			}
 		}
-		
+
         //if(stlinky_todo(&g_stlinky_term) == 0){
 		//if(stlinky_avail(&g_stlinky_term) != 0)
         //buffer_pos = stlinky_tx(&g_stlinky_term, buf, buffer_pos);
@@ -362,8 +382,8 @@ int main(void)
 		//buffer_pos = stlinky_rx(&g_stlinky_term, buf, buffer_pos);
 			//}else{
 			//}
-			
-    		
+
+
 			//buffer_pos = 0;
 
         /*if(followe){
