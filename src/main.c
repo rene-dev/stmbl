@@ -24,7 +24,11 @@ void Delay(volatile uint32_t nCount);
 
 #define pole_count 4
 #define maxdiff 2*pi/pole_count/4
-#define res_offset 0.675
+//#define res_offset 0.675 (2.48+2.57)/2 = 2.525
+//#define res_offset 0.675 (2.60+2.71)/2 = 2.655
+//#define res_offset 0.7
+
+volatile float res_offset;
 #define pwm_scale 0.8
 #define sin_res 1024
 
@@ -80,10 +84,14 @@ float freq;
 float step;
 int do_pid;
 
-volatile float max_res1;
-volatile float min_res1;
-volatile float max_res2;
-volatile float min_res2;
+float res_pos_hist0;
+float res_pos_hist1;
+float res_pos_hist2;
+volatile float v;
+volatile float g;
+volatile float avg_offset;
+
+
 
 
 volatile float current_scale;
@@ -119,11 +127,21 @@ float minus(float a, float b){
 	}
 }
 
+float mod(float a){
+    while(a < -pi){
+        a += 2.0 * pi;
+    }
+    while(a > pi){
+        a -= 2.0 * pi;
+    }
+    return(a);
+}
 
 void output_pwm(){
-    TIM4->CCR1 = (sine(mag_pos + offseta) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
-    TIM4->CCR2 = (sine(mag_pos + offsetb) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
-    TIM4->CCR3 = (sine(mag_pos + offsetc) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
+    float ctr = mod((mag_pos + res_offset) * pole_count);
+    TIM4->CCR1 = (sine(ctr + offseta) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
+    TIM4->CCR2 = (sine(ctr + offsetb) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
+    TIM4->CCR3 = (sine(ctr + offsetc) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
 }
 
 void init_pid(){
@@ -157,53 +175,77 @@ void pid(){
     float ctr_cur = 0;
 		float error_der = 0;
 
-    mag_pos = (minus(res_pos, res_offset) * pole_count);
+    mag_pos = res_pos, res_offset;
     //mot_pos = DEG((float)UB_ENCODER_TIM3_ReadPos()/2000.0*360.0);
 
-		// calc pid storage
-		pid_in_old_old = pid_in_old;
-		pid_in_old = pid_in;
-		pid_in = mot_pos;
+	// calc pid storage
+	pid_in_old_old = pid_in_old;
+	pid_in_old = pid_in;
+	pid_in = mot_pos;
 
-		pid_error_old_old = pid_error_old;
-		pid_error_old = pid_error;
-		pid_error = minus(mot_pos, res_pos);
+	pid_error_old_old = pid_error_old;
+	pid_error_old = pid_error;
+	pid_error = minus(mot_pos, res_pos);
 
 
     if(ABS(pid_error) > pid_error_limit){//schleppfehler
         followe = YES;
     }
 
-		// calc pid
-		pid_error_sum = CLAMP(pid_error_sum + pid_error, -pid_i_limit, pid_i_limit);
+		
+    // calc pid
+	pid_error_sum = CLAMP((pid_error_sum + pid_error), -pid_i_limit, pid_i_limit);
     error_der = pid_error - pid_error_old;
 
-    ctr_mag = CLAMP(pid_p * pid_error + pid_i * pid_error_sum + pid_d * error_der, -pid_output_limit, pid_output_limit);
+    ctr_mag = CLAMP((pid_p * pid_error + pid_i * pid_error_sum + pid_d * error_der), -pid_output_limit, pid_output_limit);
+    //ctr_mag = CLAMP((pid_p * pid_error), -pid_output_limit, pid_output_limit);
 
     ctr_cur = (cur_p * cur_p * cur_p * cur_p * ctr_mag * ctr_mag * ctr_mag * ctr_mag) * (cur_max - cur_min) + cur_min;
+    //ctr_cur = 0.5;
 
-
-		// output pid
+	// output pid
     mag_pos += CLAMP(ctr_mag, -maxdiff, maxdiff);
     current_scale = CLAMP(ABS(ctr_cur), 0, 1);
 
 
-    if(mag_pos < -pi){
-        mag_pos += 2.0 * pi;
-    }
-    if(mag_pos > pi){
-        mag_pos -= 2.0 * pi;
-    }
+    mag_pos = mod(mag_pos);
 }
 
-void TIM2_IRQHandler(void){//PWM int handler
+void TIM2_IRQHandler(void){//PWM int handler, 10KHz
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     //GPIO_SetBits(GPIOD,GPIO_Pin_11);
+    mot_pos += 1/10000.0 * DEG(30);
+    mot_pos = mod(mot_pos);
     if(do_pid){
         pid();
     }
     output_pwm();
     //
+}
+
+float observer(float pos1, float pos2){
+    float ret = 0;
+    
+    v = mod(minus(res_pos_hist0, res_pos_hist1) / 2.0 + minus(res_pos_hist1, res_pos_hist2) / 2.0);
+    g = mod(res_pos_hist0 + v);
+    ret = g;
+    if(ABS(minus(g, pos1)) < DEG(2)){
+        ret = pos1;
+    }
+    else{
+        //ret = g + minus(pos1, g) / 2.0;
+    }
+    if(ABS(minus(g, pos2)) < DEG(2)){
+        ret = pos2;
+    }
+    else{
+        //ret = g + minus(pos2, g) / 2.0;
+    }
+    
+    res_pos_hist2 = res_pos_hist1;
+    res_pos_hist1 = res_pos_hist0;
+    res_pos_hist0 = ret;
+    return(ret);
 }
 
 void TIM7_IRQHandler(void){//DAC int handler
@@ -226,15 +268,19 @@ void TIM7_IRQHandler(void){//DAC int handler
         //output_pwm();
     }
     if(dacpos == 25 + 4 + 1){
-				res_neg_pos = atan2f(res1_neg, res2_neg);
+		res_neg_pos = atan2f(res1_neg, res2_neg);
 
-		res_pos = res_pos_pos + minus(res_pos_pos, res_neg_pos) / 2.0;
+        //res_pos = observer(res_pos_pos, res_neg_pos);    
+        res_pos = res_pos_pos + minus(res_neg_pos, res_pos_pos) / 2.0;
+        avg_offset = mod(avg_offset * 0.999 + minus(mag_pos, res_pos) * 0.001);
+        //res_pos = res_pos_pos;
         res1_neg = 0;
         res2_neg = 0;
         //pid();
         //output_pwm();
     }
 }
+
 
 void ADC_IRQHandler(void)
 {
@@ -249,14 +295,6 @@ void ADC_IRQHandler(void)
     t1 -= t3;
     t2 -= t3;
 
-    if(dacpos == 9){
-        max_res1 = t1;
-        max_res2 = t2;
-    }
-    if(dacpos == 25){
-        min_res1 = t1;
-        min_res2 = t2;
-    }
     //if(t1 < 930 && t1 > -930 && t2 < 930 && t2 > -930){
     float max = ABS((sin1[dacpos - 2] - 2048) / 2.0);
     max = 930;
@@ -313,6 +351,10 @@ int main(void)
     res_pos = -10;
     while (res_pos == -10){
     }
+    res_offset = 2.4885;
+    res_pos_hist0 = res_pos;
+    res_pos_hist1 = res_pos;
+    res_pos_hist2 = res_pos;
     mot_pos = res_pos;
     TIM_Cmd(TIM4, ENABLE);//PWM
     TIM_Cmd(TIM2, ENABLE);//int
@@ -351,7 +393,9 @@ int main(void)
     while(1)  // Do not exit
     {
         //printf_("p1 = %f, p2 = %f, n1 = %f, n2 = %f\n", max_res1, max_res2, min_res1, min_res2);
-        printf_("p = %f, n = %f\rn", res_pos_pos, res_neg_pos);
+        //printf_("p = %f, n = %f\rn", res_pos_pos, res_neg_pos);
+        printf_("error = %f\tmot = %f\tcur = %f\n", minus(mot_pos, res_pos), mot_pos, current_scale);
+        Delay(100000);
         
 		if(stlinky_todo(&g_stlinky_term) == 0 && obuf_pos > 0){
 			stlinky_tx(&g_stlinky_term, outbuf, obuf_pos);
