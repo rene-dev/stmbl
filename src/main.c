@@ -8,7 +8,7 @@
 #include "scanf.h"
 #include "stlinky.h"
 #include "param.h"
-#include "stm32_ub_dac_dma.h"
+//#include "stm32_ub_dac_dma.h"
 #include "setup.h"
 #include <math.h>
 
@@ -24,7 +24,7 @@ void Delay(volatile uint32_t nCount);
 
 #define pole_count 4
 #define maxdiff 2*pi/pole_count/4
-#define res_offset 0.64577
+#define res_offset 0.675
 #define pwm_scale 0.8
 #define sin_res 1024
 
@@ -78,10 +78,24 @@ float pid_in_old_old;
 
 float freq;
 float step;
+int do_pid;
+
+volatile float max_res1;
+volatile float min_res1;
+volatile float max_res2;
+volatile float min_res2;
+
 
 volatile float current_scale;
 
 volatile int dacpos;
+
+const uint16_t sin1[] = { // Sinus
+  2047, 2447, 2831, 3185, 3498, 3750, 3939, 4056,
+  4095, 4056, 3939, 3750, 3495, 3185, 2831, 2447,
+  2047, 1647, 1263,  909,  599,  344,  155,   38,
+     0,   38,  155,  344,  599,  909, 1263, 1647
+};
 
 float sine(float x){
     while(x < -pi){
@@ -144,6 +158,7 @@ void pid(){
 		float error_der = 0;
 
     mag_pos = (minus(res_pos, res_offset) * pole_count);
+    //mot_pos = DEG((float)UB_ENCODER_TIM3_ReadPos()/2000.0*360.0);
 
 		// calc pid storage
 		pid_in_old_old = pid_in_old;
@@ -184,9 +199,11 @@ void pid(){
 void TIM2_IRQHandler(void){//PWM int handler
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     //GPIO_SetBits(GPIOD,GPIO_Pin_11);
-    pid();
+    if(do_pid){
+        pid();
+    }
     output_pwm();
-    //GPIO_ResetBits(GPIOD,GPIO_Pin_11);
+    //
 }
 
 void TIM7_IRQHandler(void){//DAC int handler
@@ -197,7 +214,6 @@ void TIM7_IRQHandler(void){//DAC int handler
     }
 
     if((dacpos >= 9-4 && dacpos <= 9+4) || (dacpos >= 25-4 && dacpos <= 25+4)){// phase shift 2
-        GPIO_SetBits(GPIOD,GPIO_Pin_11);
         ADC_SoftwareStartConv(ADC1);
         ADC_SoftwareStartConv(ADC2);
         ADC_SoftwareStartConv(ADC3);
@@ -211,8 +227,8 @@ void TIM7_IRQHandler(void){//DAC int handler
     }
     if(dacpos == 25 + 4 + 1){
 				res_neg_pos = atan2f(res1_neg, res2_neg);
-        //res_pos = (res_pos_pos + res_neg_pos) / 2.0;
-				res_pos = res_pos_pos;// + minus(res_pos_pos, res_neg_pos) / 2.0;
+
+		res_pos = res_pos_pos + minus(res_pos_pos, res_neg_pos) / 2.0;
         res1_neg = 0;
         res2_neg = 0;
         //pid();
@@ -233,21 +249,56 @@ void ADC_IRQHandler(void)
     t1 -= t3;
     t2 -= t3;
 
-    if(t1 < 820 && t1 > -820 && t2 < 820 && t2 > -820){
+    if(dacpos == 9){
+        max_res1 = t1;
+        max_res2 = t2;
+    }
+    if(dacpos == 25){
+        min_res1 = t1;
+        min_res2 = t2;
+    }
+    //if(t1 < 930 && t1 > -930 && t2 < 930 && t2 > -930){
+    float max = ABS((sin1[dacpos - 2] - 2048) / 2.0);
+    max = 930;
         if(dacpos >= 9-4 && dacpos <= 9+4){
-            res1_pos += t1;
-            res2_pos += t2;
+            if(t1 >  -max & t1 < max & t2 > -max & t2 < max){
+                res1_pos += t1;
+                res2_pos += t2;
+            }
+            else{
+                GPIO_SetBits(GPIOD,GPIO_Pin_11);
+            }
         }
         else if(dacpos >= 25-4 && dacpos <= 25+4){
-            res1_neg -= t1;
-            res2_neg -= t2;
+            if(t1 >  -max & t1 < max & t2 > -max & t2 < max){
+                res1_neg -= t1;
+                res2_neg -= t2;
+            }
+            else{
+                GPIO_SetBits(GPIOD,GPIO_Pin_11);
+            }
         }
-    }
+        //}
+        Delay(50);
     GPIO_ResetBits(GPIOD,GPIO_Pin_11);
 }
 
+void findoff(void){
+    float oldpos;
+    float initpos;
+    printf_("finding\n");
+    mag_pos = 0;
+    oldpos = 10;
+    while(ABS(res_pos-oldpos) > DEG(1)){
+        oldpos = res_pos;
+    }
+    printf_("off: %f\n",res_pos);
+    while(1){}
+}
+
 int main(void)
-{
+{    
+    do_pid = YES;
     dacpos = 31;
 	init_pid();
 	param_init();
@@ -293,9 +344,15 @@ int main(void)
 	register_float('p',&pid_p);
 	register_float('a', &p1);
 	register_float('b', &p2);
+    
+    if(!do_pid)
+        findoff();
 
     while(1)  // Do not exit
     {
+        //printf_("p1 = %f, p2 = %f, n1 = %f, n2 = %f\n", max_res1, max_res2, min_res1, min_res2);
+        printf_("p = %f, n = %f\rn", res_pos_pos, res_neg_pos);
+        
 		if(stlinky_todo(&g_stlinky_term) == 0 && obuf_pos > 0){
 			stlinky_tx(&g_stlinky_term, outbuf, obuf_pos);
 			obuf_pos = 0;
