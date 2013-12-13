@@ -175,7 +175,7 @@ void pid(){
     float ctr_cur = 0;
 		float error_der = 0;
 
-    mag_pos = res_pos, res_offset;
+    mag_pos = res_pos;
     //mot_pos = DEG((float)UB_ENCODER_TIM3_ReadPos()/2000.0*360.0);
 
 	// calc pid storage
