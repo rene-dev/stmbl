@@ -40,6 +40,7 @@ volatile float res_offset;
 #define offsetc 2.0 * 2.0 * pi / 3.0
 
 volatile float mag_pos;
+volatile float mag_pos_offset;
 volatile float mot_pos;
 volatile float res_pos;
 volatile float res_pos_pos;
@@ -79,6 +80,9 @@ float pid_error_sum;
 float pid_in;
 float pid_in_old;
 float pid_in_old_old;
+float pos_error_sum;
+float pos_p;
+float pos_i;
 
 float freq;
 float step;
@@ -89,7 +93,6 @@ float res_pos_hist1;
 float res_pos_hist2;
 volatile float v;
 volatile float g;
-volatile float avg_offset;
 
 
 
@@ -147,12 +150,15 @@ void output_pwm(){
 void init_pid(){
 	// pid para
 	pid_periode = 1/10000.0;
-	pid_p = 10.0;
-	pid_i = 100.0 * pid_periode;
-	pid_d = 0.001 / pid_periode;
+	pid_p = 3.0;
+	pid_i = 0.004;//;
+	pid_d = 0.001;//;
 	pid_i_limit = maxdiff * 100;
 	pid_error_limit = DEG(90);
 	pid_output_limit = maxdiff;
+    pos_error_sum = 0;
+    pos_p = 2;
+    pos_i = 0.2;
 
 // pid cur para
 	cur_p = 1 / (maxdiff);
@@ -170,10 +176,10 @@ void init_pid(){
 }
 
 
-void pid(){
+void pid(){ // strom/kraft pid
     float ctr_mag = 0;
     float ctr_cur = 0;
-		float error_der = 0;
+	float error_der = 0;
 
     mag_pos = res_pos;
     //mot_pos = DEG((float)UB_ENCODER_TIM3_ReadPos()/2000.0*360.0);
@@ -185,7 +191,7 @@ void pid(){
 
 	pid_error_old_old = pid_error_old;
 	pid_error_old = pid_error;
-	pid_error = minus(mot_pos, res_pos);
+	pid_error = minus(mag_pos, minus(res_pos, mag_pos_offset));
 
 
     if(ABS(pid_error) > pid_error_limit){//schleppfehler
@@ -197,7 +203,11 @@ void pid(){
 	pid_error_sum = CLAMP((pid_error_sum + pid_error), -pid_i_limit, pid_i_limit);
     error_der = pid_error - pid_error_old;
 
-    ctr_mag = CLAMP((pid_p * pid_error + pid_i * pid_error_sum + pid_d * error_der), -pid_output_limit, pid_output_limit);
+    ctr_mag = CLAMP((
+            pid_p * pid_error + 
+            pid_i * pid_periode * pid_error_sum + 
+            pid_d / pid_periode * error_der
+    ), -pid_output_limit, pid_output_limit);
     //ctr_mag = CLAMP((pid_p * pid_error), -pid_output_limit, pid_output_limit);
 
     ctr_cur = (cur_p * cur_p * cur_p * cur_p * ctr_mag * ctr_mag * ctr_mag * ctr_mag) * (cur_max - cur_min) + cur_min;
@@ -207,15 +217,14 @@ void pid(){
     mag_pos += CLAMP(ctr_mag, -maxdiff, maxdiff);
     current_scale = CLAMP(ABS(ctr_cur), 0, 1);
 
-
     mag_pos = mod(mag_pos);
 }
 
 void TIM2_IRQHandler(void){//PWM int handler, 10KHz
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     //GPIO_SetBits(GPIOD,GPIO_Pin_11);
-    mot_pos += 1/10000.0 * DEG(30);
-    mot_pos = mod(mot_pos);
+    //mot_pos += 1/10000.0 * DEG(30);
+    //mot_pos = mod(mot_pos);
     if(do_pid){
         pid();
     }
@@ -272,7 +281,13 @@ void TIM7_IRQHandler(void){//DAC int handler
 
         //res_pos = observer(res_pos_pos, res_neg_pos);    
         res_pos = res_pos_pos + minus(res_neg_pos, res_pos_pos) / 2.0;
-        avg_offset = mod(avg_offset * 0.999 + minus(mag_pos, res_pos) * 0.001);
+        
+        float error = minus(mot_pos, res_pos);
+
+    	pos_error_sum = CLAMP((pos_error_sum + error), -pid_i_limit, pid_i_limit);
+
+        mag_pos_offset = pos_p * error + pos_i * pos_error_sum;
+        
         //res_pos = res_pos_pos;
         res1_neg = 0;
         res2_neg = 0;
@@ -383,9 +398,12 @@ int main(void)
 	float p2 = 0;
 	int scanf_ret = 0;
 	ansistate = init;
-	register_float('p',&pid_p);
-	register_float('a', &p1);
-	register_float('b', &p2);
+	register_float('p', &pid_p);
+	register_float('i', &pid_i);
+	register_float('d', &pid_d);
+	register_float('m', &mot_pos);
+	register_float('a', &pos_p);
+	register_float('b', &pos_i);
     
     if(!do_pid)
         findoff();
@@ -394,8 +412,8 @@ int main(void)
     {
         //printf_("p1 = %f, p2 = %f, n1 = %f, n2 = %f\n", max_res1, max_res2, min_res1, min_res2);
         //printf_("p = %f, n = %f\rn", res_pos_pos, res_neg_pos);
-        printf_("error = %f\tmot = %f\tcur = %f\n", minus(mot_pos, res_pos), mot_pos, current_scale);
-        Delay(100000);
+        //printf_("error = %f\tmot = %f\tcur = %f\n", minus(mot_pos, res_pos), mot_pos, current_scale);
+        //Delay(100000);
         
 		if(stlinky_todo(&g_stlinky_term) == 0 && obuf_pos > 0){
 			stlinky_tx(&g_stlinky_term, outbuf, obuf_pos);
@@ -439,8 +457,8 @@ int main(void)
 				}else if(buf[i] == '\n'){
 					outbuf[obuf_pos] = buf[i];
 					obuf_pos++;
-					scanf_buffer[line_pos+1] = '\n';
-					scanf_buffer[line_pos+2] = 0;
+					scanf_buffer[line_pos] = '\n';
+					scanf_buffer[line_pos+1] = 0;
 					history[histpos][line_pos] = 0;
 					//printf_("saved %s at %i",history[histpos],histpos);
 					histpos = (histpos+1)%10;
