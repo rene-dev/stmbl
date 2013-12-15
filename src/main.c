@@ -39,6 +39,11 @@ volatile float res_offset;
 #define offsetb 1.0 * 2.0 * pi / 3.0
 #define offsetc 2.0 * 2.0 * pi / 3.0
 
+#define read_pos  (7+8)
+#define read_neg  (22+8)
+#define read_w  4
+
+
 volatile float mag_pos;
 volatile float mag_pos_offset;
 volatile float mot_pos;
@@ -55,6 +60,7 @@ volatile int res2_pos;
 volatile int res1_neg;
 volatile int res2_neg;
 volatile int res_avg;
+volatile int res_avg_tmp;
 
 volatile int followe;
 
@@ -223,38 +229,14 @@ void pid(){ // strom/kraft pid
 void TIM2_IRQHandler(void){//PWM int handler, 10KHz
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     //GPIO_SetBits(GPIOD,GPIO_Pin_11);
-    //mot_pos += 1/10000.0 * DEG(30);
+    //mag_pos += 1/10000.0 * DEG(30);
+    //current_scale = 0.3;
     //mot_pos = mod(mot_pos);
     if(do_pid){
         pid();
     }
     output_pwm();
     //
-}
-
-float observer(float pos1, float pos2){
-    float ret = 0;
-    
-    v = mod(minus(res_pos_hist0, res_pos_hist1) / 2.0 + minus(res_pos_hist1, res_pos_hist2) / 2.0);
-    g = mod(res_pos_hist0 + v);
-    ret = g;
-    if(ABS(minus(g, pos1)) < DEG(2)){
-        ret = pos1;
-    }
-    else{
-        //ret = g + minus(pos1, g) / 2.0;
-    }
-    if(ABS(minus(g, pos2)) < DEG(2)){
-        ret = pos2;
-    }
-    else{
-        //ret = g + minus(pos2, g) / 2.0;
-    }
-    
-    res_pos_hist2 = res_pos_hist1;
-    res_pos_hist1 = res_pos_hist0;
-    res_pos_hist0 = ret;
-    return(ret);
 }
 
 void TIM7_IRQHandler(void){//DAC int handler
@@ -264,19 +246,23 @@ void TIM7_IRQHandler(void){//DAC int handler
         dacpos = 0;
     }
 
-    if((dacpos >= 9-4 && dacpos <= 9+4) || (dacpos >= 25-4 && dacpos <= 25+4)){// phase shift 2
+    if((dacpos >= read_pos - read_w && dacpos <= read_pos + read_w) || (dacpos >= read_neg - read_w || dacpos <= (read_neg + read_w) % 32)){// phase shift 2
         ADC_SoftwareStartConv(ADC1);
         ADC_SoftwareStartConv(ADC2);
-        ADC_SoftwareStartConv(ADC3);
+        //ADC_SoftwareStartConv(ADC3);
     }
-    if(dacpos == 9 + 4 + 1){
+    if(dacpos == read_pos - read_w - 1){
+        res_avg = (res_avg_tmp/(read_w*4+2)/2)*0.2f+res_avg*0.8f;
+        res_avg_tmp = 0;
+    }
+    if(dacpos == read_pos + read_w + 1){
         res_pos_pos = atan2f(res1_pos, res2_pos);
         res1_pos = 0;
         res2_pos = 0;
         //pid();
         //output_pwm();
     }
-    if(dacpos == 25 + 4 + 1){
+    if(dacpos == (read_neg + read_w + 1) % 32){
 		res_neg_pos = atan2f(res1_neg, res2_neg);
 
         //res_pos = observer(res_pos_pos, res_neg_pos);    
@@ -301,38 +287,33 @@ void ADC_IRQHandler(void)
 {
     int t1, t2, t3;
     while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
-    while(!ADC_GetFlagStatus(ADC3, ADC_FLAG_EOC));
+    //while(!ADC_GetFlagStatus(ADC3, ADC_FLAG_EOC));
     ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
+    GPIO_SetBits(GPIOD,GPIO_Pin_11);
+    
     t1 = ADC_GetConversionValue(ADC1);
     t2 = ADC_GetConversionValue(ADC2);
-    t3 = ADC_GetConversionValue(ADC3);
-
-    t1 -= t3;
-    t2 -= t3;
+    //t3 = ADC_GetConversionValue(ADC3);
+    res_avg_tmp += t1+t2;
+    t1 -= res_avg;
+    t2 -= res_avg;
 
     //if(t1 < 930 && t1 > -930 && t2 < 930 && t2 > -930){
-    float max = ABS((sin1[dacpos - 2] - 2048) / 2.0);
-    max = 930;
-        if(dacpos >= 9-4 && dacpos <= 9+4){
-            if(t1 >  -max & t1 < max & t2 > -max & t2 < max){
+    float max = 930;
+        if(dacpos >= read_pos - read_w && dacpos <= read_pos + read_w){
+            //if(t1 >  -max & t1 < max & t2 > -max & t2 < max){
                 res1_pos += t1;
                 res2_pos += t2;
-            }
-            else{
-                GPIO_SetBits(GPIOD,GPIO_Pin_11);
-            }
+            //}
         }
-        else if(dacpos >= 25-4 && dacpos <= 25+4){
-            if(t1 >  -max & t1 < max & t2 > -max & t2 < max){
+        else if(dacpos >= read_neg - read_w || dacpos <= (read_neg + read_w) % 32){
+            //if(t1 >  -max & t1 < max & t2 > -max & t2 < max){
                 res1_neg -= t1;
                 res2_neg -= t2;
-            }
-            else{
-                GPIO_SetBits(GPIOD,GPIO_Pin_11);
-            }
+            //}
         }
         //}
-        Delay(50);
+
     GPIO_ResetBits(GPIOD,GPIO_Pin_11);
 }
 
@@ -351,6 +332,8 @@ void findoff(void){
 
 int main(void)
 {    
+    res_avg = 2051;
+    res_avg_tmp = 0;
     do_pid = YES;
     dacpos = 31;
 	init_pid();
@@ -413,8 +396,8 @@ int main(void)
         //printf_("p1 = %f, p2 = %f, n1 = %f, n2 = %f\n", max_res1, max_res2, min_res1, min_res2);
         //printf_("p = %f, n = %f\rn", res_pos_pos, res_neg_pos);
         //printf_("error = %f\tmot = %f\tcur = %f\n", minus(mot_pos, res_pos), mot_pos, current_scale);
-        //Delay(100000);
-        
+        Delay(100000);
+        printf_("res_avg = %i\t\n", res_avg);
 		if(stlinky_todo(&g_stlinky_term) == 0 && obuf_pos > 0){
 			stlinky_tx(&g_stlinky_term, outbuf, obuf_pos);
 			obuf_pos = 0;
