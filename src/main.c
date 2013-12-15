@@ -114,6 +114,16 @@ const uint16_t sin1[] = { // Sinus
      0,   38,  155,  344,  599,  909, 1263, 1647
 };
 
+int strcmp(char* x,char* y){
+    int i = 0;
+    while(x[i] == y[i] && x[i] != 0)
+        i++;
+    if(x[i] == y[i] && x[i] == 0)
+        return 1;
+    else
+        return 0;
+}
+
 float sine(float x){
     while(x < -pi){
         x += 2.0 * pi;
