@@ -5,6 +5,9 @@
 
 #define STLINKY_MAGIC 0xDEADF00D
 #define STLINKY_BSIZE 132
+//#define STLINKY_MSIZE 16
+//#define STLINKY_NSIZE 8
+
 
 /* NOTE: Since rxsize/txsize will be always one
    AXI transaction these will be hopefully atomic
@@ -19,6 +22,8 @@ struct stlinky {
 	char reserved; /* 7 */
 	char txbuf[STLINKY_BSIZE];
 	char rxbuf[STLINKY_BSIZE];
+//	float monitor[STLINKY_MSIZE];
+//	char name[STLINKY_MSIZE][STLINKY_NSIZE];
 } __attribute__ ((packed));
 
 

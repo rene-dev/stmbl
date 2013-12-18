@@ -9,7 +9,7 @@
 #include "stlinky.h"
 #include "printf.h"
 #define PRINTF_BSIZE 128
-#define PRINTF_FLENGTH 3
+#define PRINTF_FLENGTH 6
 
 
 /*
@@ -230,17 +230,17 @@ int vfprintf_(char *buffer, const char* str,  va_list arp){
 						buffer[buffer_pos++] = '\n';
 						state = 0;
 					break;
-					
+
                     case 't': // "\t"
 						buffer[buffer_pos++] = '\t';
 						state = 0;
 					break;
-					
+
                     case 'r': // "\t"
 						buffer[buffer_pos++] = '\r';
 						state = 0;
 					break;
-                    
+
 					case '\'': // "\'"
 						buffer[buffer_pos++] = '\'';
 						state = 0;

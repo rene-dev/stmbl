@@ -8,7 +8,9 @@
 #include "setup.h"
 #include <math.h>
 
+int __errno;
 void Delay(volatile uint32_t nCount);
+void Wait(unsigned int ms);
 
 #define pi 3.14159265
 #define ABS(a)	   (((a) < 0) ? -(a) : (a))
@@ -46,16 +48,16 @@ volatile int res_avg_tmp;
 volatile int followe;
 
 // pid para
-struct pid_para{
-	float p;
-	float i;
-	float d;
-	float ff0;
-	float ff1;
-	float i_limit;
-	float error_limit;
-	float output_limit;
-	float periode;
+volatile struct pid_para{
+	volatile float p;
+	volatile float i;
+	volatile float d;
+	volatile float ff0;
+	volatile float ff1;
+	volatile float i_limit;
+	volatile float error_limit;
+	volatile float output_limit;
+	volatile float periode;
 } pid_pp, pid_fp;
 
 // pid cur para
@@ -64,12 +66,14 @@ float cur_min;
 float cur_max;
 
 // pid storage
-struct pid_mem{
-	float error_old;
-	float error_sum;
-	float in_old;
-	float in_old_old;
+volatile struct pid_mem{
+	volatile float error_old;
+	volatile float error_sum;
+	volatile float in_old;
+	volatile float in_old_old;
 } pid_pm, pid_fm;
+
+volatile float kal;
 
 volatile float mot_pos;
 volatile float mot_vel;
@@ -84,6 +88,8 @@ volatile float res_neg_pos;
 
 volatile int do_pid;
 volatile float do_pos;
+volatile int do_cal;
+volatile int do_rt_cal;
 
 volatile int dacpos;
 
@@ -137,14 +143,58 @@ float mod(float a){
 }
 
 void output_pwm(){
-    float ctr = mod((mag_pos + res_offset + mag_offset) * pole_count);
+    float ctr = mod(mag_pos + mag_offset);
     TIM4->CCR1 = (sine(ctr + offseta) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
     TIM4->CCR2 = (sine(ctr + offsetb) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
     TIM4->CCR3 = (sine(ctr + offsetc) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
 }
 
+volatile struct kal1D{
+	volatile float state;
+	volatile float state_var;
+	volatile float sens;
+	volatile float sens_var;
+	volatile float move;
+	volatile float move_var;
+} k_pos;
+
+void kalman1D(struct kal1D *k){
+	// update
+	k->state = (k->sens_var * k->state + k->state_var * k->sens) / (k->state_var + k->sens_var);
+  k->state_var = 1.0/(1.0/k->state_var + 1.0/k->sens_var);
+
+	// predict
+	k->state += k->move;
+	k->state_var += k->move_var;
+}
+
+/*float acc(float vel, float dist, float max_acc, float min_acc, float max_vel, float time_step){
+	float max_break_time = sqrtf(2.0 * ABS(dist) / min_acc); // s = a/2 * t^2, t = sqrt(2s/a)
+	float max_break_vel = min_acc * max_break_time; // v = a * t
+
+	float v = min(max_break_vel, max_vel);
+	if(dist < 0){
+		v *= -1.0;
+	}
+	if(vel <= v){
+		return(min(max_acc, (v - vel) / time_step)); // v = a * t, a = v / t
+	}
+	else{
+		return(max(min_acc, (v - vel) / time_step)); // v = a * t, a = v / t
+	}
+}*/
+
 void init_pid(){
-	max_mag_diff = 2*pi/pole_count/4;
+	// kalman
+	k_pos.state = 1.0;
+	k_pos.state_var = 1.0;
+	//k_pos.sens = 0.0;
+	//k_pos.sens_var = 1.0;
+	k_pos.move = 0.0;
+	k_pos.move_var = 0.0001;
+	kal = 1;
+
+	max_mag_diff = 2*pi/pole_count/2;
 
 	// pid para
 	// pid_p
@@ -159,9 +209,9 @@ void init_pid(){
 
 	// pid_f
 	pid_fp.periode = 1/2000.0;
-	pid_fp.p = 0.0;
-	pid_fp.i = 0.0;
-	pid_fp.d = 0.0;
+	pid_fp.p = 7.0;
+	pid_fp.i = 150.0;
+	pid_fp.d = 0.05;
 	pid_fp.ff0 = 0.0;
 	pid_fp.ff1 = 0.0;
 	pid_fp.i_limit = max_mag_diff;
@@ -176,12 +226,12 @@ void init_pid(){
 	pid_pm.error_old = 0;
 	pid_pm.error_sum = 0;
 	pid_pm.in_old = 0;
-	pid_pm.in_old = 0;
+	pid_pm.in_old_old = 0;
 
 	pid_fm.error_old = 0;
 	pid_fm.error_sum = 0;
 	pid_fm.in_old = 0;
-	pid_fm.in_old = 0;
+	pid_fm.in_old_old = 0;
 }
 
 void rotate_mag(){ // rotate mag_pos
@@ -194,30 +244,38 @@ void rotate_mag(){ // rotate mag_pos
 void pid_f(){ // calc force / mag_offset
 	// in v, res_vel
 	// out mag_offset
-	float res_vel = minus(res_pos, res_pos_old) / pid_fp.periode;
-	float error = minus(vel, res_vel);
-	//float error = minus(mot_pos, res_pos);
-	float error_d = error - pid_fm.error_old;
-	float in_d = minus(vel, pid_fm.in_old);
-	//float in_d = minus(res_pos, pid_fm.in_old);
+	if(pid_fp.i != 0){
+		pid_fp.i_limit = max_mag_diff / (pid_fp.i * pid_fp.periode);
+	}
+	float pos;
+	if(kal){
+		pos = k_pos.state;
+	}
+	else{
+		pos = res_pos;
+	}
+	float error = minus(mot_pos, pos);
+	float error_d = minus(error, pid_fm.error_old);
+	float in_d = minus(mot_pos, pid_fm.in_old);
 	float in_dd = minus(in_d, minus(pid_fm.in_old, pid_fm.in_old_old));
 
 	pid_fm.error_old = error;
 	pid_fm.error_sum = CLAMP((pid_fm.error_sum + error), -pid_fp.i_limit, pid_fp.i_limit);
 	pid_fm.in_old_old = pid_fm.in_old;
-	//pid_fm.in_old = res_pos;
-	pid_fm.in_old = vel;
+	pid_fm.in_old = mot_pos;
 
-	mag_offset = CLAMP(mod(
+	mag_offset = CLAMP(
 		pid_fp.p * error +
 		pid_fp.i * pid_fp.periode * pid_fm.error_sum +
 		pid_fp.d / pid_fp.periode * error_d +
 		pid_fp.ff0 * in_d +
 		pid_fp.ff1 * in_dd
-		), -pid_fp.output_limit, pid_fp.output_limit);
+		, -pid_fp.output_limit, pid_fp.output_limit);
+
+	mag_pos = (pos + res_offset) * pole_count;
 
 	//current_scale = CLAMP(ABS((cur_p * cur_p * cur_p * cur_p * mag_offset * mag_offset * mag_offset * mag_offset)) * (cur_max - cur_min) + cur_min, 0, 1);
-	current_scale = CLAMP(ABS((cur_p * mag_offset)) * (cur_max - cur_min) + cur_min, 0, 1);
+	current_scale = CLAMP(ABS((cur_p * mag_offset) * (cur_p * mag_offset)) * (cur_max - cur_min) + cur_min, 0, 1);
 }
 
 void pid_p(){ // calc v
@@ -225,7 +283,7 @@ void pid_p(){ // calc v
 	// out v
 
 	float error = minus(mot_pos, res_pos);
-	float error_d = error - pid_pm.error_old;
+	float error_d = minus(error, pid_pm.error_old);
 	float in_d = minus(mot_pos, pid_pm.in_old);
 	float in_dd = minus(in_d, minus(pid_pm.in_old, pid_pm.in_old_old));
 
@@ -251,9 +309,8 @@ void pid_p(){ // calc v
 
 void TIM2_IRQHandler(void){//PWM int handler, 10KHz
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-    rotate_mag();
-    output_pwm();
-    //
+    //rotate_mag();
+    //output_pwm();
 }
 
 void TIM7_IRQHandler(void){//DAC int handler
@@ -287,8 +344,23 @@ void TIM7_IRQHandler(void){//DAC int handler
 				res_pos_old = res_pos;
 				res_pos = res_pos_pos + minus(res_neg_pos, res_pos_pos) / 2.0;
 
-				pid_p();
+				k_pos.sens = res_pos;
+				k_pos.move = -minus(mot_pos, pid_fm.in_old);
+				mot_pos += mot_vel * pid_fp.periode;
+				mot_pos = mod(mot_pos);
+				kalman1D(&k_pos);
 				pid_f();
+				mag_pos = mod(mag_pos);
+				output_pwm();
+
+				if(do_rt_cal){
+					//rt_cal();
+				}
+				if(do_pid){
+					//pid_p();
+
+				}
+
     }
 }
 
@@ -333,6 +405,107 @@ void findoff(void){
     while(1){}
 }
 
+
+
+void rt_cal(){
+}
+
+void mot_cal(){
+	do_pid = NO;
+	do_cal = YES;
+	do_rt_cal = NO;
+
+	current_scale = 1;
+	mag_pos = 0;
+	mag_offset = 0;
+	res_offset = 0;
+	vel = 0;
+	Wait(500);
+
+	// cal res noise
+	unsigned int N = 5000;
+	float res_mu = 0;
+	float res_var = 0;
+
+
+	for(int i = 0; i < N; i++){
+		res_mu += res_pos / N;
+		Delay(1000);
+	}
+
+	for(int i = 0; i < N; i++){
+		res_var += (res_pos - res_mu) * (res_pos - res_mu);
+		Delay(1000);
+	}
+	res_var /= N;
+
+
+	// cal mot_dir
+	float start_pos = res_pos;
+	float mot_dir = 1;
+
+	vel = DEG(10);
+	while(ABS(minus(start_pos, res_pos)) < DEG(10));
+	vel = 0;
+
+	if(minus(start_pos, res_pos) < 0){
+		mot_dir = -1;
+	}
+
+	// cal pole_count
+	float mot_pole_count = 0;
+
+	mag_pos =  0;
+	Wait(500);
+
+	start_pos = res_pos;
+	while(ABS(minus(start_pos, res_pos)) < DEG(90)){
+		mag_pos += DEG(360/100);
+		Wait(50);
+		mot_pole_count++;
+	}
+	while(ABS(minus(start_pos, res_pos)) > DEG(5)){
+		mag_pos += DEG(360/100);
+		Wait(50);
+		mot_pole_count++;
+	}
+
+	mot_pole_count /= 100;
+	mot_pole_count += 0.5;
+	mot_pole_count = (int)mot_pole_count;
+
+
+	// cal res_offset
+	res_offset = 0;
+	vel = DEG(20);
+	Wait(1000);
+	vel = 0;
+	mag_pos = 0;
+	Wait(500);
+	for(int i = 0; i < 50; i++){
+		res_offset += res_pos / 100;
+	}
+
+	vel = DEG(-20);
+	Wait(1000);
+	vel = 0;
+	mag_pos = 0;
+	Wait(500);
+	for(int i = 0; i < 50; i++){
+		res_offset += res_pos / 100;
+	}
+
+
+	// cal Vmax, Amax
+
+
+
+	current_scale = 0.3;
+}
+
+void init(){
+}
+
 int main(void)
 {
     res_avg = 2051;
@@ -346,7 +519,7 @@ int main(void)
     mag_pos = 0;
     mot_pos = 0;
     followe = NO;
-    current_scale = 0.3;
+    current_scale = 1;
     mot_vel = 0;
     /* TIM4 enable counter */
     res_pos = -10;
@@ -381,31 +554,56 @@ int main(void)
 	float p2 = 0;
 	int scanf_ret = 0;
 	ansistate = init;
-	register_float('p', &pid_pp.p);
-	register_float('i', &pid_pp.i);
-	register_float('d', &pid_pp.d);
-	register_float('a', &pid_fp.p);
-	register_float('b', &pid_fp.i);
-	register_float('c', &pid_fp.d);
+	register_float('p', &pid_fp.p);
+	register_float('i', &pid_fp.i);
+	register_float('d', &pid_fp.d);
 	register_float('m', &mot_pos);
-	register_float('p', &do_pos);
+	register_float('k', &kal);
 	register_float('v', &mot_vel);
 
 	float res_vel = 0;
 	float verror = 0;
 
-    if(!do_pid)
-        findoff();
+	float res_mu = 0;
+	float res_var = 0;
+	float N = 100.0;
+
+	Wait(1);
+
+	for(int i = 0; i < N; i++){
+		res_mu += res_pos;
+		Wait(1);
+	}
+	res_mu /= N;
+
+	float t = 0;
+	float tt = 0;
+	for(int i = 0; i < N; i++){
+		tt = res_pos;
+		t = (tt - res_mu) * (tt - res_mu);
+		res_var += t;
+		Wait(1);
+	}
+	res_var /= N;
+
+	//k_pos.state = res_mu;
+	k_pos.sens_var = sqrtf(res_var);
 
     while(1)  // Do not exit
     {
         //printf_("p1 = %f, p2 = %f, n1 = %f, n2 = %f\n", max_res1, max_res2, min_res1, min_res2);
         //printf_("p = %f, n = %f\rn", res_pos_pos, res_neg_pos);
         //printf_("error = %f\tmot = %f\tcur = %f\n", minus(mot_pos, res_pos), mot_pos, current_scale);
-        Delay(1000000);
+        Delay(10000);
 				res_vel = minus(res_pos, res_pos_old) / pid_fp.periode;
 				verror = minus(vel, res_vel);
-        printf_("pe = %f\tmo = %f\tc = %f\tv = %f\trv = %f\tve = %f\t     \r", minus(mot_pos, res_pos), mag_offset, current_scale, vel, res_vel, verror);
+				printf_("%c[s", 0x1b);
+    		printf_("%c[0;0H", 0x1b);
+        printf_("pos = %f kal_pos = %f error = %f kal_error = %f mag_offset = %f current =%f\n", res_pos, k_pos.state, minus(mot_pos, res_pos), minus(mot_pos, k_pos.state), mag_offset, current_scale);
+        printf_("mag_pos = %f error_sum = %f in_d = %f              ", mag_pos, pid_fm.error_sum, minus(mot_pos, pid_fm.in_old));
+				printf_("%c%c",0x11,(char)(int)RAD(minus(mot_pos, k_pos.state) * 2.0));
+				printf_("%c[u", 0x1b);
+
 
 		if(stlinky_todo(&g_stlinky_term) == 0 && obuf_pos > 0){
 			stlinky_tx(&g_stlinky_term, outbuf, obuf_pos);
@@ -514,4 +712,10 @@ void Delay(volatile uint32_t nCount) {
     {
         //one = (float) nCount;
     }
+}
+
+void Wait(unsigned int ms){
+	volatile unsigned int t = time + ms;
+	while(t >= time){
+	}
 }
