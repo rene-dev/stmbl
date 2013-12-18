@@ -1,6 +1,3 @@
-/* Michael Pratt <michael@pratt.im>
- * Vastly simplified the code from https://github.com/jeremyherbert/stm32-templates/ */
-
 #include <stm32f4_discovery.h>
 #include <stm32f4xx_conf.h>
 #include "../../sin.h"
@@ -8,7 +5,6 @@
 #include "scanf.h"
 #include "stlinky.h"
 #include "param.h"
-//#include "stm32_ub_dac_dma.h"
 #include "setup.h"
 #include <math.h>
 
@@ -23,12 +19,9 @@ void Delay(volatile uint32_t nCount);
 #define RAD(a) ((a)*180.0/pi)
 
 #define pole_count 4
-#define maxdiff 2*pi/pole_count/4
-//#define res_offset 0.675 (2.48+2.57)/2 = 2.525
-//#define res_offset 0.675 (2.60+2.71)/2 = 2.655
-//#define res_offset 0.7
-
+float max_mag_diff;
 volatile float res_offset;
+
 #define pwm_scale 0.8
 #define sin_res 1024
 
@@ -43,18 +36,6 @@ volatile float res_offset;
 #define read_neg  (22+8)
 #define read_w  4
 
-
-volatile float mag_pos;
-volatile float mag_pos_offset;
-volatile float mot_pos;
-volatile float res_pos;
-volatile float res_pos_pos;
-volatile float res_neg_pos;
-
-
-volatile int res1_tmp;
-volatile int res2_tmp;
-
 volatile int res1_pos;
 volatile int res2_pos;
 volatile int res1_neg;
@@ -65,13 +46,17 @@ volatile int res_avg_tmp;
 volatile int followe;
 
 // pid para
-float pid_p;
-float pid_i;
-float pid_d;
-float pid_i_limit;
-float pid_error_limit;
-float pid_output_limit;
-float pid_periode;
+struct pid_para{
+	float p;
+	float i;
+	float d;
+	float ff0;
+	float ff1;
+	float i_limit;
+	float error_limit;
+	float output_limit;
+	float periode;
+} pid_pp, pid_fp;
 
 // pid cur para
 float cur_p;
@@ -79,31 +64,26 @@ float cur_min;
 float cur_max;
 
 // pid storage
-float pid_error;
-float pid_error_old;
-float pid_error_old_old;
-float pid_error_sum;
-float pid_in;
-float pid_in_old;
-float pid_in_old_old;
-float pos_error_sum;
-float pos_p;
-float pos_i;
+struct pid_mem{
+	float error_old;
+	float error_sum;
+	float in_old;
+	float in_old_old;
+} pid_pm, pid_fm;
 
-float freq;
-float step;
-int do_pid;
-
-float res_pos_hist0;
-float res_pos_hist1;
-float res_pos_hist2;
-volatile float v;
-volatile float g;
-
-
-
-
+volatile float mot_pos;
+volatile float mot_vel;
+volatile float vel;
+volatile float mag_pos;
+volatile float mag_offset;
 volatile float current_scale;
+volatile float res_pos;
+volatile float res_pos_old;
+volatile float res_pos_pos;
+volatile float res_neg_pos;
+
+volatile int do_pid;
+volatile float do_pos;
 
 volatile int dacpos;
 
@@ -157,94 +137,121 @@ float mod(float a){
 }
 
 void output_pwm(){
-    float ctr = mod((mag_pos + res_offset) * pole_count);
+    float ctr = mod((mag_pos + res_offset + mag_offset) * pole_count);
     TIM4->CCR1 = (sine(ctr + offseta) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
     TIM4->CCR2 = (sine(ctr + offsetb) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
     TIM4->CCR3 = (sine(ctr + offsetc) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
 }
 
 void init_pid(){
+	max_mag_diff = 2*pi/pole_count/4;
+
 	// pid para
-	pid_periode = 1/10000.0;
-	pid_p = 3.0;
-	pid_i = 0.004;//;
-	pid_d = 0.001;//;
-	pid_i_limit = maxdiff * 100;
-	pid_error_limit = DEG(90);
-	pid_output_limit = maxdiff;
-    pos_error_sum = 0;
-    pos_p = 2;
-    pos_i = 0.2;
+	// pid_p
+	pid_pp.periode = 1/2000.0;
+	pid_pp.p = 0.5;
+	pid_pp.i = 0.0;
+	pid_pp.d = 0.0;
+	pid_pp.ff0 = 0.0;
+	pid_pp.ff1 = 0.0;
+	pid_pp.i_limit = 11500 / 60.0 * 2.0 * pi;
+	pid_pp.output_limit = 11500 / 60.0 * 2.0 * pi;
+
+	// pid_f
+	pid_fp.periode = 1/2000.0;
+	pid_fp.p = 0.0;
+	pid_fp.i = 0.0;
+	pid_fp.d = 0.0;
+	pid_fp.ff0 = 0.0;
+	pid_fp.ff1 = 0.0;
+	pid_fp.i_limit = max_mag_diff;
+	pid_fp.output_limit = max_mag_diff;
 
 // pid cur para
-	cur_p = 1 / (maxdiff);
+	cur_p = 1 / (max_mag_diff);
 	cur_min = 0.1;
 	cur_max = 1;
 
 // pid storage
-	pid_error = 0;
-	pid_error_old = 0;
-	pid_error_old_old = 0;
-	pid_error_sum = 0;
-	pid_in = 0;
-	pid_in_old = 0;
-	pid_in_old_old = 0;
+	pid_pm.error_old = 0;
+	pid_pm.error_sum = 0;
+	pid_pm.in_old = 0;
+	pid_pm.in_old = 0;
+
+	pid_fm.error_old = 0;
+	pid_fm.error_sum = 0;
+	pid_fm.in_old = 0;
+	pid_fm.in_old = 0;
 }
 
+void rotate_mag(){ // rotate mag_pos
+	// in mag_pos, v
+	// out mag_pos
+	mag_pos += vel/10000;
+	mag_pos = mod(mag_pos);
+}
 
-void pid(){ // strom/kraft pid
-    float ctr_mag = 0;
-    float ctr_cur = 0;
-	float error_der = 0;
+void pid_f(){ // calc force / mag_offset
+	// in v, res_vel
+	// out mag_offset
+	float res_vel = minus(res_pos, res_pos_old) / pid_fp.periode;
+	float error = minus(vel, res_vel);
+	//float error = minus(mot_pos, res_pos);
+	float error_d = error - pid_fm.error_old;
+	float in_d = minus(vel, pid_fm.in_old);
+	//float in_d = minus(res_pos, pid_fm.in_old);
+	float in_dd = minus(in_d, minus(pid_fm.in_old, pid_fm.in_old_old));
 
-    mag_pos = res_pos;
-    //mot_pos = DEG((float)UB_ENCODER_TIM3_ReadPos()/2000.0*360.0);
+	pid_fm.error_old = error;
+	pid_fm.error_sum = CLAMP((pid_fm.error_sum + error), -pid_fp.i_limit, pid_fp.i_limit);
+	pid_fm.in_old_old = pid_fm.in_old;
+	//pid_fm.in_old = res_pos;
+	pid_fm.in_old = vel;
 
-	// calc pid storage
-	pid_in_old_old = pid_in_old;
-	pid_in_old = pid_in;
-	pid_in = mot_pos;
+	mag_offset = CLAMP(mod(
+		pid_fp.p * error +
+		pid_fp.i * pid_fp.periode * pid_fm.error_sum +
+		pid_fp.d / pid_fp.periode * error_d +
+		pid_fp.ff0 * in_d +
+		pid_fp.ff1 * in_dd
+		), -pid_fp.output_limit, pid_fp.output_limit);
 
-	pid_error_old_old = pid_error_old;
-	pid_error_old = pid_error;
-	pid_error = minus(mag_pos, minus(res_pos, mag_pos_offset));
+	//current_scale = CLAMP(ABS((cur_p * cur_p * cur_p * cur_p * mag_offset * mag_offset * mag_offset * mag_offset)) * (cur_max - cur_min) + cur_min, 0, 1);
+	current_scale = CLAMP(ABS((cur_p * mag_offset)) * (cur_max - cur_min) + cur_min, 0, 1);
+}
+
+void pid_p(){ // calc v
+	// in res_pos, mot_pos
+	// out v
+
+	float error = minus(mot_pos, res_pos);
+	float error_d = error - pid_pm.error_old;
+	float in_d = minus(mot_pos, pid_pm.in_old);
+	float in_dd = minus(in_d, minus(pid_pm.in_old, pid_pm.in_old_old));
+
+	pid_pm.error_old = error;
+	pid_pm.error_sum = CLAMP((pid_pm.error_sum + error), -pid_pp.i_limit, pid_pp.i_limit);
+	pid_pm.in_old_old = pid_pm.in_old;
+	pid_pm.in_old = mot_pos;
 
 
-    if(ABS(pid_error) > pid_error_limit){//schleppfehler
-        followe = YES;
-    }
-
-		
-    // calc pid
-	pid_error_sum = CLAMP((pid_error_sum + pid_error), -pid_i_limit, pid_i_limit);
-    error_der = pid_error - pid_error_old;
-
-    ctr_mag = CLAMP((
-            pid_p * pid_error + 
-            pid_i * pid_periode * pid_error_sum + 
-            pid_d / pid_periode * error_der
-    ), -pid_output_limit, pid_output_limit);
-    //ctr_mag = CLAMP((pid_p * pid_error), -pid_output_limit, pid_output_limit);
-
-    ctr_cur = (cur_p * cur_p * cur_p * cur_p * ctr_mag * ctr_mag * ctr_mag * ctr_mag) * (cur_max - cur_min) + cur_min;
-    //ctr_cur = 0.5;
-
-	// output pid
-    mag_pos += CLAMP(ctr_mag, -maxdiff, maxdiff);
-    current_scale = CLAMP(ABS(ctr_cur), 0, 1);
-
-    mag_pos = mod(mag_pos);
+	if(do_pos){
+		vel =
+			pid_pp.p * error +
+			pid_pp.i * pid_pp.periode * pid_pm.error_sum +
+			pid_pp.d / pid_pp.periode * error_d +
+			pid_pp.ff0 * in_d +
+			pid_pp.ff1 * in_dd
+			;
+	}
+	else{
+		vel = mot_vel;
+	}
 }
 
 void TIM2_IRQHandler(void){//PWM int handler, 10KHz
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-    //GPIO_SetBits(GPIOD,GPIO_Pin_11);
-    //mag_pos += 1/10000.0 * DEG(30);
-    //current_scale = 0.3;
-    //mot_pos = mod(mot_pos);
-    if(do_pid){
-        pid();
-    }
+    rotate_mag();
     output_pwm();
     //
 }
@@ -269,60 +276,46 @@ void TIM7_IRQHandler(void){//DAC int handler
         res_pos_pos = atan2f(res1_pos, res2_pos);
         res1_pos = 0;
         res2_pos = 0;
-        //pid();
-        //output_pwm();
+
     }
     if(dacpos == (read_neg + read_w + 1) % 32){
 		res_neg_pos = atan2f(res1_neg, res2_neg);
 
-        //res_pos = observer(res_pos_pos, res_neg_pos);    
-        res_pos = res_pos_pos + minus(res_neg_pos, res_pos_pos) / 2.0;
-        
-        float error = minus(mot_pos, res_pos);
-
-    	pos_error_sum = CLAMP((pos_error_sum + error), -pid_i_limit, pid_i_limit);
-
-        mag_pos_offset = pos_p * error + pos_i * pos_error_sum;
-        
-        //res_pos = res_pos_pos;
         res1_neg = 0;
         res2_neg = 0;
-        //pid();
-        //output_pwm();
+
+				res_pos_old = res_pos;
+				res_pos = res_pos_pos + minus(res_neg_pos, res_pos_pos) / 2.0;
+
+				pid_p();
+				pid_f();
     }
 }
 
 
 void ADC_IRQHandler(void)
 {
-    int t1, t2, t3;
+    int t1, t2;
     while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
-    //while(!ADC_GetFlagStatus(ADC3, ADC_FLAG_EOC));
     ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
     GPIO_SetBits(GPIOD,GPIO_Pin_11);
-    
+
     t1 = ADC_GetConversionValue(ADC1);
     t2 = ADC_GetConversionValue(ADC2);
-    //t3 = ADC_GetConversionValue(ADC3);
     res_avg_tmp += t1+t2;
     t1 -= res_avg;
     t2 -= res_avg;
 
-    //if(t1 < 930 && t1 > -930 && t2 < 930 && t2 > -930){
     float max = 930;
         if(dacpos >= read_pos - read_w && dacpos <= read_pos + read_w){
-            //if(t1 >  -max & t1 < max & t2 > -max & t2 < max){
-                res1_pos += t1;
-                res2_pos += t2;
-            //}
+					res1_pos += t1;
+					res2_pos += t2;
         }
         else if(dacpos >= read_neg - read_w || dacpos <= (read_neg + read_w) % 32){
-            //if(t1 >  -max & t1 < max & t2 > -max & t2 < max){
-                res1_neg -= t1;
-                res2_neg -= t2;
-            //}
+        	res1_neg -= t1;
+					res2_neg -= t2;
         }
-        //}
+
 
     GPIO_ResetBits(GPIOD,GPIO_Pin_11);
 }
@@ -341,10 +334,11 @@ void findoff(void){
 }
 
 int main(void)
-{    
+{
     res_avg = 2051;
     res_avg_tmp = 0;
     do_pid = YES;
+		do_pos = YES;
     dacpos = 31;
 	init_pid();
 	param_init();
@@ -352,17 +346,13 @@ int main(void)
     mag_pos = 0;
     mot_pos = 0;
     followe = NO;
-    current_scale = 1;
-    freq = 0;
-    step = freq / 10000 * pi * 2.0;
+    current_scale = 0.3;
+    mot_vel = 0;
     /* TIM4 enable counter */
     res_pos = -10;
     while (res_pos == -10){
     }
     res_offset = 2.4885;
-    res_pos_hist0 = res_pos;
-    res_pos_hist1 = res_pos;
-    res_pos_hist2 = res_pos;
     mot_pos = res_pos;
     TIM_Cmd(TIM4, ENABLE);//PWM
     TIM_Cmd(TIM2, ENABLE);//int
@@ -391,13 +381,19 @@ int main(void)
 	float p2 = 0;
 	int scanf_ret = 0;
 	ansistate = init;
-	register_float('p', &pid_p);
-	register_float('i', &pid_i);
-	register_float('d', &pid_d);
+	register_float('p', &pid_pp.p);
+	register_float('i', &pid_pp.i);
+	register_float('d', &pid_pp.d);
+	register_float('a', &pid_fp.p);
+	register_float('b', &pid_fp.i);
+	register_float('c', &pid_fp.d);
 	register_float('m', &mot_pos);
-	register_float('a', &pos_p);
-	register_float('b', &pos_i);
-    
+	register_float('p', &do_pos);
+	register_float('v', &mot_vel);
+
+	float res_vel = 0;
+	float verror = 0;
+
     if(!do_pid)
         findoff();
 
@@ -406,8 +402,11 @@ int main(void)
         //printf_("p1 = %f, p2 = %f, n1 = %f, n2 = %f\n", max_res1, max_res2, min_res1, min_res2);
         //printf_("p = %f, n = %f\rn", res_pos_pos, res_neg_pos);
         //printf_("error = %f\tmot = %f\tcur = %f\n", minus(mot_pos, res_pos), mot_pos, current_scale);
-        Delay(100000);
-        printf_("res_avg = %i\t\n", res_avg);
+        Delay(1000000);
+				res_vel = minus(res_pos, res_pos_old) / pid_fp.periode;
+				verror = minus(vel, res_vel);
+        printf_("pe = %f\tmo = %f\tc = %f\tv = %f\trv = %f\tve = %f\t     \r", minus(mot_pos, res_pos), mag_offset, current_scale, vel, res_vel, verror);
+
 		if(stlinky_todo(&g_stlinky_term) == 0 && obuf_pos > 0){
 			stlinky_tx(&g_stlinky_term, outbuf, obuf_pos);
 			obuf_pos = 0;
