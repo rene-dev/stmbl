@@ -17,6 +17,9 @@
 #define mag_res 1024
 
 void setup();
+void SysTick_Handler(void);
+
+volatile int time;
 
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 TIM_OCInitTypeDef TIM_OCInitStructure;
