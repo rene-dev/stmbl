@@ -45,119 +45,119 @@ const int ticksize = 10;
 #define STLINKY_MAGIC 0xDEADF00D
 
 #define READ_UINT32_LE(buf)  ((uint32_t) (   buf[0]         \
-                                           | buf[1] <<  8   \
-                                           | buf[2] << 16   \
-                                           | buf[3] << 24))
+			| buf[1] <<  8   \
+			| buf[2] << 16   \
+			| buf[3] << 24))
 
 typedef struct {
-        stlink_t *sl;
-        uint32_t off;
-        size_t bufsize;
+	stlink_t *sl;
+	uint32_t off;
+	size_t bufsize;
 }stlinky;
 
 /* Detects stlinky in RAM, returns handler */
 stlinky*  stlinky_detect(stlink_t* sl)
 {
-        static const uint32_t sram_base = 0x20000000;
-        stlinky* st = (stlinky*)malloc(sizeof(stlinky));
-        int multiple=0;
-        st->sl = sl;
-        printf("sram: 0x%x bytes @ 0x%zx\n", sl->sram_base, sl->sram_size);
-        uint32_t off;
-        for (off = 0; off < sl->sram_size; off += 4) {
-                stlink_read_mem32(sl, sram_base + off, 4);
-                if (STLINKY_MAGIC == READ_UINT32_LE(sl->q_buf))
-                {
-                        if (multiple > 0)
-                        printf("WARNING: another ");
-                        printf("stlinky detected at 0x%x\n", sram_base + off);
-                        st->off = sram_base + off;
-                        stlink_read_mem32(sl, st->off + 4, 4);
-                        st->bufsize = (size_t) *(unsigned char*) sl->q_buf;
-                        printf("stlinky buffer size 0x%zu \n", st->bufsize);
-                        multiple++;
-                }
-        }
-        if (multiple > 0) {
-                if (multiple > 1) {
-                        printf("Using last stlinky structure detected\n");
-                }
-                return st;
-        }
-        return NULL;
+	static const uint32_t sram_base = 0x20000000;
+	stlinky* st = (stlinky*)malloc(sizeof(stlinky));
+	int multiple=0;
+	st->sl = sl;
+	printf("sram: 0x%x bytes @ 0x%zx\n", sl->sram_base, sl->sram_size);
+	uint32_t off;
+	for (off = 0; off < sl->sram_size; off += 4) {
+		stlink_read_mem32(sl, sram_base + off, 4);
+		if (STLINKY_MAGIC == READ_UINT32_LE(sl->q_buf))
+		{
+			if (multiple > 0)
+				printf("WARNING: another ");
+			printf("stlinky detected at 0x%x\n", sram_base + off);
+			st->off = sram_base + off;
+			stlink_read_mem32(sl, st->off + 4, 4);
+			st->bufsize = (size_t) *(unsigned char*) sl->q_buf;
+			printf("stlinky buffer size 0x%zu \n", st->bufsize);
+			multiple++;
+		}
+	}
+	if (multiple > 0) {
+		if (multiple > 1) {
+			printf("Using last stlinky structure detected\n");
+		}
+		return st;
+	}
+	return NULL;
 }
 
 int stlinky_canrx(stlinky *st)
 {
-        stlink_read_mem32(st->sl, st->off+4, 4);
-        unsigned char tx = (unsigned char) st->sl->q_buf[1];
-        return (int) tx;
+	stlink_read_mem32(st->sl, st->off+4, 4);
+	unsigned char tx = (unsigned char) st->sl->q_buf[1];
+	return (int) tx;
 }
 
 size_t stlinky_rx(stlinky *st, char* buffer)
 {
-        unsigned char tx = 0;
-        while(tx == 0) {
-                stlink_read_mem32(st->sl, st->off+4, 4);
-                tx = (unsigned char) st->sl->q_buf[1];
-        }
-        size_t rs = tx + (4 - (tx % 4)); /* voodoo */
-        stlink_read_mem32(st->sl, st->off+8, rs);
-        memcpy(buffer, st->sl->q_buf, (size_t) tx);
-        *st->sl->q_buf=0x0;
-        stlink_write_mem8(st->sl, st->off+5, 1);
-        return (size_t) tx;
+	unsigned char tx = 0;
+	while(tx == 0) {
+		stlink_read_mem32(st->sl, st->off+4, 4);
+		tx = (unsigned char) st->sl->q_buf[1];
+	}
+	size_t rs = tx + (4 - (tx % 4)); /* voodoo */
+	stlink_read_mem32(st->sl, st->off+8, rs);
+	memcpy(buffer, st->sl->q_buf, (size_t) tx);
+	*st->sl->q_buf=0x0;
+	stlink_write_mem8(st->sl, st->off+5, 1);
+	return (size_t) tx;
 }
 
 size_t stlinky_tx(stlinky *st, char* buffer, size_t sz)
 {
-        unsigned char rx = 1;
-        while(rx != 0) {
-                stlink_read_mem32(st->sl, st->off+4, 4);
-                rx = (unsigned char) st->sl->q_buf[2];
-        }
-        memcpy(st->sl->q_buf, buffer, sz);
-        size_t rs = sz + (4 - (sz % 4)); /* voodoo */
-        stlink_write_mem32(st->sl, st->off+8+st->bufsize, rs);
-        *st->sl->q_buf=(unsigned char) sz;
-        stlink_write_mem8(st->sl, st->off+6, 1);
-        return (size_t) rx;
+	unsigned char rx = 1;
+	while(rx != 0) {
+		stlink_read_mem32(st->sl, st->off+4, 4);
+		rx = (unsigned char) st->sl->q_buf[2];
+	}
+	memcpy(st->sl->q_buf, buffer, sz);
+	size_t rs = sz + (4 - (sz % 4)); /* voodoo */
+	stlink_write_mem32(st->sl, st->off+8+st->bufsize, rs);
+	*st->sl->q_buf=(unsigned char) sz;
+	stlink_write_mem8(st->sl, st->off+6, 1);
+	return (size_t) rx;
 }
 
 int kbhit()
 {
-        struct timeval tv;
-        fd_set fds;
-        tv.tv_sec = 0;
-        tv.tv_usec = 0;
-        FD_ZERO(&fds);
-        FD_SET(STDIN_FILENO, &fds); //STDIN_FILENO is 0
-        select(STDIN_FILENO+1, &fds, NULL, NULL, &tv);
-        return FD_ISSET(STDIN_FILENO, &fds);
+	struct timeval tv;
+	fd_set fds;
+	tv.tv_sec = 0;
+	tv.tv_usec = 0;
+	FD_ZERO(&fds);
+	FD_SET(STDIN_FILENO, &fds); //STDIN_FILENO is 0
+	select(STDIN_FILENO+1, &fds, NULL, NULL, &tv);
+	return FD_ISSET(STDIN_FILENO, &fds);
 }
 
 void nonblock(int state)
 {
-        struct termios ttystate;
+	struct termios ttystate;
 
-        //get the terminal state
-        tcgetattr(STDIN_FILENO, &ttystate);
+	//get the terminal state
+	tcgetattr(STDIN_FILENO, &ttystate);
 
-        if (state==1)
-        {
-                //turn off canonical mode
-                ttystate.c_lflag &= ~ICANON;
-                ttystate.c_lflag &= ~ECHO;
-                //minimum of number input read.
-                ttystate.c_cc[VMIN] = 1;
-        }
-        else if (state==0)
-        {
-                //turn on canonical mode
-                ttystate.c_lflag |= ICANON | ECHO;
-        }
-        //set the terminal attributes.
-        tcsetattr(STDIN_FILENO, TCSANOW, &ttystate);
+	if (state==1)
+	{
+		//turn off canonical mode
+		ttystate.c_lflag &= ~ICANON;
+		ttystate.c_lflag &= ~ECHO;
+		//minimum of number input read.
+		ttystate.c_cc[VMIN] = 1;
+	}
+	else if (state==0)
+	{
+		//turn on canonical mode
+		ttystate.c_lflag |= ICANON | ECHO;
+	}
+	//set the terminal attributes.
+	tcsetattr(STDIN_FILENO, TCSANOW, &ttystate);
 
 }
 
@@ -165,14 +165,14 @@ static int keep_running = 1;
 static int sigcount=0;
 void cleanup(int dummy)
 {
-        (void) dummy;
-        sigcount++;
-        keep_running = 0;
-        printf("\n\nGot a signal\n");
-        if (sigcount==2) {
-                printf("\n\nGot a second signal - bailing out\n");
-                exit(1);
-        }
+	(void) dummy;
+	sigcount++;
+	keep_running = 0;
+	printf("\n\nGot a signal\n");
+	if (sigcount==2) {
+		printf("\n\nGot a second signal - bailing out\n");
+		exit(1);
+	}
 }
 
 int init_resources() {
@@ -257,7 +257,7 @@ void display(int window_width,int window_height) {
 	glEnableVertexAttribArray(attribute_coord2d);
 	glVertexAttribPointer(attribute_coord2d, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glDrawArrays(GL_LINE_STRIP, 0, LEN);
-    //glDrawArrays(GL_POINTS, 0, LEN);
+	//glDrawArrays(GL_POINTS, 0, LEN);
 
 	// Stop clipping
 	glViewport(0, 0, window_width, window_height);
@@ -341,131 +341,131 @@ void display(int window_width,int window_height) {
 
 void addpoint(float y){
 	float x = (x_pos - LEN/2) / (LEN/2.0);
-    graph[x_pos].x = x;
-    graph[x_pos].y = y;
+	graph[x_pos].x = x;
+	graph[x_pos].y = y;
 	graph[(x_pos+1)%LEN].y = 0;
-    x_pos++;
-    x_pos%=LEN;
+	x_pos++;
+	x_pos%=LEN;
 }
 
 void render(void) {
 	int window_width;
 	int window_height;
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof graph, graph, GL_STREAM_DRAW);
-    glfwGetFramebufferSize(window, &window_width, &window_height);
-    display(window_width,window_height);
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+	glfwGetFramebufferSize(window, &window_width, &window_height);
+	display(window_width,window_height);
+	glfwSwapBuffers(window);
+	glfwPollEvents();
 }
 
 int main(int ac, char** av) {
-    stlink_t* sl;
-    stlinky *st = 0;
-    int add = 0;
+	stlink_t* sl;
+	stlinky *st = 0;
+	int add = 0;
 
-    if (!glfwInit())
-        exit(EXIT_FAILURE);
-    window = glfwCreateWindow(640, 480, "Graph", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-    glfwMakeContextCurrent(window);
-	
-    if(!init_resources())
-        exit(EXIT_FAILURE);        
-    
+	if (!glfwInit())
+		exit(EXIT_FAILURE);
+	window = glfwCreateWindow(640, 480, "Graph", NULL, NULL);
+	if (!window)
+	{
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
+	glfwMakeContextCurrent(window);
+
+	if(!init_resources())
+		exit(EXIT_FAILURE);        
+
 	for (int i = 0; i < LEN; i++) {
 		float x = (i - LEN/2) / (LEN/2.0);
 		graph[i].x = x;
 		graph[i].y = 0;
 	}
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof graph, graph, GL_DYNAMIC_DRAW);
-    
-    sl = stlink_open_usb(10, 1);
-            if (sl != NULL) {
-                    printf("ST-Linky proof-of-concept terminal :: Created by Necromant for lulz\n");
-                    stlink_version(sl);
-                    stlink_enter_swd_mode(sl);
-                    printf("chip id: %#x\n", sl->chip_id);
-                    printf("core_id: %#x\n", sl->core_id);
 
-                    cortex_m3_cpuid_t cpuid;
-                    stlink_cpu_id(sl, &cpuid);
-                    printf("cpuid:impl_id = %0#x, variant = %#x\n", cpuid.implementer_id, cpuid.variant);
-                    printf("cpuid:part = %#x, rev = %#x\n", cpuid.part, cpuid.revision);
+	sl = stlink_open_usb(10, 1);
+	if (sl != NULL) {
+		printf("ST-Linky proof-of-concept terminal :: Created by Necromant for lulz\n");
+		stlink_version(sl);
+		stlink_enter_swd_mode(sl);
+		printf("chip id: %#x\n", sl->chip_id);
+		printf("core_id: %#x\n", sl->core_id);
 
-                    stlink_reset(sl);
-                    stlink_force_debug(sl);
-                    stlink_run(sl);
-                    stlink_status(sl);
+		cortex_m3_cpuid_t cpuid;
+		stlink_cpu_id(sl, &cpuid);
+		printf("cpuid:impl_id = %0#x, variant = %#x\n", cpuid.implementer_id, cpuid.variant);
+		printf("cpuid:part = %#x, rev = %#x\n", cpuid.part, cpuid.revision);
 
-                    /* wait for device to boot */
-                    /* TODO: Make timeout adjustable via command line */
-                    sleep(1);
+		stlink_reset(sl);
+		stlink_force_debug(sl);
+		stlink_run(sl);
+		stlink_status(sl);
 
-                    if(ac == 1){ 
-                            st = stlinky_detect(sl);
-                    }else if(ac == 2){
-                            st = (stlinky*)malloc(sizeof(stlinky));
-                            st->sl = sl;
-                            st->off = (int)strtol(av[1], NULL, 16);
-                            printf("using stlinky at 0x%x\n", st->off);
-                            stlink_read_mem32(sl, st->off + 4, 4);
-                            st->bufsize = (size_t) *(unsigned char*) sl->q_buf;
-                            printf("stlinky buffer size 0x%zu \n", st->bufsize);
-                    }else{
-                            //goto bailout;
-                    }
-                    if (st == NULL)
-                    {
-                            printf("stlinky magic not found in sram :(\n");
-                            //goto bailout;
-                    }
-                    char* rxbuf = (char*)malloc(st->bufsize);
-                    char* txbuf = (char*)malloc(st->bufsize);
-                    size_t tmp;
-                    nonblock(1);
-                    int fd = fileno(stdin);
-                    int saved_flags = fcntl(fd, F_GETFL);
-                    fcntl(fd, F_SETFL, saved_flags & ~O_NONBLOCK);
-                    signal(SIGINT, cleanup);
-                    printf("Entering interactive terminal. CTRL+C to exit\n\n\n");
-                    add = 0;
-                    while(!glfwWindowShouldClose(window)) {
-                        if(add == 100){
-                            add = 0;
-                            render();
-                        }
-                        add++;
-                            if (stlinky_canrx(st)) {
-                                    tmp = stlinky_rx(st, rxbuf);
+		/* wait for device to boot */
+		/* TODO: Make timeout adjustable via command line */
+		sleep(1);
 
-                                    if(rxbuf[0] == 0x11)
-                                        addpoint(rxbuf[1]/128.0f);
-                                    else{
-                                        fwrite(rxbuf,tmp,1,stdout);
-                                        fflush(stdout);
-                                    }
-                            }
-                            if (kbhit()) {
-                                    tmp = read(fd, txbuf, st->bufsize);
-                                    stlinky_tx(st,txbuf,tmp);
-                            }
-                            if (!keep_running)
-                                    break;
-                    }
-            }
-    //bailout:
-    //            nonblock(0);
-    //    stlink_exit_debug_mode(sl);
-    //    stlink_close(sl);
-    //TODO: stop timer
-    glfwDestroyWindow(window);
-    glfwTerminate();
-    exit(EXIT_SUCCESS);
+		if(ac == 1){ 
+			st = stlinky_detect(sl);
+		}else if(ac == 2){
+			st = (stlinky*)malloc(sizeof(stlinky));
+			st->sl = sl;
+			st->off = (int)strtol(av[1], NULL, 16);
+			printf("using stlinky at 0x%x\n", st->off);
+			stlink_read_mem32(sl, st->off + 4, 4);
+			st->bufsize = (size_t) *(unsigned char*) sl->q_buf;
+			printf("stlinky buffer size 0x%zu \n", st->bufsize);
+		}else{
+			//goto bailout;
+		}
+		if (st == NULL)
+		{
+			printf("stlinky magic not found in sram :(\n");
+			//goto bailout;
+		}
+		char* rxbuf = (char*)malloc(st->bufsize);
+		char* txbuf = (char*)malloc(st->bufsize);
+		size_t tmp;
+		nonblock(1);
+		int fd = fileno(stdin);
+		int saved_flags = fcntl(fd, F_GETFL);
+		fcntl(fd, F_SETFL, saved_flags & ~O_NONBLOCK);
+		signal(SIGINT, cleanup);
+		printf("Entering interactive terminal. CTRL+C to exit\n\n\n");
+		add = 0;
+		while(!glfwWindowShouldClose(window)) {
+			if(add == 100){
+				add = 0;
+				render();
+			}
+			add++;
+			if (stlinky_canrx(st)) {
+				tmp = stlinky_rx(st, rxbuf);
+
+				if(rxbuf[0] == 0x11)
+					addpoint(rxbuf[1]/128.0f);
+				else{
+					fwrite(rxbuf,tmp,1,stdout);
+					fflush(stdout);
+				}
+			}
+			if (kbhit()) {
+				tmp = read(fd, txbuf, st->bufsize);
+				stlinky_tx(st,txbuf,tmp);
+			}
+			if (!keep_running)
+				break;
+		}
+	}
+	//bailout:
+	//            nonblock(0);
+	//    stlink_exit_debug_mode(sl);
+	//    stlink_close(sl);
+	//TODO: stop timer
+	glfwDestroyWindow(window);
+	glfwTerminate();
+	exit(EXIT_SUCCESS);
 	return 0;
 }
