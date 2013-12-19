@@ -5,3 +5,4 @@
 *.hex
 *.bin
 .DS_Store
+term/graph

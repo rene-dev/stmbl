@@ -1,8 +1,9 @@
 CC=g++
-CFLAGS=-g -c -Wall `pkg-config --cflags --static glfw3`
-LDFLAGS=`pkg-config --static --libs glfw3`
+STLINK=../../stlink
+CFLAGS=-g -c -Wall `pkg-config --cflags --static glfw3` -I$(STLINK)/src/ `pkg-config --cflags libusb`
+LDFLAGS=`pkg-config --static --libs glfw3` `pkg-config --static --libs libusb`
 SOURCES=graph.cpp shader_utils.cpp
-OBJECTS=$(SOURCES:.cpp=.o)
+OBJECTS=$(SOURCES:.cpp=.o) $(STLINK)/src/libstlink_a-stlink-common.o $(STLINK)/src/libstlink_a-stlink-usb.o $(STLINK)/src/libstlink_a-uglylogging.o $(STLINK)/src/libstlink_a-stlink-sg.o
 EXECUTABLE=graph
 
 all: $(SOURCES) $(EXECUTABLE)
