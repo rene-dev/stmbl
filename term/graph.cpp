@@ -360,20 +360,10 @@ void render(void) {
 }
 
 int main(int ac, char** av) {
-    struct itimerval it_val;	/* for setting itimer */
     stlink_t* sl;
-    stlinky *st;
+    stlinky *st = 0;
     int add = 0;
-    
-    if (signal(SIGALRM, (void (*)(int)) render) == SIG_ERR) {
-        perror("Unable to catch SIGALRM");
-        exit(1);
-     }
-    
-    it_val.it_value.tv_sec =     0;
-    it_val.it_value.tv_usec =    17000;	
-    it_val.it_interval = it_val.it_value;
-        
+
     if (!glfwInit())
         exit(EXIT_FAILURE);
     window = glfwCreateWindow(640, 480, "Graph", NULL, NULL);
@@ -394,8 +384,6 @@ int main(int ac, char** av) {
 	}
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof graph, graph, GL_DYNAMIC_DRAW);
-    
-
     
     sl = stlink_open_usb(10, 1);
             if (sl != NULL) {
@@ -446,10 +434,6 @@ int main(int ac, char** av) {
                     fcntl(fd, F_SETFL, saved_flags & ~O_NONBLOCK);
                     signal(SIGINT, cleanup);
                     printf("Entering interactive terminal. CTRL+C to exit\n\n\n");
-                    /*if (setitimer(ITIMER_REAL, &it_val, NULL) == -1) {
-                        perror("error calling setitimer()");
-                        exit(1);
-                    }*/
                     add = 0;
                     while(!glfwWindowShouldClose(window)) {
                         if(add == 100){
