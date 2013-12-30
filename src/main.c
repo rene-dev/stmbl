@@ -507,10 +507,10 @@ int main(void)
 				printf_("%c[s", 0x1b);
 				printf_("mot_pos = %f, res_pos = %f, error = %f, mo = %f, cs = %f", RAD(rad(mot_pos)), RAD(rad(res_pos)), RAD(rad(minus(mot_pos, res_pos))), RAD(rad(mag_offset)), current_scale);
     		printf_("%c[0;0H", 0x1b);
-   //			printf_("%c%c",0x11,(char)(int)RAD(minus(mot_pos, k_pos.state) * 2.0));
+   			printf_("%c%c",0x11,(char)(int)RAD(rad(minus(mot_pos, res_pos)) * 2.0));
 				printf_("%c[u", 0x1b);
-			mot_pos = new_ang(DEG(m));
-
+			//mot_pos = new_ang(DEG(m));
+			mot_pos = new_ang(DEG(UB_ENCODER_TIM3_ReadPos() * 360.0 / 2000.0));
 
 		if(stlinky_todo(&g_stlinky_term) == 0 && obuf_pos > 0){
 			stlinky_tx(&g_stlinky_term, outbuf, obuf_pos);
