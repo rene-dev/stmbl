@@ -1,0 +1,206 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		A77438D0164735C500739B82 /* .DS_Store */ = {isa = PBXFileReference; lastKnownFileType = file; path = .DS_Store; sourceTree = "<group>"; };
+		A77438D1164735C500739B82 /* inc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = inc; sourceTree = "<group>"; };
+		A77438D2164735C500739B82 /* libstm32f4.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libstm32f4.a; sourceTree = "<group>"; };
+		A77438D3164735C500739B82 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		A77438D4164735C500739B82 /* misc.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = misc.o; sourceTree = "<group>"; };
+		A77438D5164735C500739B82 /* src */ = {isa = PBXFileReference; lastKnownFileType = folder; path = src; sourceTree = "<group>"; };
+		A77438D6164735C500739B82 /* startup_stm32f4xx.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = startup_stm32f4xx.s; sourceTree = "<group>"; };
+		A77438D7164735C500739B82 /* stm32f4xx_adc.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_adc.o; sourceTree = "<group>"; };
+		A77438D8164735C500739B82 /* stm32f4xx_can.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_can.o; sourceTree = "<group>"; };
+		A77438D9164735C500739B82 /* stm32f4xx_crc.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_crc.o; sourceTree = "<group>"; };
+		A77438DA164735C500739B82 /* stm32f4xx_cryp.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_cryp.o; sourceTree = "<group>"; };
+		A77438DB164735C500739B82 /* stm32f4xx_cryp_aes.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_cryp_aes.o; sourceTree = "<group>"; };
+		A77438DC164735C500739B82 /* stm32f4xx_cryp_des.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_cryp_des.o; sourceTree = "<group>"; };
+		A77438DD164735C500739B82 /* stm32f4xx_cryp_tdes.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_cryp_tdes.o; sourceTree = "<group>"; };
+		A77438DE164735C500739B82 /* stm32f4xx_dac.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_dac.o; sourceTree = "<group>"; };
+		A77438DF164735C500739B82 /* stm32f4xx_dbgmcu.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_dbgmcu.o; sourceTree = "<group>"; };
+		A77438E0164735C500739B82 /* stm32f4xx_dcmi.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_dcmi.o; sourceTree = "<group>"; };
+		A77438E1164735C500739B82 /* stm32f4xx_dma.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_dma.o; sourceTree = "<group>"; };
+		A77438E2164735C500739B82 /* stm32f4xx_exti.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_exti.o; sourceTree = "<group>"; };
+		A77438E3164735C500739B82 /* stm32f4xx_flash.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_flash.o; sourceTree = "<group>"; };
+		A77438E4164735C500739B82 /* stm32f4xx_fsmc.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_fsmc.o; sourceTree = "<group>"; };
+		A77438E5164735C500739B82 /* stm32f4xx_gpio.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_gpio.o; sourceTree = "<group>"; };
+		A77438E6164735C500739B82 /* stm32f4xx_hash.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_hash.o; sourceTree = "<group>"; };
+		A77438E7164735C500739B82 /* stm32f4xx_hash_md5.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_hash_md5.o; sourceTree = "<group>"; };
+		A77438E8164735C500739B82 /* stm32f4xx_hash_sha1.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_hash_sha1.o; sourceTree = "<group>"; };
+		A77438E9164735C500739B82 /* stm32f4xx_i2c.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_i2c.o; sourceTree = "<group>"; };
+		A77438EA164735C500739B82 /* stm32f4xx_iwdg.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_iwdg.o; sourceTree = "<group>"; };
+		A77438EB164735C500739B82 /* stm32f4xx_pwr.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_pwr.o; sourceTree = "<group>"; };
+		A77438EC164735C500739B82 /* stm32f4xx_rcc.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_rcc.o; sourceTree = "<group>"; };
+		A77438ED164735C500739B82 /* stm32f4xx_rng.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_rng.o; sourceTree = "<group>"; };
+		A77438EE164735C500739B82 /* stm32f4xx_rtc.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_rtc.o; sourceTree = "<group>"; };
+		A77438EF164735C500739B82 /* stm32f4xx_sdio.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_sdio.o; sourceTree = "<group>"; };
+		A77438F0164735C500739B82 /* stm32f4xx_spi.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_spi.o; sourceTree = "<group>"; };
+		A77438F1164735C500739B82 /* stm32f4xx_syscfg.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_syscfg.o; sourceTree = "<group>"; };
+		A77438F2164735C500739B82 /* stm32f4xx_tim.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_tim.o; sourceTree = "<group>"; };
+		A77438F3164735C500739B82 /* stm32f4xx_usart.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_usart.o; sourceTree = "<group>"; };
+		A77438F4164735C500739B82 /* stm32f4xx_wwdg.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = stm32f4xx_wwdg.o; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		A77438C8164735C500739B82 = {
+			isa = PBXGroup;
+			children = (
+				A77438D0164735C500739B82 /* .DS_Store */,
+				A77438D1164735C500739B82 /* inc */,
+				A77438D2164735C500739B82 /* libstm32f4.a */,
+				A77438D3164735C500739B82 /* Makefile */,
+				A77438D4164735C500739B82 /* misc.o */,
+				A77438D5164735C500739B82 /* src */,
+				A77438D6164735C500739B82 /* startup_stm32f4xx.s */,
+				A77438D7164735C500739B82 /* stm32f4xx_adc.o */,
+				A77438D8164735C500739B82 /* stm32f4xx_can.o */,
+				A77438D9164735C500739B82 /* stm32f4xx_crc.o */,
+				A77438DA164735C500739B82 /* stm32f4xx_cryp.o */,
+				A77438DB164735C500739B82 /* stm32f4xx_cryp_aes.o */,
+				A77438DC164735C500739B82 /* stm32f4xx_cryp_des.o */,
+				A77438DD164735C500739B82 /* stm32f4xx_cryp_tdes.o */,
+				A77438DE164735C500739B82 /* stm32f4xx_dac.o */,
+				A77438DF164735C500739B82 /* stm32f4xx_dbgmcu.o */,
+				A77438E0164735C500739B82 /* stm32f4xx_dcmi.o */,
+				A77438E1164735C500739B82 /* stm32f4xx_dma.o */,
+				A77438E2164735C500739B82 /* stm32f4xx_exti.o */,
+				A77438E3164735C500739B82 /* stm32f4xx_flash.o */,
+				A77438E4164735C500739B82 /* stm32f4xx_fsmc.o */,
+				A77438E5164735C500739B82 /* stm32f4xx_gpio.o */,
+				A77438E6164735C500739B82 /* stm32f4xx_hash.o */,
+				A77438E7164735C500739B82 /* stm32f4xx_hash_md5.o */,
+				A77438E8164735C500739B82 /* stm32f4xx_hash_sha1.o */,
+				A77438E9164735C500739B82 /* stm32f4xx_i2c.o */,
+				A77438EA164735C500739B82 /* stm32f4xx_iwdg.o */,
+				A77438EB164735C500739B82 /* stm32f4xx_pwr.o */,
+				A77438EC164735C500739B82 /* stm32f4xx_rcc.o */,
+				A77438ED164735C500739B82 /* stm32f4xx_rng.o */,
+				A77438EE164735C500739B82 /* stm32f4xx_rtc.o */,
+				A77438EF164735C500739B82 /* stm32f4xx_sdio.o */,
+				A77438F0164735C500739B82 /* stm32f4xx_spi.o */,
+				A77438F1164735C500739B82 /* stm32f4xx_syscfg.o */,
+				A77438F2164735C500739B82 /* stm32f4xx_tim.o */,
+				A77438F3164735C500739B82 /* stm32f4xx_usart.o */,
+				A77438F4164735C500739B82 /* stm32f4xx_wwdg.o */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		A77438CF164735C500739B82 /* lib */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = A77438F5164735C500739B82 /* Build configuration list for PBXLegacyTarget "lib" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = "/Users/rene/stm23f4/stm32f4-templates/lib";
+			dependencies = (
+			);
+			name = lib;
+			passBuildSettingsInEnvironment = 1;
+			productName = lib;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		A77438CA164735C500739B82 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = A77438CD164735C500739B82 /* Build configuration list for PBXProject "lib" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A77438C8164735C500739B82;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A77438CF164735C500739B82 /* lib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		A77438CB164735C500739B82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		A77438CC164735C500739B82 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		A77438F6164735C500739B82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = lib;
+			};
+			name = Debug;
+		};
+		A77438F7164735C500739B82 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = lib;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A77438CD164735C500739B82 /* Build configuration list for PBXProject "lib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A77438CB164735C500739B82 /* Debug */,
+				A77438CC164735C500739B82 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A77438F5164735C500739B82 /* Build configuration list for PBXLegacyTarget "lib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A77438F6164735C500739B82 /* Debug */,
+				A77438F7164735C500739B82 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A77438CA164735C500739B82 /* Project object */;
+}
