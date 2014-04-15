@@ -44,6 +44,7 @@ volatile int res2_pos;
 volatile int res1_neg;
 volatile int res2_neg;
 volatile int res_avg;
+volatile int t1, t2;
 //volatile int res_avg_tmp;
 
 volatile int followe;
@@ -236,15 +237,13 @@ void TIM7_IRQHandler(void){//DAC int handler
 
 void ADC_IRQHandler(void)
 {
-	int t1, t2;
 	while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
 	ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
-    GPIO_ResetBits(GPIOD,GPIO_Pin_11);
 
 
 	t1 = ADC_GetConversionValue(ADC1);
 	t2 = ADC_GetConversionValue(ADC2);
-	res_avg = res_avg * 0.95 + (t1 + t2) * 0.05;
+	res_avg = res_avg * 0.99 + (t1 + t2)/2 * 0.01;
 	t1 -= res_avg;
 	t2 -= res_avg;
 
@@ -256,8 +255,9 @@ void ADC_IRQHandler(void)
     
     if(dacpos >= 19){
         dacpos = 0;
-        pid();
-        outpwm();
+        GPIO_ResetBits(GPIOD,GPIO_Pin_11);
+        //pid();
+        //output_pwm();
     }else{
         dacpos++;
     }
@@ -412,12 +412,13 @@ int main(void)
     // Test ob USB-Verbindung zum PC besteht
     if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED) {
       // Ceck ob Daten per USB empfangen wurden
-      if(UB_USB_CDC_ReceiveString(buf)==RX_READY) {
+      //if(UB_USB_CDC_ReceiveString(buf)==RX_READY) {
         // wenn Daten empfangen wurden
         // als Echo wieder zurücksenden
         // (mit LineFeed+CarriageReturn)
-        UB_USB_CDC_SendString(buf,NONE);
-      }
+        //UB_USB_CDC_SendString(buf,NONE);
+          printf_("avg:%i t1:%i t2:%i\r\n",res_avg,t1,t2);
+          //}
     }
   }
 
@@ -493,116 +494,18 @@ int main(void)
 
 	while(1)  // Do not exit
 	{
-		//printf_("p1 = %f, p2 = %f, n1 = %f, n2 = %f\n", max_res1, max_res2, min_res1, min_res2);
-		//printf_("p = %f, n = %f\rn", res_pos_pos, res_neg_pos);
-		//printf_("error = %f\tmot = %f\tcur = %f\n", minus(mot_pos, res_pos), mot_pos, current_scale);
-		Delay(100000);
-		printf_("%c[s", 0x1b);
-		printf_("mot_pos = %f, res_pos = %f, error = %f, mo = %f, cs = %f, es = %f", RAD(rad(mot_pos)), RAD(rad(res_pos)), RAD(rad(minus(mot_pos, res_pos))), RAD(rad(mag_offset)), current_scale, pid_m.error_sum);
-		printf_("%c[0;0H", 0x1b);
-		printf_("%c%c",0x11,(char)(int)RAD(rad(minus(mot_pos, res_pos)) * 2.0));
-		printf_("%c[u", 0x1b);
-		//mot_pos = new_ang(DEG(m));
+        if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED) {
+          // Ceck ob Daten per USB empfangen wurden
+            if(UB_USB_CDC_ReceiveString(buf)==RX_READY) {
+            // wenn Daten empfangen wurden
+            // als Echo wieder zurücksenden
+            // (mit LineFeed+CarriageReturn)
+            UB_USB_CDC_SendString(buf,NONE);
+            //printf_("fdsa");
+          }
+      }
+	}
 
-		if(stlinky_todo(&g_stlinky_term) == 0 && obuf_pos > 0){
-			stlinky_tx(&g_stlinky_term, outbuf, obuf_pos);
-			obuf_pos = 0;
-		}
-		buffer_pos = stlinky_avail(&g_stlinky_term);
-		if(buffer_pos > 0){
-			buffer_pos = stlinky_rx(&g_stlinky_term, buf, STLINKY_BSIZE);
-			for(i = 0;i<buffer_pos;i++){
-				if(buf[i] == 127){//backspace
-					stlinky_tx(&g_stlinky_term, backspace, 3);
-					line_pos = CLAMP(line_pos-1, 0, SCANF_BSIZE);
-				}else if(buf[i] == 27){//ANSI control
-					ansistate = bracket;
-				}else if(buf[i] == '[' && ansistate == bracket){
-					ansistate = letter;
-				}else if(buf[i] == 'A' && ansistate == letter){//up
-					stlinky_tx(&g_stlinky_term, ansierase, 4);
-					if(histpos == 0)
-						histpos = 9;
-					else
-						histpos = histpos-1;
-					printf_("\r%s",history[histpos]);
-					ansistate = init;
-				}else if(buf[i] == 'B' && ansistate == letter){//down
-					stlinky_tx(&g_stlinky_term, ansierase, 4);
-					histpos = (histpos+1)%10;
-					printf_("\r%s",history[histpos]);
-					ansistate = init;
-				}else if(buf[i] == 'C' && ansistate == letter){//right
-					stlinky_tx(&g_stlinky_term, ansiright, 3);
-					line_pos = CLAMP(line_pos+1, 0, SCANF_BSIZE);
-					ansistate = init;
-				}else if(buf[i] == 'D' && ansistate == letter){//left
-					stlinky_tx(&g_stlinky_term, ansileft, 3);
-					line_pos = CLAMP(line_pos-1, 0, SCANF_BSIZE);
-					ansistate = init;
-				}else if(ansistate == letter){
-					ansistate = init;
-				}else if(buf[i] == '\t'){
-				}else if(buf[i] == '\n'){
-					outbuf[obuf_pos] = buf[i];
-					obuf_pos++;
-					scanf_buffer[line_pos] = '\n';
-					scanf_buffer[line_pos+1] = 0;
-					history[histpos][line_pos] = 0;
-					//printf_("saved %s at %i",history[histpos],histpos);
-					histpos = (histpos+1)%10;
-					//printf_("hier, parsen und so: %s",scanf_buffer);
-					scanf_ret = scanf_("%c = %f", &c, &f);
-					if(scanf_ret == 7){ // write
-						if(set_float(c,f)){
-							printf_("OK\n");
-						}
-						else{
-							printf_("%c not found\n", c);
-						}
-					}
-					else{ // read
-						printf_("\n");
-						if(c == '?'){
-							for(int j = 0; j < PARAMS.param_count; j++){
-								printf_("%c = %f\n", PARAMS.names[j], *(PARAMS.data[j]));
-							}
-						}
-						else{
-							printf_("%c = %f\n", c, get_float(c));
-						}
-					}
-					line_pos = 0;
-				}else{
-					outbuf[obuf_pos] = buf[i];
-					obuf_pos++;
-					scanf_buffer[line_pos] = buf[i];
-					history[histpos][line_pos] = scanf_buffer[line_pos];
-					line_pos = CLAMP(line_pos+1, 0, SCANF_BSIZE);
-				}
-			}
-		}
-
-		//if(stlinky_todo(&g_stlinky_term) == 0){
-		//if(stlinky_avail(&g_stlinky_term) != 0)
-		//buffer_pos = stlinky_tx(&g_stlinky_term, buf, buffer_pos);
-		//if(stlinky_todo(&g_stlinky_term) == 0)
-		//buffer_pos = stlinky_rx(&g_stlinky_term, buf, buffer_pos);
-		//}else{
-		//}
-
-
-		//buffer_pos = 0;
-
-		/*if(followe){
-            GPIO_ResetBits(GPIOD,GPIO_Pin_15);//disable
-            TIM4->CCR1 = 0;
-            TIM4->CCR2 = 0;
-            TIM4->CCR3 = 0;
-            TIM_Cmd(TIM4, DISABLE);//PWM
-            TIM_Cmd(TIM2, DISABLE);//int
-        }*/
-		}
 }
 
 void Delay(volatile uint32_t nCount) {

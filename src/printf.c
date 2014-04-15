@@ -7,6 +7,7 @@
 
 #include <stdarg.h>     // (...) parameter handling
 #include "stlinky.h"
+#include "stm32_ub_usb_cdc.h"
 #include "printf.h"
 #define PRINTF_BSIZE 128
 #define PRINTF_FLENGTH 6
@@ -36,8 +37,9 @@ int printf_(const char *format, ...)
 	va_end(arg);
 
 	buffer[buffer_pos] = '\0';
-	stlinky_wait_tx(&g_stlinky_term);
-  stlinky_tx(&g_stlinky_term, buffer, buffer_pos);
+    UB_USB_CDC_SendString(buffer,NONE);
+	//stlinky_wait_tx(&g_stlinky_term);
+  //stlinky_tx(&g_stlinky_term, buffer, buffer_pos);
 
 	return 0;
 }

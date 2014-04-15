@@ -16,6 +16,13 @@ struct ang new_ang(float a){
 	return(ret);
 }
 
+struct ang new_ang2(float a,float b){
+	struct ang ret;
+	ret.x = a;
+	ret.y = b;
+	return(norm(ret));
+}
+
 float len(struct ang a){
 	return(sqrtf(a.x * a.x + a.y * a.y));
 }
