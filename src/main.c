@@ -1,5 +1,6 @@
 #include <stm32f4_discovery.h>
 #include <stm32f4xx_conf.h>
+#include "stm32_ub_usb_cdc.h"
 #include "../../sin.h"
 #include "printf.h"
 #include "scanf.h"
@@ -8,6 +9,8 @@
 #include "setup.h"
 #include <math.h>
 #include "ang.h"
+
+char buf[APP_TX_BUF_SIZE]; // puffer fuer Datenempfang
 
 int __errno;
 void Delay(volatile uint32_t nCount);
@@ -403,6 +406,20 @@ int main(void)
 	/* TIM4 enable counter */
 	res_pos.x = 0;
 	res_pos.y = 0;
+  
+  while(1)
+  {
+    // Test ob USB-Verbindung zum PC besteht
+    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED) {
+      // Ceck ob Daten per USB empfangen wurden
+      if(UB_USB_CDC_ReceiveString(buf)==RX_READY) {
+        // wenn Daten empfangen wurden
+        // als Echo wieder zurücksenden
+        // (mit LineFeed+CarriageReturn)
+        UB_USB_CDC_SendString(buf,NONE);
+      }
+    }
+  }
 
 	while (len(res_pos) != 1){
 	}
