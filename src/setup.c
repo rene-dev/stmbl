@@ -12,7 +12,7 @@ void setup(){
     //TIM7: DAC krams, auf PA5
     UB_DAC_DMA_Init(SINGLE_DAC2_DMA);
     UB_DAC_DMA_SetWaveform2(DAC_WAVE1_SINUS);
-    UB_DAC_DMA_SetFrq2(0,1312);
+    UB_DAC_DMA_SetFrq2(0,4199);
 
     //PC6 PB5
     UB_ENCODER_TIM3_Init(ENC_T3_MODE_4AB, ENC_T3_A, 2000);
@@ -59,6 +59,13 @@ void setup(){
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOD, &GPIO_InitStructure);
 
+    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_7; //neuer res erreger
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_TIM4);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource13, GPIO_AF_TIM4);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource14, GPIO_AF_TIM4);
@@ -97,11 +104,11 @@ void setup(){
     ADC_Cmd(ADC3,ENABLE);
 
     //Select the channel to be read from
-    ADC_RegularChannelConfig(ADC1,ADC_Channel_1,1,ADC_SampleTime_84Cycles);
+    ADC_RegularChannelConfig(ADC1,ADC_Channel_1,1,ADC_SampleTime_480Cycles);
     ADC_ITConfig(ADC1,ADC_IT_EOC,ENABLE);
     ADC_EOCOnEachRegularChannelCmd(ADC1,ENABLE);
 
-    ADC_RegularChannelConfig(ADC2,ADC_Channel_2,1,ADC_SampleTime_84Cycles);
+    ADC_RegularChannelConfig(ADC2,ADC_Channel_2,1,ADC_SampleTime_480Cycles);
     ADC_ITConfig(ADC2,ADC_IT_EOC,DISABLE);
     ADC_EOCOnEachRegularChannelCmd(ADC2,DISABLE);
 

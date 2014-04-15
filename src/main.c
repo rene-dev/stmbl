@@ -44,7 +44,7 @@ volatile int res2_pos;
 volatile int res1_neg;
 volatile int res2_neg;
 volatile int res_avg;
-volatile int res_avg_tmp;
+//volatile int res_avg_tmp;
 
 volatile int followe;
 
@@ -228,45 +228,9 @@ void TIM2_IRQHandler(void){//PWM int handler, 10KHz
 
 void TIM7_IRQHandler(void){//DAC int handler
 	TIM_ClearITPendingBit(TIM7, TIM_IT_Update);
-	dacpos++;//DMA fragen?
-	if(dacpos >= 32){
-		dacpos = 0;
-	}
-
-	if((dacpos >= read_pos - read_w && dacpos <= read_pos + read_w) || (dacpos >= read_neg - read_w || dacpos <= (read_neg + read_w) % 32)){// phase shift 2
-		ADC_SoftwareStartConv(ADC1);
-		ADC_SoftwareStartConv(ADC2);
-		//ADC_SoftwareStartConv(ADC3);
-	}
-	if(dacpos == read_pos - read_w - 1){
-		res_avg = (res_avg_tmp/(read_w*4+2)/2)*0.2f+res_avg*0.8f;
-		res_avg_tmp = 0;
-	}
-	if(dacpos == read_pos + read_w + 1){
-		res_pos_pos.y = res1_pos;
-		res_pos_pos.x = res2_pos;
-		res_pos_pos = norm(res_pos_pos);
-
-		res1_pos = 0;
-		res2_pos = 0;
-
-	}
-	if(dacpos == (read_neg + read_w + 1) % 32){
-		res_neg_pos.y = res1_neg;
-		res_neg_pos.x = res2_neg;
-		res_neg_pos = norm(res_neg_pos);
-
-		res1_neg = 0;
-		res2_neg = 0;
-
-		res_pos = res_pos_pos;//mid(res_pos_pos, res_neg_pos);
-		mot_pos = new_ang(DEG(UB_ENCODER_TIM3_ReadPos() * 360.0 / 2000.0 * 1.0));
-
-		pid();
-		//mag_offset = new_ang(DEG(0));
-		mag_pos = res_pos;//plus(mag_pos, new_ang(DEG(0.01)));
-		output_pwm();
-	}
+    GPIO_SetBits(GPIOD,GPIO_Pin_11);
+	ADC_SoftwareStartConv(ADC1);
+	ADC_SoftwareStartConv(ADC2);
 }
 
 
@@ -275,14 +239,27 @@ void ADC_IRQHandler(void)
 	int t1, t2;
 	while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
 	ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
-	GPIO_SetBits(GPIOD,GPIO_Pin_11);
+    GPIO_ResetBits(GPIOD,GPIO_Pin_11);
+
 
 	t1 = ADC_GetConversionValue(ADC1);
 	t2 = ADC_GetConversionValue(ADC2);
-	res_avg_tmp += t1+t2;
+	res_avg = res_avg * 0.95 + (t1 + t2) * 0.05;
 	t1 -= res_avg;
 	t2 -= res_avg;
 
+	if(dacpos % 4 == 0 || dacpos % 4 == 1){
+        GPIO_SetBits(GPIOA,GPIO_Pin_7);
+	}else{
+        GPIO_ResetBits(GPIOA,GPIO_Pin_7);
+    }
+    
+    if(dacpos >= 3){
+        dacpos = 0;
+    }else{
+        dacpos++;
+    }
+    
 	float max = 930;
 	if(dacpos >= read_pos - read_w && dacpos <= read_pos + read_w){
 		res1_pos += t1;
@@ -292,9 +269,6 @@ void ADC_IRQHandler(void)
 		res1_neg -= t1;
 		res2_neg -= t2;
 	}
-
-
-	GPIO_ResetBits(GPIOD,GPIO_Pin_11);
 }
 
 /*void findoff(void){
@@ -418,8 +392,7 @@ int main(void)
 	offsetc = new_ang(DEG(240));
 
 	res_avg = 2051;
-	res_avg_tmp = 0;
-	dacpos = 31;
+	dacpos = 0;
 	init_pid();
 	param_init();
 	setup();
