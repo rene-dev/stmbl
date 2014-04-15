@@ -1,6 +1,7 @@
 # put your *.o targets here, make should handle the rest!
 
 SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c stlinky.c printf.c scanf.c param.c stm32_ub_dac_dma.c setup.c stm32_ub_encoder_tim3.c
+SRCS +=  ub_lib/stm32_ub_usb_cdc.c ub_lib/usb_cdc_lolevel/usb_core.c ub_lib/usb_cdc_lolevel/usb_dcd_int.c ub_lib/usb_cdc_lolevel/usbd_req.c ub_lib/usb_cdc_lolevel/usbd_cdc_core.c ub_lib/usb_cdc_lolevel/usbd_core.c ub_lib/usb_cdc_lolevel/usb_dcd.c ub_lib/usb_cdc_lolevel/usbd_cdc_vcp.c ub_lib/usb_cdc_lolevel/usbd_desc.c ub_lib/usb_cdc_lolevel/usbd_ioreq.c ub_lib/usb_cdc_lolevel/usb_bsp.c ub_lib/usb_cdc_lolevel/usbd_usr.c 
 #SRCS = main.c system.c
 
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
@@ -31,7 +32,7 @@ vpath %.a lib
 ROOT=$(shell pwd)
 
 CFLAGS += -Iinc -Ilib -Ilib/inc
-CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals
+CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals -Isrc/ub_lib -Isrc/ub_lib/usb_cdc_lolevel
 
 SRCS += lib/startup_stm32f4xx.s # add startup file to build
 
