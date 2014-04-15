@@ -251,8 +251,10 @@ void ADC_IRQHandler(void)
         GPIO_ResetBits(GPIOA,GPIO_Pin_7);
     }
     
-    if(dacpos >= 3){
+    if(dacpos >= 19){
         dacpos = 0;
+        pid();
+        outpwm();
     }else{
         dacpos++;
     }
