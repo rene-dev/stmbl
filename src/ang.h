@@ -9,6 +9,17 @@ struct ang{
 	float x, y;
 };
 
+float len(struct ang a){
+	return(sqrtf(a.x * a.x + a.y * a.y));
+}
+
+struct ang norm(struct ang a){
+	struct ang ret;
+	ret.x = a.x / len(a);
+	ret.y = a.y / len(a);
+	return(ret);
+}
+
 struct ang new_ang(float a){
 	struct ang ret;
 	ret.x = cosf(a);
@@ -21,17 +32,6 @@ struct ang new_ang2(float a,float b){
 	ret.x = a;
 	ret.y = b;
 	return(norm(ret));
-}
-
-float len(struct ang a){
-	return(sqrtf(a.x * a.x + a.y * a.y));
-}
-
-struct ang norm(struct ang a){
-	struct ang ret;
-	ret.x = a.x / len(a);
-	ret.y = a.y / len(a);
-	return(ret);
 }
 
 struct ang diff(struct ang a, struct ang b){
