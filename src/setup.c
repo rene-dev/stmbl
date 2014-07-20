@@ -9,15 +9,9 @@
 #include "setup.h"
 
 void setup(){
-    //TIM7: DAC krams, auf PA5
-    UB_DAC_DMA_Init(SINGLE_DAC2_DMA);
-    UB_DAC_DMA_SetWaveform2(DAC_WAVE1_SINUS);
-    UB_DAC_DMA_SetFrq2(0,1312);
 
     //PC6 PB5
-    UB_ENCODER_TIM3_Init(ENC_T3_MODE_4AB, ENC_T3_A, 2000);
-
-
+    //UB_ENCODER_TIM3_Init(ENC_T3_MODE_4AB, ENC_T3_A, 2000);
     //TIM4:PWM
     //TIM2:int
 
@@ -32,19 +26,9 @@ void setup(){
     /* LEDs are on GPIOD */
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC2 | RCC_APB2Periph_ADC3, ENABLE);
+    //RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC2 | RCC_APB2Periph_ADC3, ENABLE);
 
-    /*
-     //DMA
-     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
-     //GPIO A an
-     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-
-     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
-     GPIO_Init(GPIOA, &GPIO_InitStructure);
-     */
-
+    //PWM
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -59,17 +43,19 @@ void setup(){
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOD, &GPIO_InitStructure);
 
+    //PWM
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_TIM4);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource13, GPIO_AF_TIM4);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource14, GPIO_AF_TIM4);
 
     //Analog pin configuration
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;//The channel 10 is connected to PC0
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN; //The PC0 pin is configured in analog mode
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; //We don't need any pull up or pull down
-    GPIO_Init(GPIOA,&GPIO_InitStructure);//Affecting the port with the initialization structure configuration
+    //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;//The channel 10 is connected to PC0
+    //GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN; //The PC0 pin is configured in analog mode
+    //GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; //We don't need any pull up or pull down
+    //GPIO_Init(GPIOA,&GPIO_InitStructure);//Affecting the port with the initialization structure configuration
 
     //ADC structure configuration
+    /*
     ADC_DeInit();
     ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;//data converted will be shifted to right
     ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;//Input voltage is converted into a 12bit number giving a maximum value of 4096
@@ -108,11 +94,11 @@ void setup(){
     ADC_RegularChannelConfig(ADC3,ADC_Channel_3,1,ADC_SampleTime_84Cycles);
     ADC_ITConfig(ADC3,ADC_IT_EOC,DISABLE);
     ADC_EOCOnEachRegularChannelCmd(ADC3,DISABLE);
-
+*/
+    
     /* pwm set up */
-
     /* Compute the prescaler value */       // 168MHz/2         / pwm frq / pwm res - 1
-    uint16_t PrescalerValue = (uint16_t) ((SystemCoreClock /2) / 20000 / mag_res) - 1; // = 4
+    uint16_t PrescalerValue = (uint16_t) ((SystemCoreClock /2) / 10000 / mag_res) - 1; // = 4
 
     /* Time base configuration */
     TIM_TimeBaseStructure.TIM_Period = mag_res;
@@ -146,8 +132,8 @@ void setup(){
     /* int set up */
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStructure.TIM_Period = 8400;//10kHz
-    TIM_TimeBaseStructure.TIM_Prescaler = 0;
+    TIM_TimeBaseStructure.TIM_Period = 8400;//1kHz
+    TIM_TimeBaseStructure.TIM_Prescaler = 9;
     //TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
     TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
@@ -161,50 +147,14 @@ void setup(){
     NVIC_Init(&NVIC_InitStructure);
 
     // analog NVIC
+    /*
     NVIC_InitTypeDef NVIC_InitStructure;
     NVIC_InitStructure.NVIC_IRQChannel = ADC_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
-
-
-    //int for DAC timer, TIM7
-    TIM_ITConfig(TIM7, TIM_IT_Update, ENABLE);
-    NVIC_InitStructure.NVIC_IRQChannel = TIM7_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
-    NVIC_Init(&NVIC_InitStructure);
-    /*
-     //DAC setup
-     DAC_InitStructure.DAC_LFSRUnmask_TriangleAmplitude = DAC_LFSRUnmask_Bit0;
-     DAC_InitStructure.DAC_OutputBuffer = DAC_OutputBuffer_Disable;
-     DAC_InitStructure.DAC_Trigger = DAC_Trigger_T2_TRGO;
-     DAC_InitStructure.DAC_WaveGeneration = DAC_WaveGeneration_None;
-     DAC_Init(DAC_Channel_1, &DAC_InitStructure);
-     DAC_Init(DAC_Channel_2, &DAC_InitStructure);
-
-     //DMA setup
-     DMA_InitStructure.DMA_Channel = DMA_Channel_7;
-     DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(DAC->DHR12RD);
-     DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&sinCosTable;
-     DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-     DMA_InitStructure.DMA_BufferSize = 32;
-     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
-     DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
-     DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
-     DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-     //DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-     DMA_Init(DMA1_Stream5, &DMA_InitStructure);
-
-     DMA_Cmd(DMA1_Stream1, ENABLE);
-     DAC_Cmd(DAC_Channel_1, ENABLE);
-     DAC_Cmd(DAC_Channel_2, ENABLE);
-     DAC_DMACmd(DAC_Channel_1, ENABLE);
-     */
+    */
 
 	// systick timer
 	time = 0;
