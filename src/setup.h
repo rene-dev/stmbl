@@ -14,7 +14,8 @@
 #include "stm32_ub_dac_dma.h"
 #include "stm32_ub_encoder_tim3.h"
 
-#define mag_res 1024
+//#define mag_res 5250
+#define mag_res 8400
 
 void setup();
 void SysTick_Handler(void);
