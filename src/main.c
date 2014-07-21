@@ -66,16 +66,11 @@ void output_pwm(){
 
 void TIM2_IRQHandler(void){//1KHz
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-    GPIO_SetBits(GPIOD,GPIO_Pin_11);
+    //GPIO_SetBits(GPIOD,GPIO_Pin_11);
     mag_pos+=pi/100;
     output_pwm();
-    GPIO_ResetBits(GPIOD,GPIO_Pin_11);
+    //GPIO_ResetBits(GPIOD,GPIO_Pin_11);
 }
-
-void TIM7_IRQHandler(void){//DAC int handler
-    TIM_ClearITPendingBit(TIM7, TIM_IT_Update);
-}
-
 
 void ADC_IRQHandler(void)
 {
@@ -97,6 +92,11 @@ int main(void)
 
     while(1)  // Do not exit
     {
+     GPIO_SetBits(GPIOD,GPIO_Pin_11);
+     Delay(1000);
+     GPIO_ResetBits(GPIOD,GPIO_Pin_11);
+     Delay(1000);
+        
         /*if(followe){
             GPIO_ResetBits(GPIOD,GPIO_Pin_15);//disable
             TIM4->CCR1 = 0;
@@ -109,10 +109,10 @@ int main(void)
 }
 
 void Delay(volatile uint32_t nCount) {
-    //float one;
+    float one;
     while(nCount--)
     {
-        //one = (float) nCount;
+        one = (float) nCount;
     }
 }
 
