@@ -6,3 +6,7 @@
 *.bin
 .DS_Store
 term/graph
+*.log
+*.net
+*.raw
+*.s#*
