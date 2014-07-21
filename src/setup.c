@@ -96,7 +96,7 @@ void setup(){
     ADC_EOCOnEachRegularChannelCmd(ADC3,DISABLE);
 */
     
-    /* pwm set up */
+    /* pwm set up, TIM4*/
     /* Compute the prescaler value */       // 168MHz/2         / pwm frq / pwm res - 1
     uint16_t PrescalerValue = (uint16_t) ((SystemCoreClock /2) / 10000 / mag_res) - 1; // = 4
 
@@ -107,29 +107,28 @@ void setup(){
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
 
-    /* PWM1 Mode configuration: Channel1 */
+
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
     TIM_OCInitStructure.TIM_Pulse = 0;
     TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-
-
+    
+    /* PWM1 Mode configuration: Channel1 */
     TIM_OC1Init(TIM4, &TIM_OCInitStructure);
     TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);
 
     /* PWM1 Mode configuration: Channel2 */
-    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_Pulse = 0;
     TIM_OC2Init(TIM4, &TIM_OCInitStructure);
     TIM_OC2PreloadConfig(TIM4, TIM_OCPreload_Enable);
 
     /* PWM1 Mode configuration: Channel3 */
-    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_Pulse = 0;
     TIM_OC3Init(TIM4, &TIM_OCInitStructure);
     TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable);
 
-    /* int set up */
+
+
+
+    /* int set up, TIM2*/
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseStructure.TIM_Period = 8400;//1kHz
@@ -138,7 +137,7 @@ void setup(){
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
     TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
     //TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);//DAC?
-
+    
     /* int NVIC setup */
     NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
