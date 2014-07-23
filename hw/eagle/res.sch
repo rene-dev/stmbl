@@ -18275,6 +18275,8 @@ Source: www.kingbright.com</description>
 <part name="GND36" library="supply1" deviceset="GND" device=""/>
 <part name="C16" library="rcl" deviceset="C-EU" device="050-025X075"/>
 <part name="GND37" library="supply1" deviceset="GND" device=""/>
+<part name="C17" library="rcl" deviceset="C-EU" device="050-025X075"/>
+<part name="GND38" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -18426,6 +18428,8 @@ Source: www.kingbright.com</description>
 <instance part="GND36" gate="1" x="391.16" y="109.22" rot="R90"/>
 <instance part="C16" gate="G$1" x="81.28" y="208.28"/>
 <instance part="GND37" gate="1" x="81.28" y="200.66"/>
+<instance part="C17" gate="G$1" x="373.38" y="162.56" rot="R90"/>
+<instance part="GND38" gate="1" x="381" y="162.56" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -18676,6 +18680,10 @@ Source: www.kingbright.com</description>
 <segment>
 <pinref part="C16" gate="G$1" pin="2"/>
 <pinref part="GND37" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="C17" gate="G$1" pin="2"/>
+<pinref part="GND38" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="N$8" class="0">
@@ -19001,6 +19009,8 @@ Source: www.kingbright.com</description>
 <wire x1="322.58" y1="167.64" x2="307.34" y2="167.64" width="0.1524" layer="91"/>
 <junction x="322.58" y="167.64"/>
 <junction x="340.36" y="162.56"/>
+<pinref part="C17" gate="G$1" pin="1"/>
+<junction x="370.84" y="162.56"/>
 </segment>
 </net>
 <net name="+12V" class="0">
@@ -19113,6 +19123,7 @@ Source: www.kingbright.com</description>
 <wire x1="96.52" y1="193.04" x2="99.06" y2="193.04" width="0.1524" layer="91"/>
 <pinref part="C16" gate="G$1" pin="1"/>
 <junction x="81.28" y="210.82"/>
+<junction x="96.52" y="193.04"/>
 </segment>
 <segment>
 <pinref part="SV3" gate="G$1" pin="3"/>
