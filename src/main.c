@@ -92,9 +92,9 @@ int main(void)
 
     while(1)  // Do not exit
     {
-     GPIO_SetBits(GPIOD,GPIO_Pin_11);
+     GPIO_SetBits(GPIOC,GPIO_Pin_2);
      Delay(1000);
-     GPIO_ResetBits(GPIOD,GPIO_Pin_11);
+     GPIO_ResetBits(GPIOC,GPIO_Pin_2);
      Delay(1000);
         
         /*if(followe){
