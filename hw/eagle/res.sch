@@ -18161,20 +18161,20 @@ Source: www.kingbright.com</description>
 <part name="X1" library="con-appsys" deviceset="RJ45" device=""/>
 <part name="IC3" library="linear" deviceset="L272" device="M"/>
 <part name="IC4" library="linear" deviceset="L272" device="M"/>
-<part name="R1" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="C1" library="rcl" deviceset="C-EU" device="050-025X075"/>
-<part name="C2" library="rcl" deviceset="C-EU" device="050-025X075"/>
+<part name="R1" library="resistor" deviceset="R-EU_" device="0204/7" value="1k"/>
+<part name="C1" library="rcl" deviceset="C-EU" device="050-025X075" value="47n"/>
+<part name="C2" library="rcl" deviceset="C-EU" device="050-025X075" value="47n"/>
 <part name="C3" library="rcl" deviceset="C-EU" device="050-025X075"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
-<part name="R2" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R3" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R4" library="pot" deviceset="TRIM_EU-" device="CA6V"/>
-<part name="R5" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R6" library="resistor" deviceset="R-EU_" device="0204/7"/>
+<part name="R2" library="resistor" deviceset="R-EU_" device="0204/7" value="10k"/>
+<part name="R3" library="resistor" deviceset="R-EU_" device="0204/7" value="100"/>
+<part name="R4" library="pot" deviceset="TRIM_EU-" device="CA6V" value="10k"/>
+<part name="R5" library="resistor" deviceset="R-EU_" device="0204/7" value="1.2k"/>
+<part name="R6" library="resistor" deviceset="R-EU_" device="0204/7" value="1.2k"/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
-<part name="C4" library="rcl" deviceset="C-EU" device="050-025X075"/>
-<part name="C5" library="rcl" deviceset="C-EU" device="050-025X075"/>
+<part name="C4" library="rcl" deviceset="C-EU" device="050-025X075" value="22p"/>
+<part name="C5" library="rcl" deviceset="C-EU" device="050-025X075" value="22p"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="C6" library="rcl" deviceset="C-EU" device="050-025X075"/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
@@ -18197,8 +18197,8 @@ Source: www.kingbright.com</description>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
 <part name="X4" library="con-appsys" deviceset="RJ45" device=""/>
-<part name="R11" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R12" library="resistor" deviceset="R-EU_" device="0204/7"/>
+<part name="R11" library="resistor" deviceset="R-EU_" device="0204/7" value="330"/>
+<part name="R12" library="resistor" deviceset="R-EU_" device="0204/7" value="330"/>
 <part name="P+2" library="supply1" deviceset="VCC" device=""/>
 <part name="C9" library="rcl" deviceset="C-EU" device="050-025X075"/>
 <part name="IC2" library="linear" deviceset="78*" device="T" technology="05" value="7805T"/>
@@ -18211,8 +18211,8 @@ Source: www.kingbright.com</description>
 <part name="SV1" library="con-lstb" deviceset="MA03-1" device=""/>
 <part name="P+4" library="supply1" deviceset="VCC" device=""/>
 <part name="SV2" library="con-lsta" deviceset="FE10-2W" device=""/>
-<part name="R13" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R14" library="resistor" deviceset="R-EU_" device="0204/7"/>
+<part name="R13" library="resistor" deviceset="R-EU_" device="0204/7" value="4.7k"/>
+<part name="R14" library="resistor" deviceset="R-EU_" device="0204/7" value="4.7k"/>
 <part name="SV3" library="con-lstb" deviceset="MA03-1" device=""/>
 <part name="P+8" library="supply1" deviceset="+12V" device=""/>
 <part name="P+9" library="supply1" deviceset="+12V" device=""/>
@@ -18231,24 +18231,24 @@ Source: www.kingbright.com</description>
 <part name="C13" library="rcl" deviceset="CPOL-EU" device="E2.5-5"/>
 <part name="P+12" library="supply1" deviceset="+5V" device=""/>
 <part name="GND28" library="supply1" deviceset="GND" device=""/>
-<part name="R15" library="pot" deviceset="TRIM_EU-" device="CA6V"/>
-<part name="R8" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R17" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R7" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R18" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R16" library="pot" deviceset="TRIM_EU-" device="CA6V"/>
-<part name="R9" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R10" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R19" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R20" library="resistor" deviceset="R-EU_" device="0204/7"/>
+<part name="R15" library="pot" deviceset="TRIM_EU-" device="CA6V" value="5k"/>
+<part name="R8" library="resistor" deviceset="R-EU_" device="0204/7" value="3k"/>
+<part name="R17" library="resistor" deviceset="R-EU_" device="0204/7" value="1k"/>
+<part name="R7" library="resistor" deviceset="R-EU_" device="0204/7" value="3k"/>
+<part name="R18" library="resistor" deviceset="R-EU_" device="0204/7" value="1k"/>
+<part name="R16" library="pot" deviceset="TRIM_EU-" device="CA6V" value="5k"/>
+<part name="R9" library="resistor" deviceset="R-EU_" device="0204/7" value="1.2k"/>
+<part name="R10" library="resistor" deviceset="R-EU_" device="0204/7" value="1k"/>
+<part name="R19" library="resistor" deviceset="R-EU_" device="0204/7" value="1.2k"/>
+<part name="R20" library="resistor" deviceset="R-EU_" device="0204/7" value="1k"/>
 <part name="P+15" library="supply1" deviceset="+5V" device=""/>
 <part name="X5" library="con-molex" deviceset="22-23-2021" device=""/>
 <part name="ADM485" library="ic-package" deviceset="DIL8" device=""/>
 <part name="P+16" library="supply1" deviceset="+5V" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
-<part name="R21" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R22" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R23" library="resistor" deviceset="R-EU_" device="0204/7"/>
+<part name="R21" library="resistor" deviceset="R-EU_" device="0204/7" value="1k"/>
+<part name="R22" library="resistor" deviceset="R-EU_" device="0204/7" value="1k"/>
+<part name="R23" library="resistor" deviceset="R-EU_" device="0204/7" value="100"/>
 <part name="R24" library="resistor" deviceset="R-EU_" device="0204/7"/>
 <part name="P+17" library="supply1" deviceset="+5V" device=""/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
@@ -18259,10 +18259,10 @@ Source: www.kingbright.com</description>
 <part name="C15" library="rcl" deviceset="C-EU" device="050-025X075"/>
 <part name="GND32" library="supply1" deviceset="GND" device=""/>
 <part name="X6" library="con-appsys" deviceset="RJ45" device=""/>
-<part name="R25" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R26" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R27" library="resistor" deviceset="R-EU_" device="0204/7"/>
-<part name="R28" library="resistor" deviceset="R-EU_" device="0204/7"/>
+<part name="R25" library="resistor" deviceset="R-EU_" device="0204/7" value="330"/>
+<part name="R26" library="resistor" deviceset="R-EU_" device="0204/7" value="330"/>
+<part name="R27" library="resistor" deviceset="R-EU_" device="0204/7" value="330"/>
+<part name="R28" library="resistor" deviceset="R-EU_" device="0204/7" value="330"/>
 <part name="LED1" library="led" deviceset="LED" device="3MM"/>
 <part name="LED2" library="led" deviceset="LED" device="3MM"/>
 <part name="LED3" library="led" deviceset="LED" device="3MM"/>
