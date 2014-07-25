@@ -18293,8 +18293,8 @@ Based on the following sources:
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="P+5" library="supply1" deviceset="VCC" device=""/>
-<part name="R2" library="pot" deviceset="TRIM_EU-" device="CA6V"/>
 <part name="C12" library="capacitor-wima" deviceset="C" device="5/5"/>
+<part name="R2" library="pot" deviceset="TRIM_EU-" device="CA6V"/>
 </parts>
 <sheets>
 <sheet>
@@ -18398,8 +18398,8 @@ Based on the following sources:
 <instance part="IC4" gate="D" x="-5.08" y="-22.86"/>
 <instance part="IC4" gate="B" x="-58.42" y="91.44"/>
 <instance part="IC4" gate="E" x="-5.08" y="17.78"/>
-<instance part="R2" gate="1" x="144.78" y="-12.7" rot="MR180"/>
 <instance part="C12" gate="G$1" x="76.2" y="66.04"/>
+<instance part="R2" gate="1" x="144.78" y="-12.7"/>
 </instances>
 <busses>
 </busses>
@@ -18672,7 +18672,7 @@ Based on the following sources:
 <wire x1="144.78" y1="-38.1" x2="144.78" y2="-17.78" width="0.1524" layer="91"/>
 <pinref part="GND7" gate="1" pin="GND"/>
 <junction x="144.78" y="-38.1"/>
-<pinref part="R2" gate="1" pin="E"/>
+<pinref part="R2" gate="1" pin="A"/>
 </segment>
 <segment>
 <pinref part="IC4" gate="P" pin="VSS"/>
@@ -18932,7 +18932,7 @@ Based on the following sources:
 <wire x1="142.24" y1="-5.08" x2="144.78" y2="-5.08" width="0.1524" layer="91"/>
 <wire x1="144.78" y1="-5.08" x2="144.78" y2="-7.62" width="0.1524" layer="91"/>
 <pinref part="IC4" gate="C" pin="O"/>
-<pinref part="R2" gate="1" pin="A"/>
+<pinref part="R2" gate="1" pin="E"/>
 </segment>
 </net>
 <net name="N$25" class="0">
