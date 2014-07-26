@@ -33,7 +33,7 @@ void Wait(unsigned int ms);
 
 
 volatile float mag_pos;
-volatile float current_scale = 0.2;
+volatile float current_scale = 1.0;
 
 float minus(float a, float b){
 	if(ABS(a - b) < pi){
