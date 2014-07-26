@@ -61,7 +61,7 @@ void output_pwm(){
     float ctr = mod(mag_pos);
     TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
     TIM4->CCR2 = (sinf(ctr + offsetb) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
-    TIM4->CCR3 = (sinf(ctr + offsetc) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
+    TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
 }
 
 void TIM2_IRQHandler(void){//1KHz
@@ -88,7 +88,7 @@ int main(void)
     setup();
     TIM_Cmd(TIM4, ENABLE);//PWM
     TIM_Cmd(TIM2, ENABLE);//int
-    GPIO_SetBits(GPIOD,GPIO_Pin_15);//enable
+    GPIO_SetBits(GPIOD,GPIO_Pin_14);//enable
 
     while(1)  // Do not exit
     {

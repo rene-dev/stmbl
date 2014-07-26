@@ -37,14 +37,14 @@ void setup(){
     GPIO_Init(GPIOC, &GPIO_InitStructure);
 
     //PWM
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_15;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
     GPIO_Init(GPIOD, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_11 | GPIO_Pin_15;
+    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_11 | GPIO_Pin_14;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -54,7 +54,7 @@ void setup(){
     //PWM
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_TIM4);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource13, GPIO_AF_TIM4);
-    GPIO_PinAFConfig(GPIOD, GPIO_PinSource14, GPIO_AF_TIM4);
+    GPIO_PinAFConfig(GPIOD, GPIO_PinSource15, GPIO_AF_TIM4);
 
     //Analog pin configuration
     //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;//The channel 10 is connected to PC0
@@ -129,9 +129,9 @@ void setup(){
     TIM_OC2Init(TIM4, &TIM_OCInitStructure);
     TIM_OC2PreloadConfig(TIM4, TIM_OCPreload_Enable);
 
-    /* PWM1 Mode configuration: Channel3 */
-    TIM_OC3Init(TIM4, &TIM_OCInitStructure);
-    TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable);
+    /* PWM1 Mode configuration: Channel4 */
+    TIM_OC4Init(TIM4, &TIM_OCInitStructure);
+    TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable);
 
 
 
