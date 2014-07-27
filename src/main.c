@@ -118,8 +118,6 @@ int main(void)
     GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
     TIM_Cmd(TIM4, ENABLE);//PWM
     TIM_Cmd(TIM2, ENABLE);//int
-    Wait(10);
-    erreger_enable = NO;
     Wait(50);
     erreger_enable = YES;
     
