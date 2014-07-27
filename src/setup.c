@@ -86,9 +86,6 @@ void setup_pwm(){
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
     /* GPIOD clock enable */
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-    
-    /* ADC clock enable */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC2, ENABLE);
 
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_15;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
@@ -134,6 +131,8 @@ void setup_pwm(){
 void setup_adc(){
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+    /* ADC clock enable */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC2, ENABLE);
     
     //Analog pin configuration
     GPIO_InitStructure.GPIO_Pin = RES_SIN_PIN;
@@ -159,7 +158,7 @@ void setup_adc(){
 
     ADC_CommonInitTypeDef ADC_CommonInitStructure;
     ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;
-    ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div2;
+    ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;
     ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
     ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
     ADC_CommonInit(&ADC_CommonInitStructure);
