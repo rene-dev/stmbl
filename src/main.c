@@ -70,6 +70,8 @@ void TIM2_IRQHandler(void){//1KHz
     mag_pos+=pi/100;
     output_pwm();
     //GPIO_ResetBits(GPIOD,GPIO_Pin_11);
+    //ADC_SoftwareStartConv(ADC1);
+    //ADC_SoftwareStartConv(ADC2);
 }
 
 void ADC_IRQHandler(void)
@@ -81,6 +83,7 @@ void ADC_IRQHandler(void)
 
     //t1 = ADC_GetConversionValue(ADC1);
     //t2 = ADC_GetConversionValue(ADC2);
+    //atan2f(res1_pos, res2_pos);
 }
 
 int main(void)

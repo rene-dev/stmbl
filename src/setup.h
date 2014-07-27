@@ -17,7 +17,25 @@
 //#define mag_res 5250
 #define mag_res 8400
 
+
+// res in:
+// ADC1: SIN: PA3 ADC1 IN3, ADC2 IN3, ADC3 IN3
+// ADC2: COS: PB1 ADC1 IN9, ADC2 IN9
+// TODO: RCC_AHB1PeriphClockCmd hardcoded in setup.c
+#define RES_SIN_PIN GPIO_Pin_3
+#define RES_SIN_PORT GPIOA
+#define RES_SIN_CHANNEL ADC_Channel_3
+
+#define RES_COS_PIN GPIO_Pin_1
+#define RES_COS_PORT GPIOB
+#define RES_COS_CHANNEL ADC_Channel_9
+
+//sample times for F4: 3,15,28,56,84,112,144,480
+#define RES_SampleTime ADC_SampleTime_84Cycles
+
 void setup();
+void setup_adc();
+void setup_pwm();
 void SysTick_Handler(void);
 
 volatile int time;
