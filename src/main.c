@@ -41,6 +41,8 @@ char buf[APP_TX_BUF_SIZE]; // puffer fuer Datenempfang
 
 volatile float mag_pos;
 volatile float current_scale = 1.0;
+//volatile enum state_t { low=1, } state;
+volatile int state = 0;
 
 float minus(float a, float b){
 	if(ABS(a - b) < pi){
@@ -71,14 +73,24 @@ void output_pwm(){
     TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
 }
 
-void TIM2_IRQHandler(void){//1KHz
+void TIM2_IRQHandler(void){//20KHz
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+    if(state >= 2)
+        state = 0;
     //GPIO_SetBits(GPIOD,GPIO_Pin_11);
-    mag_pos+=pi/100;
+    //mag_pos+=pi/100;
     output_pwm();
+    
+    if(state == 1)
+        GPIO_SetBits(GPIOC,GPIO_Pin_2);
+    if(state == 0)
+        GPIO_ResetBits(GPIOC,GPIO_Pin_2);
+    
     //GPIO_ResetBits(GPIOD,GPIO_Pin_11);
-    //ADC_SoftwareStartConv(ADC1);
-    //ADC_SoftwareStartConv(ADC2);
+    GPIO_SetBits(GPIOC,GPIO_Pin_4);
+    ADC_SoftwareStartConv(ADC1);
+    ADC_SoftwareStartConv(ADC2);
+    state++;
 }
 
 void ADC_IRQHandler(void)
@@ -86,7 +98,7 @@ void ADC_IRQHandler(void)
     //int t1, t2;
     while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
     ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
-    //GPIO_SetBits(GPIOD,GPIO_Pin_11);
+    GPIO_ResetBits(GPIOC,GPIO_Pin_4);
 
     //t1 = ADC_GetConversionValue(ADC1);
     //t2 = ADC_GetConversionValue(ADC2);
@@ -102,23 +114,22 @@ int main(void)
 
     while(1)  // Do not exit
     {
-     GPIO_SetBits(GPIOC,GPIO_Pin_2);
-     Delay(1000);
-     GPIO_ResetBits(GPIOC,GPIO_Pin_2);
-     Delay(1000);
-    
+
+     /*
     #ifdef USBTERM
      // Test ob USB-Verbindung zum PC besteht
      if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED) {
          // Ceck ob Daten per USB empfangen wurden
-         if(UB_USB_CDC_ReceiveString(buf)==RX_READY) {
+         UB_USB_CDC_SendString("hallo",CRLF);
+         //if(UB_USB_CDC_ReceiveString(buf)==RX_READY) {
              // wenn Daten empfangen wurden
              // als Echo wieder zurücksenden
              // (mit LineFeed+CarriageReturn)
              UB_USB_CDC_SendString(buf,NONE);
-        }
+        //}
     }
     #endif
+     */
         /*if(followe){
             GPIO_ResetBits(GPIOD,GPIO_Pin_15);//disable
             TIM4->CCR1 = 0;
@@ -130,6 +141,7 @@ int main(void)
     }
 }
 
+//grob 12us
 void Delay(volatile uint32_t nCount) {
     float one;
     while(nCount--)

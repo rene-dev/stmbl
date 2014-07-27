@@ -35,7 +35,7 @@
 #define RES_COS_CHANNEL ADC_Channel_9
 
 //sample times for F4: 3,15,28,56,84,112,144,480
-#define RES_SampleTime ADC_SampleTime_84Cycles
+#define RES_SampleTime ADC_SampleTime_144Cycles
 
 void setup();
 void setup_adc();
