@@ -39,6 +39,7 @@ volatile float mag_pos;
 volatile float current_scale = 1.0;
 
 volatile int t1, t2;//rohdaten sin/cos
+volatile int t1_last = 0, t2_last = 0;//rohdaten sin/cos letzter aufruf
 volatile int t1_mid = 0,t2_mid = 0;//mittelpunkt sin/cos
 volatile float res_pos1;//winkel vom resolver, -pi bsi +pi
 volatile float res_pos2;//winkel vom resolver, -pi bsi +pi
@@ -90,25 +91,28 @@ void ADC_IRQHandler(void)
     //GPIO_ToggleBits(GPIOC,GPIO_Pin_2);//toggle erreger
     t1 = ADC_GetConversionValue(ADC1);
     t2 = ADC_GetConversionValue(ADC2);
-
+    t1_mid = t1_mid * 0.9 + (t1+t1_last)/2 * 0.1;
+    t2_mid = t2_mid * 0.9 + (t2+t2_last)/2 * 0.1;
     if(erreger_enable){//erreger signal aktiv
         if(erreger){//eine halbwelle
             GPIO_SetBits(GPIOC,GPIO_Pin_2);//erreger
             res_pos1 = atan2f(t1-t1_mid, t2-t2_mid);
         }else{//andere halbwelle
-            GPIO_ResetBits(GPIOC,GPIO_Pin_2);//toggle erreger
-            res_pos2 = atan2f(t1_mid-t1, t2_mid-t2);   
+            GPIO_ResetBits(GPIOC,GPIO_Pin_2);//erreger
+            res_pos2 = atan2f(t1_mid-t1, t2_mid-t2);
         }
     }else{//mittelpunkt messen
         if(t1_mid == 0 && t2_mid == 0){//erster durchlauf
             t1_mid = t1;
             t2_mid = t2;
         }else{//restliche durchläufe
-            t1_mid = t1_mid * 0.99 + (t1 - t1_mid) * 0.01;
-            t2_mid = t2_mid * 0.99 + (t2 - t2_mid) * 0.01;
+            t1_mid = t1_mid * 0.9 + t1 * 0.1;
+            t2_mid = t2_mid * 0.9 + t2 * 0.1;
         }
             
     }
+    t1_last = t1;
+    t2_last = t2;
     erreger = !erreger;
 }
 
@@ -127,6 +131,7 @@ int main(void)
     while(1)  // Do not exit
     {
         printf_("%f %f diff: %f",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
+        printf_("%i %i",t1_mid,t2_mid);
         Wait(50);
     }
 }
