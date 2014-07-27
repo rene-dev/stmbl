@@ -1,7 +1,7 @@
 #include <stm32f4_discovery.h>
 #include <stm32f4xx_conf.h>
 //#include "../../sin.h"
-//#include "printf.h"
+#include "printf.h"
 //#include "scanf.h"
 //include "stlinky.h"
 //#include "param.h"
@@ -35,17 +35,13 @@ void Wait(unsigned int ms);
 #define offsetb 1.0 * 2.0 * pi / 3.0
 #define offsetc 2.0 * 2.0 * pi / 3.0
 
-#ifdef USBTERM
-char buf[APP_TX_BUF_SIZE]; // puffer fuer Datenempfang
-#endif
-
 volatile float mag_pos;
 volatile float current_scale = 1.0;
-//volatile enum state_t { low=1, } state;
-volatile int state = 0;
 
 volatile int t1, t2;//rohdaten sin/cos
-volatile float res_pos;//winkel vom resolver, -pi bsi +pi
+volatile float res_pos1;//winkel vom resolver, -pi bsi +pi
+volatile float res_pos2;//winkel vom resolver, -pi bsi +pi
+volatile int erreger = 1;
 
 float minus(float a, float b){
 	if(ABS(a - b) < pi){
@@ -78,26 +74,9 @@ void output_pwm(){
 
 void TIM2_IRQHandler(void){//20KHz
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-    if(state >= 2)
-        state = 0;
-    //GPIO_SetBits(GPIOD,GPIO_Pin_11);
-    //mag_pos+=pi/100;
-    output_pwm();
-    
-    /*
-    if(state == 1)
-        GPIO_SetBits(GPIOC,GPIO_Pin_2);
-    if(state == 0)
-        GPIO_ResetBits(GPIOC,GPIO_Pin_2);
-    */
-    
-    //GPIO_ResetBits(GPIOD,GPIO_Pin_11);
-    //if(state == 0){
-        GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
-        ADC_SoftwareStartConv(ADC1);
-        ADC_SoftwareStartConv(ADC2);
-        //}
-    state++;
+    GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
+    ADC_SoftwareStartConv(ADC1);
+    ADC_SoftwareStartConv(ADC2);
 }
 
 void ADC_IRQHandler(void)
@@ -105,11 +84,19 @@ void ADC_IRQHandler(void)
     while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
     ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
     GPIO_ResetBits(GPIOC,GPIO_Pin_4);//messpin
-    GPIO_ToggleBits(GPIOC,GPIO_Pin_2);//toggle erreger
 
+    //GPIO_ToggleBits(GPIOC,GPIO_Pin_2);//toggle erreger
     t1 = ADC_GetConversionValue(ADC1);
     t2 = ADC_GetConversionValue(ADC2);
-    res_pos = atan2f(t1-3111, t2-3111);
+
+    if(erreger == 1){
+        GPIO_SetBits(GPIOC,GPIO_Pin_2);//toggle erreger
+        res_pos1 = atan2f(t1-3111, t2-3111);
+    }else{
+        GPIO_ResetBits(GPIOC,GPIO_Pin_2);//toggle erreger
+        res_pos2 = atan2f(3111-t1, 3111-t2);   
+    }
+    erreger*=-1;
 }
 
 int main(void)
@@ -122,32 +109,8 @@ int main(void)
 
     while(1)  // Do not exit
     {
-        //printf_("%i %i", t1,t2);
-        printf_("%f",RAD(res_pos));
+        printf_("%f %f diff: %f",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
         Wait(50);
-     /*
-    #ifdef USBTERM
-     // Test ob USB-Verbindung zum PC besteht
-     if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED) {
-         // Ceck ob Daten per USB empfangen wurden
-         UB_USB_CDC_SendString("hallo",CRLF);
-         //if(UB_USB_CDC_ReceiveString(buf)==RX_READY) {
-             // wenn Daten empfangen wurden
-             // als Echo wieder zurücksenden
-             // (mit LineFeed+CarriageReturn)
-             UB_USB_CDC_SendString(buf,NONE);
-        //}
-    }
-    #endif
-     */
-        /*if(followe){
-            GPIO_ResetBits(GPIOD,GPIO_Pin_15);//disable
-            TIM4->CCR1 = 0;
-            TIM4->CCR2 = 0;
-            TIM4->CCR3 = 0;
-            TIM_Cmd(TIM4, DISABLE);//PWM
-            TIM_Cmd(TIM2, DISABLE);//int
-        }*/
     }
 }
 

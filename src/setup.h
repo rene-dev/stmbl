@@ -16,7 +16,6 @@
 
 #ifdef USBTERM
 #include "stm32_ub_usb_cdc.h"
-#include "printf.h"
 #endif
 
 //#define mag_res 5250
