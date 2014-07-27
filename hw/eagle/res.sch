@@ -18167,7 +18167,7 @@ Source: www.kingbright.com</description>
 <part name="C3" library="rcl" deviceset="C-EU" device="050-025X075"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="R2" library="resistor" deviceset="R-EU_" device="0204/7" value="10k"/>
-<part name="R3" library="resistor" deviceset="R-EU_" device="0204/7" value="100"/>
+<part name="R3" library="resistor" deviceset="R-EU_" device="0204/7" value="12"/>
 <part name="R4" library="pot" deviceset="TRIM_EU-" device="CA6V" value="10k"/>
 <part name="R5" library="resistor" deviceset="R-EU_" device="0204/7" value="1.2k"/>
 <part name="R6" library="resistor" deviceset="R-EU_" device="0204/7" value="1.2k"/>
@@ -18232,10 +18232,10 @@ Source: www.kingbright.com</description>
 <part name="P+12" library="supply1" deviceset="+5V" device=""/>
 <part name="GND28" library="supply1" deviceset="GND" device=""/>
 <part name="R15" library="pot" deviceset="TRIM_EU-" device="CA6V" value="5k"/>
-<part name="R8" library="resistor" deviceset="R-EU_" device="0204/7" value="3k"/>
-<part name="R17" library="resistor" deviceset="R-EU_" device="0204/7" value="1k"/>
-<part name="R7" library="resistor" deviceset="R-EU_" device="0204/7" value="3k"/>
-<part name="R18" library="resistor" deviceset="R-EU_" device="0204/7" value="1k"/>
+<part name="R8" library="resistor" deviceset="R-EU_" device="0204/7" value="3.3k"/>
+<part name="R17" library="resistor" deviceset="R-EU_" device="0204/7" value="1.2k"/>
+<part name="R7" library="resistor" deviceset="R-EU_" device="0204/7" value="3.3k"/>
+<part name="R18" library="resistor" deviceset="R-EU_" device="0204/7" value="1.2k"/>
 <part name="R16" library="pot" deviceset="TRIM_EU-" device="CA6V" value="5k"/>
 <part name="R9" library="resistor" deviceset="R-EU_" device="0204/7" value="1.2k"/>
 <part name="R10" library="resistor" deviceset="R-EU_" device="0204/7" value="1k"/>
@@ -18283,6 +18283,7 @@ Source: www.kingbright.com</description>
 <plain>
 <text x="5.08" y="215.9" size="1.778" layer="91">12V</text>
 <text x="66.04" y="213.36" size="1.778" layer="91">5V</text>
+<text x="187.96" y="154.94" size="1.778" layer="91">r9 und r19 sollen 1.5k werden</text>
 </plain>
 <instances>
 <instance part="X1" gate="-" x="162.56" y="185.42"/>

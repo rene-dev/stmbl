@@ -3086,7 +3086,7 @@ design rules under a new name.</description>
 <element name="C2" library="rcl" package="C050-025X075" value="47n" x="52.07" y="53.975" rot="R270"/>
 <element name="C3" library="rcl" package="C050-025X075" value="" x="36.83" y="66.04" rot="R90"/>
 <element name="R2" library="resistor" package="0204/7" value="10k" x="36.83" y="52.705"/>
-<element name="R3" library="resistor" package="0204/7" value="100" x="22.225" y="52.07" rot="R270"/>
+<element name="R3" library="resistor" package="0204/7" value="12" x="22.225" y="52.07" rot="R270"/>
 <element name="R4" library="pot" package="CA6V" value="10k" x="27.305" y="51.435" rot="R270"/>
 <element name="R5" library="resistor" package="0204/7" value="1.2k" x="17.145" y="69.85" rot="R90"/>
 <element name="R6" library="resistor" package="0204/7" value="1.2k" x="17.145" y="60.325" rot="R90"/>
@@ -3134,10 +3134,10 @@ design rules under a new name.</description>
 </element>
 <element name="C13" library="rcl" package="E2,5-5" value="" x="8.89" y="77.47" rot="R180"/>
 <element name="R15" library="pot" package="CA6V" value="5k" x="22.225" y="69.85" rot="R180"/>
-<element name="R8" library="resistor" package="0204/7" value="3k" x="30.48" y="72.39"/>
-<element name="R17" library="resistor" package="0204/7" value="1k" x="23.495" y="74.93"/>
-<element name="R7" library="resistor" package="0204/7" value="3k" x="30.48" y="59.69"/>
-<element name="R18" library="resistor" package="0204/7" value="1k" x="22.86" y="57.15"/>
+<element name="R8" library="resistor" package="0204/7" value="3.3k" x="30.48" y="72.39"/>
+<element name="R17" library="resistor" package="0204/7" value="1.2k" x="23.495" y="74.93"/>
+<element name="R7" library="resistor" package="0204/7" value="3.3k" x="30.48" y="59.69"/>
+<element name="R18" library="resistor" package="0204/7" value="1.2k" x="22.86" y="57.15"/>
 <element name="R16" library="pot" package="CA6V" value="5k" x="22.225" y="62.23"/>
 <element name="R9" library="resistor" package="0204/7" value="1.2k" x="36.83" y="57.785" rot="R270"/>
 <element name="R10" library="resistor" package="0204/7" value="1k" x="39.37" y="57.785" rot="R90"/>
