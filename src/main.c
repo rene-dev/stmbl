@@ -116,6 +116,7 @@ int main(void)
 {
     setup();
     GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
+    Wait(10);
     TIM_Cmd(TIM4, ENABLE);//PWM
     TIM_Cmd(TIM2, ENABLE);//int
     Wait(50);
