@@ -8,6 +8,10 @@
 #include "setup.h"
 #include <math.h>
 
+#ifdef USBTERM
+#include "stm32_ub_usb_cdc.h"
+#endif
+
 int __errno;
 void Delay(volatile uint32_t nCount);
 void Wait(unsigned int ms);
@@ -31,6 +35,9 @@ void Wait(unsigned int ms);
 #define offsetb 1.0 * 2.0 * pi / 3.0
 #define offsetc 2.0 * 2.0 * pi / 3.0
 
+#ifdef USBTERM
+char buf[APP_TX_BUF_SIZE]; // puffer fuer Datenempfang
+#endif
 
 volatile float mag_pos;
 volatile float current_scale = 1.0;
@@ -99,7 +106,19 @@ int main(void)
      Delay(1000);
      GPIO_ResetBits(GPIOC,GPIO_Pin_2);
      Delay(1000);
-        
+    
+    #ifdef USBTERM
+     // Test ob USB-Verbindung zum PC besteht
+     if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED) {
+         // Ceck ob Daten per USB empfangen wurden
+         if(UB_USB_CDC_ReceiveString(buf)==RX_READY) {
+             // wenn Daten empfangen wurden
+             // als Echo wieder zurücksenden
+             // (mit LineFeed+CarriageReturn)
+             UB_USB_CDC_SendString(buf,NONE);
+        }
+    }
+    #endif
         /*if(followe){
             GPIO_ResetBits(GPIOD,GPIO_Pin_15);//disable
             TIM4->CCR1 = 0;
