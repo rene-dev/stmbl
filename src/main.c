@@ -43,6 +43,7 @@ volatile float mag_pos;
 volatile float current_scale = 1.0;
 //volatile enum state_t { low=1, } state;
 volatile int state = 0;
+volatile int t1, t2;
 
 float minus(float a, float b){
 	if(ABS(a - b) < pi){
@@ -87,21 +88,22 @@ void TIM2_IRQHandler(void){//20KHz
         GPIO_ResetBits(GPIOC,GPIO_Pin_2);
     
     //GPIO_ResetBits(GPIOD,GPIO_Pin_11);
-    GPIO_SetBits(GPIOC,GPIO_Pin_4);
-    ADC_SoftwareStartConv(ADC1);
-    ADC_SoftwareStartConv(ADC2);
+    if(state == 0){
+        GPIO_SetBits(GPIOC,GPIO_Pin_4);
+        ADC_SoftwareStartConv(ADC1);
+        ADC_SoftwareStartConv(ADC2);
+    }
     state++;
 }
 
 void ADC_IRQHandler(void)
 {
-    //int t1, t2;
     while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
     ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
     GPIO_ResetBits(GPIOC,GPIO_Pin_4);
 
-    //t1 = ADC_GetConversionValue(ADC1);
-    //t2 = ADC_GetConversionValue(ADC2);
+    t1 = ADC_GetConversionValue(ADC1);
+    t2 = ADC_GetConversionValue(ADC2);
     //atan2f(res1_pos, res2_pos);
 }
 
