@@ -27,6 +27,7 @@ void Wait(unsigned int ms);
 #define pole_count 4
 
 #define pwm_scale 0.8
+#define current 0.5
 
 #define NO 0
 #define YES 1
@@ -35,14 +36,15 @@ void Wait(unsigned int ms);
 #define offsetb 1.0 * 2.0 * pi / 3.0
 #define offsetc 2.0 * 2.0 * pi / 3.0
 
-volatile float mag_pos;
-volatile float current_scale = 1.0;
+volatile float mag_pos = 0;
+volatile float current_scale = current;
 
 volatile int t1, t2;//rohdaten sin/cos
 volatile int t1_last = 0, t2_last = 0;//rohdaten sin/cos letzter aufruf
 volatile int t1_mid = 0,t2_mid = 0;//mittelpunkt sin/cos
 volatile float res_pos1;//winkel vom resolver, -pi bsi +pi
 volatile float res_pos2;//winkel vom resolver, -pi bsi +pi
+volatile int amp1,amp2;//betrag
 volatile int erreger = 0;
 volatile int erreger_enable = NO;
 
@@ -76,6 +78,15 @@ void output_pwm(){
 }
 
 void TIM2_IRQHandler(void){//20KHz
+    if(amp1 > 1000000 && amp2 > 1000000)
+        current_scale = current;
+    else
+        current_scale = 0.0;
+        
+    mag_pos = 4*((res_pos2+res_pos1)/2)+pi;
+
+    output_pwm();
+    
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
     ADC_SoftwareStartConv(ADC1);
@@ -91,23 +102,25 @@ void ADC_IRQHandler(void)
     //GPIO_ToggleBits(GPIOC,GPIO_Pin_2);//toggle erreger
     t1 = ADC_GetConversionValue(ADC1);
     t2 = ADC_GetConversionValue(ADC2);
-    t1_mid = t1_mid * 0.9 + (t1+t1_last)/2 * 0.1;
-    t2_mid = t2_mid * 0.9 + (t2+t2_last)/2 * 0.1;
+    t1_mid = t1_mid * 0.95 + (t1+t1_last)/2 * 0.05;
+    t2_mid = t2_mid * 0.95 + (t2+t2_last)/2 * 0.05;
     if(erreger_enable){//erreger signal aktiv
         if(erreger){//eine halbwelle
             GPIO_SetBits(GPIOC,GPIO_Pin_2);//erreger
             res_pos1 = atan2f(t1-t1_mid, t2-t2_mid);
+            amp1 = (t1-t1_mid)*(t1-t1_mid)+(t2-t2_mid)*(t2-t2_mid);
         }else{//andere halbwelle
             GPIO_ResetBits(GPIOC,GPIO_Pin_2);//erreger
             res_pos2 = atan2f(t1_mid-t1, t2_mid-t2);
+            amp2 = (t1_mid-t1)*(t1_mid-t1)+(t2_mid-t2)*(t2_mid-t2);
         }
     }else{//mittelpunkt messen
         if(t1_mid == 0 && t2_mid == 0){//erster durchlauf
             t1_mid = t1;
             t2_mid = t2;
         }else{//restliche durchläufe
-            t1_mid = t1_mid * 0.9 + t1 * 0.1;
-            t2_mid = t2_mid * 0.9 + t2 * 0.1;
+            t1_mid = t1_mid * 0.95 + t1 * 0.05;
+            t2_mid = t2_mid * 0.95 + t2 * 0.05;
         }
             
     }
@@ -118,7 +131,7 @@ void ADC_IRQHandler(void)
 
 int main(void)
 {
-    setup();
+    setup();    
     GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
     Wait(10);
     TIM_Cmd(TIM4, ENABLE);//PWM
@@ -131,7 +144,8 @@ int main(void)
     while(1)  // Do not exit
     {
         printf_("%f %f diff: %f",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
-        printf_("%i %i",t1_mid,t2_mid);
+        //printf_("%i %i",t1_mid,t2_mid);
+        printf_("%i %i diff: %i",amp1,amp2,amp1-amp2);
         Wait(50);
     }
 }
