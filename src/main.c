@@ -25,9 +25,9 @@ void Wait(unsigned int ms);
 #define RAD(a) ((a)*180.0/pi)
 
 #define pole_count 4
+#define res_offset DEG(52) //minimaler positiver resolver output bei mag_pos = 0
 
-#define pwm_scale 0.8
-#define current 0.5
+#define pwm_scale 0.9
 
 #define NO 0
 #define YES 1
@@ -37,7 +37,7 @@ void Wait(unsigned int ms);
 #define offsetc 2.0 * 2.0 * pi / 3.0
 
 volatile float mag_pos = 0;
-volatile float current_scale = current;
+volatile float voltage_scale = 0;
 
 volatile int t1, t2;//rohdaten sin/cos
 volatile int t1_last = 0, t2_last = 0;//rohdaten sin/cos letzter aufruf
@@ -72,18 +72,17 @@ float mod(float a){
 
 void output_pwm(){
     float ctr = mod(mag_pos);
-    TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
-    TIM4->CCR2 = (sinf(ctr + offsetb) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
-    TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * current_scale + 1.0) * mag_res / 2.0;
+    TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * voltage_scale + 1.0) * mag_res / 2.0;
+    TIM4->CCR2 = (sinf(ctr + offsetb) * pwm_scale * voltage_scale + 1.0) * mag_res / 2.0;
+    TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * voltage_scale + 1.0) * mag_res / 2.0;
 }
 
 void TIM2_IRQHandler(void){//20KHz
-    if(amp1 > 1000000 && amp2 > 1000000)
-        current_scale = current;
-    else
-        current_scale = 0.0;
-        
-    mag_pos = 4*((res_pos2+res_pos1)/2)+pi;
+    voltage_scale = 1.0;
+    if(amp1 < 1000000 || amp2 < 1000000)
+        voltage_scale = 0.0;
+
+    mag_pos = (pole_count*(((res_pos2+res_pos1)/2)-res_offset))+DEG(90);
 
     output_pwm();
     
