@@ -27,7 +27,7 @@ void Wait(unsigned int ms);
 #define pole_count 4
 #define res_offset DEG(52) //minimaler positiver resolver output bei mag_pos = 0
 
-#define pwm_scale 0.9
+#define pwm_scale 0.9//max/min PWM duty cycle
 
 #define NO 0
 #define YES 1
@@ -37,7 +37,7 @@ void Wait(unsigned int ms);
 #define offsetc 2.0 * 2.0 * pi / 3.0
 
 volatile float mag_pos = 0;
-volatile float voltage_scale = 0;
+volatile float voltage_scale = 0;// -1 bis 1
 
 volatile int t1, t2;//rohdaten sin/cos
 volatile int t1_last = 0, t2_last = 0;//rohdaten sin/cos letzter aufruf
@@ -45,8 +45,8 @@ volatile int t1_mid = 0,t2_mid = 0;//mittelpunkt sin/cos
 volatile float res_pos1;//winkel vom resolver, -pi bsi +pi
 volatile float res_pos2;//winkel vom resolver, -pi bsi +pi
 volatile int amp1,amp2;//betrag
-volatile int erreger = 0;
-volatile int erreger_enable = NO;
+volatile int erreger = 0;//resolver erreger pin an/aus
+volatile int erreger_enable = NO;//erreger aktiv
 
 float minus(float a, float b){
 	if(ABS(a - b) < pi){
@@ -72,9 +72,10 @@ float mod(float a){
 
 void output_pwm(){
     float ctr = mod(mag_pos);
-    TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * voltage_scale + 1.0) * mag_res / 2.0;
-    TIM4->CCR2 = (sinf(ctr + offsetb) * pwm_scale * voltage_scale + 1.0) * mag_res / 2.0;
-    TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * voltage_scale + 1.0) * mag_res / 2.0;
+    float volt = CLAMP(ABS(voltage_scale),0.0,1.0);
+    TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+    TIM4->CCR2 = (sinf(ctr + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+    TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
 }
 
 void TIM2_IRQHandler(void){//20KHz
@@ -82,7 +83,7 @@ void TIM2_IRQHandler(void){//20KHz
     if(amp1 < 1000000 || amp2 < 1000000)
         voltage_scale = 0.0;
 
-    mag_pos = (pole_count*(((res_pos2+res_pos1)/2)-res_offset))+DEG(90);
+    mag_pos = (pole_count*(((res_pos2+res_pos1)/2)-res_offset))+(voltage_scale>0?DEG(90):DEG(-90));
 
     output_pwm();
     
@@ -98,7 +99,6 @@ void ADC_IRQHandler(void)
     ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
     GPIO_ResetBits(GPIOC,GPIO_Pin_4);//messpin
 
-    //GPIO_ToggleBits(GPIOC,GPIO_Pin_2);//toggle erreger
     t1 = ADC_GetConversionValue(ADC1);
     t2 = ADC_GetConversionValue(ADC2);
     t1_mid = t1_mid * 0.95 + (t1+t1_last)/2 * 0.05;
