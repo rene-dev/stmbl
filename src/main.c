@@ -72,18 +72,18 @@ float mod(float a){
 
 void output_pwm(){
     float ctr = mod(mag_pos);
-    float volt = CLAMP(ABS(voltage_scale),0.0,1.0);
+    float volt = CLAMP(voltage_scale,-1.0,1.0);
     TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
     TIM4->CCR2 = (sinf(ctr + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
     TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
 }
 
 void TIM2_IRQHandler(void){//20KHz
-    voltage_scale = 1.0;
+    voltage_scale = -0.5;
     if(amp1 < 1000000 || amp2 < 1000000)
         voltage_scale = 0.0;
 
-    mag_pos = (pole_count*(((res_pos2+res_pos1)/2)-res_offset))+(voltage_scale>0?DEG(90):DEG(-90));
+    mag_pos = (pole_count*(((res_pos2+res_pos1)/2)-res_offset))+DEG(90);
 
     output_pwm();
     
