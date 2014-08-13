@@ -40,6 +40,7 @@
 void setup();
 void setup_adc();
 void setup_pwm();
+void setup_pid_timer();
 void SysTick_Handler(void);
 
 volatile int time;

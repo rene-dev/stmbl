@@ -68,6 +68,7 @@ void setup(){
     
     setup_pwm();
     setup_adc();
+    setup_pid_timer();
 
 	// systick timer
 	time = 0;
@@ -125,6 +126,27 @@ void setup_pwm(){
     /* PWM1 Mode configuration: Channel4 */
     TIM_OC4Init(TIM4, &TIM_OCInitStructure);
     TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable);
+}
+
+void setup_pid_timer(){
+    /* TIM5 clock enable */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
+
+    /* pid int set up, TIM5*/
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseStructure.TIM_Period = 420;//20kHz
+    TIM_TimeBaseStructure.TIM_Prescaler = 9;
+    //TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+    TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
+    TIM_ITConfig(TIM5, TIM_IT_Update, ENABLE);
+    
+    /* int NVIC setup */
+    NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0F;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0F;
+    NVIC_Init(&NVIC_InitStructure);    
 }
 
 // Setup ADC
