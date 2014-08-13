@@ -137,7 +137,7 @@ void setup_pid_timer(){
     /* pid int set up, TIM5*/
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStructure.TIM_Period = 420;//20kHz
+    TIM_TimeBaseStructure.TIM_Period = 8400;//1kHz
     TIM_TimeBaseStructure.TIM_Prescaler = 9;
     //TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
