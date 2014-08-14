@@ -37,6 +37,7 @@ void Wait(unsigned int ms);
 #define offsetc 2.0 * 2.0 * pi / 3.0
 
 volatile float mag_pos = 0;
+volatile float soll_pos = 0;
 volatile float voltage_scale = 0;// -1 bis 1
 
 volatile int t1, t2;//rohdaten sin/cos
@@ -70,7 +71,13 @@ float mod(float a){
     return(a);
 }
 
+
+float get_pos(){
+	return((res_pos2 + res_pos1) / 2 - res_offset);
+}
+
 void output_pwm(){
+		mag_pos = get_pos() * pole_count + DEG(90);
     float ctr = mod(mag_pos);
     float volt = CLAMP(voltage_scale,-1.0,1.0);
     TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
@@ -78,22 +85,14 @@ void output_pwm(){
     TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
 }
 
-void TIM2_IRQHandler(void){//20KHz
-    voltage_scale = -0.5;
-    if(amp1 < 1000000 || amp2 < 1000000)
-        voltage_scale = 0.0;
-
-    mag_pos = (pole_count*(((res_pos2+res_pos1)/2)-res_offset))+DEG(90);
-
-    output_pwm();
-    
+void TIM2_IRQHandler(void){ //20KHz
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
     GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
     ADC_SoftwareStartConv(ADC1);
     ADC_SoftwareStartConv(ADC2);
 }
 
-void ADC_IRQHandler(void)
+void ADC_IRQHandler(void) // 20khz
 {
     while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
     ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
@@ -121,25 +120,70 @@ void ADC_IRQHandler(void)
             t1_mid = t1_mid * 0.95 + t1 * 0.05;
             t2_mid = t2_mid * 0.95 + t2 * 0.05;
         }
-            
+
     }
     t1_last = t1;
     t2_last = t2;
-    erreger = !erreger;
+    erreger = !erreger; // 10khz
+}
+
+struct pid_context{
+	float old_ist;
+	float i_sum;
+	float p;
+	float i;
+	float d;
+	float periode;
+	float i_max;
+	float v;
+} c;
+
+float pid(float ist, float soll, struct pid_context* context){
+	float ctr = 0;
+	float err = minus(soll, ist);
+	float p = context->p / context->v * 10;
+	float i = context->i / context->v * 10;
+	float d = context->d / context->v * 10;
+
+	context->i_sum = CLAMP(context->i_sum + err * context->periode, -context->i_max / i, context->i_max / i);
+
+	ctr = p * err + i * context->i_sum;
+	return(CLAMP(ctr, -1, 1));
+}
+
+void TIM5_IRQHandler(void){ //1KHz
+	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
+	c.v = 10;
+	c.p = 5;
+	c.periode = 0.001;
+	c.i_max = 1;
+	c.i = 30;
+	c.d = 0;
+	float ist = get_pos();
+
+	voltage_scale = pid(ist, soll_pos, &c);
+	if(amp1 < 1000000 || amp2 < 1000000){
+		voltage_scale = 0.0;
+	}
+
+	output_pwm();
 }
 
 int main(void)
 {
-    setup();    
+    setup();
     GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
     Wait(10);
     TIM_Cmd(TIM2, ENABLE);//int
     Wait(50);
     erreger_enable = YES;
-    TIM_Cmd(TIM4, ENABLE);//PWM
-    
+    Wait(50);
+		soll_pos = get_pos();
+		TIM_Cmd(TIM4, ENABLE);//PWM
+		TIM_Cmd(TIM5, ENABLE);//PID
+
     GPIO_SetBits(GPIOD,GPIO_Pin_14);//enable
-    
+
     while(1)  // Do not exit
     {
         printf_("%f %f diff: %f",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
