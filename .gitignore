@@ -5,7 +5,7 @@
 *.hex
 *.bin
 .DS_Store
-term/graph
+term/build
 
 # Ignore list for Eagle, a PCB layout tool
 
