@@ -136,56 +136,16 @@ void BasicDrawPane::render(wxDC&  dc)
     // draw some text
     //dc.DrawText(wxT("Testing"), 40, 60);
     
-    // draw a circle
-    //dc.SetBrush(*wxGREEN_BRUSH); // green filling
-    //dc.SetPen( wxPen( wxColor(255,0,0), 5 ) ); // 5-pixels-thick red outline
-    //dc.DrawCircle( wxPoint(200,100), 25 /* radius */ );
-    
-    // draw a rectangle
-    //dc.SetBrush(*wxBLUE_BRUSH); // blue filling
-    //dc.SetPen( wxPen( wxColor(255,175,175), 10 ) ); // 10-pixels-thick pink outline
-    //dc.DrawRectangle( 300, 100, 400, 200 );
-    
-    // draw a line
-    int z = 10;
-    float modul = 12;
-    
-    float r = modul*z/2;
-    float p = modul*M_PI;
-    float rf = r-1.25*modul; //fußradius
-    float rk = r+modul; //kopfradius
-    
-    float ewinkel = (3.0f*sqrt(4.0f*z-1.0f))/(2.0f*z-5.0f);
-    
-    float xmid = r+15;
-    float ymid = r+15;
-    
-    dc.SetPen( wxPen( wxColor(0,0,0), 2 ) ); // black line, 3 pixels thick
+    dc.SetPen( wxPen( wxColor(0,0,0), 3 ) ); // black line, 3 pixels thick
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
     
-    //dc.DrawCircle( wxPoint(xmid,ymid), r /* radius */ );
-    //dc.DrawCircle( wxPoint(xmid,ymid), rk /* radius */ );
-    dc.DrawCircle( wxPoint(xmid,ymid), rf /* radius */ );
-
-    float i,oldx=0,oldy=0;
-    float scale = 1;//400;
-    float xoff = xmid;
-    float yoff = ymid+rf;
-    for (i = 0; i < M_PI/*ewinkel*/ ; i+=0.05) {
-        float x = (rf*cos(i)+i*sin(i))*rf*i+xoff;
-        float y = (rf*sin(i)+i*cos(i))*rf*i+yoff;
-        if(oldx != 0 && oldy != 0)
-            dc.DrawLine( oldx, oldy, x, y);
-        oldx = x;
-        oldy = y;
-    }
-    //dc.DrawLine( 0, 0, 100, 100 ); // draw line across the rectangle
+    dc.DrawLine( 0, 0, 100, 100 ); // draw line across the rectangle
     
     // Look at the wxDC docs to learn how to draw other stuff
 }
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
-    wxBoxSizer *mainsizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *mainsizer = new wxBoxSizer(wxHORIZONTAL);
     wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
     wxImage::AddHandler(new wxGIFHandler);
     
@@ -193,22 +153,19 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     mainsplitter->SetMinimumPaneSize(100);
     mainsizer->Add(mainsplitter, 1,wxEXPAND,0);
     
-    //left
-    wxPanel *leftpanel = new wxPanel(mainsplitter, wxID_ANY);
-    wxBoxSizer *leftsizer = new wxBoxSizer(wxVERTICAL);
-    //leftsizer->Add(new SearchResultsList(leftpanel), 1,wxEXPAND,0);
-    leftpanel->SetSizer(leftsizer);
+    //oben
+    wxPanel *top = new wxPanel(mainsplitter, wxID_ANY);
+    wxBoxSizer *topsizer = new wxBoxSizer(wxHORIZONTAL);
+    topsizer->Add(new BasicDrawPane((wxFrame*)top), 1,wxEXPAND,0);
+    top->SetSizer(topsizer);
     
-    //right
-    wxPanel *rightpanel = new wxPanel(mainsplitter, wxID_ANY);
-    wxBoxSizer *rightsizer = new wxBoxSizer(wxVERTICAL);
-    rightsizer->Add(new BasicDrawPane((wxFrame*)rightpanel), 1,wxEXPAND,0);
-
-
-    rightpanel->SetSizer(rightsizer);
+    //unten
+    wxPanel *bottom = new wxPanel(mainsplitter, wxID_ANY);
+    wxBoxSizer *bottomsizer = new wxBoxSizer(wxHORIZONTAL);
+    bottomsizer->Add(new BasicDrawPane((wxFrame*)bottom), 1,wxEXPAND,0);
+    bottom->SetSizer(bottomsizer);
     
-    mainsplitter->SplitVertically(leftpanel, rightpanel,200);
+    mainsplitter->SplitHorizontally(top, bottom,400);
     this->SetSizer(mainsizer);
     mainsizer->SetSizeHints(this);
-
 }
