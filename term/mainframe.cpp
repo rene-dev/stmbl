@@ -3,7 +3,10 @@
 #include <wx/artprov.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/choice.h>
+#include <wx/arrstr.h>
 #include <math.h>
+#include <libserialport.h>
 
 class BasicDrawPane : public wxPanel
 {
@@ -71,6 +74,9 @@ void BasicDrawPane::render(wxDC&  dc)
 }
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
+    struct sp_port **ports;
+    wxChoice *choose_port;
+    
     wxBoxSizer *mainsizer = new wxBoxSizer(wxHORIZONTAL);
     wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
     wxImage::AddHandler(new wxGIFHandler);
@@ -81,7 +87,15 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     
     //oben
     wxPanel *top = new wxPanel(mainsplitter, wxID_ANY);
-    wxBoxSizer *topsizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
+    choose_port = new wxChoice (top, wxID_ANY);
+    if(sp_list_ports(&ports) == SP_OK){
+        choose_port->Clear();
+        for (int i = 0; ports[i]; i++) {
+            choose_port->Append(sp_get_port_name(ports[i]));
+        }
+    }
+    topsizer->Add(choose_port, 1,wxEXPAND,0);
     topsizer->Add(new BasicDrawPane((wxFrame*)top), 1,wxEXPAND,0);
     top->SetSizer(topsizer);
     
