@@ -1,12 +1,4 @@
 #include "mainframe.hpp"
-#include <wx/bitmap.h>
-#include <wx/artprov.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/choice.h>
-#include <wx/arrstr.h>
-#include <math.h>
-#include <libserialport.h>
 
 class BasicDrawPane : public wxPanel
 {
@@ -73,10 +65,33 @@ void BasicDrawPane::render(wxDC&  dc)
     // Look at the wxDC docs to learn how to draw other stuff
 }
 
+void MainFrame::OnRefresh(wxCommandEvent& WXUNUSED(event)){
+    listports();
+}
+
+void MainFrame::listports(){
+    if(sp_list_ports(&ports) == SP_OK){
+        choose_port->Clear();
+        for (int i = 0; ports[i]; i++) {
+            choose_port->Append(sp_get_port_name(ports[i]));//TODO: sp_get_port_description
+        }
+    }
+    //TODO: free ports
+}
+
+void MainFrame::OnConnect(wxCommandEvent& WXUNUSED(event)){
+    wxString s = choose_port->GetString(choose_port->GetSelection());
+    if(sp_get_port_by_name(s.ToUTF8().data(), &port) == SP_OK){
+        std::cout << "yo";
+        if(sp_open(port, SP_MODE_WRITE) == SP_OK)
+            std::cout << "connected";
+            
+    }
+    //TODO: free port
+}
+
 MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
-    struct sp_port **ports;
-    wxChoice *choose_port;
-    
+    connected = false;
     wxBoxSizer *mainsizer = new wxBoxSizer(wxHORIZONTAL);
     wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
     wxImage::AddHandler(new wxGIFHandler);
@@ -85,24 +100,29 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     mainsplitter->SetMinimumPaneSize(100);
     mainsizer->Add(mainsplitter, 1,wxEXPAND,0);
     
+    connect = new wxButton(this, wxID_ANY, wxT("Connect"));
+    refresh = new wxButton(this, wxID_ANY, wxT("Refresh"));
+    refresh->Bind(wxEVT_BUTTON, &MainFrame::OnRefresh, this, wxID_ANY);
+    connect->Bind(wxEVT_BUTTON, &MainFrame::OnConnect, this, wxID_ANY);
+    
+    
     //oben
     wxPanel *top = new wxPanel(mainsplitter, wxID_ANY);
     wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *leiste = new wxBoxSizer(wxHORIZONTAL);
     choose_port = new wxChoice (top, wxID_ANY);
-    if(sp_list_ports(&ports) == SP_OK){
-        choose_port->Clear();
-        for (int i = 0; ports[i]; i++) {
-            choose_port->Append(sp_get_port_name(ports[i]));
-        }
-    }
-    topsizer->Add(choose_port, 1,wxEXPAND,0);
+    listports();
+    leiste->Add(choose_port, 0,wxALIGN_LEFT|wxALL,3);
+    leiste->Add(connect,0,wxALIGN_LEFT|wxALL,3);
+    leiste->Add(refresh,0,wxALIGN_LEFT|wxALL,3);
+    topsizer->Add(leiste);
     topsizer->Add(new BasicDrawPane((wxFrame*)top), 1,wxEXPAND,0);
     top->SetSizer(topsizer);
     
     //unten
     wxPanel *bottom = new wxPanel(mainsplitter, wxID_ANY);
     wxBoxSizer *bottomsizer = new wxBoxSizer(wxHORIZONTAL);
-    bottomsizer->Add(new wxTextCtrl::wxTextCtrl((wxFrame*)bottom,-1), 1,wxEXPAND,0);
+    bottomsizer->Add(new wxTextCtrl::wxTextCtrl((wxFrame*)bottom,-1), 1,wxALIGN_BOTTOM,0);
     bottom->SetSizer(bottomsizer);
     
     mainsplitter->SplitHorizontally(top, bottom,400);
