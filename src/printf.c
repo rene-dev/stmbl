@@ -43,7 +43,7 @@ int printf_(const char *format, ...)
 
 	#ifdef USBTERM
 	if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-		UB_USB_CDC_SendString(buffer, CRLF);
+		UB_USB_CDC_SendString(buffer, NONE);
 	}
 	#endif
 	//stlinky_wait_tx(&g_stlinky_term);

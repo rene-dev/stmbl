@@ -48,6 +48,7 @@ volatile float res_pos2;//winkel vom resolver, -pi bsi +pi
 volatile int amp1,amp2;//betrag
 volatile int erreger = 0;//resolver erreger pin an/aus
 volatile int erreger_enable = NO;//erreger aktiv
+volatile float schleppfehler = 0;
 
 float minus(float a, float b){
 	if(ABS(a - b) < pi){
@@ -141,6 +142,7 @@ struct pid_context{
 float pid(float ist, float soll, struct pid_context* context){
 	float ctr = 0;
 	float err = minus(soll, ist);
+  schleppfehler = err;//TODO: in kontext oder so
 	float p = context->p / context->v * 10;
 	float i = context->i / context->v * 10;
 	float d = context->d / context->v * 10;
@@ -153,7 +155,7 @@ float pid(float ist, float soll, struct pid_context* context){
 
 void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
-	c.v = 10;
+	c.v = 30;
 	c.p = 5;
 	c.periode = 0.001;
 	c.i_max = 1;
@@ -162,6 +164,7 @@ void TIM5_IRQHandler(void){ //1KHz
 	float ist = get_pos();
 
 	voltage_scale = pid(ist, soll_pos, &c);
+
 	if(amp1 < 1000000 || amp2 < 1000000){
 		voltage_scale = 0.0;
 	}
@@ -186,9 +189,21 @@ int main(void)
 
     while(1)  // Do not exit
     {
-        printf_("%f %f diff: %f",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
+        //printf_("%f %f diff: %f\r",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
         //printf_("%i %i",t1_mid,t2_mid);
-        printf_("%i %i diff: %i",amp1,amp2,amp1-amp2);
+        //printf_("%i %i diff: %i\r",amp1,amp2,amp1-amp2);
+        int e = (int)((RAD(schleppfehler)+180)/360*127)+127;
+        char buf[2];
+        buf[0] = e;
+        buf[1] = 0;
+        printf_("%i\r",e);
+        
+        #ifdef USBTERM
+        if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
+	        UB_USB_CDC_SendString(buf, NONE);
+        }
+        #endif
+        
         Wait(50);
     }
 }

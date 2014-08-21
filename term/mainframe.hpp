@@ -13,6 +13,18 @@
 #include <math.h>
 #include <libserialport.h>
 
+class BasicDrawPane : public wxPanel
+{
+    
+public:
+    BasicDrawPane(wxFrame* parent);
+    
+    void paintEvent(wxPaintEvent & evt);
+    void paintNow();
+    void plotvalue(int);
+    
+    void render(wxDC& dc);
+};
 
 class MainFrame : public wxFrame
 {
@@ -27,5 +39,12 @@ private:
     bool connected;
     void OnConnect(wxCommandEvent& WXUNUSED(event));
     void OnRefresh(wxCommandEvent& WXUNUSED(event));
+    void OnInput(wxCommandEvent& event);
+    void OnIdle(wxIdleEvent& evt);
     void listports();
+    static const int bufsize = 10;
+    char buf[MainFrame::bufsize+1];
+    wxTextCtrl *text;
+    wxTextCtrl *textinput;
+    BasicDrawPane *drawpanel;
 };
