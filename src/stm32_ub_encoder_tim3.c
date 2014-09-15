@@ -38,7 +38,7 @@ void P_ENCODER_InitTIM(ENC_TIM3_MODE_t mode, ENC_TIM3_TYP_t typ, uint16_t maxwer
 //--------------------------------------------------------------
 ENC_TIM3_t ENC_TIM3[] = {
   // Name   ,Channel, PORT , PIN       , CLOCK               , Source
-  {ENC_T3_A ,1      ,GPIOC ,GPIO_Pin_6 ,RCC_AHB1Periph_GPIOC ,GPIO_PinSource6},
+  {ENC_T3_A ,1      ,GPIOB ,GPIO_Pin_4 ,RCC_AHB1Periph_GPIOB ,GPIO_PinSource4},
   {ENC_T3_B ,2      ,GPIOB ,GPIO_Pin_5 ,RCC_AHB1Periph_GPIOB ,GPIO_PinSource5},
 };
 

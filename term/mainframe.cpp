@@ -106,7 +106,7 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
             buf[ret] = 0;
             for (int i=0; i<ret; i++) {
                 if ((buf[i]>>7)) {
-                    drawpanel->plotvalue(((int)buf[i])+127/2);
+                    drawpanel->plotvalue(((int)buf[i])+128/2);
                 }else{
                     text->AppendText(buf[i]);
                 }

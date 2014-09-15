@@ -69,6 +69,7 @@ void setup(){
     setup_pwm();
     setup_adc();
     setup_pid_timer();
+    setup_encoder();
 
 	// systick timer
 	time = 0;
@@ -81,6 +82,11 @@ void setup(){
     #ifdef USBTERM
     UB_USB_CDC_Init();
     #endif
+}
+
+//setup encoder using TIM3 on PB4,PB5
+void setup_encoder(){
+    UB_ENCODER_TIM3_Init(ENC_T3_MODE_4AB, ENC_T3_TYP_NORMAL, 2048);
 }
 
 //setup PWM using TIM4

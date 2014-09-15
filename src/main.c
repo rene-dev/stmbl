@@ -73,17 +73,31 @@ float mod(float a){
 }
 
 
-float get_pos(){
+float get_enc_pos(){
+    return (TIM_GetCounter(TIM3) * 2 * pi / 2048);//nochmal in der setup
+}
+
+float get_res_pos(){
 	return((res_pos2 + res_pos1) / 2 - res_offset);
 }
 
-void output_pwm(){
-		mag_pos = get_pos() * pole_count + DEG(90);
-    float ctr = mod(mag_pos);
+void output_ac_pwm(){
     float volt = CLAMP(voltage_scale,-1.0,1.0);
+    
+	mag_pos = get_res_pos() * pole_count + DEG(90);
+    float ctr = mod(mag_pos);
     TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
     TIM4->CCR2 = (sinf(ctr + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
     TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+}
+
+void output_dc_pwm(){
+    float volt = CLAMP(voltage_scale,-1.0,1.0);
+    
+    int foo = volt * mag_res * pwm_scale / 2 + mag_res / 2;
+    TIM4->CCR1 = foo;//PD12 PIN1
+    TIM4->CCR2 = mag_res-foo;//PD13 PIN2
+    TIM4->CCR4 = 0;//PD15 PIN3
 }
 
 void TIM2_IRQHandler(void){ //20KHz
@@ -142,7 +156,7 @@ struct pid_context{
 float pid(float ist, float soll, struct pid_context* context){
 	float ctr = 0;
 	float err = minus(soll, ist);
-  schleppfehler = err;//TODO: in kontext oder so
+    schleppfehler = err;//TODO: in kontext oder so
 	float p = context->p / context->v * 10;
 	float i = context->i / context->v * 10;
 	float d = context->d / context->v * 10;
@@ -155,21 +169,21 @@ float pid(float ist, float soll, struct pid_context* context){
 
 void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
-	c.v = 30;
+	c.v = 20;
 	c.p = 5;
 	c.periode = 0.001;
 	c.i_max = 1;
 	c.i = 30;
 	c.d = 0;
-	float ist = get_pos();
+	float ist = get_enc_pos();
 
 	voltage_scale = pid(ist, soll_pos, &c);
 
-	if(amp1 < 1000000 || amp2 < 1000000){
-		voltage_scale = 0.0;
-	}
+	//if(amp1 < 1000000 || amp2 < 1000000){
+	//	voltage_scale = 0.0;
+	//}
 
-	output_pwm();
+	output_dc_pwm();
 }
 
 int main(void)
@@ -181,7 +195,7 @@ int main(void)
     Wait(50);
     erreger_enable = YES;
     Wait(50);
-		soll_pos = get_pos();
+		soll_pos = get_enc_pos();
 		TIM_Cmd(TIM4, ENABLE);//PWM
 		TIM_Cmd(TIM5, ENABLE);//PID
 
@@ -192,11 +206,13 @@ int main(void)
         //printf_("%f %f diff: %f\r",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
         //printf_("%i %i",t1_mid,t2_mid);
         //printf_("%i %i diff: %i\r",amp1,amp2,amp1-amp2);
-        int e = (int)((RAD(schleppfehler)+180)/360*127)+127;
+        int e = (int)((RAD(schleppfehler)+180)/360*128)+128;
         char buf[2];
         buf[0] = e;
         buf[1] = 0;
-        printf_("%i\r",e);
+        //printf_("%i\r",e);
+        printf_("s: %f \n", schleppfehler);
+        
         
         #ifdef USBTERM
         if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
