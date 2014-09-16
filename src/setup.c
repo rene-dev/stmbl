@@ -79,6 +79,8 @@ void setup(){
     //systick prio
     //NVIC_SetPriority (SysTick_IRQn, (1<<__NVIC_PRIO_BITS) - 1); 
     
+    pid_init(&pid);
+    
     #ifdef USBTERM
     UB_USB_CDC_Init();
     #endif

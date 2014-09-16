@@ -13,6 +13,7 @@
 #include <stm32f4xx_conf.h>
 #include "stm32_ub_dac_dma.h"
 #include "stm32_ub_encoder_tim3.h"
+#include "pid.h"
 
 #ifdef USBTERM
 #include "stm32_ub_usb_cdc.h"
@@ -45,6 +46,7 @@ void setup_encoder();
 void SysTick_Handler(void);
 
 volatile int time;
+hal_pid_t pid;
 
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 TIM_OCInitTypeDef TIM_OCInitStructure;
