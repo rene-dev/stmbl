@@ -77,7 +77,7 @@ float get_enc_pos(){
 }
 
 float get_res_pos(){
-	return((res_pos2 + res_pos1) / 2 - res_offset);
+	return((res_pos2 + res_pos1) / 2 - res_offset);//TODO: avg funktion bauen und nutzen
 }
 
 void output_ac_pwm(){
@@ -144,8 +144,12 @@ void ADC_IRQHandler(void) // 20khz
 void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
 	float ist = get_enc_pos();
-
+    soll_pos = MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+    //soll_pos += DEG(0.36*1);// u/min
+    //soll_pos = mod(soll_pos);
+    
     pid.feedback = minus(ist,soll_pos);
+
     pid.commandv = pid.commandvds;
     pid.feedbackv = pid.feedbackvds;
     calc_pid(&pid,1);
@@ -184,6 +188,7 @@ int main(void)
         buf[1] = 0;
         
         printf_("e: %f\n", pid.error);
+        printf_("soll: %f\n", soll_pos);
         /*
         #ifdef USBTERM
         if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
