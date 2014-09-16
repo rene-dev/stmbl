@@ -146,9 +146,13 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
 void MainFrame::OnInput(wxCommandEvent& event){
     if(connected){
         //std::cout << textinput->GetValue();
-        sp_nonblocking_write(port, textinput->GetValue().mb_str(), textinput->GetValue().mb_str().length());
-        sp_nonblocking_write(port, "\r\n", 2);
-        
+        int ret1 = sp_nonblocking_write(port, textinput->GetValue().mb_str(), textinput->GetValue().mb_str().length());
+        int ret2 = sp_nonblocking_write(port, "\r\n", 2);
+        if(ret1 != textinput->GetValue().mb_str().length() || ret2!=2){
+            wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
+        }
+    }else{
+        wxMessageBox( wxT("Nicht verbunden"), wxT("Error"), wxICON_EXCLAMATION);
     }
     textinput->Clear();
 }
