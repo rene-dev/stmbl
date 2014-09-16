@@ -182,21 +182,28 @@ int main(void)
         //printf_("%f %f diff: %f\r",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
         //printf_("%i %i",t1_mid,t2_mid);
         //printf_("%i %i diff: %i\r",amp1,amp2,amp1-amp2);
-        int e = (int)((RAD(pid.error)+180)/360*128)+128;
+        int e = (int)((RAD(pid.error)*10+180)/360*128);
+        e=CLAMP(e,0,128);
+        e+=128;
         char buf[2];
         buf[0] = e;
         buf[1] = 0;
         
-        printf_("e: %f\n", pid.error);
-        printf_("soll: %f\n", soll_pos);
-        /*
+        //printf_("e: %f\n", pid.error);
+        //printf_("soll: %f\n", soll_pos);
+        
         #ifdef USBTERM
         if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-	        UB_USB_CDC_SendString(buf, NONE);
+	        UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
+            
+            char rx_buf[APP_TX_BUF_SIZE];
+            if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY) {
+              UB_USB_CDC_SendString(rx_buf,LF);
+            }
         }
         #endif
-        */
-        Wait(50);
+        
+        Wait(10);
     }
 }
 

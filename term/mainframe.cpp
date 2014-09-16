@@ -3,7 +3,7 @@
 BasicDrawPane::BasicDrawPane(wxFrame* parent) : wxPanel(parent){
     Bind(wxEVT_PAINT, &BasicDrawPane::paintEvent, this);
     xpos = 0;
-    for (int i = 0; i<3; i++) {
+    for (int i = 0; i<1024/2; i++) {
         data.push_back(0);
     }
 }
@@ -40,13 +40,14 @@ void BasicDrawPane::paintNow()
 
 void BasicDrawPane::plotvalue(int value)
 {
-    std::cout << "data:" << value << std::endl;
-    //TODO:
-    data.at(xpos) += 0.1;
+    //std::cout << "data:" << value << std::endl;
+    //data.at(xpos) += 0.1;
+    
+    data.at(xpos) = (float)value/64;
     xpos = (xpos+1)%data.size();
     Refresh();
     //oder
-    Update();
+    //Update();
 }
 
 /*
@@ -58,13 +59,17 @@ void BasicDrawPane::render(wxDC&  dc)
 {
     wxCoord w,h;
     dc.GetSize(&w, &h);
-    
+
     // ursprung oben links
     // draw some text
     //dc.DrawText(wxT("Testing"), 40, 60);
     
-    dc.SetPen( wxPen( wxColor(0,0,0), 3 ) ); // black line, 3 pixels thick
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
+    
+    dc.SetPen(*wxRED_PEN);
+    dc.DrawLine( 0, h/2, w, h/2 );
+    
+    dc.SetPen(*wxBLACK_PEN);
     
     x = 0;
     y = h/2;
@@ -81,8 +86,7 @@ void BasicDrawPane::render(wxDC&  dc)
 }
 
 void MainFrame::OnRefresh(wxCommandEvent& WXUNUSED(event)){
-    //listports();
-    drawpanel->plotvalue(10);
+    listports();
 }
 
 void MainFrame::listports(){
@@ -140,9 +144,12 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
 }
 
 void MainFrame::OnInput(wxCommandEvent& event){
-    //if(connected){
-        std::cout << textinput->GetValue();
-    //}
+    if(connected){
+        //std::cout << textinput->GetValue();
+        sp_nonblocking_write(port, textinput->GetValue().mb_str(), textinput->GetValue().mb_str().length());
+        sp_nonblocking_write(port, "\r\n", 2);
+        
+    }
     textinput->Clear();
 }
 
