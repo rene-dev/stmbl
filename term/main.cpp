@@ -27,8 +27,8 @@ bool Servoterm::OnInit()
 
     frame->SetMenuBar( menuBar );
 
-    frame->CreateStatusBar();
-    frame->SetStatusText("Statuskram und so");
+    //frame->CreateStatusBar();
+    //frame->SetStatusText("Statuskram und so");
  
     frame->Show(TRUE);
     return TRUE;
