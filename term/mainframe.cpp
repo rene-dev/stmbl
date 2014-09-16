@@ -2,6 +2,10 @@
 
 BasicDrawPane::BasicDrawPane(wxFrame* parent) : wxPanel(parent){
     Bind(wxEVT_PAINT, &BasicDrawPane::paintEvent, this);
+    xpos = 0;
+    for (int i = 0; i<3; i++) {
+        data.push_back(0);
+    }
 }
 
 /*
@@ -37,6 +41,12 @@ void BasicDrawPane::paintNow()
 void BasicDrawPane::plotvalue(int value)
 {
     std::cout << "data:" << value << std::endl;
+    //TODO:
+    data.at(xpos) += 0.1;
+    xpos = (xpos+1)%data.size();
+    Refresh();
+    //oder
+    Update();
 }
 
 /*
@@ -56,14 +66,23 @@ void BasicDrawPane::render(wxDC&  dc)
     dc.SetPen( wxPen( wxColor(0,0,0), 3 ) ); // black line, 3 pixels thick
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
     
-    dc.DrawLine( 0, h/2, w, h/2 );
-
+    x = 0;
+    y = h/2;
+    xstep = w/(data.size()-1);
+    for(auto point : data){
+        xold = x;
+        yold = y;
+        y = h/2-point*h/2;
+        dc.DrawLine( xold-xstep, yold, x, y );
+        x += xstep;
+    }
     
     // Look at the wxDC docs to learn how to draw other stuff
 }
 
 void MainFrame::OnRefresh(wxCommandEvent& WXUNUSED(event)){
-    listports();
+    //listports();
+    drawpanel->plotvalue(10);
 }
 
 void MainFrame::listports(){
