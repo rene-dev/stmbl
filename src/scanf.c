@@ -42,7 +42,7 @@ int isBinDigit(char c){
 }
 
 int isChar(char c){
-	return((c <= 'Z' && c >= 'A') || (c <= 'z' && c >= 'a') || isBinDigit(c));
+	return((c <= 'Z' && c >= 'A') || (c <= 'z' && c >= 'a') || isDecDigit(c));
 }
 
 int isDecDigit(char c){
@@ -116,7 +116,9 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
 						while(isChar(buf[buffer_pos])){
 							c[string_pos] = buf[buffer_pos++];
 							string_pos++;
+              c[string_pos] = '\0';
                       	}
+                        
                     break;
 
                     case 'i':

@@ -34,12 +34,14 @@ public:
 private:
     wxButton *connect;
     wxButton *refresh;
+    wxButton *clear;
     struct sp_port **ports;
     struct sp_port *port;
     wxChoice *choose_port;
     bool connected;
     void OnConnect(wxCommandEvent& WXUNUSED(event));
     void OnRefresh(wxCommandEvent& WXUNUSED(event));
+    void OnClear(wxCommandEvent& WXUNUSED(event));
     void OnInput(wxCommandEvent& event);
     void OnIdle(wxIdleEvent& evt);
     void listports();

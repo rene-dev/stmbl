@@ -99,6 +99,10 @@ void MainFrame::listports(){
     //TODO: free ports
 }
 
+void MainFrame::OnClear(wxCommandEvent& WXUNUSED(event)){
+    text->Clear();
+}
+
 void MainFrame::OnConnect(wxCommandEvent& WXUNUSED(event)){
     if(connected){//disconnect
         if(sp_close(port) == SP_OK){
@@ -184,13 +188,16 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     wxBoxSizer *leiste = new wxBoxSizer(wxHORIZONTAL);
     choose_port = new wxChoice (top, wxID_ANY);
     connect = new wxButton(top, wxID_ANY, wxT("Connect"));
+    clear = new wxButton(top, wxID_ANY, wxT("Clear"));
     refresh = new wxButton(top, wxID_ANY, wxT("Refresh"));
     refresh->Bind(wxEVT_BUTTON, &MainFrame::OnRefresh, this, wxID_ANY);
     connect->Bind(wxEVT_BUTTON, &MainFrame::OnConnect, this, wxID_ANY);
+    clear->Bind(wxEVT_BUTTON, &MainFrame::OnClear, this, wxID_ANY);
     listports();
     leiste->Add(choose_port, 0,wxALIGN_LEFT|wxALL,3);
     leiste->Add(connect,0,wxALIGN_LEFT|wxALL,3);
     leiste->Add(refresh,0,wxALIGN_LEFT|wxALL,3);
+    leiste->Add(clear,0,wxALIGN_LEFT|wxALL,3);
     topsizer->Add(leiste);
     drawpanel = new BasicDrawPane((wxFrame*)top);
     topsizer->Add(drawpanel, 1,wxEXPAND,0);

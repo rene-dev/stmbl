@@ -24,6 +24,7 @@ set -e
 # Build target: "i686" (32bit) or "x86_64" (64bit).
 TARGET="i686"
 
+#git clone https://github.com/mxe/mxe.git
 #make build-requirements -j 16
 #make MXE_TARGETS=i686-w64-mingw32.static gcc wxwidgets -j16
 

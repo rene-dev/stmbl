@@ -2,7 +2,7 @@
 #include <stm32f4xx_conf.h>
 #include "printf.h"
 #include "scanf.h"
-//#include "param.h"
+#include "param.h"
 #include "setup.h"
 #include <math.h>
 
@@ -196,20 +196,23 @@ int main(void)
             
           char name[APP_TX_BUF_SIZE];
           float value = 0;
-          int i = scanf_("%f",&value);
-          if(i != -1){
-            printf_("scanf: %i value: %f",i,value);
-          }
-          /*
-          switch(scanf_("%s%f",name,value)){
-              case 1:
-                printf_("reading %s",name);
+          int i = scanf_("%s=%f",name,&value);
+          //if(i != -1){
+          //  printf_("scanf: %i value: %f name: %s\n",i,value,name);
+          //}
+          switch(i){
               case 2:
-                printf_("setting %s to %f",name,value);
+                printf_("reading %s\n",name);
+                break;
+              case 5:
+                printf_("setting %s to %f\n",name,value);
+                break;
+              case -1:
+                break;
               default:
-                printf_("unknown command");
+                printf_("unknown command\n");
+                break;
           }
-          */
             //if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY) {
             //  UB_USB_CDC_SendString(rx_buf,LF);
             //  
