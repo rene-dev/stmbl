@@ -35,6 +35,7 @@ bool Servoterm::OnInit()
 }
 
 void Servoterm::OnAbout(wxCommandEvent& WXUNUSED(event)){
+    /*
     wxAboutDialogInfo aboutInfo;
     aboutInfo.SetName("Servoterm");
     aboutInfo.SetVersion("git");
@@ -44,4 +45,5 @@ void Servoterm::OnAbout(wxCommandEvent& WXUNUSED(event)){
     aboutInfo.AddDeveloper("Crinq");
     aboutInfo.AddDeveloper("Rene-dev");
     wxAboutBox(aboutInfo);
+    */
 }

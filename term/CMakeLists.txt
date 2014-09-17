@@ -4,7 +4,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 add_definitions("-std=c++11")
 add_definitions("-DSRCDIR=\"${PROJECT_SOURCE_DIR}\"")
 add_definitions("-D__WXDEBUG__")
-find_package(GLM REQUIRED)
 find_package(libserialport REQUIRED)
 
 include_directories(${GLM_INCLUDE_DIRS})
