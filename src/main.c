@@ -200,10 +200,10 @@ int main(void)
           //  printf_("scanf: %i value: %f name: %s\n",i,value,name);
           //}
           switch(i){
-              case 2:
+              case 1:
                 printf_("reading %s\n",name);
                 break;
-              case 5:
+              case 3:
                 printf_("setting %s to %f\n",name,value);
                 break;
               case -1:
