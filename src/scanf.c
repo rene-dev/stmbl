@@ -62,6 +62,7 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
   int format_pos = 0;
   int string_pos = 0;
   int ret = 0;
+  int found = 0;
 
   int *i;
   float *f;
@@ -74,6 +75,7 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
   // 2 = last char = '\'
 
   while(format[format_pos]){
+    found = 0;
     switch(state){
       case 0:
       switch(format[format_pos]){
@@ -88,15 +90,15 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
         case ' ': // parse whithespaces
           while(isWhitespace(buf[buffer_pos])){
             buffer_pos++;
+            found++;
           }
-          ret++;
         break;
 
         default:
           if(format[format_pos] != buf[buffer_pos++]){
             return(ret);
           }
-          ret++;
+          found++;
       }
       break;
 
@@ -106,13 +108,13 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
             if(buf[buffer_pos++] != '%'){
               return(ret);
             }
-            ret++;
+            found++;
           break;
 
           case 'c':
             c = va_arg(arg, char *);
             *c = buf[buffer_pos++];
-            ret++;
+            found++;
           break;
 
           case 's':
@@ -122,8 +124,8 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
               c[string_pos] = buf[buffer_pos++];
               string_pos++;
               c[string_pos] = '\0';
+              found++;
             }
-            ret++;
           break;
 
           case 'i':
@@ -140,9 +142,9 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
             while(isDecDigit(buf[buffer_pos])){
               *i *= 10;
               *i += buf[buffer_pos++] - '0';
+              found++;
             }
             *i *= invert;
-            ret++;
           break;
 
           case 'b':
@@ -163,9 +165,9 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
             while(isBinDigit(buf[buffer_pos])){
               *i *= 2;
               *i += buf[buffer_pos++] - '0';
+              found++;
             }
             *i *= invert;
-            ret++;
           break;
 
           case 'h':
@@ -196,9 +198,9 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
               else{
                 *i += buf[buffer_pos++] - 'a' + 10;
               }
+              found++;
             }
             *i *= invert;
-            ret++;
           break;
 
           case 'f':
@@ -216,16 +218,17 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
             while(isDecDigit(buf[buffer_pos])){
               *f *= 10;
               *f += buf[buffer_pos++] - '0';
+              found++;
             }
             if(buf[buffer_pos] == '.'){
               buffer_pos++;
               while(isDecDigit(buf[buffer_pos])){
                 *f += (buf[buffer_pos++] - '0') / tf;
                 tf *= 10;
+                found++;
               }
             }
             *f *= invert;
-            ret++;
           break;
 
           default:
@@ -241,14 +244,14 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
             if(buf[buffer_pos++] != '\''){
               return(ret);
             }
-            ret++;
+            found++;
           break;
 
           case 'n':
             if(buf[buffer_pos++] != '\n'){
               return(ret);
             }
-            ret++;
+            found++;
           break;
 
           default:
@@ -263,6 +266,9 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
     }
 
     format_pos++;
+    if(found){
+      ret++;
+    }
   }
   return(ret);
 }
