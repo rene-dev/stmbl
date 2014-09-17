@@ -6,6 +6,7 @@
 *.bin
 .DS_Store
 term/build
+term/win32/bin
 
 # Ignore list for Eagle, a PCB layout tool
 

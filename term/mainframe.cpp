@@ -115,6 +115,8 @@ void MainFrame::OnConnect(wxCommandEvent& WXUNUSED(event)){
                 connect->SetLabel(wxT("Disonnect"));
                 refresh->Disable();
                 choose_port->Disable();
+            }else{
+                wxMessageBox( wxT("Fehler beim Öffnen"), wxT("Error"), wxICON_EXCLAMATION);
             }
         }
     }
@@ -168,10 +170,6 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     mainsplitter->SetMinimumPaneSize(100);
     mainsizer->Add(mainsplitter, 1,wxEXPAND,0);
     
-    connect = new wxButton(this, wxID_ANY, wxT("Connect"));
-    refresh = new wxButton(this, wxID_ANY, wxT("Refresh"));
-    refresh->Bind(wxEVT_BUTTON, &MainFrame::OnRefresh, this, wxID_ANY);
-    connect->Bind(wxEVT_BUTTON, &MainFrame::OnConnect, this, wxID_ANY);
     Bind(wxEVT_IDLE,&MainFrame::MainFrame::OnIdle, this, wxID_ANY);
     
     
@@ -180,6 +178,10 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *leiste = new wxBoxSizer(wxHORIZONTAL);
     choose_port = new wxChoice (top, wxID_ANY);
+    connect = new wxButton(top, wxID_ANY, wxT("Connect"));
+    refresh = new wxButton(top, wxID_ANY, wxT("Refresh"));
+    refresh->Bind(wxEVT_BUTTON, &MainFrame::OnRefresh, this, wxID_ANY);
+    connect->Bind(wxEVT_BUTTON, &MainFrame::OnConnect, this, wxID_ANY);
     listports();
     leiste->Add(choose_port, 0,wxALIGN_LEFT|wxALL,3);
     leiste->Add(connect,0,wxALIGN_LEFT|wxALL,3);
