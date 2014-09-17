@@ -8,10 +8,8 @@
 
 #ifndef test_scanf_h
 #define test_scanf_h
-#define SCANF_BSIZE 1024
-#define SCANF_ASIZE 32
 
-char scanf_buffer[SCANF_BSIZE];
 int scanf_(const char *format, ...);
+int sscanf_(const char* buf, const char *format, ...);
 
 #endif
