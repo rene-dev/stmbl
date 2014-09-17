@@ -14,10 +14,13 @@ int scanf_(const char *format, ...){
     char rx_buf[APP_TX_BUF_SIZE];
     va_list arg;
     if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-      while(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY){}
-      va_start(arg, format);
-      ret = vfsscanf_(rx_buf, format, arg);
-      va_end(arg);
+      if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY){
+        va_start(arg, format);
+        ret = vfsscanf_(rx_buf, format, arg);
+        va_end(arg);
+      }else{
+        ret = -1;
+      }
     }
     #endif
     return(ret);

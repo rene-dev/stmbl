@@ -1,7 +1,7 @@
 #include <stm32f4_discovery.h>
 #include <stm32f4xx_conf.h>
 #include "printf.h"
-//#include "scanf.h"
+#include "scanf.h"
 //#include "param.h"
 #include "setup.h"
 #include <math.h>
@@ -192,12 +192,28 @@ int main(void)
         
         #ifdef USBTERM
         if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-	        UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
+	        //UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
             
-            char rx_buf[APP_TX_BUF_SIZE];
-            if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY) {
-              UB_USB_CDC_SendString(rx_buf,LF);
-            }
+          char name[APP_TX_BUF_SIZE];
+          float value = 0;
+          int i = scanf_("%f",&value);
+          if(i != -1){
+            printf_("scanf: %i value: %f",i,value);
+          }
+          /*
+          switch(scanf_("%s%f",name,value)){
+              case 1:
+                printf_("reading %s",name);
+              case 2:
+                printf_("setting %s to %f",name,value);
+              default:
+                printf_("unknown command");
+          }
+          */
+            //if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY) {
+            //  UB_USB_CDC_SendString(rx_buf,LF);
+            //  
+            //}
         }
         #endif
         
