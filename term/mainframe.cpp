@@ -40,7 +40,7 @@ void BasicDrawPane::paintNow()
 
 void BasicDrawPane::plotvalue(int value)
 {
-    //std::cout << "data:" << value << std::endl;
+    std::cout << "data:" << value << std::endl;
     //data.at(xpos) += 0.1;
     
     data.at(xpos) = (float)value/64;
@@ -111,6 +111,12 @@ void MainFrame::OnConnect(wxCommandEvent& WXUNUSED(event)){
         wxString s = choose_port->GetString(choose_port->GetSelection());
         if(sp_get_port_by_name(s.ToUTF8().data(), &port) == SP_OK){
             if(sp_open(port, SP_MODE_WRITE) == SP_OK){//port da und lässt sich öffnen
+                sp_set_baudrate(port,38400);
+                sp_set_bits(port, 8);
+                sp_set_stopbits(port, 1);
+                sp_set_parity(port, SP_PARITY_NONE);
+                sp_set_xon_xoff(port, SP_XONXOFF_DISABLED);
+                sp_set_flowcontrol(port, SP_FLOWCONTROL_NONE);
                 connected = true;
                 connect->SetLabel(wxT("Disonnect"));
                 refresh->Disable();
@@ -149,8 +155,8 @@ void MainFrame::OnInput(wxCommandEvent& event){
     if(connected){
         //std::cout << textinput->GetValue();
         int ret1 = sp_nonblocking_write(port, textinput->GetValue().mb_str(), textinput->GetValue().mb_str().length());
-        int ret2 = sp_nonblocking_write(port, "\r\n", 2);
-        if(ret1 != textinput->GetValue().mb_str().length() || ret2!=2){
+        int ret2 = sp_nonblocking_write(port, "\r", 1);
+        if(ret1 != textinput->GetValue().mb_str().length() || ret2!=1){
             wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
         }
     }else{
@@ -160,7 +166,6 @@ void MainFrame::OnInput(wxCommandEvent& event){
 }
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
-    //TODO port konfigurieren, 38400,8n1
     connected = false;
     wxBoxSizer *mainsizer = new wxBoxSizer(wxHORIZONTAL);
     wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
