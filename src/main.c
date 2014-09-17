@@ -1,9 +1,7 @@
 #include <stm32f4_discovery.h>
 #include <stm32f4xx_conf.h>
-//#include "../../sin.h"
 #include "printf.h"
 //#include "scanf.h"
-//include "stlinky.h"
 //#include "param.h"
 #include "setup.h"
 #include <math.h>
@@ -204,15 +202,6 @@ int main(void)
         #endif
         
         Wait(10);
-    }
-}
-
-//grob 12us
-void Delay(volatile uint32_t nCount) {
-    float one;
-    while(nCount--)
-    {
-        one = (float) nCount;
     }
 }
 
