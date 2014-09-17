@@ -79,7 +79,7 @@ float get_res_pos(){
 
 void output_ac_pwm(){
     float volt = CLAMP(voltage_scale,-1.0,1.0);
-    
+
 	mag_pos = get_res_pos() * pole_count + DEG(90);
     float ctr = mod(mag_pos);
     TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
@@ -89,7 +89,7 @@ void output_ac_pwm(){
 
 void output_dc_pwm(){
     float volt = CLAMP(voltage_scale,-1.0,1.0);
-    
+
     int foo = volt * mag_res * pwm_scale / 2 + mag_res / 2;
     TIM4->CCR1 = foo;//PD12 PIN1
     TIM4->CCR2 = mag_res-foo;//PD13 PIN2
@@ -144,14 +144,14 @@ void TIM5_IRQHandler(void){ //1KHz
     soll_pos = MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
     //soll_pos += DEG(0.36*1);// u/min
     //soll_pos = mod(soll_pos);
-    
+
     pid.feedback = minus(ist,soll_pos);
 
     pid.commandv = pid.commandvds;
     pid.feedbackv = pid.feedbackvds;
     calc_pid(&pid,1);
     voltage_scale = pid.output;
-	
+
     //if(amp1 < 1000000 || amp2 < 1000000){
 	//	voltage_scale = 0.0;
 	//}
@@ -185,17 +185,17 @@ int main(void)
         char buf[2];
         buf[0] = e;
         buf[1] = 0;
-        
+
         //printf_("e: %f\n", pid.error);
         //printf_("soll: %f\n", soll_pos);
-        
+
         #ifdef USBTERM
         if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
 	        //UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
-            
+
           char name[APP_TX_BUF_SIZE];
           float value = 0;
-          int i = scanf_("%s=%f",name,&value);
+          int i = scanf_("%s = %f",name,&value);
           //if(i != -1){
           //  printf_("scanf: %i value: %f name: %s\n",i,value,name);
           //}
@@ -214,11 +214,11 @@ int main(void)
           }
             //if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY) {
             //  UB_USB_CDC_SendString(rx_buf,LF);
-            //  
+            //
             //}
         }
         #endif
-        
+
         Wait(10);
     }
 }
