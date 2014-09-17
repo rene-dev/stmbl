@@ -6,23 +6,20 @@
 //  Copyright (c) 2013 Rene Hopf. All rights reserved.
 //
 
-#include <stdarg.h>
 #include "scanf.h"
-
-
-
-int vfsscanf_(const char *format, va_list arg);
 
 int scanf_(const char *format, ...){
     int ret = 0;
-
+    #ifdef USBTERM
+    char rx_buf[APP_TX_BUF_SIZE];
     va_list arg;
     if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
       while(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY){}
       va_start(arg, format);
-      ret = vfsscanf_(buf, format, arg);
+      ret = vfsscanf_(rx_buf, format, arg);
       va_end(arg);
     }
+    #endif
     return(ret);
 }
 
@@ -61,7 +58,6 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
     int buffer_pos = 0;
     int format_pos = 0;
 		int string_pos = 0;
-    int ret = 0;
 
     int *i;
     float *f;
