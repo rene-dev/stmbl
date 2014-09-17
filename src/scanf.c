@@ -269,6 +269,9 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
     if(found){
       ret++;
     }
+    else{
+      return(ret)
+    }
   }
   return(ret);
 }
