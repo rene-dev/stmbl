@@ -11,7 +11,6 @@
 #endif
 
 int __errno;
-void Delay(volatile uint32_t nCount);
 void Wait(unsigned int ms);
 
 #define pi 3.14159265
