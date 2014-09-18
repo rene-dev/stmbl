@@ -90,7 +90,9 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
 					case ' ': // parse whithespaces
 						while(isWhitespace(buf[buffer_pos])){
 							buffer_pos++;
+              found++;
 						}
+            found++;
 						break;
 
 					default:

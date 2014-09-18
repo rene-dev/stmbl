@@ -205,13 +205,13 @@ int main(void)
 			//		printf_("scanf: %i value: %f name: %s\n",i,value,name);
 			//}
 			switch(i){
-				case 1:
+				case 2:
 					if(is_param(name[0]))
 						printf_("%s=%f\n",name,get_float(name[0]));
 					else
 						printf_("not found\n");
 					break;
-				case 3:
+				case 5:
 					if(is_param(name[0])){
 						if(set_float(name[0],value))
 							printf_("OK, %s=%f\n",name,get_float(name[0]));
