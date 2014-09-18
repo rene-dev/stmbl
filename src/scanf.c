@@ -267,12 +267,10 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
 		}
 
 		format_pos++;
-		if(found){
-			ret++;
+		if(!found){
+      return(ret);
 		}
-		//else{
-		//	return(ret);
-		//}
+    ret++;
 	}
 	return(ret);
 }

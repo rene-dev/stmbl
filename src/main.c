@@ -200,7 +200,7 @@ int main(void)
 			char name[APP_TX_BUF_SIZE];
 			float value = 0;
 			//int i = scanf_("%s = %f",name,&value);
-			int i = scanf_("%s=%f",name,&value);
+			int i = scanf_("%s = %f",name,&value);
 			//if(i != -1){
 			//		printf_("scanf: %i value: %f name: %s\n",i,value,name);
 			//}
