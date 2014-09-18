@@ -32,7 +32,7 @@ class MainFrame : public wxFrame
 public:
     MainFrame(const wxString& title);
 private:
-    wxButton *connect;
+    wxButton *connectbutton;
     wxButton *refresh;
     wxButton *clear;
     struct sp_port **ports;
@@ -44,6 +44,8 @@ private:
     void OnClear(wxCommandEvent& WXUNUSED(event));
     void OnInput(wxCommandEvent& event);
     void OnIdle(wxIdleEvent& evt);
+    void connect();
+    void disconnect();
     void listports();
     static const int bufsize = 10;
     char buf[MainFrame::bufsize+1];

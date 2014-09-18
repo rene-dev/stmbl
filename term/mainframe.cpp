@@ -104,33 +104,41 @@ void MainFrame::OnClear(wxCommandEvent& WXUNUSED(event)){
 }
 
 void MainFrame::OnConnect(wxCommandEvent& WXUNUSED(event)){
-    if(connected){//disconnect
-        if(sp_close(port) == SP_OK){
-            connected = false;
-            connect->SetLabel(wxT("Connect"));
-            refresh->Enable();
-            choose_port->Enable();
-        }
-    }else{//connect
-        wxString s = choose_port->GetString(choose_port->GetSelection());
-        if(sp_get_port_by_name(s.ToUTF8().data(), &port) == SP_OK){
-            if(sp_open(port, SP_MODE_WRITE) == SP_OK){//port da und lässt sich öffnen
-                sp_set_baudrate(port,38400);
-                sp_set_bits(port, 8);
-                sp_set_stopbits(port, 1);
-                sp_set_parity(port, SP_PARITY_NONE);
-                sp_set_xon_xoff(port, SP_XONXOFF_DISABLED);
-                sp_set_flowcontrol(port, SP_FLOWCONTROL_NONE);
-                connected = true;
-                connect->SetLabel(wxT("Disonnect"));
-                refresh->Disable();
-                choose_port->Disable();
-            }else{
-                wxMessageBox( wxT("Fehler beim Öffnen"), wxT("Error"), wxICON_EXCLAMATION);
-            }
+    if(connected)
+        disconnect();
+    else
+        connect();
+    //TODO: free port, check op port noch da
+}
+
+void MainFrame::connect(){
+    wxString s = choose_port->GetString(choose_port->GetSelection());
+    if(sp_get_port_by_name(s.ToUTF8().data(), &port) == SP_OK){
+        if(sp_open(port, SP_MODE_WRITE) == SP_OK){//port da und lässt sich öffnen
+            sp_set_baudrate(port,38400);
+            sp_set_bits(port, 8);
+            sp_set_stopbits(port, 1);
+            sp_set_parity(port, SP_PARITY_NONE);
+            sp_set_xon_xoff(port, SP_XONXOFF_DISABLED);
+            sp_set_flowcontrol(port, SP_FLOWCONTROL_NONE);
+            connected = true;
+            connectbutton->SetLabel(wxT("Disonnect"));
+            refresh->Disable();
+            choose_port->Disable();
+        }else{
+            wxMessageBox( wxT("Fehler beim Öffnen"), wxT("Error"), wxICON_EXCLAMATION);
         }
     }
-    //TODO: free port, check op port noch da
+}
+
+void MainFrame::disconnect(){
+    if(sp_close(port) == SP_OK){
+        connected = false;
+        connectbutton->SetLabel(wxT("Connect"));
+        refresh->Enable();
+        choose_port->Enable();
+    }
+
 }
 
 void MainFrame::OnIdle(wxIdleEvent& evt){
@@ -162,6 +170,7 @@ void MainFrame::OnInput(wxCommandEvent& event){
         int ret2 = sp_nonblocking_write(port, "\r", 1);
         if(ret1 != textinput->GetValue().mb_str().length() || ret2!=1){
             wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
+            disconnect();
         }
     }else{
         wxMessageBox( wxT("Nicht verbunden"), wxT("Error"), wxICON_EXCLAMATION);
@@ -187,15 +196,15 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *leiste = new wxBoxSizer(wxHORIZONTAL);
     choose_port = new wxChoice (top, wxID_ANY);
-    connect = new wxButton(top, wxID_ANY, wxT("Connect"));
+    connectbutton = new wxButton(top, wxID_ANY, wxT("Connect"));
     clear = new wxButton(top, wxID_ANY, wxT("Clear"));
     refresh = new wxButton(top, wxID_ANY, wxT("Refresh"));
     refresh->Bind(wxEVT_BUTTON, &MainFrame::OnRefresh, this, wxID_ANY);
-    connect->Bind(wxEVT_BUTTON, &MainFrame::OnConnect, this, wxID_ANY);
+    connectbutton->Bind(wxEVT_BUTTON, &MainFrame::OnConnect, this, wxID_ANY);
     clear->Bind(wxEVT_BUTTON, &MainFrame::OnClear, this, wxID_ANY);
     listports();
     leiste->Add(choose_port, 0,wxALIGN_LEFT|wxALL,3);
-    leiste->Add(connect,0,wxALIGN_LEFT|wxALL,3);
+    leiste->Add(connectbutton,0,wxALIGN_LEFT|wxALL,3);
     leiste->Add(refresh,0,wxALIGN_LEFT|wxALL,3);
     leiste->Add(clear,0,wxALIGN_LEFT|wxALL,3);
     topsizer->Add(leiste);
