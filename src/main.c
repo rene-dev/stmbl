@@ -59,18 +59,18 @@ float minus(float a, float b){
 }
 
 float mod(float a){
-    while(a < -pi){
-        a += 2.0 * pi;
-    }
-    while(a > pi){
-        a -= 2.0 * pi;
-    }
-    return(a);
+	while(a < -pi){
+		a += 2.0 * pi;
+	}
+	while(a > pi){
+		a -= 2.0 * pi;
+	}
+	return(a);
 }
 
 
 float get_enc_pos(){
-    return (TIM_GetCounter(TIM3) * 2 * pi / 2048);//nochmal in der setup
+	return (TIM_GetCounter(TIM3) * 2 * pi / 2048);//nochmal in der setup
 }
 
 float get_res_pos(){
@@ -78,81 +78,81 @@ float get_res_pos(){
 }
 
 void output_ac_pwm(){
-    float volt = CLAMP(voltage_scale,-1.0,1.0);
+	float volt = CLAMP(voltage_scale,-1.0,1.0);
 
 	mag_pos = get_res_pos() * pole_count + DEG(90);
-    float ctr = mod(mag_pos);
-    TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
-    TIM4->CCR2 = (sinf(ctr + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
-    TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+	float ctr = mod(mag_pos);
+	TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+	TIM4->CCR2 = (sinf(ctr + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+	TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
 }
 
 void output_dc_pwm(){
-    float volt = CLAMP(voltage_scale,-1.0,1.0);
+	float volt = CLAMP(voltage_scale,-1.0,1.0);
 
-    int foo = volt * mag_res * pwm_scale / 2 + mag_res / 2;
-    TIM4->CCR1 = foo;//PD12 PIN1
-    TIM4->CCR2 = mag_res-foo;//PD13 PIN2
-    TIM4->CCR4 = 0;//PD15 PIN3
+	int foo = volt * mag_res * pwm_scale / 2 + mag_res / 2;
+	TIM4->CCR1 = foo;//PD12 PIN1
+	TIM4->CCR2 = mag_res-foo;//PD13 PIN2
+	TIM4->CCR4 = 0;//PD15 PIN3
 }
 
 void TIM2_IRQHandler(void){ //20KHz
-    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-    GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
-    ADC_SoftwareStartConv(ADC1);
-    ADC_SoftwareStartConv(ADC2);
+	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+	GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
+	ADC_SoftwareStartConv(ADC1);
+	ADC_SoftwareStartConv(ADC2);
 }
 
 void ADC_IRQHandler(void) // 20khz
 {
-    while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
-    ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
-    GPIO_ResetBits(GPIOC,GPIO_Pin_4);//messpin
+	while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
+	ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
+	GPIO_ResetBits(GPIOC,GPIO_Pin_4);//messpin
 
-    t1 = ADC_GetConversionValue(ADC1);
-    t2 = ADC_GetConversionValue(ADC2);
-    t1_mid = t1_mid * 0.95 + (t1+t1_last)/2 * 0.05;
-    t2_mid = t2_mid * 0.95 + (t2+t2_last)/2 * 0.05;
-    if(erreger_enable){//erreger signal aktiv
-        if(erreger){//eine halbwelle
-            GPIO_SetBits(GPIOC,GPIO_Pin_2);//erreger
-            res_pos1 = atan2f(t1-t1_mid, t2-t2_mid);
-            amp1 = (t1-t1_mid)*(t1-t1_mid)+(t2-t2_mid)*(t2-t2_mid);
-        }else{//andere halbwelle
-            GPIO_ResetBits(GPIOC,GPIO_Pin_2);//erreger
-            res_pos2 = atan2f(t1_mid-t1, t2_mid-t2);
-            amp2 = (t1_mid-t1)*(t1_mid-t1)+(t2_mid-t2)*(t2_mid-t2);
-        }
-    }else{//mittelpunkt messen
-        if(t1_mid == 0 && t2_mid == 0){//erster durchlauf
-            t1_mid = t1;
-            t2_mid = t2;
-        }else{//restliche durchläufe
-            t1_mid = t1_mid * 0.95 + t1 * 0.05;
-            t2_mid = t2_mid * 0.95 + t2 * 0.05;
-        }
+	t1 = ADC_GetConversionValue(ADC1);
+	t2 = ADC_GetConversionValue(ADC2);
+	t1_mid = t1_mid * 0.95 + (t1+t1_last)/2 * 0.05;
+	t2_mid = t2_mid * 0.95 + (t2+t2_last)/2 * 0.05;
+	if(erreger_enable){//erreger signal aktiv
+		if(erreger){//eine halbwelle
+			GPIO_SetBits(GPIOC,GPIO_Pin_2);//erreger
+			res_pos1 = atan2f(t1-t1_mid, t2-t2_mid);
+			amp1 = (t1-t1_mid)*(t1-t1_mid)+(t2-t2_mid)*(t2-t2_mid);
+		}else{//andere halbwelle
+			GPIO_ResetBits(GPIOC,GPIO_Pin_2);//erreger
+			res_pos2 = atan2f(t1_mid-t1, t2_mid-t2);
+			amp2 = (t1_mid-t1)*(t1_mid-t1)+(t2_mid-t2)*(t2_mid-t2);
+		}
+	}else{//mittelpunkt messen
+		if(t1_mid == 0 && t2_mid == 0){//erster durchlauf
+			t1_mid = t1;
+			t2_mid = t2;
+		}else{//restliche durchläufe
+			t1_mid = t1_mid * 0.95 + t1 * 0.05;
+			t2_mid = t2_mid * 0.95 + t2 * 0.05;
+		}
 
-    }
-    t1_last = t1;
-    t2_last = t2;
-    erreger = !erreger; // 10khz
+	}
+	t1_last = t1;
+	t2_last = t2;
+	erreger = !erreger; // 10khz
 }
 
 void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
 	float ist = get_enc_pos();
-    soll_pos = MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
-    //soll_pos += DEG(0.36*1);// u/min
-    //soll_pos = mod(soll_pos);
+	soll_pos = MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+	//soll_pos += DEG(0.36*1);// u/min
+	//soll_pos = mod(soll_pos);
 
-    pid.feedback = minus(ist,soll_pos);
+	pid.feedback = minus(ist,soll_pos);
 
-    pid.commandv = pid.commandvds;
-    pid.feedbackv = pid.feedbackvds;
-    calc_pid(&pid,1);
-    voltage_scale = pid.output;
+	pid.commandv = pid.commandvds;
+	pid.feedbackv = pid.feedbackvds;
+	calc_pid(&pid,1);
+	voltage_scale = pid.output;
 
-    //if(amp1 < 1000000 || amp2 < 1000000){
+	//if(amp1 < 1000000 || amp2 < 1000000){
 	//	voltage_scale = 0.0;
 	//}
 
@@ -161,66 +161,82 @@ void TIM5_IRQHandler(void){ //1KHz
 
 int main(void)
 {
-    setup();
-    GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
-    Wait(10);
-    TIM_Cmd(TIM2, ENABLE);//int
-    Wait(50);
-    erreger_enable = YES;
-    Wait(50);
-		soll_pos = get_enc_pos();
-		TIM_Cmd(TIM4, ENABLE);//PWM
-		TIM_Cmd(TIM5, ENABLE);//PID
+	setup();
+	param_init();
+	register_float('p',&pid.pgain);
+	register_float('i',&pid.igain);
+	register_float('d',&pid.dgain);
+	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
+	Wait(10);
+	TIM_Cmd(TIM2, ENABLE);//int
+	Wait(50);
+	erreger_enable = YES;
+	Wait(50);
+	soll_pos = get_enc_pos();
+	TIM_Cmd(TIM4, ENABLE);//PWM
+	TIM_Cmd(TIM5, ENABLE);//PID
 
-    GPIO_SetBits(GPIOD,GPIO_Pin_14);//enable
+	GPIO_SetBits(GPIOD,GPIO_Pin_14);//enable
 
-    while(1)  // Do not exit
-    {
-        //printf_("%f %f diff: %f\r",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
-        //printf_("%i %i",t1_mid,t2_mid);
-        //printf_("%i %i diff: %i\r",amp1,amp2,amp1-amp2);
-        int e = (int)((RAD(pid.error)*10+180)/360*128);
-        e=CLAMP(e,0,128);
-        e+=128;
-        char buf[2];
-        buf[0] = e;
-        buf[1] = 0;
+	while(1)  // Do not exit
+	{
+		//printf_("%f %f diff: %f\r",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
+		//printf_("%i %i",t1_mid,t2_mid);
+		//printf_("%i %i diff: %i\r",amp1,amp2,amp1-amp2);
+		int e = (int)((RAD(pid.error)*10+180)/360*128);
+		e=CLAMP(e,0,128);
+		e+=128;
+		char buf[2];
+		buf[0] = e;
+		buf[1] = 0;
 
-        //printf_("e: %f\n", pid.error);
-        //printf_("soll: %f\n", soll_pos);
+		//printf_("e: %f\n", pid.error);
+		//printf_("soll: %f\n", soll_pos);
 
-        #ifdef USBTERM
-        if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-	        //UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
+#ifdef USBTERM
+		if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
+			//UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
 
-          char name[APP_TX_BUF_SIZE];
-          float value = 0;
-          int i = scanf_("%s = %f",name,&value);
-          //if(i != -1){
-          //  printf_("scanf: %i value: %f name: %s\n",i,value,name);
-          //}
-          switch(i){
-              case 1:
-                printf_("reading %s\n",name);
-                break;
-              case 3:
-                printf_("setting %s to %f\n",name,value);
-                break;
-              case -1:
-                break;
-              default:
-                printf_("unknown command\n");
-                break;
-          }
-            //if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY) {
-            //  UB_USB_CDC_SendString(rx_buf,LF);
-            //
-            //}
-        }
-        #endif
+			char name[APP_TX_BUF_SIZE];
+			float value = 0;
+			//int i = scanf_("%s = %f",name,&value);
+			int i = scanf_("%s=%f",name,&value);
+			//if(i != -1){
+			//		printf_("scanf: %i value: %f name: %s\n",i,value,name);
+			//}
+			switch(i){
+				case 1:
+					if(is_param(name[0]))
+						printf_("%s=%f\n",name,get_float(name[0]));
+					else
+						printf_("not found\n");
+					break;
+				case 3:
+					if(is_param(name[0])){
+						if(set_float(name[0],value))
+							printf_("OK, %s=%f\n",name,get_float(name[0]));
+						else
+							printf_("error!\n");
+					}
+					break;
+				case -1:
+					break;
+				default:
+					//if(name[0] == '?')
+						list_param();
+					//else
+					//	printf_("unknown command\n");
+					//break;
+			}
+			//if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY) {
+			//  UB_USB_CDC_SendString(rx_buf,LF);
+			//
+			//}
+		}
+#endif
 
-        Wait(10);
-    }
+		Wait(10);
+	}
 }
 
 void Wait(unsigned int ms){
