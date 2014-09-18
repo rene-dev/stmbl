@@ -81,10 +81,14 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
 				switch(format[format_pos]){
 					case '%':
 						state = 1;
+						format_pos++;
+						continue;
 						break;
 
 					case '\'':
 						state = 2;
+						format_pos++;
+						continue;
 						break;
 
 					case ' ': // parse whithespaces

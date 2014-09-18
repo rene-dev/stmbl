@@ -195,15 +195,15 @@ int main(void)
 
 #ifdef USBTERM
 		if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-			//UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
+			UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
 
 			char name[APP_TX_BUF_SIZE];
 			float value = 0;
 			//int i = scanf_("%s = %f",name,&value);
 			int i = scanf_("%s = %f",name,&value);
 			//if(i != -1){
-			//		printf_("scanf: %i value: %f name: %s\n",i,value,name);
-			//}
+            //    printf_("scanf: %i value: %f name: %s\n",i,value,name);
+            //}
 			switch(i){
 				case 2:
 					if(is_param(name[0]))
