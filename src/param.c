@@ -26,14 +26,29 @@ int register_float(char name, float *f){
 		PARAMS.names[PARAMS.param_count] = name;
 		PARAMS.data[PARAMS.param_count] = f;
 		PARAMS.param_count++;
-		printf_("register OK:%i\n",PARAMS.param_count);
+		//printf_("register OK:%i\n",PARAMS.param_count);
 		return(1);
+}
+
+int is_param(char name){
+	for(int i = 0; i < PARAMS.param_count; i++){
+		if(PARAMS.names[i] == name){
+			return(1);
+		}
+  }
+  return(0);
+}
+
+void list_param(){
+	for(int i = 0; i < PARAMS.param_count; i++){
+		printf_("%c=%f\n",PARAMS.names[i],*PARAMS.data[i],i);
+	}
 }
 
 float get_float(char name){
 		for(int i = 0; i < PARAMS.param_count; i++){
 			if(PARAMS.names[i] == name){
-				printf_("got %f for param %i\n",*PARAMS.data[i],i);
+				//printf_("got %f for param %i\n",*PARAMS.data[i],i);
 				return(*(PARAMS.data[i]));
 			}
 		}
@@ -44,7 +59,7 @@ int set_float(char name, float f){
 		for(int i = 0; i < PARAMS.param_count; i++){
 			if(PARAMS.names[i] == name){
 				*(PARAMS.data[i]) = f;
-				printf_("%c set to %f\n",name,f);
+				//printf_("%c set to %f\n",name,f);
 				return(1);
 			}
 		}

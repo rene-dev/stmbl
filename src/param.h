@@ -24,8 +24,12 @@ struct param{
 
 void param_init();
 
+int is_param(char name);
+
 int register_float(char name, float *f);
 
 float get_float(char name);
 
 int set_float(char name, float f);
+
+void list_param();
