@@ -74,7 +74,8 @@ float get_enc_pos(){
 }
 
 float get_res_pos(){
-	return((res_pos2 + res_pos1) / 2 - res_offset);//TODO: avg funktion bauen und nutzen
+	//return((res_pos2 + res_pos1) / 2 - res_offset);//TODO: avg funktion bauen und nutzen
+    return (MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2) - res_offset;
 }
 
 void output_ac_pwm(){
@@ -140,9 +141,9 @@ void ADC_IRQHandler(void) // 20khz
 
 void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
-	float ist = get_enc_pos();
-	soll_pos = MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
-	//soll_pos += DEG(0.36*1);// u/min
+	float ist = get_res_pos();
+	soll_pos = get_enc_pos();//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+	//soll_pos += DEG(0.36*5);// u/sec
 	//soll_pos = mod(soll_pos);
 
 	pid.feedback = minus(ist,soll_pos);
@@ -152,11 +153,11 @@ void TIM5_IRQHandler(void){ //1KHz
 	calc_pid(&pid,1);
 	voltage_scale = pid.output;
 
-	//if(amp1 < 1000000 || amp2 < 1000000){
-	//	voltage_scale = 0.0;
-	//}
+	if(amp1 < 1000000 || amp2 < 1000000){
+    	voltage_scale = 0.0;
+    }
 
-	output_dc_pwm();
+	output_ac_pwm();
 }
 
 int main(void)
@@ -172,7 +173,7 @@ int main(void)
 	Wait(50);
 	erreger_enable = YES;
 	Wait(50);
-	soll_pos = get_enc_pos();
+	soll_pos = get_res_pos();
 	TIM_Cmd(TIM4, ENABLE);//PWM
 	TIM_Cmd(TIM5, ENABLE);//PID
 
