@@ -167,7 +167,7 @@ void TIM5_IRQHandler(void){ //1KHz
     for(int i = 0;i<10;i++){
         ist += atan2f(data[i][1][0], data[i][1][1]) * 0.05;
     }
-    
+
     soll_pos = get_enc_pos();//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
 	//soll_pos += DEG(0.36*1);// u/sec
 	//soll_pos = mod(soll_pos);
@@ -191,10 +191,10 @@ int main(void)
 {
 	setup();
 	param_init();
-	register_float('p',&pid.pgain);
-	register_float('i',&pid.igain);
-	register_float('d',&pid.dgain);
-    register_float('w',&w);
+	register_float("p",&pid.pgain);
+	register_float("i",&pid.igain);
+	register_float("d",&pid.dgain);
+  register_float("w",&w);
 	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
 	Wait(10);
 	TIM_Cmd(TIM2, ENABLE);//int
@@ -247,16 +247,16 @@ int main(void)
             //}
 			switch(i){
 				case 2:
-					if(is_param(name[0]))
-						printf_("%s=%f\n",name,get_float(name[0]));
+					if(is_param(name))
+						printf_("%s = %f\n",name,get_param(name));
 					else{
 						printf_("not found\n");
                     }
 					break;
 				case 5:
-					if(is_param(name[0])){
-						if(set_float(name[0],value))
-							printf_("OK, %s=%f\n",name,get_float(name[0]));
+					if(is_param(name)){
+						if(set_param(name,value))
+							printf_("OK, %s = %f\n",name,get_param(name));
 						else
 							printf_("error!\n");
 					}
