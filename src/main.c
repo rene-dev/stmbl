@@ -45,6 +45,9 @@ volatile float res_pos2;//winkel vom resolver, -pi bsi +pi
 volatile int amp1,amp2;//betrag
 volatile int erreger = 0;//resolver erreger pin an/aus
 volatile int erreger_enable = NO;//erreger aktiv
+volatile float w = -1;
+volatile int k = 0,l = 0;
+volatile int data[10][2][2];
 
 float minus(float a, float b){
 	if(ABS(a - b) < pi){
@@ -74,7 +77,8 @@ float get_enc_pos(){
 }
 
 float get_res_pos(){
-	return((res_pos2 + res_pos1) / 2 - res_offset);//TODO: avg funktion bauen und nutzen
+	//return((res_pos2 + res_pos1) / 2 - res_offset);//TODO: avg funktion bauen und nutzen
+    return (MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2) - res_offset;
 }
 
 void output_ac_pwm(){
@@ -97,10 +101,8 @@ void output_dc_pwm(){
 }
 
 void TIM2_IRQHandler(void){ //20KHz
-	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
-	ADC_SoftwareStartConv(ADC1);
-	ADC_SoftwareStartConv(ADC2);
+    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+	//GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
 }
 
 void ADC_IRQHandler(void) // 20khz
@@ -118,10 +120,28 @@ void ADC_IRQHandler(void) // 20khz
 			GPIO_SetBits(GPIOC,GPIO_Pin_2);//erreger
 			res_pos1 = atan2f(t1-t1_mid, t2-t2_mid);
 			amp1 = (t1-t1_mid)*(t1-t1_mid)+(t2-t2_mid)*(t2-t2_mid);
+            if(w >= 0){
+                data[k][0][0] = t1 - t1_mid;
+                data[k][0][1] = t2 - t2_mid;
+                k++;
+                if(k == 10){
+                    w = -1;
+                    k = 0;
+                }
+            }
 		}else{//andere halbwelle
 			GPIO_ResetBits(GPIOC,GPIO_Pin_2);//erreger
 			res_pos2 = atan2f(t1_mid-t1, t2_mid-t2);
 			amp2 = (t1_mid-t1)*(t1_mid-t1)+(t2_mid-t2)*(t2_mid-t2);
+            if(w >= 0){
+                data[l][1][0] = t1_mid - t1;
+                data[l][1][1] = t2_mid - t2;
+                l++;
+                if(l == 10){
+                    w = -1;
+                    l = 0;
+                }
+            }
 		}
 	}else{//mittelpunkt messen
 		if(t1_mid == 0 && t2_mid == 0){//erster durchlauf
@@ -140,9 +160,16 @@ void ADC_IRQHandler(void) // 20khz
 
 void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
-	float ist = get_enc_pos();
-	soll_pos = MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
-	//soll_pos += DEG(0.36*1);// u/min
+	float ist = 0;//get_res_pos();
+    for(int i = 0;i<10;i++){
+        ist += atan2f(data[i][0][0], data[i][0][1]) * 0.05;
+    }
+    for(int i = 0;i<10;i++){
+        ist += atan2f(data[i][1][0], data[i][1][1]) * 0.05;
+    }
+    
+    soll_pos = get_enc_pos();//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+	//soll_pos += DEG(0.36*1);// u/sec
 	//soll_pos = mod(soll_pos);
 
 	pid.feedback = minus(ist,soll_pos);
@@ -152,11 +179,12 @@ void TIM5_IRQHandler(void){ //1KHz
 	calc_pid(&pid,1);
 	voltage_scale = pid.output;
 
-	//if(amp1 < 1000000 || amp2 < 1000000){
-	//	voltage_scale = 0.0;
-	//}
+	if(amp1 < 1000000 || amp2 < 1000000){
+    	voltage_scale = 0.0;
+    }
 
-	output_dc_pwm();
+	output_ac_pwm();
+    w=0;
 }
 
 int main(void)
@@ -166,13 +194,14 @@ int main(void)
 	register_float('p',&pid.pgain);
 	register_float('i',&pid.igain);
 	register_float('d',&pid.dgain);
+    register_float('w',&w);
 	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
 	Wait(10);
 	TIM_Cmd(TIM2, ENABLE);//int
 	Wait(50);
 	erreger_enable = YES;
 	Wait(50);
-	soll_pos = get_enc_pos();
+	soll_pos = get_res_pos();
 	TIM_Cmd(TIM4, ENABLE);//PWM
 	TIM_Cmd(TIM5, ENABLE);//PID
 
@@ -195,21 +224,34 @@ int main(void)
 
 #ifdef USBTERM
 		if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-			//UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
-
-			char name[APP_TX_BUF_SIZE];
+			UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
+            /*
+            if(w == -1){
+                w = -2;
+                printf_("pos:\n");
+                for(int i = 0;i<10;i++){
+                    printf_("%i %i\n",data[i][0][0], data[i][0][1]);
+                }
+                printf_("neg:\n");
+                for(int i = 0;i<10;i++){
+                    printf_("%i %i\n",data[i][1][0], data[i][1][1]);
+                }
+            }
+			*/
+            char name[APP_TX_BUF_SIZE];
 			float value = 0;
 			//int i = scanf_("%s = %f",name,&value);
 			int i = scanf_("%s = %f",name,&value);
 			//if(i != -1){
-			//		printf_("scanf: %i value: %f name: %s\n",i,value,name);
-			//}
+            //    printf_("scanf: %i value: %f name: %s\n",i,value,name);
+            //}
 			switch(i){
 				case 2:
 					if(is_param(name[0]))
 						printf_("%s=%f\n",name,get_float(name[0]));
-					else
+					else{
 						printf_("not found\n");
+                    }
 					break;
 				case 5:
 					if(is_param(name[0])){
