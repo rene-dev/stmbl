@@ -57,7 +57,7 @@ void setup(){
     //TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
     TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-    //TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);//DAC?
+    TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);
     
     /* int NVIC setup */
     NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
@@ -184,7 +184,8 @@ void setup_adc(){
     ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;//data converted will be shifted to right
     ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;//Input voltage is converted into a 12bit number giving a maximum value of 4096
     ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; //the conversion is continuous, the input data is converted more than once
-    ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;//no trigger for conversion
+    ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T2_TRGO;//trigger on rising edge of TIM2
+    ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
     ADC_InitStructure.ADC_NbrOfConversion = 1;//I think this one is clear :p
     ADC_InitStructure.ADC_ScanConvMode = DISABLE;//The scan is configured in one channel
     ADC_Init(ADC1,&ADC_InitStructure);//Initialize ADC with the previous configuration

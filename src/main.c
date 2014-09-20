@@ -98,10 +98,8 @@ void output_dc_pwm(){
 }
 
 void TIM2_IRQHandler(void){ //20KHz
-	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
-	ADC_SoftwareStartConv(ADC1);
-	ADC_SoftwareStartConv(ADC2);
+    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+	//GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
 }
 
 void ADC_IRQHandler(void) // 20khz
