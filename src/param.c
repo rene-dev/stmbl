@@ -32,7 +32,7 @@ int register_float(char* name, volatile float *f){
 	}
 
 	for(int i = 0; i < PARAMS.param_count; i++){
-		if(strcmp(PARAMS.names[i], name)){
+		if(!strcmp(PARAMS.names[i], name)){
 			return(0);
 		}
 	}
