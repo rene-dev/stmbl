@@ -4,6 +4,7 @@
 *.elf
 *.hex
 *.bin
+*.map
 .DS_Store
 term/build
 term/win32/bin
