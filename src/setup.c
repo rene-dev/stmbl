@@ -21,7 +21,7 @@ void setup(){
 
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-    
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//wird in UB_USB_CDC_Init() nochmal gesetzt!
     //res erreger
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_2;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
@@ -64,9 +64,9 @@ void setup(){
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//4 bits for preemp priority 0 bit for sub priority
+
     NVIC_Init(&NVIC_InitStructure);
-    
+ 
     setup_pwm();
     setup_adc();
     setup_pid_timer();
@@ -79,7 +79,7 @@ void setup(){
 	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
     //systick prio
 
-    NVIC_SetPriority(SysTick_IRQn, 15); 
+    NVIC_SetPriority(SysTick_IRQn, 14);
     
     pid_init(&pid);
     
@@ -156,7 +156,7 @@ void setup_pid_timer(){
     /* int NVIC setup */
     NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 8;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 12;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_Init(&NVIC_InitStructure);    
 }
