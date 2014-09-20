@@ -64,20 +64,20 @@ int register_int(char* name, volatile int *i){
 
 int is_param(char* name){
 	for(int i = 0; i < PARAMS.param_count; i++){
-		if(strcmp(PARAMS.names[i], name)){
-			return(0);
+		if(!strcmp(PARAMS.names[i], name)){
+			return(1);
 		}
   }
-  return(1);
+  return(0);
 }
 
 void list_param(){
 	for(int i = 0; i < PARAMS.param_count; i++){
 		if(PARAMS.types[i] == FLOAT){
-			printf_("%s = %f\n",PARAMS.names[i],*PARAMS.floats[i],i);
+			printf_("float %s = %f\n",PARAMS.names[i],*PARAMS.floats[i],i);
 		}
 		else{
-			printf_("%s = %i\n",PARAMS.names[i],*PARAMS.ints[i],i);
+			printf_("int %s = %i\n",PARAMS.names[i],*PARAMS.ints[i],i);
 		}
 	}
 }
