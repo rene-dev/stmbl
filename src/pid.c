@@ -1,5 +1,27 @@
 #include "pid.h"
 
+float minus(float a, float b){
+	if(ABS(a - b) < M_PI){
+		return(a - b);
+	}
+	else if(a > b){
+		return(a - b - 2.0 * M_PI);
+	}
+	else{
+		return(a - b + 2.0 * M_PI);
+	}
+}
+
+float mod(float a){
+	while(a < -M_PI){
+		a += 2.0 * M_PI;
+	}
+	while(a > M_PI){
+		a -= 2.0 * M_PI;
+	}
+	return(a);
+}
+
 void pid_init(hal_pid_t *pid){
     pid->enable = 1;      /* pin: enable input */
     pid->command = 0;	  /* pin: commanded value */

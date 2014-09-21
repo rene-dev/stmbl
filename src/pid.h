@@ -1,5 +1,13 @@
 #ifndef test_pid_h
 #define test_pid_h
+#include <math.h>
+
+#define ABS(a)	   (((a) < 0) ? -(a) : (a))
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
+#define DEG(a) ((a)*M_PI/180.0)
+#define RAD(a) ((a)*180.0/M_PI)
 
 typedef struct {
     int enable;        /* pin: enable input */
@@ -43,5 +51,7 @@ typedef struct {
 
 void calc_pid(hal_pid_t *arg, float period);
 void pid_init(hal_pid_t *pid);
+float minus(float a, float b);
+float mod(float a);
 
 #endif

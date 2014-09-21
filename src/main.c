@@ -13,13 +13,12 @@
 int __errno;
 void Wait(unsigned int ms);
 
-#define pi 3.14159265
 #define ABS(a)	   (((a) < 0) ? -(a) : (a))
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
-#define DEG(a) ((a)*pi/180.0)
-#define RAD(a) ((a)*180.0/pi)
+#define DEG(a) ((a)*M_PI/180.0)
+#define RAD(a) ((a)*180.0/M_PI)
 
 #define pole_count 4
 #define res_offset DEG(52) //minimaler positiver resolver output bei mag_pos = 0
@@ -29,9 +28,9 @@ void Wait(unsigned int ms);
 #define NO 0
 #define YES 1
 
-#define offseta 0.0 * 2.0 * pi / 3.0
-#define offsetb 1.0 * 2.0 * pi / 3.0
-#define offsetc 2.0 * 2.0 * pi / 3.0
+#define offseta 0.0 * 2.0 * M_PI / 3.0
+#define offsetb 1.0 * 2.0 * M_PI / 3.0
+#define offsetc 2.0 * 2.0 * M_PI / 3.0
 
 volatile float mag_pos = 0;
 volatile float soll_pos = 0;
@@ -58,31 +57,8 @@ enum{
 	EFEEDBACK
 } state;
 
-float minus(float a, float b){
-	if(ABS(a - b) < pi){
-		return(a - b);
-	}
-	else if(a > b){
-		return(a - b - 2.0 * pi);
-	}
-	else{
-		return(a - b + 2.0 * pi);
-	}
-}
-
-float mod(float a){
-	while(a < -pi){
-		a += 2.0 * pi;
-	}
-	while(a > pi){
-		a -= 2.0 * pi;
-	}
-	return(a);
-}
-
-
 float get_enc_pos(){
-	return (TIM_GetCounter(TIM3) * 2 * pi / 2048);//nochmal in der setup
+	return (TIM_GetCounter(TIM3) * 2 * M_PI / 2048);//nochmal in der setup
 }
 
 float get_res_pos(){
