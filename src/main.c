@@ -49,6 +49,13 @@ volatile float w = -1;
 volatile int k = 0,l = 0;
 volatile int data[10][2][2];
 
+enum{
+	STBY,
+	RUNNING,
+	EFOLLOW,
+	EFEEDBACK
+} state;
+
 float minus(float a, float b){
 	if(ABS(a - b) < pi){
 		return(a - b);
@@ -181,6 +188,7 @@ void TIM5_IRQHandler(void){ //1KHz
 
 	if(amp1 < 1000000 || amp2 < 1000000){
     	voltage_scale = 0.0;
+		state = EFEEDBACK;
     }
 
 	output_ac_pwm();
@@ -198,6 +206,7 @@ int main(void)
 	register_float("ff1",&pid.ff1gain);
 	register_float("ff2",&pid.ff2gain);
 	register_float("w",&w);
+	state = STBY;
 	
 	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
 	Wait(10);
