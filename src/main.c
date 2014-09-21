@@ -13,13 +13,6 @@
 int __errno;
 void Wait(unsigned int ms);
 
-#define ABS(a)	   (((a) < 0) ? -(a) : (a))
-#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
-#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
-#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
-#define DEG(a) ((a)*M_PI/180.0)
-#define RAD(a) ((a)*180.0/M_PI)
-
 #define pole_count 4
 #define res_offset DEG(52) //minimaler positiver resolver output bei mag_pos = 0
 
