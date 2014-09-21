@@ -150,11 +150,13 @@ void TIM5_IRQHandler(void){ //1KHz
     }
     ist = atan2f(s,c);
 
-    //soll_pos = get_enc_pos();//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+    if(vel == 0)
+        soll_pos = get_enc_pos();//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
 	soll_pos += DEG(0.36*vel);// u/sec
 	soll_pos = mod(soll_pos);
 
-	pid.feedback = minus(ist,soll_pos);
+	pid.feedback = ist;
+    pid.command = soll_pos;
 
 	pid.commandv = pid.commandvds;
 	pid.feedbackv = pid.feedbackvds;
