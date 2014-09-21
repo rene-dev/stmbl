@@ -194,7 +194,11 @@ int main(void)
 	register_float("p",&pid.pgain);
 	register_float("i",&pid.igain);
 	register_float("d",&pid.dgain);
-  register_float("w",&w);
+	register_float("ff0",&pid.ff0gain);
+	register_float("ff1",&pid.ff1gain);
+	register_float("ff2",&pid.ff2gain);
+	register_float("w",&w);
+	
 	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
 	Wait(10);
 	TIM_Cmd(TIM2, ENABLE);//int

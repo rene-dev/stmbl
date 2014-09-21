@@ -13,19 +13,7 @@
 #include <math.h>
 #include <vector>
 #include <libserialport.h>
-
-class BasicDrawPane : public wxPanel
-{
-public:
-    BasicDrawPane(wxFrame* parent);
-    void paintEvent(wxPaintEvent & evt);
-    void paintNow();
-    void plotvalue(int);
-    void render(wxDC& dc);
-private:
-    std::vector<float> data;
-    int x,y,xold,yold,xpos,xstep;
-};
+#include "basicdrawpane.hpp"
 
 class MainFrame : public wxFrame
 {

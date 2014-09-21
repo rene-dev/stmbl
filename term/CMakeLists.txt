@@ -18,6 +18,7 @@ add_definitions("-D__WXDEBUG__")
 set(SRC_LIST
 main.cpp
 mainframe.cpp mainframe.hpp
+basicdrawpane.cpp basicdrawpane.hpp
 )
 
 set(wxWidgets_CONFIGURATION mswu)
