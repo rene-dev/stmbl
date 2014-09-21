@@ -2,6 +2,7 @@
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     connected = false;
+    histpos = 0;
     wxBoxSizer *mainsizer = new wxBoxSizer(wxHORIZONTAL);
     wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
     wxImage::AddHandler(new wxGIFHandler);
@@ -38,6 +39,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     text = new wxTextCtrl((wxFrame*)bottom,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
     textinput = new wxTextCtrl((wxFrame*)bottom,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
     textinput->Bind(wxEVT_TEXT_ENTER, &MainFrame::OnInput, this, wxID_ANY);
+    textinput->Bind(wxEVT_KEY_DOWN, &MainFrame::OnKeyDown, this, wxID_ANY);
     wxBoxSizer *bottomsizer = new wxBoxSizer(wxVERTICAL);
     bottomsizer->Add(text, 1,wxEXPAND|wxALL,3);
     bottomsizer->Add(textinput, 0,wxEXPAND|wxALL,3);
@@ -46,6 +48,26 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     mainsplitter->SplitHorizontally(top, bottom,400);
     this->SetSizer(mainsizer);
     mainsizer->SetSizeHints(this);
+}
+
+void MainFrame::OnKeyDown(wxKeyEvent& event){
+    if(event.GetKeyCode() == 315){//up
+        if(histpos > 0 && history.size()>0){
+            textinput->SetValue(history.at(--histpos));
+            textinput->SetInsertionPointEnd();
+        }
+    }
+    else if(event.GetKeyCode() == 317){//down
+        if(histpos < history.size()-1 && history.size()>0){
+            textinput->SetValue(history.at(++histpos));
+            textinput->SetInsertionPointEnd();
+        }else if(history.size() == history.size()){
+            textinput->SetValue(wxT(""));
+        }
+    }
+    else{
+        event.Skip();
+    }
 }
 
 void MainFrame::OnIdle(wxIdleEvent& evt){
@@ -62,7 +84,6 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
                 }
             }
             //std::cout << buf;
-            
         }
         wxMilliSleep(3);//örks
     }
@@ -111,6 +132,7 @@ void MainFrame::connect(){
         connectbutton->SetLabel(wxT("Disonnect"));
         refresh->Disable();
         choose_port->Disable();
+        textinput->SetFocus();
     }else{
         wxMessageBox( wxT("Fehler beim Öffnen"), wxT("Error"), wxICON_EXCLAMATION);
     }
@@ -123,11 +145,12 @@ void MainFrame::disconnect(){
         refresh->Enable();
         choose_port->Enable();
     }
-
 }
 
 void MainFrame::OnInput(wxCommandEvent& event){
     if(connected){
+        histpos = history.size();
+        history.push_back(textinput->GetValue());
         //std::cout << textinput->GetValue();
         int ret1 = sp_nonblocking_write(port, textinput->GetValue().mb_str(), textinput->GetValue().mb_str().length());
         int ret2 = sp_nonblocking_write(port, "\r", 1);

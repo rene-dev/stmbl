@@ -31,6 +31,7 @@ private:
     void OnRefresh(wxCommandEvent& WXUNUSED(event));
     void OnClear(wxCommandEvent& WXUNUSED(event));
     void OnInput(wxCommandEvent& event);
+    void OnKeyDown(wxKeyEvent& event);
     void OnIdle(wxIdleEvent& evt);
     void connect();
     void disconnect();
@@ -40,4 +41,6 @@ private:
     wxTextCtrl *text;
     wxTextCtrl *textinput;
     BasicDrawPane *drawpanel;
+    std::vector<wxString> history;
+    int histpos;
 };
