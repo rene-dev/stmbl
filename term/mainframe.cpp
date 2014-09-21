@@ -61,7 +61,8 @@ void MainFrame::OnKeyDown(wxKeyEvent& event){
         if(histpos < history.size()-1 && history.size()>0){
             textinput->SetValue(history.at(++histpos));
             textinput->SetInsertionPointEnd();
-        }else if(history.size() == history.size()){
+        }else if(histpos < history.size()){
+            histpos++;
             textinput->SetValue(wxT(""));
         }
     }
@@ -116,7 +117,6 @@ void MainFrame::OnConnect(wxCommandEvent& WXUNUSED(event)){
         disconnect();
     else
         connect();
-    //TODO: free port, check op port noch da
 }
 
 void MainFrame::connect(){
@@ -135,6 +135,7 @@ void MainFrame::connect(){
         textinput->SetFocus();
     }else{
         wxMessageBox( wxT("Fehler beim Öffnen"), wxT("Error"), wxICON_EXCLAMATION);
+        listports();
     }
 }
 
@@ -149,9 +150,10 @@ void MainFrame::disconnect(){
 
 void MainFrame::OnInput(wxCommandEvent& event){
     if(connected){
+        if((history.size()==0 || history.back() != textinput->GetValue()) && textinput->GetValue() != wxEmptyString){
+            history.push_back(textinput->GetValue());
+        }
         histpos = history.size();
-        history.push_back(textinput->GetValue());
-        //std::cout << textinput->GetValue();
         int ret1 = sp_nonblocking_write(port, textinput->GetValue().mb_str(), textinput->GetValue().mb_str().length());
         int ret2 = sp_nonblocking_write(port, "\r", 1);
         if(ret1 != textinput->GetValue().mb_str().length() || ret2!=1){
