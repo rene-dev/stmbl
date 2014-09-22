@@ -280,7 +280,7 @@ int main(void)
 		}
 #endif
 
-		Wait(10);
+		Wait(5);
 	}
 }
 

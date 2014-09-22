@@ -3,7 +3,7 @@
 BasicDrawPane::BasicDrawPane(wxFrame* parent) : wxPanel(parent){
     Bind(wxEVT_PAINT, &BasicDrawPane::paintEvent, this);
     xpos = 0;
-    for (int i = 0; i<1024/2; i++) {
+    for (int i = 0; i<1024; i++) {
         data.push_back(0);
     }
 }
