@@ -13,8 +13,20 @@
 int __errno;
 void Wait(unsigned int ms);
 
+//bosch grau, gelb, grün
 #define pole_count 4
 #define res_offset DEG(52) //minimaler positiver resolver output bei mag_pos = 0
+
+//mayr gelb sw, rot
+//amp zu gering!
+// #define pole_count 2
+// #define res_offset 0.5 //minimaler positiver resolver output bei mag_pos = 0
+// float p = 8.000000
+// float i = 400.000000
+// float d = 0.050000
+// float p = 3.000000
+// float i = 100.000000
+// float d = 0.004999
 
 #define pwm_scale 0.9//max/min PWM duty cycle
 
@@ -66,6 +78,7 @@ void output_ac_pwm(){
     if(rescal){
         mag_pos += DEG(0.36*vel)*pole_count;// u/sec
         mag_pos = mod(mag_pos);
+        //mag_pos = 0;
         volt = 0.5;
     }else{
         mag_pos = get_res_pos() * pole_count + DEG(90);
@@ -164,18 +177,14 @@ void TIM5_IRQHandler(void){ //1KHz
 	soll_pos = mod(soll_pos);
     
     pid.feedbackv = minus(ist, ist_old) * freq;
-    pid.commandv = minus(soll_pos, soll_pos_old) * freq;
+    pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
     pid.error = minus(soll_pos, ist);
-    // pid.feedback = ist;
-    // pid.command = soll_pos;
 
-    // pid.commandv = pid.commandvds;
-    // pid.feedbackv = pid.feedbackvds;
 	calc_pid(&pid,1.0 / freq * 1000.0);
 	voltage_scale = pid.output;
 
 	if(amp1 < 1000000 || amp2 < 1000000){
-    	voltage_scale = 0.0;
+    	//voltage_scale = 0.0;
 		state = EFEEDBACK;
     }
 	output_ac_pwm();
@@ -199,6 +208,7 @@ int main(void)
     register_float("vel",&vel);
     register_int("rescal",&rescal);
     register_int("wave",&wave);
+    register_float("ist",&ist);
 	state = STBY;
 	
 	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
