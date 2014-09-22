@@ -37,15 +37,19 @@
 //sample times for F4: 3,15,28,56,84,112,144,480
 #define RES_SampleTime ADC_SampleTime_144Cycles
 
+#define  ADC2d_ANZ   3
+
 void setup();
 void setup_adc();
 void setup_pwm();
 void setup_pid_timer();
 void setup_encoder();
+void setup_dma();
 void SysTick_Handler(void);
 
 volatile int time;
 hal_pid_t pid;
+volatile uint32_t ADC2_DMA_Buffer[ADC2d_ANZ];
 
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 TIM_OCInitTypeDef TIM_OCInitStructure;
