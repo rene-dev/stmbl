@@ -27,6 +27,9 @@ void Wait(unsigned int ms);
 
 volatile float mag_pos = 0;
 volatile float soll_pos = 0;
+volatile float soll_pos_old = 0;
+volatile float ist = 0;
+volatile float ist_old = 0;
 volatile float voltage_scale = 0;// -1 bis 1
 
 volatile int t1, t2;//rohdaten sin/cos
@@ -39,9 +42,8 @@ volatile float w = -1;
 volatile int k = 0,l = 0;
 volatile int data[10][2][2];
 volatile float vel = 0;//geschwindigkeit testparameter
-volatile float ist = 0;//get_res_pos();
 volatile int rescal = 0;//potis einstellen
-volatile int wave = 0;//potis einstellen
+volatile int wave = 0;//scope ausgabe
 
 enum{
 	STBY,
@@ -140,6 +142,8 @@ void ADC_IRQHandler(void) // 20khz
 void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
     float s = 0,c = 0;
+    int freq = 1000;
+    int revs = 0;
     for(int i = 0;i<10;i++){
         s += data[i][0][0] * 0.05;
         c += data[i][0][1] * 0.05;
@@ -148,19 +152,26 @@ void TIM5_IRQHandler(void){ //1KHz
         s += data[i][1][0] * 0.05;
         c += data[i][1][1] * 0.05;
     }
+    //revs = (int)(ist/(2*M_PI));
+    //ist = revs*2*M_PI+atan2f(s,c);
+    ist_old = ist;
     ist = atan2f(s,c);
-
+    
+    soll_pos_old = soll_pos;
     if(vel == 0)
         soll_pos = get_enc_pos();//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
 	soll_pos += DEG(0.36*vel);// u/sec
 	soll_pos = mod(soll_pos);
+    
+    pid.feedbackv = minus(ist, ist_old) * freq;
+    pid.commandv = minus(soll_pos, soll_pos_old) * freq;
+    pid.error = minus(soll_pos, ist);
+    // pid.feedback = ist;
+    // pid.command = soll_pos;
 
-	pid.feedback = ist;
-    pid.command = soll_pos;
-
-	pid.commandv = pid.commandvds;
-	pid.feedbackv = pid.feedbackvds;
-	calc_pid(&pid,1);
+    // pid.commandv = pid.commandvds;
+    // pid.feedbackv = pid.feedbackvds;
+	calc_pid(&pid,1.0 / freq * 1000.0);
 	voltage_scale = pid.output;
 
 	if(amp1 < 1000000 || amp2 < 1000000){
@@ -176,10 +187,12 @@ int main(void)
     int e = 0;
 	setup();
 	param_init();
+	register_int("e",&pid.enable);
 	register_float("p",&pid.pgain);
 	register_float("i",&pid.igain);
 	register_float("d",&pid.dgain);
-	register_float("ff0",&pid.ff0gain);
+	register_float("b",&pid.bgain);
+    // register_float("ff0",&pid.ff0gain);
 	register_float("ff1",&pid.ff1gain);
 	register_float("ff2",&pid.ff2gain);
 	register_float("w",&w);
@@ -207,13 +220,31 @@ int main(void)
 		//printf_("%i %i diff: %i\r",amp1,amp2,amp1-amp2);
 		switch(wave){
             case 1:
-                e = (int)((RAD(pid.error)*10+180)/360*128);
+                e = (int)((RAD(pid.error) * 10 + 180) / 360 * 128);
                 break;
             case 2:
-                e = (int)((pid.commandvds*10+180)/360*128);
+                e = (int)(pid.error_d * 64 / 16 + 63);
                 break;
             case 3:
+                e = (int)(pid.error_dd * 64 / 16 + 63);
+                break;
+            case 4:
+                e = (int)(pid.cmd_d * 64 / 16 + 63);
+                break;
+            case 5:
+                e = (int)(pid.cmd_dd * 64 / 16 + 63);
+                break;
+            case 6:
+                e = (int)(pid.feedbackv * 64 / 16 + 63);
+                break;
+            case 7:
                 e = (int)(voltage_scale*64+63);
+                break;
+            case 8:
+                e = (int)(pid.saturated_count * 64 / 100 + 63);
+                break;
+            case 9:
+                e = (int)((ist + M_PI) * 127 / 2 / M_PI);
                 break;
             default:
                 e = 0;
