@@ -99,6 +99,13 @@ void output_dc_pwm(){
 	TIM4->CCR4 = 0;//PD15 PIN3
 }
 
+void DMA2_Stream2_IRQHandler(void){
+  // welches flag?
+  //DMA_ClearFlag(DMA2_FLAG_IT);
+  DMA_ClearITPendingBit(DMA2_Stream2, DMA_IT_TCIF2);
+  printf_("DMA\n");
+}
+
 void TIM2_IRQHandler(void){ //20KHz
     TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
