@@ -81,8 +81,8 @@ void calc_pid(hal_pid_t *arg, float period)
     /* read the command and feedback only once */
     //command = pid->command;
     //feedback = pid->feedback;
-    
-    
+
+
     // /* calculate the error */
     // if((!(pid->prev_ie && !pid->index_enable)) &&
     //    (pid->error_previous_target)) {
@@ -99,7 +99,7 @@ void calc_pid(hal_pid_t *arg, float period)
     // /* store error to error pin */
     // pid->error = tmp1;
     tmp1 = pid->error;
-    
+
     /* apply error limits */
     if (pid->maxerror != 0.0) {
 	if (tmp1 > pid->maxerror) {
@@ -152,7 +152,7 @@ void calc_pid(hal_pid_t *arg, float period)
 	    pid->error_d = -pid->maxerror_d;
 	}
     }
-    
+
     pid->error_dd = (pid->error_d - tmp2) * periodrecip;
     /* apply 2nd derivative limits */
     if (pid->maxerror_dd != 0.0) {
@@ -228,7 +228,7 @@ void calc_pid(hal_pid_t *arg, float period)
     pid->output = tmp1;
 
     /* set 'saturated' outputs */
-    if(pid->limit_state) { 
+    if(pid->limit_state) {
         pid->saturated = 1;
         pid->saturated_s += period * 1e-3;
         if(pid->saturated_count != 2147483647)
@@ -239,4 +239,41 @@ void calc_pid(hal_pid_t *arg, float period)
         pid->saturated_count = 0;
     }
     /* done */
+}
+
+void predict(struct kalman_context* k){
+	k->cur = (k->volt - k->k * k->vel) / k->r;
+	k->cur_var = pow(k->k, 2) * k->vel_var / pow(k->r, 2);
+
+	k->acc = k->m * k->cur;
+	k->acc_var = pow(k->m, 2) * k->cur_var;
+
+	float d_vel = k->acc * k->periode;
+	float d_vel_var = pow(k->periode, 2) * k->acc_var;
+	k->vel += d_vel;
+	k->vel_var = k->vel_var + d_vel_var;
+
+	float d_pos = k->vel * k->periode;
+	float d_pos_var = pow(k->periode, 2) * k->vel_var;
+	k->pos += d_pos;
+	k->pos_var = k->pos_var + d_pos_var;
+
+	k->pos = mod(k->pos);
+}
+
+void update(struct kalman_context* k){
+	float old_pos = k->pos;
+	float old_pos_var = k->pos_var;
+	k->pos = (k->res_var * k->pos + k->pos_var * minus(k->pos, k->res) / 2.0) / (k->pos_var + k->res_var);
+	k->pos_var = 1.0 / (1.0 / k->pos_var + 1.0 / k->res_var);
+
+	float old_vel = k->vel;
+	float old_vel_var = k->vel_var;
+	k->vel = minus(k->pos, old_pos) / k->periode;
+	k->vel_var = (k->pos_var + old_pos_var) / pow(k->periode, 2);
+
+	k->acc = (k->vel - old_vel) / k->periode;
+	k->acc_var = (k->vel_var + old_vel_var) / pow(k->periode, 2);
+
+	k->pos = mod(k->pos);
 }
