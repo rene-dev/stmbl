@@ -21,6 +21,10 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     connectbutton = new wxButton(top, wxID_ANY, wxT("Connect"));
     clear = new wxButton(top, wxID_ANY, wxT("Clear"));
     refresh = new wxButton(top, wxID_ANY, wxT("Refresh"));
+    uhu = new wxRadioButton(top,wxID_ANY, "UHU");
+    stmbl = new wxRadioButton(top, wxID_ANY,"STMBL");
+    stmbl->SetValue(true);
+    
     refresh->Bind(wxEVT_BUTTON, &MainFrame::OnRefresh, this, wxID_ANY);
     connectbutton->Bind(wxEVT_BUTTON, &MainFrame::OnConnect, this, wxID_ANY);
     clear->Bind(wxEVT_BUTTON, &MainFrame::OnClear, this, wxID_ANY);
@@ -29,6 +33,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     leiste->Add(connectbutton,0,wxALIGN_LEFT|wxALL,3);
     leiste->Add(refresh,0,wxALIGN_LEFT|wxALL,3);
     leiste->Add(clear,0,wxALIGN_LEFT|wxALL,3);
+    leiste->Add(uhu,0,wxALIGN_LEFT|wxALL,3);
+    leiste->Add(stmbl,0,wxALIGN_LEFT|wxALL,3);
     topsizer->Add(leiste);
     drawpanel = new BasicDrawPane((wxFrame*)top);
     topsizer->Add(drawpanel, 1,wxEXPAND,0);

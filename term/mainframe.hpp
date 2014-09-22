@@ -23,6 +23,8 @@ private:
     wxButton *connectbutton;
     wxButton *refresh;
     wxButton *clear;
+    wxRadioButton *uhu;
+    wxRadioButton *stmbl;
     struct sp_port **ports;
     struct sp_port *port;
     wxChoice *choose_port;
