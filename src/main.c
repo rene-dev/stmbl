@@ -163,7 +163,7 @@ void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
     float s = 0,c = 0;
     int freq = 1000;
-    int revs = 0;
+    kal.periode = 1.0/freq;
     for(int i = 0;i<10;i++){
         s += data[i][0][0] * 0.05;
         c += data[i][0][1] * 0.05;
@@ -187,7 +187,12 @@ void TIM5_IRQHandler(void){ //1KHz
     pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
     pid.error = minus(soll_pos, ist);
 
+    kal.res = ist;
+    update(&kal);
+
 	calc_pid(&pid,1.0 / freq * 1000.0);
+    kal.volt = pid.output;
+    predict(&kal);
 	voltage_scale = pid.output;
 
 	if(amp1 < 1000000 || amp2 < 1000000){
@@ -262,6 +267,18 @@ int main(void)
                 break;
             case 9:
                 e = (int)((ist + M_PI) * 127 / 2 / M_PI);
+                break;
+            case 10:
+                e = (int)(kal.pos * 64 / 2 / M_PI + 63);
+                break;
+            case 11:
+                e = (int)(kal.vel * 64 / 16 + 63);
+                break;
+            case 12:
+                e = (int)(kal.acc * 64 / 16 + 63);
+                break;
+            case 13:
+                e = (int)(kal.cur * 64 / 16 + 63);
                 break;
             default:
                 e = 0;

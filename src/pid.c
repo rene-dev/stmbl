@@ -241,39 +241,57 @@ void calc_pid(hal_pid_t *arg, float period)
     /* done */
 }
 
-void predict(struct kalman_context* k){
+void kal_init(kalman_context_t *k){
+    k->m = 1;
+    k->k = 1;
+    k->r = 1;
+    
+    k->res_var = 0.1;
+    k->pos_var = 0.1;
+    k->vel_var = 0.1;
+    k->acc_var = 0.1;
+    k->cur_var = 0.1;
+    
+    k->res = 0;
+    k->pos = 0;
+    k->vel = 0;
+    k->acc = 0;
+    k->volt = 0;
+    k->cur = 0;
+}
+
+void predict(kalman_context_t* k){
 	k->cur = (k->volt - k->k * k->vel) / k->r;
-	k->cur_var = pow(k->k, 2) * k->vel_var / pow(k->r, 2);
+	k->cur_var = powf(k->k, 2) * k->vel_var / powf(k->r, 2);
 
 	k->acc = k->m * k->cur;
-	k->acc_var = pow(k->m, 2) * k->cur_var;
+	k->acc_var = powf(k->m, 2) * k->cur_var;
 
 	float d_vel = k->acc * k->periode;
-	float d_vel_var = pow(k->periode, 2) * k->acc_var;
+	float d_vel_var = powf(k->periode, 2) * k->acc_var;
 	k->vel += d_vel;
 	k->vel_var = k->vel_var + d_vel_var;
 
 	float d_pos = k->vel * k->periode;
-	float d_pos_var = pow(k->periode, 2) * k->vel_var;
+	float d_pos_var = powf(k->periode, 2) * k->vel_var;
 	k->pos += d_pos;
 	k->pos_var = k->pos_var + d_pos_var;
 
 	k->pos = mod(k->pos);
 }
 
-void update(struct kalman_context* k){
+void update(kalman_context_t* k){
 	float old_pos = k->pos;
 	float old_pos_var = k->pos_var;
-	k->pos = (k->res_var * k->pos + k->pos_var * minus(k->pos, k->res) / 2.0) / (k->pos_var + k->res_var);
+	k->pos = (k->res_var * k->pos + k->pos_var * k->res) / (k->pos_var + k->res_var);
+    k->pos = mod(k->pos);
 	k->pos_var = 1.0 / (1.0 / k->pos_var + 1.0 / k->res_var);
 
 	float old_vel = k->vel;
 	float old_vel_var = k->vel_var;
 	k->vel = minus(k->pos, old_pos) / k->periode;
-	k->vel_var = (k->pos_var + old_pos_var) / pow(k->periode, 2);
+	k->vel_var = (k->pos_var + old_pos_var) / powf(k->periode, 2);
 
-	k->acc = (k->vel - old_vel) / k->periode;
-	k->acc_var = (k->vel_var + old_vel_var) / pow(k->periode, 2);
-
-	k->pos = mod(k->pos);
+	k->acc = minus(k->vel, old_vel) / k->periode;
+	k->acc_var = (k->vel_var + old_vel_var) / powf(k->periode, 2);
 }

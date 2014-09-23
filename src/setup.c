@@ -83,6 +83,7 @@ void setup(){
     NVIC_SetPriority(SysTick_IRQn, 14);
     
     pid_init(&pid);
+    kal_init(&kal);
     
     #ifdef USBTERM
     UB_USB_CDC_Init();
