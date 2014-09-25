@@ -9,6 +9,9 @@
 term/build
 term/win32/bin
 
+sim/sim
+sim/plot
+
 # Ignore list for Eagle, a PCB layout tool
 
 # Backup files
