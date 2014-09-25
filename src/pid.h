@@ -52,7 +52,7 @@ typedef struct {
     //char prev_ie;
 } hal_pid_t;
 
-struct kalman_context{
+typedef struct{
   float res;
   float res_var;
 
@@ -75,14 +75,15 @@ struct kalman_context{
   float k;
   float r;
   float m;
-};
+} kalman_context_t;
 
 void calc_pid(hal_pid_t *arg, float period);
 void pid_init(hal_pid_t *pid);
 float minus(float a, float b);
 float mod(float a);
 
-void predict(struct kalman_context* k);
-void update(struct kalman_context* k);
+void predict(kalman_context_t* k);
+void update(kalman_context_t* k);
+void kal_init(kalman_context_t *k);
 
 #endif
