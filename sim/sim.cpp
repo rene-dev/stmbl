@@ -4,7 +4,7 @@
 int main(){
   float sim_time = 0;
   float sim_step = 0.001;
-  float sim_end_time = 500.0;
+  float sim_end_time = 5.0;
 
   srand(14235);
 
@@ -30,9 +30,9 @@ int main(){
   mot.feedback.res_offset = 0.0;
   mot.noise.sin_scale = 1.0;
   mot.noise.cos_scale = 1.0;
-  mot.noise.sin_offset = 0.1;
-  mot.noise.cos_offset = -0.2;
-  mot.noise.var = 0.05;
+  mot.noise.sin_offset = 0.0;
+  mot.noise.cos_offset = 0.0;
+  mot.noise.var = 0.001;
 
   mot.load.friction = 0.0;
   mot.load.load = 0.0;
@@ -42,9 +42,9 @@ int main(){
 
   cmd_c cmd;
   cmd.reset();
-  cmd.periode = 50.0;
-  cmd.amplitude = 0.5;
-  cmd.wave = cmd_c::RAMP;
+  cmd.periode = 2.0;
+  cmd.amplitude = 1;
+  cmd.wave = cmd_c::SQUARE;
   cmd.type = cmd_c::POS;
   cmd.pos_res = 0.01;
   cmd.vel_res = 0.01;
@@ -52,7 +52,7 @@ int main(){
 
   drive_c drive;
   drive.reset();
-  drive.dc = 30;
+  drive.dc = 50;
   drive.pwm_scale = 0.9;
   drive.pwm_res = 8400;
   drive.mot = &mot;
@@ -62,13 +62,16 @@ int main(){
   drive.output = output;
 
 
-  cout << flush << "time cmd pos est_pos sin_avg sin_scale cos_avg cos_scale" << endl;
+  //cout << flush << "time cmd pos est_pos sin_avg sin_scale cos_avg cos_scale" << endl;
+  cout << flush << "time cmd pos est_pos p v a ctr e" << endl;
 
   for(sim_time = 0.0; sim_time < sim_end_time; sim_time += sim_step){
     drive.in->step(sim_step);
     drive.step(sim_step);
     drive.mot->step(sim_step);
-    cout << sim_time << ", " << drive.in->get_pos() << ", " << drive.mot->state.pos << ", " << drive.est.pos << ", " << drive.est.sin_avg << ", " << drive.est.sin_scale << ", " << drive.est.cos_avg << ", " << drive.est.cos_scale << endl;
+    //cout << sim_time << ", " << drive.in->get_pos() << ", " << drive.mot->state.pos << ", " << drive.est.pos << ", " << drive.est.sin_avg << ", " << drive.est.sin_scale << ", " << drive.est.cos_avg << ", " << drive.est.cos_scale << endl;
+    cout << sim_time << ", " << drive.in->get_pos() << ", " << drive.mot->state.pos << ", " << drive.est.pos << ", " << drive.est.p << ", " << drive.est.v << ", " << drive.est.a << ", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
+
   }
 
   system("gnuplot --persist gp");

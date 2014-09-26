@@ -319,6 +319,10 @@ public:
     double vel;
     double acc;
     double cur;
+
+    double p;
+    double v;
+    double a;
   } est;
 
   struct {
@@ -377,6 +381,21 @@ void input(drive_c* drv, double periode){
   static double sin_avg_amp = 1.0;
   static double cos_avg_amp = 1.0;
   static double r = 1.0;
+  double dpos = 0.0;
+  double v = 0.0;
+  static double i_sum;
+  double p = 0.05;
+  double i = 1 * periode;
+  double vlo = 0.0 * periode;
+
+  static int point = 0;
+  const int hist_size = 10;
+  static double pos_hist[hist_size];
+  static double vel_hist[hist_size];
+  static double acc_hist[hist_size];
+
+
+
 
   t1 = drv->est.pos;
 
@@ -387,32 +406,75 @@ void input(drive_c* drv, double periode){
     case mot_c::feedback_s::RES:
       drv->est.sin_avg = 0.995 * drv->est.sin_avg + 0.005 * drv->mot->get_sin();
       drv->est.cos_avg = 0.995 * drv->est.cos_avg + 0.005 * drv->mot->get_cos();
-      sin_avg_amp = 0.5 * sin_avg_amp + 0.5 * (drv->mot->get_sin() - drv->est.sin_avg) / drv->est.sin_scale * drv->mot->get_polarity();
-      cos_avg_amp = 0.5 * cos_avg_amp + 0.5 * (drv->mot->get_cos() - drv->est.cos_avg) / drv->est.cos_scale * drv->mot->get_polarity();
+      // sin_avg_amp = 0.5 * sin_avg_amp + 0.5 * (drv->mot->get_sin() - drv->est.sin_avg) / drv->est.sin_scale * drv->mot->get_polarity();
+      // cos_avg_amp = 0.5 * cos_avg_amp + 0.5 * (drv->mot->get_cos() - drv->est.cos_avg) / drv->est.cos_scale * drv->mot->get_polarity();
+      //
+      // r = 0.99 * r + 0.01 * (sin_avg_amp * sin_avg_amp + cos_avg_amp * cos_avg_amp);
+      //
+      // if(ABS(sin_avg_amp) < 0.01){
+      //   drv->est.cos_scale -= 0.001 * SIGN(1 - cos_avg_amp);
+      // }
+      //
+      // if(ABS(cos_avg_amp) < 0.01){
+      //   drv->est.sin_scale -= 0.001 * SIGN(1 - sin_avg_amp);
+      // }
+      //
+      // if(ABS(r - 1.0) > 0.6){
+      //   //cerr << "res error r: " << r << endl;
+      // }
 
-      r = 0.99 * r + 0.01 * (sin_avg_amp * sin_avg_amp + cos_avg_amp * cos_avg_amp);
 
-      if(ABS(sin_avg_amp) < 0.01){
-        //drv->est.cos_scale -= 0.001 * SIGN(1 - cos_avg_amp);
-      }
+      dpos = (drv->mot->get_sin() - drv->est.sin_avg) / drv->est.sin_scale * drv->mot->get_polarity() * cos(drv->est.pos + drv->est.offset) - (drv->mot->get_cos() - drv->est.cos_avg) / drv->est.cos_scale * drv->mot->get_polarity() * sin(drv->est.pos + drv->est.offset);
+      i_sum += dpos * i + vlo * (drv->state.ctr * drv->dc - drv->est.vel * drv->mot->elec_spec.v_rps) / drv->mot->elec_spec.r * drv->mot->elec_spec.nm_a * periode;
+      dpos = p * dpos + i_sum;
+      drv->est.pos += dpos;
+      drv->est.pos = mod(drv->est.pos);
+      pos_hist[point] = drv->est.pos;
+      vel_hist[point] = minus_(pos_hist[(point) % hist_size], pos_hist[(point + hist_size - 2) % hist_size]) / (2 * periode);
+      acc_hist[point] = minus_(vel_hist[(point) % hist_size], vel_hist[(point + hist_size - 2) % hist_size]) / (2 * periode);
+      point++;
 
-      if(ABS(cos_avg_amp) < 0.01){
-        //drv->est.sin_scale -= 0.001 * SIGN(1 - sin_avg_amp);
-      }
-
-      if(ABS(r - 1.0) > 0.6){
-        //cerr << "res error r: " << r << endl;
-      }
-
+      point %= hist_size;
+      //drv->est.vel = i_sum / periode;
       drv->est.pos = mod(atan2((drv->mot->get_sin() - drv->est.sin_avg) / drv->est.sin_scale * drv->mot->get_polarity(), (drv->mot->get_cos() - drv->est.cos_avg) / drv->est.cos_scale * drv->mot->get_polarity()) - drv->est.offset);
       break;
     case mot_c::feedback_s::NONE:
     break;
   }
 
-  t2 = drv->est.vel;
-  drv->est.vel = drv->est.pos - t1;
-  drv->est.acc = drv->est.vel - t2;
+  double a = 0.0;
+  v = 0.0;
+  p = 0.0;
+  double x = 0.0;
+
+  for(int j = 0; j < hist_size; j++){
+    a += acc_hist[(point + j) % hist_size];
+  }
+  a /= hist_size;
+  a *= 0.5;
+
+  for(int j = 0; j < hist_size; j++){
+    x = (j - hist_size / 2.0) * periode;
+    v += vel_hist[(point + j) % hist_size] - (2 * a * x);
+  }
+  v /= hist_size;
+
+  for(int j = 0; j < hist_size; j++){
+    x = (j - hist_size / 2.0) * periode;
+    p += pos_hist[(point + j) % hist_size] - (a * x * x + v * x);
+  }
+  p /= hist_size;
+
+  x = hist_size / 2.0 * periode;
+  drv->est.p = (a * x * x + v * x + p);
+  drv->est.v = (2 * a * x + v);
+  drv->est.a = (2 * a);
+
+  //drv->est.pos = drv->est.p;
+
+  // t2 = drv->est.vel;
+  // drv->est.vel = (drv->est.pos - t1) / periode;
+  // drv->est.acc = (drv->est.vel - t2) / periode;
 
   switch(drv->in->type){
     case cmd_c::POS:
@@ -444,9 +506,9 @@ void input(drive_c* drv, double periode){
 }
 
 void pid(drive_c* drv, double periode){
-  double p = 4;
+  double p = 3;
   double i = 40 * periode;
-  double d = 0.001 / periode;
+  double d = 0.01 / periode;
 
   double e = minus_(drv->cmd.pos, drv->est.pos);
   static double e_old = 0;
