@@ -10,24 +10,26 @@ using namespace std;
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 #define DEG(a) ((a)*M_PI/180.0)
 #define RAD(a) ((a)*180.0/M_PI)
+#define RAD(a) ((a)*180.0/M_PI)
+#define SIGN(a) (((a) < 0) ? (-1) : (((a) > 0) ? (1) : (0)))
 
-float grand(){
-  float ret = 0;
+double grand(){
+  double ret = 0;
   for(int i = 0; i < 12; i++){
     ret += (float)rand() / RAND_MAX;
   }
  return(ret - 6.0);
 }
 
-float prand(){
+double prand(){
   return(rand() * 2 * M_PI / RAND_MAX - M_PI);
 }
 
-// float mod(float pos){
+// double mod(double pos){
 //   return(fmod(pos + M_PI, 2 * M_PI) - M_PI);
 // }
 
-float mod(float a){
+double mod(double a){
   while(a < -M_PI){
     a += 2.0 * M_PI;
   }
@@ -37,7 +39,7 @@ float mod(float a){
   return(a);
 }
 
-float minus_(float a, float b){
+double minus_(double a, double b){
   if(ABS(a - b) < M_PI){
     return(a - b);
   }
@@ -52,17 +54,17 @@ float minus_(float a, float b){
 class mot_c{
 public:
   struct {
-    float pos;
-    float vel;
-    float acc;
-    float u;
-    float v;
-    float w;
-    float t;
-    float cur;
-    float volt;
-    float torq;
-    float res_polarity;
+    double pos;
+    double vel;
+    double acc;
+    double u;
+    double v;
+    double w;
+    double t;
+    double cur;
+    double volt;
+    double torq;
+    int res_polarity;
   } state;
 
   struct feedback_s{
@@ -72,22 +74,22 @@ public:
       NONE
     } type;
     int count;
-    float res_offset;
+    double res_offset;
     int enc_offset;
   } feedback;
 
   struct {
-    float max_i;
-    float i;
-    float r;
-    float nm_a;
-    float v_rps;
-    float slip;
+    double max_i;
+    double i;
+    double r;
+    double nm_a;
+    double v_rps;
+    double slip;
   } elec_spec;
 
   struct mech_spec_s{
-    float t2; // term. time const
-    float max_rps;
+    double t2; // term. time const
+    double max_rps;
     int pole_count;
 
     enum{
@@ -96,34 +98,35 @@ public:
       DC
     } mot_type;
 
-    float friction;
-    float damping;
-    float inertia; // inertia
+    double friction;
+    double damping;
+    double inertia; // inertia
   } mech_spec;
 
   struct{
-    float var;
-    float sin_offset;
-    float sin_scale;
-    float cos_offset;
-    float cos_scale;
+    double var;
+    double sin_offset;
+    double sin_scale;
+    double cos_offset;
+    double cos_scale;
   } noise;
 
   struct {
-    float friction; // friction (torque)
-    float load; // asym. torque
-    float damping; // damping (torque / vel)
-    float inertia; // inertia (torque / acc)
+    double friction; // friction (torque)
+    double load; // asym. torque
+    double damping; // damping (torque / vel)
+    double inertia; // inertia (torque / acc)
   } load;
 
   void reset();
-  void step(float periode);
+  void step(double periode);
 
   int get_enc();
-  float get_sin();
-  float get_cos();
+  double get_sin();
+  double get_cos();
+  int get_polarity();
 
-  void set_volt(float u, float v, float w);
+  void set_volt(double u, double v, double w);
 };
 
 void mot_c::reset(){
@@ -140,9 +143,9 @@ void mot_c::reset(){
   feedback.enc_offset = state.pos;
 }
 
-void mot_c::step(float periode){
-  float d;
-  float q;
+void mot_c::step(double periode){
+  double d;
+  double q;
 
   state.res_polarity *= -1;
 
@@ -162,9 +165,12 @@ void mot_c::step(float periode){
       break;
   }
 
-  state.torq = state.cur * elec_spec.nm_a - mech_spec.damping * state.vel - load.damping * state.vel + load.load;
+  state.torq = state.cur * elec_spec.nm_a - (mech_spec.damping + load.damping) * state.vel + load.load;
   if(abs(state.torq) < mech_spec.friction + load.friction){
     state.torq = 0.0;
+  }
+  else{
+    state.torq = state.torq - SIGN(state.torq) * (mech_spec.friction + load.friction);
   }
 
   state.acc = state.torq / (mech_spec.inertia + load.inertia);
@@ -172,14 +178,14 @@ void mot_c::step(float periode){
   state.pos += state.vel * periode;
   state.pos = mod(state.pos);
   if(state.cur  > elec_spec.max_i){
-    cout << "MOT: cur > max_i: " << state.cur << endl;
+    cerr << "MOT: cur > max_i: " << state.cur << endl;
   }
   if(state.vel  > mech_spec.max_rps){
-    cout << "MOT: vel > max_v: " << state.vel << endl;
+    cerr << "MOT: vel > max_v: " << state.vel << endl;
   }
 }
 
-void mot_c::set_volt(float u, float v, float w){
+void mot_c::set_volt(double u, double v, double w){
   state.u = u;
   state.v = v;
   state.w = w;
@@ -189,22 +195,25 @@ int mot_c::get_enc(){
   return((int)((state.pos - feedback.enc_offset + 2 * M_PI) * feedback.count / 2 / M_PI) % feedback.count);
 }
 
-float mot_c::get_sin(){
-  return(sin(state.pos * feedback.count) * noise.sin_scale * state.res_polarity + noise.sin_offset + grand() * noise.var);
+double mot_c::get_sin(){
+  return(sin((state.pos + feedback.res_offset) * feedback.count) * noise.sin_scale * state.res_polarity + noise.sin_offset + grand() * noise.var);
 }
 
-float mot_c::get_cos(){
-  return(cos(state.pos * feedback.count) * noise.cos_scale * state.res_polarity + noise.cos_offset + grand() * noise.var);
+double mot_c::get_cos(){
+  return(cos((state.pos + feedback.res_offset) * feedback.count) * noise.cos_scale * state.res_polarity + noise.cos_offset + grand() * noise.var);
 }
 
+int mot_c::get_polarity(){
+  return(state.res_polarity);
+}
 
 class cmd_c{
 public:
   struct {
-    float time;
-    float pos;
-    float vel;
-    float acc;
+    double time;
+    double pos;
+    double vel;
+    double acc;
   } state;
 
   enum{
@@ -218,25 +227,25 @@ public:
   enum{
     SINE,
     SQUARE,
-    //TRAPEZOID,
+    RAMP,
     CONST
   } wave;
 
-  float periode;
-  float amplitude;
-  float max_vel;
-  float max_acc;
+  double periode;
+  double amplitude;
+  double max_vel;
+  double max_acc;
 
-  float pos_res;
-  float vel_res;
-  float acc_res;
+  double pos_res;
+  double vel_res;
+  double acc_res;
 
   void reset();
-  void step(float periode);
+  void step(double periode);
 
-  float get_pos();
-  float get_vel();
-  float get_acc();
+  double get_pos();
+  double get_vel();
+  double get_acc();
 };
 
 void cmd_c::reset(){
@@ -246,37 +255,42 @@ void cmd_c::reset(){
   state.acc = 0.0;
 }
 
-void cmd_c::step(float s){
+void cmd_c::step(double s){
   state.time += s;
 
   switch(wave){
     case SINE:
-      state.pos = sin(state.time / periode * 2 * M_PI) * amplitude;
+      state.pos = mod(sin(state.time / periode * 2 * M_PI) * amplitude);
       state.vel = cos(state.time / periode * 2 * M_PI) * amplitude;
       state.acc = -sin(state.time / periode * 2 * M_PI) * amplitude;
       break;
     case SQUARE:
-      state.pos = ((int)(state.time / periode * 2) % 2) * amplitude;
+      state.pos = mod(((int)(state.time / periode * 2) % 2) * amplitude);
+      state.vel = 0;
+      state.acc = 0;
+      break;
+    case RAMP:
+      state.pos = mod(state.time * amplitude);
       state.vel = 0;
       state.acc = 0;
       break;
     case CONST:
-      state.pos = amplitude;
+      state.pos = mod(amplitude);
       state.vel = 0;
       state.acc = 0;
       break;
   }
 }
 
-float cmd_c::get_pos(){
+double cmd_c::get_pos(){
   return((int)(state.pos / pos_res) * pos_res);
 }
 
-float cmd_c::get_vel(){
+double cmd_c::get_vel(){
   return((int)(state.vel / vel_res) * vel_res);
 }
 
-float cmd_c::get_acc(){
+double cmd_c::get_acc(){
   return((int)(state.acc / acc_res) * acc_res);
 }
 
@@ -284,50 +298,50 @@ float cmd_c::get_acc(){
 class drive_c{
 public:
   struct cmd_s{
-    float pos;
-    float vel;
-    float acc;
+    double pos;
+    double vel;
+    double acc;
   } cmd;
 
-  float dc;
-  float pwm_scale;
+  double dc;
+  double pwm_scale;
   int pwm_res;
 
   struct {
-    float offset;
-    float sin_scale;
-    float sin_avg;
-    float cos_scale;
-    float cos_avg;
-    float res_var;
+    double offset;
+    double sin_scale;
+    double sin_avg;
+    double cos_scale;
+    double cos_avg;
+    double res_var;
 
-    float pos;
-    float vel;
-    float acc;
-    float cur;
+    double pos;
+    double vel;
+    double acc;
+    double cur;
   } est;
 
   struct {
-    float mag_pos;
-    float mag_vel;
-    float ctr;
+    double mag_pos;
+    double mag_vel;
+    double ctr;
   } state;
 
   mot_c* mot;
   cmd_c* in;
 
   void reset();
-  void step(float periode);
+  void step(double periode);
 
-  void input(float periode);
-  void pid(float periode);
-  void output(float periode);
+  void (*input)(drive_c* drv, double periode);
+  void (*pid)(drive_c* drv, double periode);
+  void (*output)(drive_c* drv, double periode);
 
-  void set_pos(float pos);
-  void set_pos_vel(float pos, float vel);
-  void set_pos_vel_acc(float pos, float vel, float acc);
-  void set_vel(float pos);
-  void set_vel_acc(float pos, float acc);
+  void set_pos(double pos);
+  void set_pos_vel(double pos, double vel);
+  void set_pos_vel_acc(double pos, double vel, double acc);
+  void set_vel(double pos);
+  void set_vel_acc(double pos, double acc);
 };
 
 void drive_c::reset(){
@@ -352,92 +366,115 @@ void drive_c::reset(){
   state.ctr = 0.0;
 }
 
-void drive_c::step(float periode){
-  input(periode);
-  pid(periode);
-  output(periode);
+void drive_c::step(double periode){
+  input(this, periode);
+  pid(this, periode);
+  output(this, periode);
 }
 
-void drive_c::input(float periode){
-  float t1, t2;
-  t1 = est.pos;
+void input(drive_c* drv, double periode){
+  double t1, t2;
+  static double sin_avg_amp = 1.0;
+  static double cos_avg_amp = 1.0;
+  static double r = 1.0;
 
-  switch(mot->feedback.type){
+  t1 = drv->est.pos;
+
+  switch(drv->mot->feedback.type){
     case mot_c::feedback_s::ENC:
-      est.pos = mod(mot->get_enc() * 2 * M_PI / mot->feedback.count - est.offset);
+      drv->est.pos = mod(drv->mot->get_enc() * 2 * M_PI / drv->mot->feedback.count - drv->est.offset);
       break;
     case mot_c::feedback_s::RES:
-      est.pos = mod(atan2((mot->get_sin() - est.sin_avg) * est.sin_scale, (mot->get_cos() - est.cos_avg) * est.cos_avg) - est.offset);
+      drv->est.sin_avg = 0.995 * drv->est.sin_avg + 0.005 * drv->mot->get_sin();
+      drv->est.cos_avg = 0.995 * drv->est.cos_avg + 0.005 * drv->mot->get_cos();
+      sin_avg_amp = 0.5 * sin_avg_amp + 0.5 * (drv->mot->get_sin() - drv->est.sin_avg) / drv->est.sin_scale * drv->mot->get_polarity();
+      cos_avg_amp = 0.5 * cos_avg_amp + 0.5 * (drv->mot->get_cos() - drv->est.cos_avg) / drv->est.cos_scale * drv->mot->get_polarity();
+
+      r = 0.99 * r + 0.01 * (sin_avg_amp * sin_avg_amp + cos_avg_amp * cos_avg_amp);
+
+      if(ABS(sin_avg_amp) < 0.01){
+        //drv->est.cos_scale -= 0.001 * SIGN(1 - cos_avg_amp);
+      }
+
+      if(ABS(cos_avg_amp) < 0.01){
+        //drv->est.sin_scale -= 0.001 * SIGN(1 - sin_avg_amp);
+      }
+
+      if(ABS(r - 1.0) > 0.6){
+        //cerr << "res error r: " << r << endl;
+      }
+
+      drv->est.pos = mod(atan2((drv->mot->get_sin() - drv->est.sin_avg) / drv->est.sin_scale * drv->mot->get_polarity(), (drv->mot->get_cos() - drv->est.cos_avg) / drv->est.cos_scale * drv->mot->get_polarity()) - drv->est.offset);
       break;
     case mot_c::feedback_s::NONE:
     break;
   }
 
-  t2 = est.vel;
-  est.vel = est.pos - t1;
-  est.acc = est.vel - t2;
+  t2 = drv->est.vel;
+  drv->est.vel = drv->est.pos - t1;
+  drv->est.acc = drv->est.vel - t2;
 
-  switch(in->type){
+  switch(drv->in->type){
     case cmd_c::POS:
-      cmd.pos = in->get_pos();
-      cmd.vel = 0.0;
-      cmd.acc = 0.0;
+      drv->cmd.pos = drv->in->get_pos();
+      drv->cmd.vel = 0.0;
+      drv->cmd.acc = 0.0;
       break;
     case cmd_c::POS_VEL:
-      cmd.pos = in->get_pos();
-      cmd.vel = in->get_vel();;
-      cmd.acc = 0.0;
+      drv->cmd.pos = drv->in->get_pos();
+      drv->cmd.vel = drv->in->get_vel();;
+      drv->cmd.acc = 0.0;
       break;
     case cmd_c::POS_VEL_ACC:
-      cmd.pos = in->get_pos();
-      cmd.vel = in->get_vel();;
-      cmd.acc = in->get_acc();
+      drv->cmd.pos = drv->in->get_pos();
+      drv->cmd.vel = drv->in->get_vel();;
+      drv->cmd.acc = drv->in->get_acc();
       break;
     case cmd_c::VEL:
-      cmd.pos = 0.0;
-      cmd.vel = in->get_vel();;
-      cmd.acc = 0.0;
+      drv->cmd.pos = 0.0;
+      drv->cmd.vel = drv->in->get_vel();;
+      drv->cmd.acc = 0.0;
       break;
     case cmd_c::VEL_ACC:
-      cmd.pos = 0.0;
-      cmd.vel = in->get_vel();;
-      cmd.acc = in->get_acc();
+      drv->cmd.pos = 0.0;
+      drv->cmd.vel = drv->in->get_vel();;
+      drv->cmd.acc = drv->in->get_acc();
       break;
   }
 }
 
-void drive_c::pid(float periode){
-  float p = 4;
-  float i = 40 * periode;
-  float d = 0.001 / periode;
+void pid(drive_c* drv, double periode){
+  double p = 4;
+  double i = 40 * periode;
+  double d = 0.001 / periode;
 
-  float e = minus_(cmd.pos, est.pos);
-  static float e_old = 0;
-  static float i_sum = 0;
+  double e = minus_(drv->cmd.pos, drv->est.pos);
+  static double e_old = 0;
+  static double i_sum = 0;
 
   i_sum += e;
 
-  state.ctr = CLAMP(p * minus_(cmd.pos, est.pos) + i * i_sum + d * (e - e_old), -1, 1);
+  drv->state.ctr = CLAMP(p * e + i * i_sum + d * (e - e_old), -1, 1);
 
-  if(abs(state.ctr) >= 0.99){
+  if(abs(drv->state.ctr) >= 0.99){
     i_sum -= e;
   }
 
   e_old = e;
 }
 
-void drive_c::output(float periode){
-  float u, v, w;
+void output(drive_c* drv, double periode){
+  double u, v, w;
 
-  switch(mot->mech_spec.mot_type){
+  switch(drv->mot->mech_spec.mot_type){
     case mot_c::mech_spec_s::AC_SYNC:
     case mot_c::mech_spec_s::AC_ASYNC:
     case mot_c::mech_spec_s::DC:
-      u = ((int)((state.ctr * pwm_scale + 1) / 2.0 * pwm_res)) * dc / pwm_res;
-      v = ((int)((state.ctr * pwm_scale * (-1) + 1) / 2.0  * pwm_res)) * dc / pwm_res;
+      u = ((int)((drv->state.ctr * drv->pwm_scale + 1) / 2.0 * drv->pwm_res)) * drv->dc / drv->pwm_res;
+      v = ((int)((drv->state.ctr * drv->pwm_scale * (-1) + 1) / 2.0  * drv->pwm_res)) * drv->dc / drv->pwm_res;
       w = 0;
     break;
   }
 
-  mot->set_volt(u, v, w);
+  drv->mot->set_volt(u, v, w);
 }
