@@ -55,6 +55,7 @@ volatile int k = 0,l = 0;
 volatile int data[10][2][2];
 volatile float vel = 0;//geschwindigkeit testparameter
 volatile int rescal = 0;//potis einstellen
+volatile float calv = 0.5;//potis einstellen
 volatile int wave = 0;//scope ausgabe
 
 enum{
@@ -79,7 +80,7 @@ void output_ac_pwm(){
         mag_pos += DEG(0.36*vel)*pole_count;// u/sec
         mag_pos = mod(mag_pos);
         //mag_pos = 0;
-        volt = 0.5;
+        volt = calv;
     }else{
         mag_pos = get_res_pos() * pole_count + DEG(90);
     }
@@ -221,6 +222,7 @@ int main(void)
     register_int("rescal",&rescal);
     register_int("wave",&wave);
     register_float("ist",&ist);
+    register_float("calv",&calv);
 	state = STBY;
 	
 	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
