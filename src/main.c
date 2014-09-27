@@ -57,7 +57,9 @@ volatile float vel = 0;//geschwindigkeit testparameter
 volatile int rescal = 0;//potis einstellen
 volatile float calv = 0.5;//potis einstellen
 volatile int wave = 0;//scope ausgabe
-
+volatile float res_s_var = 0.0;
+volatile float res_c_var = 0.0;
+volatile int count = 0;
 enum{
 	STBY,
 	RUNNING,
@@ -75,7 +77,7 @@ float get_res_pos(){
 
 void output_ac_pwm(){
 	float volt = CLAMP(voltage_scale,-1.0,1.0);
-	
+
     if(rescal){
         mag_pos += DEG(0.36*vel)*pole_count;// u/sec
         mag_pos = mod(mag_pos);
@@ -84,7 +86,7 @@ void output_ac_pwm(){
     }else{
         mag_pos = get_res_pos() * pole_count + DEG(90);
     }
-    
+
     float ctr = mod(mag_pos);
 	TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
 	TIM4->CCR2 = (sinf(ctr + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
@@ -177,13 +179,22 @@ void TIM5_IRQHandler(void){ //1KHz
     //ist = revs*2*M_PI+atan2f(s,c);
     ist_old = ist;
     ist = atan2f(s,c);
-    
+
+		if(count > 1000){
+			if(count < 2000){
+				res_s_var += s * s / 100;
+				res_c_var += c * c / 100;
+			}
+		}
+
+		count++;
+
     soll_pos_old = soll_pos;
     if(vel == 0)
         soll_pos = get_enc_pos();//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
 	soll_pos += DEG(0.36*vel);// u/sec
 	soll_pos = mod(soll_pos);
-    
+
     pid.feedbackv = minus(ist, ist_old) * freq;
     pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
     pid.error = minus(soll_pos, ist);
@@ -223,8 +234,11 @@ int main(void)
     register_int("wave",&wave);
     register_float("ist",&ist);
     register_float("calv",&calv);
+		register_float("s_var",&res_s_var);
+		register_float("c_var",&res_c_var);
+
 	state = STBY;
-	
+
 	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
 	Wait(10);
 	TIM_Cmd(TIM2, ENABLE);//int
