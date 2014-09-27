@@ -308,6 +308,7 @@ public:
   double dc;
   double pwm_scale;
   int pwm_res;
+  double pid_periode;
 
   struct {
     double offset;
@@ -511,8 +512,8 @@ void input(drive_c* drv, double periode){
 
 void pid(drive_c* drv, double periode){
   double p = 10;              // kp
-  double i = 40 * periode;    // ki
-  double d = 0.001 / periode; // kd
+  double i = 4 * periode;    // ki
+  double d = 0.01 / periode; // kd
   double dd = 0.0 / periode;  // rel. vel. kd
   double in = 0.1;            // ind. kp
 

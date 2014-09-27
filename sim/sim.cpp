@@ -3,7 +3,7 @@
 
 int main(){
   float sim_time = 0.0;
-  float sim_step = 0.0001;
+  float sim_step = 0.00001;
   float sim_end_time = 0.2;
 
   srand(14235);
@@ -55,6 +55,7 @@ int main(){
   drive.dc = 50;
   drive.pwm_scale = 0.9;
   drive.pwm_res = 8400;
+  drive.pid_periode = 0.001;
   drive.mot = &mot;
   drive.in = &cmd;
   drive.input = input;
@@ -63,18 +64,20 @@ int main(){
 
 
   //cout << flush << "time cmd pos est_pos sin_avg sin_scale cos_avg cos_scale" << endl;
-  cout << flush << "time cmd ctr v i c v v a" << endl;
+  cout << flush << "time cmd ctr volt ind cur vel pos err" << endl;
 
   int count = 0;
+  int pid_count = drive.pid_periode / sim_step;
 
   for(sim_time = 0.0; sim_time < sim_end_time; sim_time += sim_step){
     drive.in->step(sim_step);
-    if(count == 9){
-      drive.step(sim_step);
+    if(count == 0){
+      drive.step(sim_step * pid_count);
     }
     count++;
-    count %= 10;
+    count %= pid_count;
     drive.mot->step(sim_step);
+
     //cout << sim_time << ", " << drive.in->get_pos() << ", " << drive.mot->state.pos << ", " << drive.est.pos << ", " << drive.est.sin_avg << ", " << drive.est.sin_scale << ", " << drive.est.cos_avg << ", " << drive.est.cos_scale << endl;
     //cout << sim_time << ", " << drive.mot->state.pos << ", " << drive.mot->state.vel << ", " << drive.mot->state.acc << ", " << drive.est.p << ", " << drive.est.v << ", " << drive.est.a << endl;//", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
     cout << sim_time << ", " << drive.in->get_pos() * 5 - 15<< ", " << drive.state.ctr << ", " << drive.mot->state.volt << ", " << drive.mot->state.ind << ", " << drive.mot->state.cur << ", " << drive.mot->state.vel << ", " << drive.mot->state.pos * 5 - 15 << ", " << minus_(drive.in->get_pos(), drive.est.pos) * (-100) - 15 << endl;//", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
