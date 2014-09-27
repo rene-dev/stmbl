@@ -83,6 +83,7 @@ public:
     double max_i;
     double i;
     double r;
+    double l;
     double nm_a;
     double v_rps;
     double slip;
@@ -166,7 +167,9 @@ void mot_c::step(double periode){
   }
 
   state.ind = state.vel * elec_spec.v_rps;
-  state.cur = (state.volt - state.ind) / elec_spec.r;
+  double v = (state.volt - state.ind);
+  state.cur += (state.volt - state.ind - state.cur * elec_spec.r) / elec_spec.l * periode;
+  //state.cur = (state.volt - state.ind) / elec_spec.r;
   state.torq = state.cur * elec_spec.nm_a - (mech_spec.damping + load.damping) * state.vel + load.load;
   if(abs(state.torq) < mech_spec.friction + load.friction){
     state.torq = 0.0;
@@ -323,6 +326,11 @@ public:
     double acc;
     double cur;
 
+    double friction;
+    double load;
+    double damping;
+    double inertia;
+
     double p;
     double v;
     double a;
@@ -340,7 +348,8 @@ public:
   void reset();
   void step(double periode);
 
-  void (*input)(drive_c* drv, double periode);
+  void (*input_cmd)(drive_c* drv, double periode);
+  void (*input_feedback)(drive_c* drv, double periode);
   void (*pid)(drive_c* drv, double periode);
   void (*output)(drive_c* drv, double periode);
 
@@ -363,6 +372,11 @@ void drive_c::reset(){
   est.cos_avg = 0.0;
   est.res_var = 0.0;
 
+  est.friction = mot->mech_spec.friction;
+  est.load = 0.0;
+  est.damping = mot->mech_spec.damping;
+  est.inertia = mot->mech_spec.inertia;
+
   est.pos = 0.0;
   est.vel = 0.0;
   est.acc = 0.0;
@@ -374,12 +388,48 @@ void drive_c::reset(){
 }
 
 void drive_c::step(double periode){
-  input(this, periode);
+  input_cmd(this, periode);
+  input_feedback(this, periode);
   pid(this, periode);
   output(this, periode);
 }
 
-void input(drive_c* drv, double periode){
+void input_cmd(drive_c* drv, double periode){
+  double tp, tv;
+
+  tp = drv->cmd.pos;
+  tv = drv->cmd.vel;
+
+  switch(drv->in->type){
+    case cmd_c::POS:
+      drv->cmd.pos = drv->in->get_pos();
+      drv->cmd.vel = (drv->cmd.pos - tp) / periode;
+      drv->cmd.acc = (drv->cmd.vel - tv) / periode;
+      break;
+    case cmd_c::POS_VEL:
+      drv->cmd.pos = drv->in->get_pos();
+      drv->cmd.vel = drv->in->get_vel();;
+      drv->cmd.acc = (drv->cmd.vel - tv) / periode;
+      break;
+    case cmd_c::POS_VEL_ACC:
+      drv->cmd.pos = drv->in->get_pos();
+      drv->cmd.vel = drv->in->get_vel();;
+      drv->cmd.acc = drv->in->get_acc();
+      break;
+    case cmd_c::VEL:
+      drv->cmd.pos = drv->cmd.pos + drv->cmd.vel * periode;
+      drv->cmd.vel = drv->in->get_vel();;
+      drv->cmd.acc = (drv->cmd.vel - tv) / periode;
+      break;
+    case cmd_c::VEL_ACC:
+      drv->cmd.pos = drv->cmd.pos + drv->cmd.vel * periode;
+      drv->cmd.vel = drv->in->get_vel();;
+      drv->cmd.acc = drv->in->get_acc();
+      break;
+  }
+}
+
+void input_feedback(drive_c* drv, double periode){
   double t1, t2;
   static double sin_avg_amp = 1.0;
   static double cos_avg_amp = 1.0;
@@ -396,9 +446,6 @@ void input(drive_c* drv, double periode){
   static double pos_hist[hist_size];
   static double vel_hist[hist_size];
   static double acc_hist[hist_size];
-
-
-
 
   t1 = drv->est.pos;
 
@@ -480,44 +527,22 @@ void input(drive_c* drv, double periode){
   // t2 = drv->est.vel;
   // drv->est.vel = (drv->est.pos - t1) / periode;
   // drv->est.acc = (drv->est.vel - t2) / periode;
+}
 
-  switch(drv->in->type){
-    case cmd_c::POS:
-      drv->cmd.pos = drv->in->get_pos();
-      drv->cmd.vel = 0.0;
-      drv->cmd.acc = 0.0;
-      break;
-    case cmd_c::POS_VEL:
-      drv->cmd.pos = drv->in->get_pos();
-      drv->cmd.vel = drv->in->get_vel();;
-      drv->cmd.acc = 0.0;
-      break;
-    case cmd_c::POS_VEL_ACC:
-      drv->cmd.pos = drv->in->get_pos();
-      drv->cmd.vel = drv->in->get_vel();;
-      drv->cmd.acc = drv->in->get_acc();
-      break;
-    case cmd_c::VEL:
-      drv->cmd.pos = 0.0;
-      drv->cmd.vel = drv->in->get_vel();;
-      drv->cmd.acc = 0.0;
-      break;
-    case cmd_c::VEL_ACC:
-      drv->cmd.pos = 0.0;
-      drv->cmd.vel = drv->in->get_vel();;
-      drv->cmd.acc = drv->in->get_acc();
-      break;
-  }
+void input_feedback_real(drive_c* drv, double periode){
+  drv->est.pos = drv->mot->state.pos;
+  drv->est.vel = drv->mot->state.vel;
+  drv->est.acc = drv->mot->state.acc;
 }
 
 void pid(drive_c* drv, double periode){
-  double p = 10;              // kp
-  double i = 4 * periode;    // ki
-  double d = 0.01 / periode; // kd
+  double p = 180;              // kp
+  double i = 15000 * periode;    // ki
+  double d = 0.1 / periode; // kd
   double dd = 0.0 / periode;  // rel. vel. kd
-  double in = 0.1;            // ind. kp
+  double in = 0.0;            // ind. kp
 
-  double dc_scale = 50.0 / drv->dc; // dc voltage scale
+  double dc_scale = 1.0 / drv->dc; // dc voltage scale
   double ind = drv->mot->state.vel * drv->mot->elec_spec.v_rps / drv->dc;
 
   double e = minus_(drv->cmd.pos, drv->est.pos);
@@ -525,6 +550,7 @@ void pid(drive_c* drv, double periode){
   static double i_sum = 0;
 
   i_sum += e;
+  //i_sum -=
   drv->state.ctr = p * e;
   drv->state.ctr += i * i_sum;
   drv->state.ctr += d * (e - e_old);
@@ -535,12 +561,41 @@ void pid(drive_c* drv, double periode){
   drv->state.ctr += in * ind;
 
   drv->state.ctr = CLAMP(drv->state.ctr, -1, 1);
+  // if(ABS(drv->est.vel) >= drv->mot->mech_spec.max_rps * 0.7){
+  //   drv->state.ctr = 0.0;
+  // }
 
   if(abs(drv->state.ctr) >= 0.99){
     i_sum -= e;
   }
+  i_sum = CLAMP(i_sum, -1/i, 1/i);
 
   e_old = e;
+}
+
+void pid2(drive_c* drv, double periode){
+  double ind = drv->est.vel * drv->mot->elec_spec.v_rps;
+  double max_volt_pos = drv->dc * drv->pwm_scale - ind;
+  double max_cur_pos = max_volt_pos / drv->mot->elec_spec.r;
+  double max_torq_pos = max_cur_pos * drv->mot->elec_spec.nm_a;
+  max_torq_pos -= drv->est.friction;
+  max_torq_pos -= drv->est.load;
+  max_torq_pos -= drv->est.damping * drv->est.vel;
+  double max_acc_pos = max_torq_pos / drv->est.inertia;
+  double max_dvel_pos = max_acc_pos * periode;
+
+  double max_volt_neg = -drv->dc * drv->pwm_scale - ind;
+  double max_cur_neg = max_volt_neg / drv->mot->elec_spec.r;
+  double max_torq_neg = max_cur_neg * drv->mot->elec_spec.nm_a;
+  max_torq_neg -= drv->est.friction;
+  max_torq_neg += drv->est.load;
+  max_torq_neg -= drv->est.damping * drv->est.vel;
+  double max_acc_neg = max_torq_neg / drv->est.inertia;
+  double max_dvel_neg = max_acc_neg * periode;
+
+
+
+  drv->state.ctr = 0.0;
 }
 
 void output(drive_c* drv, double periode){
