@@ -63,6 +63,7 @@ public:
     double t;
     double cur;
     double volt;
+    double ind;
     double torq;
     int res_polarity;
   } state;
@@ -139,6 +140,7 @@ void mot_c::reset(){
   state.t = 20.0;
   state.cur = 0.0;
   state.volt = 0.0;
+  state.ind = 0.0;
   state.res_polarity = 1.0;
   feedback.enc_offset = state.pos;
 }
@@ -154,17 +156,17 @@ void mot_c::step(double periode){
       d = 2/3 * (cos(state.pos * mech_spec.pole_count) * state.u + cos(state.pos * mech_spec.pole_count - 2/3 * M_PI) * state.v + cos(state.pos * mech_spec.pole_count + 2/3 * M_PI) * state.w);
       q = 2/3 * (-sin(state.pos * mech_spec.pole_count) * state.u - sin(state.pos * mech_spec.pole_count - 2/3 * M_PI) * state.v - sin(state.pos * mech_spec.pole_count + 2/3 * M_PI) * state.w);
       state.volt = q;
-      state.cur = (q - state.vel * elec_spec.v_rps) / elec_spec.r;
       break;
     case mech_spec_s::AC_ASYNC:
-      state.cur = 0.0;
+      state.volt = 0.0;
       break;
     case mech_spec_s::DC:
       state.volt = state.u - state.v;
-      state.cur = (state.u - state.v - state.vel * elec_spec.v_rps) / elec_spec.r;
       break;
   }
 
+  state.ind = state.vel * elec_spec.v_rps;
+  state.cur = (state.volt - state.ind) / elec_spec.r;
   state.torq = state.cur * elec_spec.nm_a - (mech_spec.damping + load.damping) * state.vel + load.load;
   if(abs(state.torq) < mech_spec.friction + load.friction){
     state.torq = 0.0;
@@ -470,6 +472,8 @@ void input(drive_c* drv, double periode){
   drv->est.v = (2 * a * x + v);
   drv->est.a = (2 * a);
 
+  drv->est.pos = drv->mot->state.pos;
+
   //drv->est.pos = drv->est.p;
 
   // t2 = drv->est.vel;
@@ -506,17 +510,30 @@ void input(drive_c* drv, double periode){
 }
 
 void pid(drive_c* drv, double periode){
-  double p = 3;
-  double i = 40 * periode;
-  double d = 0.01 / periode;
+  double p = 10;              // kp
+  double i = 40 * periode;    // ki
+  double d = 0.001 / periode; // kd
+  double dd = 0.0 / periode;  // rel. vel. kd
+  double in = 0.1;            // ind. kp
+
+  double dc_scale = 50.0 / drv->dc; // dc voltage scale
+  double ind = drv->mot->state.vel * drv->mot->elec_spec.v_rps / drv->dc;
 
   double e = minus_(drv->cmd.pos, drv->est.pos);
   static double e_old = 0;
   static double i_sum = 0;
 
   i_sum += e;
+  drv->state.ctr = p * e;
+  drv->state.ctr += i * i_sum;
+  drv->state.ctr += d * (e - e_old);
+  if(abs(e) > 0.01){
+    drv->state.ctr += dd * (e - e_old) / e;
+  }
+  drv->state.ctr *= dc_scale;
+  drv->state.ctr += in * ind;
 
-  drv->state.ctr = CLAMP(p * e + i * i_sum + d * (e - e_old), -1, 1);
+  drv->state.ctr = CLAMP(drv->state.ctr, -1, 1);
 
   if(abs(drv->state.ctr) >= 0.99){
     i_sum -= e;

@@ -2,9 +2,9 @@
 
 
 int main(){
-  float sim_time = 0;
-  float sim_step = 0.001;
-  float sim_end_time = 5.0;
+  float sim_time = 0.0;
+  float sim_step = 0.0001;
+  float sim_end_time = 0.2;
 
   srand(14235);
 
@@ -15,7 +15,7 @@ int main(){
   mot.mech_spec.mot_type = mot_c::mech_spec_s::DC;
   mot.mech_spec.pole_count = 1;
   mot.mech_spec.friction = 0.021;
-  mot.mech_spec.damping = 0.0118;
+  mot.mech_spec.damping = 0.0000426;
   mot.mech_spec.inertia = 0.0000268;
 
   mot.elec_spec.max_i = 13.9;
@@ -32,7 +32,7 @@ int main(){
   mot.noise.cos_scale = 1.0;
   mot.noise.sin_offset = 0.0;
   mot.noise.cos_offset = 0.0;
-  mot.noise.var = 0.001;
+  mot.noise.var = 0.0;
 
   mot.load.friction = 0.0;
   mot.load.load = 0.0;
@@ -42,8 +42,8 @@ int main(){
 
   cmd_c cmd;
   cmd.reset();
-  cmd.periode = 2.0;
-  cmd.amplitude = 1;
+  cmd.periode = 0.2;
+  cmd.amplitude = 2;
   cmd.wave = cmd_c::SQUARE;
   cmd.type = cmd_c::POS;
   cmd.pos_res = 0.01;
@@ -63,14 +63,21 @@ int main(){
 
 
   //cout << flush << "time cmd pos est_pos sin_avg sin_scale cos_avg cos_scale" << endl;
-  cout << flush << "time cmd pos est_pos p v a ctr e" << endl;
+  cout << flush << "time cmd ctr v i c v v a" << endl;
+
+  int count = 0;
 
   for(sim_time = 0.0; sim_time < sim_end_time; sim_time += sim_step){
     drive.in->step(sim_step);
-    drive.step(sim_step);
+    if(count == 9){
+      drive.step(sim_step);
+    }
+    count++;
+    count %= 10;
     drive.mot->step(sim_step);
     //cout << sim_time << ", " << drive.in->get_pos() << ", " << drive.mot->state.pos << ", " << drive.est.pos << ", " << drive.est.sin_avg << ", " << drive.est.sin_scale << ", " << drive.est.cos_avg << ", " << drive.est.cos_scale << endl;
-    cout << sim_time << ", " << drive.in->get_pos() << ", " << drive.mot->state.pos << ", " << drive.est.pos << ", " << drive.est.p << ", " << drive.est.v << ", " << drive.est.a << ", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
+    //cout << sim_time << ", " << drive.mot->state.pos << ", " << drive.mot->state.vel << ", " << drive.mot->state.acc << ", " << drive.est.p << ", " << drive.est.v << ", " << drive.est.a << endl;//", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
+    cout << sim_time << ", " << drive.in->get_pos() * 5 - 15<< ", " << drive.state.ctr << ", " << drive.mot->state.volt << ", " << drive.mot->state.ind << ", " << drive.mot->state.cur << ", " << drive.mot->state.vel << ", " << drive.mot->state.pos * 5 - 15 << ", " << minus_(drive.in->get_pos(), drive.est.pos) * (-100) - 15 << endl;//", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
 
   }
 
