@@ -14,7 +14,7 @@ int main(){
   mot.mech_spec.max_rps = 83.3;
   mot.mech_spec.mot_type = mot_c::mech_spec_s::DC;
   mot.mech_spec.pole_count = 1;
-  mot.mech_spec.friction = 0.0;//21;//0.021;
+  mot.mech_spec.friction = 0.021;//0.021;
   mot.mech_spec.damping = 0.0000426;//0.0000426;
   mot.mech_spec.inertia = 0.0000268;//0.0000268;
 
@@ -40,6 +40,69 @@ int main(){
   mot.load.damping = 0.0;
   mot.load.inertia = 0.0;
 
+  // bautz e728
+  mot_c mot2;
+  mot2.reset();
+  mot2.mech_spec.max_rps = 50;
+  mot2.mech_spec.mot_type = mot_c::mech_spec_s::DC;
+  mot2.mech_spec.pole_count = 1;
+  mot2.mech_spec.friction = 0.18;
+  mot2.mech_spec.damping = 0.004236;
+  mot2.mech_spec.inertia = 0.0012;
+
+  mot2.elec_spec.max_i = 12;
+  mot2.elec_spec.i = 10;
+  mot2.elec_spec.nm_a = 0.36;
+  mot2.elec_spec.r = 0.67;
+  mot2.elec_spec.l = 0.0011;
+  mot2.elec_spec.v_rps = 2.28;
+  mot2.elec_spec.slip = 0;
+
+  mot2.feedback.type = mot_c::feedback_s::RES;
+  mot2.feedback.count = 1;
+  mot2.feedback.res_offset = 0.0;
+  mot2.noise.sin_scale = 1.0;
+  mot2.noise.cos_scale = 1.0;
+  mot2.noise.sin_offset = 0.0;
+  mot2.noise.cos_offset = 0.0;
+  mot2.noise.var = 0.0;
+
+  mot2.load.friction = 0.0;
+  mot2.load.load = 0.0;
+  mot2.load.damping = 0.0;
+  mot2.load.inertia = 0.0;
+
+  // bautz e728
+  mot_c mot3;
+  mot3.reset();
+  mot3.mech_spec.max_rps = 16.6;
+  mot3.mech_spec.mot_type = mot_c::mech_spec_s::DC;
+  mot3.mech_spec.pole_count = 4;
+  mot3.mech_spec.friction = 0.0;
+  mot3.mech_spec.damping = 0.0;
+  mot3.mech_spec.inertia = 0.000141;
+
+  mot3.elec_spec.max_i = 2.2;
+  mot3.elec_spec.i = 10;
+  mot3.elec_spec.nm_a = 0.2727;
+  mot3.elec_spec.r = 50;
+  mot3.elec_spec.l = 0.030;
+  mot3.elec_spec.v_rps = 5;
+  mot3.elec_spec.slip = 0;
+
+  mot3.feedback.type = mot_c::feedback_s::RES;
+  mot3.feedback.count = 1;
+  mot3.feedback.res_offset = 0.0;
+  mot3.noise.sin_scale = 1.0;
+  mot3.noise.cos_scale = 1.0;
+  mot3.noise.sin_offset = 0.0;
+  mot3.noise.cos_offset = 0.0;
+  mot3.noise.var = 0.0;
+
+  mot3.load.friction = 0.0;
+  mot3.load.load = 0.0;
+  mot3.load.damping = 0.0;
+  mot3.load.inertia = 0.0;
 
   cmd_c cmd;
   cmd.reset();
@@ -52,11 +115,11 @@ int main(){
   cmd.acc_res = 0.01;
 
   drive_c drive;
-  drive.dc = 5;
+  drive.dc = 110;
   drive.pwm_scale = 0.9;
   drive.pwm_res = 8400;
   drive.pid_periode = 0.001;
-  drive.mot = &mot;
+  drive.mot = &mot3;
   drive.in = &cmd;
   drive.input_cmd = input_cmd;
   drive.input_feedback = input_feedback_real;
@@ -135,6 +198,8 @@ int main(){
     //dp
     //v0
     //v1
+    //-> a
+    
 
     //v = 1/a * maxa * exp(-sim_time * a)
     //e_pos = 30 * torq / drive.est.inertia * (sim_time - 0.15) * (sim_time - 0.15) + 1;
@@ -169,7 +234,7 @@ int main(){
     //cout << sim_time << ", " << drive.in->get_pos() << ", " << drive.mot->state.pos << ", " << drive.est.pos << ", " << drive.est.sin_avg << ", " << drive.est.sin_scale << ", " << drive.est.cos_avg << ", " << drive.est.cos_scale << endl;
     //cout << sim_time << ", " << drive.mot->state.pos << ", " << drive.mot->state.vel << ", " << drive.mot->state.acc << ", " << drive.est.p << ", " << drive.est.v << ", " << drive.est.a << endl;//", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
     //cout << sim_time << ", " << "-15, " << drive.in->get_pos() * 5 - 15<< ", " << drive.state.ctr * 10 << ", " << drive.mot->state.cur << ", " << drive.mot->state.vel / 5 << ", " << drive.mot->state.pos * 5 - 15 << ", " << minus_(drive.in->state.pos, drive.mot->state.pos) * (-100) - 15 << endl;//", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
-    cout << sim_time << ", " << mot.state.cur << ", " << mot.state.acc / 100 << ", " << mot.state.vel / 10 << endl;
+    cout << sim_time << ", " << drive.mot->state.cur << ", " << drive.mot->state.acc / 100 << ", " << drive.mot->state.vel << endl;
   }
 
   system("gnuplot --persist gp");
