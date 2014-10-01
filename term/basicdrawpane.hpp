@@ -23,6 +23,8 @@ public:
     void plotvalue(int);
     void render(wxDC& dc);
 private:
+    wxLongLong time;
+    wxLongLong diff;
     std::vector<float> data;
     int x,y,xold,yold,xpos,xstep;
 };
