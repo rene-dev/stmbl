@@ -1,6 +1,9 @@
-#ifndef test_pid_h
-#define test_pid_h
+#pragma once
 #include <math.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define ABS(a)	   (((a) < 0) ? -(a) : (a))
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
@@ -8,6 +11,7 @@
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 #define DEG(a) ((a)*M_PI/180.0)
 #define RAD(a) ((a)*180.0/M_PI)
+#define SIGN(a) (((a) < 0) ? (-1) : (((a) > 0) ? (1) : (0)))
 
 typedef struct {
     int enable;        /* pin: enable input */
@@ -86,4 +90,6 @@ void predict(kalman_context_t* k);
 void update(kalman_context_t* k);
 void kal_init(kalman_context_t *k);
 
+#ifdef __cplusplus
+}
 #endif
