@@ -182,8 +182,8 @@ void TIM5_IRQHandler(void){ //1KHz
 
 		if(count > 1000){
 			if(count < 2000){
-				res_s_var += s * s / 100;
-				res_c_var += c * c / 100;
+				res_s_var += s * s / 1000;
+				res_c_var += c * c / 1000;
 			}
 		}
 
