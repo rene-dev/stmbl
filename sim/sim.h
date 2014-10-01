@@ -167,7 +167,6 @@ void mot_c::step(double periode){
   }
 
   state.ind = state.vel * elec_spec.v_rps;
-  double v = (state.volt - state.ind);
   state.cur += (state.volt - state.ind - state.cur * elec_spec.r) / elec_spec.l * periode;
   state.cur = CLAMP(state.cur, -elec_spec.max_i, elec_spec.max_i);
   //state.cur = (state.volt - state.ind) / elec_spec.r;
