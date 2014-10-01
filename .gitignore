@@ -7,6 +7,7 @@
 *.map
 .DS_Store
 term/build
+term/xbuild
 term/win32/bin
 
 sim/sim
