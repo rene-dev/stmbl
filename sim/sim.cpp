@@ -3,8 +3,8 @@
 
 int main(){
   float sim_time = 0.0;
-  float sim_step = 0.00001;
-  float sim_end_time = 0.03;
+  float sim_step = 0.0001;
+  float sim_end_time = 2;
 
   srand(14235);
 
@@ -72,22 +72,22 @@ int main(){
   mot2.load.damping = 0.0;
   mot2.load.inertia = 0.0;
 
-  // bautz e728
+  // bosch
   mot_c mot3;
   mot3.reset();
   mot3.mech_spec.max_rps = 16.6;
   mot3.mech_spec.mot_type = mot_c::mech_spec_s::DC;
   mot3.mech_spec.pole_count = 4;
-  mot3.mech_spec.friction = 0.0;
-  mot3.mech_spec.damping = 0.0;
+  mot3.mech_spec.friction = 0.065;//0.0;
+  mot3.mech_spec.damping = 0.0000826;//0.0;
   mot3.mech_spec.inertia = 0.000141;
 
-  mot3.elec_spec.max_i = 2.2;
-  mot3.elec_spec.i = 10;
+  mot3.elec_spec.max_i = 4;
+  mot3.elec_spec.i = 2.2;
   mot3.elec_spec.nm_a = 0.2727;
-  mot3.elec_spec.r = 50;
-  mot3.elec_spec.l = 0.030;
-  mot3.elec_spec.v_rps = 5;
+  mot3.elec_spec.r = 15.2;
+  mot3.elec_spec.l = 0.0082;//0.030;
+  mot3.elec_spec.v_rps = 3.4;//5;
   mot3.elec_spec.slip = 0;
 
   mot3.feedback.type = mot_c::feedback_s::RES;
@@ -97,7 +97,7 @@ int main(){
   mot3.noise.cos_scale = 1.0;
   mot3.noise.sin_offset = 0.0;
   mot3.noise.cos_offset = 0.0;
-  mot3.noise.var = 0.0;
+  mot3.noise.var = 0.01;
 
   mot3.load.friction = 0.0;
   mot3.load.load = 0.0;
@@ -106,8 +106,8 @@ int main(){
 
   cmd_c cmd;
   cmd.reset();
-  cmd.periode = 0.5;
-  cmd.amplitude = 2;
+  cmd.periode = 2;
+  cmd.amplitude = 1;
   cmd.wave = cmd_c::SQUARE;
   cmd.type = cmd_c::POS;
   cmd.pos_res = 0.01;
@@ -115,11 +115,11 @@ int main(){
   cmd.acc_res = 0.01;
 
   drive_c drive;
-  drive.dc = 150;
+  drive.dc = 50;
   drive.pwm_scale = 0.9;
   drive.pwm_res = 8400;
   drive.pid_periode = 0.001;
-  drive.mot = &mot;
+  drive.mot = &mot3;
   drive.in = &cmd;
   drive.input_cmd = input_cmd;
   drive.input_feedback = input_feedback_real;
@@ -127,105 +127,7 @@ int main(){
   drive.output = output;
   drive.reset();
 
-/*
-  double ind = 0.0;
-  double max_volt_pos = 0.0;
-  double max_cur_pos = 0.0;
-  double max_torq_pos = 0.0;
-  double max_acc_pos = 0.0;
-  double max_dvel_pos = 0.0;
-
-  double max_volt_neg = 0.0;
-  double max_cur_neg = 0.0;
-  double max_torq_neg = 0.0;
-  double max_acc_neg = -2;
-  double max_dvel_neg = 0.0;
-
-  double vel = 0.0;
-  double pos = 0.0;
-
-  int dir = 1;
-
-  double e_pos = 0.0;
-  double e_neg = 0.0;
-  drive.est.load = 0.0;
-
-  double volt = 0.0;
-  double cur = 0.0;
-  double torq = 0.0;
-
-  cout << flush << "time vel accp accn e" << endl;
-
-  while(vel >= -mot.mech_spec.max_rps){
-    ind = vel * drive.mot->elec_spec.v_rps;
-
-    max_volt_pos = (drive.dc * drive.pwm_scale - drive.dc * (1 - drive.pwm_scale)) - ind;
-    max_cur_pos += (max_volt_pos - max_cur_pos * mot.elec_spec.r) / mot.elec_spec.l * sim_step;
-    //max_cur_pos = max_volt_pos / drive.mot->elec_spec.r;
-    max_torq_pos = max_cur_pos * drive.mot->elec_spec.nm_a;
-    max_torq_pos -= drive.est.friction;
-    max_torq_pos -= drive.est.load;
-    max_torq_pos -= drive.est.damping * vel;
-    max_acc_pos = max_torq_pos / drive.est.inertia;
-
-    max_volt_neg = (drive.dc * (1 - drive.pwm_scale) - drive.dc * drive.pwm_scale) - ind;
-    max_cur_neg += (max_volt_neg - max_cur_neg * mot.elec_spec.r) / mot.elec_spec.l * sim_step;
-    //max_cur_neg = max_volt_neg / drive.mot->elec_spec.r;
-    max_torq_neg = max_cur_neg * drive.mot->elec_spec.nm_a;
-    max_torq_neg += drive.est.friction;
-    max_torq_neg -= drive.est.load;
-    max_torq_neg -= drive.est.damping * vel;
-    max_acc_neg = max_torq_neg / drive.est.inertia;
-
-    if(dir == 1){
-      vel += max_acc_pos * sim_step;
-    }
-    else {
-      vel += max_acc_neg * sim_step;
-    }
-    pos += vel * sim_step;
-
-    if(vel >= mot.mech_spec.max_rps){
-      dir = -1;
-    }
-
-    volt = drive.dc * drive.pwm_scale - drive.dc * (1 - drive.pwm_scale);
-    cur = volt / drive.mot->elec_spec.r;
-    torq = cur * drive.mot->elec_spec.nm_a;
-    //e_pos = torq / drive.est.inertia * exp(-sim_time * drive.dc / drive.mot->elec_spec.v_rps );
-    e_pos = (torq - drive.est.load) / drive.est.inertia * exp(-sim_time * mot.elec_spec.v_rps / drive.est.inertia * mot.elec_spec.nm_a / mot.elec_spec.r);
-
-    //dp
-    //v0
-    //v1
-    //-> a
-
-    double dp;
-    double v0;
-    double v1;
-    double a;
-
-
-
-
-    //v = 1/a * maxa * exp(-sim_time * a)
-    //e_pos = 30 * torq / drive.est.inertia * (sim_time - 0.15) * (sim_time - 0.15) + 1;
-
-    //e_pos = CLAMP(torq / drive.est.inertia * 0.8 + torq / drive.est.inertia * (-22) * sim_time * 0.5, 0, torq / drive.est.inertia);
-
-    cout << sim_time << ", " << vel << ", " << max_acc_pos << ", " << e_pos << ", " << pos << endl;//", " << max_acc_pos << ", " << max_acc_neg << ", " << e_pos << endl;
-
-    sim_time += sim_step;
-  }
-  system("gnuplot --persist gp");
-
-  return(0);
-*/
-  //cout << flush << "time cmd pos est_pos sin_avg sin_scale cos_avg cos_scale" << endl;
-
-
-
-  cout << flush << "time curr acc vel acc0 acc1 y" << endl;
+  cout << flush << "time error cur vel ctr" << endl;
 
   int count = 0;
   int pid_count = drive.pid_periode / sim_step;
@@ -250,24 +152,24 @@ int main(){
   b = acc0 - a * vel0;
 
   for(sim_time = 0.0; sim_time < sim_end_time; sim_time += sim_step){
-    //drive.in->step(sim_step);
-    //if(count == 0){
-    //  drive.step(sim_step * pid_count);
-    //}
-    //count++;
-    //count %= pid_count;
-    drive.state.ctr = 1;
+    drive.in->step(sim_step);
+    if(count == 0){
+      drive.step(sim_step * pid_count);
+    }
+    count++;
+    count %= pid_count;
+    //drive.state.ctr = 1;
     drive.output(&drive, sim_step);
     drive.mot->step(sim_step);
 
 
     //e_pos = (torq - drive.est.load) / drive.est.inertia * exp(-sim_time * mot.elec_spec.v_rps / drive.est.inertia * mot.elec_spec.nm_a / mot.elec_spec.r);
-    y = a * drive.mot->state.vel + b;
+    //y = a * drive.mot->state.vel + b;
 
     //cout << sim_time << ", " << drive.in->get_pos() << ", " << drive.mot->state.pos << ", " << drive.est.pos << ", " << drive.est.sin_avg << ", " << drive.est.sin_scale << ", " << drive.est.cos_avg << ", " << drive.est.cos_scale << endl;
     //cout << sim_time << ", " << drive.mot->state.pos << ", " << drive.mot->state.vel << ", " << drive.mot->state.acc << ", " << drive.est.p << ", " << drive.est.v << ", " << drive.est.a << endl;//", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
     //cout << sim_time << ", " << "-15, " << drive.in->get_pos() * 5 - 15<< ", " << drive.state.ctr * 10 << ", " << drive.mot->state.cur << ", " << drive.mot->state.vel / 5 << ", " << drive.mot->state.pos * 5 - 15 << ", " << minus_(drive.in->state.pos, drive.mot->state.pos) * (-100) - 15 << endl;//", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
-    cout << sim_time/*drive.mot->state.vel*/ << ", " << drive.mot->state.cur << ", " << drive.mot->state.acc << ", " << drive.mot->state.vel << ", " << acc0 << ", " << acc1 << ", " << y << endl;
+    cout << sim_time/*drive.mot->state.vel*/ << ", " << minus_(drive.in->state.pos, drive.mot->state.pos) << ", " << drive.mot->state.cur << endl;
   }
 
   system("gnuplot --persist gp");

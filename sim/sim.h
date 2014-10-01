@@ -536,9 +536,9 @@ void input_feedback_real(drive_c* drv, double periode){
 }
 
 void pid(drive_c* drv, double periode){
-  double p = 180;              // kp
-  double i = 15000 * periode;    // ki
-  double d = 0.1 / periode; // kd
+  double p = 1000;              // kp
+  double i = 10000 * periode;    // ki
+  double d = 0.6 / periode; // kd
   double dd = 0.0 / periode;  // rel. vel. kd
   double in = 0.0;            // ind. kp
 
