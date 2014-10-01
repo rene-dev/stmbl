@@ -59,6 +59,8 @@ volatile float calv = 0.5;//potis einstellen
 volatile int wave = 0;//scope ausgabe
 volatile float res_s_var = 0.0;
 volatile float res_c_var = 0.0;
+volatile float jump = 0.0;
+volatile float startpos = 0.0;
 volatile int count = 0;
 enum{
 	STBY,
@@ -87,10 +89,10 @@ void output_ac_pwm(){
         mag_pos = get_res_pos() * pole_count + DEG(90);
     }
 
-    float ctr = mod(mag_pos);
-	TIM4->CCR1 = (sinf(ctr + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
-	TIM4->CCR2 = (sinf(ctr + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
-	TIM4->CCR4 = (sinf(ctr + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+    mag_pos = mod(mag_pos);
+	TIM4->CCR1 = (sinf(mag_pos + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+	TIM4->CCR2 = (sinf(mag_pos + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+	TIM4->CCR4 = (sinf(mag_pos + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
 }
 
 void output_dc_pwm(){
@@ -189,15 +191,20 @@ void TIM5_IRQHandler(void){ //1KHz
 
 		count++;
 
-    soll_pos_old = soll_pos;
     if(vel == 0)
-        soll_pos = get_enc_pos();//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+        soll_pos = startpos + get_enc_pos() + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
 	soll_pos += DEG(0.36*vel);// u/sec
-	soll_pos = mod(soll_pos);
+	soll_pos = mod(soll_pos+jump);
 
+	soll_pos_old = soll_pos;
     pid.feedbackv = minus(ist, ist_old) * freq;
     pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
     pid.error = minus(soll_pos, ist);
+	if(ABS(pid.error) > DEG(45)){
+		GPIO_ResetBits(GPIOD,GPIO_Pin_14);//enable
+		state = EFOLLOW;
+		pid.enable = 0;
+	}
 
     kal.res = ist;
     update(&kal);
@@ -234,8 +241,9 @@ int main(void)
     register_int("wave",&wave);
     register_float("ist",&ist);
     register_float("calv",&calv);
-		register_float("s_var",&res_s_var);
-		register_float("c_var",&res_c_var);
+	register_float("s_var",&res_s_var);
+	register_float("c_var",&res_c_var);
+	register_float("jump",&jump);
 
 	state = STBY;
 
@@ -245,10 +253,11 @@ int main(void)
 	Wait(50);
 	erreger_enable = YES;
 	Wait(50);
-	soll_pos = get_res_pos();
 	TIM_Cmd(TIM4, ENABLE);//PWM
 	TIM_Cmd(TIM5, ENABLE);//PID
-
+	Wait(50);
+	startpos = get_res_pos();
+	pid.enable = 1;
 	GPIO_SetBits(GPIOD,GPIO_Pin_14);//enable
 
 	while(1)  // Do not exit
@@ -276,7 +285,7 @@ int main(void)
                 e = (int)(pid.feedbackv * 64 / 16 + 63);
                 break;
             case 7:
-                e = (int)(voltage_scale*64+63);
+                e = (int)(voltage_scale*50+63);
                 break;
             case 8:
                 e = (int)(pid.saturated_count * 64 / 100 + 63);
@@ -361,7 +370,7 @@ int main(void)
 		}
 #endif
 
-		Wait(5);
+		Wait(10);
 	}
 }
 

@@ -23,7 +23,7 @@ float mod(float a){
 }
 
 void pid_init(hal_pid_t *pid){
-    pid->enable = 1;      /* pin: enable input */
+    pid->enable = 0;      /* pin: enable input */
     //pid->command = 0;	  /* pin: commanded value */
     //pid->commandvds = 0;  /* pin: commanded derivative dummysig */
     pid->commandv = 0;    /* pin: commanded derivative value */
