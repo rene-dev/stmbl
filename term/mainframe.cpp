@@ -18,9 +18,9 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *leiste = new wxBoxSizer(wxHORIZONTAL);
     choose_port = new wxChoice (top, wxID_ANY);
-    connectbutton = new wxButton(top, wxID_ANY, wxT("Connect"));
+    connectbutton = new wxButton(top, wxID_ANY, wxT("&Connect"));
     clear = new wxButton(top, wxID_ANY, wxT("Clear"));
-    refresh = new wxButton(top, wxID_ANY, wxT("Refresh"));
+    refresh = new wxButton(top, wxID_ANY, wxT("&Refresh"));
     uhu = new wxRadioButton(top,wxID_ANY, "UHU");
     stmbl = new wxRadioButton(top, wxID_ANY,"STMBL");
     stmbl->SetValue(true);
@@ -135,7 +135,7 @@ void MainFrame::connect(){
         sp_set_xon_xoff(port, SP_XONXOFF_DISABLED);
         sp_set_flowcontrol(port, SP_FLOWCONTROL_NONE);
         connected = true;
-        connectbutton->SetLabel(wxT("Disonnect"));
+        connectbutton->SetLabel(wxT("&Disonnect"));
         refresh->Disable();
         choose_port->Disable();
         textinput->SetFocus();
@@ -148,7 +148,7 @@ void MainFrame::connect(){
 void MainFrame::disconnect(){
     if(sp_close(port) == SP_OK){
         connected = false;
-        connectbutton->SetLabel(wxT("Connect"));
+        connectbutton->SetLabel(wxT("&Connect"));
         refresh->Enable();
         choose_port->Enable();
     }
