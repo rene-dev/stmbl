@@ -246,11 +246,11 @@ void kal_init(kalman_context_t *k){
     k->k = 1;
     k->r = 1;
     
-    k->res_var = 0.1;
-    k->pos_var = 0.1;
-    k->vel_var = 0.1;
-    k->acc_var = 0.1;
-    k->cur_var = 0.1;
+    k->res_var = 0.01;
+    k->pos_var = 0.01;
+    k->vel_var = 0.01;
+    k->acc_var = 0.01;
+    k->cur_var = 0.01;
     
     k->res = 0;
     k->pos = 0;
