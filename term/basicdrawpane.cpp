@@ -1,9 +1,11 @@
 #include "basicdrawpane.hpp"
 
 BasicDrawPane::BasicDrawPane(wxFrame* parent) : wxPanel(parent){
+    time = 0;
+    diff = 0;
     Bind(wxEVT_PAINT, &BasicDrawPane::paintEvent, this);
     xpos = 0;
-    for (int i = 0; i<1024; i++) {
+    for (int i = 0; i<1024/2; i++) {
         data.push_back(0);
     }
 }
@@ -40,7 +42,9 @@ void BasicDrawPane::paintNow()
 
 void BasicDrawPane::plotvalue(int value)
 {
-    std::cout << "data:" << value << std::endl;
+    diff = wxGetUTCTimeMillis()-time;
+    time = wxGetUTCTimeMillis();
+    //std::cout << "data:" << value << std::endl;
     //data.at(xpos) += 0.1;
     
     data.at(xpos) = (float)value/64;
@@ -62,7 +66,7 @@ void BasicDrawPane::render(wxDC&  dc)
     
     // ursprung oben links
     // draw some text
-    //dc.DrawText(wxT("Testing"), 40, 60);
+
     
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
     
@@ -70,6 +74,10 @@ void BasicDrawPane::render(wxDC&  dc)
     dc.DrawLine( 0, h/2, w, h/2 );
     
     dc.SetPen(*wxBLACK_PEN);
+
+    
+    dc.DrawText(wxString::Format(wxT("%i"),diff*50), 40, 60);
+    dc.DrawLine( 40, 60, 40+50, 60 );
     
     x = 0;
     y = h/2;
