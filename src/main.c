@@ -305,6 +305,12 @@ int main(void)
             case 13:
                 e = (int)(kal.cur * 64 / 16 + 63);
                 break;
+	        case 14:
+	            e = (int)(time%100);
+	            break;
+		    case 15:
+		        e = (int)((mag_pos+M_PI)/(2*M_PI)*127);
+		        break;
             default:
                 e = 0;
         }
