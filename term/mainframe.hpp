@@ -10,6 +10,7 @@
 #include <wx/choice.h>
 #include <wx/arrstr.h>
 #include <wx/button.h>
+#include <wx/config.h>
 #include <math.h>
 #include <vector>
 #include <libserialport.h>
@@ -25,6 +26,7 @@ private:
     wxButton *clear;
     wxRadioButton *uhu;
     wxRadioButton *stmbl;
+    wxConfig *config;
     struct sp_port **ports;
     struct sp_port *port;
     wxChoice *choose_port;
