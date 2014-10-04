@@ -1692,6 +1692,31 @@ Based on the following sources:
 <text x="-10.541" y="-2.921" size="1.27" layer="25" ratio="10" rot="R90">&gt;NAME</text>
 <text x="-7.493" y="-0.635" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
 </package>
+<package name="DIL14">
+<description>&lt;b&gt;Dual In Line Package&lt;/b&gt;</description>
+<wire x1="8.89" y1="2.921" x2="-8.89" y2="2.921" width="0.1524" layer="21"/>
+<wire x1="-8.89" y1="-2.921" x2="8.89" y2="-2.921" width="0.1524" layer="21"/>
+<wire x1="8.89" y1="2.921" x2="8.89" y2="-2.921" width="0.1524" layer="21"/>
+<wire x1="-8.89" y1="2.921" x2="-8.89" y2="1.016" width="0.1524" layer="21"/>
+<wire x1="-8.89" y1="-2.921" x2="-8.89" y2="-1.016" width="0.1524" layer="21"/>
+<wire x1="-8.89" y1="1.016" x2="-8.89" y2="-1.016" width="0.1524" layer="21" curve="-180"/>
+<pad name="1" x="-7.62" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="2" x="-5.08" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="7" x="7.62" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="8" x="7.62" y="3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="3" x="-2.54" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="4" x="0" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="6" x="5.08" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="5" x="2.54" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="9" x="5.08" y="3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="10" x="2.54" y="3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="11" x="0" y="3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="12" x="-2.54" y="3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="13" x="-5.08" y="3.81" drill="0.8128" shape="long" rot="R90"/>
+<pad name="14" x="-7.62" y="3.81" drill="0.8128" shape="long" rot="R90"/>
+<text x="-9.271" y="-3.048" size="1.27" layer="25" ratio="10" rot="R90">&gt;NAME</text>
+<text x="-6.731" y="-0.635" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+</package>
 </packages>
 </library>
 </libraries>
@@ -1949,6 +1974,7 @@ design rules under a new name.</description>
 <element name="R19" library="rcl" package="0204/7" value="" x="67.945" y="12.7" rot="R180"/>
 <element name="C12" library="capacitor-wima" package="C5B5" value="" x="81.915" y="45.72" rot="R270"/>
 <element name="R2" library="pot" package="CA6V" value="" x="66.675" y="7.62" rot="R90"/>
+<element name="IC5" library="40xx" package="DIL14" value="4013N" x="51.435" y="13.335" rot="R270"/>
 </elements>
 <signals>
 <signal name="N$1">
@@ -2387,6 +2413,12 @@ design rules under a new name.</description>
 <wire x1="13.335" y1="44.45" x2="35.56" y2="44.45" width="0.4064" layer="16"/>
 <wire x1="35.56" y1="44.45" x2="35.56" y2="28.575" width="0.4064" layer="16"/>
 <wire x1="35.56" y1="28.575" x2="67.31" y2="28.575" width="0.4064" layer="16"/>
+</signal>
+<signal name="VSS">
+<contactref element="IC5" pad="7"/>
+</signal>
+<signal name="VDD">
+<contactref element="IC5" pad="14"/>
 </signal>
 </signals>
 </board>
