@@ -18423,6 +18423,10 @@ grid 2.54 mm</description>
 <part name="GND27" library="supply1" deviceset="GND" device=""/>
 <part name="C19" library="rcl" deviceset="C-EU" device="050-025X075"/>
 <part name="GND28" library="supply1" deviceset="GND" device=""/>
+<part name="C20" library="rcl" deviceset="C-EU" device="050-025X075"/>
+<part name="C21" library="rcl" deviceset="C-EU" device="050-025X075"/>
+<part name="GND29" library="supply1" deviceset="GND" device=""/>
+<part name="GND30" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -18553,6 +18557,10 @@ grid 2.54 mm</description>
 <instance part="GND27" gate="1" x="121.92" y="106.68"/>
 <instance part="C19" gate="G$1" x="132.08" y="119.38"/>
 <instance part="GND28" gate="1" x="132.08" y="106.68"/>
+<instance part="C20" gate="G$1" x="139.7" y="119.38"/>
+<instance part="C21" gate="G$1" x="147.32" y="119.38"/>
+<instance part="GND29" gate="1" x="139.7" y="106.68"/>
+<instance part="GND30" gate="1" x="147.32" y="106.68"/>
 </instances>
 <busses>
 </busses>
@@ -18837,6 +18845,14 @@ grid 2.54 mm</description>
 <pinref part="R8" gate="G$1" pin="1"/>
 <wire x1="91.44" y1="53.34" x2="86.36" y2="53.34" width="0.1524" layer="91"/>
 <junction x="83.82" y="60.96"/>
+</segment>
+<segment>
+<wire x1="139.7" y1="109.22" x2="139.7" y2="114.3" width="0.1524" layer="91"/>
+<pinref part="C20" gate="G$1" pin="2"/>
+</segment>
+<segment>
+<wire x1="147.32" y1="109.22" x2="147.32" y2="114.3" width="0.1524" layer="91"/>
+<pinref part="C21" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="N$10" class="0">
@@ -19206,6 +19222,14 @@ grid 2.54 mm</description>
 <wire x1="68.58" y1="124.46" x2="60.96" y2="124.46" width="0.1524" layer="91"/>
 <junction x="60.96" y="124.46"/>
 <junction x="68.58" y="124.46"/>
+<wire x1="137.16" y1="124.46" x2="139.7" y2="124.46" width="0.1524" layer="91"/>
+<wire x1="139.7" y1="124.46" x2="147.32" y2="124.46" width="0.1524" layer="91"/>
+<wire x1="129.54" y1="124.46" x2="132.08" y2="124.46" width="0.1524" layer="91"/>
+<junction x="132.08" y="124.46"/>
+<wire x1="132.08" y1="124.46" x2="139.7" y2="124.46" width="0.1524" layer="91"/>
+<wire x1="139.7" y1="124.46" x2="139.7" y2="121.92" width="0.1524" layer="91"/>
+<junction x="139.7" y="124.46"/>
+<pinref part="C20" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="P+13" gate="1" pin="+5V"/>
@@ -19264,6 +19288,10 @@ grid 2.54 mm</description>
 <pinref part="OK3" gate="A" pin="VE"/>
 <wire x1="-88.9" y1="38.1" x2="-88.9" y2="35.56" width="0.1524" layer="91"/>
 <junction x="-88.9" y="38.1"/>
+</segment>
+<segment>
+<wire x1="147.32" y1="124.46" x2="147.32" y2="121.92" width="0.1524" layer="91"/>
+<pinref part="C21" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="N$42" class="0">
