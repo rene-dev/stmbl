@@ -1979,9 +1979,9 @@ design rules under a new name.</description>
 </pass>
 </autorouter>
 <elements>
-<element name="C1" library="capacitor-wima" package="C5B5" value="" x="84.455" y="54.61" rot="R90"/>
-<element name="C2" library="capacitor-wima" package="C5B5" value="" x="84.455" y="62.23" rot="R90"/>
-<element name="C3" library="capacitor-wima" package="C5B5" value="" x="84.455" y="69.85" rot="R270"/>
+<element name="C1" library="capacitor-wima" package="C5B5" value="4.7µ" x="84.455" y="54.61" rot="R90"/>
+<element name="C2" library="capacitor-wima" package="C5B5" value="4.7µ" x="84.455" y="62.23" rot="R90"/>
+<element name="C3" library="capacitor-wima" package="C5B5" value="4.7µ" x="84.455" y="69.85" rot="R270"/>
 <element name="C4" library="capacitor-wima" package="C5B5" value="" x="84.455" y="46.355" rot="R270"/>
 <element name="OK1" library="optocoupler" package="DIL08" value="6N137" x="26.67" y="29.845" rot="R270">
 <attribute name="OC_NEWARK" value="52M1895" x="26.67" y="29.845" size="1.778" layer="27" rot="R270" display="off"/>
@@ -2007,38 +2007,38 @@ design rules under a new name.</description>
 <attribute name="MF" value="" x="26.67" y="9.525" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="OC_FARNELL" value="1328376" x="26.67" y="9.525" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
-<element name="R1" library="rcl" package="0204/7" value="" x="48.895" y="14.605" rot="R180"/>
+<element name="R1" library="rcl" package="0204/7" value="10K" x="48.895" y="14.605" rot="R180"/>
 <element name="R3" library="rcl" package="0204/7" value="" x="55.245" y="26.67" rot="R270"/>
 <element name="R5" library="rcl" package="0204/7" value="" x="52.705" y="23.495" rot="R270"/>
 <element name="R7" library="rcl" package="0204/7" value="" x="50.165" y="22.225" rot="R270"/>
 <element name="X2" library="con-appsys" package="RJ45" value="" x="5.715" y="19.685" rot="R270"/>
 <element name="IC3" library="linear" package="DIL08" value="LM393N" x="79.375" y="10.16" rot="R180"/>
 <element name="R9" library="rcl" package="0204/7" value="" x="47.625" y="20.32" rot="R270"/>
-<element name="C5" library="rcl" package="E2,5-5" value="" x="10.16" y="45.72"/>
-<element name="C6" library="rcl" package="E2,5-5" value="" x="5.08" y="45.72"/>
-<element name="C7" library="rcl" package="C050-025X075" value="" x="68.58" y="34.29" rot="R270"/>
-<element name="C8" library="rcl" package="C050-025X075" value="" x="34.29" y="8.255" rot="R270"/>
-<element name="C9" library="rcl" package="C050-025X075" value="" x="18.415" y="41.275" rot="R90"/>
-<element name="C10" library="rcl" package="C050-025X075" value="" x="83.82" y="38.1" rot="R270"/>
-<element name="R11" library="rcl" package="0204/7" value="" x="86.36" y="20.32" rot="R90"/>
-<element name="C14" library="rcl" package="C050-025X075" value="" x="70.485" y="5.08" rot="R180"/>
-<element name="LED1" library="led" package="LED5MM" value="" x="15.875" y="48.895" rot="R180"/>
-<element name="LED2" library="led" package="LED5MM" value="" x="92.71" y="8.89" rot="R90"/>
-<element name="R12" library="rcl" package="0204/7" value="" x="88.9" y="3.175" rot="R180"/>
-<element name="R13" library="rcl" package="0204/7" value="" x="20.955" y="42.545" rot="R270"/>
-<element name="C13" library="rcl" package="C050-025X075" value="" x="86.36" y="9.525" rot="R90"/>
-<element name="R14" library="rcl" package="0204V" value="" x="18.415" y="31.115"/>
-<element name="R15" library="rcl" package="0204V" value="" x="18.415" y="10.795" rot="R180"/>
-<element name="R16" library="rcl" package="0204V" value="" x="18.415" y="20.955" rot="R180"/>
-<element name="R17" library="rcl" package="0204V" value="" x="11.43" y="29.845"/>
+<element name="C5" library="rcl" package="E2,5-5" value="0.33µ" x="10.16" y="45.72"/>
+<element name="C6" library="rcl" package="E2,5-5" value="0.1µ" x="5.08" y="45.72"/>
+<element name="C7" library="rcl" package="C050-025X075" value="100n" x="68.58" y="34.29" rot="R270"/>
+<element name="C8" library="rcl" package="C050-025X075" value="100n" x="34.29" y="8.255" rot="R270"/>
+<element name="C9" library="rcl" package="C050-025X075" value="100n" x="18.415" y="41.275" rot="R90"/>
+<element name="C10" library="rcl" package="C050-025X075" value="100n" x="83.82" y="38.1" rot="R270"/>
+<element name="R11" library="rcl" package="0204/7" value="1K" x="86.36" y="20.32" rot="R90"/>
+<element name="C14" library="rcl" package="C050-025X075" value="100n" x="70.485" y="5.08" rot="R180"/>
+<element name="LED1" library="led" package="LED5MM" value="GELB" x="15.875" y="48.895" rot="R180"/>
+<element name="LED2" library="led" package="LED5MM" value="ROT" x="92.71" y="8.89" rot="R90"/>
+<element name="R12" library="rcl" package="0204/7" value="470" x="88.9" y="3.175" rot="R180"/>
+<element name="R13" library="rcl" package="0204/7" value="470" x="20.955" y="42.545" rot="R270"/>
+<element name="C13" library="rcl" package="C050-025X075" value="100n" x="86.36" y="9.525" rot="R90"/>
+<element name="R14" library="rcl" package="0204V" value="180" x="18.415" y="31.115"/>
+<element name="R15" library="rcl" package="0204V" value="180" x="18.415" y="10.795" rot="R180"/>
+<element name="R16" library="rcl" package="0204V" value="180" x="18.415" y="20.955" rot="R180"/>
+<element name="R17" library="rcl" package="0204V" value="180" x="11.43" y="29.845"/>
 <element name="IC1" library="iram-b" package="SIP23_TOP" value="IRAMTOP" x="88.265" y="64.135" rot="R90"/>
 <element name="IC4" library="40xx" package="DIL16" value="4049N" x="75.565" y="27.94" rot="R270"/>
-<element name="C11" library="rcl" package="C050-025X075" value="" x="63.5" y="15.875"/>
-<element name="R6" library="rcl" package="0204/7" value="" x="69.215" y="8.255" rot="R180"/>
-<element name="R18" library="rcl" package="0204/7" value="" x="69.85" y="13.97" rot="R270"/>
-<element name="C16" library="rcl" package="C050-025X075" value="" x="73.025" y="12.7" rot="R90"/>
-<element name="R19" library="rcl" package="0204/7" value="" x="58.42" y="19.685" rot="R90"/>
-<element name="R2" library="pot" package="CA6V" value="" x="63.5" y="21.59" rot="R90"/>
+<element name="C11" library="rcl" package="C050-025X075" value="100n" x="63.5" y="15.875"/>
+<element name="R6" library="rcl" package="0204/7" value="33K" x="69.215" y="8.255" rot="R180"/>
+<element name="R18" library="rcl" package="0204/7" value="3.9K" x="69.85" y="13.97" rot="R270"/>
+<element name="C16" library="rcl" package="C050-025X075" value="100n" x="73.025" y="12.7" rot="R90"/>
+<element name="R19" library="rcl" package="0204/7" value="100" x="58.42" y="19.685" rot="R90"/>
+<element name="R2" library="pot" package="CA6V" value="5K" x="63.5" y="21.59" rot="R90"/>
 <element name="IC5" library="40xx" package="DIL14" value="4013N" x="52.705" y="6.985" rot="R180"/>
 <element name="X3" library="con-wago-508" package="W237-133" value="" x="74.295" y="70.485" rot="R180">
 <attribute name="OC_NEWARK" value="unknown" x="74.295" y="70.485" size="1.778" layer="27" rot="R180" display="off"/>
@@ -2052,12 +2052,12 @@ design rules under a new name.</description>
 <attribute name="MF" value="" x="60.325" y="70.485" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="60.325" y="70.485" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="C15" library="rcl" package="EB25D" value="" x="64.135" y="53.34" rot="R225"/>
-<element name="R4" library="rcl" package="0617V" value="" x="48.26" y="71.12"/>
-<element name="R8" library="rcl" package="0617V" value="" x="33.02" y="71.12" rot="R180"/>
-<element name="C17" library="rcl" package="EB25D" value="" x="38.735" y="53.34" rot="R135"/>
-<element name="R10" library="rcl" package="0204/7" value="" x="79.375" y="4.445" rot="R180"/>
-<element name="R20" library="rcl" package="0204/7" value="" x="59.055" y="33.02" rot="R90"/>
+<element name="C15" library="rcl" package="EB25D" value="1000µ" x="64.135" y="53.34" rot="R225"/>
+<element name="R4" library="rcl" package="0617V" value="18K" x="48.26" y="71.12"/>
+<element name="R8" library="rcl" package="0617V" value="18K" x="33.02" y="71.12" rot="R180"/>
+<element name="C17" library="rcl" package="EB25D" value="1000µ" x="38.735" y="53.34" rot="R135"/>
+<element name="R10" library="rcl" package="0204/7" value="100K" x="79.375" y="4.445" rot="R180"/>
+<element name="R20" library="rcl" package="0204/7" value="22" x="59.055" y="33.02" rot="R90"/>
 <element name="Q1" library="transistor-power" package="TO220BV" value="IRF740" x="17.78" y="64.77"/>
 <element name="X5" library="con-wago-508" package="W237-132" value="" x="17.78" y="70.485" rot="R180">
 <attribute name="OC_NEWARK" value="unknown" x="17.78" y="70.485" size="1.778" layer="27" rot="R180" display="off"/>
@@ -2071,18 +2071,18 @@ design rules under a new name.</description>
 <attribute name="MF" value="" x="6.35" y="70.485" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="6.35" y="70.485" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="IC6" library="v-reg" package="78XXS" value="" x="6.35" y="48.26" rot="R180"/>
-<element name="IC7" library="v-reg" package="78XXS" value="" x="6.35" y="64.77"/>
-<element name="C12" library="rcl" package="E2,5-5" value="" x="5.08" y="55.245"/>
-<element name="C18" library="rcl" package="E2,5-5" value="" x="10.16" y="55.245"/>
-<element name="LED3" library="led" package="LED5MM" value="" x="15.875" y="55.88" rot="R180"/>
-<element name="R21" library="rcl" package="0204/7" value="" x="62.23" y="33.02" rot="R270"/>
-<element name="R22" library="rcl" package="0204/7" value="" x="66.04" y="30.48" rot="R90"/>
-<element name="C19" library="rcl" package="C050-025X075" value="" x="63.5" y="5.08" rot="R90"/>
-<element name="C20" library="rcl" package="C050-025X075" value="" x="34.29" y="18.415" rot="R270"/>
-<element name="C21" library="rcl" package="C050-025X075" value="" x="34.29" y="28.575" rot="R270"/>
+<element name="IC6" library="v-reg" package="78XXS" value="7805" x="6.35" y="48.26" rot="R180"/>
+<element name="IC7" library="v-reg" package="78XXS" value="7815" x="6.35" y="64.77"/>
+<element name="C12" library="rcl" package="E2,5-5" value="0.33µ" x="5.08" y="55.245"/>
+<element name="C18" library="rcl" package="E2,5-5" value="0.1µ" x="10.16" y="55.245"/>
+<element name="LED3" library="led" package="LED5MM" value="GRÜN" x="15.875" y="55.88" rot="R180"/>
+<element name="R21" library="rcl" package="0204/7" value="470" x="62.23" y="33.02" rot="R270"/>
+<element name="R22" library="rcl" package="0204/7" value="10K" x="66.04" y="30.48" rot="R90"/>
+<element name="C19" library="rcl" package="C050-025X075" value="100n" x="63.5" y="5.08" rot="R90"/>
+<element name="C20" library="rcl" package="C050-025X075" value="100n" x="34.29" y="18.415" rot="R270"/>
+<element name="C21" library="rcl" package="C050-025X075" value="100n" x="34.29" y="28.575" rot="R270"/>
 <element name="C22" library="rcl" package="C150-054X183" value="" x="79.375" y="50.165" rot="R270"/>
-<element name="R23" library="rcl" package="0204/7" value="" x="88.9" y="17.145" rot="R90"/>
+<element name="R23" library="rcl" package="0204/7" value="1K" x="88.9" y="17.145" rot="R90"/>
 <element name="R24" library="rcl" package="0204V" value="" x="8.89" y="59.055"/>
 <element name="R25" library="rcl" package="0204V" value="" x="3.81" y="59.055"/>
 </elements>

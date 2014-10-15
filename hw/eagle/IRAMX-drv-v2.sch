@@ -18324,16 +18324,16 @@ grid 2.54 mm</description>
 </class>
 </classes>
 <parts>
-<part name="C1" library="capacitor-wima" deviceset="C" device="5/5"/>
-<part name="C2" library="capacitor-wima" deviceset="C" device="5/5"/>
-<part name="C3" library="capacitor-wima" deviceset="C" device="5/5"/>
+<part name="C1" library="capacitor-wima" deviceset="C" device="5/5" value="4.7µ"/>
+<part name="C2" library="capacitor-wima" deviceset="C" device="5/5" value="4.7µ"/>
+<part name="C3" library="capacitor-wima" deviceset="C" device="5/5" value="4.7µ"/>
 <part name="C4" library="capacitor-wima" deviceset="C" device="5/5"/>
 <part name="OK1" library="optocoupler" deviceset="6N137" device=""/>
 <part name="OK2" library="optocoupler" deviceset="6N137" device=""/>
 <part name="OK3" library="optocoupler" deviceset="6N137" device=""/>
 <part name="OK4" library="optocoupler" deviceset="6N137" device=""/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
-<part name="R1" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="R1" library="rcl" deviceset="R-EU_" device="0204/7" value="10K"/>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
@@ -18353,54 +18353,54 @@ grid 2.54 mm</description>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
 <part name="P+13" library="supply1" deviceset="+5V" device=""/>
 <part name="R9" library="rcl" deviceset="R-EU_" device="0204/7"/>
-<part name="C5" library="rcl" deviceset="CPOL-EU" device="E2.5-5"/>
-<part name="C6" library="rcl" deviceset="CPOL-EU" device="E2.5-5"/>
-<part name="C7" library="rcl" deviceset="C-EU" device="050-025X075"/>
-<part name="C8" library="rcl" deviceset="C-EU" device="050-025X075"/>
-<part name="C9" library="rcl" deviceset="C-EU" device="050-025X075"/>
+<part name="C5" library="rcl" deviceset="CPOL-EU" device="E2.5-5" value="0.33µ"/>
+<part name="C6" library="rcl" deviceset="CPOL-EU" device="E2.5-5" value="0.1µ"/>
+<part name="C7" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
+<part name="C8" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
+<part name="C9" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
 <part name="P+17" library="supply1" deviceset="+5V" device=""/>
-<part name="C10" library="rcl" deviceset="C-EU" device="050-025X075"/>
+<part name="C10" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
-<part name="R11" library="rcl" deviceset="R-EU_" device="0204/7"/>
-<part name="C14" library="rcl" deviceset="C-EU" device="050-025X075"/>
+<part name="R11" library="rcl" deviceset="R-EU_" device="0204/7" value="1K"/>
+<part name="C14" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
 <part name="GND20" library="supply1" deviceset="GND" device=""/>
-<part name="LED1" library="led" deviceset="LED" device="5MM"/>
-<part name="LED2" library="led" deviceset="LED" device="5MM"/>
-<part name="R12" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="LED1" library="led" deviceset="LED" device="5MM" value="GELB"/>
+<part name="LED2" library="led" deviceset="LED" device="5MM" value="ROT"/>
+<part name="R12" library="rcl" deviceset="R-EU_" device="0204/7" value="470"/>
 <part name="P+18" library="supply1" deviceset="+5V" device=""/>
-<part name="R13" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="R13" library="rcl" deviceset="R-EU_" device="0204/7" value="470"/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
-<part name="C13" library="rcl" deviceset="C-EU" device="050-025X075"/>
+<part name="C13" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
-<part name="R14" library="rcl" deviceset="R-EU_" device="0204/2V"/>
-<part name="R15" library="rcl" deviceset="R-EU_" device="0204/2V"/>
-<part name="R16" library="rcl" deviceset="R-EU_" device="0204/2V"/>
-<part name="R17" library="rcl" deviceset="R-EU_" device="0204/2V"/>
+<part name="R14" library="rcl" deviceset="R-EU_" device="0204/2V" value="180"/>
+<part name="R15" library="rcl" deviceset="R-EU_" device="0204/2V" value="180"/>
+<part name="R16" library="rcl" deviceset="R-EU_" device="0204/2V" value="180"/>
+<part name="R17" library="rcl" deviceset="R-EU_" device="0204/2V" value="180"/>
 <part name="IC1" library="iram-b" deviceset="IRAM" device="TOP"/>
 <part name="IC4" library="40xx" deviceset="4049" device="N"/>
-<part name="C11" library="rcl" deviceset="C-EU" device="050-025X075"/>
-<part name="R6" library="rcl" deviceset="R-EU_" device="0204/7"/>
-<part name="R18" library="rcl" deviceset="R-EU_" device="0204/7"/>
-<part name="C16" library="rcl" deviceset="C-EU" device="050-025X075"/>
-<part name="R19" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="C11" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
+<part name="R6" library="rcl" deviceset="R-EU_" device="0204/7" value="33K"/>
+<part name="R18" library="rcl" deviceset="R-EU_" device="0204/7" value="3.9K"/>
+<part name="C16" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
+<part name="R19" library="rcl" deviceset="R-EU_" device="0204/7" value="100"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
-<part name="R2" library="pot" deviceset="TRIM_EU-" device="CA6V"/>
+<part name="R2" library="pot" deviceset="TRIM_EU-" device="CA6V" value="5K"/>
 <part name="IC5" library="40xx" deviceset="4013" device="N"/>
 <part name="X3" library="con-wago-508" deviceset="W237-03P" device=""/>
 <part name="X4" library="con-wago-508" deviceset="W237-02P" device=""/>
-<part name="C15" library="rcl" deviceset="CPOL-EU" device="E10-25"/>
-<part name="R4" library="rcl" deviceset="R-EU_" device="0617/5V"/>
-<part name="R8" library="rcl" deviceset="R-EU_" device="0617/5V"/>
-<part name="C17" library="rcl" deviceset="CPOL-EU" device="E10-25"/>
-<part name="R10" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="C15" library="rcl" deviceset="CPOL-EU" device="E10-25" value="1000µ"/>
+<part name="R4" library="rcl" deviceset="R-EU_" device="0617/5V" value="18K"/>
+<part name="R8" library="rcl" deviceset="R-EU_" device="0617/5V" value="18K"/>
+<part name="C17" library="rcl" deviceset="CPOL-EU" device="E10-25" value="1000µ"/>
+<part name="R10" library="rcl" deviceset="R-EU_" device="0204/7" value="100K"/>
 <part name="P+7" library="supply1" deviceset="+5V" device=""/>
-<part name="R20" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="R20" library="rcl" deviceset="R-EU_" device="0204/7" value="22"/>
 <part name="Q1" library="transistor-power" deviceset="IRF740" device=""/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
 <part name="X5" library="con-wago-508" deviceset="W237-02P" device=""/>
@@ -18409,16 +18409,16 @@ grid 2.54 mm</description>
 <part name="P+20" library="supply1" deviceset="+24V" device=""/>
 <part name="X1" library="con-wago-508" deviceset="W237-02P" device=""/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
-<part name="IC6" library="v-reg" deviceset="78XXS" device=""/>
-<part name="IC7" library="v-reg" deviceset="78XXS" device=""/>
-<part name="C12" library="rcl" deviceset="CPOL-EU" device="E2.5-5"/>
-<part name="C18" library="rcl" deviceset="CPOL-EU" device="E2.5-5"/>
+<part name="IC6" library="v-reg" deviceset="78XXS" device="" value="7805"/>
+<part name="IC7" library="v-reg" deviceset="78XXS" device="" value="7815"/>
+<part name="C12" library="rcl" deviceset="CPOL-EU" device="E2.5-5" value="0.33µ"/>
+<part name="C18" library="rcl" deviceset="CPOL-EU" device="E2.5-5" value="0.1µ"/>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>
 <part name="GND22" library="supply1" deviceset="GND" device=""/>
 <part name="GND23" library="supply1" deviceset="GND" device=""/>
-<part name="LED3" library="led" deviceset="LED" device="5MM"/>
-<part name="R21" library="rcl" deviceset="R-EU_" device="0204/7"/>
-<part name="R22" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="LED3" library="led" deviceset="LED" device="5MM" value="GRÜN"/>
+<part name="R21" library="rcl" deviceset="R-EU_" device="0204/7" value="470"/>
+<part name="R22" library="rcl" deviceset="R-EU_" device="0204/7" value="10K"/>
 <part name="P+22" library="supply1" deviceset="+5V" device=""/>
 <part name="P+23" library="supply1" deviceset="+5V" device=""/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
@@ -18427,15 +18427,15 @@ grid 2.54 mm</description>
 <part name="P+24" library="supply1" deviceset="+5V" device=""/>
 <part name="GND26" library="supply1" deviceset="GND" device=""/>
 <part name="GND27" library="supply1" deviceset="GND" device=""/>
-<part name="C19" library="rcl" deviceset="C-EU" device="050-025X075"/>
+<part name="C19" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
 <part name="GND28" library="supply1" deviceset="GND" device=""/>
-<part name="C20" library="rcl" deviceset="C-EU" device="050-025X075"/>
-<part name="C21" library="rcl" deviceset="C-EU" device="050-025X075"/>
+<part name="C20" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
+<part name="C21" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
 <part name="GND30" library="supply1" deviceset="GND" device=""/>
 <part name="C22" library="rcl" deviceset="C-EU" device="150-054X183"/>
 <part name="GND31" library="supply1" deviceset="GND" device=""/>
-<part name="R23" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="R23" library="rcl" deviceset="R-EU_" device="0204/7" value="1K"/>
 <part name="R24" library="rcl" deviceset="R-EU_" device="0204/2V"/>
 <part name="R25" library="rcl" deviceset="R-EU_" device="0204/2V"/>
 </parts>
