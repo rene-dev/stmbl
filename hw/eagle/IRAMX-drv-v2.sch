@@ -18327,7 +18327,7 @@ grid 2.54 mm</description>
 <part name="C1" library="capacitor-wima" deviceset="C" device="5/5" value="4.7µ"/>
 <part name="C2" library="capacitor-wima" deviceset="C" device="5/5" value="4.7µ"/>
 <part name="C3" library="capacitor-wima" deviceset="C" device="5/5" value="4.7µ"/>
-<part name="C4" library="capacitor-wima" deviceset="C" device="5/5"/>
+<part name="C4" library="capacitor-wima" deviceset="C" device="5/5" value="1000p"/>
 <part name="OK1" library="optocoupler" deviceset="6N137" device=""/>
 <part name="OK2" library="optocoupler" deviceset="6N137" device=""/>
 <part name="OK3" library="optocoupler" deviceset="6N137" device=""/>
@@ -18342,17 +18342,17 @@ grid 2.54 mm</description>
 <part name="P+2" library="supply1" deviceset="+5V" device=""/>
 <part name="P+3" library="supply1" deviceset="+5V" device=""/>
 <part name="P+4" library="supply1" deviceset="+5V" device=""/>
-<part name="R3" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="R3" library="rcl" deviceset="R-EU_" device="0204/7" value="10K"/>
 <part name="P+6" library="supply1" deviceset="+5V" device=""/>
-<part name="R5" library="rcl" deviceset="R-EU_" device="0204/7"/>
-<part name="R7" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="R5" library="rcl" deviceset="R-EU_" device="0204/7" value="10K"/>
+<part name="R7" library="rcl" deviceset="R-EU_" device="0204/7" value="10K"/>
 <part name="P+8" library="supply1" deviceset="+5V" device=""/>
 <part name="P+10" library="supply1" deviceset="+5V" device=""/>
 <part name="X2" library="con-appsys" deviceset="RJ45" device=""/>
 <part name="IC3" library="linear" deviceset="LM393" device="N"/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
 <part name="P+13" library="supply1" deviceset="+5V" device=""/>
-<part name="R9" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="R9" library="rcl" deviceset="R-EU_" device="0204/7" value="10K"/>
 <part name="C5" library="rcl" deviceset="CPOL-EU" device="E2.5-5" value="0.33µ"/>
 <part name="C6" library="rcl" deviceset="CPOL-EU" device="E2.5-5" value="0.1µ"/>
 <part name="C7" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
@@ -18433,7 +18433,7 @@ grid 2.54 mm</description>
 <part name="C21" library="rcl" deviceset="C-EU" device="050-025X075" value="100n"/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
 <part name="GND30" library="supply1" deviceset="GND" device=""/>
-<part name="C22" library="rcl" deviceset="C-EU" device="150-054X183"/>
+<part name="C22" library="rcl" deviceset="C-EU" device="150-054X183" value="100p"/>
 <part name="GND31" library="supply1" deviceset="GND" device=""/>
 <part name="R23" library="rcl" deviceset="R-EU_" device="0204/7" value="1K"/>
 <part name="R24" library="rcl" deviceset="R-EU_" device="0204/2V"/>

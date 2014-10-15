@@ -1982,7 +1982,7 @@ design rules under a new name.</description>
 <element name="C1" library="capacitor-wima" package="C5B5" value="4.7µ" x="84.455" y="54.61" rot="R90"/>
 <element name="C2" library="capacitor-wima" package="C5B5" value="4.7µ" x="84.455" y="62.23" rot="R90"/>
 <element name="C3" library="capacitor-wima" package="C5B5" value="4.7µ" x="84.455" y="69.85" rot="R270"/>
-<element name="C4" library="capacitor-wima" package="C5B5" value="" x="84.455" y="46.355" rot="R270"/>
+<element name="C4" library="capacitor-wima" package="C5B5" value="1000p" x="84.455" y="46.355" rot="R270"/>
 <element name="OK1" library="optocoupler" package="DIL08" value="6N137" x="26.67" y="29.845" rot="R270">
 <attribute name="OC_NEWARK" value="52M1895" x="26.67" y="29.845" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="MPN" value="6N137" x="26.67" y="29.845" size="1.778" layer="27" rot="R270" display="off"/>
@@ -2008,12 +2008,12 @@ design rules under a new name.</description>
 <attribute name="OC_FARNELL" value="1328376" x="26.67" y="9.525" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="R1" library="rcl" package="0204/7" value="10K" x="48.895" y="14.605" rot="R180"/>
-<element name="R3" library="rcl" package="0204/7" value="" x="55.245" y="26.67" rot="R270"/>
-<element name="R5" library="rcl" package="0204/7" value="" x="52.705" y="23.495" rot="R270"/>
-<element name="R7" library="rcl" package="0204/7" value="" x="50.165" y="22.225" rot="R270"/>
+<element name="R3" library="rcl" package="0204/7" value="10K" x="55.245" y="26.67" rot="R270"/>
+<element name="R5" library="rcl" package="0204/7" value="10K" x="52.705" y="23.495" rot="R270"/>
+<element name="R7" library="rcl" package="0204/7" value="10K" x="50.165" y="22.225" rot="R270"/>
 <element name="X2" library="con-appsys" package="RJ45" value="" x="5.715" y="19.685" rot="R270"/>
 <element name="IC3" library="linear" package="DIL08" value="LM393N" x="79.375" y="10.16" rot="R180"/>
-<element name="R9" library="rcl" package="0204/7" value="" x="47.625" y="20.32" rot="R270"/>
+<element name="R9" library="rcl" package="0204/7" value="10K" x="47.625" y="20.32" rot="R270"/>
 <element name="C5" library="rcl" package="E2,5-5" value="0.33µ" x="10.16" y="45.72"/>
 <element name="C6" library="rcl" package="E2,5-5" value="0.1µ" x="5.08" y="45.72"/>
 <element name="C7" library="rcl" package="C050-025X075" value="100n" x="68.58" y="34.29" rot="R270"/>
@@ -2081,7 +2081,7 @@ design rules under a new name.</description>
 <element name="C19" library="rcl" package="C050-025X075" value="100n" x="63.5" y="5.08" rot="R90"/>
 <element name="C20" library="rcl" package="C050-025X075" value="100n" x="34.29" y="18.415" rot="R270"/>
 <element name="C21" library="rcl" package="C050-025X075" value="100n" x="34.29" y="28.575" rot="R270"/>
-<element name="C22" library="rcl" package="C150-054X183" value="" x="79.375" y="50.165" rot="R270"/>
+<element name="C22" library="rcl" package="C150-054X183" value="100p" x="79.375" y="50.165" rot="R270"/>
 <element name="R23" library="rcl" package="0204/7" value="1K" x="88.9" y="17.145" rot="R90"/>
 <element name="R24" library="rcl" package="0204V" value="" x="8.89" y="59.055"/>
 <element name="R25" library="rcl" package="0204V" value="" x="3.81" y="59.055"/>
