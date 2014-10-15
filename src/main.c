@@ -69,6 +69,14 @@ enum{
 	EFEEDBACK
 } state;
 
+void enable(){
+	PWM_E = mag_res*0.9;
+}
+
+void disable(){
+	PWM_E = 0;
+}
+
 float get_enc_pos(){
 	return (TIM_GetCounter(TIM3) * 2 * M_PI / 2048);//nochmal in der setup
 }
@@ -90,18 +98,18 @@ void output_ac_pwm(){
     }
 
     mag_pos = mod(mag_pos);
-	TIM4->CCR1 = (sinf(mag_pos + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
-	TIM4->CCR2 = (sinf(mag_pos + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
-	TIM4->CCR4 = (sinf(mag_pos + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+	PWM_U = (sinf(mag_pos + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+	PWM_V = (sinf(mag_pos + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+	PWM_W = (sinf(mag_pos + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
 }
 
 void output_dc_pwm(){
 	float volt = CLAMP(voltage_scale,-1.0,1.0);
 
 	int foo = volt * mag_res * pwm_scale / 2 + mag_res / 2;
-	TIM4->CCR1 = foo;//PD12 PIN1
-	TIM4->CCR2 = mag_res-foo;//PD13 PIN2
-	TIM4->CCR4 = 0;//PD15 PIN3
+	PWM_U = foo;//PD12 PIN1
+	PWM_V = mag_res-foo;//PD13 PIN2
+	PWM_W = 0;//PD15 PIN3
 }
 
 void DMA2_Stream2_IRQHandler(void){
@@ -201,7 +209,7 @@ void TIM5_IRQHandler(void){ //1KHz
     pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
     pid.error = minus(soll_pos, ist);
 	if(ABS(pid.error) > DEG(45)){
-		GPIO_ResetBits(GPIOD,GPIO_Pin_14);//enable
+		disable();
 		state = EFOLLOW;
 		pid.enable = 0;
 	}
@@ -258,7 +266,7 @@ int main(void)
 	Wait(50);
 	startpos = get_res_pos();
 	pid.enable = 1;
-	GPIO_SetBits(GPIOD,GPIO_Pin_14);//enable
+	enable();
 
 	while(1)  // Do not exit
 	{

@@ -30,7 +30,6 @@ void setup(){
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
     
-    
     //messpin
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_4;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
@@ -38,16 +37,6 @@ void setup(){
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
-    
-      
-    //enable
-    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_14;
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-    GPIO_Init(GPIOD, &GPIO_InitStructure);
-
   
     /* int set up, TIM2*/
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -102,7 +91,7 @@ void setup_pwm(){
     /* GPIOD clock enable */
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_15;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -111,6 +100,7 @@ void setup_pwm(){
     
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_TIM4);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource13, GPIO_AF_TIM4);
+	 GPIO_PinAFConfig(GPIOD, GPIO_PinSource14, GPIO_AF_TIM4);
     GPIO_PinAFConfig(GPIOD, GPIO_PinSource15, GPIO_AF_TIM4);
 
     /* pwm set up, TIM4*/
@@ -136,6 +126,10 @@ void setup_pwm(){
     /* PWM1 Mode configuration: Channel2 */
     TIM_OC2Init(TIM4, &TIM_OCInitStructure);
     TIM_OC2PreloadConfig(TIM4, TIM_OCPreload_Enable);
+	 
+    /* PWM1 Mode configuration: Channel4 */
+    TIM_OC3Init(TIM4, &TIM_OCInitStructure);
+    TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable);
 
     /* PWM1 Mode configuration: Channel4 */
     TIM_OC4Init(TIM4, &TIM_OCInitStructure);

@@ -34,6 +34,12 @@
 #define RES_COS_PORT GPIOB
 #define RES_COS_CHANNEL ADC_Channel_9
 
+#define PWM_U TIM4->CCR1
+#define PWM_V TIM4->CCR2
+#define PWM_W TIM4->CCR4
+#define PWM_E TIM4->CCR3
+
+
 //sample times for F4: 3,15,28,56,84,112,144,480
 #define RES_SampleTime ADC_SampleTime_144Cycles
 
