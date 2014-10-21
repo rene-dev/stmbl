@@ -5,6 +5,9 @@
 *.hex
 *.bin
 *.map
+*.log
+*.net
+*.raw
 .DS_Store
 term/build
 term/xbuild
