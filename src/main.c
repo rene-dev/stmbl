@@ -70,7 +70,7 @@ enum{
 } state;
 
 void enable(){
-	PWM_E = mag_res*0.9;
+	PWM_E = mag_res*0.97;
 }
 
 void disable(){
@@ -87,6 +87,7 @@ float get_res_pos(){
 
 void output_ac_pwm(){
 	float volt = CLAMP(voltage_scale,-1.0,1.0);
+	volt = volt*-1;
 
     if(rescal){
         mag_pos += DEG(0.36*vel)*pole_count;// u/sec
@@ -208,7 +209,7 @@ void TIM5_IRQHandler(void){ //1KHz
     pid.feedbackv = minus(ist, ist_old) * freq;
     pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
     pid.error = minus(soll_pos, ist);
-	if(ABS(pid.error) > DEG(45)){
+	if(ABS(pid.error) > DEG(90)){
 		disable();
 		state = EFOLLOW;
 		pid.enable = 0;
