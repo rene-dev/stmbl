@@ -26,8 +26,8 @@ stmbl
 * stlink https://github.com/texane/stlink
 ##### Flashing
 Add gcc and stlink to your $PATH
-`make`
-`make burn`
+`make
+make burn`
 
 ####Building Servoterm
 ##### Requirements
@@ -36,7 +36,7 @@ Add gcc and stlink to your $PATH
 * wxwidgets >= 3.0
 * libserialport http://sigrok.org/wiki/Libserialport
 ##### Compiling
-`cd term/`
-`mkdir build/`
-`cmake ../`
-`make`
+`cd term/
+mkdir build/
+cmake ../
+make`
