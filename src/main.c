@@ -89,7 +89,7 @@ float get_res_pos(){
 
 void output_ac_pwm(){
 	float volt = CLAMP(voltage_scale,-1.0,1.0);
-	volt = volt*-1;
+	//volt = volt*-1;
 
     if(rescal){
         mag_pos += DEG(0.36*amp)*pole_count;// u/sec
