@@ -20,6 +20,10 @@ struct param{
       volatile float *floats[MAX_PARAMS];
       volatile int *ints[MAX_PARAMS];
     };
+
+    void (*read_callbacks[MAX_PARAMS])(float v);
+    void (*write_callbacks[MAX_PARAMS])(float v);
+
 		int param_count;
 } PARAMS;
 
@@ -33,6 +37,10 @@ int is_param(char* name);
 int register_float(char* name,volatile float *f);
 
 int register_int(char* name,volatile int *i);
+
+int register_read_callback(char* name, void (*db)(float v));
+
+int register_write_callback(char* name, void (*db)(float v));
 
 float get_param(char* name);
 
