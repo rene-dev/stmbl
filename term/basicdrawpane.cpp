@@ -5,8 +5,9 @@ BasicDrawPane::BasicDrawPane(wxFrame* parent) : wxPanel(parent){
     diff = 0;
     Bind(wxEVT_PAINT, &BasicDrawPane::paintEvent, this);
     xpos = 0;
+    data.push_back(std::vector<float>(0));
     for (int i = 0; i<1024/2; i++) {
-        data.push_back(0);
+        data[0].push_back(0);
     }
 }
 
@@ -47,7 +48,7 @@ void BasicDrawPane::plotvalue(int value)
     //std::cout << "data:" << value << std::endl;
     //data.at(xpos) += 0.1;
     
-    data.at(xpos) = (float)value/64;
+    data[0].at(xpos) = (float)value/64;
     xpos = (xpos+1)%data.size();
     Refresh();
     //oder
@@ -81,8 +82,8 @@ void BasicDrawPane::render(wxDC&  dc)
     
     x = 0;
     y = h/2;
-    xstep = w/(data.size()-1);
-    for(auto point : data){
+    xstep = w/(data[0].size()-1);
+    for(auto point : data[0]){
         xold = x;
         yold = y;
         y = h/2-point*h/2;

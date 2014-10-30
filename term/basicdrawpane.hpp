@@ -25,6 +25,6 @@ public:
 private:
     wxLongLong time;
     wxLongLong diff;
-    std::vector<float> data;
+    std::vector<std::vector<float>> data;
     int x,y,xold,yold,xpos,xstep;
 };
