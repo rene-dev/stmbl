@@ -15,7 +15,7 @@ void Wait(unsigned int ms);
 
 //bosch grau, gelb, grün
 #define pole_count 4
-#define res_offset DEG(52) //minimaler positiver resolver output bei mag_pos = 0
+#define res_offset DEG(36.6) //minimaler positiver resolver output bei mag_pos = 0
 
 //mayr gelb sw, rot
 //amp zu gering!
@@ -92,9 +92,7 @@ void output_ac_pwm(){
 	//volt = volt*-1;
 
     if(rescal){
-        mag_pos += DEG(0.36*amp)*pole_count;// u/sec
-        mag_pos = mod(mag_pos);
-        //mag_pos = 0;
+        mag_pos = 0;
         volt = calv;
     }else{
         mag_pos = get_res_pos() * pole_count + DEG(90);
@@ -191,14 +189,14 @@ float get_pos(float periode){
 			pos = mod(pos);
 			return(pos);
 		case 3: // square
-			if(sin(freq * time) > 0){
+			if(sin(freq * 2 * M_PI * time) > 0){
 				return(amp);
 			}
 			else{
 				return(-amp);
 			}
 		case 4: // sine
-			return(amp * sin(freq * time));
+			return(amp * sin(freq * 2 * M_PI * time));
 	}
 	return(0.0);
 }
@@ -237,11 +235,11 @@ void TIM5_IRQHandler(void){ //1KHz
     pid.feedbackv = minus(ist, ist_old) * freq;
     pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
     pid.error = minus(soll_pos, ist);
-	if(ABS(pid.error) > DEG(90)){
+	/*if(ABS(pid.error) > DEG(90)){
 		disable();
 		state = EFOLLOW;
 		pid.enable = 0;
-	}
+	}*/
 
     kal.res = ist;
     update(&kal);
