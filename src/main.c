@@ -15,7 +15,7 @@ void Wait(unsigned int ms);
 
 //bosch grau, gelb, grün
 #define pole_count 4
-#define res_offset DEG(52) //minimaler positiver resolver output bei mag_pos = 0
+#define res_offset DEG(36.6) //minimaler positiver resolver output bei mag_pos = 0
 
 //mayr gelb sw, rot
 //amp zu gering!
@@ -53,15 +53,17 @@ volatile int erreger_enable = NO;//erreger aktiv
 volatile float w = -1;
 volatile int k = 0,l = 0;
 volatile int data[10][2][2];
-volatile float vel = 0;//geschwindigkeit testparameter
 volatile int rescal = 0;//potis einstellen
 volatile float calv = 0.5;//potis einstellen
 volatile int wave = 0;//scope ausgabe
 volatile float res_s_var = 0.0;
 volatile float res_c_var = 0.0;
-volatile float jump = 0.0;
 volatile float startpos = 0.0;
 volatile int count = 0;
+volatile int mode = 0;
+volatile float amp = 0.0;
+volatile float freq = 0.0;
+
 enum{
 	STBY,
 	RUNNING,
@@ -90,9 +92,7 @@ void output_ac_pwm(){
 	//volt = volt*-1;
 
     if(rescal){
-        mag_pos += DEG(0.36*vel)*pole_count;// u/sec
-        mag_pos = mod(mag_pos);
-        //mag_pos = 0;
+        mag_pos = 0;
         volt = calv;
     }else{
         mag_pos = get_res_pos() * pole_count + DEG(90);
@@ -173,6 +173,34 @@ void ADC_IRQHandler(void) // 20khz
 	erreger = !erreger; // 10khz
 }
 
+float get_pos(float periode){
+	static float time = 0.0;
+	static float pos = 0.0;
+
+	time += periode;
+
+	switch(mode){
+		case 0: // hold
+			return(0.0);
+		case 1: // enc
+			return(get_enc_pos());
+		case 2: // vel
+			pos += amp * periode;
+			pos = mod(pos);
+			return(pos);
+		case 3: // square
+			if(sin(freq * 2 * M_PI * time) > 0){
+				return(amp);
+			}
+			else{
+				return(-amp);
+			}
+		case 4: // sine
+			return(amp * sin(freq * 2 * M_PI * time));
+	}
+	return(0.0);
+}
+
 void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
     float s = 0,c = 0;
@@ -200,20 +228,18 @@ void TIM5_IRQHandler(void){ //1KHz
 
 		count++;
 
-    if(vel == 0)
-        soll_pos = startpos + get_enc_pos() + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
-	soll_pos += DEG(0.36*vel);// u/sec
-	soll_pos = mod(soll_pos+jump);
+  soll_pos = startpos + get_pos(1.0/freq) + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+	soll_pos = mod(soll_pos);
 
 	soll_pos_old = soll_pos;
     pid.feedbackv = minus(ist, ist_old) * freq;
     pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
     pid.error = minus(soll_pos, ist);
-	if(ABS(pid.error) > DEG(90)){
+	/*if(ABS(pid.error) > DEG(90)){
 		disable();
 		state = EFOLLOW;
 		pid.enable = 0;
-	}
+	}*/
 
     kal.res = ist;
     update(&kal);
@@ -245,14 +271,15 @@ int main(void)
 	register_float("ff1",&pid.ff1gain);
 	register_float("ff2",&pid.ff2gain);
 	register_float("w",&w);
-    register_float("vel",&vel);
     register_int("rescal",&rescal);
     register_int("wave",&wave);
     register_float("ist",&ist);
     register_float("calv",&calv);
 	register_float("s_var",&res_s_var);
 	register_float("c_var",&res_c_var);
-	register_float("jump",&jump);
+register_float("amp",&amp);
+register_float("freq",&freq);
+register_int("mode",&mode);
 
 	state = STBY;
 
