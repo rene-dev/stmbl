@@ -17,11 +17,12 @@
 class BasicDrawPane : public wxPanel
 {
 public:
-    BasicDrawPane(wxFrame* parent);
+    BasicDrawPane(wxFrame* parent, int ch);
     void paintEvent(wxPaintEvent & evt);
     void paintNow();
-    void plotvalue(int);
+    void plotvalue(int,int);
     void render(wxDC& dc);
+    int channels;
 private:
     wxLongLong time;
     wxLongLong diff;

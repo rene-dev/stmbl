@@ -18,7 +18,9 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	wxPanel *top = new wxPanel(mainsplitter, wxID_ANY);
 	wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *leiste = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *channelleiste = new wxBoxSizer(wxHORIZONTAL);
 	choose_port = new wxChoice (top, wxID_ANY);
+    
 	connectbutton = new wxButton(top, wxID_ANY, wxT("&Connect"));
 	clear = new wxButton(top, wxID_ANY, wxT("Clear"));
 	refresh = new wxButton(top, wxID_ANY, wxT("&Refresh"));
@@ -37,9 +39,22 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	leiste->Add(uhu,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(stmbl,0,wxALIGN_LEFT|wxALL,3);
 	topsizer->Add(leiste);
-	drawpanel = new BasicDrawPane((wxFrame*)top);
-	topsizer->Add(drawpanel, 1,wxEXPAND,0);
-	top->SetSizer(topsizer);
+	drawpanel = new BasicDrawPane((wxFrame*)top,4);
+    
+    topsizer->Add(drawpanel, 1,wxEXPAND,0);
+    for(int i = 0;i<drawpanel->channels;i++){
+        channelchoice.push_back(new wxChoice (top, wxID_ANY));
+        channelchoice.back()->SetClientData(new int(i));
+        channelchoice.back()->Bind(wxEVT_CHOICE,&MainFrame::OnChannelChange, this, wxID_ANY);
+        channelchoice.back()->Append(wxT("-"));
+        channelchoice.back()->Append(wxT("1"));
+        channelchoice.back()->Append(wxT("2"));
+        channelchoice.back()->Append(wxT("3"));
+        channelleiste->Add(channelchoice.back(), 0,wxALIGN_LEFT|wxALL,3);
+    }
+	topsizer->Add(channelleiste);
+    
+    top->SetSizer(topsizer);
 
 	//unten
 	wxPanel *bottom = new wxPanel(mainsplitter, wxID_ANY);
@@ -78,6 +93,10 @@ void MainFrame::OnKeyDown(wxKeyEvent& event){
 	}
 }
 
+void MainFrame::OnChannelChange(wxCommandEvent& event){
+    std::cout << *(int*)event.GetClientData() << "->" << event.GetSelection() << std::endl;
+}
+
 void MainFrame::OnIdle(wxIdleEvent& evt){
 	int ret;
 	if(connected){
@@ -87,7 +106,7 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
 			//if(uhu->GetValue()){
 			for (int i=0; i<ret; i++) {
 				if ((buf[i]>>7)) {
-					drawpanel->plotvalue(((int)buf[i])+128/2);
+					drawpanel->plotvalue(((int)buf[i])+128/2,0);
 				}else{
 					text->AppendText(buf[i]);
 				}

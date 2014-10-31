@@ -1,13 +1,16 @@
 #include "basicdrawpane.hpp"
 
-BasicDrawPane::BasicDrawPane(wxFrame* parent) : wxPanel(parent){
+BasicDrawPane::BasicDrawPane(wxFrame* parent, int ch) : wxPanel(parent){
     time = 0;
     diff = 0;
     Bind(wxEVT_PAINT, &BasicDrawPane::paintEvent, this);
     xpos = 0;
-    data.push_back(std::vector<float>(0));
-    for (int i = 0; i<1024/2; i++) {
-        data[0].push_back(0);
+    channels = ch;
+    for (int i = 0; i<channels; i++) {
+        data.push_back(std::vector<float>());
+        for (int j = 0; j<1024/2; j++) {
+            data[i].push_back(0);
+        }
     }
 }
 
@@ -41,7 +44,7 @@ void BasicDrawPane::paintNow()
     render(dc);
 }
 
-void BasicDrawPane::plotvalue(int value)
+void BasicDrawPane::plotvalue(int value, int channel)
 {
     diff = wxGetUTCTimeMillis()-time;
     time = wxGetUTCTimeMillis();
@@ -49,7 +52,7 @@ void BasicDrawPane::plotvalue(int value)
     //data.at(xpos) += 0.1;
     
     data[0].at(xpos) = (float)value/64;
-    xpos = (xpos+1)%data.size();
+    xpos = (xpos+1)%data[0].size();
     Refresh();
     //oder
     //Update();
@@ -82,14 +85,15 @@ void BasicDrawPane::render(wxDC&  dc)
     
     x = 0;
     y = h/2;
-    xstep = w/(data[0].size()-1);
-    for(auto point : data[0]){
-        xold = x;
-        yold = y;
-        y = h/2-point*h/2;
-        dc.DrawLine( xold-xstep, yold, x, y );
-        x += xstep;
+    for (int i = 0; i<channels; i++) {
+        xstep = w/(data[i].size()-1);
+        for(auto point : data[i]){
+            xold = x;
+            yold = y;
+            y = h/2-point*h/2;
+            dc.DrawLine( xold-xstep, yold, x, y );
+            x += xstep;
+        }
     }
-    
     // Look at the wxDC docs to learn how to draw other stuff
 }
