@@ -173,7 +173,7 @@ void ADC_IRQHandler(void) // 20khz
 	erreger = !erreger; // 10khz
 }
 
-float get_pos(float periode){
+float get_cmd(float periode){
 	static float time = 0.0;
 	static float pos = 0.0;
 
@@ -216,7 +216,6 @@ void TIM5_IRQHandler(void){ //1KHz
     }
     //revs = (int)(ist/(2*M_PI));
     //ist = revs*2*M_PI+atan2f(s,c);
-    ist_old = ist;
     ist = atan2f(s,c);
 
 		if(count > 1000){
@@ -228,13 +227,16 @@ void TIM5_IRQHandler(void){ //1KHz
 
 		count++;
 
-  soll_pos = startpos + get_pos(1.0/freq) + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+  soll_pos = startpos + get_cmd(1.0/freq) + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
 	soll_pos = mod(soll_pos);
 
+  pid.feedbackv = minus(ist, ist_old) * freq;
+  pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
+  pid.error = minus(soll_pos, ist);
+
 	soll_pos_old = soll_pos;
-    pid.feedbackv = minus(ist, ist_old) * freq;
-    pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
-    pid.error = minus(soll_pos, ist);
+	ist_old = ist;
+
 	/*if(ABS(pid.error) > DEG(90)){
 		disable();
 		state = EFOLLOW;
@@ -412,7 +414,7 @@ register_int("mode",&mode);
 		}
 #endif
 
-		Wait(10);
+		Wait(5);
 	}
 }
 
