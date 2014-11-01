@@ -47,13 +47,13 @@ void pid_init(hal_pid_t *pid){
     pid->cmd_d = 0;       /* opt. pin: differentiated command */
     pid->cmd_dd = 0;      /* opt. pin: 2nd derivative of command */
     pid->bias = 0;        /* param: steady state offset */
-    pid->pgain = 3;       /* pin: proportional gain */
+    pid->pgain = 2;       /* pin: proportional gain */
     pid->igain = 40;       /* pin: integral gain */
-    pid->dgain = 0.01;       /* pin: derivative gain */
+    pid->dgain = 0.02;       /* pin: derivative gain */
     pid->bgain = 0.0;       /* pin: derivative gain */
         // pid->ff0gain = 0;      /* pin: feedforward proportional */
-    pid->ff1gain = 0;     /* pin: feedforward derivative */
-    pid->ff2gain = 0;     /* pin: feedforward 2nd derivative */
+    pid->ff1gain = 0.006;     /* pin: feedforward derivative */
+    pid->ff2gain = 0.00015;     /* pin: feedforward 2nd derivative */
     pid->maxoutput = 1;   /* pin: limit for PID output */
     pid->output = 0;      /* pin: the output value */
     pid->saturated = 0;   /* pin: TRUE when the output is saturated */
@@ -245,13 +245,13 @@ void kal_init(kalman_context_t *k){
     k->m = 1;
     k->k = 1;
     k->r = 1;
-    
+
     k->res_var = 0.01;
     k->pos_var = 0.01;
     k->vel_var = 0.01;
     k->acc_var = 0.01;
     k->cur_var = 0.01;
-    
+
     k->res = 0;
     k->pos = 0;
     k->vel = 0;
