@@ -55,7 +55,6 @@ volatile int k = 0,l = 0;
 volatile int data[10][2][2];
 volatile int rescal = 0;//potis einstellen
 volatile float calv = 0.5;//potis einstellen
-volatile int wave = 0;//scope ausgabe
 volatile float res_s_var = 0.0;
 volatile float res_c_var = 0.0;
 volatile float startpos = 0.0;
@@ -261,9 +260,22 @@ void TIM5_IRQHandler(void){ //1KHz
 
 int main(void)
 {
-    int e = 0;
+	#define MAX_WAVE 4
+	unsigned char buf[MAX_WAVE * 2 + 2];
+	int wave[MAX_WAVE];
+	int bufpos = 0;
+	char name[] = "wave ";
+	int e = 0;
+
 	setup();
 	param_init();
+
+	for(bufpos = 0; bufpos < MAX_WAVE; bufpos++){
+		name[4] = bufpos + '1';
+		register_int(name,&wave[bufpos]);
+		wave[bufpos] = 0;
+	}
+
 	register_int("e",&pid.enable);
 	register_float("p",&pid.pgain);
 	register_float("i",&pid.igain);
@@ -273,15 +285,14 @@ int main(void)
 	register_float("ff1",&pid.ff1gain);
 	register_float("ff2",&pid.ff2gain);
 	register_float("w",&w);
-    register_int("rescal",&rescal);
-    register_int("wave",&wave);
-    register_float("ist",&ist);
-    register_float("calv",&calv);
+  register_int("rescal",&rescal);
+  register_float("ist",&ist);
+  register_float("calv",&calv);
 	register_float("s_var",&res_s_var);
 	register_float("c_var",&res_c_var);
-register_float("amp",&amp);
-register_float("freq",&freq);
-register_int("mode",&mode);
+	register_float("amp",&amp);
+	register_float("freq",&freq);
+	register_int("mode",&mode);
 
 	state = STBY;
 
@@ -298,74 +309,72 @@ register_int("mode",&mode);
 	pid.enable = 1;
 	enable();
 
+
+
 	while(1)  // Do not exit
 	{
 		//printf_("%f %f diff: %f\r",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
 		//printf_("%i %i",t1_mid,t2_mid);
 		//printf_("%i %i diff: %i\r",amp1,amp2,amp1-amp2);
-		switch(wave){
-            case 1:
-                e = (int)((RAD(pid.error) * 10 + 180) / 360 * 128);
-                break;
-            case 2:
-                e = (int)(pid.error_d * 64 / 16 + 63);
-                break;
-            case 3:
-                e = (int)(pid.error_dd * 64 / 16 + 63);
-                break;
-            case 4:
-                e = (int)(pid.cmd_d * 64 / 16 + 63);
-                break;
-            case 5:
-                e = (int)(pid.cmd_dd * 64 / 16 + 63);
-                break;
-            case 6:
-                e = (int)(pid.feedbackv * 64 / 16 + 63);
-                break;
-            case 7:
-                e = (int)(voltage_scale*50+63);
-                break;
-            case 8:
-                e = (int)(pid.saturated_count * 64 / 100 + 63);
-                break;
-            case 9:
-                e = (int)((ist + M_PI) * 127 / 2 / M_PI);
-                break;
-            case 10:
-                e = (int)(kal.pos * 64 / 2 / M_PI + 63);
-                break;
-            case 11:
-                e = (int)(kal.vel * 64 / 16 + 63);
-                break;
-            case 12:
-                e = (int)(kal.acc * 64 / 16 + 63);
-                break;
-            case 13:
-                e = (int)(kal.cur * 64 / 16 + 63);
-                break;
-	        case 14:
-	            e = (int)(time%100);
-	            break;
-		    case 15:
-		        e = (int)((mag_pos+M_PI)/(2*M_PI)*127);
-		        break;
-            default:
-                e = 0;
-        }
-        e=CLAMP(e,0,127);
-		e+=128;
-		char buf[2];
-		buf[0] = e;
-		buf[1] = 0;
+		for(bufpos = 0; bufpos < MAX_WAVE; bufpos++){
+			switch(wave[bufpos]){
+				case 1:
+			    e = (int)RAD(pid.error);
+			    break;
+				case 2:
+			    e = (int)RAD(pid.error_d);
+			    break;
+				case 3:
+			    e = (int)RAD(pid.error_dd);
+			    break;
+				case 4:
+					e = (int)RAD(soll_pos);
+					break;
+				case 5:
+			    e = (int)RAD(pid.cmd_d);
+			    break;
+				case 6:
+			    e = (int)RAD(pid.cmd_dd);
+			    break;
+				case 7:
+					e = (int)RAD(ist);
+					break;
+				case 8:
+			    e = (int)RAD(pid.feedbackv);
+			    break;
+				case 9:
+			    e = (int)(voltage_scale * 127);
+			    break;
+				case 10:
+			    e = (int)(pid.saturated_count / 10);
+			    break;
+				case 12:
+					e = (int)RAD(mag_pos);
+					break;
+				case 13:
+					e = (int)RAD(startpos);
+					break;
+				case 14:
+					e = (int)RAD(res_offset);
+					break;
+				default:
+				    e = 0;
+			}
+			e = CLAMP(e + 128,1,255);
+
+			buf[bufpos * 2] = bufpos + 128;
+			buf[bufpos * 2 + 1] = e;
+		}
+		buf[MAX_WAVE * 2] = 255;
+		buf[MAX_WAVE * 2 + 1] = 0;
+
 
 		//printf_("e: %f\n", pid.error);
 		//printf_("soll: %f\n", soll_pos);
 
 #ifdef USBTERM
 		if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-			if(wave){
-                UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
-            }
+    	UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
             /*
             if(w == -1){
                 w = -2;
