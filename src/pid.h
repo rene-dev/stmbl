@@ -18,9 +18,11 @@ typedef struct {
     //float command;	   /* pin: commanded value */
     //float commandvds;  /* pin: commanded derivative dummysig */
     float commandv;    /* pin: commanded derivative value */
+    float commanda;    /* pin: commandedv derivative value */
     //float feedback;    /* pin: feedback value */
     //float feedbackvds; /* pin: feedback derivative dummysig */
     float feedbackv;   /* pin: feedback derivative value */
+    float feedbacka;   /* pin: feedbackv derivative value */
     float error;       /* pin: command - feedback */
     float deadband;    /* pin: deadband */
     float maxerror;    /* pin: limit for error */

@@ -65,7 +65,7 @@ void BasicDrawPane::plotvalue(int value)
     time = wxGetUTCTimeMillis();
     //std::cout << "data:" << value << std::endl;
     //data.at(xpos) += 0.1;
-    data[0].at(xpos) = (float)value/64;
+    data[0].at(xpos) = (float)value/64.0;
     xpos = (xpos+1)%data[0].size();
     Refresh();
     //oder

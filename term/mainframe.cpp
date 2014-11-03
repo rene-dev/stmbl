@@ -48,9 +48,9 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
         channelchoice.back()->SetClientData(new int(i));
         channelchoice.back()->Bind(wxEVT_CHOICE,&MainFrame::OnChannelChange, this, wxID_ANY);
         channelchoice.back()->Append(wxT("-"));
-        channelchoice.back()->Append(wxT("1"));
-        channelchoice.back()->Append(wxT("2"));
-        channelchoice.back()->Append(wxT("3"));
+        for(int j = 1; j < 15; j++){
+            channelchoice.back()->Append(std::to_string(j));
+        }
         channelleiste->Add(channelchoice.back(), 0,wxALIGN_LEFT|wxALL,3);
     }
 	topsizer->Add(channelleiste);
@@ -96,6 +96,21 @@ void MainFrame::OnKeyDown(wxKeyEvent& event){
 
 void MainFrame::OnChannelChange(wxCommandEvent& event){
     std::cout << *(int*)event.GetClientData() << "->" << event.GetSelection() << std::endl;
+    std::string df = "wave";
+    df += std::to_string(*(int*)event.GetClientData() + 1);
+    df += " = ";
+    df += std::to_string(event.GetSelection());
+    
+    if((history.size()==0 || history.back() != df) && df != wxEmptyString){
+        history.push_back(df);
+    }
+    histpos = history.size();
+    int ret1 = sp_nonblocking_write(port, df.c_str(), df.length());
+    int ret2 = sp_nonblocking_write(port, "\r", 1);
+    if(ret1 != df.length() || ret2!=1){
+        wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
+        disconnect();
+    }
 }
 
 void MainFrame::OnIdle(wxIdleEvent& evt){
@@ -115,23 +130,16 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
             }else if(stmbl->GetValue()){
                 for (int i=0; i<ret; i++){
                     if(addr != -1){
-                        std::cout << "addr:" << addr;
+                        //std::cout << "addr:" << addr << " data:" << (int)buf[i] << std::endl;
+                        values[addr] = (int)buf[i]-128;
                         addr = -1;
+                    }else if ((buf[i]>>7)) {
+                        addr = (int)buf[i]-128;
                         if (addr == 127) {
                             drawpanel->plotvalue(values);
-                        }else{
-                            values[addr] = (int)buf[i];
-                            std::cout << " data:" << (int)buf[i] << std::endl;
+                            //std::cout << "reset" << std::endl;
+                            addr = -1;
                         }
-                        //drawpanel->plotvalue(values);
-                    }else if ((buf[i]>>7)) {
-                        //int values[] = {((int)buf[i])+128/2,((int)buf[i])+128/2,((int)buf[i])+128/2,((int)buf[i])+128/2};
-                        if((int)buf[i]-128 != 0 && addr == -1){
-                            addr = (int)buf[i]-128;
-                        }
-                        //drawpanel->plotvalue(((int)buf[i])+128/2,1);
-                        //drawpanel->plotvalue(((int)buf[i])+128/2,2);
-                        //drawpanel->plotvalue(((int)buf[i])+128/2,3);
                     }else{
                         text->AppendText((char)buf[i]);
                     }

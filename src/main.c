@@ -204,7 +204,8 @@ void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
     float s = 0,c = 0;
     int freq = 1000;
-    kal.periode = 1.0/freq;
+		float periode = 1.0 / freq;
+    kal.periode = periode;
     for(int i = 0;i<10;i++){
         s += data[i][0][0] * 0.05;
         c += data[i][0][1] * 0.05;
@@ -226,11 +227,13 @@ void TIM5_IRQHandler(void){ //1KHz
 
 		count++;
 
-  soll_pos = startpos + get_cmd(1.0/freq) + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+  soll_pos = startpos + get_cmd(periode) + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
 	soll_pos = mod(soll_pos);
 
-  pid.feedbackv = minus(ist, ist_old) * freq;
-  pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
+  pid.feedbacka = (minus(ist, ist_old) * freq - pid.feedbackv) * freq * 0.5 + pid.feedbacka * 0.5;
+	pid.feedbackv = minus(ist, ist_old) * freq * 0.5 + pid.feedbackv * 0.5;
+	pid.commanda = (minus(soll_pos, soll_pos_old) * freq - pid.commandv) * freq * 0.5 + pid.commanda * 0.5;
+  pid.commandv = minus(soll_pos, soll_pos_old) * freq * 0.5 + pid.commandv * 0.5;
   pid.error = minus(soll_pos, ist);
 
 	soll_pos_old = soll_pos;
@@ -245,7 +248,7 @@ void TIM5_IRQHandler(void){ //1KHz
     kal.res = ist;
     update(&kal);
 
-	calc_pid(&pid,1.0 / freq * 1000.0);
+	calc_pid(&pid, periode * 1000.0);
     kal.volt = pid.output;
     predict(&kal);
 	voltage_scale = pid.output;
@@ -293,6 +296,7 @@ int main(void)
 	register_float("amp",&amp);
 	register_float("freq",&freq);
 	register_int("mode",&mode);
+	register_float("startpos",&startpos);
 
 	state = STBY;
 
@@ -343,7 +347,7 @@ int main(void)
 			    e = (int)RAD(pid.feedbackv);
 			    break;
 				case 9:
-			    e = (int)(voltage_scale * 127);
+			    e = (int)(voltage_scale * 10);
 			    break;
 				case 10:
 			    e = (int)(pid.saturated_count / 10);
@@ -423,7 +427,7 @@ int main(void)
 		}
 #endif
 
-		Wait(5);
+		Wait(20);
 	}
 }
 

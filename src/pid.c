@@ -27,9 +27,11 @@ void pid_init(hal_pid_t *pid){
     //pid->command = 0;	  /* pin: commanded value */
     //pid->commandvds = 0;  /* pin: commanded derivative dummysig */
     pid->commandv = 0;    /* pin: commanded derivative value */
+		pid->commanda = 0;    /* pin: commandedv derivative value */
     //pid->feedback = 0;    /* pin: feedback value */
     //pid->feedbackvds = 0; /* pin: feedback derivative dummysig */
     pid->feedbackv = 0;   /* pin: feedback derivative value */
+		pid->feedbacka = 0;   /* pin: feedbackv derivative value */
     pid->error = 0;       /* pin: command - feedback */
     pid->deadband = 0;    /* pin: deadband */
     pid->maxerror = 0;    /* pin: limit for error */
@@ -74,8 +76,9 @@ void calc_pid(hal_pid_t *arg, float period)
     /* point to the data for this PID loop */
     pid = arg;
     /* precalculate some timing constants */
-    periodfp = period * 0.001;
-    periodrecip = 1.0 / periodfp;
+    //periodfp = period * 0.001;
+    periodfp = period;
+		periodrecip = 1.0 / periodfp;
     /* get the enable bit */
     enable = pid->enable;
     /* read the command and feedback only once */
@@ -141,9 +144,9 @@ void calc_pid(hal_pid_t *arg, float period)
     //     pid->feedbackvds = (feedback - pid->prev_fb) * periodrecip;
     // }
     /* and calculate derivative term as difference of derivatives */
-    tmp2 = pid->error_d;
+    //tmp2 = pid->error_d;
     pid->error_d = pid->commandv - pid->feedbackv;
-    pid->prev_error = tmp1;
+    //pid->prev_error = tmp1;
     /* apply derivative limits */
     if (pid->maxerror_d != 0.0) {
 	if (pid->error_d > pid->maxerror_d) {
@@ -153,8 +156,9 @@ void calc_pid(hal_pid_t *arg, float period)
 	}
     }
 
-    pid->error_dd = (pid->error_d - tmp2) * periodrecip;
-    /* apply 2nd derivative limits */
+    //pid->error_dd = (pid->error_d - tmp2) * periodrecip;
+    pid->error_dd = pid->commanda - pid->feedbacka;
+		/* apply 2nd derivative limits */
     if (pid->maxerror_dd != 0.0) {
 	if (pid->error_dd > pid->maxerror_dd) {
 	    pid->error_dd = pid->maxerror_dd;
@@ -164,10 +168,10 @@ void calc_pid(hal_pid_t *arg, float period)
     }
     /* calculate derivative of command */
     /* save old value for 2nd derivative calc later */
-    tmp2 = pid->cmd_d;
+    //tmp2 = pid->cmd_d;
     //if(!(pid->prev_ie && !pid->index_enable)) {
         // not falling edge of index_enable: the normal case
-        pid->cmd_d = pid->commandv;
+    pid->cmd_d = pid->commandv;
     //}
     // else: leave cmd_d alone and use last period's.  prev_cmd
     // shouldn't be trusted because index homing has caused us to have
@@ -190,8 +194,9 @@ void calc_pid(hal_pid_t *arg, float period)
 	}
     }
     /* calculate 2nd derivative of command */
-    pid->cmd_dd = (pid->cmd_d - tmp2) * periodrecip;
-    /* apply 2nd derivative limits */
+    //pid->cmd_dd = (pid->cmd_d - tmp2) * periodrecip * 0.5 + pid->cmd_dd * 0.5;
+    pid->cmd_dd = pid->commanda;
+		/* apply 2nd derivative limits */
     if (pid->maxcmd_dd != 0.0) {
 	if (pid->cmd_dd > pid->maxcmd_dd) {
 	    pid->cmd_dd = pid->maxcmd_dd;
@@ -230,7 +235,7 @@ void calc_pid(hal_pid_t *arg, float period)
     /* set 'saturated' outputs */
     if(pid->limit_state) {
         pid->saturated = 1;
-        pid->saturated_s += period * 1e-3;
+        pid->saturated_s += period;
         if(pid->saturated_count != 2147483647)
             (pid->saturated_count) ++;
     } else {
