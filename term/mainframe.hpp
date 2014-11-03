@@ -43,10 +43,12 @@ private:
     void disconnect();
     void listports();
     static const int bufsize = 10;
-    char buf[MainFrame::bufsize+1];
+    unsigned char buf[MainFrame::bufsize+1];
     wxTextCtrl *text;
     wxTextCtrl *textinput;
     BasicDrawPane *drawpanel;
     std::vector<wxString> history;
     int histpos;
+    int addr;
+    int values[8];
 };

@@ -44,13 +44,27 @@ void BasicDrawPane::paintNow()
     render(dc);
 }
 
-void BasicDrawPane::plotvalue(int value, int channel)
+void BasicDrawPane::plotvalue(int values[])
 {
     diff = wxGetUTCTimeMillis()-time;
     time = wxGetUTCTimeMillis();
     //std::cout << "data:" << value << std::endl;
     //data.at(xpos) += 0.1;
-    
+    for (int i = 0; i<channels; i++) {
+        data[i].at(xpos) = (float)values[i]/64;
+    }
+    xpos = (xpos+1)%data[0].size();
+    Refresh();
+    //oder
+    //Update();
+}
+
+void BasicDrawPane::plotvalue(int value)
+{
+    diff = wxGetUTCTimeMillis()-time;
+    time = wxGetUTCTimeMillis();
+    //std::cout << "data:" << value << std::endl;
+    //data.at(xpos) += 0.1;
     data[0].at(xpos) = (float)value/64;
     xpos = (xpos+1)%data[0].size();
     Refresh();
@@ -70,22 +84,25 @@ void BasicDrawPane::render(wxDC&  dc)
     
     // ursprung oben links
     // draw some text
-
+    const wxPen pen[] = {*wxRED_PEN, *wxYELLOW_PEN, *wxGREEN_PEN, *wxBLUE_PEN};
     
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
     
-    dc.SetPen(*wxRED_PEN);
+    dc.SetPen(*wxGREY_PEN);
     dc.DrawLine( 0, h/2, w, h/2 );
     
     dc.SetPen(*wxBLACK_PEN);
 
-    
     dc.DrawText(wxString::Format(wxT("%i"),diff*50), 40, 60);
     dc.DrawLine( 40, 60, 40+50, 60 );
     
-    x = 0;
-    y = h/2;
+    
+
+
     for (int i = 0; i<channels; i++) {
+        dc.SetPen(pen[i]);
+        x = 0;
+        y = h/2;
         xstep = w/(data[i].size()-1);
         for(auto point : data[i]){
             xold = x;

@@ -1,6 +1,7 @@
 #include "mainframe.hpp"
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
+    addr = -1;
 	connected = false;
 	histpos = 0;
 	config = new wxConfig("Servoterm");
@@ -103,15 +104,39 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
 		ret = sp_nonblocking_read(port, buf, bufsize);
 		if(ret > 0){
 			buf[ret] = 0;
-			//if(uhu->GetValue()){
-			for (int i=0; i<ret; i++) {
-				if ((buf[i]>>7)) {
-					drawpanel->plotvalue(((int)buf[i])+128/2,0);
-				}else{
-					text->AppendText(buf[i]);
-				}
-			}
-			//}
+			if(uhu->GetValue()){
+                for (int i=0; i<ret; i++) {
+                    if ((buf[i]>>7)) {
+                        drawpanel->plotvalue(((int)buf[i])+128/2);
+                    }else{
+                        text->AppendText((char)buf[i]);
+                    }
+                }
+            }else if(stmbl->GetValue()){
+                for (int i=0; i<ret; i++){
+                    if(addr != -1){
+                        std::cout << "addr:" << addr;
+                        addr = -1;
+                        if (addr == 127) {
+                            drawpanel->plotvalue(values);
+                        }else{
+                            values[addr] = (int)buf[i];
+                            std::cout << " data:" << (int)buf[i] << std::endl;
+                        }
+                        //drawpanel->plotvalue(values);
+                    }else if ((buf[i]>>7)) {
+                        //int values[] = {((int)buf[i])+128/2,((int)buf[i])+128/2,((int)buf[i])+128/2,((int)buf[i])+128/2};
+                        if((int)buf[i]-128 != 0 && addr == -1){
+                            addr = (int)buf[i]-128;
+                        }
+                        //drawpanel->plotvalue(((int)buf[i])+128/2,1);
+                        //drawpanel->plotvalue(((int)buf[i])+128/2,2);
+                        //drawpanel->plotvalue(((int)buf[i])+128/2,3);
+                    }else{
+                        text->AppendText((char)buf[i]);
+                    }
+                }
+            }
 			//std::cout << buf;
 		}
 		wxMilliSleep(3);//örks

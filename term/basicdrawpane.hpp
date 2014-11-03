@@ -20,7 +20,8 @@ public:
     BasicDrawPane(wxFrame* parent, int ch);
     void paintEvent(wxPaintEvent & evt);
     void paintNow();
-    void plotvalue(int,int);
+    void plotvalue(int[]);
+    void plotvalue(int);
     void render(wxDC& dc);
     int channels;
 private:
