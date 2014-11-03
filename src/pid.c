@@ -49,9 +49,9 @@ void pid_init(hal_pid_t *pid){
     pid->cmd_d = 0;       /* opt. pin: differentiated command */
     pid->cmd_dd = 0;      /* opt. pin: 2nd derivative of command */
     pid->bias = 0;        /* param: steady state offset */
-    pid->pgain = 2;       /* pin: proportional gain */
-    pid->igain = 40;       /* pin: integral gain */
-    pid->dgain = 0.02;       /* pin: derivative gain */
+    pid->pgain = 4;       /* pin: proportional gain */
+    pid->igain = 0.02;       /* pin: integral gain */
+    pid->dgain = 0.01;       /* pin: derivative gain */
     pid->bgain = 0.0;       /* pin: derivative gain */
         // pid->ff0gain = 0;      /* pin: feedforward proportional */
     pid->ff1gain = 0.006;     /* pin: feedforward derivative */

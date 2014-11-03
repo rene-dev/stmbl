@@ -1,17 +1,29 @@
 #include "basicdrawpane.hpp"
 
+const wxPen BasicDrawPane::pen[] = {*wxRED_PEN, *wxBLUE_PEN, *wxGREEN_PEN, *wxYELLOW_PEN};
+
 BasicDrawPane::BasicDrawPane(wxFrame* parent, int ch) : wxPanel(parent){
     time = 0;
     diff = 0;
     Bind(wxEVT_PAINT, &BasicDrawPane::paintEvent, this);
     xpos = 0;
     channels = ch;
+
     for (int i = 0; i<channels; i++) {
         data.push_back(std::vector<float>());
         for (int j = 0; j<1024/2; j++) {
             data[i].push_back(0);
         }
     }
+}
+
+void BasicDrawPane::Clear(){
+    for (int i = 0; i<channels; i++) {
+        for (auto &d : data[i]){
+            d = 0;
+        }
+    }
+    xpos = 0;
 }
 
 /*
@@ -84,15 +96,10 @@ void BasicDrawPane::render(wxDC&  dc)
     
     // ursprung oben links
     // draw some text
-    const wxPen pen[] = {*wxRED_PEN, *wxYELLOW_PEN, *wxGREEN_PEN, *wxBLUE_PEN};
     
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
     
-    dc.SetPen(*wxGREY_PEN);
-    dc.DrawLine( 0, h/2, w, h/2 );
-    
     dc.SetPen(*wxBLACK_PEN);
-
     dc.DrawText(wxString::Format(wxT("%i"),diff*50), 40, 60);
     dc.DrawLine( 40, 60, 40+50, 60 );
     
@@ -112,5 +119,9 @@ void BasicDrawPane::render(wxDC&  dc)
             x += xstep;
         }
     }
+    
+    //mittellinie
+    dc.SetPen(*wxGREY_PEN);
+    dc.DrawLine( 0, h/2, w, h/2 );
     // Look at the wxDC docs to learn how to draw other stuff
 }

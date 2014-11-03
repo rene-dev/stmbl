@@ -43,16 +43,38 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	drawpanel = new BasicDrawPane((wxFrame*)top,4);
     
     topsizer->Add(drawpanel, 1,wxEXPAND,0);
+    wxArrayString waves;
+    waves.push_back("-");
+    waves.push_back("error");
+    waves.push_back("error_d");
+    waves.push_back("error_dd");
+    waves.push_back("soll_pos");
+    waves.push_back("pid.cmd_d");
+    waves.push_back("pid.cmd_dd");
+    waves.push_back("ist");
+    waves.push_back("feedbackv");
+    waves.push_back("voltage_scale");
+    waves.push_back("saturated_count");
+    waves.push_back("mag_pos");
+    waves.push_back("startpos");
+    waves.push_back("res_offset");
+
+    //channels
     for(int i = 0;i<drawpanel->channels;i++){
         channelchoice.push_back(new wxChoice (top, wxID_ANY));
         channelchoice.back()->SetClientData(new int(i));
         channelchoice.back()->Bind(wxEVT_CHOICE,&MainFrame::OnChannelChange, this, wxID_ANY);
         channelchoice.back()->Append(wxT("-"));
-        for(int j = 1; j < 15; j++){
-            channelchoice.back()->Append(std::to_string(j));
-        }
+        channelchoice.back()->Set(waves);
+        
+        wxPanel *c_panel;
+        c_panel = new wxPanel(top, wxID_NEW, wxPoint(150, 20), wxSize(20, 20), wxBORDER_NONE);
+        c_panel->SetBackgroundColour(drawpanel->pen[i].GetColour());
+        channelleiste->Add(c_panel, 0,wxALIGN_LEFT|wxALL,3);
+        
         channelleiste->Add(channelchoice.back(), 0,wxALIGN_LEFT|wxALL,3);
     }
+    
 	topsizer->Add(channelleiste);
     
     top->SetSizer(topsizer);
@@ -95,21 +117,23 @@ void MainFrame::OnKeyDown(wxKeyEvent& event){
 }
 
 void MainFrame::OnChannelChange(wxCommandEvent& event){
-    std::cout << *(int*)event.GetClientData() << "->" << event.GetSelection() << std::endl;
-    std::string df = "wave";
-    df += std::to_string(*(int*)event.GetClientData() + 1);
-    df += " = ";
-    df += std::to_string(event.GetSelection());
-    
-    if((history.size()==0 || history.back() != df) && df != wxEmptyString){
-        history.push_back(df);
-    }
-    histpos = history.size();
-    int ret1 = sp_nonblocking_write(port, df.c_str(), df.length());
-    int ret2 = sp_nonblocking_write(port, "\r", 1);
-    if(ret1 != df.length() || ret2!=1){
-        wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
-        disconnect();
+    if(connected){
+        std::cout << *(int*)event.GetClientData() << "->" << event.GetSelection() << std::endl;
+        std::string df = "wave";
+        df += std::to_string(*(int*)event.GetClientData() + 1);
+        df += " = ";
+        df += std::to_string(event.GetSelection());
+        
+        if((history.size()==0 || history.back() != df) && df != wxEmptyString){
+            history.push_back(df);
+        }
+        histpos = history.size();
+        int ret1 = sp_nonblocking_write(port, df.c_str(), df.length());
+        int ret2 = sp_nonblocking_write(port, "\r", 1);
+        if(ret1 != df.length() || ret2!=1){
+            wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
+            disconnect();
+        }
     }
 }
 
@@ -175,6 +199,7 @@ void MainFrame::listports(){
 
 void MainFrame::OnClear(wxCommandEvent& WXUNUSED(event)){
 	text->Clear();
+    drawpanel->Clear();
 }
 
 void MainFrame::OnConnect(wxCommandEvent& WXUNUSED(event)){
@@ -201,6 +226,8 @@ void MainFrame::connect(){
 		connectbutton->SetLabel(wxT("&Disonnect"));
 		refresh->Disable();
 		choose_port->Disable();
+        uhu->Disable();
+        stmbl->Disable();
 		textinput->SetFocus();
 	}else{
 		wxMessageBox( wxT("Fehler beim Öffnen"), wxT("Error"), wxICON_EXCLAMATION);
@@ -214,6 +241,8 @@ void MainFrame::disconnect(){
 		connectbutton->SetLabel(wxT("&Connect"));
 		refresh->Enable();
 		choose_port->Enable();
+        uhu->Enable();
+        stmbl->Enable();
 	}
 }
 

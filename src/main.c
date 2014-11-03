@@ -83,21 +83,21 @@ float get_enc_pos(){
 }
 
 float get_res_pos(){
-    return ist - res_offset;
+	return ist - res_offset;
 }
 
 void output_ac_pwm(){
 	float volt = CLAMP(voltage_scale,-1.0,1.0);
 	//volt = volt*-1;
 
-    if(rescal){
-        mag_pos = 0;
-        volt = calv;
-    }else{
-        mag_pos = get_res_pos() * pole_count + DEG(90);
-    }
+	if(rescal){
+		mag_pos = 0;
+		volt = calv;
+	}else{
+		mag_pos = get_res_pos() * pole_count + DEG(90);
+	}
 
-    mag_pos = mod(mag_pos);
+	mag_pos = mod(mag_pos);
 	PWM_U = (sinf(mag_pos + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
 	PWM_V = (sinf(mag_pos + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
 	PWM_W = (sinf(mag_pos + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
@@ -113,14 +113,14 @@ void output_dc_pwm(){
 }
 
 void DMA2_Stream2_IRQHandler(void){
-  // welches flag?
-  //DMA_ClearFlag(DMA2_FLAG_IT);
-  DMA_ClearITPendingBit(DMA2_Stream2, DMA_IT_TCIF2);
-  printf_("DMA\n");
+	// welches flag?
+	//DMA_ClearFlag(DMA2_FLAG_IT);
+	DMA_ClearITPendingBit(DMA2_Stream2, DMA_IT_TCIF2);
+	printf_("DMA\n");
 }
 
 void TIM2_IRQHandler(void){ //20KHz
-    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
 	GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
 }
 
@@ -138,25 +138,25 @@ void ADC_IRQHandler(void) // 20khz
 		if(erreger){//eine halbwelle
 			GPIO_SetBits(GPIOC,GPIO_Pin_2);//erreger
 			amp1 = (t1-t1_mid)*(t1-t1_mid)+(t2-t2_mid)*(t2-t2_mid);
-            if(w >= 0){
-                data[k][0][0] = t1 - t1_mid;
-                data[k][0][1] = t2 - t2_mid;
-                k++;
-            }
+			if(w >= 0){
+				data[k][0][0] = t1 - t1_mid;
+				data[k][0][1] = t2 - t2_mid;
+				k++;
+			}
 		}else{//andere halbwelle
 			GPIO_ResetBits(GPIOC,GPIO_Pin_2);//erreger
 			amp2 = (t1_mid-t1)*(t1_mid-t1)+(t2_mid-t2)*(t2_mid-t2);
-            if(w >= 0){
-                data[l][1][0] = t1_mid - t1;
-                data[l][1][1] = t2_mid - t2;
-                l++;
-            }
+			if(w >= 0){
+				data[l][1][0] = t1_mid - t1;
+				data[l][1][1] = t2_mid - t2;
+				l++;
+			}
 		}
-        if(l == 10 && k == 10){
-            w = -1;
-            l = 0;
-            k = 0;
-        }
+		if(l == 10 && k == 10){
+			w = -1;
+			l = 0;
+			k = 0;
+		}
 	}else{//mittelpunkt messen
 		if(t1_mid == 0 && t2_mid == 0){//erster durchlauf
 			t1_mid = t1;
@@ -202,68 +202,68 @@ float get_cmd(float periode){
 
 void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
-    float s = 0,c = 0;
-    int freq = 1000;
-		float periode = 1.0 / freq;
-    kal.periode = periode;
-    for(int i = 0;i<10;i++){
-        s += data[i][0][0] * 0.05;
-        c += data[i][0][1] * 0.05;
-    }
-    for(int i = 0;i<10;i++){
-        s += data[i][1][0] * 0.05;
-        c += data[i][1][1] * 0.05;
-    }
-    //revs = (int)(ist/(2*M_PI));
-    //ist = revs*2*M_PI+atan2f(s,c);
-    ist = atan2f(s,c);
+	float s = 0,c = 0;
+	int freq = 1000;
+	float periode = 1.0 / freq;
+	kal.periode = periode;
+	for(int i = 0;i<10;i++){
+		s += data[i][0][0] * 0.05;
+		c += data[i][0][1] * 0.05;
+	}
+	for(int i = 0;i<10;i++){
+		s += data[i][1][0] * 0.05;
+		c += data[i][1][1] * 0.05;
+	}
+	//revs = (int)(ist/(2*M_PI));
+	//ist = revs*2*M_PI+atan2f(s,c);
+	ist = atan2f(s,c);
 
-		if(count > 1000){
-			if(count < 2000){
-				res_s_var += s * s / 1000;
-				res_c_var += c * c / 1000;
-			}
+	if(count > 1000){
+		if(count < 2000){
+			res_s_var += s * s / 1000;
+			res_c_var += c * c / 1000;
 		}
+	}
 
-		count++;
+	count++;
 
-  soll_pos = startpos + get_cmd(periode) + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+	soll_pos = startpos + get_cmd(periode) + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
 	soll_pos = mod(soll_pos);
 
-  pid.feedbacka = (minus(ist, ist_old) * freq - pid.feedbackv) * freq * 0.5 + pid.feedbacka * 0.5;
+	pid.feedbacka = (minus(ist, ist_old) * freq - pid.feedbackv) * freq * 0.5 + pid.feedbacka * 0.5;
 	pid.feedbackv = minus(ist, ist_old) * freq * 0.5 + pid.feedbackv * 0.5;
 	pid.commanda = (minus(soll_pos, soll_pos_old) * freq - pid.commandv) * freq * 0.5 + pid.commanda * 0.5;
-  pid.commandv = minus(soll_pos, soll_pos_old) * freq * 0.5 + pid.commandv * 0.5;
-  pid.error = minus(soll_pos, ist);
+	pid.commandv = minus(soll_pos, soll_pos_old) * freq * 0.5 + pid.commandv * 0.5;
+	pid.error = minus(soll_pos, ist);
 
 	soll_pos_old = soll_pos;
 	ist_old = ist;
 
 	/*if(ABS(pid.error) > DEG(90)){
-		disable();
-		state = EFOLLOW;
-		pid.enable = 0;
-	}*/
+	  disable();
+	  state = EFOLLOW;
+	  pid.enable = 0;
+	  }*/
 
-    kal.res = ist;
-    update(&kal);
+	kal.res = ist;
+	update(&kal);
 
 	calc_pid(&pid, periode * 1000.0);
-    kal.volt = pid.output;
-    predict(&kal);
+	kal.volt = pid.output;
+	predict(&kal);
 	voltage_scale = pid.output;
 
 	if(amp1 < 1000000 || amp2 < 1000000){
-    	//voltage_scale = 0.0;
+		//voltage_scale = 0.0;
 		state = EFEEDBACK;
-    }
+	}
 	output_ac_pwm();
-    w=0;//request data
+	w=0;//request data
 }
 
 int main(void)
 {
-	#define MAX_WAVE 4
+#define MAX_WAVE 4
 	unsigned char buf[MAX_WAVE * 2 + 2];
 	int wave[MAX_WAVE];
 	int bufpos = 0;
@@ -284,13 +284,13 @@ int main(void)
 	register_float("i",&pid.igain);
 	register_float("d",&pid.dgain);
 	register_float("b",&pid.bgain);
-    // register_float("ff0",&pid.ff0gain);
+	// register_float("ff0",&pid.ff0gain);
 	register_float("ff1",&pid.ff1gain);
 	register_float("ff2",&pid.ff2gain);
 	register_float("w",&w);
-  register_int("rescal",&rescal);
-  register_float("ist",&ist);
-  register_float("calv",&calv);
+	register_int("rescal",&rescal);
+	register_float("ist",&ist);
+	register_float("calv",&calv);
 	register_float("s_var",&res_s_var);
 	register_float("c_var",&res_c_var);
 	register_float("amp",&amp);
@@ -323,46 +323,46 @@ int main(void)
 		for(bufpos = 0; bufpos < MAX_WAVE; bufpos++){
 			switch(wave[bufpos]){
 				case 1:
-			    e = (int)RAD(pid.error);
-			    break;
+					e = (int)RAD(pid.error);
+					break;
 				case 2:
-			    e = (int)RAD(pid.error_d);
-			    break;
+					e = (int)RAD(pid.error_d);
+					break;
 				case 3:
-			    e = (int)RAD(pid.error_dd);
-			    break;
+					e = (int)RAD(pid.error_dd);
+					break;
 				case 4:
 					e = (int)RAD(soll_pos);
 					break;
 				case 5:
-			    e = (int)RAD(pid.cmd_d);
-			    break;
+					e = (int)RAD(pid.cmd_d);
+					break;
 				case 6:
-			    e = (int)RAD(pid.cmd_dd);
-			    break;
+					e = (int)RAD(pid.cmd_dd);
+					break;
 				case 7:
 					e = (int)RAD(ist);
 					break;
 				case 8:
-			    e = (int)RAD(pid.feedbackv);
-			    break;
+					e = (int)RAD(pid.feedbackv);
+					break;
 				case 9:
-			    e = (int)(voltage_scale * 10);
-			    break;
+					e = (int)(voltage_scale * 10);
+					break;
 				case 10:
-			    e = (int)(pid.saturated_count / 10);
-			    break;
-				case 12:
+					e = (int)(pid.saturated_count / 10);
+					break;
+				case 11:
 					e = (int)RAD(mag_pos);
 					break;
-				case 13:
+				case 12:
 					e = (int)RAD(startpos);
 					break;
-				case 14:
+				case 13:
 					e = (int)RAD(res_offset);
 					break;
 				default:
-				    e = 0;
+					e = 0;
 			}
 			e = CLAMP(e + 128,1,255);
 
@@ -378,21 +378,21 @@ int main(void)
 
 #ifdef USBTERM
 		if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-    	UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
-            /*
-            if(w == -1){
-                w = -2;
-                printf_("pos:\n");
-                for(int i = 0;i<10;i++){
-                    printf_("%i %i\n",data[i][0][0], data[i][0][1]);
-                }
-                printf_("neg:\n");
-                for(int i = 0;i<10;i++){
-                    printf_("%i %i\n",data[i][1][0], data[i][1][1]);
-                }
-            }
-			*/
-            char name[APP_TX_BUF_SIZE];
+			UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
+			/*
+			   if(w == -1){
+			   w = -2;
+			   printf_("pos:\n");
+			   for(int i = 0;i<10;i++){
+			   printf_("%i %i\n",data[i][0][0], data[i][0][1]);
+			   }
+			   printf_("neg:\n");
+			   for(int i = 0;i<10;i++){
+			   printf_("%i %i\n",data[i][1][0], data[i][1][1]);
+			   }
+			   }
+			 */
+			char name[APP_TX_BUF_SIZE];
 			float value = 0;
 			int i = scanf_("%s = %f",name,&value);
 			switch(i){
@@ -401,7 +401,7 @@ int main(void)
 						printf_("%s = %f\n",name,get_param(name));
 					else{
 						printf_("not found\n");
-                    }
+					}
 					break;
 				case 5:
 					if(is_param(name)){
@@ -415,7 +415,7 @@ int main(void)
 					break;
 				default:
 					//if(name[0] == '?')
-						list_param();
+					list_param();
 					//else
 					//	printf_("unknown command\n");
 					//break;

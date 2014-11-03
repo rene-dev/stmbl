@@ -22,8 +22,10 @@ public:
     void paintNow();
     void plotvalue(int[]);
     void plotvalue(int);
+    void Clear();
     void render(wxDC& dc);
     int channels;
+    static const wxPen pen[];
 private:
     wxLongLong time;
     wxLongLong diff;
