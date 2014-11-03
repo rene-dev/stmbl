@@ -33,6 +33,8 @@ void Wait(unsigned int ms);
 #define NO 0
 #define YES 1
 
+#define MAX_WAVE 4
+
 #define offseta 0.0 * 2.0 * M_PI / 3.0
 #define offsetb 1.0 * 2.0 * M_PI / 3.0
 #define offsetc 2.0 * 2.0 * M_PI / 3.0
@@ -59,9 +61,9 @@ volatile float res_s_var = 0.0;
 volatile float res_c_var = 0.0;
 volatile float startpos = 0.0;
 volatile int count = 0;
-volatile int mode = 0;
-volatile float amp = 0.0;
-volatile float freq = 0.0;
+volatile int mode = 1;
+volatile float amp = 1.0;
+volatile float freq = 1.0;
 
 enum{
 	STBY,
@@ -263,7 +265,6 @@ void TIM5_IRQHandler(void){ //1KHz
 
 int main(void)
 {
-#define MAX_WAVE 4
 	unsigned char buf[MAX_WAVE * 2 + 2];
 	int wave[MAX_WAVE];
 	int bufpos = 0;
@@ -427,7 +428,7 @@ int main(void)
 		}
 #endif
 
-		Wait(20);
+		Wait(10);
 	}
 }
 
