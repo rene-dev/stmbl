@@ -188,14 +188,14 @@ float get_cmd(float periode){
 			pos = mod(pos);
 			return(pos);
 		case 3: // square
-			if(sin(freq * 2 * M_PI * time) > 0){
+			if(sinf(freq * 2 * M_PI * time) > 0){
 				return(amp);
 			}
 			else{
 				return(-amp);
 			}
 		case 4: // sine
-			return(amp * sin(freq * 2 * M_PI * time));
+			return(amp * sinf(freq * 2 * M_PI * time));
 	}
 	return(0.0);
 }
