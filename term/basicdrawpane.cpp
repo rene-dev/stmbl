@@ -11,7 +11,7 @@ BasicDrawPane::BasicDrawPane(wxFrame* parent, int ch) : wxPanel(parent){
 
     for (int i = 0; i<channels; i++) {
         data.push_back(std::vector<float>());
-        for (int j = 0; j<1024/2; j++) {
+        for (int j = 0; j<1024; j++) {
             data[i].push_back(0);
         }
     }
