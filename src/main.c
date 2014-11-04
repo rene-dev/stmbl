@@ -311,6 +311,7 @@ int main(void)
 	TIM_Cmd(TIM5, ENABLE);//PID
 	Wait(50);
 	startpos = get_res_pos();
+	soll_pos_old = startpos + res_offset;
 	pid.enable = 1;
 	enable();
 
