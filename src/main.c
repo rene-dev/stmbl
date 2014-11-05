@@ -232,10 +232,14 @@ void TIM5_IRQHandler(void){ //1KHz
 	soll_pos = startpos + get_cmd(periode) + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
 	soll_pos = mod(soll_pos);
 
-	pid.feedbacka = (minus(ist, ist_old) * freq - pid.feedbackv) * freq * 0.3 + pid.feedbacka * 0.7;
-	pid.feedbackv = minus(ist, ist_old) * freq * 0.5 + pid.feedbackv * 0.5;
-	pid.commanda = (minus(soll_pos, soll_pos_old) * freq - pid.commandv) * freq * 0.3 + pid.commanda * 0.7;
-	pid.commandv = minus(soll_pos, soll_pos_old) * freq * 0.5 + pid.commandv * 0.5;
+	float tmpv;
+
+	tmpv = minus(ist, ist_old) * freq * 0.3 + pid.feedbackv * 0.7;
+	pid.feedbacka = (tmpv - pid.feedbackv) * freq * 0.3 + pid.feedbacka * 0.7;
+	pid.feedbackv = tmpv;
+	tmpv = minus(soll_pos, soll_pos_old) * freq * 0.3 + pid.commandv * 0.7;
+	pid.commanda = (tmpv - pid.commandv) * freq * 0.3 + pid.commanda * 0.7;
+	pid.commandv = tmpv;
 	pid.error = minus(soll_pos, ist);
 
 	soll_pos_old = soll_pos;
@@ -429,7 +433,7 @@ int main(void)
 		}
 #endif
 
-		Wait(5);
+		Wait(1);
 	}
 }
 
