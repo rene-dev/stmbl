@@ -1,6 +1,6 @@
 #include "basicdrawpane.hpp"
 
-const wxPen BasicDrawPane::pen[] = {*wxRED_PEN, *wxBLUE_PEN, *wxGREEN_PEN, *wxYELLOW_PEN};
+const wxPen BasicDrawPane::pen[] = {*wxBLACK_PEN, *wxRED_PEN, *wxBLUE_PEN, *wxGREEN_PEN};
 
 BasicDrawPane::BasicDrawPane(wxFrame* parent, int ch) : wxPanel(parent){
     time = 0;
@@ -24,6 +24,7 @@ void BasicDrawPane::Clear(){
         }
     }
     xpos = 0;
+    Refresh();
 }
 
 /*
