@@ -301,7 +301,7 @@ int main(void)
 	register_float("amp",&amp);
 	register_float("freq",&freq);
 	register_int("mode",&mode);
-	register_float("startpos",&startpos);
+	register_float("spos",&startpos);
 
 	state = STBY;
 
