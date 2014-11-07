@@ -31,7 +31,7 @@ void strncpy(char* dst, char* src, int n){
 void param_init(){
 	PARAMS.param_count = 0;
 }
-
+//TODO: check name length
 int register_float(char* name, volatile float *f){
 	if(PARAMS.param_count == MAX_PARAMS){
 		return(0);
