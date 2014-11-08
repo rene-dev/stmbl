@@ -2,6 +2,10 @@ stmbl
 =====
 
 ###AC Servo Driver for STM32F4
+##### Driving a Bosch Turboscara
+https://www.youtube.com/watch?v=Ue98HE76paI
+##### Drivetest
+https://www.youtube.com/watch?v=sMeV4SCu4TA
 
 ####Things that work
 * Synchronous AC servos with resolver
