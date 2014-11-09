@@ -216,8 +216,6 @@ void TIM5_IRQHandler(void){ //1KHz
 		s += data[i][1][0] * 0.05;
 		c += data[i][1][1] * 0.05;
 	}
-	//revs = (int)(ist/(2*M_PI));
-	//ist = revs*2*M_PI+atan2f(s,c);
 	ist = atan2f(s,c);
 
 	if(count > 1000){
@@ -264,7 +262,6 @@ void TIM5_IRQHandler(void){ //1KHz
 		state = EFEEDBACK;
 	}
 	output_ac_pwm();
-	w=0;//request data
 }
 
 int main(void)
@@ -306,14 +303,13 @@ int main(void)
 	state = STBY;
 
 	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
-	Wait(10);
 	TIM_Cmd(TIM2, ENABLE);//int
-	Wait(50);
+	Wait(5);
 	erreger_enable = YES;
-	Wait(50);
+	Wait(5);
 	TIM_Cmd(TIM4, ENABLE);//PWM
 	TIM_Cmd(TIM5, ENABLE);//PID
-	Wait(50);
+	Wait(10);
 	startpos = get_res_pos();
 	soll_pos_old = startpos + res_offset;
 	pid.enable = 1;
@@ -323,9 +319,6 @@ int main(void)
 
 	while(1)  // Do not exit
 	{
-		//printf_("%f %f diff: %f\r",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
-		//printf_("%i %i",t1_mid,t2_mid);
-		//printf_("%i %i diff: %i\r",amp1,amp2,amp1-amp2);
 		for(bufpos = 0; bufpos < MAX_WAVE; bufpos++){
 			switch(wave[bufpos]){
 				case 1:
@@ -379,25 +372,10 @@ int main(void)
 		buf[MAX_WAVE * 2 + 1] = 0;
 
 
-		//printf_("e: %f\n", pid.error);
-		//printf_("soll: %f\n", soll_pos);
-
 #ifdef USBTERM
 		if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
 			UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
-			/*
-			   if(w == -1){
-			   w = -2;
-			   printf_("pos:\n");
-			   for(int i = 0;i<10;i++){
-			   printf_("%i %i\n",data[i][0][0], data[i][0][1]);
-			   }
-			   printf_("neg:\n");
-			   for(int i = 0;i<10;i++){
-			   printf_("%i %i\n",data[i][1][0], data[i][1][1]);
-			   }
-			   }
-			 */
+
 			char name[APP_TX_BUF_SIZE];
 			float value = 0;
 			int i = scanf_("%s = %f",name,&value);
@@ -420,16 +398,8 @@ int main(void)
 				case -1:
 					break;
 				default:
-					//if(name[0] == '?')
 					list_param();
-					//else
-					//	printf_("unknown command\n");
-					//break;
 			}
-			//if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY) {
-			//  UB_USB_CDC_SendString(rx_buf,LF);
-			//
-			//}
 		}
 #endif
 
