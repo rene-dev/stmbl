@@ -14,8 +14,6 @@ int __errno;
 void Wait(unsigned int ms);
 
 //bosch grau, gelb, grün
-#define pole_count 4
-#define res_offset DEG(36.6) //minimaler positiver resolver output bei mag_pos = 0
 
 //mayr gelb sw, rot
 //amp zu gering!
@@ -64,6 +62,8 @@ volatile int count = 0;
 volatile int mode = 1;
 volatile float amp = 1.0;
 volatile float freq = 1.0;
+volatile float pole_count = 4;
+volatile float res_offset = DEG(36.6); //minimaler positiver resolver output bei mag_pos = 0
 
 enum{
 	STBY,
@@ -299,6 +299,8 @@ int main(void)
 	register_float("freq",&freq);
 	register_int("mode",&mode);
 	register_float("spos",&startpos);
+	register_float("mpol",&pole_count);
+	register_float("resoff",&res_offset);
 
 	state = STBY;
 
