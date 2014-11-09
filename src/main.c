@@ -186,18 +186,18 @@ float get_cmd(float periode){
 		case 1: // enc
 			return(get_enc_pos());
 		case 2: // vel
-			pos += amp * periode;
+			pos += amp * periode / M_PI / 2.0;
 			pos = mod(pos);
 			return(pos);
 		case 3: // square
 			if(sinf(freq * 2 * M_PI * time) > 0){
-				return(amp);
+				return(amp / M_PI / 2.0);
 			}
 			else{
-				return(-amp);
+				return(-amp / M_PI / 2.0);
 			}
 		case 4: // sine
-			return(amp * sinf(freq * 2 * M_PI * time));
+			return(amp * sinf(freq * 2 * M_PI * time) / M_PI / 2.0);
 	}
 	return(0.0);
 }
