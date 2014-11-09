@@ -146,7 +146,7 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
 			if(uhu->GetValue()){
                 for (int i=0; i<ret; i++) {
                     if ((buf[i]>>7)) {
-                        drawpanel->plotvalue(((int)buf[i])+128/2);
+                        drawpanel->plotvalue((buf[i]+128/2) / 64.0);
                     }else{
                         text->AppendText((char)buf[i]);
                     }
@@ -154,7 +154,7 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
             }else if(stmbl->GetValue()){
                 for (int i=0; i<ret; i++){
                     if(addr >= 0){
-                        values[addr++] = (int)buf[i]-128;
+                        values[addr++] = (buf[i]-128) / 128.0;
                         if(addr == 4){
                             drawpanel->plotvalue(values);
                             addr = -1;

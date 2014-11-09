@@ -57,14 +57,14 @@ void BasicDrawPane::paintNow()
     render(dc);
 }
 
-void BasicDrawPane::plotvalue(int values[])
+void BasicDrawPane::plotvalue(float values[])
 {
     diff = wxGetUTCTimeMillis()-time;
     time = wxGetUTCTimeMillis();
     //std::cout << "data:" << value << std::endl;
     //data.at(xpos) += 0.1;
     for (int i = 0; i<channels; i++) {
-        data[i].at(xpos) = (float)values[i]/64;
+        data[i].at(xpos) = (float)values[i];
     }
     xpos = (xpos+1)%data[0].size();
     Refresh();
@@ -72,13 +72,13 @@ void BasicDrawPane::plotvalue(int values[])
     //Update();
 }
 
-void BasicDrawPane::plotvalue(int value)
+void BasicDrawPane::plotvalue(float value)
 {
     diff = wxGetUTCTimeMillis()-time;
     time = wxGetUTCTimeMillis();
     //std::cout << "data:" << value << std::endl;
     //data.at(xpos) += 0.1;
-    data[0].at(xpos) = (float)value/64.0;
+    data[0].at(xpos) = (float)value;
     xpos = (xpos+1)%data[0].size();
     Refresh();
     //oder

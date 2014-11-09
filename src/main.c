@@ -50,13 +50,10 @@ volatile int t1_mid = 0,t2_mid = 0;//mittelpunkt sin/cos
 volatile int amp1,amp2;//betrag
 volatile int erreger = 0;//resolver erreger pin an/aus
 volatile int erreger_enable = NO;//erreger aktiv
-volatile float w = -1;
-volatile int k = 0,l = 0;
+volatile int k = 0,l = 0; // adc res pos
 volatile int data[10][2][2];
 volatile int rescal = 0;//potis einstellen
 volatile float calv = 0.5;//potis einstellen
-volatile float res_s_var = 0.0;
-volatile float res_c_var = 0.0;
 volatile float startpos = 0.0;
 volatile int count = 0;
 volatile int mode = 1;
@@ -64,6 +61,7 @@ volatile float amp = 1.0;
 volatile float freq = 1.0;
 volatile float pole_count = 4;
 volatile float res_offset = DEG(36.6); //minimaler positiver resolver output bei mag_pos = 0
+volatile float time_wave = 0; // time scale
 
 enum{
 	STBY,
@@ -140,22 +138,17 @@ void ADC_IRQHandler(void) // 20khz
 		if(erreger){//eine halbwelle
 			GPIO_SetBits(GPIOC,GPIO_Pin_2);//erreger
 			amp1 = (t1-t1_mid)*(t1-t1_mid)+(t2-t2_mid)*(t2-t2_mid);
-			if(w >= 0){
-				data[k][0][0] = t1 - t1_mid;
-				data[k][0][1] = t2 - t2_mid;
-				k++;
-			}
+			data[k][0][0] = t1 - t1_mid;
+			data[k][0][1] = t2 - t2_mid;
+			k++;
 		}else{//andere halbwelle
 			GPIO_ResetBits(GPIOC,GPIO_Pin_2);//erreger
 			amp2 = (t1_mid-t1)*(t1_mid-t1)+(t2_mid-t2)*(t2_mid-t2);
-			if(w >= 0){
-				data[l][1][0] = t1_mid - t1;
-				data[l][1][1] = t2_mid - t2;
-				l++;
-			}
+			data[l][1][0] = t1_mid - t1;
+			data[l][1][1] = t2_mid - t2;
+			l++;
 		}
 		if(l == 10 && k == 10){
-			w = -1;
 			l = 0;
 			k = 0;
 		}
@@ -217,13 +210,6 @@ void TIM5_IRQHandler(void){ //1KHz
 	}
 	ist = atan2f(s,c);
 
-	if(count > 1000){
-		if(count < 2000){
-			res_s_var += s * s / 1000;
-			res_c_var += c * c / 1000;
-		}
-	}
-
 	count++;
 
 	soll_pos = startpos + get_cmd(periode) + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
@@ -257,24 +243,40 @@ void TIM5_IRQHandler(void){ //1KHz
 		state = EFEEDBACK;
 	}
 	output_ac_pwm();
+	time_wave++;
+	if(time_wave >= 100){
+		time_wave = 0;
+	}
 }
 
 int main(void)
 {
-	unsigned char buf[MAX_WAVE * 2 + 2];
+	unsigned char buf[MAX_WAVE + 2];
 	int wave[MAX_WAVE];
+	float offset[MAX_WAVE];
+	float gain[MAX_WAVE];
 	int bufpos = 0;
-	char name[] = "wave ";
+	char w_name[] = "wave ";
+	char o_name[] = "offset ";
+	char g_name[] = "gain ";
+
 	int e = 0;
 
 	setup();
 	param_init();
 
 	for(bufpos = 0; bufpos < MAX_WAVE; bufpos++){
-		name[4] = bufpos + '1';
-		register_int(name,&wave[bufpos]);
+		w_name[4] = bufpos + '1';
+		o_name[6] = bufpos + '1';
+		g_name[4] = bufpos + '1';
+		register_int(w_name,&wave[bufpos]);
+		register_float(o_name,&offset[bufpos]);
+		register_float(g_name,&gain[bufpos]);
 		wave[bufpos] = 0;
+		offset[bufpos] = 0;
+		gain[bufpos] = 1;
 	}
+
 
 	register_int("e",&pid.enable);
 	register_float("p",&pid.pgain);
@@ -284,12 +286,9 @@ int main(void)
 	// register_float("ff0",&pid.ff0gain);
 	register_float("ff1",&pid.ff1gain);
 	register_float("ff2",&pid.ff2gain);
-	register_float("w",&w);
 	register_int("rescal",&rescal);
 	register_float("ist",&ist);
 	register_float("calv",&calv);
-	register_float("s_var",&res_s_var);
-	register_float("c_var",&res_c_var);
 	register_float("amp",&amp);
 	register_float("freq",&freq);
 	register_int("mode",&mode);
@@ -300,10 +299,11 @@ int main(void)
 	state = STBY;
 
 	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
+	Wait(10);
 	TIM_Cmd(TIM2, ENABLE);//int
-	Wait(5);
+	Wait(50);
 	erreger_enable = YES;
-	Wait(5);
+	Wait(50);
 	TIM_Cmd(TIM4, ENABLE);//PWM
 	TIM_Cmd(TIM5, ENABLE);//PID
 	Wait(10);
@@ -319,54 +319,56 @@ int main(void)
 		for(bufpos = 0; bufpos < MAX_WAVE; bufpos++){
 			switch(wave[bufpos]){
 				case 1:
-					e = (int)RAD(pid.error);
+					e = (int)RAD((pid.error + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 2:
-					e = (int)RAD(pid.error_d);
+					e = (int)RAD((pid.error_d + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 3:
-					e = (int)RAD(pid.error_dd);
+					e = (int)RAD((pid.error_dd + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 4:
-					e = (int)RAD(soll_pos);
+					e = (int)RAD((soll_pos + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 5:
-					e = (int)RAD(pid.cmd_d);
+					e = (int)RAD((pid.cmd_d + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 6:
-					e = (int)RAD(pid.cmd_dd);
+					e = (int)RAD((pid.cmd_dd + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 7:
-					e = (int)RAD(ist);
+					e = (int)RAD((ist + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 8:
-					e = (int)RAD(pid.feedbackv);
+					e = (int)RAD((pid.feedbackv + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 9:
-					e = (int)(voltage_scale * 10);
+					e = (int)((voltage_scale + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 10:
-					e = (int)(pid.saturated_count / 10);
+					e = (int)((pid.saturated_count + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 11:
-					e = (int)RAD(mag_pos);
+					e = (int)RAD((mag_pos + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 12:
-					e = (int)RAD(startpos);
+					e = (int)RAD((startpos + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 13:
-					e = (int)RAD(res_offset);
+					e = (int)RAD((res_offset + offset[bufpos]) * gain[bufpos]);
+					break;
+				case 14:
+					e = (int)((time_wave + offset[bufpos]) * gain[bufpos]);
 					break;
 				default:
 					e = 0;
 			}
 			e = CLAMP(e + 128,1,255);
 
-			buf[bufpos * 2] = bufpos + 128;
-			buf[bufpos * 2 + 1] = e;
+			buf[bufpos + 1] = e;
 		}
-		buf[MAX_WAVE * 2] = 255;
-		buf[MAX_WAVE * 2 + 1] = 0;
+		buf[0] = 255;
+		buf[MAX_WAVE + 1] = 0;
 
 
 #ifdef USBTERM
