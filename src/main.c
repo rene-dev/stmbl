@@ -207,7 +207,6 @@ void TIM5_IRQHandler(void){ //1KHz
 	float s = 0,c = 0;
 	int freq = 1000;
 	float periode = 1.0 / freq;
-	kal.periode = periode;
 	for(int i = 0;i<10;i++){
 		s += data[i][0][0];
 		c += data[i][0][1];
@@ -249,12 +248,8 @@ void TIM5_IRQHandler(void){ //1KHz
 	  pid.enable = 0;
 	  }*/
 
-	kal.res = ist;
-	update(&kal);
 
 	calc_pid(&pid, periode * 1000.0);
-	kal.volt = pid.output;
-	predict(&kal);
 	voltage_scale = pid.output;
 
 	if(amp1 < 1000000 || amp2 < 1000000){
@@ -376,7 +371,7 @@ int main(void)
 
 #ifdef USBTERM
 		if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-			UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
+			UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
 
 			char name[APP_TX_BUF_SIZE];
 			float value = 0;

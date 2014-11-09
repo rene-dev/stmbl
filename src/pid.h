@@ -58,39 +58,11 @@ typedef struct {
     //char prev_ie;
 } hal_pid_t;
 
-typedef struct{
-  float res;
-  float res_var;
-
-  float pos;
-  float pos_var;
-
-  float vel;
-  float vel_var;
-
-  float acc;
-  float acc_var;
-
-  float volt;
-
-  float cur;
-  float cur_var;
-
-  float periode;
-
-  float k;
-  float r;
-  float m;
-} kalman_context_t;
 
 void calc_pid(hal_pid_t *arg, float period);
 void pid_init(hal_pid_t *pid);
 float minus(float a, float b);
 float mod(float a);
-
-void predict(kalman_context_t* k);
-void update(kalman_context_t* k);
-void kal_init(kalman_context_t *k);
 
 #ifdef __cplusplus
 }

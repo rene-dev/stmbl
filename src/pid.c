@@ -69,16 +69,12 @@ void pid_init(hal_pid_t *pid){
 void calc_pid(hal_pid_t *arg, float period)
 {
     hal_pid_t *pid;
-    float tmp1, tmp2;//, command, feedback;
+    float tmp1;
     int enable;
-    float periodfp, periodrecip;
 
     /* point to the data for this PID loop */
     pid = arg;
     /* precalculate some timing constants */
-    //periodfp = period * 0.001;
-    periodfp = period;
-		periodrecip = 1.0 / periodfp;
     /* get the enable bit */
     enable = pid->enable;
     /* read the command and feedback only once */
@@ -124,7 +120,7 @@ void calc_pid(hal_pid_t *arg, float period)
 	/* if output is in limit, don't let integrator wind up */
 	if ( ( tmp1 * pid->limit_state ) <= 0.0 ) {
 	    /* compute integral term */
-	    pid->error_i += tmp1 * periodfp;
+	    pid->error_i += tmp1 * period;
 	}
 	/* apply integrator limits */
 	if (pid->maxerror_i != 0.0) {
@@ -244,59 +240,4 @@ void calc_pid(hal_pid_t *arg, float period)
         pid->saturated_count = 0;
     }
     /* done */
-}
-
-void kal_init(kalman_context_t *k){
-    k->m = 1;
-    k->k = 1;
-    k->r = 1;
-
-    k->res_var = 0.01;
-    k->pos_var = 0.01;
-    k->vel_var = 0.01;
-    k->acc_var = 0.01;
-    k->cur_var = 0.01;
-
-    k->res = 0;
-    k->pos = 0;
-    k->vel = 0;
-    k->acc = 0;
-    k->volt = 0;
-    k->cur = 0;
-}
-
-void predict(kalman_context_t* k){
-	k->cur = (k->volt - k->k * k->vel) / k->r;
-	k->cur_var = powf(k->k, 2) * k->vel_var / powf(k->r, 2);
-
-	k->acc = k->m * k->cur;
-	k->acc_var = powf(k->m, 2) * k->cur_var;
-
-	float d_vel = k->acc * k->periode;
-	float d_vel_var = powf(k->periode, 2) * k->acc_var;
-	k->vel += d_vel;
-	k->vel_var = k->vel_var + d_vel_var;
-
-	float d_pos = k->vel * k->periode;
-	float d_pos_var = powf(k->periode, 2) * k->vel_var;
-	k->pos += d_pos;
-	k->pos_var = k->pos_var + d_pos_var;
-
-	k->pos = mod(k->pos);
-}
-
-void update(kalman_context_t* k){
-	float old_pos = k->pos;
-	float old_pos_var = k->pos_var;
-	k->pos = (k->res_var * k->pos + k->pos_var * k->res) / (k->pos_var + k->res_var);
-    k->pos = mod(k->pos);
-	k->pos_var = 1.0 / (1.0 / k->pos_var + 1.0 / k->res_var);
-
-	float old_vel = k->vel;
-	float old_vel_var = k->vel_var;
-	k->vel = minus(k->pos, old_pos) / k->periode;
-	k->vel_var = (k->pos_var + old_pos_var) / powf(k->periode, 2);
-
-	k->acc = minus(k->vel, old_vel) / k->periode;
-	k->acc_var = (k->vel_var + old_vel_var) / powf(k->periode, 2);
 }
