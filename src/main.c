@@ -209,12 +209,12 @@ void TIM5_IRQHandler(void){ //1KHz
 	float periode = 1.0 / freq;
 	kal.periode = periode;
 	for(int i = 0;i<10;i++){
-		s += data[i][0][0] * 0.05;
-		c += data[i][0][1] * 0.05;
+		s += data[i][0][0];
+		c += data[i][0][1];
 	}
 	for(int i = 0;i<10;i++){
-		s += data[i][1][0] * 0.05;
-		c += data[i][1][1] * 0.05;
+		s += data[i][1][0];
+		c += data[i][1][1];
 	}
 	//revs = (int)(ist/(2*M_PI));
 	//ist = revs*2*M_PI+atan2f(s,c);
