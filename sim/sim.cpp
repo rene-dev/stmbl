@@ -1,10 +1,231 @@
 #include "sim.h"
 
+// Rcpp implementation of the 1D TVD algorithm in:
+// Condat, L (2012) A Direct Algorithm for 1D Total Variation Denoising
+// http://hal.inria.fr/docs/00/67/50/43/PDF/condat_killer_tv.pdf
+// Accessed 11 August 2014.
+// [[Rcpp::export]]
+void tvd_1d_condat(std::vector<float> &y, std::vector<float> &x, int N, float lambda)
+{
+	int k, k0, kn, kp, i;
+	float vmin, vmax, umin, umax;
+
+	k = k0 = kn = kp = 1;
+	vmin = y[0] - lambda;
+	vmax = y[0] + lambda;
+	umin = lambda;
+	umax = -lambda;
+
+	while (1)
+	{
+		// b
+		if (k == N)
+		{
+			x[k-1] = vmin + umin;
+			break;
+		}
+
+		if (y[k] + umin < vmin - lambda)
+		{
+			// b1
+			for (i = k0-1; i < kn; i++)
+				x[i] = vmin;
+			kn++;
+			k = k0 = kp = kn;
+			vmin = y[k-1];
+			vmax = y[k-1] + 2*lambda;
+			umin = lambda;
+			umax = -lambda;
+		}
+		else if (y[k] + umax > vmax + lambda)
+		{
+			// b2
+			for (i = k0-1; i < kp; i++)
+				x[i] = vmax;
+			kp++;
+			k = k0 = kn = kp;
+			vmin = y[k-1] - 2*lambda;
+			vmax = y[k-1];
+			umin = lambda;
+			umax = -lambda;
+		}
+		else
+		{
+			// b3
+			k++;
+			umin = umin + y[k-1] - vmin;
+			umax = umax + y[k-1] - vmax;
+			if (umin >= lambda)
+			{
+				// b31
+				vmin = vmin + (umin - lambda)/((float)(k - k0 + 1));
+				umin = lambda;
+				kn = k;
+			}
+			if (umax <= -lambda)
+			{
+				// b32
+				vmax = vmax + (umax + lambda)/((float)(k - k0 + 1));
+				umax = -lambda;
+				kp = k;
+			}
+		}
+
+		// c
+		if (k == N)
+		{
+			if (umin < 0)
+			{
+				// c1
+				for (i = k0-1; i < kn; i++)
+					x[i] = vmin;
+				kn++;
+				k = k0 = kn;
+				vmin = y[k-1];
+				umin = lambda;
+				umax = y[k-1] + lambda - vmax;
+			}
+			else if (umax > 0)
+			{
+				// c2
+				for (i = k0-1; i < kn; i++)
+					x[i] = vmax;
+				kp++;
+				k = k0 = kp;
+				vmax = y[k-1];
+				umax = -lambda;
+				umin = y[k-1] - lambda - vmin;
+			}
+			else
+			{
+				// c3
+				for (i = k0-1; i < N; i++)
+					x[i] = vmin + umin/((float)(k - k0 + 1));
+				break;
+			}
+		}
+	}
+}
+
+
+// Rcpp implementation of the 1D TVD algorithm in:
+// Condat, L (2012) A Direct Algorithm for 1D Total Variation Denoising
+// http://hal.inria.fr/docs/00/67/50/43/PDF/condat_killer_tv.pdf
+// Accessed 11 August 2014.
+// [[Rcpp::export]]
+std::vector<double> tvd_1d_condat_worker(std::vector<double>& y, double lambda)
+{
+	// NOTE: in wrapping R code, verify that y.size() <= 2^32-1.  Although
+	// newer versions of R get around this index limit, Rcpp is still 
+	// limited to int indices.
+	int N = y.size();
+	int k, k0, kn, kp, i;
+	double vmin, vmax, umin, umax;
+	std::vector<double> x(N);
+
+	k = k0 = kn = kp = 1;
+	vmin = y[0] - lambda;
+	vmax = y[0] + lambda;
+	umin = lambda;
+	umax = -lambda;
+
+	while (true)
+	{
+		// b
+		if (k == N)
+		{
+			x[k-1] = vmin + umin;
+			break;
+		}
+
+		if (y[k] + umin < vmin - lambda)
+		{
+			// b1
+			for (i = k0-1; i < kn; i++)
+				x[i] = vmin;
+			kn++;
+			k = k0 = kp = kn;
+			vmin = y[k-1];
+			vmax = y[k-1] + 2*lambda;
+			umin = lambda;
+			umax = -lambda;
+		}
+		else if (y[k] + umax > vmax + lambda)
+		{
+			// b2
+			for (i = k0-1; i < kp; i++)
+				x[i] = vmax;
+			kp++;
+			k = k0 = kn = kp;
+			vmin = y[k-1] - 2*lambda;
+			vmax = y[k-1];
+			umin = lambda;
+			umax = -lambda;
+		}
+		else
+		{
+			// b3
+			k++;
+			umin = umin + y[k-1] - vmin;
+			umax = umax + y[k-1] - vmax;
+			if (umin >= lambda)
+			{
+				// b31
+				vmin = vmin + (umin - lambda)/(static_cast<double>(k - k0 + 1));
+				umin = lambda;
+				kn = k;
+			}
+			if (umax <= -lambda)
+			{
+				// b32
+				vmax = vmax + (umax + lambda)/(static_cast<double>(k - k0 + 1));
+				umax = -lambda;
+				kp = k;
+			}
+		}
+
+		// c
+		if (k == N)
+		{
+			if (umin < 0)
+			{
+				// c1
+				for (i = k0-1; i < kn; i++)
+					x[i] = vmin;
+				kn++;
+				k = k0 = kn;
+				vmin = y[k-1];
+				umin = lambda;
+				umax = y[k-1] + lambda - vmax;
+			}
+			else if (umax > 0)
+			{
+				// c2
+				for (i = k0-1; i < kn; i++)
+					x[i] = vmax;
+				kp++;
+				k = k0 = kp;
+				vmax = y[k-1];
+				umax = -lambda;
+				umin = y[k-1] - lambda - vmin;
+			}
+			else
+			{
+				// c3
+				for (i = k0-1; i < N; i++)
+					x[i] = vmin + umin/(static_cast<double>(k - k0 + 1));
+				break;
+			}
+		}
+	}
+
+	return x;
+}
 
 int main(){
   float sim_time = 0.0;
   float sim_step = 0.0001;
-  float sim_end_time = 2;
+  float sim_end_time = 0.1;
 
   srand(14235);
 
@@ -108,7 +329,7 @@ int main(){
   cmd.reset();
   cmd.periode = 2;
   cmd.amplitude = 1;
-  cmd.wave = cmd_c::SQUARE;
+  cmd.wave = cmd_c::CONST;
   cmd.type = cmd_c::POS;
   cmd.pos_res = 0.01;
   cmd.vel_res = 0.01;
@@ -127,7 +348,7 @@ int main(){
   drive.output = output;
   drive.reset();
 
-  cout << flush << "time error cur vel ctr" << endl;
+  cout << flush << "time pos pos2 pos3" << endl;
 
   int count = 0;
   int pid_count = drive.pid_periode / sim_step;
@@ -150,7 +371,9 @@ int main(){
 
   a = (acc1 - acc0) / (vel1 - vel0);
   b = acc0 - a * vel0;
-
+  std::vector<float> in,out,foo;
+  int i = 0;
+  
   for(sim_time = 0.0; sim_time < sim_end_time; sim_time += sim_step){
     drive.in->step(sim_step);
     if(count == 0){
@@ -162,15 +385,24 @@ int main(){
     drive.output(&drive, sim_step);
     drive.mot->step(sim_step);
 
-
+	in.push_back(drive.mot->get_sin()*drive.mot->get_polarity());
+	out.push_back(drive.mot->get_sin()*drive.mot->get_polarity());
+	foo.push_back(sin((drive.mot->state.pos + drive.mot->feedback.res_offset) * drive.mot->feedback.count));
     //e_pos = (torq - drive.est.load) / drive.est.inertia * exp(-sim_time * mot.elec_spec.v_rps / drive.est.inertia * mot.elec_spec.nm_a / mot.elec_spec.r);
     //y = a * drive.mot->state.vel + b;
 
     //cout << sim_time << ", " << drive.in->get_pos() << ", " << drive.mot->state.pos << ", " << drive.est.pos << ", " << drive.est.sin_avg << ", " << drive.est.sin_scale << ", " << drive.est.cos_avg << ", " << drive.est.cos_scale << endl;
     //cout << sim_time << ", " << drive.mot->state.pos << ", " << drive.mot->state.vel << ", " << drive.mot->state.acc << ", " << drive.est.p << ", " << drive.est.v << ", " << drive.est.a << endl;//", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
     //cout << sim_time << ", " << "-15, " << drive.in->get_pos() * 5 - 15<< ", " << drive.state.ctr * 10 << ", " << drive.mot->state.cur << ", " << drive.mot->state.vel / 5 << ", " << drive.mot->state.pos * 5 - 15 << ", " << minus_(drive.in->state.pos, drive.mot->state.pos) * (-100) - 15 << endl;//", " << drive.state.ctr << ", " << minus_(drive.in->get_pos(), drive.est.pos) << endl;
-    cout << sim_time/*drive.mot->state.vel*/ << ", " << minus_(drive.in->state.pos, drive.mot->state.pos) << ", " << drive.mot->state.cur << endl;
+     //cout << sim_time/*drive.mot->state.vel*/ << ", " << drive.est.pos << ", " << drive.mot->state.pos << endl;
   }
+  //out = tvd_1d_condat_worker(in, 0.05);
+   tvd_1d_condat(in, out, in.size(),0.05);
+  
+    for(sim_time = 0.0; sim_time < sim_end_time; sim_time += sim_step){
+    	cout << sim_time/*drive.mot->state.vel*/ << ", " << in[i] << ", " << out[i] << ", " << foo[i] << endl;
+		i++;
+    }
 
   system("gnuplot --persist gp");
 
