@@ -55,7 +55,6 @@ void SysTick_Handler(void);
 
 volatile int time;
 hal_pid_t pid;
-kalman_context_t kal;
 volatile uint32_t ADC2_DMA_Buffer[ADC2d_ANZ];
 
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
