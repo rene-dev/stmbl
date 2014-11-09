@@ -153,17 +153,14 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
                 }
             }else if(stmbl->GetValue()){
                 for (int i=0; i<ret; i++){
-                    if(addr != -1){
-                        //std::cout << "addr:" << addr << " data:" << (int)buf[i] << std::endl;
-                        values[addr] = (int)buf[i]-128;
-                        addr = -1;
-                    }else if ((buf[i]>>7)) {
-                        addr = (int)buf[i]-128;
-                        if (addr == 127) {
+                    if(addr >= 0){
+                        values[addr++] = (int)buf[i]-128;
+                        if(addr == 4){
                             drawpanel->plotvalue(values);
-                            //std::cout << "reset" << std::endl;
                             addr = -1;
                         }
+                    }else if (buf[i] == 0xff && addr == -1) {
+                        addr = 0;
                     }else{
                         text->AppendText((char)buf[i]);
                     }
