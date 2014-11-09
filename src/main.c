@@ -4,6 +4,7 @@
 #include "scanf.h"
 #include "param.h"
 #include "setup.h"
+#include "input.h"
 #include <math.h>
 
 #ifdef USBTERM
@@ -63,11 +64,14 @@ volatile float pole_count = 4;
 volatile float res_offset = DEG(36.6); //minimaler positiver resolver output bei mag_pos = 0
 volatile float time_wave = 0; // time scale
 
+input* inputs[4];
+
 enum{
 	STBY,
 	RUNNING,
 	EFOLLOW,
-	EFEEDBACK
+	EFEEDBACK,
+	EOVERLOAD
 } state;
 
 void enable(){
