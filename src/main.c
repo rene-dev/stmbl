@@ -27,6 +27,16 @@ void Wait(unsigned int ms);
 // float i = 100.000000
 // float d = 0.004999
 
+// bosch 320V
+/*
+float p = 1.000000
+float i = 0.050000
+float d = 0.009999
+float b = 0.000000
+float ff1 = 0.001500
+float ff2 = 0.000049
+*/
+
 #define pwm_scale 0.9//max/min PWM duty cycle
 
 #define NO 0
