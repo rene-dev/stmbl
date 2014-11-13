@@ -74,15 +74,18 @@ volatile float pole_count = 4;
 volatile float ferror = 90;//schleppfehler
 volatile float res_offset = DEG(36.6); //minimaler positiver resolver output bei mag_pos = 0
 volatile float time_wave = 0; // time scale
+volatile float cmd = 0; //dummywert für befehle
+volatile float overload = 1000;// overload error time
 
 input* inputs[4];
 
 enum{
-	STBY,
+	STBY = 0,
 	RUNNING,
 	EFOLLOW,
 	EFEEDBACK,
-	EOVERLOAD
+	EOVERLOAD,
+	EOVERSPEED,
 } state;
 
 void enable(){
@@ -248,20 +251,36 @@ void TIM5_IRQHandler(void){ //1KHz
 	  state = EFOLLOW;
 	  pid.enable = 0;
 	}
-
+	if(amp1 < 1000000 && amp2 < 1000000){
+		disable();
+		state = EFEEDBACK;
+		pid.enable = 0;
+	}
 
 	calc_pid(&pid, periode * 1000.0);
 	voltage_scale = pid.output;
 
-	if(amp1 < 1000000 || amp2 < 1000000){
-		//voltage_scale = 0.0;
-		state = EFEEDBACK;
+	if(pid.saturated_count >= overload && overload != 0){
+		disable();
+		state = EOVERLOAD;
+		pid.enable = 0;
 	}
+
 	output_ac_pwm();
 	time_wave++;
 	if(time_wave >= 100){
 		time_wave = 0;
 	}
+}
+
+void reset(float r){
+	printf_("reset\n");
+	disable();
+	state = RUNNING;
+	startpos = minus(minus(ist,res_offset),get_cmd(0.001f));//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+	soll_pos_old = startpos + get_cmd(0.001) + res_offset;
+	pid.enable = 1;
+	enable();
 }
 
 int main(void)
@@ -311,6 +330,9 @@ int main(void)
 	register_float("mpol",&pole_count);
 	register_float("resoff",&res_offset);
 	register_float("ferror",&ferror);
+	register_float("reset",&cmd);
+	register_read_callback("reset", reset);
+	register_int("state",&state);
 
 	state = STBY;
 
