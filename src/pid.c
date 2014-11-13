@@ -116,7 +116,7 @@ void calc_pid(hal_pid_t *arg, float period)
 	tmp1 = 0;
     }
     /* do integrator calcs only if enabled */
-    if (enable != 0) {
+    if (enable != 0 && pid->igain != 0) {
 	/* if output is in limit, don't let integrator wind up */
 	if ( ( tmp1 * pid->limit_state ) <= 0.0 ) {
 	    /* compute integral term */
