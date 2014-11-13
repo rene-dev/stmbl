@@ -11,6 +11,7 @@
 #include <wx/arrstr.h>
 #include <wx/button.h>
 #include <wx/config.h>
+#include <wx/slider.h>
 #include <math.h>
 #include <vector>
 #include <libserialport.h>
@@ -31,14 +32,19 @@ private:
     struct sp_port *port;
     wxChoice *choose_port;
     std::vector<wxChoice *> channelchoice;
+    std::vector<wxSlider *> channelpos;
+    std::vector<wxSlider *> channelgain;
     bool connected;
     void OnConnect(wxCommandEvent& WXUNUSED(event));
     void OnRefresh(wxCommandEvent& WXUNUSED(event));
     void OnClear(wxCommandEvent& WXUNUSED(event));
     void OnInput(wxCommandEvent& event);
     void OnChannelChange(wxCommandEvent& event);
+    void OnPosChange(wxCommandEvent& event);
+    void OnGainChange(wxCommandEvent& event);
     void OnKeyDown(wxKeyEvent& event);
     void OnIdle(wxIdleEvent& evt);
+    void send(std::string& s);
     void connect();
     void disconnect();
     void listports();
@@ -46,6 +52,8 @@ private:
     unsigned char buf[MainFrame::bufsize+1];
     wxTextCtrl *text;
     wxTextCtrl *textinput;
+    wxWindowID currentID;
+    wxWindowID channelstartID;//StartID of channel config
     BasicDrawPane *drawpanel;
     std::vector<wxString> history;
     int histpos;

@@ -1,6 +1,12 @@
 #include "mainframe.hpp"
 
+using std::cout;
+using std::endl;
+using std::string;
+using std::to_string;
+
 MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
+    currentID = wxID_LOWEST;
     addr = -1;
 	connected = false;
 	histpos = 0;
@@ -58,21 +64,39 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     waves.push_back("mag_pos");
     waves.push_back("startpos");
     waves.push_back("res_offset");
+    waves.push_back("time");
 
     //channels
+    channelstartID = currentID-1;//next ID
     for(int i = 0;i<drawpanel->channels;i++){
-        channelchoice.push_back(new wxChoice (top, wxID_ANY));
-        channelchoice.back()->SetClientData(new int(i));
-        channelchoice.back()->Bind(wxEVT_CHOICE,&MainFrame::OnChannelChange, this, wxID_ANY);
-        channelchoice.back()->Append(wxT("-"));
+        wxBoxSizer *channelsizer = new wxBoxSizer(wxVERTICAL);
+        channelchoice.push_back(new wxChoice (top, ++currentID));
+        channelchoice.back()->Bind(wxEVT_CHOICE,&MainFrame::OnChannelChange, this, currentID);
         channelchoice.back()->Set(waves);
+        channelchoice.back()->SetSelection(0);
+        cout << channelchoice.back()->GetId() << endl;
+        
+        channelpos.push_back(new wxSlider(top, ++currentID, 0, -100, 100));
+        channelpos.back()->Bind(wxEVT_SLIDER,&MainFrame::OnChannelChange, this, currentID);
+        
+        channelgain.push_back(new wxSlider(top, ++currentID, 10, 1, 100));
+        channelgain.back()->Bind(wxEVT_SLIDER,&MainFrame::OnChannelChange, this, currentID);
         
         wxPanel *c_panel;
         c_panel = new wxPanel(top, wxID_NEW, wxPoint(150, 20), wxSize(20, 20), wxBORDER_NONE);
         c_panel->SetBackgroundColour(drawpanel->pen[i].GetColour());
-        channelleiste->Add(c_panel, 0,wxALIGN_LEFT|wxALL,3);
         
-        channelleiste->Add(channelchoice.back(), 0,wxALIGN_LEFT|wxALL,3);
+        wxBoxSizer *sizer1 = new wxBoxSizer(wxHORIZONTAL);
+        wxBoxSizer *sizer2 = new wxBoxSizer(wxHORIZONTAL);
+        wxBoxSizer *sizer3 = new wxBoxSizer(wxHORIZONTAL);
+        sizer1->Add(c_panel, 0,wxALIGN_LEFT|wxALL,3);
+        sizer1->Add(channelchoice.back(), 1,wxALIGN_LEFT|wxALL,3);
+        sizer2->Add(channelpos.back(), 1,wxALIGN_LEFT|wxALL,3);
+        sizer3->Add(channelgain.back(), 1,wxALIGN_LEFT|wxALL,3);
+        channelsizer->Add(sizer1);
+        channelsizer->Add(sizer2);
+        channelsizer->Add(sizer3);
+        channelleiste->Add(channelsizer);
     }
     
 	topsizer->Add(channelleiste);
@@ -90,7 +114,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	bottomsizer->Add(textinput, 0,wxEXPAND|wxALL,3);
 	bottom->SetSizer(bottomsizer);
 
-	mainsplitter->SplitHorizontally(top, bottom,400);
+	mainsplitter->SplitHorizontally(top, bottom,500);
 	this->SetSizer(mainsizer);
 	mainsizer->SetSizeHints(this);
 }
@@ -117,23 +141,44 @@ void MainFrame::OnKeyDown(wxKeyEvent& event){
 }
 
 void MainFrame::OnChannelChange(wxCommandEvent& event){
+    int param = (event.GetId()-channelstartID-2)%3;
+    int channel = (int)((event.GetId()-channelstartID-2)/3)+1;
+    string params[] = {"wave","offset","gain"};
+    float value = 0;
+    switch (param) {
+        case 0://wave
+            value = event.GetSelection();
+            break;
+        case 1://offset
+        case 2://gain
+            value = (float)event.GetSelection()/10.0f;
+            break;
+        default:
+            break;
+    }
+    //cout << "change " << channel << " " << param << " " << value << endl;
+
+    string df = params[param];
+    df += to_string(channel);
+    df += " = ";
+    df += to_string(value);
+    send(df);
+}
+
+void MainFrame::send(string& s){
     if(connected){
-        std::cout << *(int*)event.GetClientData() << "->" << event.GetSelection() << std::endl;
-        std::string df = "wave";
-        df += std::to_string(*(int*)event.GetClientData() + 1);
-        df += " = ";
-        df += std::to_string(event.GetSelection());
-        
-        if((history.size()==0 || history.back() != df) && df != wxEmptyString){
-            history.push_back(df);
+        if((history.size()==0 || history.back() != s) && !s.empty()){
+            history.push_back(s);
         }
         histpos = history.size();
-        int ret1 = sp_nonblocking_write(port, df.c_str(), df.length());
+        int ret1 = sp_nonblocking_write(port, s.c_str(), s.length());
         int ret2 = sp_nonblocking_write(port, "\r", 1);
-        if(ret1 != df.length() || ret2!=1){
+        if(ret1 != s.length() || ret2!=1){
             wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
             disconnect();
         }
+    }else{
+        wxMessageBox( wxT("Nicht verbunden"), wxT("Error"), wxICON_EXCLAMATION);
     }
 }
 
@@ -244,19 +289,7 @@ void MainFrame::disconnect(){
 }
 
 void MainFrame::OnInput(wxCommandEvent& event){
-	if(connected){
-		if((history.size()==0 || history.back() != textinput->GetValue()) && textinput->GetValue() != wxEmptyString){
-			history.push_back(textinput->GetValue());
-		}
-		histpos = history.size();
-		int ret1 = sp_nonblocking_write(port, textinput->GetValue().mb_str(), textinput->GetValue().mb_str().length());
-		int ret2 = sp_nonblocking_write(port, "\r", 1);
-		if(ret1 != textinput->GetValue().mb_str().length() || ret2!=1){
-			wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
-			disconnect();
-		}
-	}else{
-		wxMessageBox( wxT("Nicht verbunden"), wxT("Error"), wxICON_EXCLAMATION);
-	}
+    string s =string(textinput->GetValue().mb_str());
+    send(s);
 	textinput->Clear();
 }
