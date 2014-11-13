@@ -71,6 +71,7 @@ volatile int mode = 1;
 volatile float amp = 1.0;
 volatile float freq = 1.0;
 volatile float pole_count = 4;
+volatile float ferror = 90;//schleppfehler
 volatile float res_offset = DEG(36.6); //minimaler positiver resolver output bei mag_pos = 0
 volatile float time_wave = 0; // time scale
 
@@ -242,11 +243,11 @@ void TIM5_IRQHandler(void){ //1KHz
 	soll_pos_old = soll_pos;
 	ist_old = ist;
 
-	/*if(ABS(pid.error) > DEG(90)){
+	if(ferror != 0.0f && ABS(pid.error) > DEG(ferror)){
 	  disable();
 	  state = EFOLLOW;
 	  pid.enable = 0;
-	  }*/
+	}
 
 
 	calc_pid(&pid, periode * 1000.0);
@@ -309,6 +310,7 @@ int main(void)
 	register_float("spos",&startpos);
 	register_float("mpol",&pole_count);
 	register_float("resoff",&res_offset);
+	register_float("ferror",&ferror);
 
 	state = STBY;
 
