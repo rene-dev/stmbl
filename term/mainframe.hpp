@@ -58,5 +58,5 @@ private:
     std::vector<wxString> history;
     int histpos;
     int addr;
-    int values[8];
+    float values[8];
 };

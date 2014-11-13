@@ -10,7 +10,7 @@ https://www.youtube.com/watch?v=sMeV4SCu4TA
 ####Things that work
 * Synchronous AC servos with resolver
 * DC servos with encoder
-* IRAMXv2 Hardware testet up to 150V
+* IRAMXv2 Hardware testet up to 320V
 
 ####TODO
 * autophasing for Synchronous AC servos with encoder
