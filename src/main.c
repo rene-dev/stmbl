@@ -381,7 +381,7 @@ int main(void)
 					e = (int)RAD((pid.feedbackv + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 9:
-					e = (int)((voltage_scale + offset[bufpos]) * gain[bufpos]);
+					e = (int)((voltage_scale*127 + offset[bufpos]) * gain[bufpos]);
 					break;
 				case 10:
 					e = (int)((pid.saturated_count + offset[bufpos]) * gain[bufpos]);
