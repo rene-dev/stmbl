@@ -252,7 +252,9 @@ void MainFrame::OnConnect(wxCommandEvent& WXUNUSED(event)){
 }
 
 void MainFrame::connect(){
-	port = ports[choose_port->GetSelection()];
+	if(choose_port->IsEmpty())
+        return;
+    port = ports[choose_port->GetSelection()];
 	if(sp_open(port, SP_MODE_READ_WRITE) == SP_OK){//port da und lässt sich öffnen
 		wxString str;
 		str = sp_get_port_description(port);
