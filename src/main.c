@@ -191,11 +191,11 @@ void ADC_IRQHandler(void) // 20khz
 	erreger = !erreger; // 10khz
 }
 
-float get_cmd(float periode){
+float get_cmd(float period){
 	static float time = 0.0;
 	static float pos = 0.0;
 
-	time += periode;
+	time += period;
 
 	switch(mode){
 		case 0: // hold
