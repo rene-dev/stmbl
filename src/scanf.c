@@ -125,7 +125,8 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
 					case 's':
 						string_pos = 0;
 						c = va_arg(arg, char *);
-						while(isChar(buf[buffer_pos])){
+						//while(isChar(buf[buffer_pos])){
+						while(!isWhitespace(buf[buffer_pos])){
 							c[string_pos] = buf[buffer_pos++];
 							string_pos++;
 							c[string_pos] = '\0';

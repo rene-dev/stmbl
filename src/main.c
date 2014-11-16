@@ -201,7 +201,7 @@ float get_cmd(float period){
 		case 0: // hold
 			return(0.0);
 		case 1: // enc
-			return(minus(get_res_pos(), startpos));
+			return(get_enc_pos());
 		case 2: // vel
 			pos += amp * period * M_PI * 2.0;
 			pos = mod(pos);
@@ -264,10 +264,25 @@ void TIM5_IRQHandler(void){ //1KHz
 		pid.enable = 0;
 	}
 	}
-	calc_pid(&pid, periode * 1000.0);
-	voltage_scale = pid.output;
+	//calc_pid(&pid, periode * 1000.0);
+
+	pid2ps.ext_cmd_pos = soll_pos;
+	pid2ps.feedback_pos = ist;
+	pid2ps.ext_cmd_vel = pid.commandv;
+	pid2ps.feedback_vel = pid.feedbackv;
+	pid2ps.ext_cmd_acc = pid.commanda;
+	//pid2ps.feedback_acc = pid.feedbacka;
+
+
+	pid2(&pid2ps);
+
+	//voltage_scale = pid.output;
+	voltage_scale = pid2ps.cmd_pwm;
+
 	if(!rescal){
-	if(pid.saturated_count >= overload && overload != 0){
+	//if(pid.saturated_count >= overload && overload != 0){
+	if(pid2ps.saturated_s >= 1.0 && overload != 0){
+
 		disable();
 		state = EOVERLOAD;
 		pid.enable = 0;
@@ -301,7 +316,7 @@ int main(void)
 	char o_name[] = "offset ";
 	char g_name[] = "gain ";
 
-	int e = 0;
+	float e = 0;
 
 	setup();
 	param_init();
@@ -319,7 +334,7 @@ int main(void)
 		gain[bufpos] = 1;
 	}
 
-
+/*
 	register_int("e",&pid.enable);
 	register_float("p",&pid.pgain);
 	register_float("i",&pid.igain);
@@ -344,6 +359,48 @@ int main(void)
 	register_int("amp2",&amp2);
 	register_int("state",&state);
 	register_float("scale",&scale);
+	*/
+	
+register_float("reset",&cmd);
+register_read_callback("reset", reset);
+register_int("rescal",&rescal);
+register_float("ist",&ist);
+register_float("calv",&calv);
+register_float("amp",&amp);
+register_float("freq",&freq);
+register_int("mode",&mode);
+register_float("spos",&startpos);
+register_float("mpol",&pole_count);
+register_float("resoff",&res_offset);
+register_float("ferror",&ferror);
+
+register_float("pos_p",&pid2ps.pos_p);
+register_float("ff1",&pid2ps.ff1);
+
+register_float("vel_p",&pid2ps.vel_p);
+register_float("vel_i",&pid2ps.vel_i);
+register_float("ff2",&pid2ps.ff2);
+
+register_float("acc_p",&pid2ps.acc_p);
+
+register_float("force_p",&pid2ps.force_p);
+
+register_float("cur_p",&pid2ps.cur_p);
+register_float("cur_d",&pid2ps.cur_d);
+register_float("ind_p",&pid2ps.ind_p);
+
+register_float("volt",&pid2ps.volt);
+
+register_float("max_vel",&pid2ps.max_vel);
+register_float("max_sum",&pid2ps.max_vel_error_sum);
+register_float("max_acc",&pid2ps.max_acc);
+register_float("max_for",&pid2ps.max_force);
+register_float("max_cur",&pid2ps.max_cur);
+register_float("max_vol",&pid2ps.max_volt);
+register_float("max_pwm",&pid2ps.max_pwm);
+
+
+
 
 	state = STBY;
 
@@ -367,6 +424,7 @@ int main(void)
 	{
 		for(bufpos = 0; bufpos < MAX_WAVE; bufpos++){
 			switch(wave[bufpos]){
+				/*
 				case 1:
 					e = (int)RAD((pid.error + offset[bufpos]) * gain[bufpos]);
 					break;
@@ -411,10 +469,65 @@ int main(void)
 					break;
 				default:
 					e = 0;
+					*/
+				case 1:
+					e = RAD(pid2ps.pos_error);
+					break;
+				case 2:
+					e = RAD(pid2ps.vel_error);
+					break;
+				case 3:
+					//e = RAD(pid2ps.acc_error);
+					break;
+				case 4:
+					e = RAD(pid2ps.ext_cmd_pos);
+					break;
+				case 5:
+					e = RAD(pid2ps.ext_cmd_vel);
+					break;
+				case 6:
+					e = RAD(pid2ps.ext_cmd_acc);
+					break;
+				case 7:
+					e = RAD(pid2ps.feedback_pos);
+					break;
+				case 8:
+					e = RAD(pid2ps.feedback_vel);
+					break;
+				case 9:
+					//e = RAD(pid2ps.feedback_acc);
+					break;
+				case 10:
+					e = RAD(pid2ps.cmd_vel);
+					break;
+				case 11:
+					e = RAD(pid2ps.cmd_acc);
+					break;
+				case 12:
+					e = RAD(pid2ps.cmd_force);
+					break;
+				case 13:
+					e = RAD(pid2ps.cmd_cur);
+					break;
+				case 14:
+					e = RAD(pid2ps.cmd_volt);
+					break;
+				case 15:
+					e = RAD(pid2ps.cmd_pwm);
+					break;
+				case 16:
+					e = RAD(pid2ps.saturated_s);
+					break;
+				case 17:
+					e = (int)((time_wave + offset[bufpos]) * gain[bufpos]);
+					break;
+				default:
+					e = 0;
 			}
+			e = (e + offset[bufpos]) * gain[bufpos];
 			e = CLAMP(e + 128,1,255);
 
-			buf[bufpos + 1] = e;
+			buf[bufpos + 1] = (int)e;
 		}
 		buf[0] = 255;
 		buf[MAX_WAVE + 1] = 0;
