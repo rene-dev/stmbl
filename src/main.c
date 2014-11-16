@@ -339,7 +339,10 @@ int main(void)
 	register_float("ferror",&ferror);
 	register_float("reset",&cmd);
 	register_read_callback("reset", reset);
+	register_int("amp1",&amp1);
+	register_int("amp2",&amp2);
 	register_int("state",&state);
+	register_float("scale",&scale);
 
 	state = STBY;
 
