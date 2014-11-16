@@ -201,7 +201,7 @@ float get_cmd(float period){
 		case 0: // hold
 			return(0.0);
 		case 1: // enc
-			return(minus(get_res_pos(), startpos));
+			return get_enc_pos();
 		case 2: // vel
 			pos += amp * period * M_PI * 2.0;
 			pos = mod(pos);
