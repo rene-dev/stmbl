@@ -76,6 +76,8 @@ volatile float res_offset = DEG(36.6); //minimaler positiver resolver output bei
 volatile float time_wave = 0; // time scale
 volatile float cmd = 0; //dummywert für befehle
 volatile float overload = 1000;// overload error time
+volatile float encres = 4096;//16384;// encoder
+volatile float scale = 1;//100;// encoder
 
 input* inputs[4];
 
@@ -97,7 +99,11 @@ void disable(){
 }
 
 float get_enc_pos(){
-	return (TIM_GetCounter(TIM3) * 2 * M_PI / 2048);//nochmal in der setup
+	static float value = 0;
+	value += minus((TIM_GetCounter(TIM3) * 2 * M_PI / encres),value)*0.01f;
+	//value = (TIM_GetCounter(TIM3) * 2 * M_PI / encres)*0.005f+(1-0.005f)*value;
+	//return value*scale;//nochmal in der setup
+	return (TIM_GetCounter(TIM3) * 2 * M_PI / encres);
 }
 
 float get_res_pos(){
@@ -298,6 +304,7 @@ int main(void)
 
 	setup();
 	param_init();
+	TIM_SetAutoreload(TIM3, encres - 1);
 
 	for(bufpos = 0; bufpos < MAX_WAVE; bufpos++){
 		w_name[4] = bufpos + '1';
