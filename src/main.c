@@ -360,7 +360,7 @@ int main(void)
 	register_int("state",&state);
 	register_float("scale",&scale);
 	*/
-	
+
 register_float("reset",&cmd);
 register_read_callback("reset", reset);
 register_int("rescal",&rescal);
