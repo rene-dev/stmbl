@@ -201,20 +201,20 @@ float get_cmd(float periode){
 		case 0: // hold
 			return(0.0);
 		case 1: // enc
-			return(get_enc_pos());
+			return(minus(get_res_pos(), startpos));
 		case 2: // vel
-			pos += amp * periode / M_PI / 2.0;
+			pos += amp * period * M_PI * 2.0;
 			pos = mod(pos);
 			return(pos);
 		case 3: // square
 			if(sinf(freq * 2 * M_PI * time) > 0){
-				return(amp / M_PI / 2.0);
+				return(amp * M_PI * 2.0);
 			}
 			else{
-				return(-amp / M_PI / 2.0);
+				return(-amp * M_PI * 2.0);
 			}
 		case 4: // sine
-			return(amp * sinf(freq * 2 * M_PI * time) / M_PI / 2.0);
+			return(amp * sinf(freq * 2 * M_PI * time) * M_PI * 2.0);
 	}
 	return(0.0);
 }
@@ -252,26 +252,27 @@ void TIM5_IRQHandler(void){ //1KHz
 	soll_pos_old = soll_pos;
 	ist_old = ist;
 
+	if(!rescal){
 	if(ferror != 0.0f && ABS(pid.error) > DEG(ferror)){
 	  disable();
 	  state = EFOLLOW;
 	  pid.enable = 0;
 	}
-	if(amp1 < 1000000 && amp2 < 1000000){
+	if(amp1 < 10000 && amp2 < 10000){//TODO nur letzter wert!
 		disable();
 		state = EFEEDBACK;
 		pid.enable = 0;
 	}
-
+	}
 	calc_pid(&pid, periode * 1000.0);
 	voltage_scale = pid.output;
-
+	if(!rescal){
 	if(pid.saturated_count >= overload && overload != 0){
 		disable();
 		state = EOVERLOAD;
 		pid.enable = 0;
 	}
-
+	}
 	output_ac_pwm();
 	time_wave++;
 	if(time_wave >= 100){
