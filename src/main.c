@@ -3,6 +3,7 @@
 #include "printf.h"
 #include "scanf.h"
 #include "param.h"
+#include "hal.h"
 #include "setup.h"
 #include "input.h"
 #include <math.h>
@@ -75,7 +76,7 @@ volatile float ferror = 90;//schleppfehler
 volatile float res_offset = DEG(36.6); //minimaler positiver resolver output bei mag_pos = 0
 volatile float time_wave = 0; // time scale
 volatile float cmd = 0; //dummywert für befehle
-volatile float overload = 1000;// overload error time
+volatile float overload = 1;// overload error time
 volatile float encres = 4096;//16384;// encoder
 volatile float scale = 1;//100;// encoder
 
@@ -281,7 +282,7 @@ void TIM5_IRQHandler(void){ //1KHz
 
 	if(!rescal){
 	//if(pid.saturated_count >= overload && overload != 0){
-	if(pid2ps.saturated_s >= 1.0 && overload != 0){
+	if(pid2ps.saturated_s >= overload && overload != 0){
 
 		disable();
 		state = EOVERLOAD;
@@ -320,6 +321,8 @@ int main(void)
 
 	setup();
 	param_init();
+	init_hal();
+
 	TIM_SetAutoreload(TIM3, encres - 1);
 
 	for(bufpos = 0; bufpos < MAX_WAVE; bufpos++){
@@ -399,7 +402,14 @@ register_float("max_cur",&pid2ps.max_cur);
 register_float("max_vol",&pid2ps.max_volt);
 register_float("max_pwm",&pid2ps.max_pwm);
 
+struct hal_pin pin1;
+struct hal_pin pin2;
 
+init_hal_pin("pin1", &pin1, 1.0);
+init_hal_pin("pin2", &pin2, 2.0);
+
+register_hal_pin(&pin1);
+register_hal_pin(&pin2);
 
 
 	state = STBY;
@@ -535,31 +545,44 @@ register_float("max_pwm",&pid2ps.max_pwm);
 
 #ifdef USBTERM
 		if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-			UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
+			//UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
 
-			char name[APP_TX_BUF_SIZE];
-			float value = 0;
-			int i = scanf_("%s = %f",name,&value);
-			switch(i){
-				case 2:
-					if(is_param(name))
-						printf_("%s = %f\n",name,get_param(name));
-					else{
-						printf_("not found\n");
-					}
-					break;
-				case 5:
-					if(is_param(name)){
-						if(set_param(name,value))
-							printf_("OK, %s = %f\n",name,get_param(name));
-						else
-							printf_("error!\n");
-					}
-					break;
-				case -1:
-					break;
-				default:
-					list_param();
+			char source[APP_TX_BUF_SIZE];
+			char sink[APP_TX_BUF_SIZE];
+
+			int i = scanf_("%N = %N",sink ,source);
+
+			if(i == 2){ // read
+				if(is_hal_pin(sink)){
+					printf_("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
+				}
+				else{
+					//for(int i = 0; i < hal.hal_pin_count; i++){
+					//	printf_("%s = %f\n",hal.hal_pins[i]->name, *(hal.hal_pins[i]->source->value));
+					//}
+					printf_("not found %i", i);
+				}
+			}
+			else if(i == 5){
+				if(is_hal_pin(source) && is_hal_pin(sink)){
+					link_hal_pins(source, sink);
+					printf_("OK %s <= %s = %f\n", sink, source, get_hal_pin(sink));
+				}
+				else if(is_hal_pin(sink)){
+					set_hal_pin(sink, read_float(source));
+					printf_("OK %s = %f\n", sink, get_hal_pin(sink));
+				}
+				else{
+					printf_("not found %i\n", i);
+				}
+			}
+			else if(i == -1){
+
+			}
+			else{
+				for(int i = 0; i < hal.hal_pin_count; i++){
+					printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->value);
+				}
 			}
 		}
 #endif
