@@ -145,14 +145,17 @@ struct hal_pin pid_max_pwm;
 
 struct hal_pin pid_pos_p;
 struct hal_pin pid_ff1;
+struct hal_pin pid_pos_lp;
 struct hal_pin pid_vel_p;
 struct hal_pin pid_vel_i;
 struct hal_pin pid_ff2;
+struct hal_pin pid_vel_lp;
 struct hal_pin pid_acc_p;
 struct hal_pin pid_force_p;
 struct hal_pin pid_cur_p;
 struct hal_pin pid_cur_d;
 struct hal_pin pid_ind_p;
+struct hal_pin pid_cur_lp;
 struct hal_pin pid_volt;
 
 void init_hal_pins(){
@@ -238,14 +241,17 @@ void init_hal_pins(){
 
 	init_hal_pin("pid_pos_p", &pid_pos_p, 30.0);
 	init_hal_pin("pid_ff1", &pid_ff1, 0.95);
+	init_hal_pin("pid_pos_lp", &pid_pos_lp, 1.0);
 	init_hal_pin("pid_vel_p", &pid_vel_p, 1.0);
 	init_hal_pin("pid_vel_i", &pid_vel_i, 40.0);
 	init_hal_pin("pid_ff2", &pid_ff2, 0.002);
+	init_hal_pin("pid_vel_lp", &pid_vel_lp, 1.0);
 	init_hal_pin("pid_acc_p", &pid_acc_p, 0.1);
 	init_hal_pin("pid_force_p", &pid_force_p, 3.667);
 	init_hal_pin("pid_cur_p", &pid_cur_p, 15.0);
 	init_hal_pin("pid_cur_d", &pid_cur_d, 0.01);
 	init_hal_pin("pid_ind_p", &pid_ind_p, 0.57);
+	init_hal_pin("pid_cur_lp", &pid_cur_lp, 1.0);
 	init_hal_pin("pid_volt", &pid_volt, 130.0);
 }
 
@@ -664,6 +670,7 @@ int main(void)
 			else{
 				for(int i = 0; i < hal.hal_pin_count; i++){
 					printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->value);
+					Wait(1);
 				}
 			}
 		}

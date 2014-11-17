@@ -248,7 +248,7 @@ void pid2(pid2p* pid){
 	if(pid->enable > 0.5){
 		// pos -> vel
 		pid->pos_error = minus(pid->ext_cmd_pos, pid->feedback_pos);
-		pid->cmd_vel = LIMIT(pid->pos_p * pid->pos_error + pid->ff1 * pid->ext_cmd_vel, pid->max_vel);
+		pid->cmd_vel = LIMIT(pid->pos_p * pid->pos_error + pid->ff1 * pid->ext_cmd_vel, pid->max_vel) * pid->pos_lpass + pid->cmd_vel * (1 - pid->pos_lpass);
 
 		// vel -> acc
 		pid->vel_error = pid->cmd_vel - pid->feedback_vel;
@@ -258,7 +258,7 @@ void pid2(pid2p* pid){
 		else{
 			pid->vel_error_sum = 0.0;
 		}
-		pid->cmd_acc = LIMIT(pid->vel_p * pid->vel_error + pid->vel_i * pid->vel_error_sum + pid->ff2 * pid->ext_cmd_acc, pid->max_acc);
+		pid->cmd_acc = LIMIT(pid->vel_p * pid->vel_error + pid->vel_i * pid->vel_error_sum + pid->ff2 * pid->ext_cmd_acc, pid->max_acc) * pid->vel_lpass + pid->cmd_acc * (1 - pid->vel_lpass);
 
 		// acc -> force
 		pid->cmd_force = LIMIT(pid->acc_p * pid->cmd_acc + pid->ext_cmd_force, pid->max_force);
@@ -268,7 +268,7 @@ void pid2(pid2p* pid){
 
 		// current -> volt
 		pid->cur_error = pid->cmd_cur - pid->feedback_cur;
-		pid->cmd_volt = LIMIT(pid->cur_p * pid->cur_error + pid->cur_d * (pid->cmd_cur - pid->cmd_cur_old) / pid->period + pid->ind_p * pid->feedback_vel, pid->max_volt);
+		pid->cmd_volt = LIMIT(pid->cur_p * pid->cur_error + pid->cur_d * (pid->cmd_cur - pid->cmd_cur_old) / pid->period + pid->ind_p * pid->feedback_vel, pid->max_volt)  * pid->cur_lpass + pid->cmd_volt * (1 - pid->cur_lpass);
 		pid->cmd_cur_old = pid->cmd_cur;
 
 		// volt -> pwm
@@ -330,10 +330,12 @@ void pid2_init(pid2p* pid){
 
 	pid->pos_p = 30.0;
 	pid->ff1 = 0.95;
+	pid->pos_lpass = 1.0;
 
 	pid->vel_p = 1.0;
 	pid->vel_i = 40.0;
 	pid->ff2 = 0.002;
+	pid->vel_lpass = 1.0;
 
 	pid->acc_p = 0.1;
 
@@ -342,6 +344,7 @@ void pid2_init(pid2p* pid){
 	pid->cur_p = 15.0;
 	pid->cur_d = 0.01;
 	pid->ind_p = 0.57;
+	pid->cur_lpass = 1.0;
 
 	pid->volt = 130.0;
 

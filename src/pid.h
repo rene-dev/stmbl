@@ -102,11 +102,13 @@ typedef struct {
   // pos -> vel
   float pos_p;
   float ff1;
+  float pos_lpass;
 
   // vel -> acc
   float vel_p;
   float vel_i;
   float ff2;
+  float vel_lpass;
 
   // acc -> force
   float acc_p;
@@ -118,6 +120,7 @@ typedef struct {
   float cur_p;
   float cur_d;
   float ind_p;
+  float cur_lpass;
 
   // voltage -> pwm
   float volt;
