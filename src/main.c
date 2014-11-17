@@ -97,6 +97,7 @@ struct hal_pin pid_saturated_s;
 
 struct hal_pin ferror;
 struct hal_pin overload_s;
+struct hal_pin res_amp;
 struct hal_pin polecount;
 struct hal_pin res_offset;
 struct hal_pin startpos;
@@ -116,6 +117,15 @@ struct hal_pin offset2;
 struct hal_pin offset3;
 
 struct hal_pin pid_enable;
+
+struct hal_pin pid_max_vel;
+struct hal_pin pid_max_sum;
+struct hal_pin pid_max_acc;
+struct hal_pin pid_max_force;
+struct hal_pin pid_max_cur;
+struct hal_pin pid_max_volt;
+struct hal_pin pid_max_pwm;
+
 struct hal_pin pid_pos_p;
 struct hal_pin pid_ff1;
 struct hal_pin pid_vel_p;
@@ -163,6 +173,7 @@ void init_hal_pins(){
 
 	init_hal_pin("ferror", &ferror, DEG(90.0));
 	init_hal_pin("overload_s", &overload_s, 1.0);
+	init_hal_pin("res_amp", &res_amp, 10000.0);
 	init_hal_pin("polecount", &polecount, 4.0);
 	init_hal_pin("res_offset", &res_offset, DEG(36.6));
 	init_hal_pin("startpos", &startpos, 0.0);
@@ -182,6 +193,15 @@ void init_hal_pins(){
 	init_hal_pin("offset3", &offset3, 0.0);
 
 	init_hal_pin("pid_enable", &pid_enable, 1.0);
+
+	init_hal_pin("pid_max_vel", &pid_max_vel, 62.9);
+	init_hal_pin("pid_max_sum", &pid_max_sum, 2.5);
+	init_hal_pin("pid_max_acc", &pid_max_acc, 1200.0);
+	init_hal_pin("pid_max_force", &pid_max_force, 100.0);
+	init_hal_pin("pid_max_cur", &pid_max_cur, 6.0);
+	init_hal_pin("pid_max_volt", &pid_max_volt, 130.0);
+	init_hal_pin("pid_max_pwm", &pid_max_pwm, 0.9);
+
 	init_hal_pin("pid_pos_p", &pid_pos_p, 30.0);
 	init_hal_pin("pid_ff1", &pid_ff1, 0.95);
 	init_hal_pin("pid_vel_p", &pid_vel_p, 1.0);
@@ -378,8 +398,15 @@ void TIM5_IRQHandler(void){ //1KHz
 
 
 	pid2ps.enable = read_hal_pin(&pid_enable);
+	pid2ps.max_vel = read_hal_pin(&pid_max_vel);
+	pid2ps.max_vel_error_sum = read_hal_pin(&pid_max_sum);
+	pid2ps.max_acc = read_hal_pin(&pid_max_acc);
+	pid2ps.max_force = read_hal_pin(&pid_max_force);
+	pid2ps.max_cur = read_hal_pin(&pid_max_cur);
+	pid2ps.max_volt = read_hal_pin(&pid_max_volt);
+	pid2ps.max_pwm = read_hal_pin(&pid_max_pwm);
 
-	if(amp1 < 10000 && amp2 < 10000){//TODO nur letzter wert!
+	if(amp1 < read_hal_pin(&res_amp) && amp2 < read_hal_pin(&res_amp) && read_hal_pin(&res_amp) > 0.0){//TODO nur letzter wert!
 		disable();
 		state = EFEEDBACK;
 		pid2ps.enable = 0;
@@ -388,7 +415,7 @@ void TIM5_IRQHandler(void){ //1KHz
 	pid2(&pid2ps);
 
 
-	if(read_hal_pin(&ferror) != 0.0f && ABS(pid2ps.pos_error) > read_hal_pin(&ferror)){
+	if(read_hal_pin(&ferror) > 0.0 && ABS(pid2ps.pos_error) > read_hal_pin(&ferror)){
 		disable();
 		state = EFOLLOW;
 		pid2ps.enable = 0;
@@ -411,7 +438,7 @@ void TIM5_IRQHandler(void){ //1KHz
 	write_hal_pin(&pid_error_cur, pid2ps.cur_error);
 
 
-	if(pid2ps.saturated_s >= read_hal_pin(&overload_s) && read_hal_pin(&overload_s) != 0){
+	if(pid2ps.saturated_s >= read_hal_pin(&overload_s) && read_hal_pin(&overload_s) > 0.0){
 		disable();
 		state = EOVERLOAD;
 		pid2ps.enable = 0;

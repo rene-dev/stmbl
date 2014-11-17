@@ -7,6 +7,7 @@ extern "C" {
 
 #define ABS(a)	   (((a) < 0) ? -(a) : (a))
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+#define LIMIT(x, lowhigh)  (((lowhigh) > 0.0) ? (((x) > (lowhigh)) ? (lowhigh) : (((x) < (-lowhigh)) ? (-lowhigh) : (x))) : (x))
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 #define DEG(a) ((a)*M_PI/180.0)
@@ -97,7 +98,7 @@ typedef struct {
 
   // parameters
   float enable;
-  
+
   // pos -> vel
   float pos_p;
   float ff1;
@@ -138,6 +139,8 @@ typedef struct {
 
   float max_pwm;
 
+  float i0;
+
 
   // state
   float vel_error_sum;
@@ -145,6 +148,8 @@ typedef struct {
   float cmd_cur_old;
 
   float saturated_s;
+
+  float i2t;
 
   // operator
   // pos_error = minus(cmd_pos, feedback_pos)

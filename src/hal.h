@@ -3,7 +3,7 @@
 
 #pragma once
 
-#define MAX_HAL_PINS 64
+#define MAX_HAL_PINS 128
 #define MAX_HPNAME 16
 
 typedef char HPNAME[MAX_HPNAME];
