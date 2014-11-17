@@ -581,6 +581,7 @@ void reset_(){
 	//startpos = minus(minus(ist,res_offset),get_cmd(0.001f));//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
 	//soll_pos_old = startpos + get_cmd(0.001) + res_offset;
 	write_hal_pin(&pid_enable, 1.0);
+	write_hal_pin(&en, 1.0);
 	enable();
 }
 
