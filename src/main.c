@@ -664,6 +664,7 @@ int main(void)
 			else{
 				for(int i = 0; i < hal.hal_pin_count; i++){
 					printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->value);
+					Wait(1);
 				}
 			}
 		}
