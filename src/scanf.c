@@ -46,7 +46,7 @@ int isChar(char c){
 }
 
 int isNameChar(char c){
-	return(isChar(c) || c == '_' || c == '-');
+	return(isChar(c) || c == '_' || c == '-' || c == '.');
 }
 
 int isDecDigit(char c){

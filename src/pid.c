@@ -245,41 +245,58 @@ void calc_pid(hal_pid_t *arg, float period)
 
 
 void pid2(pid2p* pid){
-	// pos -> vel
-	pid->pos_error = minus(pid->ext_cmd_pos, pid->feedback_pos);
-	pid->cmd_vel = CLAMP(pid->pos_p * pid->pos_error + pid->ff1 * pid->ext_cmd_vel, -pid->max_vel, pid->max_vel);
+	if(pid->enable > 0.5){
+		// pos -> vel
+		pid->pos_error = minus(pid->ext_cmd_pos, pid->feedback_pos);
+		pid->cmd_vel = CLAMP(pid->pos_p * pid->pos_error + pid->ff1 * pid->ext_cmd_vel, -pid->max_vel, pid->max_vel);
 
-	// vel -> acc
-	pid->vel_error = pid->cmd_vel - pid->feedback_vel;
-	if(pid->vel_i > 0.0){
-		pid->vel_error_sum = CLAMP(pid->vel_error_sum + pid->vel_error * pid->period, -pid->max_vel_error_sum, pid->max_vel_error_sum);
+		// vel -> acc
+		pid->vel_error = pid->cmd_vel - pid->feedback_vel;
+		if(pid->vel_i > 0.0){
+			pid->vel_error_sum = CLAMP(pid->vel_error_sum + pid->vel_error * pid->period, -pid->max_vel_error_sum, pid->max_vel_error_sum);
+		}
+		else{
+			pid->vel_error_sum = 0.0;
+		}
+		pid->cmd_acc = CLAMP(pid->vel_p * pid->vel_error + pid->vel_i * pid->vel_error_sum + pid->ff2 * pid->ext_cmd_acc, -pid->max_acc, pid->max_acc);
+
+		// acc -> force
+		pid->cmd_force = CLAMP(pid->acc_p * pid->cmd_acc + pid->ext_cmd_force, -pid->max_force, pid->max_force);
+
+		// force -> current
+		pid->cmd_cur = CLAMP(pid->force_p * pid->cmd_force, -pid->max_cur, pid->max_cur);
+
+		// current -> volt
+		pid->cur_error = pid->cmd_cur - pid->feedback_cur;
+		pid->cmd_volt = CLAMP(pid->cur_p * pid->cur_error + pid->cur_d * (pid->cmd_cur - pid->cmd_cur_old) / pid->period + pid->ind_p * pid->feedback_vel, -pid->max_volt, pid->max_volt);
+		pid->cmd_cur_old = pid->cmd_cur;
+
+		// volt -> pwm
+		pid->cmd_pwm = pid->cmd_volt / pid->volt;
+		if(pid->cmd_pwm >= pid->max_pwm || pid->cmd_pwm <= -pid->max_pwm){
+			pid->saturated_s += pid->period;
+		}
+		else{
+			pid->saturated_s = 0.0;
+		}
+		pid->cmd_pwm = CLAMP(pid->cmd_pwm, -pid->max_pwm, pid->max_pwm);
 	}
 	else{
+		pid->cmd_vel = 0.0;
+		pid->cmd_acc = 0.0;
+		pid->cmd_force = 0.0;
+		pid->cmd_cur = 0.0;
+		pid->cmd_volt = 0.0;
+		pid->cmd_vel = 0.0;
+
 		pid->vel_error_sum = 0.0;
-	}
-	pid->cmd_acc = CLAMP(pid->vel_p * pid->vel_error + pid->vel_i * pid->vel_error_sum + pid->ff2 * pid->ext_cmd_acc, -pid->max_acc, pid->max_acc);
 
-	// acc -> force
-	pid->cmd_force = CLAMP(pid->acc_p * pid->cmd_acc + pid->ext_cmd_force, -pid->max_force, pid->max_force);
+		pid->cmd_cur_old = 0.0;
 
-	// force -> current
-	pid->cmd_cur = CLAMP(pid->force_p * pid->cmd_force, -pid->max_cur, pid->max_cur);
-
-	// current -> volt
-	pid->cur_error = pid->cmd_cur - pid->feedback_cur;
-	pid->cmd_volt = CLAMP(pid->cur_p * pid->cur_error + pid->cur_d * (pid->cmd_cur - pid->cmd_cur_old) / pid->period + pid->ind_p * pid->feedback_vel, -pid->max_volt, pid->max_volt);
-	pid->cmd_cur_old = pid->cmd_cur;
-
-	// volt -> pwm
-	pid->cmd_pwm = pid->cmd_volt / pid->volt;
-	if(pid->cmd_pwm >= pid->max_pwm || pid->cmd_pwm <= -pid->max_pwm){
-		pid->saturated_s += pid->period;
-	}
-	else{
 		pid->saturated_s = 0.0;
 	}
-	pid->cmd_pwm = CLAMP(pid->cmd_pwm, -pid->max_pwm, pid->max_pwm);
 }
+
 
 void pid2_init(pid2p* pid){
 	pid->ext_cmd_pos = 0.0;
@@ -308,6 +325,8 @@ void pid2_init(pid2p* pid){
 	pid->pos_error = 0.0;
 	pid->vel_error = 0.0;
 	pid->cur_error = 0.0;
+
+	pid->enable = 1.0;
 
 	pid->pos_p = 30.0;
 	pid->ff1 = 0.95;

@@ -11,6 +11,7 @@ void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
   strncpy(pin->name, name, MAX_HPNAME);
   pin->value = value;
   pin->source = pin;
+  register_hal_pin(pin);
 }
 
 int register_hal_pin(struct hal_pin* pin){
@@ -83,7 +84,7 @@ int link_hal_pins(HPNAME source, HPNAME sink){
 
   if(d != 0 && s != 0){
     s->value = s->source->value;
-    s->source = d;
+    s->source = d->source;
     return(1);
   }
   return(0);

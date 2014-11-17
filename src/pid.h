@@ -96,6 +96,8 @@ typedef struct {
 
 
   // parameters
+  float enable;
+  
   // pos -> vel
   float pos_p;
   float ff1;
@@ -145,7 +147,7 @@ typedef struct {
   float saturated_s;
 
   // operator
-  // pos_error = minux(cmd_pos, feedback_pos)
+  // pos_error = minus(cmd_pos, feedback_pos)
   float (*minus)(float a, float b);
 }pid2p;
 

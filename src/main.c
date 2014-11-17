@@ -5,7 +5,6 @@
 #include "param.h"
 #include "hal.h"
 #include "setup.h"
-#include "input.h"
 #include <math.h>
 
 #ifdef USBTERM
@@ -49,12 +48,7 @@ float ff2 = 0.000049
 #define offsetb 1.0 * 2.0 * M_PI / 3.0
 #define offsetc 2.0 * 2.0 * M_PI / 3.0
 
-volatile float mag_pos = 0;
-volatile float soll_pos = 0;
-volatile float soll_pos_old = 0;
-volatile float ist = 0;
-volatile float ist_old = 0;
-volatile float voltage_scale = 0;// -1 bis 1
+volatile float res = 0;
 
 volatile int t1, t2;//rohdaten sin/cos
 volatile int t1_last = 0, t2_last = 0;//rohdaten sin/cos letzter aufruf
@@ -64,23 +58,150 @@ volatile int erreger = 0;//resolver erreger pin an/aus
 volatile int erreger_enable = NO;//erreger aktiv
 volatile int k = 0,l = 0; // adc res pos
 volatile int data[10][2][2];
-volatile int rescal = 0;//potis einstellen
-volatile float calv = 0.5;//potis einstellen
-volatile float startpos = 0.0;
-volatile int count = 0;
-volatile int mode = 1;
-volatile float amp = 1.0;
-volatile float freq = 1.0;
-volatile float pole_count = 4;
-volatile float ferror = 90;//schleppfehler
-volatile float res_offset = DEG(36.6); //minimaler positiver resolver output bei mag_pos = 0
 volatile float time_wave = 0; // time scale
 volatile float cmd = 0; //dummywert für befehle
-volatile float overload = 1;// overload error time
 volatile float encres = 4096;//16384;// encoder
 volatile float scale = 1;//100;// encoder
 
-input* inputs[4];
+struct hal_pin enc_pos;
+struct hal_pin res_pos;
+struct hal_pin sin_pos;
+struct hal_pin square_pos;
+struct hal_pin vel_pos;
+
+struct hal_pin amp;
+struct hal_pin freq;
+
+struct hal_pin mot_pos;
+struct hal_pin pwm;
+
+struct hal_pin pid_ext_pos;
+struct hal_pin pid_fb_pos;
+struct hal_pin pid_cmd_vel;
+struct hal_pin pid_ext_vel;
+struct hal_pin pid_fb_vel;
+struct hal_pin pid_cmd_acc;
+struct hal_pin pid_ext_acc;
+struct hal_pin pid_fb_acc;
+struct hal_pin pid_cmd_force;
+struct hal_pin pid_cmd_cur;
+struct hal_pin pid_fb_cur;
+struct hal_pin pid_cmd_volt;
+struct hal_pin pid_cmd_pwm;
+
+struct hal_pin pid_error_pos;
+struct hal_pin pid_error_vel;
+struct hal_pin pid_error_cur;
+
+struct hal_pin pid_saturated_s;
+
+struct hal_pin ferror;
+struct hal_pin overload_s;
+struct hal_pin polecount;
+struct hal_pin res_offset;
+struct hal_pin startpos;
+struct hal_pin reset;
+
+struct hal_pin wave0;
+struct hal_pin wave1;
+struct hal_pin wave2;
+struct hal_pin wave3;
+struct hal_pin gain0;
+struct hal_pin gain1;
+struct hal_pin gain2;
+struct hal_pin gain3;
+struct hal_pin offset0;
+struct hal_pin offset1;
+struct hal_pin offset2;
+struct hal_pin offset3;
+
+struct hal_pin pid_enable;
+struct hal_pin pid_pos_p;
+struct hal_pin pid_ff1;
+struct hal_pin pid_vel_p;
+struct hal_pin pid_vel_i;
+struct hal_pin pid_ff2;
+struct hal_pin pid_acc_p;
+struct hal_pin pid_force_p;
+struct hal_pin pid_cur_p;
+struct hal_pin pid_cur_d;
+struct hal_pin pid_ind_p;
+struct hal_pin pid_volt;
+
+void init_hal_pins(){
+	init_hal_pin("enc_pos", &enc_pos, 0.0);
+	init_hal_pin("res_pos", &res_pos, 0.0);
+	init_hal_pin("sin_pos", &sin_pos, 0.0);
+	init_hal_pin("square_pos", &square_pos, 0.0);
+	init_hal_pin("vel_pos", &vel_pos, 0.0);
+
+	init_hal_pin("amp", &amp, 0.1);
+	init_hal_pin("freq", &freq, 1.0);
+
+	init_hal_pin("mot_pos", &mot_pos, 0.0);
+	init_hal_pin("pwm", &pwm, 0.0);
+
+	init_hal_pin("pid_ext_pos", &pid_ext_pos, 0.0);
+	init_hal_pin("pid_fb_pos", &pid_fb_pos, 0.0);
+	init_hal_pin("pid_cmd_vel", &pid_cmd_vel, 0.0);
+	init_hal_pin("pid_ext_vel", &pid_ext_vel, 0.0);
+	init_hal_pin("pid_fb_vel", &pid_fb_vel, 0.0);
+	init_hal_pin("pid_cmd_acc", &pid_cmd_acc, 0.0);
+	init_hal_pin("pid_ext_acc", &pid_ext_acc, 0.0);
+	//init_hal_pin("pid_fb_acc", &pid_fb_acc, 0.0);
+	init_hal_pin("pid_cmd_force", &pid_cmd_force, 0.0);
+	init_hal_pin("pid_cmd_cur", &pid_cmd_cur, 0.0);
+	init_hal_pin("pid_fb_cur", &pid_fb_cur, 0.0);
+	init_hal_pin("pid_cmd_volt", &pid_cmd_volt, 0.0);
+	init_hal_pin("pid_cmd_pwm", &pid_cmd_pwm, 0.0);
+
+	init_hal_pin("pid_error_pos", &pid_error_pos, 0.0);
+	init_hal_pin("pid_error_vel", &pid_error_vel, 0.0);
+	init_hal_pin("pid_error_cur", &pid_error_cur, 0.0);
+
+	init_hal_pin("pid_saturated_s", &pid_saturated_s, 0.0);
+
+	init_hal_pin("ferror", &ferror, DEG(90.0));
+	init_hal_pin("overload_s", &overload_s, 1.0);
+	init_hal_pin("polecount", &polecount, 4.0);
+	init_hal_pin("res_offset", &res_offset, DEG(36.6));
+	init_hal_pin("startpos", &startpos, 0.0);
+	init_hal_pin("reset", &reset, 0.0);
+
+	init_hal_pin("wave0", &wave0, 0.0);
+	init_hal_pin("wave1", &wave1, 0.0);
+	init_hal_pin("wave2", &wave2, 0.0);
+	init_hal_pin("wave3", &wave3, 0.0);
+	init_hal_pin("gain0", &gain0, 1.0);
+	init_hal_pin("gain1", &gain1, 1.0);
+	init_hal_pin("gain2", &gain2, 1.0);
+	init_hal_pin("gain3", &gain3, 1.0);
+	init_hal_pin("offset0", &offset0, 0.0);
+	init_hal_pin("offset1", &offset1, 0.0);
+	init_hal_pin("offset2", &offset2, 0.0);
+	init_hal_pin("offset3", &offset3, 0.0);
+
+	init_hal_pin("pid_enable", &pid_enable, 1.0);
+	init_hal_pin("pid_pos_p", &pid_pos_p, 30.0);
+	init_hal_pin("pid_ff1", &pid_ff1, 0.95);
+	init_hal_pin("pid_vel_p", &pid_vel_p, 1.0);
+	init_hal_pin("pid_vel_i", &pid_vel_i, 40.0);
+	init_hal_pin("pid_ff2", &pid_ff2, 0.002);
+	init_hal_pin("pid_acc_p", &pid_acc_p, 0.1);
+	init_hal_pin("pid_force_p", &pid_force_p, 3.667);
+	init_hal_pin("pid_cur_p", &pid_cur_p, 15.0);
+	init_hal_pin("pid_cur_d", &pid_cur_d, 0.01);
+	init_hal_pin("pid_ind_p", &pid_ind_p, 0.57);
+	init_hal_pin("pid_volt", &pid_volt, 130.0);
+}
+
+void link_hal(){
+	link_hal_pins("enc_pos", "pid_ext_pos");
+	link_hal_pins("res_pos", "pid_fb_pos");
+	link_hal_pins("pid_cmd_pwm", "pwm");
+	link_hal_pins("res_pos", "mot_pos");
+}
+
 
 enum{
 	STBY = 0,
@@ -99,28 +220,22 @@ void disable(){
 	PWM_E = 0;
 }
 
-float get_enc_pos(){
+void read_enc_pos(){
 	static float value = 0;
 	value += minus((TIM_GetCounter(TIM3) * 2 * M_PI / encres),value)*0.01f;
 	//value = (TIM_GetCounter(TIM3) * 2 * M_PI / encres)*0.005f+(1-0.005f)*value;
 	//return value*scale;//nochmal in der setup
-	return (TIM_GetCounter(TIM3) * 2 * M_PI / encres);
+	write_hal_pin(&enc_pos, TIM_GetCounter(TIM3) * 2 * M_PI / encres);
 }
 
-float get_res_pos(){
-	return ist - res_offset;
+void read_res_pos(){
+	write_hal_pin(&res_pos, res - read_hal_pin(&res_offset));
 }
 
 void output_ac_pwm(){
-	float volt = CLAMP(voltage_scale,-1.0,1.0);
+	float volt = CLAMP(read_hal_pin(&pwm),-1.0,1.0);
 	//volt = volt*-1;
-
-	if(rescal){
-		mag_pos = 0;
-		volt = calv;
-	}else{
-		mag_pos = get_res_pos() * pole_count + DEG(90);
-	}
+	float mag_pos = read_hal_pin(&mot_pos) * read_hal_pin(&polecount) + DEG(90);
 
 	mag_pos = mod(mag_pos);
 	PWM_U = (sinf(mag_pos + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
@@ -129,7 +244,7 @@ void output_ac_pwm(){
 }
 
 void output_dc_pwm(){
-	float volt = CLAMP(voltage_scale,-1.0,1.0);
+	float volt = CLAMP(read_hal_pin(&pwm),-1.0,1.0);
 
 	int foo = volt * mag_res * pwm_scale / 2 + mag_res / 2;
 	PWM_U = foo;//PD12 PIN1
@@ -192,39 +307,35 @@ void ADC_IRQHandler(void) // 20khz
 	erreger = !erreger; // 10khz
 }
 
-float get_cmd(float period){
+void get_pos(float period){
 	static float time = 0.0;
 	static float pos = 0.0;
 
 	time += period;
+	read_res_pos();
+	read_enc_pos();
 
-	switch(mode){
-		case 0: // hold
-			return(0.0);
-		case 1: // enc
-			return(get_enc_pos());
-		case 2: // vel
-			pos += amp * period * M_PI * 2.0;
-			pos = mod(pos);
-			return(pos);
-		case 3: // square
-			if(sinf(freq * 2 * M_PI * time) > 0){
-				return(amp * M_PI * 2.0);
-			}
-			else{
-				return(-amp * M_PI * 2.0);
-			}
-		case 4: // sine
-			return(amp * sinf(freq * 2 * M_PI * time) * M_PI * 2.0);
+	pos += read_hal_pin(&amp) * period * M_PI * 2.0;
+	pos = mod(pos);
+	write_hal_pin(&vel_pos, pos);
+
+	if(sinf(read_hal_pin(&freq) * 2 * M_PI * time) > 0.0){
+		write_hal_pin(&square_pos, read_hal_pin(&amp) * M_PI * 2.0);
 	}
-	return(0.0);
+	else{
+		write_hal_pin(&square_pos, -read_hal_pin(&amp) * M_PI * 2.0);
+	}
+
+	write_hal_pin(&sin_pos, read_hal_pin(&amp) * sinf(read_hal_pin(&freq) * 2 * M_PI * time) * M_PI * 2.0);
 }
+
 
 void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
 	float s = 0,c = 0;
 	int freq = 1000;
-	float periode = 1.0 / freq;
+	float period = 1.0 / freq;
+
 	for(int i = 0;i<10;i++){
 		s += data[i][0][0];
 		c += data[i][0][1];
@@ -233,183 +344,114 @@ void TIM5_IRQHandler(void){ //1KHz
 		s += data[i][1][0];
 		c += data[i][1][1];
 	}
-	ist = atan2f(s,c);
+	res = atan2f(s,c);
 
-	count++;
+	get_pos(period);
 
-	soll_pos = startpos + get_cmd(periode) + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
-	soll_pos = mod(soll_pos);
-
+	float soll_pos;
+	float ist;
+	static float soll_pos_old = 0.0;
+	static float ist_old = 0.0;
 	float tmpv;
 
-	tmpv = minus(ist, ist_old) * freq * 0.3 + pid.feedbackv * 0.7;
-	pid.feedbacka = (tmpv - pid.feedbackv) * freq * 0.3 + pid.feedbacka * 0.7;
-	pid.feedbackv = tmpv;
-	tmpv = minus(soll_pos, soll_pos_old) * freq * 0.3 + pid.commandv * 0.7;
-	pid.commanda = (tmpv - pid.commandv) * freq * 0.3 + pid.commanda * 0.7;
-	pid.commandv = tmpv;
-	pid.error = minus(soll_pos, ist);
+	pid2ps.period = period;
+
+	soll_pos = read_hal_pin(&pid_ext_pos);
+	soll_pos = mod(soll_pos);
+
+	ist = read_hal_pin(&pid_fb_pos);
+	ist = mod(ist);
+
+	tmpv = minus(ist, ist_old) * freq * 0.3 + pid2ps.feedback_vel * 0.7;
+	//pid2ps.feedback_acc = (tmpv - pid2ps.feedback_vel) * freq * 0.3 + pid2ps.feedback_acc * 0.7;
+	pid2ps.feedback_vel = tmpv;
+
+	tmpv = minus(soll_pos, soll_pos_old) * freq * 0.3 + pid2ps.ext_cmd_vel * 0.7;
+	pid2ps.ext_cmd_acc = (tmpv - pid2ps.ext_cmd_vel) * freq * 0.3 + pid2ps.ext_cmd_acc * 0.7;
+	pid2ps.ext_cmd_vel = tmpv;
+
+	pid2ps.ext_cmd_pos = soll_pos;
+	pid2ps.feedback_pos = ist;
 
 	soll_pos_old = soll_pos;
 	ist_old = ist;
 
-	if(!rescal){
-	if(ferror != 0.0f && ABS(pid.error) > DEG(ferror)){
-	  disable();
-	  state = EFOLLOW;
-	  pid.enable = 0;
-	}
+
+	pid2ps.enable = read_hal_pin(&pid_enable);
+
 	if(amp1 < 10000 && amp2 < 10000){//TODO nur letzter wert!
 		disable();
 		state = EFEEDBACK;
-		pid.enable = 0;
+		pid2ps.enable = 0;
 	}
-	}
-	//calc_pid(&pid, periode * 1000.0);
-
-	pid2ps.ext_cmd_pos = soll_pos;
-	pid2ps.feedback_pos = ist;
-	pid2ps.ext_cmd_vel = pid.commandv;
-	pid2ps.feedback_vel = pid.feedbackv;
-	pid2ps.ext_cmd_acc = pid.commanda;
-	//pid2ps.feedback_acc = pid.feedbacka;
-
 
 	pid2(&pid2ps);
 
-	//voltage_scale = pid.output;
-	voltage_scale = pid2ps.cmd_pwm;
 
-	if(!rescal){
-	//if(pid.saturated_count >= overload && overload != 0){
-	if(pid2ps.saturated_s >= overload && overload != 0){
+	if(read_hal_pin(&ferror) != 0.0f && ABS(pid2ps.pos_error) > read_hal_pin(&ferror)){
+		disable();
+		state = EFOLLOW;
+		pid2ps.enable = 0;
+	}
 
+	write_hal_pin(&pid_cmd_vel, pid2ps.cmd_vel);
+	write_hal_pin(&pid_ext_vel, pid2ps.ext_cmd_vel);
+	write_hal_pin(&pid_fb_vel, pid2ps.cmd_vel);
+	write_hal_pin(&pid_cmd_acc, pid2ps.cmd_acc);
+	write_hal_pin(&pid_ext_acc, pid2ps.ext_cmd_acc);
+	write_hal_pin(&pid_cmd_force, pid2ps.cmd_force);
+	write_hal_pin(&pid_cmd_cur, pid2ps.cmd_cur);
+	write_hal_pin(&pid_fb_cur, pid2ps.feedback_cur);
+	write_hal_pin(&pid_cmd_volt, pid2ps.cmd_volt);
+	write_hal_pin(&pid_cmd_pwm, pid2ps.cmd_pwm);
+	write_hal_pin(&pid_saturated_s, pid2ps.saturated_s);
+
+	write_hal_pin(&pid_error_pos, pid2ps.pos_error);
+	write_hal_pin(&pid_error_vel, pid2ps.vel_error);
+	write_hal_pin(&pid_error_cur, pid2ps.cur_error);
+
+
+	if(pid2ps.saturated_s >= read_hal_pin(&overload_s) && read_hal_pin(&overload_s) != 0){
 		disable();
 		state = EOVERLOAD;
-		pid.enable = 0;
+		pid2ps.enable = 0;
 	}
-	}
+
+	write_hal_pin(&pid_enable, pid2ps.enable);
+
+
 	output_ac_pwm();
+
 	time_wave++;
 	if(time_wave >= 100){
 		time_wave = 0;
 	}
 }
 
-void reset(float r){
+void reset_(){
 	printf_("reset\n");
 	disable();
 	state = RUNNING;
-	startpos = minus(minus(ist,res_offset),get_cmd(0.001f));//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
-	soll_pos_old = startpos + get_cmd(0.001) + res_offset;
-	pid.enable = 1;
+	//startpos = minus(minus(ist,res_offset),get_cmd(0.001f));//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
+	//soll_pos_old = startpos + get_cmd(0.001) + res_offset;
+	write_hal_pin(&pid_enable, 1.0);
 	enable();
 }
 
 int main(void)
 {
 	unsigned char buf[MAX_WAVE + 2];
-	int wave[MAX_WAVE];
-	float offset[MAX_WAVE];
-	float gain[MAX_WAVE];
-	int bufpos = 0;
-	char w_name[] = "wave ";
-	char o_name[] = "offset ";
-	char g_name[] = "gain ";
+
 
 	float e = 0;
 
 	setup();
-	param_init();
+//	param_init();
 	init_hal();
+	init_hal_pins();
+	link_hal();
 
 	TIM_SetAutoreload(TIM3, encres - 1);
-
-	for(bufpos = 0; bufpos < MAX_WAVE; bufpos++){
-		w_name[4] = bufpos + '1';
-		o_name[6] = bufpos + '1';
-		g_name[4] = bufpos + '1';
-		register_int(w_name,&wave[bufpos]);
-		register_float(o_name,&offset[bufpos]);
-		register_float(g_name,&gain[bufpos]);
-		wave[bufpos] = 0;
-		offset[bufpos] = 0;
-		gain[bufpos] = 1;
-	}
-
-/*
-	register_int("e",&pid.enable);
-	register_float("p",&pid.pgain);
-	register_float("i",&pid.igain);
-	register_float("d",&pid.dgain);
-	register_float("b",&pid.bgain);
-	// register_float("ff0",&pid.ff0gain);
-	register_float("ff1",&pid.ff1gain);
-	register_float("ff2",&pid.ff2gain);
-	register_int("rescal",&rescal);
-	register_float("ist",&ist);
-	register_float("calv",&calv);
-	register_float("amp",&amp);
-	register_float("freq",&freq);
-	register_int("mode",&mode);
-	register_float("spos",&startpos);
-	register_float("mpol",&pole_count);
-	register_float("resoff",&res_offset);
-	register_float("ferror",&ferror);
-	register_float("reset",&cmd);
-	register_read_callback("reset", reset);
-	register_int("amp1",&amp1);
-	register_int("amp2",&amp2);
-	register_int("state",&state);
-	register_float("scale",&scale);
-	*/
-
-register_float("reset",&cmd);
-register_read_callback("reset", reset);
-register_int("rescal",&rescal);
-register_float("ist",&ist);
-register_float("calv",&calv);
-register_float("amp",&amp);
-register_float("freq",&freq);
-register_int("mode",&mode);
-register_float("spos",&startpos);
-register_float("mpol",&pole_count);
-register_float("resoff",&res_offset);
-register_float("ferror",&ferror);
-
-register_float("pos_p",&pid2ps.pos_p);
-register_float("ff1",&pid2ps.ff1);
-
-register_float("vel_p",&pid2ps.vel_p);
-register_float("vel_i",&pid2ps.vel_i);
-register_float("ff2",&pid2ps.ff2);
-
-register_float("acc_p",&pid2ps.acc_p);
-
-register_float("force_p",&pid2ps.force_p);
-
-register_float("cur_p",&pid2ps.cur_p);
-register_float("cur_d",&pid2ps.cur_d);
-register_float("ind_p",&pid2ps.ind_p);
-
-register_float("volt",&pid2ps.volt);
-
-register_float("max_vel",&pid2ps.max_vel);
-register_float("max_sum",&pid2ps.max_vel_error_sum);
-register_float("max_acc",&pid2ps.max_acc);
-register_float("max_for",&pid2ps.max_force);
-register_float("max_cur",&pid2ps.max_cur);
-register_float("max_vol",&pid2ps.max_volt);
-register_float("max_pwm",&pid2ps.max_pwm);
-
-struct hal_pin pin1;
-struct hal_pin pin2;
-
-init_hal_pin("pin1", &pin1, 1.0);
-init_hal_pin("pin2", &pin2, 2.0);
-
-register_hal_pin(&pin1);
-register_hal_pin(&pin2);
 
 
 	state = STBY;
@@ -423,129 +465,45 @@ register_hal_pin(&pin2);
 	TIM_Cmd(TIM4, ENABLE);//PWM
 	TIM_Cmd(TIM5, ENABLE);//PID
 	Wait(10);
-	startpos = get_res_pos();
-	soll_pos_old = startpos + res_offset;
-	pid.enable = 1;
+	//startpos = get_res_pos();
+	//soll_pos_old = startpos + res_offset;
+	write_hal_pin(&pid_enable, 1.0);
 	enable();
 
 
 
 	while(1)  // Do not exit
 	{
-		for(bufpos = 0; bufpos < MAX_WAVE; bufpos++){
-			switch(wave[bufpos]){
-				/*
-				case 1:
-					e = (int)RAD((pid.error + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 2:
-					e = (int)RAD((pid.error_d + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 3:
-					e = (int)RAD((pid.error_dd + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 4:
-					e = (int)RAD((soll_pos + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 5:
-					e = (int)RAD((pid.cmd_d + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 6:
-					e = (int)RAD((pid.cmd_dd + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 7:
-					e = (int)RAD((ist + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 8:
-					e = (int)RAD((pid.feedbackv + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 9:
-					e = (int)((voltage_scale*127 + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 10:
-					e = (int)((pid.saturated_count + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 11:
-					e = (int)RAD((mag_pos + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 12:
-					e = (int)RAD((startpos + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 13:
-					e = (int)RAD((res_offset + offset[bufpos]) * gain[bufpos]);
-					break;
-				case 14:
-					e = (int)((time_wave + offset[bufpos]) * gain[bufpos]);
-					break;
-				default:
-					e = 0;
-					*/
-				case 1:
-					e = RAD(pid2ps.pos_error);
-					break;
-				case 2:
-					e = RAD(pid2ps.vel_error);
-					break;
-				case 3:
-					//e = RAD(pid2ps.acc_error);
-					break;
-				case 4:
-					e = RAD(pid2ps.ext_cmd_pos);
-					break;
-				case 5:
-					e = RAD(pid2ps.ext_cmd_vel);
-					break;
-				case 6:
-					e = RAD(pid2ps.ext_cmd_acc);
-					break;
-				case 7:
-					e = RAD(pid2ps.feedback_pos);
-					break;
-				case 8:
-					e = RAD(pid2ps.feedback_vel);
-					break;
-				case 9:
-					//e = RAD(pid2ps.feedback_acc);
-					break;
-				case 10:
-					e = RAD(pid2ps.cmd_vel);
-					break;
-				case 11:
-					e = RAD(pid2ps.cmd_acc);
-					break;
-				case 12:
-					e = RAD(pid2ps.cmd_force);
-					break;
-				case 13:
-					e = RAD(pid2ps.cmd_cur);
-					break;
-				case 14:
-					e = RAD(pid2ps.cmd_volt);
-					break;
-				case 15:
-					e = RAD(pid2ps.cmd_pwm);
-					break;
-				case 16:
-					e = RAD(pid2ps.saturated_s);
-					break;
-				case 17:
-					e = (int)((time_wave + offset[bufpos]) * gain[bufpos]);
-					break;
-				default:
-					e = 0;
-			}
-			e = (e + offset[bufpos]) * gain[bufpos];
-			e = CLAMP(e + 128,1,255);
 
-			buf[bufpos + 1] = (int)e;
-		}
+
+
+		e = read_hal_pin(&wave0);
+		e = (e + read_hal_pin(&offset0)) * read_hal_pin(&gain0);
+		e = CLAMP(e + 128,1,255);
+		buf[1] = (int)e;
+
+		e = read_hal_pin(&wave1);
+		e = (e + read_hal_pin(&offset1)) * read_hal_pin(&gain1);
+		e = CLAMP(e + 128,1,255);
+		buf[2] = (int)e;
+
+		e = read_hal_pin(&wave2);
+		e = (e + read_hal_pin(&offset2)) * read_hal_pin(&gain2);
+		e = CLAMP(e + 128,1,255);
+		buf[3] = (int)e;
+
+		e = read_hal_pin(&wave3);
+		e = (e + read_hal_pin(&offset3)) * read_hal_pin(&gain3);
+		e = CLAMP(e + 128,1,255);
+		buf[4] = (int)e;
+
 		buf[0] = 255;
 		buf[MAX_WAVE + 1] = 0;
 
 
 #ifdef USBTERM
 		if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-			//UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
+			UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
 
 			char source[APP_TX_BUF_SIZE];
 			char sink[APP_TX_BUF_SIZE];
@@ -557,10 +515,7 @@ register_hal_pin(&pin2);
 					printf_("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
 				}
 				else{
-					//for(int i = 0; i < hal.hal_pin_count; i++){
-					//	printf_("%s = %f\n",hal.hal_pins[i]->name, *(hal.hal_pins[i]->source->value));
-					//}
-					printf_("not found %i", i);
+					printf_("not found");
 				}
 			}
 			else if(i == 5){
@@ -573,7 +528,7 @@ register_hal_pin(&pin2);
 					printf_("OK %s = %f\n", sink, get_hal_pin(sink));
 				}
 				else{
-					printf_("not found %i\n", i);
+					printf_("not found");
 				}
 			}
 			else if(i == -1){
@@ -587,6 +542,10 @@ register_hal_pin(&pin2);
 		}
 #endif
 
+		if(read_hal_pin(&reset) > 0.5){
+			reset_();
+			write_hal_pin(&reset, 0.0);
+		}
 		Wait(1);
 	}
 }
