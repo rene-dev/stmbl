@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 Rene Hopf. All rights reserved.
 //
 
+#pragma once
+
 #define MAX_PARAMS 64
 #define MAX_PNAME 8
 typedef char PNAME[MAX_PNAME];

@@ -7,6 +7,7 @@ extern "C" {
 
 #define ABS(a)	   (((a) < 0) ? -(a) : (a))
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+#define LIMIT(x, lowhigh)  (((lowhigh) > 0.0) ? (((x) > (lowhigh)) ? (lowhigh) : (((x) < (-lowhigh)) ? (-lowhigh) : (x))) : (x))
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 #define DEG(a) ((a)*M_PI/180.0)
@@ -58,6 +59,105 @@ typedef struct {
     //char prev_ie;
 } hal_pid_t;
 
+typedef struct {
+  // pos
+  float ext_cmd_pos;
+  float feedback_pos;
+
+  // vel
+  float cmd_vel;
+  float ext_cmd_vel;
+  float feedback_vel;
+
+  // acc
+  float cmd_acc;
+  float ext_cmd_acc;
+  //float feedback_acc;
+
+  // force
+  float cmd_force;
+  float ext_cmd_force;
+  //float feedback_force;
+
+  // current
+  float cmd_cur;
+  float feedback_cur;
+
+  // volt
+  float cmd_volt;
+
+  // pwm output
+  float cmd_pwm;
+
+
+  // error
+  float pos_error;
+  float vel_error;
+  float cur_error;
+
+
+  // parameters
+  float enable;
+
+  // pos -> vel
+  float pos_p;
+  float ff1;
+
+  // vel -> acc
+  float vel_p;
+  float vel_i;
+  float ff2;
+
+  // acc -> force
+  float acc_p;
+
+  // force -> current
+  float force_p;
+
+  // current -> volt
+  float cur_p;
+  float cur_d;
+  float ind_p;
+
+  // voltage -> pwm
+  float volt;
+
+  // time
+  float period;
+
+  // limits
+  float max_vel;
+  float max_vel_error_sum;
+
+  float max_acc;
+
+  float max_force;
+
+  float max_cur;
+
+  float max_volt;
+
+  float max_pwm;
+
+  float i0;
+
+
+  // state
+  float vel_error_sum;
+
+  float cmd_cur_old;
+
+  float saturated_s;
+
+  float i2t;
+
+  // operator
+  // pos_error = minus(cmd_pos, feedback_pos)
+  float (*minus)(float a, float b);
+}pid2p;
+
+void pid2(pid2p* pid);
+void pid2_init(pid2p* pid);
 
 void calc_pid(hal_pid_t *arg, float period);
 void pid_init(hal_pid_t *pid);

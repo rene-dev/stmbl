@@ -21,11 +21,7 @@ int strcmp(const char* s1, const char* s2){
 }
 
 void strncpy(char* dst, char* src, int n){
-	for(int i = 0; i < n && *src; i++){
-		*dst = *src;
-		dst++;
-		src++;
-	}
+  while (n-- && (*dst++ = *src++));
 }
 
 void param_init(){
