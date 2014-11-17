@@ -687,12 +687,12 @@ int main(void)
 		}
 		if(read_hal_pin(&en) > 0.5){
 			enable();
-			state = STBY;
+			state = RUNNING;
 			write_hal_pin(&pid_enable, 1.0);
 		}
 		else{
 			disable();
-			state = RUNNING;
+			state = STBY;
 			write_hal_pin(&pid_enable, 0.0);
 		}
 		Wait(1);
