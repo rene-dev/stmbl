@@ -44,9 +44,9 @@ float ff2 = 0.000049
 
 #define MAX_WAVE 4
 
-#define offseta 0.0 * 2.0 * M_PI / 3.0
-#define offsetb 1.0 * 2.0 * M_PI / 3.0
-#define offsetc 2.0 * 2.0 * M_PI / 3.0
+//#define offseta 0.0 * 2.0 * M_PI / 3.0
+//#define offsetb 1.0 * 2.0 * M_PI / 3.0
+//#define offsetc 2.0 * 2.0 * M_PI / 3.0
 
 volatile float res = 0;
 
@@ -69,10 +69,17 @@ struct hal_pin sin_pos;
 struct hal_pin square_pos;
 struct hal_pin vel_pos;
 
+struct hal_pin p0_in0;
+struct hal_pin p0_in1;
+struct hal_pin p0_out;
+
 struct hal_pin amp;
 struct hal_pin freq;
 
-struct hal_pin mot_pos;
+struct hal_pin mag_pos;
+struct hal_pin mag_vel;
+struct hal_pin mag_vel_p;
+struct hal_pin mag_vel_min;
 struct hal_pin pwm;
 
 struct hal_pin pid_ext_pos;
@@ -98,10 +105,16 @@ struct hal_pin pid_saturated_s;
 struct hal_pin ferror;
 struct hal_pin overload_s;
 struct hal_pin res_amp;
-struct hal_pin polecount;
+struct hal_pin pole_count;
+struct hal_pin phase_count;
+struct hal_pin sync;
 struct hal_pin res_offset;
 struct hal_pin startpos;
 struct hal_pin reset;
+struct hal_pin en;
+struct hal_pin dc;
+struct hal_pin ac_sync;
+struct hal_pin ac_async;
 
 struct hal_pin wave0;
 struct hal_pin wave1;
@@ -145,10 +158,17 @@ void init_hal_pins(){
 	init_hal_pin("square_pos", &square_pos, 0.0);
 	init_hal_pin("vel_pos", &vel_pos, 0.0);
 
+	init_hal_pin("p0_in0", &p0_in0, 0.0);
+	init_hal_pin("p0_in1", &p0_in1, DEG(90.0));
+	init_hal_pin("p0_out", &p0_out, 0.0);
+
 	init_hal_pin("amp", &amp, 0.1);
 	init_hal_pin("freq", &freq, 1.0);
 
-	init_hal_pin("mot_pos", &mot_pos, 0.0);
+	init_hal_pin("mag_pos", &mag_pos, 0.0);
+	init_hal_pin("mag_vel", &mag_vel, 0.0);
+	init_hal_pin("mag_vel_p", &mag_vel_p, 1.02);
+	init_hal_pin("mag_vel_min", &mag_vel_min, 1.0);
 	init_hal_pin("pwm", &pwm, 0.0);
 
 	init_hal_pin("pid_ext_pos", &pid_ext_pos, 0.0);
@@ -174,10 +194,16 @@ void init_hal_pins(){
 	init_hal_pin("ferror", &ferror, DEG(90.0));
 	init_hal_pin("overload_s", &overload_s, 1.0);
 	init_hal_pin("res_amp", &res_amp, 10000.0);
-	init_hal_pin("polecount", &polecount, 4.0);
+	init_hal_pin("pole_count", &pole_count, 4.0);
+	init_hal_pin("phase_count", &phase_count, 3.0);
+	init_hal_pin("sync", &sync, 1.0);
 	init_hal_pin("res_offset", &res_offset, DEG(36.6));
 	init_hal_pin("startpos", &startpos, 0.0);
 	init_hal_pin("reset", &reset, 0.0);
+	init_hal_pin("en", &en, 1.0);
+	init_hal_pin("dc", &dc, 0.0);
+	init_hal_pin("ac_sync", &ac_sync, 1.0);
+	init_hal_pin("ac_async", &ac_async, 0.0);
 
 	init_hal_pin("wave0", &wave0, 0.0);
 	init_hal_pin("wave1", &wave1, 0.0);
@@ -219,9 +245,31 @@ void link_hal(){
 	link_hal_pins("enc_pos", "pid_ext_pos");
 	link_hal_pins("res_pos", "pid_fb_pos");
 	link_hal_pins("pid_cmd_pwm", "pwm");
-	link_hal_pins("res_pos", "mot_pos");
+	link_hal_pins("p0_out", "mag_pos");
+	link_hal_pins("pid_cmd_vel", "mag_vel");
 }
 
+void link_dc(){
+	link_hal_pins("p0_in0", "p0_in0");
+	set_hal_pin("p0_in0", 0.0);
+	set_hal_pin("sync", 1.0);
+	set_hal_pin("phase_count", 2.0);
+	set_hal_pin("pole_count", 1.0);
+}
+
+void link_ac_sync(){
+	link_hal_pins("res_pos", "p0_in0");
+	set_hal_pin("sync", 1.0);
+	set_hal_pin("phase_count", 3.0);
+	set_hal_pin("pole_count", 4.0);
+}
+
+void link_ac_async(){
+	link_hal_pins("res_pos", "p0_in0");
+	set_hal_pin("sync", 0.0);
+	set_hal_pin("phase_count", 3.0);
+	set_hal_pin("pole_count", 1.0);
+}
 
 enum{
 	STBY = 0,
@@ -241,10 +289,6 @@ void disable(){
 }
 
 void read_enc_pos(){
-	static float value = 0;
-	value += minus((TIM_GetCounter(TIM3) * 2 * M_PI / encres),value)*0.01f;
-	//value = (TIM_GetCounter(TIM3) * 2 * M_PI / encres)*0.005f+(1-0.005f)*value;
-	//return value*scale;//nochmal in der setup
 	write_hal_pin(&enc_pos, TIM_GetCounter(TIM3) * 2 * M_PI / encres);
 }
 
@@ -252,24 +296,56 @@ void read_res_pos(){
 	write_hal_pin(&res_pos, res - read_hal_pin(&res_offset));
 }
 
-void output_ac_pwm(){
-	float volt = CLAMP(read_hal_pin(&pwm),-1.0,1.0);
-	//volt = volt*-1;
-	float mag_pos = read_hal_pin(&mot_pos) * read_hal_pin(&polecount) + DEG(90);
-
-	mag_pos = mod(mag_pos);
-	PWM_U = (sinf(mag_pos + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
-	PWM_V = (sinf(mag_pos + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
-	PWM_W = (sinf(mag_pos + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+void plus0(){
+	write_hal_pin(&p0_out, read_hal_pin(&p0_in0) + read_hal_pin(&p0_in1));
 }
 
-void output_dc_pwm(){
+void output_pwm(float period){
 	float volt = CLAMP(read_hal_pin(&pwm),-1.0,1.0);
+	static float pos = 0.0;
 
-	int foo = volt * mag_res * pwm_scale / 2 + mag_res / 2;
-	PWM_U = foo;//PD12 PIN1
-	PWM_V = mag_res-foo;//PD13 PIN2
-	PWM_W = 0;//PD15 PIN3
+	if(read_hal_pin(&sync) > 0.0){
+		pos = read_hal_pin(&mag_pos) * read_hal_pin(&pole_count);
+	}
+	else{
+		float vel = read_hal_pin(&mag_vel) * read_hal_pin(&mag_vel_p);
+		if(vel > 0){
+			vel = MAX(vel, read_hal_pin(&mag_vel_min));
+		}
+		else{
+			vel = MIN(vel, -read_hal_pin(&mag_vel_min));
+		}
+		pos += vel * read_hal_pin(&pole_count) * period;
+	}
+
+	pos = mod(pos);
+
+	switch((int)read_hal_pin(&phase_count)){
+		case 0:
+			PWM_U = 0;
+			PWM_V = 0;
+			PWM_W = 0;
+			break;
+		case 1:
+			PWM_U = (sinf(pos) * pwm_scale * volt + 1.0) * mag_res / 2.0;//PD12 PIN1
+			PWM_V = mag_res / 2.0;//PD13 PIN2
+			PWM_W = 0;//PD15 PIN3
+			break;
+		case 2:
+			PWM_U = (sinf(pos) * pwm_scale * volt + 1.0) * mag_res / 2.0;//PD12 PIN1
+			PWM_V = (sinf(pos + M_PI) * pwm_scale * volt + 1.0) * mag_res / 2.0;//PD13 PIN2
+			PWM_W = 0;//PD15 PIN3
+			break;
+		case 3:
+			PWM_U = (sinf(pos) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+			PWM_V = (sinf(pos + 2.0 * M_PI / 3.0) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+			PWM_W = (sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+			break;
+		default:
+			PWM_U = 0;
+			PWM_V = 0;
+			PWM_W = 0;
+	}
 }
 
 void DMA2_Stream2_IRQHandler(void){
@@ -408,6 +484,7 @@ void TIM5_IRQHandler(void){ //1KHz
 
 	if(amp1 < read_hal_pin(&res_amp) && amp2 < read_hal_pin(&res_amp) && read_hal_pin(&res_amp) > 0.0){//TODO nur letzter wert!
 		disable();
+		write_hal_pin(&en, 0.0);
 		state = EFEEDBACK;
 		pid2ps.enable = 0;
 	}
@@ -417,6 +494,7 @@ void TIM5_IRQHandler(void){ //1KHz
 
 	if(read_hal_pin(&ferror) > 0.0 && ABS(pid2ps.pos_error) > read_hal_pin(&ferror)){
 		disable();
+		write_hal_pin(&en, 0.0);
 		state = EFOLLOW;
 		pid2ps.enable = 0;
 	}
@@ -441,13 +519,15 @@ void TIM5_IRQHandler(void){ //1KHz
 	if(pid2ps.saturated_s >= read_hal_pin(&overload_s) && read_hal_pin(&overload_s) > 0.0){
 		disable();
 		state = EOVERLOAD;
+		write_hal_pin(&en, 0.0);
 		pid2ps.enable = 0;
 	}
 
 	write_hal_pin(&pid_enable, pid2ps.enable);
 
+	plus0();
 
-	output_ac_pwm();
+	output_pwm(period);
 
 	time_wave++;
 	if(time_wave >= 100){
@@ -542,7 +622,7 @@ int main(void)
 					printf_("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
 				}
 				else{
-					printf_("not found");
+					printf_("not found\n");
 				}
 			}
 			else if(i == 5){
@@ -555,7 +635,7 @@ int main(void)
 					printf_("OK %s = %f\n", sink, get_hal_pin(sink));
 				}
 				else{
-					printf_("not found");
+					printf_("not found\n");
 				}
 			}
 			else if(i == -1){
@@ -572,6 +652,28 @@ int main(void)
 		if(read_hal_pin(&reset) > 0.5){
 			reset_();
 			write_hal_pin(&reset, 0.0);
+		}
+		if(read_hal_pin(&dc) > 0.5){
+			link_dc();
+			write_hal_pin(&dc, 0.0);
+		}
+		if(read_hal_pin(&ac_sync) > 0.5){
+			link_ac_sync();
+			write_hal_pin(&ac_sync, 0.0);
+		}
+		if(read_hal_pin(&ac_async) > 0.5){
+			link_ac_async();
+			write_hal_pin(&ac_async, 0.0);
+		}
+		if(read_hal_pin(&en) > 0.5){
+			enable();
+			state = STBY;
+			write_hal_pin(&pid_enable, 1.0);
+		}
+		else{
+			disable();
+			state = RUNNING;
+			write_hal_pin(&pid_enable, 0.0);
 		}
 		Wait(1);
 	}
