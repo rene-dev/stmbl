@@ -166,8 +166,8 @@ void init_hal_pins(){
 	init_hal_pin("p0_in1", &p0_in1, 0.0);
 	init_hal_pin("p0_out", &p0_out, 0.0);
 
-	init_hal_pin("d0_in0", &d0_in0, 0.0);
-	init_hal_pin("d0_in1", &d0_in1, DEG(90.0));
+	init_hal_pin("d0_in0", &d0_in0, DEG(90.0));
+	init_hal_pin("d0_in1", &d0_in1, 1.0);
 	init_hal_pin("d0_out", &d0_out, 0.0);
 
 	init_hal_pin("amp", &amp, 0.1);
@@ -217,10 +217,10 @@ void init_hal_pins(){
 	init_hal_pin("wave1", &wave1, 0.0);
 	init_hal_pin("wave2", &wave2, 0.0);
 	init_hal_pin("wave3", &wave3, 0.0);
-	init_hal_pin("gain0", &gain0, 1.0);
-	init_hal_pin("gain1", &gain1, 1.0);
-	init_hal_pin("gain2", &gain2, 1.0);
-	init_hal_pin("gain3", &gain3, 1.0);
+	init_hal_pin("gain0", &gain0, 10.0);
+	init_hal_pin("gain1", &gain1, 10.0);
+	init_hal_pin("gain2", &gain2, 10.0);
+	init_hal_pin("gain3", &gain3, 10.0);
 	init_hal_pin("offset0", &offset0, 0.0);
 	init_hal_pin("offset1", &offset1, 0.0);
 	init_hal_pin("offset2", &offset2, 0.0);
@@ -255,7 +255,7 @@ void link_hal(){
 	link_hal_pins("pid_cmd_pwm", "pwm");
 	link_hal_pins("p0_out", "mag_pos");
 	link_hal_pins("d0_out", "p0_in1");
-	link_hal_pins("pole_count", "d0_in0");
+	link_hal_pins("pole_count", "d0_in1");
 	link_hal_pins("pid_cmd_vel", "mag_vel");
 }
 
