@@ -497,6 +497,19 @@ void TIM5_IRQHandler(void){ //1KHz
 	soll_pos_old = soll_pos;
 	ist_old = ist;
 
+	pid2ps.pos_p = read_hal_pin(&pid_pos_p);
+	pid2ps.ff1 = read_hal_pin(&pid_ff1);
+	pid2ps.pos_lpass = read_hal_pin(&pid_pos_lp);
+	pid2ps.vel_p = read_hal_pin(&pid_vel_p);
+	pid2ps.vel_i = read_hal_pin(&pid_vel_i);
+	pid2ps.ff2 = read_hal_pin(&pid_ff2);
+	pid2ps.vel_lpass = read_hal_pin(&pid_vel_lp);
+	pid2ps.acc_p = read_hal_pin(&pid_acc_p);
+	pid2ps.force_p = read_hal_pin(&pid_force_p);
+	pid2ps.cur_p = read_hal_pin(&pid_cur_p);
+	pid2ps.cur_d = read_hal_pin(&pid_cur_d);
+	pid2ps.ind_p = read_hal_pin(&pid_ind_p);
+	pid2ps.cur_lpass = read_hal_pin(&pid_cur_lp);
 
 	pid2ps.enable = read_hal_pin(&pid_enable);
 	pid2ps.max_vel = read_hal_pin(&pid_max_vel);
