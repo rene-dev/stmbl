@@ -73,6 +73,10 @@ struct hal_pin p0_in0;
 struct hal_pin p0_in1;
 struct hal_pin p0_out;
 
+struct hal_pin d0_in0;
+struct hal_pin d0_in1;
+struct hal_pin d0_out;
+
 struct hal_pin amp;
 struct hal_pin freq;
 
@@ -159,8 +163,12 @@ void init_hal_pins(){
 	init_hal_pin("vel_pos", &vel_pos, 0.0);
 
 	init_hal_pin("p0_in0", &p0_in0, 0.0);
-	init_hal_pin("p0_in1", &p0_in1, DEG(90.0));
+	init_hal_pin("p0_in1", &p0_in1, 0.0);
 	init_hal_pin("p0_out", &p0_out, 0.0);
+
+	init_hal_pin("d0_in0", &d0_in0, 0.0);
+	init_hal_pin("d0_in1", &d0_in1, DEG(90.0));
+	init_hal_pin("d0_out", &d0_out, 0.0);
 
 	init_hal_pin("amp", &amp, 0.1);
 	init_hal_pin("freq", &freq, 1.0);
@@ -246,6 +254,8 @@ void link_hal(){
 	link_hal_pins("res_pos", "pid_fb_pos");
 	link_hal_pins("pid_cmd_pwm", "pwm");
 	link_hal_pins("p0_out", "mag_pos");
+	link_hal_pins("d0_out", "p0_in1");
+	link_hal_pins("pole_count", "d0_in0");
 	link_hal_pins("pid_cmd_vel", "mag_vel");
 }
 
@@ -298,6 +308,15 @@ void read_res_pos(){
 
 void plus0(){
 	write_hal_pin(&p0_out, read_hal_pin(&p0_in0) + read_hal_pin(&p0_in1));
+}
+
+void div0(){
+	if(read_hal_pin(&d0_in1) != 0.0){
+		write_hal_pin(&d0_out, read_hal_pin(&d0_in0) / read_hal_pin(&d0_in1));
+	}
+	else{
+		write_hal_pin(&d0_out, 0.0);
+	}
 }
 
 void output_pwm(float period){
@@ -525,6 +544,7 @@ void TIM5_IRQHandler(void){ //1KHz
 
 	write_hal_pin(&pid_enable, pid2ps.enable);
 
+	div0();
 	plus0();
 
 	output_pwm(period);
