@@ -159,29 +159,30 @@ struct hal_pin pid_cur_lp;
 struct hal_pin pid_volt;
 
 void init_hal_pins(){
+	set_comp_type("in");
 	init_hal_pin("enc_pos", &enc_pos, 0.0);
 	init_hal_pin("res_pos", &res_pos, 0.0);
 	init_hal_pin("sin_pos", &sin_pos, 0.0);
 	init_hal_pin("square_pos", &square_pos, 0.0);
 	init_hal_pin("vel_pos", &vel_pos, 0.0);
-
+	set_comp_type("plus");
 	init_hal_pin("p0_in0", &p0_in0, 0.0);
 	init_hal_pin("p0_in1", &p0_in1, 0.0);
 	init_hal_pin("p0_out", &p0_out, 0.0);
-
+	set_comp_type("div");
 	init_hal_pin("d0_in0", &d0_in0, DEG(90.0));
 	init_hal_pin("d0_in1", &d0_in1, 1.0);
 	init_hal_pin("d0_out", &d0_out, 0.0);
-
+	set_comp_type("in_sim");
 	init_hal_pin("amp", &amp, 0.1);
 	init_hal_pin("freq", &freq, 1.0);
-
+	set_comp_type("out");
 	init_hal_pin("mag_pos", &mag_pos, 0.0);
 	init_hal_pin("mag_vel", &mag_vel, 0.0);
 	init_hal_pin("mag_vel_p", &mag_vel_p, 1.02);
 	init_hal_pin("mag_vel_min", &mag_vel_min, 1.0);
 	init_hal_pin("pwm", &pwm, 0.0);
-
+	set_comp_type("pid");
 	init_hal_pin("pid_ext_pos", &pid_ext_pos, 0.0);
 	init_hal_pin("pid_fb_pos", &pid_fb_pos, 0.0);
 	init_hal_pin("pid_cmd_vel", &pid_cmd_vel, 0.0);
@@ -201,7 +202,7 @@ void init_hal_pins(){
 	init_hal_pin("pid_error_cur", &pid_error_cur, 0.0);
 
 	init_hal_pin("pid_saturated_s", &pid_saturated_s, 0.0);
-
+	set_comp_type("global");
 	init_hal_pin("ferror", &ferror, DEG(90.0));
 	init_hal_pin("overload_s", &overload_s, 1.0);
 	init_hal_pin("res_amp", &res_amp, 10000.0);
@@ -215,7 +216,7 @@ void init_hal_pins(){
 	init_hal_pin("dc", &dc, 0.0);
 	init_hal_pin("ac_sync", &ac_sync, 1.0);
 	init_hal_pin("ac_async", &ac_async, 0.0);
-
+	set_comp_type("term");
 	init_hal_pin("wave0", &wave0, 0.0);
 	init_hal_pin("wave1", &wave1, 0.0);
 	init_hal_pin("wave2", &wave2, 0.0);
@@ -228,7 +229,7 @@ void init_hal_pins(){
 	init_hal_pin("offset1", &offset1, 0.0);
 	init_hal_pin("offset2", &offset2, 0.0);
 	init_hal_pin("offset3", &offset3, 0.0);
-
+	set_comp_type("pid");
 	init_hal_pin("pid_enable", &pid_enable, 1.0);
 
 	init_hal_pin("pid_max_vel", &pid_max_vel, 62.9);
@@ -584,6 +585,9 @@ void reset_(){
 	enable();
 }
 
+//#define HAL_FLOAT(name) struct hal_pin COMP##name = {COMP_##name, 0.0, 0}; init_hal_pin(COMP_##name, &COMP_name, 0.0);
+//#define PIN(name) (name.source->value)
+
 int main(void)
 {
 	unsigned char buf[MAX_WAVE + 2];
@@ -617,6 +621,9 @@ int main(void)
 	enable();
 
 
+	#include "df.comp"
+	#include "df.comp"
+	#include "df.comp"
 
 	while(1)  // Do not exit
 	{

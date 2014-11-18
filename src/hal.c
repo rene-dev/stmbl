@@ -1,6 +1,10 @@
 #include "hal.h"
 
 void init_hal(){
+  hal.comp_type_count = 0;
+  for(int i = 0; i < MAX_COMP_TYPES; i++){
+    hal.comp_types_counter[i] = 0;
+  }
   hal.hal_pin_count = 0;
   hal.fast_rt_lock = 0;
   hal.rt_lock = 0;
@@ -8,7 +12,9 @@ void init_hal(){
 }
 
 void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
-  strncpy(pin->name, name, MAX_HPNAME);
+  strncpy(pin->name, hal.comp_type, MAX_HPNAME);
+  strncat(pin->name, ".", MAX_HPNAME);
+  strncat(pin->name, name, MAX_HPNAME);
   pin->value = value;
   pin->source = pin;
   register_hal_pin(pin);
@@ -116,4 +122,25 @@ float read_float(char* buf){
   }
   f *= invert;
   return(f);
+}
+
+char* itoa(int i){
+  hal.tmp[0] = (i % 10) + '0';
+  hal.tmp[1] = '\0';
+  return(hal.tmp);
+}
+
+int set_comp_type(HPNAME name){
+  for(int i = 0; i < hal.comp_type_count; i++){
+    if(!strcmp(hal.comp_types[i], name)){
+      strncpy(hal.comp_type, name, MAX_HPNAME);
+      strncat(hal.comp_type, itoa(hal.comp_types_counter[i]), MAX_HPNAME);
+      return(hal.comp_types_counter[i]++);
+    }
+  }
+
+  strncpy(hal.comp_types[hal.comp_type_count], name, MAX_HPNAME);
+  strncpy(hal.comp_type, name, MAX_HPNAME);
+  strncat(hal.comp_type, itoa(hal.comp_types_counter[hal.comp_type_count++]++), MAX_HPNAME);
+  return(0);
 }

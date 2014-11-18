@@ -24,6 +24,16 @@ void strncpy(char* dst, char* src, int n){
   while (n-- && (*dst++ = *src++));
 }
 
+char* strncat(char *dest, const char *src, int n){
+    char *rdest = dest;
+    while (n-- && *dest)
+      dest++;
+    while (n-- && (*dest++ = *src++))
+      ;
+    rdest[n] = '\0';
+    return rdest;
+}
+
 void param_init(){
 	PARAMS.param_count = 0;
 }
