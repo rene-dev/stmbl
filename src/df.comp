@@ -7,12 +7,14 @@ MEM(float j) = 4.0;
 
 RT_IN(
   j = period;
-  static int i;
+  static int i = 0;
+  i = (int)j;
   PIN(out) = PIN(in);
 );
 
-READ(
+RC(out,
   float df = j;
+  PIN(out) = df;
 );
 
 ENDCOMP;

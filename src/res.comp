@@ -1,0 +1,20 @@
+COMP(res);
+
+HAL_PIN(pos) = 0.0;
+HAL_PIN(amp1) = 0.0;
+HAL_PIN(amp2) = 0.0;
+
+
+MEM(float j) = 4.0;
+
+FRT(
+
+);
+
+
+RT_IN(
+  PIN(pos) = 0;
+);
+
+
+ENDCOMP;

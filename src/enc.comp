@@ -1,0 +1,21 @@
+COMP(enc);
+
+HAL_PIN(res) = 500.0;
+HAL_PIN(pos) = 0.0;
+
+MEM(int e_res) = 0.0;
+
+INIT(
+  TIM_SetAutoreload(TIM3, PIN(res) - 1);
+);
+
+RT_IN(
+  int i = PIN(res);
+  PIN(pos) = TIM_GetCounter(TIM3) * 2 * M_PI / e_res;
+  if(e_res != i){
+    e_res = i;
+    TIM_SetAutoreload(TIM3, e_res - 1);
+  }
+);
+
+ENDCOMP;

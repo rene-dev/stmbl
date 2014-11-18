@@ -388,6 +388,8 @@ void TIM2_IRQHandler(void){ //20KHz
 
 void ADC_IRQHandler(void) // 20khz
 {
+	int freq = 20000;
+	float period = 1.0 / freq;
 	while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
 	ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
 	GPIO_ResetBits(GPIOC,GPIO_Pin_4);//messpin
@@ -427,6 +429,10 @@ void ADC_IRQHandler(void) // 20khz
 	t1_last = t1;
 	t2_last = t2;
 	erreger = !erreger; // 10khz
+
+	for(int i = 0; i < hal.fast_rt_func_count; i++){
+		hal.fast_rt[i](period);
+	}
 }
 
 void get_pos(float period){
@@ -573,6 +579,26 @@ void TIM5_IRQHandler(void){ //1KHz
 	if(time_wave >= 100){
 		time_wave = 0;
 	}
+
+	for(int i = 0; i < hal.rt_in_func_count; i++){
+		hal.rt_in[i](period);
+	}
+
+	for(int i = 0; i < hal.rt_filter_func_count; i++){
+		hal.rt_filter[i](period);
+	}
+
+	for(int i = 0; i < hal.rt_pid_func_count; i++){
+		hal.rt_pid[i](period);
+	}
+
+	for(int i = 0; i < hal.rt_calc_func_count; i++){
+		hal.rt_calc[i](period);
+	}
+
+	for(int i = 0; i < hal.rt_out_func_count; i++){
+		hal.rt_out[i](period);
+	}
 }
 
 void reset_(){
@@ -591,17 +617,30 @@ void reset_(){
 int main(void)
 {
 	unsigned char buf[MAX_WAVE + 2];
-
-
 	float e = 0;
+	int last_time = 0;
+	float period = 0.0;
 
-	setup();
-//	param_init();
 	init_hal();
+	setup();
+
+
+	#include "enc.comp"
+	#include "plus.comp"
+	#include "plus.comp"
+
+
+	for(int i = 0; i < hal.init_func_count; i++){
+		hal.init[i]();
+	}
+
 	init_hal_pins();
 	link_hal();
 
-	TIM_SetAutoreload(TIM3, encres - 1);
+//	param_init();
+
+
+	//TIM_SetAutoreload(TIM3, encres - 1);
 
 
 	state = STBY;
@@ -621,10 +660,9 @@ int main(void)
 	enable();
 
 
-	#include "df.comp"
-	#include "df.comp"
-	#include "df.comp"
 
+
+	last_time = time;
 	while(1)  // Do not exit
 	{
 
@@ -723,6 +761,12 @@ int main(void)
 			write_hal_pin(&pid_enable, 0.0);
 		}
 		Wait(1);
+
+		period = (time - last_time) / 1000.0;
+
+		for(int i = 0; i < hal.nrt_func_count; i++){
+			hal.nrt[i](period);
+		}
 	}
 }
 

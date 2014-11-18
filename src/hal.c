@@ -9,6 +9,15 @@ void init_hal(){
   hal.fast_rt_lock = 0;
   hal.rt_lock = 0;
   hal.nrt_lock = 0;
+
+  hal.init_func_count = 0;
+  hal.fast_rt_func_count = 0;
+  hal.rt_in_func_count = 0;
+  hal.rt_filter_func_count = 0;
+  hal.rt_pid_func_count = 0;
+  hal.rt_calc_func_count = 0;
+  hal.rt_out_func_count = 0;
+  hal.nrt_func_count = 0;
 }
 
 void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
@@ -17,6 +26,7 @@ void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
   strncat(pin->name, name, MAX_HPNAME);
   pin->value = value;
   pin->source = pin;
+  pin->read_callback = 0;
   register_hal_pin(pin);
 }
 
@@ -143,4 +153,75 @@ int set_comp_type(HPNAME name){
   strncpy(hal.comp_type, name, MAX_HPNAME);
   strncat(hal.comp_type, itoa(hal.comp_types_counter[hal.comp_type_count++]++), MAX_HPNAME);
   return(0);
+}
+
+void call(void (*func)()){
+  if(func){
+    func();
+  }
+}
+
+
+int addf_init(void (*init)()){
+  if(init != 0 && hal.init_func_count < MAX_COMP_FUNCS){
+    hal.init[hal.init_func_count++] = init;
+    return(hal.init_func_count);
+  }
+  return(-1);
+}
+
+int addf_fast_rt(void (*fast_rt)(float period)){
+  if(fast_rt != 0 && hal.fast_rt_func_count < MAX_COMP_FUNCS){
+    hal.fast_rt[hal.fast_rt_func_count++] = fast_rt;
+    return(hal.fast_rt_func_count);
+  }
+  return(-1);
+}
+
+int addf_rt_in(void (*rt_in)(float period)){
+  if(rt_in != 0 && hal.rt_in_func_count < MAX_COMP_FUNCS){
+    hal.rt_in[hal.rt_in_func_count++] = rt_in;
+    return(hal.rt_in_func_count);
+  }
+  return(-1);
+}
+
+int addf_rt_filter(void (*rt_filter)(float period)){
+  if(rt_filter != 0 && hal.rt_filter_func_count < MAX_COMP_FUNCS){
+    hal.rt_filter[hal.rt_filter_func_count++] = rt_filter;
+    return(hal.rt_filter_func_count);
+  }
+  return(-1);
+}
+
+int addf_rt_pid(void (*rt_pid)(float period)){
+  if(rt_pid != 0 && hal.rt_pid_func_count < MAX_COMP_FUNCS){
+    hal.rt_pid[hal.rt_in_func_count++] = rt_pid;
+    return(hal.rt_pid_func_count);
+  }
+  return(-1);
+}
+
+int addf_rt_calc(void (*rt_calc)(float period)){
+  if(rt_calc != 0 && hal.rt_calc_func_count < MAX_COMP_FUNCS){
+    hal.rt_calc[hal.rt_calc_func_count++] = rt_calc;
+    return(hal.rt_calc_func_count);
+  }
+  return(-1);
+}
+
+int addf_rt_out(void (*rt_out)(float period)){
+  if(rt_out != 0 && hal.rt_out_func_count < MAX_COMP_FUNCS){
+    hal.rt_out[hal.rt_out_func_count++] = rt_out;
+    return(hal.rt_out_func_count);
+  }
+  return(-1);
+}
+
+int addf_nrt(void (*nrt)(float period)){
+  if(nrt != 0 && hal.nrt_func_count < MAX_COMP_FUNCS){
+    hal.nrt[hal.nrt_func_count++] = nrt;
+    return(hal.nrt_func_count);
+  }
+  return(-1);
 }

@@ -13,6 +13,7 @@ struct hal_comp{
 #define MAX_HAL_PINS 128
 #define MAX_HPNAME 32
 #define MAX_COMP_TYPES 16
+#define MAX_COMP_FUNCS 16
 
 
 typedef char HPNAME[MAX_HPNAME];
@@ -20,6 +21,7 @@ typedef char HPNAME[MAX_HPNAME];
 struct hal_pin{
   HPNAME name;
   float value;
+  void (*read_callback)();
   struct hal_pin* source;
 };
 
@@ -29,6 +31,30 @@ struct hal_struct{
   int comp_type_count;
   HPNAME comp_type;
   HPNAME tmp;
+
+  void (*init[MAX_COMP_FUNCS])();
+  int init_func_count;
+
+  void (*fast_rt[MAX_COMP_FUNCS])(float period);
+  int fast_rt_func_count;
+
+  void (*rt_in[MAX_COMP_FUNCS])(float period);
+  int rt_in_func_count;
+
+  void (*rt_filter[MAX_COMP_FUNCS])(float period);
+  int rt_filter_func_count;
+
+  void (*rt_pid[MAX_COMP_FUNCS])(float period);
+  int rt_pid_func_count;
+
+  void (*rt_calc[MAX_COMP_FUNCS])(float period);
+  int rt_calc_func_count;
+
+  void (*rt_out[MAX_COMP_FUNCS])(float period);
+  int rt_out_func_count;
+
+  void (*nrt[MAX_COMP_FUNCS])(float period);
+  int nrt_func_count;
 
   struct hal_pin* hal_pins[MAX_HAL_PINS];
   int hal_pin_count;
@@ -62,6 +88,18 @@ int link_hal_pins(HPNAME source, HPNAME sink);
 
 float read_float(char* buf);
 
+void call(void (*func)());
+
+int addf_init(void (*init)());
+int addf_fast_rt(void (*fast_rt)(float period));
+int addf_rt_in(void (*rt_in)(float period));
+int addf_rt_filter(void (*rt_filter)(float period));
+int addf_rt_pid(void (*rt_pid)(float period));
+int addf_rt_calc(void (*rt_calc)(float period));
+int addf_rt_out(void (*rt_out)(float period));
+int addf_nrt_in(void (*nrt)(float period));
+
+
 #define COMP(type)                  \
 {                                   \
   set_comp_type(#type);             \
@@ -72,8 +110,7 @@ float read_float(char* buf);
   void (*rt_pid)(float period) = 0;     \
   void (*rt_calc)(float period) = 0;     \
   void (*rt_out)(float period) = 0;     \
-  void (*nrt)(float period) = 0;    \
-  void (*read_callback)() = 0;
+  void (*nrt)(float period) = 0;
 
 #define HAL_PIN(name)               \
   static struct hal_pin name;       \
@@ -82,11 +119,16 @@ float read_float(char* buf);
 
 #define MEM(var) static var
 
-#define PIN(name)                   \
-  (name.source->value)
+#define PIN(name)                       \
+  *({                                   \
+    if(&name != name.source){           \
+      call(name.source->read_callback); \
+    };                                   \
+    &(name.source->value);              \
+  })
 
 #define INIT(func)                    \
- init = ({ void function(float period){func} function;});
+ init = ({ void function(){func} function;});
 
 #define FRT(func)                    \
  frt = ({ void function(float period){func} function;});
@@ -109,18 +151,16 @@ float read_float(char* buf);
 #define NRT(func)                    \
  nrt = ({ void function(float period){func} function;});
 
-#define READ(func)                    \
- read_callback = ({ void function(float period){func} function;});
+#define RC(pin, func)                    \
+ pin.read_callback = ({ void function(){func} function;});
 
 #define ENDCOMP \
+  addf_init(init); \
+  addf_fast_rt(fast_rt); \
+  addf_rt_in(rt_in); \
+  addf_rt_filter(rt_filter); \
+  addf_rt_pid(rt_pid); \
+  addf_rt_calc(rt_calc); \
+  addf_rt_out(rt_out); \
+  addf_nrt(nrt); \
 }
-/*
-init_addf(init); \
-frt_addf(frt); \
-rt_in_addf(rt_in); \
-rt_filter_addf(rt_filter); \
-rt_pid_addf(rt_pid); \
-rt_calc_addf(rt_calc); \
-rt_out_addf(rt_out); \
-nrt_addf(nrt); \
-}*/
