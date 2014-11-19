@@ -60,13 +60,12 @@ void setup(){
     setup_adc();
     //setup_dma();
     setup_pid_timer();
-    setup_encoder();
 
 	// systick timer
 	time = 0;
 	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
-	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
+	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000 - 1);
     //systick prio
 
     NVIC_SetPriority(SysTick_IRQn, 14);
@@ -79,10 +78,7 @@ void setup(){
     #endif
 }
 
-//setup encoder using TIM3 on PB4,PB5
-void setup_encoder(){
-    UB_ENCODER_TIM3_Init(ENC_T3_MODE_4AB, ENC_T3_TYP_NORMAL, 2048);
-}
+
 
 //setup PWM using TIM4
 void setup_pwm(){
