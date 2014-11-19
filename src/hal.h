@@ -20,7 +20,7 @@ typedef char HPNAME[MAX_HPNAME];
 
 struct hal_pin{
   HPNAME name;
-  float value;
+  volatile float value;
   void (*read_callback)();
   struct hal_pin* source;
 };
@@ -97,7 +97,7 @@ int addf_rt_filter(void (*rt_filter)(float period));
 int addf_rt_pid(void (*rt_pid)(float period));
 int addf_rt_calc(void (*rt_calc)(float period));
 int addf_rt_out(void (*rt_out)(float period));
-int addf_nrt_in(void (*nrt)(float period));
+int addf_nrt(void (*nrt)(float period));
 
 
 #define COMP(type)                  \
@@ -153,6 +153,9 @@ int addf_nrt_in(void (*nrt)(float period));
 
 #define RC(pin, func)                    \
  pin.read_callback = ({ void function(){func} function;});
+
+#define LINK_RC(src_pin, dst_pin)                    \
+ src_pin.read_callback = dst_pin.read_callback;
 
 #define ENDCOMP \
   addf_init(init); \
