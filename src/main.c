@@ -37,7 +37,7 @@ float ff1 = 0.001500
 float ff2 = 0.000049
 */
 
-#define pwm_scale 0.9//max/min PWM duty cycle
+#define pwm_scale 0.9//max/min _ duty cycle
 
 #define NO 0
 #define YES 1
@@ -522,12 +522,15 @@ int main(void)
 
 	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
 	Wait(10);
-	TIM_Cmd(TIM2, ENABLE);//int
+
 	Wait(50);
 	erreger_enable = YES;
 	Wait(50);
+	*/
+	TIM_Cmd(TIM2, ENABLE);//int
 	TIM_Cmd(TIM4, ENABLE);//PWM
 	TIM_Cmd(TIM5, ENABLE);//PID
+	/*
 	Wait(10);
 	//startpos = get_res_pos();
 	//soll_pos_old = startpos + res_offset;
@@ -537,17 +540,16 @@ int main(void)
 
 
 */
-RCC_ClocksTypeDef RCC_Clocks;
-RCC_GetClocksFreq(&RCC_Clocks);
-
-	last_time = SysTick->VAL;
+unsigned int* mem;
+mem = (unsigned int*) 0;
 	while(1)  // Do not exit
 	{
 
 		Wait(1);
+		printf_("tim5: %h vec66: %h\n", (unsigned int)TIM5_IRQHandler, (unsigned int)*(mem));
 
 		period = 0.001;
-
+		//printf_("rt_in_count %i\n", hal.rt_in_func_count);
 		for(int i = 0; i < hal.nrt_func_count; i++){
 			hal.nrt[i](period);
 		}

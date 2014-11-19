@@ -196,7 +196,7 @@ int addf_rt_filter(void (*rt_filter)(float period)){
 
 int addf_rt_pid(void (*rt_pid)(float period)){
   if(rt_pid != 0 && hal.rt_pid_func_count < MAX_COMP_FUNCS){
-    hal.rt_pid[hal.rt_in_func_count++] = rt_pid;
+    hal.rt_pid[hal.rt_pid_func_count++] = rt_pid;
     return(hal.rt_pid_func_count);
   }
   return(-1);
