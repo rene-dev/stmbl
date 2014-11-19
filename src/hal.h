@@ -131,7 +131,7 @@ int addf_nrt(void (*nrt)(float period));
  init = ({ void function(){func} function;});
 
 #define FRT(func)                    \
- frt = ({ void function(float period){func} function;});
+ fast_rt = ({ void function(float period){func} function;});
 
 #define RT_IN(func)                    \
  rt_in = ({ void function(float period){func} function;});

@@ -507,6 +507,8 @@ int main(void)
 	#include "enc.comp"
 	#include "pid.comp"
 	#include "term.comp"
+	#include "sim.comp"
+	#include "deriv.comp"
 
 	for(int i = 0; i < hal.init_func_count; i++){
 		hal.init[i]();
@@ -546,7 +548,7 @@ mem = (unsigned int*) 0;
 	{
 
 		Wait(1);
-		printf_("tim5: %h vec66: %h\n", (unsigned int)TIM5_IRQHandler, (unsigned int)*(mem));
+		//printf_("tim5: %h vec66: %h\n", (unsigned int)TIM5_IRQHandler, (unsigned int)*(mem));
 
 		period = 0.001;
 		//printf_("rt_in_count %i\n", hal.rt_in_func_count);

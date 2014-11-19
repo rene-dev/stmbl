@@ -1,19 +1,19 @@
 COMP(term);
 
 HAL_PIN(wave0) = 0.0;
-HAL_PIN(gain0) = 0.0;
+HAL_PIN(gain0) = 10.0;
 HAL_PIN(offset0) = 0.0;
 
 HAL_PIN(wave1) = 0.0;
-HAL_PIN(gain1) = 0.0;
+HAL_PIN(gain1) = 10.0;
 HAL_PIN(offset1) = 0.0;
 
 HAL_PIN(wave2) = 0.0;
-HAL_PIN(gain2) = 0.0;
+HAL_PIN(gain2) = 10.0;
 HAL_PIN(offset2) = 0.0;
 
 HAL_PIN(wave3) = 0.0;
-HAL_PIN(gain3) = 0.0;
+HAL_PIN(gain3) = 10.0;
 HAL_PIN(offset3) = 0.0;
 
 NRT(
