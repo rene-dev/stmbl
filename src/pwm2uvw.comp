@@ -1,0 +1,23 @@
+COMP(pwm2uvw);
+
+HAL_PIN(pwm) = 0.0;
+HAL_PIN(magpos) = 0.0;
+HAL_PIN(volt) = 0.0;
+HAL_PIN(poles) = 0.0;
+HAL_PIN(pwm_max) = 0.0;
+
+HAL_PIN(u) = 0.0;
+HAL_PIN(v) = 0.0;
+HAL_PIN(w) = 0.0;
+
+RC(u,
+  float pos = PIN(magpos) * (int)PIN(poles);
+  float pwm_ = LIMIT(PIN(pwm), pwm_max);
+  float volt_ = PIN(volt);
+
+  PIN(u) = (sinf(pos + 2.0 * M_PI / 3.0 * 0.0) * pwm_ + 1.0) * / 2.0 * volt_;
+  PIN(v) = (sinf(pos + 2.0 * M_PI / 3.0 * 1.0) * pwm_ + 1.0) * / 2.0 * volt_;
+  PIN(w) = (sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * pwm_ + 1.0) * / 2.0 * volt_;
+);
+
+ENDCOMP;
