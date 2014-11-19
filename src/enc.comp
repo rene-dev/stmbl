@@ -9,6 +9,9 @@ INIT(
   // enable pin clock
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 
+  // enable tim3 clock
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+
   // pin mode: af
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
@@ -18,7 +21,7 @@ INIT(
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  // af mode: tim3
+  // pin af -> tim3
   GPIO_PinAFConfig(GPIOB, GPIO_PinSource4 | GPIO_PinSource5, GPIO_AF_TIM3);
 
   // tim3 mode: count on A and B on rising edge
