@@ -1,0 +1,202 @@
+COMP(pid);
+
+//HAL_PIN(pos_cmd_ext) = 0.0;
+//HAL_PIN(pos_fb) = 0.0;
+HAL_PIN(pos_error) = 0.0;
+
+HAL_PIN(vel_cmd) = 0.0;
+HAL_PIN(vel_ext_cmd) = 0.0;
+HAL_PIN(vel_fb) = 0.0;
+HAL_PIN(vel_error) = 0.0;
+
+HAL_PIN(acc_cmd) = 0.0;
+HAL_PIN(acc_ext_cmd) = 0.0;
+
+HAL_PIN(force_cmd) = 0.0;
+HAL_PIN(force_ext_cmd) = 0.0;
+
+HAL_PIN(cur_cmd) = 0.0;
+HAL_PIN(cur_fb) = 0.0;
+HAL_PIN(cur_error) = 0.0;
+
+HAL_PIN(volt_cmd) = 0.0;
+
+HAL_PIN(pwm_cmd) = 0.0;
+
+
+HAL_PIN(enable) = 0.0;
+
+HAL_PIN(pos_en) = 0.0;
+HAL_PIN(pos_p) = 0.0;
+HAL_PIN(pos_lp) = 0.0;
+
+HAL_PIN(vel_en) = 0.0;
+HAL_PIN(vel_p) = 0.0;
+HAL_PIN(vel_i) = 0.0;
+//HAL_PIN(vel_d) = 0.0;
+HAL_PIN(vel_ff) = 0.0;
+HAL_PIN(vel_lp) = 0.0;
+
+HAL_PIN(acc_p) = 0.0;
+HAL_PIN(acc_ff) = 0.0;
+
+HAL_PIN(force_p) = 0.0;
+
+HAL_PIN(cur_p) = 0.0;
+//HAL_PIN(cur_i) = 0.0;
+HAL_PIN(cur_d) = 0.0;
+HAL_PIN(cur_ind) = 0.0;
+HAL_PIN(cur_lp) = 0.0;
+
+HAL_PIN(volt) = 0.0;
+
+
+HAL_PIN(vel_max) = 0.0;
+HAL_PIN(vel_error_sum_max) = 0.0;
+HAL_PIN(acc_max) = 0.0;
+HAL_PIN(force_max) = 0.0;
+HAL_PIN(cur_max) = 0.0;
+HAL_PIN(volt_max) = 0.0;
+HAL_PIN(pwm_max) = 0.0;
+
+
+HAL_PIN(saturated) = 0.0;
+
+MEM(float velcmd) = 0.0;
+MEM(float acccmd) = 0.0;
+MEM(float vltcmd) = 0.0;
+
+MEM(float vel_error_sum) = 0.0;
+MEM(float cur_cmd_old) = 0.0;
+MEM(float sat) = 0.0;
+
+RT_PID(
+  float poserr = PIN(pos_error);
+
+  float velextcmd = PIN(vel_ext_cmd);
+  float velfb = PIN(vel_fb);
+  float velerr;
+
+  float accextcmd = PIN(acc_ext_cmd);
+
+  float forcecmd;
+  float forceextcmd = PIN(force_ext_cmd);
+
+  float curcmd;
+  float curfb = PIN(cur_fb);
+  float curerr;
+
+  float pwmcmd;
+
+
+  float en = PIN(enable);
+
+  float posen = PIN(pos_en);
+  float posp = PIN(pos_p);
+  float poslp = PIN(pos_lp);
+
+  float velen = PIN(vel_en);
+  float velp = PIN(vel_p);
+  float veli = PIN(vel_i);
+  float velff = PIN(vel_ff);
+  float vellp = PIN(vel_lp);
+
+  float accp = PIN(acc_p);
+  float accff = PIN(acc_ff);
+
+
+  float forcep = PIN(force_p);
+
+  float curp = PIN(cur_p);
+  float curd = PIN(cur_d);
+  float curind = PIN(cur_ind);
+  float curlp = PIN(cur_lp);
+
+  float vlt = PIN(volt);
+
+  float velmax = PIN(vel_max);
+  float velerrsummax = PIN(vel_error_sum_max);
+  float accmax = PIN(acc_max);
+  float forcemax = PIN(force_max);
+  float curmax = PIN(cur_max);
+  float vltmax = PIN(volt_max);
+  float pwmmax = PIN(pwm_max);
+
+
+  if(en > 0.0){
+    // pos -> vel
+    if(posen == 0.0){
+      posp = 0.0;
+    }
+    velcmd = LIMIT(posp * poserr + velff * velextcmd, velmax) * poslp + velcmd * (1 - poslp);
+
+    // vel -> acc
+    velerr = velcmd - velfb;
+    if(velen > 0.0){
+      velp = 0.0;
+      veli = 0.0;
+    }
+    if(veli > 0.0){
+      vel_error_sum = LIMIT(vel_error_sum + velerr * period, velerrsummax);
+    }
+    else{
+      vel_error_sum = 0.0;
+    }
+    acccmd = LIMIT(velp * velerr + veli * vel_error_sum + accff * accextcmd, accmax) * vellp + acccmd * (1 - vellp);
+
+    // acc -> force
+    forcecmd = LIMIT(accp * acccmd + forceextcmd, forcemax);
+
+    // force -> current
+    curcmd = LIMIT(forcep * forcecmd, curmax);
+
+    // current -> volt
+    curerr = curcmd - curfb;
+    vltcmd = LIMIT(curp * curerr + curd * (curcmd - cur_cmd_old) / period + curind * velfb, vltmax)  * curlp + vltcmd * (1 - curlp);
+    cur_cmd_old = curcmd;
+
+    // volt -> pwm
+    if(vlt == 0.0){
+      pwmcmd = 0.0;
+    }
+    else{
+      pwmcmd = vltcmd / vlt;
+    }
+
+    if(pwmcmd >= pwmmax || pwmcmd <= -pwmmax){
+      sat += period;
+    }
+    else{
+      sat = 0.0;
+    }
+    pwmcmd = LIMIT(pwmcmd, pwmmax);
+  }
+  else{
+    velcmd = 0.0;
+    velerr = 0.0;
+    acccmd = 0.0;
+    forcecmd = 0.0;
+    curcmd = 0.0;
+    velerr = 0.0;
+    vltcmd = 0.0;
+    pwmcmd = 0.0;
+
+    vel_error_sum = 0.0;
+
+    cur_cmd_old = 0.0;
+
+    sat = 0.0;
+  }
+
+  PIN(vel_cmd) = velcmd;
+  PIN(vel_error) = velerr;
+  PIN(acc_cmd) = acccmd;
+  PIN(force_cmd) = forcecmd;
+  PIN(cur_cmd) = curcmd;
+  PIN(cur_error) = curerr;
+  PIN(volt_cmd) = vltcmd;
+  PIN(pwm_cmd) = pwmcmd;
+  PIN(saturated) = sat;
+);
+
+ENDCOMP;

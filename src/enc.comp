@@ -6,7 +6,29 @@ HAL_PIN(pos) = 0.0;
 MEM(int e_res) = 0.0;
 
 INIT(
+  // enable pin clock
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
+  // pin mode: af
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  // af mode: tim3
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource4 | GPIO_PinSource5, GPIO_AF_TIM3);
+
+  // tim3 mode: count on A and B on rising edge
+  TIM_EncoderInterfaceConfig(TIM3, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+
+  // enc res / turn
   TIM_SetAutoreload(TIM3, PIN(res) - 1);
+
+  // enable tim3
+  TIM_Cmd(TIM3, ENABLE);
 );
 
 RT_IN(

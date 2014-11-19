@@ -1,0 +1,91 @@
+COMP(term);
+
+HAL_PIN(wave0) = 0.0;
+HAL_PIN(gain0) = 0.0;
+HAL_PIN(offset0) = 0.0;
+
+HAL_PIN(wave1) = 0.0;
+HAL_PIN(gain1) = 0.0;
+HAL_PIN(offset1) = 0.0;
+
+HAL_PIN(wave2) = 0.0;
+HAL_PIN(gain2) = 0.0;
+HAL_PIN(offset2) = 0.0;
+
+HAL_PIN(wave3) = 0.0;
+HAL_PIN(gain3) = 0.0;
+HAL_PIN(offset3) = 0.0;
+
+NRT(
+  float e = 0.0;
+  unsigned char buf[MAX_WAVE + 2];
+
+  e = PIN(wave0);
+  e = (e + PIN(offset0)) * PIN(gain0);
+  e = CLAMP(e + 128,1,255);
+  buf[1] = (int)e;
+
+  e = PIN(wave1);
+  e = (e + PIN(offset1)) * PIN(gain1);
+  e = CLAMP(e + 128,1,255);
+  buf[2] = (int)e;
+
+  e = PIN(wave2);
+  e = (e + PIN(offset2)) * PIN(gain2);
+  e = CLAMP(e + 128,1,255);
+  buf[3] = (int)e;
+
+  e = PIN(wave3);
+  e = (e + PIN(offset3)) * PIN(gain3);
+  e = CLAMP(e + 128,1,255);
+  buf[4] = (int)e;
+
+  buf[0] = 255;
+  buf[MAX_WAVE + 1] = 0;
+
+
+  #ifdef USBTERM
+    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
+      UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
+
+      char source[APP_TX_BUF_SIZE];
+      char sink[APP_TX_BUF_SIZE];
+
+      int i = scanf_("%N = %N",sink ,source);
+
+      if(i == 2){ // read
+        if(is_hal_pin(sink)){
+          printf_("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
+        }
+        else{
+          printf_("not found\n");
+        }
+      }
+      else if(i == 5){
+        if(is_hal_pin(source) && is_hal_pin(sink)){
+          link_hal_pins(source, sink);
+          printf_("OK %s <= %s = %f\n", sink, source, get_hal_pin(sink));
+        }
+        else if(is_hal_pin(sink)){
+          set_hal_pin(sink, read_float(source));
+          printf_("OK %s = %f\n", sink, get_hal_pin(sink));
+        }
+        else{
+          printf_("not found\n");
+        }
+      }
+      else if(i == -1){
+
+      }
+      else{
+        for(int i = 0; i < hal.hal_pin_count; i++){
+          printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->value);
+          Wait(1);
+        }
+      }
+    }
+  #endif
+
+);
+
+ENDCOMP;
