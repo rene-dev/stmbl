@@ -6,6 +6,7 @@ HAL_PIN(pos) = 0.0;
 MEM(int e_res) = 0.0;
 
 INIT(
+  e_res = (int)PIN(res);
   // enable pin clock
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 
@@ -28,7 +29,7 @@ INIT(
   TIM_EncoderInterfaceConfig(TIM3, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
 
   // enc res / turn
-  TIM_SetAutoreload(TIM3, PIN(res) - 1);
+  TIM_SetAutoreload(TIM3, e_res - 1);
 
   // enable tim3
   TIM_Cmd(TIM3, ENABLE);
