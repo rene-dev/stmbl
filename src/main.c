@@ -39,10 +39,10 @@ void link_ac_sync_res(){
 	link_hal_pins("pid0.pwm_cmd", "p2uvw0.pwm");
 	link_hal_pins("res0.pos", "pderiv0.in");
 	link_hal_pins("pderiv0.out", "pid0.vel_fb");
-	set_hal_pin("pderiv0.lp", 0.7);
+	set_hal_pin("pderiv0.lp", 0.8);
 	link_hal_pins("enc0.pos", "pderiv1.in");
 	link_hal_pins("pderiv1.out", "pid0.vel_ext_cmd");
-	set_hal_pin("pderiv1.lp", 0.7);
+	set_hal_pin("pderiv1.lp", 0.8);
 	link_hal_pins("res0.pos", "plus1.in0");
 	set_hal_pin("plus1.in1", -0.64);
 	link_hal_pins("plus1.out", "mul0.in0");
@@ -59,11 +59,11 @@ void link_ac_sync_res(){
 	set_hal_pin("res0.enable", 1.0);
 	set_hal_pin("pid0.enable", 1.0);
 	set_hal_pin("pwmout0.enable", 0.9);
-	set_hal_pin("pwmout0.volt", 60.0);
+	set_hal_pin("pwmout0.volt", 130.0);
 	set_hal_pin("pwmout0.pwm_max", 0.9);
-	set_hal_pin("p2uvw0.volt", 60.0);
+	set_hal_pin("p2uvw0.volt", 130.0);
 	set_hal_pin("p2uvw0.pwm_max", 0.9);
-	set_hal_pin("pid0.volt", 60.0);
+	set_hal_pin("pid0.volt", 130.0);
 	set_hal_pin("p2uvw0.poles", 1.0);
 		
 }

@@ -1,6 +1,6 @@
 COMP(enc);
 
-HAL_PIN(res) = 500.0;
+HAL_PIN(res) = 2048.0;
 HAL_PIN(pos) = 0.0;
 
 MEM(int e_res) = 0.0;
