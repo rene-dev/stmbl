@@ -36,7 +36,7 @@ INIT(
 );
 
 RT_IN(
-  int i = PIN(res);
+  int i = (int)PIN(res);
   PIN(pos) = TIM_GetCounter(TIM3) * 2 * M_PI / e_res;
   if(e_res != i){
     e_res = i;
