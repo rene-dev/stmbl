@@ -543,12 +543,12 @@ int main(void)
 
 */
 unsigned int* mem;
-mem = (unsigned int*) 0;
+mem = (unsigned int*) SCB->VTOR + TIM5_IRQn;
 	while(1)  // Do not exit
 	{
 
 		Wait(1);
-		//printf_("tim5: %h vec66: %h\n", (unsigned int)TIM5_IRQHandler, (unsigned int)*(mem));
+		printf_("tim5: %h vec: %h\n", (unsigned int)TIM5_IRQHandler, (unsigned int)*(mem));
 
 		period = 0.001;
 		//printf_("rt_in_count %i\n", hal.rt_in_func_count);

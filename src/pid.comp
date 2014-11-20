@@ -43,6 +43,7 @@ HAL_PIN(acc_ff) = 0.0;
 HAL_PIN(force_p) = 0.0;
 
 HAL_PIN(cur_p) = 0.0;
+HAL_PIN(cur_ff) = 0.0;
 //HAL_PIN(cur_i) = 0.0;
 HAL_PIN(cur_d) = 0.0;
 HAL_PIN(cur_ind) = 0.0;
@@ -108,6 +109,7 @@ RT_PID(
   float forcep = PIN(force_p);
 
   float curp = PIN(cur_p);
+  float curff = PIN(cur_ff);
   float curd = PIN(cur_d);
   float curind = PIN(cur_ind);
   float curlp = PIN(cur_lp);
@@ -152,7 +154,7 @@ RT_PID(
 
     // current -> volt
     curerr = curcmd - curfb;
-    vltcmd = LIMIT(curp * curerr + curd * (curcmd - cur_cmd_old) / period + curind * velfb, vltmax)  * curlp + vltcmd * (1 - curlp);
+    vltcmd = LIMIT(curp * curerr + curff * curcmd + curd * (curcmd - cur_cmd_old) / period + curind * velfb, vltmax)  * curlp + vltcmd * (1 - curlp);
     cur_cmd_old = curcmd;
 
     // volt -> pwm
