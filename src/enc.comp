@@ -23,7 +23,8 @@ INIT(
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   // pin af -> tim3
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource4 | GPIO_PinSource5, GPIO_AF_TIM3);
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_TIM3);
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_TIM3);
 
   // tim3 mode: count on A and B on rising edge
   TIM_EncoderInterfaceConfig(TIM3, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
@@ -37,7 +38,7 @@ INIT(
 
 RT_IN(
   int i = (int)PIN(res);
-  PIN(pos) = TIM_GetCounter(TIM3) * 2 * M_PI / e_res;
+  PIN(pos) = TIM_GetCounter(TIM3) * 2.0f * M_PI / (float)e_res;
   if(e_res != i){
     e_res = i;
     TIM_SetAutoreload(TIM3, e_res - 1);
