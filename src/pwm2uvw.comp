@@ -1,4 +1,4 @@
-COMP(pwm2uvw);
+COMP(p2uvw);
 
 HAL_PIN(pwm) = 0.0;
 HAL_PIN(magpos) = 0.0;
@@ -10,14 +10,59 @@ HAL_PIN(u) = 0.0;
 HAL_PIN(v) = 0.0;
 HAL_PIN(w) = 0.0;
 
-RC(u,
+RT_CALC(
   float pos = PIN(magpos) * (int)PIN(poles);
-  float pwm_ = LIMIT(PIN(pwm), pwm_max);
+  float pwm_ = LIMIT(PIN(pwm), PIN(pwm_max));
   float volt_ = PIN(volt);
 
-  PIN(u) = (sinf(pos + 2.0 * M_PI / 3.0 * 0.0) * pwm_ + 1.0) * / 2.0 * volt_;
-  PIN(v) = (sinf(pos + 2.0 * M_PI / 3.0 * 1.0) * pwm_ + 1.0) * / 2.0 * volt_;
-  PIN(w) = (sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * pwm_ + 1.0) * / 2.0 * volt_;
+  PIN(u) = (sinf(pos + 2.0 * M_PI / 3.0 * 0.0) * pwm_ + 1.0) / 2.0 * volt_;
+  PIN(v) = (sinf(pos + 2.0 * M_PI / 3.0 * 1.0) * pwm_ + 1.0) / 2.0 * volt_;
+  PIN(w) = (sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * pwm_ + 1.0) / 2.0 * volt_;
 );
 
 ENDCOMP;
+/*float volt = CLAMP(read_hal_pin(&pwm),-1.0,1.0);
+static float pos = 0.0;
+
+if(read_hal_pin(&sync) > 0.0){
+	pos = read_hal_pin(&mag_pos) * read_hal_pin(&pole_count);
+}
+else{
+	float vel = read_hal_pin(&mag_vel) * read_hal_pin(&mag_vel_p);
+	if(vel > 0){
+		vel = MAX(vel, read_hal_pin(&mag_vel_min));
+	}
+	else{
+		vel = MIN(vel, -read_hal_pin(&mag_vel_min));
+	}
+	pos += vel * read_hal_pin(&pole_count) * period;
+}
+
+pos = mod(pos);
+
+switch((int)read_hal_pin(&phase_count)){
+	case 0:
+		PWM_U = 0;
+		PWM_V = 0;
+		PWM_W = 0;
+		break;
+	case 1:
+		PWM_U = (sinf(pos) * pwm_scale * volt + 1.0) * mag_res / 2.0;//PD12 PIN1
+		PWM_V = mag_res / 2.0;//PD13 PIN2
+		PWM_W = 0;//PD15 PIN3
+		break;
+	case 2:
+		PWM_U = (sinf(pos) * pwm_scale * volt + 1.0) * mag_res / 2.0;//PD12 PIN1
+		PWM_V = (sinf(pos + M_PI) * pwm_scale * volt + 1.0) * mag_res / 2.0;//PD13 PIN2
+		PWM_W = 0;//PD15 PIN3
+		break;
+	case 3:
+		PWM_U = (sinf(pos) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+		PWM_V = (sinf(pos + 2.0 * M_PI / 3.0) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+		PWM_W = (sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * pwm_scale * volt + 1.0) * mag_res / 2.0;
+		break;
+	default:
+		PWM_U = 0;
+		PWM_V = 0;
+		PWM_W = 0;
+}*/

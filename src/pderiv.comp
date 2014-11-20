@@ -1,0 +1,33 @@
+COMP(pderiv);
+
+HAL_PIN(in) = 0.0;
+HAL_PIN(lp) = 1.0;
+HAL_PIN(out) = 0.0;
+
+MEM(float time) = 0.0;
+MEM(float last_time) = 0.0;
+MEM(float last_in) = 0.0;
+MEM(float last_out) = 0.0;
+
+FRT(
+  if(time >= 1.0 && time == last_time){
+    time = 0.0;
+    last_time = 0.0;
+  }
+  time += period;
+);
+
+RC(out,
+  float dt = time - last_time;
+  float l = PIN(lp);
+  float i = PIN(in);
+  last_time = time;
+
+  if(dt > 0.0){
+    last_out = minus(i, last_in) / dt * l + last_out * (1 - l);
+  }
+  PIN(out) = last_out;
+  last_in = i;
+);
+
+ENDCOMP;

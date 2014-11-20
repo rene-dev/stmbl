@@ -23,12 +23,7 @@ void setup(){
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//wird in UB_USB_CDC_Init() nochmal gesetzt!
     //res erreger
-    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_2;
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-    GPIO_Init(GPIOC, &GPIO_InitStructure);
+    
 
     //messpin
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_4;
@@ -56,7 +51,6 @@ void setup(){
 
     NVIC_Init(&NVIC_InitStructure);
 
-    setup_pwm();
     setup_adc();
     //setup_dma();
     setup_pid_timer();
@@ -78,59 +72,6 @@ void setup(){
     #endif
 }
 
-
-
-//setup PWM using TIM4
-void setup_pwm(){
-    /* TIM4 clock enable */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-    /* GPIOD clock enable */
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
-    GPIO_Init(GPIOD, &GPIO_InitStructure);
-
-    GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_TIM4);
-    GPIO_PinAFConfig(GPIOD, GPIO_PinSource13, GPIO_AF_TIM4);
-	 GPIO_PinAFConfig(GPIOD, GPIO_PinSource14, GPIO_AF_TIM4);
-    GPIO_PinAFConfig(GPIOD, GPIO_PinSource15, GPIO_AF_TIM4);
-
-    /* pwm set up, TIM4*/
-    /* Compute the prescaler value */       // 168MHz/2         / pwm frq / pwm res - 1
-    uint16_t PrescalerValue = (uint16_t) ((SystemCoreClock /2) / 10000 / mag_res) - 1; // = 4
-
-    /* Time base configuration */
-    TIM_TimeBaseStructure.TIM_Period = mag_res;
-    TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
-    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
-
-    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_Pulse = 0;
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-
-    /* PWM1 Mode configuration: Channel1 */
-    TIM_OC1Init(TIM4, &TIM_OCInitStructure);
-    TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable);
-
-    /* PWM1 Mode configuration: Channel2 */
-    TIM_OC2Init(TIM4, &TIM_OCInitStructure);
-    TIM_OC2PreloadConfig(TIM4, TIM_OCPreload_Enable);
-
-    /* PWM1 Mode configuration: Channel4 */
-    TIM_OC3Init(TIM4, &TIM_OCInitStructure);
-    TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable);
-
-    /* PWM1 Mode configuration: Channel4 */
-    TIM_OC4Init(TIM4, &TIM_OCInitStructure);
-    TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable);
-}
 
 void setup_pid_timer(){
     /* TIM5 clock enable */

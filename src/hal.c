@@ -100,9 +100,15 @@ int link_hal_pins(HPNAME source, HPNAME sink){
 
   if(d != 0 && s != 0){
     s->value = s->source->value;
-    s->source = d->source;
-    return(1);
+	if(s == d){
+		s->source = d;
+	}
+	else{
+		s->source = d->source;
+    }
+	return(1);
   }
+  printf_("link not found %s:%i -> %s:%i\n", source, d, sink, s);
   return(0);
 }
 

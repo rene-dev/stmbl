@@ -1,5 +1,7 @@
 #include "param.h"
 #include "scanf.h"
+#include "printf.h"
+
 
 #pragma once
 /*
@@ -12,8 +14,8 @@ struct hal_comp{
 */
 #define MAX_HAL_PINS 128
 #define MAX_HPNAME 32
-#define MAX_COMP_TYPES 16
-#define MAX_COMP_FUNCS 16
+#define MAX_COMP_TYPES 32
+#define MAX_COMP_FUNCS 32
 
 
 typedef char HPNAME[MAX_HPNAME];

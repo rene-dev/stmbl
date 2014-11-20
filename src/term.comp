@@ -18,7 +18,7 @@ HAL_PIN(offset3) = 0.0;
 
 NRT(
   float e = 0.0;
-  unsigned char buf[MAX_WAVE + 2];
+  unsigned char buf[4 + 2];
 
   e = PIN(wave0);
   e = (e + PIN(offset0)) * PIN(gain0);
@@ -41,7 +41,7 @@ NRT(
   buf[4] = (int)e;
 
   buf[0] = 255;
-  buf[MAX_WAVE + 1] = 0;
+  buf[4 + 1] = 0;
 
 
   #ifdef USBTERM

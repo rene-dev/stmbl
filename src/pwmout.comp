@@ -66,15 +66,15 @@ INIT(
 );
 
 RT_OUT(
-  float v = PIN(volt);
+  float vlt = PIN(volt);
   float e = PIN(enable);
   int min = CLAMP((1 - PIN(pwm_max)) / 2.0, 0.0, 1.0) * 8400;
   int max = 8400 - min;
 
-  if(v > 0.0 && e > 0.0){
-    PWM_U = CLAMP(PIN(u) / v * 8400, min, max);
-    PWM_V = CLAMP(PIN(v) / v * 8400, min, max);
-    PWM_W = CLAMP(PIN(w) / v * 8400, min, max);
+  if(vlt > 0.0 && e > 0.0){
+    PWM_U = CLAMP(PIN(u) / vlt * 8400, min, max);
+    PWM_V = CLAMP(PIN(v) / vlt * 8400, min, max);
+    PWM_W = CLAMP(PIN(w) / vlt * 8400, min, max);
     PWM_E = CLAMP(e * 8400, 0, 8400);
   }
   else{

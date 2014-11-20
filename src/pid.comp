@@ -26,39 +26,39 @@ HAL_PIN(pwm_cmd) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 
-HAL_PIN(pos_en) = 0.0;
-HAL_PIN(pos_p) = 0.0;
-HAL_PIN(pos_lp) = 0.0;
+HAL_PIN(pos_en) = 1.0;
+HAL_PIN(pos_p) = 30.0;
+HAL_PIN(pos_lp) = 0.2;
 
-HAL_PIN(vel_en) = 0.0;
-HAL_PIN(vel_p) = 0.0;
-HAL_PIN(vel_i) = 0.0;
+HAL_PIN(vel_en) = 1.0;
+HAL_PIN(vel_p) = 1.0;
+HAL_PIN(vel_i) = 40.0;
 //HAL_PIN(vel_d) = 0.0;
-HAL_PIN(vel_ff) = 0.0;
-HAL_PIN(vel_lp) = 0.0;
+HAL_PIN(vel_ff) = 0.95;
+HAL_PIN(vel_lp) = 0.8;
 
-HAL_PIN(acc_p) = 0.0;
+HAL_PIN(acc_p) = 0.1;
 HAL_PIN(acc_ff) = 0.0;
 
-HAL_PIN(force_p) = 0.0;
+HAL_PIN(force_p) = 3.667;
 
 HAL_PIN(cur_p) = 0.0;
-HAL_PIN(cur_ff) = 0.0;
+HAL_PIN(cur_ff) = 15.0;
 //HAL_PIN(cur_i) = 0.0;
-HAL_PIN(cur_d) = 0.0;
-HAL_PIN(cur_ind) = 0.0;
-HAL_PIN(cur_lp) = 0.0;
+HAL_PIN(cur_d) = 0.01;
+HAL_PIN(cur_ind) = 0.57;
+HAL_PIN(cur_lp) = 1.0;
 
-HAL_PIN(volt) = 0.0;
+HAL_PIN(volt) = 60;
 
 
-HAL_PIN(vel_max) = 0.0;
-HAL_PIN(vel_error_sum_max) = 0.0;
-HAL_PIN(acc_max) = 0.0;
-HAL_PIN(force_max) = 0.0;
-HAL_PIN(cur_max) = 0.0;
-HAL_PIN(volt_max) = 0.0;
-HAL_PIN(pwm_max) = 0.0;
+HAL_PIN(vel_max) = 62.9;
+HAL_PIN(vel_e_max) = 2.5;
+HAL_PIN(acc_max) = 1200.0;
+HAL_PIN(force_max) = 100.0;
+HAL_PIN(cur_max) = 6.0;
+HAL_PIN(volt_max) = 130.0;
+HAL_PIN(pwm_max) = 0.9;
 
 
 HAL_PIN(saturated) = 0.0;
@@ -117,7 +117,7 @@ RT_PID(
   float vlt = PIN(volt);
 
   float velmax = PIN(vel_max);
-  float velerrsummax = PIN(vel_error_sum_max);
+  float velerrsummax = PIN(vel_e_max);
   float accmax = PIN(acc_max);
   float forcemax = PIN(force_max);
   float curmax = PIN(cur_max);
@@ -134,7 +134,7 @@ RT_PID(
 
     // vel -> acc
     velerr = velcmd - velfb;
-    if(velen > 0.0){
+    if(velen == 0.0){
       velp = 0.0;
       veli = 0.0;
     }

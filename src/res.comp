@@ -3,17 +3,89 @@ COMP(res);
 HAL_PIN(pos) = 0.0;
 HAL_PIN(amp1) = 0.0;
 HAL_PIN(amp2) = 0.0;
+HAL_PIN(enable) = 0.0;
+HAL_PIN(error) = 0.0;
 
+MEM(float t1_mid) = 0.0;
+MEM(float t2_mid) = 0.0;
+MEM(float t1_last) = 0.0;
+MEM(float t2_last) = 0.0;
 
-MEM(float j) = 4.0;
+MEM(float a1) = 0.0;
+MEM(float a2) = 0.0;
 
-FRT(
+MEM(float data[2][2][2]);
+MEM(int l) = 0;
+MEM(int k) = 0;
+MEM(int ref) = 0;
 
+INIT(
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
+    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_2;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
 );
 
-
-RT_IN(
-  PIN(pos) = 0;
+FRT(
+	float t1 = ADC_GetConversionValue(ADC1);
+	float t2 = ADC_GetConversionValue(ADC2);
+	float s = 0.0;
+	float c = 0.0;
+	
+	t1_mid = t1_mid * 0.95 + (t1+t1_last)/2 * 0.05;
+	t2_mid = t2_mid * 0.95 + (t2+t2_last)/2 * 0.05;
+	
+	if(PIN(enable) > 0.0){//erreger signal aktiv
+		if(ref){//eine halbwelle
+			GPIO_SetBits(GPIOC,GPIO_Pin_2);//erreger
+			a1 = ((t1-t1_mid)*(t1-t1_mid)+(t2-t2_mid)*(t2-t2_mid)) * 0.1 + a1 * 0.9;
+			data[k][0][0] = t1 - t1_mid;
+			data[k][0][1] = t2 - t2_mid;
+			k++;
+		}else{//andere halbwelle
+			GPIO_ResetBits(GPIOC,GPIO_Pin_2);//erreger
+			a2 = ((t1_mid-t1)*(t1_mid-t1)+(t2_mid-t2)*(t2_mid-t2)) * 0.1 + a2 * 0.9;
+			data[l][1][0] = t1_mid - t1;
+			data[l][1][1] = t2_mid - t2;
+			l++;
+		}
+		if(l == 2 && k == 2){
+			l = 0;
+			k = 0;
+			for(int i = 0;i<2;i++){
+				s += data[i][0][0];
+				c += data[i][0][1];
+			}
+			for(int i = 0;i<2;i++){
+				s += data[i][1][0];
+				c += data[i][1][1];
+			}
+			if(a1 < 50000 && a2 < 50000){//TODO nur letzter wert!
+				PIN(error) = 1.0;
+			}
+			else{
+				PIN(error) = 0.0;
+				PIN(pos) = atan2f(s,c);
+			}
+			PIN(amp1) = a1;
+			PIN(amp2) = a2;
+		}
+	}else{//mittelpunkt messen
+		if(t1_mid == 0 && t2_mid == 0){//erster durchlauf
+			t1_mid = t1;
+			t2_mid = t2;
+		}else{//restliche durchläufe
+			t1_mid = t1_mid * 0.95 + t1 * 0.05;
+			t2_mid = t2_mid * 0.95 + t2 * 0.05;
+		}
+	}
+	t1_last = t1;
+	t2_last = t2;
+	ref = !ref; // 10khz
 );
 
 
