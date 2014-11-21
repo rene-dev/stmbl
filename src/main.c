@@ -41,7 +41,7 @@ void link_ac_sync_res(){
 	link_hal_pins("pderiv0.out", "pid0.vel_fb");
 	set_hal_pin("pderiv0.lp", 0.8);
 	link_hal_pins("enc0.pos", "pderiv1.in");
-	link_hal_pins("pderiv1.out", "pid0.vel_ext_cmd");
+	link_hal_pins("pderiv1.out", "pid0.vel_ext_c");
 	set_hal_pin("pderiv1.lp", 0.8);
 	link_hal_pins("res0.pos", "plus1.in0");
 	set_hal_pin("plus1.in1", -0.64);
@@ -64,8 +64,48 @@ void link_ac_sync_res(){
 	set_hal_pin("p2uvw0.volt", 130.0);
 	set_hal_pin("p2uvw0.pwm_max", 0.9);
 	set_hal_pin("pid0.volt", 130.0);
+	set_hal_pin("p2uvw0.poles", 1.0);		
+}
+
+void link_ac_sync_enc(){
+	link_hal_pins("enc0.pos", "pos_minus0.in1");
+	link_hal_pins("res0.pos", "pos_minus0.in0");
+	link_hal_pins("pos_minus0.out", "pid0.pos_error");
+	link_hal_pins("pid0.pwm_cmd", "p2uvw0.pwm");
+	link_hal_pins("enc0.pos", "pderiv0.in");
+	link_hal_pins("pderiv0.out", "pid0.vel_fb");
+	set_hal_pin("pderiv0.lp", 0.8);
+	link_hal_pins("res0.pos", "pderiv1.in");
+	link_hal_pins("pderiv1.out", "pid0.vel_ext_c");
+	set_hal_pin("pderiv1.lp", 0.8);
+	link_hal_pins("enc0.pos", "plus1.in0");
+	set_hal_pin("plus1.in1", -0.64);
+	link_hal_pins("plus1.out", "mul0.in0");
+	set_hal_pin("mul0.in1", 3.0);
+	link_hal_pins("mul0.out", "mod0.in");
+	link_hal_pins("mod0.out", "plus0.in0");
+	set_hal_pin("plus0.in1", M_PI / 2.0);
+	link_hal_pins("plus0.out", "p2uvw0.magpos");
+	link_hal_pins("p2uvw0.u", "pwmout0.u");
+	link_hal_pins("p2uvw0.v", "pwmout0.v");
+	link_hal_pins("p2uvw0.w", "pwmout0.w");
+	link_hal_pins("res0.pos", "term0.wave0");
+	link_hal_pins("enc0.pos", "term0.wave1");
+	set_hal_pin("res0.enable", 1.0);
+	set_hal_pin("pid0.enable", 1.0);
+	set_hal_pin("pwmout0.enable", 0.9);
+	set_hal_pin("pwmout0.volt", 130.0);
+	set_hal_pin("pwmout0.pwm_max", 0.9);
+	set_hal_pin("p2uvw0.volt", 130.0);
+	set_hal_pin("p2uvw0.pwm_max", 0.9);
+	set_hal_pin("pid0.volt", 130.0);
+	set_hal_pin("pid0.pos_p", 80.0);
+	set_hal_pin("pid0.pos_lp", 1.0);
+	set_hal_pin("pid0.vel_lp", 0.6);
+	set_hal_pin("pid0.vel_max", 200.0);
+	set_hal_pin("pid0.acc_max", 3000.0);
 	set_hal_pin("p2uvw0.poles", 1.0);
-		
+	set_hal_pin("enc0.res", 4096.0);		
 }
 
 void DMA2_Stream2_IRQHandler(void){
@@ -96,7 +136,7 @@ void ADC_IRQHandler(void) // 20khz
 void TIM5_IRQHandler(void){ //1KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
 	float s = 0,c = 0;
-	int freq = 1000;
+	int freq = 5000;
 	float period = 1.0 / freq;
 
 	for(int i = 0;i<10;i++){

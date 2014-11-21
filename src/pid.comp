@@ -28,14 +28,14 @@ HAL_PIN(enable) = 0.0;
 
 HAL_PIN(pos_en) = 1.0;
 HAL_PIN(pos_p) = 100.0;
-HAL_PIN(pos_lp) = 1.0;
+HAL_PIN(pos_lp) = 0.8;
 
 HAL_PIN(vel_en) = 1.0;
 HAL_PIN(vel_p) = 1.0;
-HAL_PIN(vel_i) = 40.0;
+HAL_PIN(vel_i) = 80.0;
 //HAL_PIN(vel_d) = 0.0;
 HAL_PIN(vel_ff) = 1.0;
-HAL_PIN(vel_lp) = 0.9;
+HAL_PIN(vel_lp) = 0.3;
 
 HAL_PIN(acc_p) = 0.1;
 HAL_PIN(acc_ff) = 0.0;
@@ -53,7 +53,7 @@ HAL_PIN(volt) = 130;
 
 
 HAL_PIN(vel_max) = 62.9;
-HAL_PIN(vel_e_max) = 2.5;
+HAL_PIN(vel_e_max) = 1.25;
 HAL_PIN(acc_max) = 1200.0;
 HAL_PIN(force_max) = 100.0;
 HAL_PIN(cur_max) = 6.0;
