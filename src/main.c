@@ -133,7 +133,7 @@ void ADC_IRQHandler(void) // 20khz
 	}
 }
 
-void TIM5_IRQHandler(void){ //1KHz
+void TIM5_IRQHandler(void){ //5KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
 	float s = 0,c = 0;
 	int freq = 5000;
