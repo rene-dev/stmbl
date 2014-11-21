@@ -17,21 +17,6 @@ void Wait(unsigned int ms);
 #define NO 0
 #define YES 1
 
-volatile float res = 0;
-
-volatile int t1, t2;//rohdaten sin/cos
-volatile int t1_last = 0, t2_last = 0;//rohdaten sin/cos letzter aufruf
-volatile int t1_mid = 0,t2_mid = 0;//mittelpunkt sin/cos
-volatile int amp1,amp2;//betrag
-volatile int erreger = 0;//resolver erreger pin an/aus
-volatile int erreger_enable = NO;//erreger aktiv
-volatile int k = 0,l = 0; // adc res pos
-volatile int data[10][2][2];
-volatile float time_wave = 0; // time scale
-volatile float cmd = 0; //dummywert für befehle
-volatile float encres = 4096;//16384;// encoder
-volatile float scale = 1;//100;// encoder
-
 void link_ac_sync_res(){
 	link_hal_pins("res0.pos", "pos_minus0.in1");
 	link_hal_pins("enc0.pos", "pos_minus0.in0");
@@ -135,36 +120,21 @@ void ADC_IRQHandler(void) // 20khz
 
 void TIM5_IRQHandler(void){ //5KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
-	float s = 0,c = 0;
 	int freq = 5000;
 	float period = 1.0 / freq;
-
-	for(int i = 0;i<10;i++){
-		s += data[i][0][0];
-		c += data[i][0][1];
-	}
-	for(int i = 0;i<10;i++){
-		s += data[i][1][0];
-		c += data[i][1][1];
-	}
-	res = atan2f(s,c);
 /*
-
-
 	if(read_hal_pin(&ferror) > 0.0 && ABS(pid2ps.pos_error) > read_hal_pin(&ferror)){
 		disable();
 		write_hal_pin(&en, 0.0);
 		state = EFOLLOW;
 		pid2ps.enable = 0;
 	}
-
 	if(pid2ps.saturated_s >= read_hal_pin(&overload_s) && read_hal_pin(&overload_s) > 0.0){
 		disable();
 		state = EOVERLOAD;
 		write_hal_pin(&en, 0.0);
 		pid2ps.enable = 0;
 	}
-
 */
 	for(int i = 0; i < hal.rt_in_func_count; i++){
 		hal.rt_in[i](period);
@@ -189,8 +159,8 @@ void TIM5_IRQHandler(void){ //5KHz
 
 int main(void)
 {
-	int last_time = 0;
 	float period = 0.0;
+	float lasttime = 0.0;
 	setup();
 
 	#include "plus.comp"
@@ -224,10 +194,12 @@ int main(void)
 	while(1)  // Do not exit
 	{
 		Wait(1);
-		period = 0.001;
+		period = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
+		lasttime = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){
 			hal.nrt[i](period);
 		}
+		
 	}
 }
 

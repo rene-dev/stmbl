@@ -65,5 +65,6 @@ GPIO_InitTypeDef GPIO_InitStructure;
 DAC_InitTypeDef DAC_InitStructure;
 DMA_InitTypeDef DMA_InitStructure;
 ADC_InitTypeDef ADC_InitStructure;
+RCC_ClocksTypeDef RCC_Clocks;
 
 #endif
