@@ -3,7 +3,7 @@
 const wxPen BasicDrawPane::pen[] = {*wxBLACK_PEN, *wxRED_PEN, *wxBLUE_PEN, *wxGREEN_PEN};
 
 BasicDrawPane::BasicDrawPane(wxFrame* parent, int ch) : wxPanel(parent){
-    time = 0;
+    time = wxGetUTCTimeMillis();
     Bind(wxEVT_PAINT, &BasicDrawPane::paintEvent, this);
     xpos = 0;
     channels = ch;
@@ -58,16 +58,15 @@ void BasicDrawPane::paintNow()
 
 void BasicDrawPane::plotvalue(float values[])
 {
-    time += wxGetUTCTimeMillis();
     //std::cout << "data:" << value << std::endl;
     //data.at(xpos) += 0.1;
     for (int i = 0; i<channels; i++) {
         data[i].at(xpos) = (float)values[i];
     }
     xpos = (xpos+1)%data[0].size();
-    if(time > 50){
+    if(wxGetUTCTimeMillis()-time > 50){
         Refresh();
-        time = 0;
+        time = wxGetUTCTimeMillis();
     }
     //oder
     //Update();
@@ -75,14 +74,13 @@ void BasicDrawPane::plotvalue(float values[])
 
 void BasicDrawPane::plotvalue(float value)
 {
-    time += wxGetUTCTimeMillis();
     //std::cout << "data:" << value << std::endl;
     //data.at(xpos) += 0.1;
     data[0].at(xpos) = (float)value;
     xpos = (xpos+1)%data[0].size();
-    if(time > 50){
+    if(wxGetUTCTimeMillis()-time > 50){
         Refresh();
-        time = 0;
+        time = wxGetUTCTimeMillis();
     }
     //oder
     //Update();
