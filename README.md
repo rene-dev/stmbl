@@ -8,7 +8,7 @@ https://www.youtube.com/watch?v=Ue98HE76paI
 https://www.youtube.com/watch?v=sMeV4SCu4TA
 
 ####Things that work
-* Synchronous AC servos with resolver
+* Synchronous AC servos with resolver or incremental encoder
 * DC servos with encoder
 * IRAMXv2 Hardware testet up to 320V
 
@@ -38,7 +38,7 @@ Add gcc and stlink to your $PATH
 ####Building Servoterm
 ##### Requirements
 * cmake >= 2.8
-* gcc >= 4.8
+* gcc >= 4.8 or clang
 * wxwidgets >= 3.0
 * libserialport http://sigrok.org/wiki/Libserialport
 
