@@ -28,7 +28,6 @@ public:
     static const wxPen pen[];
 private:
     wxLongLong time;
-    wxLongLong diff;
     std::vector<std::vector<float>> data;
     int x,y,xold,yold,xpos,xstep;
 };

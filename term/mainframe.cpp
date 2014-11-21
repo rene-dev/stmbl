@@ -213,7 +213,7 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
             }
 			//std::cout << buf;
 		}
-		wxMilliSleep(3);//örks
+		wxMilliSleep(10);//örks
 	}
 	//wxWakeUpIdle();
 	evt.RequestMore();

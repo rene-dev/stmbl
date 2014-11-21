@@ -4,7 +4,6 @@ const wxPen BasicDrawPane::pen[] = {*wxBLACK_PEN, *wxRED_PEN, *wxBLUE_PEN, *wxGR
 
 BasicDrawPane::BasicDrawPane(wxFrame* parent, int ch) : wxPanel(parent){
     time = 0;
-    diff = 0;
     Bind(wxEVT_PAINT, &BasicDrawPane::paintEvent, this);
     xpos = 0;
     channels = ch;
@@ -59,28 +58,32 @@ void BasicDrawPane::paintNow()
 
 void BasicDrawPane::plotvalue(float values[])
 {
-    diff = wxGetUTCTimeMillis()-time;
-    time = wxGetUTCTimeMillis();
+    time += wxGetUTCTimeMillis();
     //std::cout << "data:" << value << std::endl;
     //data.at(xpos) += 0.1;
     for (int i = 0; i<channels; i++) {
         data[i].at(xpos) = (float)values[i];
     }
     xpos = (xpos+1)%data[0].size();
-    Refresh();
+    if(time > 50){
+        Refresh();
+        time = 0;
+    }
     //oder
     //Update();
 }
 
 void BasicDrawPane::plotvalue(float value)
 {
-    diff = wxGetUTCTimeMillis()-time;
-    time = wxGetUTCTimeMillis();
+    time += wxGetUTCTimeMillis();
     //std::cout << "data:" << value << std::endl;
     //data.at(xpos) += 0.1;
     data[0].at(xpos) = (float)value;
     xpos = (xpos+1)%data[0].size();
-    Refresh();
+    if(time > 50){
+        Refresh();
+        time = 0;
+    }
     //oder
     //Update();
 }
@@ -100,9 +103,9 @@ void BasicDrawPane::render(wxDC&  dc)
     
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
     
-    dc.SetPen(*wxBLACK_PEN);
-    dc.DrawText(wxString::Format(wxT("%i"),diff*50), 40, 60);
-    dc.DrawLine( 40, 60, 40+50, 60 );
+//    dc.SetPen(*wxBLACK_PEN);
+//    dc.DrawText(wxString::Format(wxT("%i"),diff*50), 40, 60);
+//    dc.DrawLine( 40, 60, 40+50, 60 );
     
     
 
