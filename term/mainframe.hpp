@@ -44,7 +44,7 @@ private:
     void OnGainChange(wxCommandEvent& event);
     void OnKeyDown(wxKeyEvent& event);
     void OnIdle(wxIdleEvent& evt);
-    void send(std::string& s);
+    void send(std::string& s,bool h = false);
     void connect();
     void disconnect();
     void listports();

@@ -51,20 +51,10 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     topsizer->Add(drawpanel, 1,wxEXPAND,0);
     wxArrayString waves;
     waves.push_back("-");
-    waves.push_back("error");
-    waves.push_back("error_d");
-    waves.push_back("error_dd");
-    waves.push_back("soll_pos");
-    waves.push_back("pid.cmd_d");
-    waves.push_back("pid.cmd_dd");
-    waves.push_back("ist");
-    waves.push_back("feedbackv");
-    waves.push_back("voltage_scale");
-    waves.push_back("saturated_count");
-    waves.push_back("mag_pos");
-    waves.push_back("startpos");
-    waves.push_back("res_offset");
-    waves.push_back("time");
+    waves.push_back("net0.cmd");
+    waves.push_back("net0.fb");
+    waves.push_back("pid0.pwm_cmd");
+    waves.push_back("pos_minus0.out");
 
     //channels
     channelstartID = currentID-1;//next ID
@@ -142,16 +132,16 @@ void MainFrame::OnKeyDown(wxKeyEvent& event){
 
 void MainFrame::OnChannelChange(wxCommandEvent& event){
     int param = (event.GetId()-channelstartID-2)%3;
-    int channel = (int)((event.GetId()-channelstartID-2)/3)+1;
-    string params[] = {"wave","offset","gain"};
-    float value = 0;
+    int channel = (int)((event.GetId()-channelstartID-2)/3);
+    string params[] = {"term0.wave","term0.offset","term0.gain"};
+    wxString value;
     switch (param) {
         case 0://wave
-            value = event.GetSelection();
+            value = event.GetSelection()==0?"0":event.GetString();
             break;
         case 1://offset
         case 2://gain
-            value = (float)event.GetSelection()/10.0f;
+            value = to_string(event.GetSelection()/10.0f);
             break;
         default:
             break;
@@ -161,16 +151,19 @@ void MainFrame::OnChannelChange(wxCommandEvent& event){
     string df = params[param];
     df += to_string(channel);
     df += " = ";
-    df += to_string(value);
+    df += value;
     send(df);
 }
 
-void MainFrame::send(string& s){
+void MainFrame::send(string& s,bool h){
+    cout << s << endl;
     if(connected){
-        if((history.size()==0 || history.back() != s) && !s.empty()){
-            history.push_back(s);
+        if(h){//history
+            if((history.size()==0 || history.back() != s) && !s.empty()){
+                history.push_back(s);
+            }
+            histpos = history.size();
         }
-        histpos = history.size();
         int ret1 = sp_nonblocking_write(port, s.c_str(), s.length());
         int ret2 = sp_nonblocking_write(port, "\r", 1);
         if(ret1 != s.length() || ret2!=1){
@@ -292,6 +285,6 @@ void MainFrame::disconnect(){
 
 void MainFrame::OnInput(wxCommandEvent& event){
     string s =string(textinput->GetValue().mb_str());
-    send(s);
+    send(s,true);
 	textinput->Clear();
 }
