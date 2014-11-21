@@ -64,7 +64,7 @@ void link_ac_sync_res(){
 	set_hal_pin("p2uvw0.volt", 130.0);
 	set_hal_pin("p2uvw0.pwm_max", 0.9);
 	set_hal_pin("pid0.volt", 130.0);
-	set_hal_pin("p2uvw0.poles", 1.0);		
+	set_hal_pin("p2uvw0.poles", 1.0);
 }
 
 void link_ac_sync_enc(){
@@ -105,7 +105,7 @@ void link_ac_sync_enc(){
 	set_hal_pin("pid0.vel_max", 200.0);
 	set_hal_pin("pid0.acc_max", 3000.0);
 	set_hal_pin("p2uvw0.poles", 1.0);
-	set_hal_pin("enc0.res", 4096.0);		
+	set_hal_pin("enc0.res", 4096.0);
 }
 
 void DMA2_Stream2_IRQHandler(void){
@@ -127,7 +127,7 @@ void ADC_IRQHandler(void) // 20khz
 	while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
 	ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
 	GPIO_ResetBits(GPIOC,GPIO_Pin_4);//messpin
-	
+
 	for(int i = 0; i < hal.fast_rt_func_count; i++){
 		hal.fast_rt[i](period);
 	}
@@ -207,7 +207,9 @@ int main(void)
 	#include "sim.comp"
 	#include "pderiv.comp"
 	#include "pderiv.comp"
-	
+
+	set_comp_type("net");
+	HAL_PIN(enable) = 0.0;
 
 	for(int i = 0; i < hal.init_func_count; i++){
 		hal.init[i]();

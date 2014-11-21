@@ -117,16 +117,16 @@ int addf_nrt(void (*nrt)(float period));
 #define HAL_PIN(name)               \
   static struct hal_pin name;       \
   init_hal_pin(#name, &name, 0.0);  \
-  (name.source->value)
+  (name.value)
 
 #define MEM(var) static var
 
 #define PIN(name)                       \
   *({                                   \
-    if(&name != name.source){           \
-      call(name.source->read_callback); \
+    if(&name != name.source->source){           \
+      call(name.source->source->read_callback); \
     };                                   \
-    &(name.source->value);              \
+    &(name.source->source->value);              \
   })
 
 #define INIT(func)                    \

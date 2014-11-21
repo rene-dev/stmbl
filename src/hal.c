@@ -69,7 +69,7 @@ int is_hal_pin(HPNAME name){
 float get_hal_pin(HPNAME name){
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, name)){
-      return(hal.hal_pins[i]->source->value);
+      return(hal.hal_pins[i]->source->source->value);
     }
   }
   return(0.0);
@@ -80,7 +80,7 @@ void write_hal_pin(struct hal_pin* pin, float value){
 }
 
 float read_hal_pin(struct hal_pin* pin){
-  return(pin->source->value);
+  return(pin->source->source->value);
 }
 
 struct hal_pin* find_hal_pin(HPNAME name){
@@ -99,16 +99,11 @@ int link_hal_pins(HPNAME source, HPNAME sink){
   s = find_hal_pin(sink);
 
   if(d != 0 && s != 0){
-    s->value = s->source->value;
-	if(s == d){
-		s->source = d;
-	}
-	else{
-		s->source = d->source;
-    }
+    s->value = s->source->source->value;
+    s->source = d;
 	return(1);
   }
-  printf_("link not found %s:%i -> %s:%i\n", source, d, sink, s);
+  printf_("link not possible %s:%i -> %s:%i\n", source, d, sink, s);
   return(0);
 }
 
