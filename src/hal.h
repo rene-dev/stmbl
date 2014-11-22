@@ -4,14 +4,7 @@
 
 
 #pragma once
-/*
-#define HAL_FLOAT(name) hal_pin name = {#name, 0.0, 0};
-#define PIN(name) name.source->value;
 
-struct hal_comp{
-  void
-};
-*/
 #define MAX_HAL_PINS 128
 #define MAX_HPNAME 32
 #define MAX_COMP_TYPES 32

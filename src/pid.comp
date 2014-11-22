@@ -16,6 +16,7 @@ HAL_PIN(force_cmd) = 0.0;
 HAL_PIN(force_ext_cmd) = 0.0;
 
 HAL_PIN(cur_cmd) = 0.0;
+HAL_PIN(cur_ext_cmd) = 0.0;
 HAL_PIN(cur_fb) = 0.0;
 HAL_PIN(cur_error) = 0.0;
 
@@ -33,13 +34,15 @@ HAL_PIN(pos_lp) = 0.8;
 HAL_PIN(vel_en) = 1.0;
 HAL_PIN(vel_p) = 1.0;
 HAL_PIN(vel_i) = 80.0;
-//HAL_PIN(vel_d) = 0.0;
+HAL_PIN(vel_d) = 0.0;
 HAL_PIN(vel_ff) = 1.0;
 HAL_PIN(vel_lp) = 0.3;
 
+HAL_PIN(acc_en) = 1.0;
 HAL_PIN(acc_p) = 0.1;
 HAL_PIN(acc_ff) = 0.0;
 
+HAL_PIN(force_en) = 1.0;
 HAL_PIN(force_p) = 3.667;
 
 HAL_PIN(cur_p) = 0.0;
@@ -68,6 +71,7 @@ MEM(float acccmd) = 0.0;
 MEM(float vltcmd) = 0.0;
 
 MEM(float vel_error_sum) = 0.0;
+MEM(float vel_err_old) = 0.0;
 MEM(float cur_cmd_old) = 0.0;
 MEM(float sat) = 0.0;
 
@@ -84,6 +88,7 @@ RT_PID(
   float forceextcmd = PIN(force_ext_cmd);
 
   float curcmd;
+  float curextcmd = PIN(cur_ext_cmd);
   float curfb = PIN(cur_fb);
   float curerr;
 
@@ -99,13 +104,15 @@ RT_PID(
   float velen = PIN(vel_en);
   float velp = PIN(vel_p);
   float veli = PIN(vel_i);
+  float veld = PIN(vel_d);
   float velff = PIN(vel_ff);
   float vellp = PIN(vel_lp);
 
+  float accen = PIN(acc_en);
   float accp = PIN(acc_p);
   float accff = PIN(acc_ff);
 
-
+  float forceen = PIN(force_en);
   float forcep = PIN(force_p);
 
   float curp = PIN(cur_p);
@@ -144,13 +151,19 @@ RT_PID(
     else{
       vel_error_sum = 0.0;
     }
-    acccmd = LIMIT(velp * velerr + veli * vel_error_sum + accff * accextcmd, accmax) * vellp + acccmd * (1 - vellp);
-
+    acccmd = LIMIT(velp * velerr + veli * vel_error_sum + veld * (velerr - vel_err_old) + accff * accextcmd, accmax) * vellp + acccmd * (1 - vellp);
+    vel_err_old = velerr;
     // acc -> force
+    if(accen == 0.0){
+      accp = 0.0;
+    }
     forcecmd = LIMIT(accp * acccmd + forceextcmd, forcemax);
 
     // force -> current
-    curcmd = LIMIT(forcep * forcecmd, curmax);
+    if(forceen == 0.0){
+      forcep = 0.0;
+    }
+    curcmd = LIMIT(forcep * forcecmd + curextcmd, curmax);
 
     // current -> volt
     curerr = curcmd - curfb;

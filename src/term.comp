@@ -17,28 +17,20 @@ HAL_PIN(gain3) = 10.0;
 HAL_PIN(offset3) = 0.0;
 
 NRT(
-  float e = 0.0;
+  int e = 0;
   unsigned char buf[4 + 2];
 
-  e = PIN(wave0);
-  e = (e + PIN(offset0)) * PIN(gain0);
-  e = CLAMP(e + 128,1,255);
-  buf[1] = (int)e;
+  e = (PIN(wave0) + PIN(offset0)) * PIN(gain0) + 128;
+  buf[1] = CLAMP(e,1,254);
 
-  e = PIN(wave1);
-  e = (e + PIN(offset1)) * PIN(gain1);
-  e = CLAMP(e + 128,1,255);
-  buf[2] = (int)e;
+  e = (PIN(wave1) + PIN(offset1)) * PIN(gain1) + 128;
+  buf[2] = CLAMP(e,1,254);
 
-  e = PIN(wave2);
-  e = (e + PIN(offset2)) * PIN(gain2);
-  e = CLAMP(e + 128,1,255);
-  buf[3] = (int)e;
+  e = (PIN(wave2) + PIN(offset2)) * PIN(gain2) + 128;
+  buf[3] = CLAMP(e,1,254);
 
-  e = PIN(wave3);
-  e = (e + PIN(offset3)) * PIN(gain3);
-  e = CLAMP(e + 128,1,255);
-  buf[4] = (int)e;
+  e = (PIN(wave3) + PIN(offset3)) * PIN(gain3) + 128;
+  buf[4] = CLAMP(e,1,254);
 
   buf[0] = 255;
   buf[4 + 1] = 0;

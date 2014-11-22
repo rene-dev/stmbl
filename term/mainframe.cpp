@@ -197,7 +197,7 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
                             drawpanel->plotvalue(values);
                             addr = -1;
                         }
-                    }else if (buf[i] == 0xff && addr == -1) {
+                    }else if (buf[i] == 0xff) {
                         addr = 0;
                     }else{
                         text->AppendText((char)buf[i]);
@@ -206,7 +206,7 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
             }
 			//std::cout << buf;
 		}
-		wxMilliSleep(10);//örks
+		wxMilliSleep(3);//örks
 	}
 	//wxWakeUpIdle();
 	evt.RequestMore();
