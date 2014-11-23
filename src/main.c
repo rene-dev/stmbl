@@ -228,6 +228,8 @@ int main(void)
 	#include "sim.comp"
 	#include "pderiv.comp"
 	#include "pderiv.comp"
+	#include "log.comp"
+	
 
 	set_comp_type("net");
 	HAL_PIN(enable) = 0.0;

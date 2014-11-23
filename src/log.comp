@@ -1,0 +1,35 @@
+COMP(log);
+
+HAL_PIN(in) = 0.0;
+HAL_PIN(out) = 0.0;
+HAL_PIN(enable) = 0.0;
+HAL_PIN(ready) = 0.0;
+
+MEM(float data[1000]);
+MEM(int pos) = 0;
+MEM(int pos_out) = 0;
+
+RT_FILTER(
+	float e = PIN(enable);
+	if(e > 0.0 && pos < 1000){
+		data[pos++] = PIN(in);
+	}
+	if(e == 0.0){
+		pos = 0;
+	}
+	if(pos == 1000){
+		PIN(ready) = 1.0;
+	}
+	else{
+		PIN(ready) = 0.0;
+	}
+);
+
+RC(out,
+	PIN(out) = data[pos_out++];
+	if(pos_out == 1000){
+		pos_out = 0;
+	}
+)
+
+ENDCOMP;
