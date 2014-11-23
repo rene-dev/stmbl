@@ -160,8 +160,8 @@ void ADC_IRQHandler(void) // 20khz
 {
 	int freq = 20000;
 	float period = 1.0 / freq;
-	while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
-	ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
+	while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_JEOC));
+	ADC_ClearITPendingBit(ADC1, ADC_IT_JEOC);
 	GPIO_ResetBits(GPIOC,GPIO_Pin_4);//messpin
 
 	for(int i = 0; i < hal.fast_rt_func_count; i++){
@@ -229,7 +229,7 @@ int main(void)
 	#include "pderiv.comp"
 	#include "pderiv.comp"
 	#include "log.comp"
-	
+
 
 	set_comp_type("net");
 	HAL_PIN(enable) = 0.0;

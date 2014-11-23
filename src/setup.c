@@ -23,7 +23,7 @@ void setup(){
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//wird in UB_USB_CDC_Init() nochmal gesetzt!
     //res erreger
-    
+
 
     //messpin
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_4;
@@ -154,35 +154,47 @@ void setup_adc(){
 
     //ADC structure configuration
     ADC_DeInit();
+
     ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;//data converted will be shifted to right
     ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;//Input voltage is converted into a 12bit number giving a maximum value of 4096
     ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; //the conversion is continuous, the input data is converted more than once
-    ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T2_TRGO;//trigger on rising edge of TIM2
-    ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
+    //ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;//trigger on rising edge of TIM2
+    ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
     ADC_InitStructure.ADC_NbrOfConversion = 1;//I think this one is clear :p
-    ADC_InitStructure.ADC_ScanConvMode = DISABLE;//The scan is configured in one channel
+    ADC_InitStructure.ADC_ScanConvMode = ENABLE;//The scan is configured in one channel
     ADC_Init(ADC1,&ADC_InitStructure);//Initialize ADC with the previous configuration
     ADC_Init(ADC2,&ADC_InitStructure);//Initialize ADC with the previous configuration
 
     ADC_CommonInitTypeDef ADC_CommonInitStructure;
-    ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;
+    ADC_CommonInitStructure.ADC_Mode = ADC_DualMode_InjecSimult;
     ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;
     ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
     ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
     ADC_CommonInit(&ADC_CommonInitStructure);
 
+    ADC_InjectedSequencerLengthConfig(ADC1, 4);
+    ADC_InjectedChannelConfig(ADC1, RES_SIN_CHANNEL, 1, RES_SampleTime);
+    ADC_InjectedChannelConfig(ADC1, RES_SIN_CHANNEL, 2, RES_SampleTime);
+    ADC_InjectedChannelConfig(ADC1, RES_SIN_CHANNEL, 3, RES_SampleTime);
+    ADC_InjectedChannelConfig(ADC1, RES_SIN_CHANNEL, 4, RES_SampleTime);
+    ADC_ExternalTrigInjectedConvConfig(ADC1, ADC_ExternalTrigInjecConv_T2_TRGO);
+    ADC_ExternalTrigInjectedConvEdgeConfig(ADC1, ADC_ExternalTrigInjecConvEdge_Rising);
+    ADC_InjectedDiscModeCmd(ADC1, DISABLE);
+    ADC_ITConfig(ADC1, ADC_IT_JEOC, ENABLE);
+
+    ADC_InjectedSequencerLengthConfig(ADC2, 4);
+    ADC_InjectedChannelConfig(ADC2, RES_COS_CHANNEL, 1, RES_SampleTime);
+    ADC_InjectedChannelConfig(ADC2, RES_COS_CHANNEL, 2, RES_SampleTime);
+    ADC_InjectedChannelConfig(ADC2, RES_COS_CHANNEL, 3, RES_SampleTime);
+    ADC_InjectedChannelConfig(ADC2, RES_COS_CHANNEL, 4, RES_SampleTime);
+    //ADC_ExternalTrigInjectedConvConfig(ADC2, ADC_ExternalTrigInjecConv_T2_TRGO);
+    //ADC_ExternalTrigInjectedConvEdgeConfig(ADC2, ADC_ExternalTrigInjecConvEdge_Rising);
+    ADC_InjectedDiscModeCmd(ADC2, DISABLE);
+    ADC_ITConfig(ADC2, ADC_IT_JEOC, DISABLE);
+
     //Enable ADC conversion
     ADC_Cmd(ADC1,ENABLE);
     ADC_Cmd(ADC2,ENABLE);
-
-    //Select the channel to be read from
-    ADC_RegularChannelConfig(ADC1,RES_SIN_CHANNEL,1,RES_SampleTime);
-    ADC_ITConfig(ADC1,ADC_IT_EOC,ENABLE);
-    ADC_EOCOnEachRegularChannelCmd(ADC1,ENABLE);
-
-    ADC_RegularChannelConfig(ADC2,RES_COS_CHANNEL,1,RES_SampleTime);
-    ADC_ITConfig(ADC2,ADC_IT_EOC,DISABLE);
-    ADC_EOCOnEachRegularChannelCmd(ADC2,DISABLE);
 
     // analog NVIC
     NVIC_InitTypeDef NVIC_InitStructure;
