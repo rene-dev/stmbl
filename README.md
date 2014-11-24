@@ -48,3 +48,28 @@ Add gcc and stlink to your $PATH
     mkdir build/
     cmake ../
     make
+
+####Using Servoterm
+##### Testing HAL
+HAL can be tested without any hardware connected to the STM32F4discovery.
+* Flash STM32F4discovery(STlink and USB OTG must be connected)
+* Launch Servoterm, Click refresh, and connecto to STM32 Virtual ComPort
+
+entering ? prints a list of hal pins.
+The current default config is for a 4 pole AC permanent magnet motor with resolver feedback, using an encoder for command. 
+
+> net0.fb <= res0.pos = 0.000000
+
+net0.fb is driven by res0.pos, and its current value is 0. Pins can be connected to other pins, or fixed values.
+
+This example connects the sine wave generatror to wave view 0.
+Offset and gain can be controlled with the sliders below Channel 1(black).
+```
+term0.wave0 = sim0.sin
+sim0.amp = 10
+sim0.freq = 5
+```
+To disconnect a pin, connect it to itself
+```
+term0.wave0 = term0.wave0
+```
