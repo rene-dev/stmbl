@@ -11,8 +11,7 @@
 
 #include <stm32f4_discovery.h>
 #include <stm32f4xx_conf.h>
-#include "stm32_ub_encoder_tim3.h"
-#include "pid.h"
+#include "misc.h"
 
 #ifdef USBTERM
 #include "stm32_ub_usb_cdc.h"
@@ -53,8 +52,6 @@ void setup_dma();
 void SysTick_Handler(void);
 
 volatile int time;
-hal_pid_t pid;
-pid2p pid2ps;
 
 volatile uint32_t ADC2_DMA_Buffer[ADC2d_ANZ];
 
