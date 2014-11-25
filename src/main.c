@@ -101,7 +101,7 @@ void link_pid(){
 	set_hal_pin("pid0.enable", 1.0);
 }
 
-void link_ac_sync_res(){
+void link_ac_sync_res(){//bosch
 	// cmd
 	link_hal_pins("enc0.pos", "net0.cmd");
 	set_hal_pin("pderiv0.in_lp", 1);
@@ -113,7 +113,7 @@ void link_ac_sync_res(){
 	link_hal_pins("res0.pos", "net0.fb");
 	set_hal_pin("res0.enable", 1.0);
 	set_hal_pin("pderiv1.in_lp", 1);
-	set_hal_pin("pderiv1.out_lp", 1);
+	set_hal_pin("pderiv1.out_lp", 0.2);
 	set_hal_pin("pderiv1.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
@@ -126,12 +126,13 @@ void link_ac_sync_res(){
 	// pid
 	set_hal_pin("pid0.pos_p", 100.0);
 	set_hal_pin("pid0.pos_lp", 1.0);
-	set_hal_pin("pid0.vel_lp", 0.6);
+	set_hal_pin("pid0.vel_lp", 0.4);
+	set_hal_pin("pid0.cur_lp", 0.5);
 	set_hal_pin("pid0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pid0.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 }
 
-void link_ac_sync_enc(){
+void link_ac_sync_enc(){//berger lahr
 	// cmd
 	link_hal_pins("res0.pos", "net0.cmd");
 	set_hal_pin("res0.enable", 1.0);
