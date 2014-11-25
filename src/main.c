@@ -234,21 +234,21 @@ int main(void)
 	float lasttime = 0.0;
 	setup();
 
-	#include "plus.comp"
-	#include "plus.comp"
-	#include "mod.comp"
-	#include "mul.comp"
-	#include "pos_minus.comp"
-	#include "pwm2uvw.comp"
-	#include "pwmout.comp"
-	#include "enc.comp"
-	#include "res.comp"
-	#include "pid.comp"
-	#include "term.comp"
-	#include "sim.comp"
-	#include "pderiv.comp"
-	#include "pderiv.comp"
-	#include "log.comp"
+	#include "comps/plus.comp"
+	#include "comps/plus.comp"
+	#include "comps/mod.comp"
+	#include "comps/mul.comp"
+	#include "comps/pos_minus.comp"
+	#include "comps/pwm2uvw.comp"
+	#include "comps/pwmout.comp"
+	#include "comps/enc.comp"
+	#include "comps/res.comp"
+	#include "comps/pid.comp"
+	#include "comps/term.comp"
+	#include "comps/sim.comp"
+	#include "comps/pderiv.comp"
+	#include "comps/pderiv.comp"
+	#include "comps/log.comp"
 
 
 	set_comp_type("net");
