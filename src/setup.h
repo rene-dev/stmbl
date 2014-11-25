@@ -40,7 +40,7 @@
 
 
 //sample times for F4: 3,15,28,56,84,112,144,480
-#define RES_SampleTime ADC_SampleTime_15Cycles
+#define RES_SampleTime ADC_SampleTime_28Cycles
 
 #define  ADC2d_ANZ   3
 
