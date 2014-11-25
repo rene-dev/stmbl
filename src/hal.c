@@ -19,6 +19,7 @@
  */
 
 #include "hal.h"
+#include "misc.h"
 
 void init_hal(){
   hal.comp_type_count = 0;

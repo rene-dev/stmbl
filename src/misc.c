@@ -41,3 +41,25 @@ float mod(float a){
 	}
 	return(a);
 }
+
+int strcmp(const char* s1, const char* s2){
+  while(*s1 && (*s1 == *s2)){
+  	s1++;
+		s2++;
+	}
+  return(*(const unsigned char*)s1 - *(const unsigned char*)s2);
+}
+
+void strncpy(char* dst, char* src, int n){
+  while (n-- && (*dst++ = *src++));
+}
+
+char* strncat(char *dest, const char *src, int n){
+    char *rdest = dest;
+    while (n-- && *dest)
+      dest++;
+    while (n-- && (*dest++ = *src++))
+      ;
+    rdest[n] = '\0';
+    return rdest;
+}

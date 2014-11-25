@@ -18,7 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "param.h"
 #include "scanf.h"
 #include "printf.h"
 
