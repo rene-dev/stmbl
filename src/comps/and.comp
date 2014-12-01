@@ -1,0 +1,26 @@
+COMP(and);
+
+HAL_PIN(in0) = 0.0;
+HAL_PIN(in1) = 0.0;
+HAL_PIN(in2) = 0.0;
+HAL_PIN(in3) = 0.0;
+HAL_PIN(nin0) = 0.0;
+HAL_PIN(nin1) = 0.0;
+HAL_PIN(nin2) = 0.0;
+HAL_PIN(nin3) = 0.0;
+HAL_PIN(out) = 0.0;
+HAL_PIN(nout) = 1.0;
+
+
+RC(out,
+  if(PIN(in0) > 0.0 && PIN(in1) > 0.0 && PIN(in2) > 0.0 && PIN(in3) > 0.0 && PIN(nin0) == 0.0 && PIN(nin1) == 0.0 && PIN(nin2) == 0.0 && PIN(nin3) == 0.0){
+    PIN(out) = 1.0;
+    PIN(nout) = 0.0;
+  }
+  else{
+    PIN(out) = 0.0;
+    PIN(nout) = 1.0;
+  }
+);
+
+ENDCOMP;

@@ -7,11 +7,11 @@ HAL_PIN(out) = 0.0;
 MEM(float avg) = 0.0;
 
 RT_FILTER(
-  float i = PIN(i);
+  float i = PIN(in);
   float a = PIN(ac);
 
   // avg
-  avg = i * ac + avg * (1 - ac);
+  avg = i * a + avg * (1 - a);
 
   PIN(out) = i - avg;
 );

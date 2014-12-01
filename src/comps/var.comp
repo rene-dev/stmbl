@@ -7,7 +7,7 @@ MEM(float data[100]);
 MEM(int pos) = 0;
 
 RT_FILTER(
-  float i = PIN(i);
+  float i = PIN(in);
   float avg = 0.0;
   float o = 0.0;
 
