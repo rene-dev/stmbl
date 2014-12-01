@@ -59,7 +59,7 @@ void setup(){
 	time = 0;
 
 	RCC_GetClocksFreq(&RCC_Clocks);
-	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000 - 1);
+	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
     //systick prio
 
     NVIC_SetPriority(SysTick_IRQn, 14);

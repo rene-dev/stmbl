@@ -168,6 +168,11 @@ int addf_nrt(void (*nrt)(float period));
 #define RC(pin, func)                    \
  pin.read_callback = ({ void function(){func} function;});
 
+#define TRG(func)                    \
+  static struct hal_pin trg;       \
+  init_hal_pin("trg", &trg, 0.0);  \
+  trg.read_callback = ({ void function(){func} function;});
+
 #define LINK_RC(src_pin, dst_pin)                    \
  src_pin.read_callback = dst_pin.read_callback;
 

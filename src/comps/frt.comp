@@ -1,0 +1,24 @@
+COMP(frt);
+
+HAL_PIN(trg0) = 0.0;
+HAL_PIN(trg1) = 0.0;
+HAL_PIN(trg2) = 0.0;
+HAL_PIN(trg3) = 0.0;
+HAL_PIN(trg4) = 0.0;
+HAL_PIN(trg5) = 0.0;
+HAL_PIN(trg6) = 0.0;
+HAL_PIN(trg7) = 0.0;
+
+FRT(
+  volatile float df = 0.0;
+  df = PIN(trg0);
+  df = PIN(trg1);
+  df = PIN(trg2);
+  df = PIN(trg3);
+  df = PIN(trg4);
+  df = PIN(trg5);
+  df = PIN(trg6);
+  df = PIN(trg7);
+);
+
+ENDCOMP;

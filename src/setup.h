@@ -51,7 +51,7 @@ void setup_pid_timer();
 void setup_dma();
 void SysTick_Handler(void);
 
-volatile int time;
+volatile unsigned int time;
 
 volatile uint32_t ADC2_DMA_Buffer[ADC2d_ANZ];
 
@@ -63,5 +63,7 @@ DAC_InitTypeDef DAC_InitStructure;
 DMA_InitTypeDef DMA_InitStructure;
 ADC_InitTypeDef ADC_InitStructure;
 RCC_ClocksTypeDef RCC_Clocks;
+
+
 
 #endif
