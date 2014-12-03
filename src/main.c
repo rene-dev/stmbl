@@ -41,6 +41,8 @@ void link_pid(){
 	link_hal_pins("net0.cmd", "pos_minus0.in0");
 	link_hal_pins("net0.fb", "pos_minus0.in1");
 	link_hal_pins("pos_minus0.out", "pid0.pos_error");
+	link_hal_pins("net0.fb", "ap0.fb_in");
+
 
 	// vel
 	link_hal_pins("net0.cmd", "pderiv0.in");
@@ -60,20 +62,14 @@ void link_pid(){
 	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
 	// pwm
-	link_hal_pins("pid0.pwm_cmd", "p2uvw0.pwm");
+	link_hal_pins("pid0.pwm_cmd", "ap0.pwm_in");
+	link_hal_pins("ap0.pwm_out", "p2uvw0.pwm");
 	link_hal_pins("p2uvw0.u", "pwmout0.u");
 	link_hal_pins("p2uvw0.v", "pwmout0.v");
 	link_hal_pins("p2uvw0.w", "pwmout0.w");
 
 	// magpos
-	link_hal_pins("net0.fb", "plus0.in0");
-	set_hal_pin("plus0.in1", -0.0);
-	link_hal_pins("plus0.out", "mul0.in0");
-	set_hal_pin("mul0.in1", 4.0);
-	link_hal_pins("mul0.out", "mod0.in");
-	link_hal_pins("mod0.out", "plus1.in0");
-	set_hal_pin("plus1.in1", M_PI / 2.0);
-	link_hal_pins("plus1.out", "p2uvw0.magpos");
+	link_hal_pins("ap0.mag_pos_out", "p2uvw0.magpos");
 
 	// term
 	link_hal_pins("net0.cmd", "term0.wave0");
@@ -118,10 +114,10 @@ void link_ac_sync_res(){//bosch
 	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
 	// res_offset
-	set_hal_pin("plus0.in1", -0.64);
+	set_hal_pin("ap0.fb_offset_in", -0.64);
 
 	// pole count
-	set_hal_pin("mul0.in1", 4.0);
+	set_hal_pin("ap0.pole_count", 4.0);
 
 	// pid
 	set_hal_pin("pid0.pos_p", 100.0);
@@ -151,10 +147,10 @@ void link_ac_sync_enc(){//berger lahr
 	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
 	// res_offset
-	set_hal_pin("plus0.in1", 0.0);
+	set_hal_pin("ap0.fb_offset_in", 0.0);
 
 	// pole count
-	set_hal_pin("mul0.in1", 3.0);
+	set_hal_pin("ap0.pole_count", 3.0);
 
 	// pid
 	set_hal_pin("pid0.pos_p", 80.0);
@@ -234,10 +230,10 @@ int main(void)
 	float lasttime = 0.0;
 	setup();
 
-	#include "comps/plus.comp"
-	#include "comps/plus.comp"
-	#include "comps/mod.comp"
-	#include "comps/mul.comp"
+	#include "comps/frt.comp"
+	#include "comps/rt.comp"
+	#include "comps/nrt.comp"
+
 	#include "comps/pos_minus.comp"
 	#include "comps/pwm2uvw.comp"
 	#include "comps/pwmout.comp"
@@ -248,7 +244,9 @@ int main(void)
 	#include "comps/sim.comp"
 	#include "comps/pderiv.comp"
 	#include "comps/pderiv.comp"
-	#include "comps/log.comp"
+	#include "comps/autophase.comp"
+	//#include "comps/var.comp"
+
 
 
 	set_comp_type("net");
@@ -268,6 +266,7 @@ int main(void)
 
 	link_pid();
 	link_ac_sync_res();
+	set_hal_pin("ap0.start", 1.0);
 
 	while(1)  // Do not exit
 	{

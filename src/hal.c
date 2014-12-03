@@ -53,11 +53,13 @@ void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
 
 int register_hal_pin(struct hal_pin* pin){
   if(hal.hal_pin_count >= MAX_HAL_PINS){
+    printf_("reg hal pin: too many pins: %i\n", hal.hal_pin_count);
     return(0);
   }
 
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, pin->name)){
+      printf_("reg hal pin: name fault: %i\n", pin->name);
       return(0);
     }
   }
@@ -173,10 +175,14 @@ int set_comp_type(HPNAME name){
     }
   }
 
-  strncpy(hal.comp_types[hal.comp_type_count], name, MAX_HPNAME);
-  strncpy(hal.comp_type, name, MAX_HPNAME);
-  strncat(hal.comp_type, itoa(hal.comp_types_counter[hal.comp_type_count++]++), MAX_HPNAME);
-  return(0);
+  if(hal.comp_type_count < MAX_COMP_TYPES){
+    strncpy(hal.comp_types[hal.comp_type_count], name, MAX_HPNAME);
+    strncpy(hal.comp_type, name, MAX_HPNAME);
+    strncat(hal.comp_type, itoa(hal.comp_types_counter[hal.comp_type_count++]++), MAX_HPNAME);
+    return(0);
+  }
+  printf_("set comp type: too many comps types: %i\n", hal.comp_type_count);
+  return(-1);
 }
 
 void call(void (*func)()){
