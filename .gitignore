@@ -12,6 +12,9 @@
 term/build
 term/xbuild
 term/win32/bin
+.depend
+*.list
+*.out
 
 sim/sim
 sim/plot
