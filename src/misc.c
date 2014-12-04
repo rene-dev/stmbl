@@ -58,8 +58,8 @@ char* strncat(char *dest, const char *src, int n){
     char *rdest = dest;
     while (n-- && *dest)
       dest++;
-    while (n-- && (*dest++ = *src++))
-      ;
-    rdest[n] = '\0';
+    while (n-- && (*dest++ = *src++)){
+			*dest = '\0';
+		}
     return rdest;
 }
