@@ -48,15 +48,10 @@ void init_hal(){
 }
 
 void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
-  //printf_("init hal pin: %s", name);
   strncpy(pin->name, hal.comp_types[hal.comp_type], MAX_HPNAME);
-  //printf_(" -> %s", pin->name);
   strncat(pin->name, itoa(hal.comp_types_counter[hal.comp_type]), MAX_HPNAME);
-  //printf_(" -> %s", pin->name);
   strncat(pin->name, ".", MAX_HPNAME);
-  //printf_(" -> %s", pin->name);
   strncat(pin->name, name, MAX_HPNAME);
-  //printf_(" to: %s\n", pin->name);
   pin->value = value;
   pin->source = pin;
   pin->read_callback = 0;
