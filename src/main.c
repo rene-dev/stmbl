@@ -47,7 +47,7 @@ void link_pid(){
 	// vel
 	link_hal_pins("net0.cmd", "pderiv0.in");
 	link_hal_pins("pderiv0.out", "net0.cmd_d");
-	link_hal_pins("net0.cmd_d", "pid0.vel_ext_c");
+	link_hal_pins("net0.cmd_d", "pid0.vel_ext_cmd");
 	set_hal_pin("pderiv0.in_lp", 1);
 	set_hal_pin("pderiv0.out_lp", 1);
 	set_hal_pin("pderiv0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
@@ -230,6 +230,7 @@ int main(void)
 	float lasttime = 0.0;
 	setup();
 
+
 	#include "comps/frt.comp"
 	#include "comps/rt.comp"
 	#include "comps/nrt.comp"
@@ -245,8 +246,6 @@ int main(void)
 	#include "comps/pderiv.comp"
 	#include "comps/pderiv.comp"
 	#include "comps/autophase.comp"
-	//#include "comps/var.comp"
-
 
 
 	set_comp_type("net");

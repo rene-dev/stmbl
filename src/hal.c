@@ -21,6 +21,12 @@
 #include "hal.h"
 #include "misc.h"
 
+char* itoa(int i){
+  hal.tmp[0] = (i % 10) + '0';
+  hal.tmp[1] = '\0';
+  return(hal.tmp);
+}
+
 void init_hal(){
   hal.comp_type_count = 0;
   for(int i = 0; i < MAX_COMP_TYPES; i++){
@@ -42,9 +48,15 @@ void init_hal(){
 }
 
 void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
-  strncpy(pin->name, hal.comp_type, MAX_HPNAME);
+  //printf_("init hal pin: %s", name);
+  strncpy(pin->name, hal.comp_types[hal.comp_type], MAX_HPNAME);
+  //printf_(" -> %s", pin->name);
+  strncat(pin->name, itoa(hal.comp_types_counter[hal.comp_type]), MAX_HPNAME);
+  //printf_(" -> %s", pin->name);
   strncat(pin->name, ".", MAX_HPNAME);
+  //printf_(" -> %s", pin->name);
   strncat(pin->name, name, MAX_HPNAME);
+  //printf_(" to: %s\n", pin->name);
   pin->value = value;
   pin->source = pin;
   pin->read_callback = 0;
@@ -59,7 +71,7 @@ int register_hal_pin(struct hal_pin* pin){
 
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, pin->name)){
-      printf_("reg hal pin: name fault: %i\n", pin->name);
+      printf_("reg hal pin: name fault: %s\n", pin->name);
       return(0);
     }
   }
@@ -160,25 +172,17 @@ float read_float(char* buf){
   return(f);
 }
 
-char* itoa(int i){
-  hal.tmp[0] = (i % 10) + '0';
-  hal.tmp[1] = '\0';
-  return(hal.tmp);
-}
-
 int set_comp_type(HPNAME name){
   for(int i = 0; i < hal.comp_type_count; i++){
     if(!strcmp(hal.comp_types[i], name)){
-      strncpy(hal.comp_type, name, MAX_HPNAME);
-      strncat(hal.comp_type, itoa(hal.comp_types_counter[i]), MAX_HPNAME);
-      return(hal.comp_types_counter[i]++);
+      hal.comp_type = i;
+      return(hal.comp_types_counter[hal.comp_type]++);
     }
   }
 
   if(hal.comp_type_count < MAX_COMP_TYPES){
     strncpy(hal.comp_types[hal.comp_type_count], name, MAX_HPNAME);
-    strncpy(hal.comp_type, name, MAX_HPNAME);
-    strncat(hal.comp_type, itoa(hal.comp_types_counter[hal.comp_type_count++]++), MAX_HPNAME);
+    hal.comp_type = hal.comp_type_count++;
     return(0);
   }
   printf_("set comp type: too many comps types: %i\n", hal.comp_type_count);

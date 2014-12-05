@@ -43,7 +43,7 @@ struct hal_struct{
   HPNAME comp_types[MAX_COMP_TYPES];
   int comp_types_counter[MAX_COMP_TYPES];
   int comp_type_count;
-  HPNAME comp_type;
+  int comp_type;
   HPNAME tmp;
 
   void (*init[MAX_COMP_FUNCS])();
