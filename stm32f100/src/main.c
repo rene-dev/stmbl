@@ -1,5 +1,5 @@
 #include "stm32f10x_conf.h"
-#include "math.h"
+#include <math.h>
 
 volatile unsigned int time = 0;
 volatile float u,v,w;
@@ -7,7 +7,7 @@ volatile float u,v,w;
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef  TIM_OCInitStructure;
 NVIC_InitTypeDef NVIC_InitStructure;
-#define ADC_channels 4
+#define ADC_channels 13
 __IO uint16_t ADCConvertedValue[ADC_channels];
 
 void Wait(unsigned int ms){
@@ -217,9 +217,20 @@ DMA_InitTypeDef DMA_InitStructure;
   /* ADC1 regular channel14 configuration */ 
   //ADC_channels anpassen!
   ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_239Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 3, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 4, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 2, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SampleTime_13Cycles5); 
+  
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 4, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 5, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 6, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 7, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 8, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 9, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 10, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 11, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 12, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 13, ADC_SampleTime_13Cycles5);
+ 
 
   /* Enable ADC1 DMA */
   ADC_DMACmd(ADC1, ENABLE);
@@ -249,16 +260,25 @@ void TIM1_UP_TIM16_IRQHandler(){
 
 void DMA1_Channel1_IRQHandler(){
 	DMA_ClearITPendingBit(DMA1_IT_TC1);
-	if(ADCConvertedValue[1] < ADCConvertedValue[0]/100){
+	int strom = 0;
+	for(int i = 3;i<13;i++){
+		strom += ADCConvertedValue[i];
+	}
+	int e;
+	//strom /= 5;
+	if(strom*50 < ADCConvertedValue[0]){
+		e = strom - ADCConvertedValue[0]/100;
+		float amp = 1.0;
+		//amp = 1.0-e*(ADCConvertedValue[7]/4000);
 		GPIO_ResetBits(GPIOB,GPIO_Pin_12);
-		TIM1->CCR1 = u;
-		TIM1->CCR2 = v;
-		TIM1->CCR3 = w;
+		TIM1->CCR1 = u*amp;
+		TIM1->CCR2 = v*amp;
+		TIM1->CCR3 = w*amp;
 	}else{
 		GPIO_SetBits(GPIOB,GPIO_Pin_12);
-		TIM1->CCR1 = 0;
-		TIM1->CCR2 = 0;
-		TIM1->CCR3 = 0;
+		TIM1->CCR1 = 1200;
+		TIM1->CCR2 = 1200;
+		TIM1->CCR3 = 1200;
 	}
 }
 
@@ -304,13 +324,17 @@ int main(void)
 
 	while(1){
 		Wait(10);
-		vel = ADCConvertedValue[3]/50 * 0.05 + vel * 0.95;
-		TIM3->CCR1 = ADCConvertedValue[0]/2;
-		TIM3->CCR2 = ADCConvertedValue[1]*50;
-		TIM3->CCR3 = ADCConvertedValue[2];
-		pos += vel * 2 * M_PI * 0.01;
-		u = amp * sinf(pos + 0.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
-		v = amp * sinf(pos + 1.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
-		w = amp * sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
+		//vel = ADCConvertedValue[7]/50 * 0.05 + vel * 0.95;
+		amp = ADCConvertedValue[2]/4096.0;
+		//TIM3->CCR1 = ADCConvertedValue[0]/2;
+		//TIM3->CCR2 = ADCConvertedValue[1]*50;
+		//TIM3->CCR3 = ADCConvertedValue[2];
+		//pos += vel * 2 * M_PI * 0.01;
+		//u = amp * sinf(pos + 0.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
+		//v = amp * sinf(pos + 1.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
+		//w = amp * sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
+		u = (1 - amp) * res;
+		v = res - (1 - amp) * res;
+		w = (1 - amp) * res;
 	}
 }
