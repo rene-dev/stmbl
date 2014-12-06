@@ -2,9 +2,13 @@
 #include "math.h"
 
 volatile unsigned int time = 0;
+volatile float u,v,w;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef  TIM_OCInitStructure;
+NVIC_InitTypeDef NVIC_InitStructure;
+#define ADC_channels 4
+__IO uint16_t ADCConvertedValue[ADC_channels];
 
 void Wait(unsigned int ms){
 	volatile unsigned int t = time + ms;
@@ -64,6 +68,11 @@ void GPIO_Configuration(void)
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
+  
+  //Analog pin configuration
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_Init(GPIOA,&GPIO_InitStructure);
 }
 
 void tim1_init(){
@@ -74,6 +83,16 @@ void tim1_init(){
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
 	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
+	TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);
+	//TIM_SelectOutputTrigger(TIM1, TIM_TRGOSource_Update);
+
+    /* int NVIC setup */
+    NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_TIM16_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+
+    NVIC_Init(&NVIC_InitStructure);
 
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
@@ -128,6 +147,121 @@ void tim3_init(){
 
 }
 
+// Setup ADC
+void setup_adc(){
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+#define ADC1_DR_Address    ((uint32_t)0x4001244C)
+
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+ADC_InitTypeDef ADC_InitStructure;
+DMA_InitTypeDef DMA_InitStructure;
+
+#if defined (STM32F10X_LD_VL) || defined (STM32F10X_MD_VL) || defined (STM32F10X_HD_VL)
+  /* ADCCLK = PCLK2/2 */
+  RCC_ADCCLKConfig(RCC_PCLK2_Div2); 
+#else
+  /* ADCCLK = PCLK2/4 */
+  RCC_ADCCLKConfig(RCC_PCLK2_Div4); 
+#endif
+  /* Enable peripheral clocks ------------------------------------------------*/
+  /* Enable DMA1 clock */
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+
+  /* Enable ADC1 and GPIOC clock */
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA, ENABLE);
+  
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  /* Configure PC.04 (ADC Channel14) as analog input -------------------------*/
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+  
+  /* DMA1 channel1 configuration ----------------------------------------------*/
+  DMA_DeInit(DMA1_Channel1);
+  DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
+  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADCConvertedValue;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+  DMA_InitStructure.DMA_BufferSize = ADC_channels;
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+  DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+  DMA_Init(DMA1_Channel1, &DMA_InitStructure);
+  
+  NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel1_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+  
+  /* Enable DMA1 channel1 */
+  DMA_Cmd(DMA1_Channel1, ENABLE);
+  DMA_ITConfig(DMA1_Channel1, DMA_IT_TC, ENABLE);
+  
+  /* ADC1 configuration ------------------------------------------------------*/
+  ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
+  ADC_InitStructure.ADC_ScanConvMode = ENABLE;
+  ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
+  ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
+  ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+  ADC_InitStructure.ADC_NbrOfChannel = ADC_channels;
+  ADC_Init(ADC1, &ADC_InitStructure);
+
+  ADC_TempSensorVrefintCmd(ENABLE);
+  /* ADC1 regular channel14 configuration */ 
+  //ADC_channels anpassen!
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 3, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 4, ADC_SampleTime_13Cycles5);
+
+  /* Enable ADC1 DMA */
+  ADC_DMACmd(ADC1, ENABLE);
+  
+  /* Enable ADC1 */
+  ADC_Cmd(ADC1, ENABLE);
+
+  /* Enable ADC1 reset calibration register */   
+  ADC_ResetCalibration(ADC1);
+  /* Check the end of ADC1 reset calibration register */
+  while(ADC_GetResetCalibrationStatus(ADC1));
+
+  /* Start ADC1 calibration */
+  ADC_StartCalibration(ADC1);
+  /* Check the end of ADC1 calibration */
+  while(ADC_GetCalibrationStatus(ADC1));
+     
+  /* Start ADC1 Software Conversion */ 
+  //ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+}
+
+void TIM1_UP_TIM16_IRQHandler(){
+	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
+	ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+	//GPIO_SetBits(GPIOB,GPIO_Pin_12);
+}
+
+void DMA1_Channel1_IRQHandler(){
+	DMA_ClearITPendingBit(DMA1_IT_TC1);
+	if(ADCConvertedValue[1] < ADCConvertedValue[0]/100){
+		GPIO_ResetBits(GPIOB,GPIO_Pin_12);
+		TIM1->CCR1 = u;
+		TIM1->CCR2 = v;
+		TIM1->CCR3 = w;
+	}else{
+		GPIO_SetBits(GPIOB,GPIO_Pin_12);
+		TIM1->CCR1 = 0;
+		TIM1->CCR2 = 0;
+		TIM1->CCR3 = 0;
+	}
+}
+
 int main(void)
 {
 	PLL_Configurattion();
@@ -150,8 +284,7 @@ int main(void)
     /* GPIO Configuration */
     GPIO_Configuration();
 
-
-
+	setup_adc();
 	tim1_init();
 	tim3_init();
 
@@ -165,15 +298,19 @@ int main(void)
 	TIM1->CCR3 = 2000;
 
 	float pos = 0;
-	float vel = 1;
-	float amp = 0.8;
+	float vel = 0;
+	float amp = 0.9;
 	int res = 2400;
 
 	while(1){
-		Wait(1);
-		pos += vel * 2 * M_PI * 0.001;
-		TIM1->CCR1 = amp * sinf(pos + 0.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
-		TIM1->CCR2 = amp * sinf(pos + 1.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
-		TIM1->CCR3 = amp * sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
+		Wait(10);
+		vel = ADCConvertedValue[3]/50 * 0.05 + vel * 0.95;
+		TIM3->CCR1 = ADCConvertedValue[0]/2;
+		TIM3->CCR2 = ADCConvertedValue[1]*50;
+		TIM3->CCR3 = ADCConvertedValue[2];
+		pos += vel * 2 * M_PI * 0.01;
+		u = amp * sinf(pos + 0.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
+		v = amp * sinf(pos + 1.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
+		w = amp * sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
 	}
 }
