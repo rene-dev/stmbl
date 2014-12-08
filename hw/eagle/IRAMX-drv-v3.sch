@@ -15345,6 +15345,8 @@ NS Package M08A</description>
 <instance part="+3V6" gate="G$1" x="96.52" y="10.16" rot="R180"/>
 <instance part="U$2" gate="G$1" x="-45.72" y="121.92"/>
 <instance part="IC4" gate="G$1" x="12.7" y="124.46"/>
+<instance part="IC4" gate="NC4" x="27.94" y="114.3"/>
+<instance part="IC4" gate="NC5" x="27.94" y="111.76"/>
 </instances>
 <busses>
 </busses>
