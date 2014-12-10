@@ -16112,6 +16112,8 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <part name="IC3" library="linear" deviceset="78L*SMD" device="" technology="05"/>
 <part name="C20" library="rcl" deviceset="CPOL-EU" device="A/3216-18R"/>
 <part name="C21" library="rcl" deviceset="CPOL-EU" device="A/3216-18R"/>
+<part name="H4" library="holes" deviceset="MOUNT-PAD-ROUND" device="3.2"/>
+<part name="R8" library="rcl" deviceset="R-EU_" device="R0805"/>
 </parts>
 <sheets>
 <sheet>
@@ -16145,7 +16147,7 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <instance part="R10" gate="G$1" x="96.52" y="27.94" rot="R270"/>
 <instance part="P+9" gate="1" x="-7.62" y="127"/>
 <instance part="GND22" gate="1" x="-25.4" y="104.14"/>
-<instance part="GND2" gate="1" x="96.52" y="53.34"/>
+<instance part="GND2" gate="1" x="96.52" y="48.26"/>
 <instance part="R23" gate="G$1" x="200.66" y="-45.72"/>
 <instance part="GND32" gate="1" x="10.16" y="63.5"/>
 <instance part="P+11" gate="1" x="22.86" y="73.66"/>
@@ -16211,6 +16213,8 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <instance part="IC3" gate="G$1" x="-104.14" y="45.72"/>
 <instance part="C20" gate="G$1" x="-116.84" y="43.18"/>
 <instance part="C21" gate="G$1" x="-91.44" y="43.18"/>
+<instance part="H4" gate="G$1" x="175.26" y="93.98"/>
+<instance part="R8" gate="G$1" x="96.52" y="58.42" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -16222,7 +16226,7 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <pinref part="IC1" gate="G$1" pin="UB"/>
 </segment>
 </net>
-<net name="N$2" class="1">
+<net name="U" class="1">
 <segment>
 <wire x1="58.42" y1="50.8" x2="68.58" y2="50.8" width="0.1524" layer="91"/>
 <pinref part="C1" gate="G$1" pin="2"/>
@@ -16240,7 +16244,7 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <pinref part="IC1" gate="G$1" pin="VB"/>
 </segment>
 </net>
-<net name="N$4" class="1">
+<net name="V" class="1">
 <segment>
 <wire x1="58.42" y1="40.64" x2="68.58" y2="40.64" width="0.1524" layer="91"/>
 <pinref part="C2" gate="G$1" pin="2"/>
@@ -16258,7 +16262,7 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <pinref part="IC1" gate="G$1" pin="WB"/>
 </segment>
 </net>
-<net name="N$6" class="1">
+<net name="W" class="1">
 <segment>
 <wire x1="58.42" y1="30.48" x2="68.58" y2="30.48" width="0.1524" layer="91"/>
 <pinref part="C3" gate="G$1" pin="2"/>
@@ -16283,29 +16287,6 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <pinref part="IC1" gate="G$1" pin="VSS"/>
 <wire x1="27.94" y1="66.04" x2="10.16" y2="66.04" width="0.1524" layer="91"/>
 <pinref part="GND32" gate="1" pin="GND"/>
-</segment>
-<segment>
-<wire x1="58.42" y1="63.5" x2="66.04" y2="63.5" width="0.1524" layer="91"/>
-<pinref part="IC1" gate="G$1" pin="V-"/>
-<wire x1="66.04" y1="63.5" x2="71.12" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="71.12" y1="63.5" x2="76.2" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="76.2" y1="63.5" x2="81.28" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="81.28" y1="63.5" x2="96.52" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="96.52" y1="55.88" x2="96.52" y2="63.5" width="0.1524" layer="91"/>
-<pinref part="C17" gate="G$1" pin="-"/>
-<junction x="96.52" y="63.5"/>
-<pinref part="GND2" gate="1" pin="GND"/>
-<pinref part="X4" gate="-2" pin="KL"/>
-<wire x1="109.22" y1="63.5" x2="96.52" y2="63.5" width="0.1524" layer="91"/>
-<junction x="96.52" y="63.5"/>
-<pinref part="C4" gate="G$1" pin="2"/>
-<junction x="66.04" y="63.5"/>
-<pinref part="C11" gate="G$1" pin="2"/>
-<junction x="81.28" y="63.5"/>
-<pinref part="C15" gate="G$1" pin="2"/>
-<junction x="76.2" y="63.5"/>
-<pinref part="C16" gate="G$1" pin="2"/>
-<junction x="71.12" y="63.5"/>
 </segment>
 <segment>
 <pinref part="GND22" gate="1" pin="GND"/>
@@ -16441,6 +16422,11 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <pinref part="GND13" gate="1" pin="GND"/>
 <wire x1="96.52" y1="93.98" x2="96.52" y2="86.36" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="R8" gate="G$1" pin="1"/>
+<pinref part="GND2" gate="1" pin="GND"/>
+<wire x1="96.52" y1="50.8" x2="96.52" y2="53.34" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="EN" class="0">
 <segment>
@@ -16486,7 +16472,7 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <label x="15.24" y="-15.24" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="N$37" class="1">
+<net name="V+" class="1">
 <segment>
 <pinref part="X4" gate="-1" pin="KL"/>
 <wire x1="63.5" y1="71.12" x2="66.04" y2="71.12" width="0.1524" layer="91"/>
@@ -16969,6 +16955,30 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <wire x1="-132.08" y1="35.56" x2="-134.62" y2="35.56" width="0.1524" layer="91"/>
 </segment>
 </net>
+<net name="V-" class="0">
+<segment>
+<wire x1="58.42" y1="63.5" x2="66.04" y2="63.5" width="0.1524" layer="91"/>
+<pinref part="IC1" gate="G$1" pin="V-"/>
+<wire x1="66.04" y1="63.5" x2="71.12" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="63.5" x2="76.2" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="63.5" x2="81.28" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="81.28" y1="63.5" x2="96.52" y2="63.5" width="0.1524" layer="91"/>
+<pinref part="C17" gate="G$1" pin="-"/>
+<junction x="96.52" y="63.5"/>
+<pinref part="X4" gate="-2" pin="KL"/>
+<wire x1="109.22" y1="63.5" x2="96.52" y2="63.5" width="0.1524" layer="91"/>
+<junction x="96.52" y="63.5"/>
+<pinref part="C4" gate="G$1" pin="2"/>
+<junction x="66.04" y="63.5"/>
+<pinref part="C11" gate="G$1" pin="2"/>
+<junction x="81.28" y="63.5"/>
+<pinref part="C15" gate="G$1" pin="2"/>
+<junction x="76.2" y="63.5"/>
+<pinref part="C16" gate="G$1" pin="2"/>
+<junction x="71.12" y="63.5"/>
+<pinref part="R8" gate="G$1" pin="2"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>
@@ -16978,8 +16988,6 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <approved hash="101,1,172.72,101.6,H3,MOUNT,,,,"/>
 <approved hash="101,1,172.72,93.98,H4,MOUNT,,,,"/>
 <approved hash="113,1,75.119,35.56,X3,,,,,"/>
-<approved hash="113,1,197.039,20.32,X5,,,,,"/>
-<approved hash="113,1,-62.419,124.46,X1,,,,,"/>
 </errors>
 </schematic>
 </drawing>
