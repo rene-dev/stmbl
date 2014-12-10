@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.5.0">
+<eagle version="7.1.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1952,6 +1952,9 @@ design rules under a new name.</description>
 <autorouter>
 <pass name="Default">
 <param name="RoutingGrid" value="50mil"/>
+<param name="AutoGrid" value="1"/>
+<param name="Efforts" value="0"/>
+<param name="TopRouterVariant" value="1"/>
 <param name="tpViaShape" value="round"/>
 <param name="PrefDir.1" value="|"/>
 <param name="PrefDir.2" value="0"/>
@@ -2108,6 +2111,7 @@ design rules under a new name.</description>
 <element name="R6" library="rcl" package="R0805" value="1K" x="87.75" y="21.75" rot="MR270"/>
 <element name="R7" library="rcl" package="R0805" value="1K" x="85.75" y="22.75" rot="MR90"/>
 <element name="D2" library="diode" package="SOD80C" value="" x="64.25" y="32.5" rot="MR90"/>
+<element name="IC3" library="linear" package="SO08" value="78L05SMD" x="51.25" y="58.75" rot="MR270"/>
 </elements>
 <signals>
 <signal name="N$1" class="2">
@@ -2678,6 +2682,62 @@ design rules under a new name.</description>
 <wire x1="76" y1="5.5" x2="74.75" y2="6.75" width="0.3" layer="16"/>
 </signal>
 <signal name="N$7">
+</signal>
+<signal name="N$11">
+<contactref element="IC3" pad="1"/>
+<contactref element="U$1" pad="1"/>
+<wire x1="53.85" y1="60.655" x2="52.405" y2="60.655" width="0.4064" layer="16"/>
+<wire x1="52.405" y1="60.655" x2="51.5" y2="59.75" width="0.4064" layer="16"/>
+<wire x1="51.5" y1="59.75" x2="51.5" y2="56.25" width="0.4064" layer="16"/>
+<wire x1="51.5" y1="56.25" x2="52.5" y2="55.25" width="0.4064" layer="16"/>
+<wire x1="52.5" y1="55.25" x2="54.25" y2="55.25" width="0.4064" layer="16"/>
+<wire x1="54.25" y1="55.25" x2="55" y2="54.5" width="0.4064" layer="16"/>
+<wire x1="55" y1="54.5" x2="55" y2="52.9184" width="0.4064" layer="16"/>
+<wire x1="55" y1="52.9184" x2="55.095" y2="52.8234" width="0.4064" layer="16"/>
+</signal>
+<signal name="ISO_GND">
+<contactref element="U$1" pad="4"/>
+<contactref element="IC3" pad="7"/>
+<contactref element="IC3" pad="6"/>
+<contactref element="IC3" pad="3"/>
+<contactref element="IC3" pad="2"/>
+<contactref element="U$2" pad="VIN-"/>
+<polygon width="0.4064" layer="16">
+<vertex x="46" y="72.75"/>
+<vertex x="63.75" y="72.75"/>
+<vertex x="63.75" y="50.5"/>
+<vertex x="46" y="50.5"/>
+</polygon>
+<contactref element="X2" pad="8"/>
+</signal>
+<signal name="N$17">
+<contactref element="U$2" pad="VIN+"/>
+<contactref element="IC3" pad="8"/>
+<wire x1="48.65" y1="60.655" x2="47" y2="60.655" width="0.4064" layer="16"/>
+<wire x1="47" y1="60.655" x2="47" y2="54" width="0.4064" layer="16"/>
+<wire x1="47" y1="54" x2="49.75" y2="51.25" width="0.4064" layer="16"/>
+<wire x1="49.75" y1="51.25" x2="52.27" y2="51.25" width="0.4064" layer="16"/>
+<wire x1="52.27" y1="51.25" x2="52.5" y2="51.02" width="0.4064" layer="16"/>
+<contactref element="X2" pad="7"/>
+<wire x1="52.0375" y1="66.185" x2="48.435" y2="66.185" width="0.4064" layer="16"/>
+<wire x1="48.435" y1="66.185" x2="47" y2="64.75" width="0.4064" layer="16"/>
+<wire x1="47" y1="64.75" x2="47" y2="60.655" width="0.4064" layer="16"/>
+</signal>
+<signal name="N$13">
+<contactref element="X2" pad="4"/>
+<contactref element="U$1" pad="2"/>
+<wire x1="56.365" y1="52.8234" x2="56.365" y2="63.1275" width="0.4064" layer="16"/>
+<wire x1="56.365" y1="63.1275" x2="55.8475" y2="63.645" width="0.4064" layer="16"/>
+</signal>
+<signal name="N$14">
+<contactref element="U$1" pad="3"/>
+<contactref element="X2" pad="5"/>
+<wire x1="57.635" y1="52.8234" x2="57.635" y2="61.865" width="0.4064" layer="16"/>
+<wire x1="57.635" y1="61.865" x2="57.25" y2="62.25" width="0.4064" layer="16"/>
+<wire x1="57.25" y1="62.25" x2="57.25" y2="64" width="0.4064" layer="16"/>
+<wire x1="57.25" y1="64" x2="56" y2="65.25" width="0.4064" layer="16"/>
+<wire x1="56" y1="65.25" x2="55.5125" y2="65.25" width="0.4064" layer="16"/>
+<wire x1="55.5125" y1="65.25" x2="54.5775" y2="66.185" width="0.4064" layer="16"/>
 </signal>
 </signals>
 <errors>
