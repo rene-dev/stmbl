@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.1.0">
+<eagle version="6.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -16056,7 +16056,6 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <part name="H1" library="holes" deviceset="MOUNT-PAD-ROUND" device="3.2"/>
 <part name="H2" library="holes" deviceset="MOUNT-PAD-ROUND" device="3.2"/>
 <part name="H3" library="holes" deviceset="MOUNT-PAD-ROUND" device="3.2"/>
-<part name="H4" library="holes" deviceset="MOUNT-PAD-ROUND" device="3.2"/>
 <part name="IC2" library="micro-stm_v2" deviceset="STM32F103R*T" device="" technology="6"/>
 <part name="C4" library="rcl" deviceset="C-EU" device="C1206K"/>
 <part name="C11" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
@@ -16111,6 +16110,8 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <part name="D2" library="diode" deviceset="ZENER-DIODE" device="SOD80C"/>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>
 <part name="IC3" library="linear" deviceset="78L*SMD" device="" technology="05"/>
+<part name="C20" library="rcl" deviceset="CPOL-EU" device="A/3216-18R"/>
+<part name="C21" library="rcl" deviceset="CPOL-EU" device="A/3216-18R"/>
 </parts>
 <sheets>
 <sheet>
@@ -16151,7 +16152,6 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <instance part="H1" gate="G$1" x="175.26" y="116.84"/>
 <instance part="H2" gate="G$1" x="175.26" y="109.22"/>
 <instance part="H3" gate="G$1" x="175.26" y="101.6"/>
-<instance part="H4" gate="G$1" x="175.26" y="93.98"/>
 <instance part="IC2" gate="MCU" x="45.72" y="-27.94"/>
 <instance part="C4" gate="G$1" x="66.04" y="68.58"/>
 <instance part="C11" gate="G$1" x="81.28" y="68.58"/>
@@ -16209,6 +16209,8 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <instance part="D2" gate="G$1" x="96.52" y="83.82" rot="R270"/>
 <instance part="GND13" gate="1" x="96.52" y="96.52" rot="R180"/>
 <instance part="IC3" gate="G$1" x="-104.14" y="45.72"/>
+<instance part="C20" gate="G$1" x="-116.84" y="43.18"/>
+<instance part="C21" gate="G$1" x="-91.44" y="43.18"/>
 </instances>
 <busses>
 </busses>
@@ -16886,6 +16888,8 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <pinref part="IC3" gate="G$1" pin="VOUT"/>
 <pinref part="U$1" gate="G$1" pin="VDD1"/>
 <wire x1="-91.44" y1="45.72" x2="-83.82" y2="45.72" width="0.1524" layer="91"/>
+<pinref part="C21" gate="G$1" pin="+"/>
+<junction x="-91.44" y="45.72"/>
 </segment>
 </net>
 <net name="ISO_GND" class="0">
@@ -16894,7 +16898,8 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <wire x1="-83.82" y1="38.1" x2="-86.36" y2="38.1" width="0.1524" layer="91"/>
 <wire x1="-86.36" y1="38.1" x2="-86.36" y2="27.94" width="0.1524" layer="91"/>
 <pinref part="IC3" gate="G$1" pin="GND@4"/>
-<wire x1="-86.36" y1="27.94" x2="-99.06" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="-86.36" y1="27.94" x2="-91.44" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="-91.44" y1="27.94" x2="-99.06" y2="27.94" width="0.1524" layer="91"/>
 <wire x1="-99.06" y1="27.94" x2="-99.06" y2="33.02" width="0.1524" layer="91"/>
 <pinref part="IC3" gate="G$1" pin="GND@3"/>
 <wire x1="-101.6" y1="33.02" x2="-101.6" y2="27.94" width="0.1524" layer="91"/>
@@ -16915,8 +16920,15 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <junction x="-101.6" y="27.94"/>
 <junction x="-104.14" y="27.94"/>
 <pinref part="X2" gate="-" pin="8"/>
-<wire x1="-134.62" y1="27.94" x2="-106.68" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="-134.62" y1="27.94" x2="-116.84" y2="27.94" width="0.1524" layer="91"/>
 <junction x="-106.68" y="27.94"/>
+<pinref part="C20" gate="G$1" pin="-"/>
+<wire x1="-116.84" y1="27.94" x2="-106.68" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="-116.84" y1="38.1" x2="-116.84" y2="27.94" width="0.1524" layer="91"/>
+<pinref part="C21" gate="G$1" pin="-"/>
+<wire x1="-91.44" y1="38.1" x2="-91.44" y2="27.94" width="0.1524" layer="91"/>
+<junction x="-116.84" y="27.94"/>
+<junction x="-91.44" y="27.94"/>
 </segment>
 </net>
 <net name="N$17" class="0">
@@ -16925,11 +16937,14 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <wire x1="-60.96" y1="124.46" x2="-121.92" y2="124.46" width="0.1524" layer="91"/>
 <wire x1="-121.92" y1="124.46" x2="-121.92" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="IC3" gate="G$1" pin="VIN"/>
-<wire x1="-121.92" y1="45.72" x2="-114.3" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="-121.92" y1="45.72" x2="-116.84" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="X2" gate="-" pin="7"/>
+<wire x1="-116.84" y1="45.72" x2="-114.3" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="-134.62" y1="30.48" x2="-121.92" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="-121.92" y1="30.48" x2="-121.92" y2="45.72" width="0.1524" layer="91"/>
 <junction x="-121.92" y="45.72"/>
+<pinref part="C20" gate="G$1" pin="+"/>
+<junction x="-116.84" y="45.72"/>
 </segment>
 </net>
 <net name="N$13" class="0">
