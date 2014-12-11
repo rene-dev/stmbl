@@ -16019,10 +16019,10 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 </variantdefs>
 <classes>
 <class number="0" name="default" width="0.3" drill="0">
-<clearance class="0" value="0.2"/>
+<clearance class="0" value="0.19"/>
 </class>
 <class number="1" name="dick" width="3.5" drill="0">
-<clearance class="1" value="0.8"/>
+<clearance class="1" value="0.5"/>
 </class>
 <class number="2" name="iso" width="0.5" drill="0">
 <clearance class="2" value="0.5"/>
