@@ -2111,7 +2111,7 @@ design rules under a new name.</description>
 <element name="C20" library="rcl" package="A/3216-18R" value="" x="47.75" y="58.75" rot="MR90"/>
 <element name="C21" library="rcl" package="A/3216-18R" value="" x="57.25" y="58.75" rot="MR90"/>
 <element name="H4" library="holes" package="3,2-PAD" value="MOUNT-PAD-ROUND3.2" x="50" y="40"/>
-<element name="R8" library="rcl" package="R0805" value="" x="83.25" y="41.25" rot="MR90"/>
+<element name="R8" library="rcl" package="R0805" value="" x="83.25" y="41" rot="MR90"/>
 </elements>
 <signals>
 <signal name="N$1" class="2">
