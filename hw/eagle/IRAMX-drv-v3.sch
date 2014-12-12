@@ -16022,7 +16022,7 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <part name="X3" library="con-wago-508" deviceset="W237-03P" device=""/>
 <part name="X4" library="con-wago-508" deviceset="W237-02P" device=""/>
 <part name="C17" library="rcl" deviceset="CPOL-EU" device="E10-35" value="820µ"/>
-<part name="R10" library="rcl" deviceset="R-EU_" device="R0805" value="100K"/>
+<part name="R10" library="rcl" deviceset="R-EU_" device="R0805" value="10K"/>
 <part name="P+9" library="supply1" deviceset="+15V" device=""/>
 <part name="GND22" library="supply1" deviceset="GND" device=""/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
@@ -16047,8 +16047,8 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="+3V1" library="supply1" deviceset="+3V3" device=""/>
 <part name="+3V2" library="supply1" deviceset="+3V3" device=""/>
-<part name="R1" library="rcl" deviceset="R-EU_" device="R0805"/>
-<part name="R2" library="rcl" deviceset="R-EU_" device="R0805"/>
+<part name="R1" library="rcl" deviceset="R-EU_" device="R0805" value="100K"/>
+<part name="R2" library="rcl" deviceset="R-EU_" device="R0805" value="800"/>
 <part name="C9" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="C19" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
