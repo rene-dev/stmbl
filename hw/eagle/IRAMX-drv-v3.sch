@@ -16016,12 +16016,12 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <part name="R11" library="rcl" deviceset="R-EU_" device="R0805" value="1K"/>
 <part name="C14" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
 <part name="LED1" library="led" deviceset="LED" device="3MM" value="GELB"/>
-<part name="R13" library="rcl" deviceset="R-EU_" device="R0805" value="470"/>
+<part name="R13" library="rcl" deviceset="R-EU_" device="R0805" value="180"/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
 <part name="IC1" library="iram-b" deviceset="IRAM" device="TOP"/>
 <part name="X3" library="con-wago-508" deviceset="W237-03P" device=""/>
 <part name="X4" library="con-wago-508" deviceset="W237-02P" device=""/>
-<part name="C17" library="rcl" deviceset="CPOL-EU" device="E10-35" value="1000µ"/>
+<part name="C17" library="rcl" deviceset="CPOL-EU" device="E10-35" value="820µ"/>
 <part name="R10" library="rcl" deviceset="R-EU_" device="R0805" value="100K"/>
 <part name="P+9" library="supply1" deviceset="+15V" device=""/>
 <part name="GND22" library="supply1" deviceset="GND" device=""/>
@@ -16033,9 +16033,9 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <part name="H2" library="holes" deviceset="MOUNT-PAD-ROUND" device="3.2"/>
 <part name="H3" library="holes" deviceset="MOUNT-PAD-ROUND" device="3.2"/>
 <part name="IC2" library="micro-stm_v2" deviceset="STM32F103R*T" device="" technology="6"/>
-<part name="C4" library="rcl" deviceset="C-EU" device="C1206K"/>
+<part name="C4" library="rcl" deviceset="C-EU" device="C1206K" value="100p"/>
 <part name="C11" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
-<part name="C15" library="rcl" deviceset="C-EU" device="C1206K"/>
+<part name="C15" library="rcl" deviceset="C-EU" device="C1206K" value="100p"/>
 <part name="C16" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
 <part name="C24" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
@@ -16053,17 +16053,17 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="C19" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
-<part name="R4" library="rcl" deviceset="R-EU_" device="R0805" value="100K"/>
+<part name="R4" library="rcl" deviceset="R-EU_" device="R0805" value="10K"/>
 <part name="U$1" library="reroolib" deviceset="SI8621" device=""/>
 <part name="+3V3" library="supply1" deviceset="+3V3" device=""/>
 <part name="+3V4" library="supply1" deviceset="+3V3" device=""/>
 <part name="+3V6" library="supply1" deviceset="+3V3" device=""/>
 <part name="U$2" library="reroolib" deviceset="RO-XXXX" device=""/>
 <part name="IC4" library="linear" deviceset="78L*SMD" device="" technology="05"/>
-<part name="R3" library="rcl" deviceset="R-EU_" device="R0805" value="470"/>
+<part name="R3" library="rcl" deviceset="R-EU_" device="R0805" value="180"/>
 <part name="LED3" library="led" deviceset="LED" device="3MM" value="GRÜN"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
-<part name="R5" library="rcl" deviceset="R-EU_" device="R0805" value="470"/>
+<part name="R5" library="rcl" deviceset="R-EU_" device="R0805" value="180"/>
 <part name="LED4" library="led" deviceset="LED" device="3MM" value="ROT"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="JP1" library="pinhead" deviceset="PINHD-1X1" device=""/>
