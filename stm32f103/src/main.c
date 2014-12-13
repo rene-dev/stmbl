@@ -9,6 +9,9 @@ volatile float u,v,w;
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef  TIM_OCInitStructure;
 NVIC_InitTypeDef NVIC_InitStructure;
+GPIO_InitTypeDef GPIO_InitStruct;
+USART_InitTypeDef USART_InitStruct;
+
 #define ADC_channels 13
 __IO uint16_t ADCConvertedValue[ADC_channels];
 
@@ -54,7 +57,6 @@ void RCC_Configuration(void)
 
 void GPIO_Configuration(void)
 {
-  GPIO_InitTypeDef GPIO_InitStruct;
   
   //LED init
   GPIO_InitStruct.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
@@ -124,6 +126,32 @@ void tim1_init(){
 	TIM_Cmd(TIM1, ENABLE);
 
 	TIM_CtrlPWMOutputs(TIM1, ENABLE);
+}
+
+void usart_init(){
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+	
+    //USART TX
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_2;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    //USART RX
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOA, &GPIO_InitStruct);
+	
+    USART_InitStruct.USART_BaudRate = 9600;
+    USART_InitStruct.USART_WordLength = USART_WordLength_8b;
+    USART_InitStruct.USART_StopBits = USART_StopBits_1;
+    USART_InitStruct.USART_Parity = USART_Parity_No;
+    USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+
+    USART_Init(USART2, &USART_InitStruct);
+    /* Enable the USART2 */
+    USART_Cmd(USART2, ENABLE);
 }
 
 void tim3_init(){
@@ -300,6 +328,7 @@ void DMA1_Channel1_IRQHandler(){
 
 int main(void)
 {
+	uint8_t buf = 0x55;
 	//PLL_Configurattion();
 	RCC_Configuration();
 	GPIO_Configuration();
@@ -315,6 +344,7 @@ int main(void)
 
 	//setup_adc();
 	tim1_init();
+	usart_init();
 	//tim3_init();
 
 	//TIM3->CCR1 = 2000;
@@ -335,6 +365,14 @@ int main(void)
 
 	while(1){
 		Wait(10);
+		
+		if((USART_GetFlagStatus(USART2, USART_FLAG_RXNE) != RESET)){//rx buf not empty
+			buf = USART_ReceiveData(USART2);
+			while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);//tx buf empty
+		    USART_SendData(USART2, buf);
+			//GPIO_SetBits(GPIOC,GPIO_Pin_0);
+			GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
+		}
 		//vel = ADCConvertedValue[7]/50 * 0.05 + vel * 0.95;
 		//amp = ADCConvertedValue[2]/4096.0;
 		//TIM3->CCR1 = ADCConvertedValue[0]/2;
