@@ -12,7 +12,6 @@ OTHER_OPT = "-D__weak=__attribute__((weak))" "-D__packed=__attribute__((__packed
 CPU = -mthumb -mcpu=cortex-m3
 SYSTEM = arm-none-eabi
 
-#LDSCRIPT = STM32F407ZG_FLASH.ld
 LDSCRIPT = "stm32_flash.ld"
 
 SRCDIR := src/
@@ -37,10 +36,6 @@ OBJCOPY = $(SYSTEM)-objcopy
 OBJDUMP	= $(SYSTEM)-objdump
 GDB		= $(SYSTEM)-gdb
 SIZE	= $(SYSTEM)-size
-OCD	= sudo ~/openocd-git/openocd/src/openocd \
-		-s ~/openocd-git/openocd/tcl/ \
-		-f interface/stlink-v2.cfg \
-		-f target/stm32f4x_stlink.cfg
 
 # INCLUDES = -I$(SRCDIR) $(LIBINC)
 INCLUDES = $(LIBINC)
@@ -63,16 +58,6 @@ OBJS = $(sort \
  $(SYSTEM_OBJ))
 
 all: $(BIN)
-
-reset:
-	$(OCD) -c init -c "reset run" -c shutdown
-	#$(GDB) main.out <reset.gdb
-
-flash: $(BIN)
-	$(OCD) -c init -c "reset halt" \
-	               -c "flash write_image erase "$(BIN)" 0x08000000" \
-			       -c "reset run" \
-	               -c shutdown
 
 burn: $(BIN)
 	st-flash --reset write $(BIN) 0x8000000
