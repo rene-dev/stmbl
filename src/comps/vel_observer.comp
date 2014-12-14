@@ -1,0 +1,36 @@
+COMP(vel_ob);
+
+HAL_PIN(pos_in) = 0.0;
+HAL_PIN(acc_in) = 0.0;
+HAL_PIN(pos_out) = 0.0;
+HAL_PIN(vel_out) = 0.0;
+
+HAL_PIN(alpha) = 0.0;
+HAL_PIN(beta) = 0.0;
+
+
+MEM(float vel) = 0.0;
+MEM(float pos) = 0.0;
+
+TRG(
+  float pos_e;
+  float acc = PIN(acc_in);
+  float a = PIN(alpha);
+  float b = PIN(beta);
+  float period = 0.0002;
+  float p = PIN(pos_in);
+
+
+  pos += vel * period;
+  pos = mod(pos);
+  pos_e = minus(p, pos);
+  pos += a * pos_e;
+  pos = mod(pos);
+  vel += pos_e * b / period;
+  vel += acc * period;
+
+  PIN(vel_out) = vel;
+  PIN(pos_out) = pos;
+);
+
+ENDCOMP;
