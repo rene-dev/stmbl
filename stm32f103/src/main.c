@@ -1,7 +1,10 @@
 #include "stm32f10x_conf.h"
 #include <math.h>
 
-#define M_PI 3.14159265358979323846
+#ifndef M_PI
+#define M_PI		3.14159265358979323846
+#define M_TWOPI         (M_PI * 2.0)
+#endif
 
 volatile unsigned int time = 0;
 volatile float u,v,w;
@@ -47,11 +50,6 @@ void PLL_Configurattion(void){
 
 void RCC_Configuration(void)
 {
-  /* TIM3 clock enable */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-
-  /* GPIOA and GPIOB clock enable */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
 }
 
@@ -69,17 +67,6 @@ void GPIO_Configuration(void)
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  //TIM1
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
-  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOA, &GPIO_InitStruct);
-  //TIM1 N
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStruct);
   
 
   //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
@@ -92,6 +79,19 @@ void GPIO_Configuration(void)
 }
 
 void tim1_init(){
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
+	
+    //TIM1
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStruct);
+    //TIM1 N
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOB, &GPIO_InitStruct);
+	
 	/* Channel 1, 2 and 3 Configuration in PWM mode */
 	TIM_TimeBaseStructure.TIM_Period = 2400;
 	TIM_TimeBaseStructure.TIM_Prescaler = 2;
@@ -143,7 +143,7 @@ void usart_init(){
     GPIO_Init(GPIOA, &GPIO_InitStruct);
 	
     USART_InitStruct.USART_BaudRate = 9600;
-    USART_InitStruct.USART_WordLength = USART_WordLength_8b;
+    USART_InitStruct.USART_WordLength = USART_WordLength_9b;
     USART_InitStruct.USART_StopBits = USART_StopBits_1;
     USART_InitStruct.USART_Parity = USART_Parity_No;
     USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
@@ -155,6 +155,7 @@ void usart_init(){
 }
 
 void tim3_init(){
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 	TIM_TimeBaseStructure.TIM_Period = 2400;
 	TIM_TimeBaseStructure.TIM_Prescaler = 0;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
@@ -325,6 +326,12 @@ void DMA1_Channel1_IRQHandler(){
 	}
 	*/
 }
+#define DATALENGTH 3
+
+typedef union{
+	uint16_t data[DATALENGTH];
+	unit8_t byte[DATALENGTH*2];
+}data_t;
 
 int main(void)
 {
@@ -336,7 +343,8 @@ int main(void)
 	//GPIO_SetBits(GPIOC,GPIO_Pin_0);//rot
 	GPIO_SetBits(GPIOC,GPIO_Pin_1);//gelb
 	//GPIO_SetBits(GPIOC,GPIO_Pin_2);//grün
-	
+
+	data_t data;
 	
 	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
