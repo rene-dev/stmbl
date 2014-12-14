@@ -224,6 +224,47 @@ void TIM5_IRQHandler(void){ //5KHz
 	}
 }
 
+void usart_init(){
+	GPIO_InitTypeDef GPIO_InitStruct;
+	USART_InitTypeDef USART_InitStruct;
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+
+	//USART TX
+	GPIO_PinAFConfig(GPIOB, GPIO_Pin_6, GPIO_AF_USART1);
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+	GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+
+	//USART RX
+	GPIO_PinAFConfig(GPIOD, GPIO_Pin_9, GPIO_AF_USART1);
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
+	GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+
+	USART_InitStruct.USART_BaudRate = 115200;
+	USART_InitStruct.USART_WordLength = USART_WordLength_9b;
+	USART_InitStruct.USART_StopBits = USART_StopBits_1;
+	USART_InitStruct.USART_Parity = USART_Parity_No;
+	USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+
+	USART_Init(USART1, &USART_InitStruct);
+	/* Enable the USART2 */
+	USART_Cmd(USART1, ENABLE);
+}
+
+#define DATALENGTH 3
+
+typedef union{
+	uint16_t data[DATALENGTH];
+	uint8_t byte[DATALENGTH*2];
+}data_t;
+
 int main(void)
 {
 	float period = 0.0;
@@ -240,13 +281,13 @@ int main(void)
 	#include "comps/pwmout.comp"
 	#include "comps/enc.comp"
 	#include "comps/res.comp"
-	#include "comps/pid.comp"
+	//#include "comps/pid.comp"
 	#include "comps/term.comp"
 	#include "comps/sim.comp"
 	#include "comps/pderiv.comp"
 	#include "comps/pderiv.comp"
 	#include "comps/autophase.comp"
-
+	#include "comps/vel_observer.comp"
 
 	set_comp_type("net");
 	HAL_PIN(enable) = 0.0;
@@ -254,6 +295,10 @@ int main(void)
 	HAL_PIN(fb) = 0.0;
 	HAL_PIN(cmd_d) = 0.0;
 	HAL_PIN(fb_d) = 0.0;
+
+	HAL_PIN(u) = 0.0;
+	HAL_PIN(v) = 0.0;
+	HAL_PIN(w) = 0.0;
 
 	for(int i = 0; i < hal.init_func_count; i++){
 		hal.init[i]();
@@ -267,6 +312,25 @@ int main(void)
 	link_ac_sync_res();
 	set_hal_pin("ap0.start", 1.0);
 
+	link_hal_pins("sim0.sin", "net0.cmd");
+	link_hal_pins("net0.cmd", "vel_ob0.pos_in");
+	link_hal_pins("net0.cmd", "term0.wave0");
+	link_hal_pins("net0.cmd_d", "term0.wave1");
+	link_hal_pins("vel_ob0.pos_out", "term0.wave2");
+	link_hal_pins("vel_ob0.vel_out", "term0.wave3");
+	link_hal_pins("vel_ob0.trg", "rt0.trg0");
+	set_hal_pin("term0.gain0", 10.0);
+	set_hal_pin("term0.gain1", 10.0);
+	set_hal_pin("term0.gain2", 10.0);
+	set_hal_pin("term0.gain3", 10.0);
+	set_hal_pin("sim0.amp", 1.0);
+	set_hal_pin("sim0.freq", 0.5);
+	set_hal_pin("vel_ob0.alpha", 1.0);
+	set_hal_pin("vel_ob0.beta", 0.1);
+
+	usart_init();
+	data_t data;
+
 	while(1)  // Do not exit
 	{
 		Wait(1);
@@ -274,6 +338,18 @@ int main(void)
 		lasttime = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){
 			hal.nrt[i](period);
+		}
+
+		data.data[0] = (uint16_t)PIN(u);
+		data.data[1] = (uint16_t)PIN(v);
+		data.data[2] = (uint16_t)PIN(w);
+
+		while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+		USART_SendData(USART1, 0x100);
+
+		for(int i = 0; i < DATALENGTH * 2; i++){
+			while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+			USART_SendData(USART1, data.byte[i]);
 		}
 
 	}

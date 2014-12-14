@@ -6,7 +6,7 @@ HAL_PIN(out) = 0.0;
 HAL_PIN(out_lp) = 1.0;
 HAL_PIN(vel_max) = 105; // max 1000rpm
 HAL_PIN(acc_max) = 21000; // max 200000rpm / s
-HAL_PIN(res) = 1000;
+HAL_PIN(res) = 100000;
 
 MEM(float last_in) = 0.0;
 MEM(float last_last_in) = 0.0;
@@ -39,7 +39,7 @@ RT_FILTER(
   last_last_last_in = last_last_in;
   last_last_in = last_in;
   last_in = i;
-  
+
 );
 
 ENDCOMP;

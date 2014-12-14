@@ -54,14 +54,14 @@ FRT(
   //cur_ = CLAMP(state.cur, -elec_spec.max_i, elec_spec.max_i);
   //state.cur = (state.volt - state.ind) / elec_spec.r;
   torq_ = cur_ * PIN(nm_a) - (PIN(damping) + PIN(load_damping)) * vel_ + PIN(load_force);
-  if(abs(torq) < fric){
+  if(abs(torq_) < fric_){
     torq_ = 0.0;
   }
   else{
-    torq_ = torq_ - SIGN(torq_) * fric;
+    torq_ = torq_ - SIGN(torq_) * fric_;
   }
 
-  acc_ = torq / (PIN(inertia) + PIN(load_inertia));
+  acc_ = torq_ / (PIN(inertia) + PIN(load_inertia));
   vel_ += acc_ * period;
   pos_ += vel_ * period;
   pos_ = mod(pos_);

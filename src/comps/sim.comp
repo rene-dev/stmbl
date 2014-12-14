@@ -6,6 +6,7 @@ HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
 HAL_PIN(square) = 0.0;
 HAL_PIN(vel) = 0.0;
+HAL_PIN(res) = 2000.0;
 
 MEM(float time) = 0.0;
 
@@ -14,6 +15,7 @@ RT_IN(
   float freq_ = PIN(freq);
   float sin_;
   float cos_;
+  float r = PIN(res);
   float square_;
 
   time += period;
@@ -21,10 +23,10 @@ RT_IN(
   sin_ = amp_ * sinf(freq_ * 2 * M_PI * time);
   cos_ = amp_ * cosf(freq_ * 2 * M_PI * time);
 
-  PIN(sin) = sin_;
-  PIN(cos) = cos_;
+  PIN(sin) = mod(((int)(sin_ * r)) / r);
+  PIN(cos) = mod(((int)(cos_ * r)) / r);
   PIN(square) = (sin_ > 0.0) ? (amp_) : (-amp_);
-  PIN(vel) = amp_ * time;
+  PIN(vel) = mod(((int)(amp_ * time * r)) / r);
 );
 
 ENDCOMP;
