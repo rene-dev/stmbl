@@ -330,12 +330,12 @@ void DMA1_Channel1_IRQHandler(){
 
 typedef union{
 	uint16_t data[DATALENGTH];
-	unit8_t byte[DATALENGTH*2];
+	uint8_t byte[DATALENGTH*2];
 }data_t;
+
 
 int main(void)
 {
-	uint8_t buf = 0x55;
 	//PLL_Configurattion();
 	RCC_Configuration();
 	GPIO_Configuration();
@@ -345,6 +345,8 @@ int main(void)
 	//GPIO_SetBits(GPIOC,GPIO_Pin_2);//grün
 
 	data_t data;
+	int32_t datapos = -1;
+	uint16_t buf;
 	
 	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
@@ -372,27 +374,38 @@ int main(void)
 	int res = 2400;
 
 	while(1){
-		Wait(10);
+		//Wait(10);
 		
 		if((USART_GetFlagStatus(USART2, USART_FLAG_RXNE) != RESET)){//rx buf not empty
 			buf = USART_ReceiveData(USART2);
-			while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);//tx buf empty
-		    USART_SendData(USART2, buf);
+			if(buf == 0x100){
+				datapos = 0;
+			}else if(datapos >= 0 && datapos < DATALENGTH*2){
+				data.byte[datapos++] = (uint8_t)buf;
+			}else if(datapos == DATALENGTH*2){
+				datapos = -1;
+				TIM1->CCR1 = data.data[0];
+				TIM1->CCR2 = data.data[1];
+				TIM1->CCR3 = data.data[2];
+				GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
+			}
+			//while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);//tx buf empty
+		    //USART_SendData(USART2, buf);
 			//GPIO_SetBits(GPIOC,GPIO_Pin_0);
-			GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
+			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
 		}
 		//vel = ADCConvertedValue[7]/50 * 0.05 + vel * 0.95;
 		//amp = ADCConvertedValue[2]/4096.0;
 		//TIM3->CCR1 = ADCConvertedValue[0]/2;
 		//TIM3->CCR2 = ADCConvertedValue[1]*50;
 		//TIM3->CCR3 = ADCConvertedValue[2];
-		pos += vel * 2 * M_PI * 0.01;
-		if(pos > 2*M_PI){
-			pos-=2*M_PI;
-		}
-		TIM1->CCR1 = amp * sinf(pos + 0.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
-		TIM1->CCR2 = amp * sinf(pos + 1.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
-		TIM1->CCR3 = amp * sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
+		// pos += vel * 2 * M_PI * 0.01;
+// 		if(pos > 2*M_PI){
+// 			pos-=2*M_PI;
+// 		}
+// 		TIM1->CCR1 = amp * sinf(pos + 0.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
+// 		TIM1->CCR2 = amp * sinf(pos + 1.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
+// 		TIM1->CCR3 = amp * sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
 		//u = (1 - amp) * res;
 		//v = res - (1 - amp) * res;
 		//w = (1 - amp) * res;
