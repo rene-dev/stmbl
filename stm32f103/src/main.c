@@ -9,6 +9,8 @@
 #define DATALENGTH 3
 #define DATABAUD 2000000;
 
+volatile uint32_t timeout = 99999;
+
 typedef union{
 	uint16_t data[DATALENGTH];
 	uint8_t byte[DATALENGTH*2];
@@ -77,13 +79,13 @@ void GPIO_Configuration(void)
   GPIO_Init(GPIOB, &GPIO_InitStructure);
   
 
-  //GPIO_InitStructureure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-  //GPIO_Init(GPIOB, &GPIO_InitStructureure);
+  //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+  //GPIO_Init(GPIOB, &GPIO_InitStructure);
   
   //Analog pin configuration
-  //GPIO_InitStructureure.GPIO_Pin = GPIO_Pin_0;
-  //GPIO_InitStructureure.GPIO_Mode = GPIO_Mode_AIN;
-  //GPIO_Init(GPIOA,&GPIO_InitStructureure);
+  //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  //GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  //GPIO_Init(GPIOA,&GPIO_InitStructure);
 }
 
 void tim1_init(){
@@ -188,9 +190,9 @@ DMA_InitTypeDef DMA_InitStructure;
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA, ENABLE);
 
   /* Configure PC.04 (ADC Channel14) as analog input -------------------------*/
-  GPIO_InitStructureure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
-  GPIO_InitStructureure.GPIO_Mode = GPIO_Mode_AIN;
-  GPIO_Init(GPIOC, &GPIO_InitStructureure);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
   
   /* DMA1 channel1 configuration ----------------------------------------------*/
   DMA_DeInit(DMA1_Channel1);
@@ -267,6 +269,16 @@ DMA_InitTypeDef DMA_InitStructure;
 
 void TIM1_UP_IRQHandler(){
 	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
+	if(timeout > 30){
+		GPIO_ResetBits(GPIOB,GPIO_Pin_6);//disable
+		GPIO_SetBits(GPIOC,GPIO_Pin_1);//gelb
+		GPIO_ResetBits(GPIOC,GPIO_Pin_2);//grün
+	}else{
+		GPIO_SetBits(GPIOB,GPIO_Pin_6);//Enable
+		GPIO_SetBits(GPIOC,GPIO_Pin_2);//grün
+		GPIO_ResetBits(GPIOC,GPIO_Pin_1);//gelb
+		timeout ++;
+	}
 	//ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 	//GPIO_SetBits(GPIOB,GPIO_Pin_12);
 }
@@ -304,7 +316,7 @@ int main(void)
 	GPIO_Configuration();
 
 	//GPIO_SetBits(GPIOC,GPIO_Pin_0);//rot
-	GPIO_SetBits(GPIOC,GPIO_Pin_1);//gelb
+	//GPIO_SetBits(GPIOC,GPIO_Pin_1);//gelb
 	//GPIO_SetBits(GPIOC,GPIO_Pin_2);//grün
 
 	data_t data;
@@ -319,32 +331,26 @@ int main(void)
 	tim1_init();
 	usart_init();
 
-	TIM1->CCR1 = 2000;
-	TIM1->CCR2 = 2000;
-	TIM1->CCR3 = 2000;
-	
-	GPIO_SetBits(GPIOB,GPIO_Pin_6);//Enable
-
-	float pos = 0;
-	float vel = 10;
-	float amp = 0.5;
-	int res = 2400;
+	TIM1->CCR1 = 0;
+	TIM1->CCR2 = 0;
+	TIM1->CCR3 = 0;
 
 	while(1){
 		if((USART_GetFlagStatus(USART2, USART_FLAG_RXNE) != RESET)){//rx buf not empty
 			buf = USART_ReceiveData(USART2);
-			if(buf == 0x155){
+			if(buf == 0x155){//start condition
 				datapos = 0;
-				GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
+				//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
 			}else if(datapos >= 0 && datapos < DATALENGTH*2){
 				data.byte[datapos++] = (uint8_t)buf;
 			}
-			if(datapos == DATALENGTH*2){
+			if(datapos == DATALENGTH*2){//all data received
 				datapos = -1;
 				TIM1->CCR1 = data.data[0];
 				TIM1->CCR2 = data.data[1];
 				TIM1->CCR3 = data.data[2];
-				GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
+				timeout = 0;
+				//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
 			}
 		}
 	}
