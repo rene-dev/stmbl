@@ -6,13 +6,21 @@
 #define M_TWOPI         (M_PI * 2.0)
 #endif
 
+#define DATALENGTH 3
+#define DATABAUD 2000000;
+
+typedef union{
+	uint16_t data[DATALENGTH];
+	uint8_t byte[DATALENGTH*2];
+}data_t;
+
 volatile unsigned int time = 0;
 volatile float u,v,w;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef  TIM_OCInitStructure;
 NVIC_InitTypeDef NVIC_InitStructure;
-GPIO_InitTypeDef GPIO_InitStruct;
+GPIO_InitTypeDef GPIO_InitStructure;
 USART_InitTypeDef USART_InitStruct;
 
 #define ADC_channels 13
@@ -57,40 +65,40 @@ void GPIO_Configuration(void)
 {
   
   //LED init
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
-  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStruct);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 
   //Enable output init
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
-  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
   
 
-  //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-  //GPIO_Init(GPIOB, &GPIO_InitStructure);
+  //GPIO_InitStructureure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+  //GPIO_Init(GPIOB, &GPIO_InitStructureure);
   
   //Analog pin configuration
-  //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-  //GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-  //GPIO_Init(GPIOA,&GPIO_InitStructure);
+  //GPIO_InitStructureure.GPIO_Pin = GPIO_Pin_0;
+  //GPIO_InitStructureure.GPIO_Mode = GPIO_Mode_AIN;
+  //GPIO_Init(GPIOA,&GPIO_InitStructureure);
 }
 
 void tim1_init(){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 	
     //TIM1
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &GPIO_InitStruct);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
     //TIM1 N
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOB, &GPIO_InitStruct);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
 	
 	/* Channel 1, 2 and 3 Configuration in PWM mode */
 	TIM_TimeBaseStructure.TIM_Period = 2400;
@@ -132,17 +140,17 @@ void usart_init(){
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
 	
     //USART TX
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_2;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIOA, &GPIO_InitStruct);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
 
     //USART RX
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(GPIOA, &GPIO_InitStruct);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
-    USART_InitStruct.USART_BaudRate = 2000000;
+    USART_InitStruct.USART_BaudRate = DATABAUD;
     USART_InitStruct.USART_WordLength = USART_WordLength_9b;
     USART_InitStruct.USART_StopBits = USART_StopBits_1;
     USART_InitStruct.USART_Parity = USART_Parity_No;
@@ -152,42 +160,6 @@ void usart_init(){
     USART_Init(USART2, &USART_InitStruct);
     /* Enable the USART2 */
     USART_Cmd(USART2, ENABLE);
-}
-
-void tim3_init(){
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-	TIM_TimeBaseStructure.TIM_Period = 2400;
-	TIM_TimeBaseStructure.TIM_Prescaler = 0;
-	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
-
-	/* PWM1 Mode configuration: Channel1 */
-	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse = 0;
-	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-
-	TIM_OC1Init(TIM3, &TIM_OCInitStructure);
-	TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);
-
-	/* PWM1 Mode configuration: Channel2 */
-	TIM_OC2Init(TIM3, &TIM_OCInitStructure);
-	TIM_OC2PreloadConfig(TIM3, TIM_OCPreload_Enable);
-
-	/* PWM1 Mode configuration: Channel3 */
-	TIM_OC3Init(TIM3, &TIM_OCInitStructure);
-	TIM_OC3PreloadConfig(TIM3, TIM_OCPreload_Enable);
-
-	/* PWM1 Mode configuration: Channel4 */
-	TIM_OC4Init(TIM3, &TIM_OCInitStructure);
-	TIM_OC4PreloadConfig(TIM3, TIM_OCPreload_Enable);
-
-	TIM_ARRPreloadConfig(TIM3, ENABLE);
-
-	/* TIM3 enable counter */
-	TIM_Cmd(TIM3, ENABLE);
-
 }
 
 // Setup ADC
@@ -214,13 +186,11 @@ DMA_InitTypeDef DMA_InitStructure;
 
   /* Enable ADC1 and GPIOC clock */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA, ENABLE);
-  
-  GPIO_InitTypeDef GPIO_InitStructure;
 
   /* Configure PC.04 (ADC Channel14) as analog input -------------------------*/
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+  GPIO_InitStructureure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
+  GPIO_InitStructureure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_Init(GPIOC, &GPIO_InitStructureure);
   
   /* DMA1 channel1 configuration ----------------------------------------------*/
   DMA_DeInit(DMA1_Channel1);
@@ -326,13 +296,6 @@ void DMA1_Channel1_IRQHandler(){
 	}
 	*/
 }
-#define DATALENGTH 3
-
-typedef union{
-	uint16_t data[DATALENGTH];
-	uint8_t byte[DATALENGTH*2];
-}data_t;
-
 
 int main(void)
 {
@@ -355,12 +318,6 @@ int main(void)
 	//setup_adc();
 	tim1_init();
 	usart_init();
-	//tim3_init();
-
-	//TIM3->CCR1 = 2000;
-	//TIM3->CCR2 = 2000;
-	//TIM3->CCR3 = 2000;
-	//TIM3->CCR4 = 2000;
 
 	TIM1->CCR1 = 2000;
 	TIM1->CCR2 = 2000;
@@ -374,8 +331,6 @@ int main(void)
 	int res = 2400;
 
 	while(1){
-		//Wait(10);
-		
 		if((USART_GetFlagStatus(USART2, USART_FLAG_RXNE) != RESET)){//rx buf not empty
 			buf = USART_ReceiveData(USART2);
 			if(buf == 0x155){
@@ -391,25 +346,6 @@ int main(void)
 				TIM1->CCR3 = data.data[2];
 				GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
 			}
-			//while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);//tx buf empty
-		    //USART_SendData(USART2, buf);
-			//GPIO_SetBits(GPIOC,GPIO_Pin_0);
-			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
 		}
-		//vel = ADCConvertedValue[7]/50 * 0.05 + vel * 0.95;
-		//amp = ADCConvertedValue[2]/4096.0;
-		//TIM3->CCR1 = ADCConvertedValue[0]/2;
-		//TIM3->CCR2 = ADCConvertedValue[1]*50;
-		//TIM3->CCR3 = ADCConvertedValue[2];
-		// pos += vel * 2 * M_PI * 0.01;
-// 		if(pos > 2*M_PI){
-// 			pos-=2*M_PI;
-// 		}
-// 		TIM1->CCR1 = amp * sinf(pos + 0.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
-// 		TIM1->CCR2 = amp * sinf(pos + 1.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
-// 		TIM1->CCR3 = amp * sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * res / 2.0 + res / 2.0;
-		//u = (1 - amp) * res;
-		//v = res - (1 - amp) * res;
-		//w = (1 - amp) * res;
 	}
 }
