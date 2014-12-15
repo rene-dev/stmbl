@@ -244,7 +244,7 @@ void usart_init(){
 	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
 	GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-	USART_InitStruct.USART_BaudRate = 2000000;
+	USART_InitStruct.USART_BaudRate = 2000000;//2000000
 	USART_InitStruct.USART_WordLength = USART_WordLength_9b;
 	USART_InitStruct.USART_StopBits = USART_StopBits_1;
 	USART_InitStruct.USART_Parity = USART_Parity_No;
@@ -331,7 +331,7 @@ int main(void)
 
 	while(1)  // Do not exit
 	{
-		Wait(1);
+		Wait(10);
 		period = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
 		lasttime = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){

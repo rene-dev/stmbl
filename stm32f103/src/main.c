@@ -142,7 +142,7 @@ void usart_init(){
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_Init(GPIOA, &GPIO_InitStruct);
 	
-    USART_InitStruct.USART_BaudRate = 9600;
+    USART_InitStruct.USART_BaudRate = 2000000;
     USART_InitStruct.USART_WordLength = USART_WordLength_9b;
     USART_InitStruct.USART_StopBits = USART_StopBits_1;
     USART_InitStruct.USART_Parity = USART_Parity_No;
@@ -346,7 +346,7 @@ int main(void)
 
 	data_t data;
 	int32_t datapos = -1;
-	uint16_t buf;
+	uint16_t buf = 0x0000;
 	
 	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
@@ -378,11 +378,13 @@ int main(void)
 		
 		if((USART_GetFlagStatus(USART2, USART_FLAG_RXNE) != RESET)){//rx buf not empty
 			buf = USART_ReceiveData(USART2);
-			if(buf == 0x100){
+			if(buf == 0x155){
 				datapos = 0;
+				GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
 			}else if(datapos >= 0 && datapos < DATALENGTH*2){
 				data.byte[datapos++] = (uint8_t)buf;
-			}else if(datapos == DATALENGTH*2){
+			}
+			if(datapos == DATALENGTH*2-1){
 				datapos = -1;
 				TIM1->CCR1 = data.data[0];
 				TIM1->CCR2 = data.data[1];
