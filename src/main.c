@@ -227,35 +227,33 @@ void TIM5_IRQHandler(void){ //5KHz
 void usart_init(){
 	GPIO_InitTypeDef GPIO_InitStruct;
 	USART_InitTypeDef USART_InitStruct;
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 
 	//USART TX
-	GPIO_PinAFConfig(GPIOB, GPIO_Pin_6, GPIO_AF_USART1);
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
-	GPIO_Init(GPIOB, &GPIO_InitStruct);
-
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_USART3);
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
+	GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 	//USART RX
-	GPIO_PinAFConfig(GPIOD, GPIO_Pin_9, GPIO_AF_USART1);
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
-	GPIO_Init(GPIOD, &GPIO_InitStruct);
+	GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_USART3);
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
+	GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-
-	USART_InitStruct.USART_BaudRate = 115200;
+	USART_InitStruct.USART_BaudRate = 2000000;
 	USART_InitStruct.USART_WordLength = USART_WordLength_9b;
 	USART_InitStruct.USART_StopBits = USART_StopBits_1;
 	USART_InitStruct.USART_Parity = USART_Parity_No;
 	USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
-	USART_Init(USART1, &USART_InitStruct);
-	/* Enable the USART2 */
-	USART_Cmd(USART1, ENABLE);
+	USART_Init(USART3, &USART_InitStruct);
+	/* Enable the USART */
+	USART_Cmd(USART3, ENABLE);
 }
 
 #define DATALENGTH 3
@@ -344,12 +342,12 @@ int main(void)
 		data.data[1] = (uint16_t)PIN(v);
 		data.data[2] = (uint16_t)PIN(w);
 
-		while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
-		USART_SendData(USART1, 0x100);
+		while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET);
+		USART_SendData(USART3, 0x155);
 
 		for(int i = 0; i < DATALENGTH * 2; i++){
-			while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
-			USART_SendData(USART1, data.byte[i]);
+			while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET);
+			USART_SendData(USART3, data.byte[i]);
 		}
 
 	}
