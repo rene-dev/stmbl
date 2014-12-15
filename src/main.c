@@ -61,12 +61,17 @@ void link_pid(){
 	set_hal_pin("pderiv1.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
-	// pwm
+	// timer pwm
 	link_hal_pins("pid0.pwm_cmd", "ap0.pwm_in");
 	link_hal_pins("ap0.pwm_out", "p2uvw0.pwm");
 	link_hal_pins("p2uvw0.u", "pwmout0.u");
 	link_hal_pins("p2uvw0.v", "pwmout0.v");
 	link_hal_pins("p2uvw0.w", "pwmout0.w");
+	//pwm over uart
+	link_hal_pins("p2uvw0.u", "pwm2uart0.u");
+	link_hal_pins("p2uvw0.v", "pwm2uart0.v");
+	link_hal_pins("p2uvw0.w", "pwm2uart0.w");
+	
 
 	// magpos
 	link_hal_pins("ap0.mag_pos_out", "p2uvw0.magpos");
@@ -90,6 +95,11 @@ void link_pid(){
 	set_hal_pin("pwmout0.enable", 0.9);
 	set_hal_pin("pwmout0.volt", 130.0);
 	set_hal_pin("pwmout0.pwm_max", 0.9);
+	
+	set_hal_pin("pwm2uart0.enable", 0.9);
+	set_hal_pin("pwm2uart0.volt", 130.0);
+	set_hal_pin("pwm2uart0.pwm_max", 0.9);
+	
 	set_hal_pin("p2uvw0.volt", 130.0);
 	set_hal_pin("p2uvw0.pwm_max", 0.9);
 	set_hal_pin("pid0.volt", 130.0);
@@ -277,6 +287,7 @@ int main(void)
 	#include "comps/pos_minus.comp"
 	#include "comps/pwm2uvw.comp"
 	#include "comps/pwmout.comp"
+	#include "comps/pwm2uart.comp"
 	#include "comps/enc.comp"
 	#include "comps/res.comp"
 	//#include "comps/pid.comp"
@@ -325,13 +336,17 @@ int main(void)
 	set_hal_pin("sim0.freq", 0.5);
 	set_hal_pin("vel_ob0.alpha", 1.0);
 	set_hal_pin("vel_ob0.beta", 0.1);
+	
+	link_hal_pins("pwm2uart0.uout", "net0.u");
+	link_hal_pins("pwm2uart0.vout", "net0.v");
+	link_hal_pins("pwm2uart0.wout", "net0.w");
 
 	usart_init();
 	data_t data;
 
 	while(1)  // Do not exit
 	{
-		Wait(10);
+		Wait(1);
 		period = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
 		lasttime = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){

@@ -384,7 +384,7 @@ int main(void)
 			}else if(datapos >= 0 && datapos < DATALENGTH*2){
 				data.byte[datapos++] = (uint8_t)buf;
 			}
-			if(datapos == DATALENGTH*2-1){
+			if(datapos == DATALENGTH*2){
 				datapos = -1;
 				TIM1->CCR1 = data.data[0];
 				TIM1->CCR2 = data.data[1];
