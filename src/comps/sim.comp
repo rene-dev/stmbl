@@ -30,7 +30,7 @@ RT_IN(
   PIN(sin) = mod(((int)(sin_ * r)) / r);
   PIN(cos) = mod(((int)(cos_ * r)) / r);
   PIN(square) = (sin_ > 0.0) ? (amp_) : (-amp_);
-  PIN(vel) = mod(((int)(amp_ * time * r)) / r);
+  PIN(vel) = mod(((int)(freq_ * time * r)) / r);
 );
 
 ENDCOMP;
