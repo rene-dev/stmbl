@@ -20,8 +20,12 @@ RT_IN(
 
   time += period;
 
-  sin_ = amp_ * sinf(freq_ * 2 * M_PI * time);
-  cos_ = amp_ * cosf(freq_ * 2 * M_PI * time);
+  if(freq_ * time >= 2.0 * M_PI){
+    time = 0.0;
+  }
+
+  sin_ = amp_ * sinf(freq_ * time);
+  cos_ = amp_ * cosf(freq_ * time);
 
   PIN(sin) = mod(((int)(sin_ * r)) / r);
   PIN(cos) = mod(((int)(cos_ * r)) / r);
