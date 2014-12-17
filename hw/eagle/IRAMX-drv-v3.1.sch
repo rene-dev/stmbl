@@ -16199,6 +16199,8 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <part name="R27" library="rcl" deviceset="R-EU_" device="R0805" value="180"/>
 <part name="R28" library="rcl" deviceset="R-EU_" device="R0805" value="3.9k"/>
 <part name="C40" library="rcl" deviceset="C-EU" device="C0805K" value="1n"/>
+<part name="X2" library="reroolib" deviceset="RJ45" device=""/>
+<part name="X5" library="reroolib" deviceset="RJ45" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -16329,6 +16331,8 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <instance part="R27" gate="G$1" x="-414.02" y="124.46" rot="R270"/>
 <instance part="R28" gate="G$1" x="-429.26" y="147.32" rot="R180"/>
 <instance part="C40" gate="G$1" x="-444.5" y="142.24"/>
+<instance part="X2" gate="-" x="-502.92" y="127" rot="R180"/>
+<instance part="X5" gate="-" x="-502.92" y="101.6" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -17083,10 +17087,7 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <junction x="-365.76" y="55.88"/>
 <wire x1="-365.76" y1="55.88" x2="-360.68" y2="55.88" width="0.1524" layer="91"/>
 <junction x="-370.84" y="55.88"/>
-<pinref part="IC5" gate="PWR" pin="VSS@1"/>
-<wire x1="-419.1" y1="27.94" x2="-414.02" y2="27.94" width="0.1524" layer="91"/>
 <pinref part="IC5" gate="PWR" pin="VSS@2"/>
-<junction x="-414.02" y="27.94"/>
 <wire x1="-414.02" y1="27.94" x2="-408.94" y2="27.94" width="0.1524" layer="91"/>
 <pinref part="IC5" gate="PWR" pin="VSS@3"/>
 <junction x="-408.94" y="27.94"/>
@@ -17097,6 +17098,9 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <pinref part="C36" gate="G$1" pin="-"/>
 <wire x1="-355.6" y1="55.88" x2="-360.68" y2="55.88" width="0.1524" layer="91"/>
 <junction x="-360.68" y="55.88"/>
+<pinref part="IC5" gate="PWR" pin="VSS@1"/>
+<wire x1="-414.02" y1="27.94" x2="-419.1" y2="27.94" width="0.1524" layer="91"/>
+<junction x="-414.02" y="27.94"/>
 </segment>
 </net>
 <net name="N$11" class="0">

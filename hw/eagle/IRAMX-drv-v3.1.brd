@@ -110,10 +110,10 @@
 </layers>
 <board>
 <plain>
-<wire x1="0" y1="90" x2="0" y2="0" width="0" layer="20"/>
+<wire x1="0" y1="80" x2="0" y2="0" width="0" layer="20"/>
 <wire x1="0" y1="0" x2="74.9975" y2="0" width="0" layer="20"/>
-<wire x1="74.9975" y1="0" x2="74.9975" y2="90" width="0" layer="20"/>
-<wire x1="74.9975" y1="90" x2="0" y2="90" width="0" layer="20"/>
+<wire x1="74.9975" y1="0" x2="74.9975" y2="80" width="0" layer="20"/>
+<wire x1="74.9975" y1="80" x2="0" y2="80" width="0" layer="20"/>
 </plain>
 <libraries>
 <library name="rcl">
@@ -2111,10 +2111,10 @@ design rules under a new name.</description>
 <element name="C31" library="rcl" package="C0805K" value="100n" x="6.5" y="72.25" rot="MR0"/>
 <element name="C32" library="rcl" package="C0805K" value="100n" x="9" y="63.25" rot="MR0"/>
 <element name="C33" library="rcl" package="A/3216-18R" value="" x="27.5" y="64.25" rot="MR0"/>
-<element name="C34" library="rcl" package="C0805K" value="100n" x="32" y="80.25" rot="MR0"/>
+<element name="C34" library="rcl" package="C0805K" value="100n" x="32.5" y="77.75" rot="MR0"/>
 <element name="C35" library="rcl" package="C0805K" value="100n" x="34.75" y="69.75" rot="MR0"/>
 <element name="C36" library="rcl" package="A/3216-18R" value="" x="34.25" y="71.75" rot="MR0"/>
-<element name="X1" library="reroolib" package="RJ45" value="" x="7" y="-11.75"/>
+<element name="X1" library="reroolib" package="RJ45" value="" x="67" y="78" rot="R180"/>
 <element name="R14" library="rcl" package="R0805" value="470" x="-2.25" y="-25.5"/>
 <element name="C37" library="rcl" package="C0805K" value="1n" x="-2.5" y="-31"/>
 <element name="R15" library="rcl" package="R0805" value="1k" x="-2.25" y="-36.5"/>
@@ -2134,6 +2134,8 @@ design rules under a new name.</description>
 <element name="R27" library="rcl" package="R0805" value="180" x="-5" y="-105.5"/>
 <element name="R28" library="rcl" package="R0805" value="3.9k" x="1.25" y="-105.5"/>
 <element name="C40" library="rcl" package="C0805K" value="1n" x="-7" y="-111"/>
+<element name="X2" library="reroolib" package="RJ45" value="" x="49" y="78" rot="R180"/>
+<element name="X5" library="reroolib" package="RJ45" value="" x="31" y="78" rot="R180"/>
 </elements>
 <signals>
 <signal name="N$1" class="2">
@@ -2813,8 +2815,8 @@ design rules under a new name.</description>
 </signal>
 <signal name="GND2">
 <polygon width="0.3" layer="16">
-<vertex x="0" y="90"/>
-<vertex x="75" y="90"/>
+<vertex x="0" y="80"/>
+<vertex x="75" y="80"/>
 <vertex x="75" y="56"/>
 <vertex x="0" y="56"/>
 </polygon>
@@ -2826,23 +2828,23 @@ design rules under a new name.</description>
 <contactref element="C20" pad="2"/>
 <contactref element="C35" pad="2"/>
 <contactref element="C34" pad="2"/>
-<contactref element="IC5" pad="31"/>
 <contactref element="IC5" pad="47"/>
 <contactref element="IC5" pad="63"/>
 <contactref element="IC5" pad="18"/>
 <contactref element="C36" pad="-"/>
-<wire x1="33.75" y1="69.75" x2="35.625" y2="71.75" width="0" layer="19" extent="1-1"/>
-<wire x1="28.875" y1="64.25" x2="33.75" y2="69.75" width="0" layer="19" extent="1-1"/>
-<wire x1="8" y1="63.25" x2="33.75" y2="69.75" width="0" layer="19" extent="1-1"/>
-<wire x1="31" y1="80.25" x2="8" y2="63.25" width="0" layer="19" extent="1-1"/>
-<wire x1="3.5" y1="74.75" x2="8" y2="63.25" width="0" layer="19" extent="1-1"/>
-<wire x1="5.5" y1="72.25" x2="3.5" y2="74.75" width="0" layer="19" extent="1-1"/>
-<wire x1="24" y1="59.5" x2="3.5" y2="74.75" width="0" layer="19" extent="1-1"/>
-<wire x1="14" y1="63.25" x2="24" y2="59.5" width="0" layer="19" extent="1-1"/>
-<wire x1="25.75" y1="67.75" x2="24" y2="59.5" width="0" layer="19" extent="1-1"/>
-<wire x1="14.25" y1="67.75" x2="14" y2="63.25" width="0" layer="19" extent="1-1"/>
-<wire x1="14.25" y1="74.25" x2="14.25" y2="67.75" width="0" layer="19" extent="1-1"/>
-<wire x1="23.25" y1="76.75" x2="25.75" y2="67.75" width="0" layer="19" extent="1-1"/>
+<contactref element="IC5" pad="31"/>
+<wire x1="35.625" y1="71.75" x2="31.5" y2="77.75" width="0" layer="19" extent="16-16"/>
+<wire x1="33.75" y1="69.75" x2="35.625" y2="71.75" width="0" layer="19" extent="16-16"/>
+<wire x1="28.875" y1="64.25" x2="33.75" y2="69.75" width="0" layer="19" extent="16-16"/>
+<wire x1="25.75" y1="67.75" x2="28.875" y2="64.25" width="0" layer="19" extent="16-16"/>
+<wire x1="24" y1="59.5" x2="28.875" y2="64.25" width="0" layer="19" extent="16-16"/>
+<wire x1="23.25" y1="76.75" x2="31.5" y2="77.75" width="0" layer="19" extent="16-16"/>
+<wire x1="14.25" y1="74.25" x2="23.25" y2="76.75" width="0" layer="19" extent="16-16"/>
+<wire x1="14.25" y1="67.75" x2="14.25" y2="74.25" width="0" layer="19" extent="16-16"/>
+<wire x1="14" y1="63.25" x2="14.25" y2="67.75" width="0" layer="19" extent="16-16"/>
+<wire x1="8" y1="63.25" x2="14" y2="63.25" width="0" layer="19" extent="16-16"/>
+<wire x1="5.5" y1="72.25" x2="14.25" y2="74.25" width="0" layer="19" extent="16-16"/>
+<wire x1="3.5" y1="74.75" x2="5.5" y2="72.25" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="VDDA">
 <contactref element="IC5" pad="13"/>
@@ -2874,12 +2876,12 @@ design rules under a new name.</description>
 <contactref element="C36" pad="+"/>
 <wire x1="35.75" y1="69.75" x2="32.875" y2="71.75" width="0" layer="19" extent="1-1"/>
 <wire x1="10" y1="63.25" x2="35.75" y2="69.75" width="0" layer="19" extent="1-1"/>
-<wire x1="33" y1="80.25" x2="10" y2="63.25" width="0" layer="19" extent="1-1"/>
+<wire x1="33.5" y1="77.75" x2="10" y2="63.25" width="0" layer="19" extent="1-1"/>
 <wire x1="5.5" y1="74.75" x2="10" y2="63.25" width="0" layer="19" extent="1-1"/>
 <wire x1="7.5" y1="72.25" x2="5.5" y2="74.75" width="0" layer="19" extent="1-1"/>
 <wire x1="26" y1="59.5" x2="5.5" y2="74.75" width="0" layer="19" extent="1-1"/>
 <wire x1="16" y1="63.25" x2="26" y2="59.5" width="0" layer="19" extent="1-1"/>
-<wire x1="26.125" y1="64.25" x2="33" y2="80.25" width="0" layer="19" extent="1-1"/>
+<wire x1="26.125" y1="64.25" x2="33.5" y2="77.75" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$16">
 <contactref element="R14" pad="2"/>
