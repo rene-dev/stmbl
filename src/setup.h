@@ -48,6 +48,7 @@ void setup();
 void setup_adc();
 void setup_pwm();
 void setup_pid_timer();
+void setup_usart();
 void setup_dma();
 void SysTick_Handler(void);
 
