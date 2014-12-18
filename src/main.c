@@ -238,21 +238,21 @@ void usart_init(){
 	GPIO_InitTypeDef GPIO_InitStruct;
 	USART_InitTypeDef USART_InitStruct;
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
 
 	//USART TX
-	GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_USART3);
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+	GPIO_PinAFConfig(GPIOD, GPIO_PinSource8, GPIO_AF_USART3);
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
-	GPIO_Init(GPIOC, &GPIO_InitStruct);
+	GPIO_Init(GPIOD, &GPIO_InitStruct);
 
 	//USART RX
-	GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_USART3);
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
-	GPIO_Init(GPIOC, &GPIO_InitStruct);
+	GPIO_PinAFConfig(GPIOD, GPIO_PinSource9, GPIO_AF_USART3);
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
+	GPIO_Init(GPIOD, &GPIO_InitStruct);
 
 	USART_InitStruct.USART_BaudRate = 2000000;//2000000
 	USART_InitStruct.USART_WordLength = USART_WordLength_9b;
