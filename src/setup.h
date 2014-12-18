@@ -55,6 +55,17 @@ void SysTick_Handler(void);
 volatile unsigned int time;
 
 volatile uint32_t ADC2_DMA_Buffer[ADC2d_ANZ];
+volatile uint16_t UART_DMA_Buffer[7];
+
+#define DATALENGTH 3
+#define DATABAUD 2000000;
+
+typedef union{
+	uint16_t data[DATALENGTH];
+	uint8_t byte[DATALENGTH*2];
+}data_t;
+
+data_t data;
 
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 TIM_OCInitTypeDef TIM_OCInitStructure;

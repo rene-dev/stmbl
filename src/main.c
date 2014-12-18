@@ -234,13 +234,6 @@ void TIM5_IRQHandler(void){ //5KHz
 	}
 }
 
-#define DATALENGTH 3
-
-typedef union{
-	uint16_t data[DATALENGTH];
-	uint8_t byte[DATALENGTH*2];
-}data_t;
-
 int main(void)
 {
 	float period = 0.0;
@@ -273,10 +266,6 @@ int main(void)
 	HAL_PIN(cmd_d) = 0.0;
 	HAL_PIN(fb_d) = 0.0;
 
-	HAL_PIN(u) = 0.0;
-	HAL_PIN(v) = 0.0;
-	HAL_PIN(w) = 0.0;
-
 	for(int i = 0; i < hal.init_func_count; i++){
 		hal.init[i]();
 	}
@@ -305,33 +294,15 @@ int main(void)
 	set_hal_pin("vel_ob0.alpha", 1.0);
 	set_hal_pin("vel_ob0.beta", 0.1);
 	
-	link_hal_pins("pwm2uart0.uout", "net0.u");
-	link_hal_pins("pwm2uart0.vout", "net0.v");
-	link_hal_pins("pwm2uart0.wout", "net0.w");
-
-	data_t data;
 
 	while(1)  // Do not exit
 	{
-		Wait(1);
+		Wait(10);
 		period = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
 		lasttime = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){
 			hal.nrt[i](period);
 		}
-
-		data.data[0] = (uint16_t)PIN(u);
-		data.data[1] = (uint16_t)PIN(v);
-		data.data[2] = (uint16_t)PIN(w);
-
-		while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET);
-		USART_SendData(USART3, 0x155);
-
-		for(int i = 0; i < DATALENGTH * 2; i++){
-			while(USART_GetFlagStatus(USART3, USART_FLAG_TXE) == RESET);
-			USART_SendData(USART3, data.byte[i]);
-		}
-
 	}
 }
 

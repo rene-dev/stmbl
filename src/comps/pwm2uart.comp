@@ -25,15 +25,28 @@ RT_OUT(
   int max = res - min;
 
   if(vlt > 0.0 && e > 0.0){
-    PIN(uout) = CLAMP(PIN(u) / vlt * res, min, max);
-    PIN(vout) = CLAMP(PIN(v) / vlt * res, min, max);
-    PIN(wout) = CLAMP(PIN(w) / vlt * res, min, max);
+    data.data[0] = CLAMP(PIN(u) / vlt * res, min, max);
+    data.data[1] = CLAMP(PIN(v) / vlt * res, min, max);
+    data.data[2] = CLAMP(PIN(w) / vlt * res, min, max);
   }
   else{
-    PIN(uout) = 0;
-    PIN(vout) = 0;
-    PIN(wout) = 0;
+    data.data[0] = 0;
+    data.data[1] = 0;
+    data.data[2] = 0;
   }
+
+  UART_DMA_Buffer[0] = 0x155;
+  UART_DMA_Buffer[1] = data.byte[0];
+  UART_DMA_Buffer[2] = data.byte[1];
+  UART_DMA_Buffer[3] = data.byte[2];
+  UART_DMA_Buffer[4] = data.byte[3];
+  UART_DMA_Buffer[5] = data.byte[4];
+  UART_DMA_Buffer[6] = data.byte[5];
+
+  //start DMA transfer
+  DMA_Cmd(DMA1_Stream3, DISABLE);
+  DMA_ClearFlag(DMA1_Stream3, DMA_FLAG_TCIF3);
+  DMA_Cmd(DMA1_Stream3, ENABLE);
 );
 
 ENDCOMP;
