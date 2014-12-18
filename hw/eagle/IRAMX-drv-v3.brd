@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.5.0">
+<eagle version="7.2.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -57,6 +57,7 @@
 <layer number="96" name="Values" color="7" fill="1" visible="no" active="no"/>
 <layer number="97" name="Info" color="7" fill="1" visible="no" active="no"/>
 <layer number="98" name="Guide" color="6" fill="1" visible="no" active="no"/>
+<layer number="99" name="SpiceOrder" color="5" fill="1" visible="no" active="no"/>
 <layer number="100" name="Muster" color="7" fill="1" visible="no" active="no"/>
 <layer number="101" name="Patch_Top" color="12" fill="4" visible="yes" active="yes"/>
 <layer number="102" name="Vscore" color="7" fill="1" visible="yes" active="yes"/>
@@ -1607,10 +1608,10 @@ Extended by Federico Battaglin &lt;author&gt;&amp;lt;federico.rd@fdpinternationa
 <rectangle x1="-2.159" y1="1.9558" x2="-1.651" y2="3.0988" layer="51"/>
 </package>
 <package name="SIP4">
-<pad name="VIN-" x="-3.81" y="0" drill="0.8" shape="long" rot="R90"/>
-<pad name="VIN+" x="-1.27" y="0" drill="0.8" shape="long" rot="R90"/>
-<pad name="VOUT-" x="1.27" y="0" drill="0.8" shape="long" rot="R90"/>
-<pad name="VOUT+" x="3.81" y="0" drill="0.8" shape="long" rot="R90"/>
+<pad name="1" x="3.81" y="0" drill="0.8" shape="long" rot="R90"/>
+<pad name="2" x="1.27" y="0" drill="0.8" shape="long" rot="R90"/>
+<pad name="3" x="-1.27" y="0" drill="0.8" shape="long" rot="R90"/>
+<pad name="4" x="-3.81" y="0" drill="0.8" shape="long" rot="R90"/>
 <wire x1="-5.7" y1="1.2" x2="5.7" y2="1.2" width="0.127" layer="21"/>
 <wire x1="5.7" y1="1.2" x2="5.7" y2="-4.8" width="0.127" layer="21"/>
 <wire x1="5.7" y1="-4.8" x2="-5.7" y2="-4.8" width="0.127" layer="21"/>
@@ -1944,6 +1945,9 @@ design rules under a new name.</description>
 <autorouter>
 <pass name="Default">
 <param name="RoutingGrid" value="50mil"/>
+<param name="AutoGrid" value="1"/>
+<param name="Efforts" value="0"/>
+<param name="TopRouterVariant" value="1"/>
 <param name="tpViaShape" value="round"/>
 <param name="PrefDir.1" value="|"/>
 <param name="PrefDir.2" value="0"/>
@@ -2080,7 +2084,7 @@ design rules under a new name.</description>
 <element name="C19" library="rcl" package="C0805K" value="100n" x="20.5" y="37.5" rot="MR180"/>
 <element name="R4" library="rcl" package="R0805" value="10K" x="25.5" y="35.5" rot="MR180"/>
 <element name="U$1" library="reroolib" package="SOIC08" value="SI8621" x="49.75" y="39.5" rot="MR270"/>
-<element name="U$2" library="reroolib" package="SIP4" value="RO-XXXX" x="49.75" y="47.5" rot="R180"/>
+<element name="U$2" library="reroolib" package="SIP4" value="RO-XXXX" x="49.75" y="50.25"/>
 <element name="IC4" library="linear" package="SO08" value="78L05SMD" x="30" y="47.75" rot="MR90"/>
 <element name="R3" library="rcl" package="R0805" value="180" x="7" y="40.75" rot="MR180"/>
 <element name="LED3" library="led" package="LED3MM" value="GRÜN" x="3.25" y="40.75" rot="R180"/>
@@ -2210,7 +2214,7 @@ design rules under a new name.</description>
 <contactref element="IC2" pad="12"/>
 <contactref element="IC2" pad="60"/>
 <contactref element="C8" pad="2"/>
-<contactref element="U$2" pad="VOUT-"/>
+<contactref element="U$2" pad="3"/>
 <contactref element="IC4" pad="2"/>
 <contactref element="IC4" pad="3"/>
 <contactref element="IC4" pad="6"/>
@@ -2234,6 +2238,12 @@ design rules under a new name.</description>
 <via x="23" y="31.75" extent="1-16" drill="0.8" diameter="1.4224"/>
 <contactref element="D2" pad="A"/>
 <contactref element="R8" pad="1"/>
+<polygon width="0.3" layer="16" thermals="no">
+<vertex x="26" y="49"/>
+<vertex x="34" y="49"/>
+<vertex x="34" y="46.5"/>
+<vertex x="26" y="46.5"/>
+</polygon>
 </signal>
 <signal name="EN">
 <contactref element="R23" pad="2"/>
@@ -2307,11 +2317,9 @@ design rules under a new name.</description>
 <contactref element="C10" pad="1"/>
 <contactref element="IC1" pad="14"/>
 <contactref element="C24" pad="1"/>
-<contactref element="U$2" pad="VOUT+"/>
+<contactref element="U$2" pad="4"/>
 <contactref element="IC4" pad="8"/>
 <contactref element="C6" pad="+"/>
-<wire x1="45.94" y1="47.5" x2="44.5" y2="47.5" width="0.3" layer="16"/>
-<wire x1="44.5" y1="47.5" x2="42.845" y2="45.845" width="0.3" layer="16"/>
 <wire x1="42.845" y1="45.845" x2="35.5" y2="45.845" width="0.3" layer="16"/>
 <wire x1="35.5" y1="45.845" x2="32.6" y2="45.845" width="0.3" layer="16"/>
 <wire x1="35.25" y1="45.875" x2="35.47" y2="45.875" width="0.3" layer="16"/>
@@ -2332,6 +2340,8 @@ design rules under a new name.</description>
 <wire x1="37.75" y1="14" x2="37.75" y2="11" width="0.3" layer="16"/>
 <wire x1="37.75" y1="11" x2="38.25" y2="10.5" width="0.3" layer="16"/>
 <wire x1="38.25" y1="10.5" x2="39" y2="10.5" width="0.3" layer="16"/>
+<wire x1="42.845" y1="45.845" x2="45.94" y2="48.94" width="0.3" layer="16"/>
+<wire x1="45.94" y1="48.94" x2="45.94" y2="50.25" width="0.3" layer="16"/>
 </signal>
 <signal name="N$43">
 <contactref element="LED1" pad="A"/>
@@ -2684,7 +2694,7 @@ design rules under a new name.</description>
 <contactref element="IC3" pad="6"/>
 <contactref element="IC3" pad="3"/>
 <contactref element="IC3" pad="2"/>
-<contactref element="U$2" pad="VIN-"/>
+<contactref element="U$2" pad="1"/>
 <polygon width="0.2" layer="16" orphans="yes">
 <vertex x="75" y="55"/>
 <vertex x="75" y="36.5"/>
@@ -2696,23 +2706,23 @@ design rules under a new name.</description>
 <contactref element="X1" pad="8"/>
 </signal>
 <signal name="N$17">
-<contactref element="U$2" pad="VIN+"/>
+<contactref element="U$2" pad="2"/>
 <contactref element="IC3" pad="8"/>
 <contactref element="C20" pad="+"/>
 <wire x1="59.905" y1="50.1" x2="59.905" y2="52.25" width="0.3" layer="16"/>
 <wire x1="59.905" y1="52.25" x2="60.125" y2="52.25" width="0.3" layer="16"/>
-<wire x1="51" y1="49" x2="51" y2="47.52" width="0.3" layer="16"/>
-<wire x1="51" y1="47.52" x2="51.02" y2="47.5" width="0.3" layer="16"/>
 <wire x1="59.905" y1="50.1" x2="59.905" y2="52" width="0.3" layer="16"/>
 <contactref element="X1" pad="7"/>
-<wire x1="51" y1="49" x2="55.5" y2="53.5" width="0.3" layer="16"/>
-<wire x1="55.5" y1="53.5" x2="59.5" y2="53.5" width="0.3" layer="16"/>
+<wire x1="53.5" y1="53.5" x2="59.5" y2="53.5" width="0.3" layer="16"/>
 <wire x1="59.5" y1="53.5" x2="60" y2="53" width="0.3" layer="16"/>
 <wire x1="60" y1="53" x2="60" y2="52.375" width="0.3" layer="16"/>
 <wire x1="60" y1="52.375" x2="60.125" y2="52.25" width="0.3" layer="16"/>
 <wire x1="66.4" y1="48.425" x2="66.4" y2="50.1" width="0.3" layer="16"/>
 <wire x1="66.4" y1="50.1" x2="64.25" y2="52.25" width="0.3" layer="16"/>
 <wire x1="64.25" y1="52.25" x2="60.125" y2="52.25" width="0.3" layer="16"/>
+<wire x1="53.5" y1="53.5" x2="51" y2="51" width="0.3" layer="16"/>
+<wire x1="51" y1="51" x2="51" y2="50.27" width="0.3" layer="16"/>
+<wire x1="51" y1="50.27" x2="51.02" y2="50.25" width="0.3" layer="16"/>
 </signal>
 <signal name="N$13">
 <contactref element="U$1" pad="2"/>
