@@ -2368,7 +2368,7 @@ design rules under a new name.</description>
 <element name="C43" library="rcl" package="C0805" value="" x="45.75" y="41.75" rot="MR270"/>
 <element name="C44" library="rcl" package="C0805" value="" x="43.75" y="41.75" rot="MR270"/>
 <element name="R1" library="reroolib" package="CER" value="18k" x="55" y="69" rot="R180"/>
-<element name="R9" library="rcl" package="R0805" value="280" x="-5.5" y="-18"/>
+<element name="R9" library="rcl" package="R0805" value="280" x="58.5" y="19.75" rot="MR90"/>
 </elements>
 <signals>
 <signal name="N$1" class="2">
@@ -2500,7 +2500,7 @@ design rules under a new name.</description>
 <contactref element="R8" pad="1"/>
 <contactref element="U$2" pad="3"/>
 <contactref element="R9" pad="2"/>
-<wire x1="59.25" y1="1.98" x2="-4.55" y2="-18" width="0" layer="19" extent="1-1"/>
+<wire x1="59.25" y1="1.98" x2="58.5" y2="20.7" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="EN">
 <contactref element="R23" pad="2"/>
@@ -2767,7 +2767,7 @@ design rules under a new name.</description>
 <wire x1="65.75" y1="31.8" x2="52.46" y2="69" width="0" layer="19" extent="16-16"/>
 <wire x1="63.95" y1="30.5" x2="65.75" y2="31.8" width="0" layer="19" extent="16-16"/>
 <wire x1="65" y1="18" x2="63.95" y2="30.5" width="0" layer="19" extent="16-16"/>
-<wire x1="-6.45" y1="-18" x2="65" y2="18" width="0" layer="19" extent="1-16"/>
+<wire x1="58.5" y1="18.8" x2="65" y2="18" width="0" layer="19" extent="1-16"/>
 </signal>
 <signal name="VTH">
 <contactref element="IC1" pad="13"/>
