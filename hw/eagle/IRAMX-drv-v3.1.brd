@@ -4523,7 +4523,7 @@ design rules under a new name.</description>
 <via x="47.75" y="8" extent="1-16" drill="0.8" diameter="1.5"/>
 <via x="26" y="49" extent="1-16" drill="0.8" diameter="1.5"/>
 <via x="47" y="33" extent="1-16" drill="0.8" diameter="1.5"/>
-<via x="18" y="10" extent="1-16" drill="0.8" diameter="1.5"/>
+<via x="20" y="10" extent="1-16" drill="0.8" diameter="1.5"/>
 <via x="29.5" y="58" extent="1-16" drill="0.8" diameter="1.5"/>
 <contactref element="X1" pad="G3"/>
 <contactref element="X1" pad="G4"/>
