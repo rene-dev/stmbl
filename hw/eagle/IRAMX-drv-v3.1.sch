@@ -14970,12 +14970,6 @@ Source: www.kingbright.com</description>
 <wire x1="4.699" y1="10.043" x2="7.821" y2="10.043" width="0.2032" layer="21"/>
 <wire x1="7.821" y1="10.043" x2="7.821" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="7.821" y1="-4.445" x2="7.821" y2="-10.551" width="0.2032" layer="21"/>
-<wire x1="7.869" y1="-5.331" x2="8.799" y2="-5.331" width="0.2032" layer="21"/>
-<wire x1="8.799" y1="-5.331" x2="8.799" y2="-4.273" width="0.2032" layer="21"/>
-<wire x1="8.799" y1="-4.273" x2="7.87" y2="-4.273" width="0.2032" layer="21"/>
-<wire x1="-7.844" y1="-5.331" x2="-8.799" y2="-5.331" width="0.2032" layer="21"/>
-<wire x1="-8.799" y1="-5.331" x2="-8.799" y2="-4.273" width="0.2032" layer="21"/>
-<wire x1="-8.799" y1="-4.273" x2="-7.845" y2="-4.273" width="0.2032" layer="21"/>
 <wire x1="3.429" y1="5.08" x2="2.921" y2="5.08" width="0.2032" layer="21"/>
 <wire x1="2.921" y1="5.08" x2="2.921" y2="5.334" width="0.2032" layer="21"/>
 <wire x1="2.921" y1="7.239" x2="2.921" y2="10.033" width="0.2032" layer="21"/>
@@ -15029,6 +15023,8 @@ Source: www.kingbright.com</description>
 <pad name="1" x="-4.445" y="6.35" drill="0.889"/>
 <pad name="7" x="3.175" y="6.35" drill="0.889"/>
 <pad name="8" x="4.445" y="8.89" drill="0.889"/>
+<pad name="G3" x="-7.874" y="3.302" drill="1.5748" diameter="2.1844"/>
+<pad name="G4" x="8.001" y="3.302" drill="1.5748" diameter="2.1844"/>
 <text x="-8.89" y="-0.127" size="1.778" layer="25" rot="R90">&gt;NAME</text>
 <text x="10.16" y="-0.127" size="1.778" layer="27" rot="R90">&gt;VALUE</text>
 <hole x="-5.715" y="0" drill="3.2512"/>
@@ -16794,6 +16790,10 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="1" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
 </symbol>
+<symbol name="SHIELD">
+<pin name="SHIELD1" x="-2.54" y="2.54" length="middle"/>
+<pin name="SHIELD2" x="-2.54" y="-2.54" length="middle"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="SI8621">
@@ -16840,6 +16840,7 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <description>&lt;b&gt;AMP connector&lt;/b&gt;</description>
 <gates>
 <gate name="-" symbol="JACK8" x="-2.54" y="0" addlevel="always" swaplevel="1"/>
+<gate name="G$1" symbol="SHIELD" x="-2.54" y="-20.32"/>
 </gates>
 <devices>
 <device name="" package="RJ45">
@@ -16852,6 +16853,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <connect gate="-" pin="6" pad="6"/>
 <connect gate="-" pin="7" pad="7"/>
 <connect gate="-" pin="8" pad="8"/>
+<connect gate="G$1" pin="SHIELD1" pad="G3"/>
+<connect gate="G$1" pin="SHIELD2" pad="G4"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -23957,6 +23960,10 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <part name="GND52" library="supply1" deviceset="GND" device=""/>
 <part name="JP8" library="pinhead" deviceset="PINHD-1X4" device=""/>
 <part name="C64" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
+<part name="GND53" library="supply1" deviceset="GND" device=""/>
+<part name="GND54" library="supply1" deviceset="GND" device=""/>
+<part name="GND55" library="supply1" deviceset="GND" device=""/>
+<part name="GND56" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -24197,6 +24204,12 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <instance part="GND52" gate="1" x="-396.24" y="142.24"/>
 <instance part="JP8" gate="A" x="-393.7" y="154.94"/>
 <instance part="C64" gate="G$1" x="-25.4" y="121.92"/>
+<instance part="X1" gate="G$1" x="-487.68" y="198.12"/>
+<instance part="X2" gate="G$1" x="-375.92" y="243.84"/>
+<instance part="GND53" gate="1" x="-495.3" y="200.66" rot="R270"/>
+<instance part="GND54" gate="1" x="-495.3" y="195.58" rot="R270"/>
+<instance part="GND55" gate="1" x="-383.54" y="246.38" rot="R270"/>
+<instance part="GND56" gate="1" x="-383.54" y="241.3" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -25476,6 +25489,26 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <pinref part="GND52" gate="1" pin="GND"/>
 <pinref part="JP8" gate="A" pin="4"/>
 </segment>
+<segment>
+<pinref part="X1" gate="G$1" pin="SHIELD1"/>
+<pinref part="GND53" gate="1" pin="GND"/>
+<wire x1="-492.76" y1="200.66" x2="-490.22" y2="200.66" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="X1" gate="G$1" pin="SHIELD2"/>
+<pinref part="GND54" gate="1" pin="GND"/>
+<wire x1="-492.76" y1="195.58" x2="-490.22" y2="195.58" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="X2" gate="G$1" pin="SHIELD1"/>
+<pinref part="GND55" gate="1" pin="GND"/>
+<wire x1="-381" y1="246.38" x2="-378.46" y2="246.38" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="X2" gate="G$1" pin="SHIELD2"/>
+<pinref part="GND56" gate="1" pin="GND"/>
+<wire x1="-381" y1="241.3" x2="-378.46" y2="241.3" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="+3V3_RES" class="0">
 <segment>
@@ -25854,6 +25887,11 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <wire x1="-353.06" y1="60.96" x2="-353.06" y2="63.5" width="0.1524" layer="91"/>
 <label x="-353.06" y="60.96" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="IC5" gate="MCU" pin="PC11"/>
+<wire x1="-360.68" y1="172.72" x2="-370.84" y2="172.72" width="0.1524" layer="91"/>
+<label x="-370.84" y="172.72" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="G_RES" class="0">
 <segment>
@@ -25861,12 +25899,22 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <wire x1="-337.82" y1="60.96" x2="-337.82" y2="63.5" width="0.1524" layer="91"/>
 <label x="-337.82" y="60.96" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="IC5" gate="MCU" pin="PC12"/>
+<wire x1="-360.68" y1="175.26" x2="-370.84" y2="175.26" width="0.1524" layer="91"/>
+<label x="-370.84" y="175.26" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="R_RES" class="0">
 <segment>
 <pinref part="R37" gate="G$1" pin="2"/>
 <wire x1="-327.66" y1="60.96" x2="-327.66" y2="63.5" width="0.1524" layer="91"/>
 <label x="-327.66" y="60.96" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="IC5" gate="MCU" pin="PC10"/>
+<wire x1="-360.68" y1="170.18" x2="-370.84" y2="170.18" width="0.1524" layer="91"/>
+<label x="-370.84" y="170.18" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="Y" class="0">
