@@ -4519,6 +4519,7 @@ design rules under a new name.</description>
 <via x="36.5" y="14.5" extent="1-16" drill="0.8" diameter="1.5"/>
 <via x="23" y="54.25" extent="1-16" drill="0.8" diameter="1.5"/>
 <via x="49.5" y="36.5" extent="1-16" drill="0.8" diameter="1.5"/>
+<via x="12.5" y="9.5" extent="1-16" drill="0.8" diameter="1.5"/>
 </signal>
 <signal name="+3V3_RES">
 <contactref element="IC3" pad="1"/>
@@ -5120,9 +5121,6 @@ design rules under a new name.</description>
 <wire x1="14.295" y1="20.155" x2="14.75" y2="19.7" width="0.3" layer="16"/>
 <wire x1="14.75" y1="19.7" x2="16.75" y2="19.7" width="0.3" layer="16"/>
 <wire x1="16.75" y1="19.7" x2="16.8" y2="19.75" width="0.3" layer="16"/>
-</signal>
-<signal name="N$59">
-<via x="12.5" y="9.5" extent="1-16" drill="0.8" diameter="1.5"/>
 </signal>
 </signals>
 <errors>
