@@ -21418,16 +21418,16 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <text x="0.29" y="4.94" size="1.27" layer="25">TCA0372DW</text>
 </package>
 <package name="TCA0372DM2">
-<wire x1="-5.08" y1="-3.175" x2="5.22" y2="-3.175" width="0.127" layer="20"/>
-<wire x1="5.22" y1="-3.175" x2="5.22" y2="3.055" width="0.127" layer="20"/>
-<wire x1="5.22" y1="3.055" x2="-5.08" y2="3.055" width="0.127" layer="20"/>
-<wire x1="-5.08" y1="3.055" x2="-5.08" y2="0.44" width="0.127" layer="20"/>
-<wire x1="-5.08" y1="0.44" x2="-5.08" y2="-3.175" width="0.127" layer="20"/>
-<wire x1="-5.08" y1="0.44" x2="-4.08" y2="0.44" width="0.127" layer="20"/>
-<wire x1="-4.08" y1="0.44" x2="-4.08" y2="-0.56" width="0.127" layer="20"/>
-<wire x1="-4.08" y1="-0.56" x2="-5.07" y2="-0.56" width="0.127" layer="20"/>
-<circle x="-4.38" y="-2.405" radius="0.4382" width="0.127" layer="20"/>
-<smd name="1" x="-4.37" y="-4.005" dx="1.5" dy="0.5" layer="1" rot="R90"/>
+<wire x1="-5.08" y1="-3.175" x2="5.22" y2="-3.175" width="0.127" layer="21"/>
+<wire x1="5.22" y1="-3.175" x2="5.22" y2="3.055" width="0.127" layer="21"/>
+<wire x1="5.22" y1="3.055" x2="-5.08" y2="3.055" width="0.127" layer="21"/>
+<wire x1="-5.08" y1="3.055" x2="-5.08" y2="0.44" width="0.127" layer="21"/>
+<wire x1="-5.08" y1="0.44" x2="-5.08" y2="-3.175" width="0.127" layer="21"/>
+<wire x1="-5.08" y1="0.44" x2="-4.08" y2="0.44" width="0.127" layer="21"/>
+<wire x1="-4.08" y1="0.44" x2="-4.08" y2="-0.56" width="0.127" layer="21"/>
+<wire x1="-4.08" y1="-0.56" x2="-5.07" y2="-0.56" width="0.127" layer="21"/>
+<circle x="-4.38" y="-2.405" radius="0.4382" width="0.127" layer="21"/>
+<smd name="1" x="-4.37" y="-4.005" dx="1.5" dy="0.5" layer="1" roundness="50" rot="R90"/>
 <smd name="2" x="-3.1" y="-4.005" dx="1.5" dy="0.5" layer="1" rot="R90"/>
 <smd name="3" x="-1.83" y="-3.995" dx="1.5" dy="0.5" layer="1" rot="R90"/>
 <smd name="4" x="-0.56" y="-3.995" dx="1.5" dy="0.5" layer="1" rot="R90"/>
