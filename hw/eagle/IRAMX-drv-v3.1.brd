@@ -4195,12 +4195,6 @@ design rules under a new name.</description>
 <wire x1="45.5" y1="26.75" x2="45.5" y2="18.25" width="0.3" layer="16"/>
 <wire x1="45.5" y1="18.25" x2="47.115" y2="16.635" width="0.3" layer="16"/>
 </signal>
-<signal name="N$48">
-<contactref element="IC5" pad="8"/>
-</signal>
-<signal name="N$49">
-<contactref element="IC5" pad="10"/>
-</signal>
 <signal name="CAN_TX/I2C_SDA">
 <contactref element="IC5" pad="62"/>
 <contactref element="JP3" pad="1"/>
@@ -4257,9 +4251,6 @@ design rules under a new name.</description>
 <wire x1="31.96" y1="52.73" x2="31.96" y2="52.29" width="0.3" layer="16"/>
 <wire x1="31.96" y1="52.29" x2="35.5" y2="48.75" width="0.3" layer="16"/>
 <wire x1="35.5" y1="48.75" x2="35.5" y2="46.25" width="0.3" layer="16"/>
-</signal>
-<signal name="N$57">
-<contactref element="IC5" pad="9"/>
 </signal>
 <signal name="SIN">
 <contactref element="C37" pad="1"/>

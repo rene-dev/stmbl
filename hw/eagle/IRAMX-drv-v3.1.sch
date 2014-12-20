@@ -24841,20 +24841,6 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <label x="-116.84" y="104.14" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="N$48" class="0">
-<segment>
-<pinref part="IC5" gate="MCU" pin="PC0"/>
-<wire x1="-360.68" y1="144.78" x2="-370.84" y2="144.78" width="0.1524" layer="91"/>
-<label x="-370.84" y="144.78" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="N$49" class="0">
-<segment>
-<pinref part="IC5" gate="MCU" pin="PC2"/>
-<wire x1="-360.68" y1="149.86" x2="-370.84" y2="149.86" width="0.1524" layer="91"/>
-<label x="-370.84" y="149.86" size="1.778" layer="95"/>
-</segment>
-</net>
 <net name="CAN_TX/I2C_SDA" class="0">
 <segment>
 <pinref part="IC5" gate="MCU" pin="PB9"/>
@@ -24937,13 +24923,6 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <pinref part="JP3" gate="A" pin="8"/>
 <wire x1="-256.54" y1="160.02" x2="-238.76" y2="160.02" width="0.1524" layer="91"/>
 <label x="-251.46" y="160.02" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="N$57" class="0">
-<segment>
-<pinref part="IC5" gate="MCU" pin="PC1"/>
-<wire x1="-360.68" y1="147.32" x2="-370.84" y2="147.32" width="0.1524" layer="91"/>
-<label x="-370.84" y="147.32" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="SIN" class="0">
@@ -25256,6 +25235,7 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <pinref part="C60" gate="G$1" pin="2"/>
 <wire x1="-447.04" y1="35.56" x2="-454.66" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="-454.66" y1="35.56" x2="-454.66" y2="43.18" width="0.1524" layer="91"/>
+<junction x="-447.04" y="35.56"/>
 </segment>
 <segment>
 <pinref part="U$5" gate="G$1" pin="GND"/>
@@ -25467,7 +25447,6 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <pinref part="X1" gate="-" pin="8"/>
 <wire x1="-485.14" y1="170.18" x2="-482.6" y2="170.18" width="0.1524" layer="91"/>
 <pinref part="GND50" gate="1" pin="GND"/>
-<junction x="-482.6" y="170.18"/>
 </segment>
 <segment>
 <pinref part="X2" gate="-" pin="8"/>
@@ -25752,6 +25731,8 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <wire x1="-109.22" y1="124.46" x2="-116.84" y2="124.46" width="0.1524" layer="91"/>
 <pinref part="U$2" gate="G$1" pin="VIN+"/>
 <pinref part="P+4" gate="1" pin="+24V"/>
+<junction x="-99.06" y="124.46"/>
+<junction x="-109.22" y="124.46"/>
 </segment>
 </net>
 <net name="+12V_RES" class="0">
@@ -25779,6 +25760,7 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <wire x1="-454.66" y1="50.8" x2="-454.66" y2="55.88" width="0.1524" layer="91"/>
 <wire x1="-454.66" y1="55.88" x2="-447.04" y2="55.88" width="0.1524" layer="91"/>
 <pinref part="U$3" gate="G$1" pin="VCC"/>
+<junction x="-447.04" y="55.88"/>
 </segment>
 <segment>
 <pinref part="JP5" gate="A" pin="1"/>
@@ -25856,6 +25838,7 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <segment>
 <pinref part="JP8" gate="A" pin="1"/>
 <wire x1="-396.24" y1="160.02" x2="-396.24" y2="172.72" width="0.1524" layer="91"/>
+<label x="-396.24" y="172.72" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="IC5" gate="MCU" pin="PA5"/>
