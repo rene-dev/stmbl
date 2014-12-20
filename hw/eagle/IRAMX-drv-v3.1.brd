@@ -3243,10 +3243,10 @@ precision wire wound</description>
 <clearance class="0" value="0.19"/>
 </class>
 <class number="1" name="dick" width="3.5" drill="0">
-<clearance class="1" value="0.5"/>
+<clearance class="1" value="1"/>
 </class>
 <class number="2" name="iso" width="0.5" drill="0">
-<clearance class="2" value="0.5"/>
+<clearance class="2" value="1"/>
 </class>
 </classes>
 <designrules name="cnc">
@@ -3733,12 +3733,12 @@ design rules under a new name.</description>
 <vertex x="73.5" y="72.5"/>
 <vertex x="71" y="72.5"/>
 </polygon>
-<wire x1="59.79" y1="74" x2="70" y2="74" width="0.3" layer="16"/>
-<wire x1="70" y1="74" x2="72" y2="72" width="0.3" layer="16"/>
+<wire x1="59.79" y1="74" x2="70" y2="74" width="0.5" layer="16"/>
+<wire x1="70" y1="74" x2="72" y2="72" width="0.5" layer="16"/>
 <wire x1="72" y1="72" x2="72" y2="70.6725" width="0.3" layer="16"/>
 <wire x1="72" y1="70.6725" x2="72.04" y2="70.6325" width="0.3" layer="16"/>
 <contactref element="R1" pad="P$1"/>
-<wire x1="59.79" y1="74" x2="55.04" y2="69.25" width="0.3" layer="16"/>
+<wire x1="59.79" y1="74" x2="55.04" y2="69.25" width="0.5" layer="16"/>
 </signal>
 <signal name="N$43">
 <contactref element="LED1" pad="A"/>
@@ -3806,15 +3806,15 @@ design rules under a new name.</description>
 <wire x1="65.49694375" y1="17.50305625" x2="65" y2="18" width="0.3" layer="16"/>
 <contactref element="R9" pad="1"/>
 <contactref element="R12" pad="P$2"/>
-<wire x1="50" y1="53.96" x2="53.24" y2="53.96" width="0.3" layer="16"/>
+<wire x1="50" y1="53.96" x2="53.24" y2="53.96" width="0.5" layer="16"/>
 <wire x1="53.24" y1="53.96" x2="53.25" y2="53.8" width="0.3" layer="16"/>
-<wire x1="53.25" y1="53.8" x2="54.5" y2="53.8" width="0.3" layer="16"/>
+<wire x1="53.25" y1="53.8" x2="54.25" y2="53.8" width="0.5" layer="16"/>
+<wire x1="54.25" y1="53.8" x2="54.5" y2="53.8" width="0.5" layer="16"/>
 <wire x1="54.5" y1="53.8" x2="55.25" y2="53.8" width="0.3" layer="16"/>
 <wire x1="65" y1="18" x2="59.5" y2="18" width="0.3" layer="16"/>
 <wire x1="59.5" y1="18" x2="58" y2="18" width="0.3" layer="16"/>
 <wire x1="58" y1="30" x2="54.25" y2="33.75" width="0.3" layer="16"/>
-<wire x1="54.25" y1="33.75" x2="54.25" y2="53.55" width="0.3" layer="16"/>
-<wire x1="54.25" y1="53.55" x2="54.5" y2="53.8" width="0.3" layer="16"/>
+<wire x1="54.25" y1="33.75" x2="54.25" y2="53.8" width="0.3" layer="16"/>
 <wire x1="58" y1="30" x2="58" y2="18" width="0.3" layer="16"/>
 <wire x1="59.5" y1="19.3" x2="59.5" y2="18" width="0.3" layer="16"/>
 </signal>
@@ -4341,7 +4341,7 @@ design rules under a new name.</description>
 <signal name="N$2" class="2">
 <contactref element="R1" pad="P$2"/>
 <contactref element="R12" pad="P$1"/>
-<wire x1="49.96" y1="69.25" x2="49.96" y2="59.08" width="0.3" layer="16"/>
+<wire x1="49.96" y1="69.25" x2="49.96" y2="59.08" width="0.5" layer="16"/>
 <wire x1="49.96" y1="59.08" x2="50" y2="59.04" width="0.3" layer="16"/>
 </signal>
 <signal name="GND_DRV">

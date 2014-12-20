@@ -23732,10 +23732,10 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <clearance class="0" value="0.19"/>
 </class>
 <class number="1" name="dick" width="3.5" drill="0">
-<clearance class="1" value="0.5"/>
+<clearance class="1" value="1"/>
 </class>
 <class number="2" name="iso" width="0.5" drill="0">
-<clearance class="2" value="0.5"/>
+<clearance class="2" value="1"/>
 </class>
 </classes>
 <parts>
