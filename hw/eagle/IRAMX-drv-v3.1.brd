@@ -3490,7 +3490,7 @@ design rules under a new name.</description>
 <element name="R6" library="rcl" package="R0805" value="1K" x="87.5" y="22.75" rot="MR270"/>
 <element name="R7" library="rcl" package="R0805" value="1K" x="85.5" y="22.75" rot="MR90"/>
 <element name="D2" library="diode" package="SOD80C" value="" x="59.5" y="21" rot="MR90"/>
-<element name="H4" library="holes" package="3,2-PAD" value="MOUNT-PAD-ROUND3.2" x="5.25" y="70"/>
+<element name="H4" library="holes" package="3,2-PAD" value="MOUNT-PAD-ROUND3.2" x="5" y="70"/>
 <element name="C21" library="rcl" package="C0805K" value="100n" x="48.75" y="20.25" rot="MR0"/>
 <element name="C22" library="rcl" package="A/3216-18R" value="" x="10.5" y="59.75" rot="MR90"/>
 <element name="U$2" library="reroolib" package="SIP4" value="RO-XXXX" x="51.5" y="22.5" rot="R180"/>
@@ -3733,9 +3733,9 @@ design rules under a new name.</description>
 <vertex x="73.5" y="72.5"/>
 <vertex x="71" y="72.5"/>
 </polygon>
-<wire x1="59.79" y1="74" x2="70" y2="74" width="0.5" layer="16"/>
-<wire x1="70" y1="74" x2="72" y2="72" width="0.5" layer="16"/>
-<wire x1="72" y1="72" x2="72" y2="70.6725" width="0.3" layer="16"/>
+<wire x1="59.79" y1="74" x2="69" y2="74" width="0.5" layer="16"/>
+<wire x1="69" y1="74" x2="71" y2="72" width="0.5" layer="16"/>
+<wire x1="71" y1="72" x2="72" y2="70.6725" width="0.3" layer="16"/>
 <wire x1="72" y1="70.6725" x2="72.04" y2="70.6325" width="0.3" layer="16"/>
 <contactref element="R1" pad="P$1"/>
 <wire x1="59.79" y1="74" x2="55.04" y2="69.25" width="0.5" layer="16"/>
@@ -3861,10 +3861,10 @@ design rules under a new name.</description>
 <wire x1="65" y1="8.25" x2="55.75" y2="8.25" width="2" layer="1"/>
 <via x="55.75" y="8.25" extent="1-16" drill="0.8" diameter="1.5"/>
 <wire x1="55.75" y1="8.25" x2="58.25" y2="10.75" width="0.3" layer="16"/>
-<wire x1="58.25" y1="10.75" x2="58.25" y2="15" width="0.3" layer="16"/>
-<wire x1="58.25" y1="15" x2="56.75" y2="16.5" width="0.3" layer="16"/>
-<wire x1="56.75" y1="16.5" x2="54.7084" y2="16.5" width="0.3" layer="16"/>
-<wire x1="54.7084" y1="16.5" x2="54.5734" y2="16.635" width="0.3" layer="16"/>
+<wire x1="58.25" y1="10.75" x2="58.25" y2="14.75" width="0.3" layer="16"/>
+<wire x1="58.25" y1="14.75" x2="56.5" y2="16.5" width="0.3" layer="16"/>
+<wire x1="56.5" y1="16.5" x2="54.9384" y2="16.5" width="0.3" layer="16"/>
+<wire x1="54.9384" y1="16.5" x2="54.5734" y2="16.635" width="0.3" layer="16"/>
 </signal>
 <signal name="RX">
 <contactref element="IC2" pad="17"/>
@@ -3962,8 +3962,8 @@ design rules under a new name.</description>
 <vertex x="65.5" y="72.5"/>
 <vertex x="67.75" y="72.5"/>
 <vertex x="68.5" y="71.75"/>
-<vertex x="68.5" y="50.5"/>
-<vertex x="75" y="44"/>
+<vertex x="68.5" y="50.75"/>
+<vertex x="75.25" y="44"/>
 <vertex x="92.5" y="44"/>
 <vertex x="93" y="43.5"/>
 <vertex x="93" y="42"/>
@@ -4421,9 +4421,10 @@ design rules under a new name.</description>
 <vertex x="60.5" y="30"/>
 </polygon>
 <via x="81.25" y="11.25" extent="1-16" drill="0.8" diameter="1.5"/>
+<via x="55.75" y="5.5" extent="1-16" drill="0.8" diameter="1.5"/>
 </signal>
 <signal name="GND_RES">
-<polygon width="0.3" layer="16">
+<polygon width="0.3" layer="16" orphans="yes">
 <vertex x="0" y="0"/>
 <vertex x="0" y="75"/>
 <vertex x="44.75" y="75"/>
