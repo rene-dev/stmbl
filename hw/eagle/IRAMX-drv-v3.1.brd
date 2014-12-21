@@ -115,8 +115,8 @@
 <wire x1="100" y1="0" x2="100" y2="74.9975" width="0" layer="20"/>
 <wire x1="100" y1="74.9975" x2="0" y2="74.9975" width="0" layer="20"/>
 <wire x1="0" y1="74.9975" x2="0" y2="0" width="0" layer="20"/>
-<dimension x1="0" y1="0" x2="100.0125" y2="0" x3="50.00625" y3="-11.25" textsize="1.778" layer="47"/>
-<dimension x1="100.0125" y1="0" x2="100" y2="74.9975" x3="110.499665625" y3="37.5005" textsize="1.778" layer="47"/>
+<dimension x1="0" y1="0" x2="100.0025" y2="0" x3="50.00125" y3="-11.25" textsize="1.778" layer="47"/>
+<dimension x1="100.0025" y1="0" x2="100" y2="74.9975" x3="110.494665625" y3="37.4991" textsize="1.778" layer="47"/>
 </plain>
 <libraries>
 <library name="rcl">
@@ -4335,8 +4335,8 @@ design rules under a new name.</description>
 <signal name="N$2" class="2">
 <contactref element="R1" pad="P$2"/>
 <contactref element="R12" pad="P$1"/>
-<wire x1="49.96" y1="69.25" x2="49.96" y2="59.08" width="0.5" layer="16"/>
-<wire x1="49.96" y1="59.08" x2="50" y2="59.04" width="0.3" layer="16"/>
+<wire x1="50" y1="59.04" x2="50" y2="69.21" width="0.5" layer="16"/>
+<wire x1="50" y1="69.21" x2="49.96" y2="69.25" width="0.5" layer="16"/>
 </signal>
 <signal name="GND_DRV">
 <contactref element="C28" pad="-"/>
@@ -4369,9 +4369,8 @@ design rules under a new name.</description>
 <vertex x="46.25" y="75"/>
 <vertex x="63.99" y="75"/>
 <vertex x="64" y="40.5"/>
-<vertex x="99.75" y="40.5"/>
-<vertex x="99.83" y="40.43"/>
-<vertex x="100.0125" y="0"/>
+<vertex x="100" y="40.5"/>
+<vertex x="100.0025" y="0"/>
 <vertex x="52.25" y="-0.0025"/>
 <vertex x="52.25" y="50.25"/>
 <vertex x="46.25" y="50.26"/>
