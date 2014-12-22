@@ -23964,6 +23964,12 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <part name="GND54" library="supply1" deviceset="GND" device=""/>
 <part name="GND55" library="supply1" deviceset="GND" device=""/>
 <part name="GND56" library="supply1" deviceset="GND" device=""/>
+<part name="D1" library="diode" deviceset="ZENER-DIODE" device="SOD80C" value="3v3"/>
+<part name="GND57" library="supply1" deviceset="GND" device=""/>
+<part name="C65" library="rcl" deviceset="CPOL-EU" device="E2.5-6"/>
+<part name="C66" library="rcl" deviceset="CPOL-EU" device="E2.5-6"/>
+<part name="JP10" library="pinhead" deviceset="PINHD-1X1" device=""/>
+<part name="C68" library="rcl" deviceset="C-EU" device="C0805" value="18p"/>
 </parts>
 <sheets>
 <sheet>
@@ -24210,6 +24216,12 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <instance part="GND54" gate="1" x="-314.96" y="45.72" rot="R270"/>
 <instance part="GND55" gate="1" x="-203.2" y="96.52" rot="R270"/>
 <instance part="GND56" gate="1" x="-203.2" y="91.44" rot="R270"/>
+<instance part="D1" gate="G$1" x="109.22" y="17.78" rot="R90"/>
+<instance part="GND57" gate="1" x="109.22" y="10.16"/>
+<instance part="C65" gate="G$1" x="-185.42" y="165.1"/>
+<instance part="C66" gate="G$1" x="-187.96" y="127"/>
+<instance part="JP10" gate="G$1" x="-218.44" y="-68.58" rot="R180"/>
+<instance part="C68" gate="G$1" x="-15.24" y="-73.66" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -24304,7 +24316,11 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <pinref part="R10" gate="G$1" pin="2"/>
 <junction x="96.52" y="22.86"/>
 <label x="106.68" y="22.86" size="1.778" layer="95"/>
-<wire x1="114.3" y1="22.86" x2="96.52" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="114.3" y1="22.86" x2="109.22" y2="22.86" width="0.1524" layer="91"/>
+<pinref part="D1" gate="G$1" pin="C"/>
+<wire x1="109.22" y1="22.86" x2="96.52" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="109.22" y1="22.86" x2="109.22" y2="20.32" width="0.1524" layer="91"/>
+<junction x="109.22" y="22.86"/>
 </segment>
 <segment>
 <pinref part="IC2" gate="MCU" pin="PC4"/>
@@ -24540,8 +24556,10 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 </segment>
 <segment>
 <pinref part="JP1" gate="G$1" pin="1"/>
-<wire x1="-2.54" y1="-66.04" x2="-12.7" y2="-66.04" width="0.1524" layer="91"/>
+<wire x1="-2.54" y1="-66.04" x2="-15.24" y2="-66.04" width="0.1524" layer="91"/>
 <label x="-12.7" y="-66.04" size="1.778" layer="95"/>
+<pinref part="C68" gate="G$1" pin="2"/>
+<wire x1="-15.24" y1="-66.04" x2="-15.24" y2="-68.58" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="R" class="0">
@@ -25057,6 +25075,11 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <junction x="0" y="-30.48"/>
 <wire x1="0" y1="-30.48" x2="5.08" y2="-30.48" width="0.1524" layer="91"/>
 <junction x="-5.08" y="-30.48"/>
+<pinref part="C68" gate="G$1" pin="1"/>
+<wire x1="-15.24" y1="-76.2" x2="-15.24" y2="-78.74" width="0.1524" layer="91"/>
+<wire x1="-15.24" y1="-78.74" x2="-30.48" y2="-78.74" width="0.1524" layer="91"/>
+<wire x1="-30.48" y1="-78.74" x2="-30.48" y2="-58.42" width="0.1524" layer="91"/>
+<junction x="-30.48" y="-58.42"/>
 </segment>
 <segment>
 <pinref part="C5" gate="G$1" pin="-"/>
@@ -25186,6 +25209,11 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <label x="101.6" y="-53.34" size="1.778" layer="95"/>
 <pinref part="JP2" gate="A" pin="2"/>
 </segment>
+<segment>
+<pinref part="D1" gate="G$1" pin="A"/>
+<pinref part="GND57" gate="1" pin="GND"/>
+<wire x1="109.22" y1="15.24" x2="109.22" y2="12.7" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="GND_RES" class="0">
 <segment>
@@ -25304,6 +25332,9 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <pinref part="C46" gate="G$1" pin="2"/>
 <pinref part="GND29" gate="1" pin="GND"/>
 <wire x1="-195.58" y1="160.02" x2="-195.58" y2="152.4" width="0.1524" layer="91"/>
+<pinref part="C65" gate="G$1" pin="-"/>
+<wire x1="-185.42" y1="160.02" x2="-195.58" y2="160.02" width="0.1524" layer="91"/>
+<junction x="-195.58" y="160.02"/>
 </segment>
 <segment>
 <pinref part="C50" gate="G$1" pin="-"/>
@@ -25327,6 +25358,9 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <pinref part="C53" gate="G$1" pin="2"/>
 <pinref part="GND31" gate="1" pin="GND"/>
 <wire x1="-200.66" y1="121.92" x2="-200.66" y2="111.76" width="0.1524" layer="91"/>
+<pinref part="C66" gate="G$1" pin="-"/>
+<wire x1="-187.96" y1="121.92" x2="-200.66" y2="121.92" width="0.1524" layer="91"/>
+<junction x="-200.66" y="121.92"/>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="GND1"/>
@@ -25557,7 +25591,7 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <wire x1="-167.64" y1="129.54" x2="-165.1" y2="129.54" width="0.1524" layer="91"/>
 <wire x1="-210.82" y1="129.54" x2="-208.28" y2="129.54" width="0.1524" layer="91"/>
 <wire x1="-208.28" y1="129.54" x2="-200.66" y2="129.54" width="0.1524" layer="91"/>
-<wire x1="-200.66" y1="129.54" x2="-175.26" y2="129.54" width="0.1524" layer="91"/>
+<wire x1="-200.66" y1="129.54" x2="-187.96" y2="129.54" width="0.1524" layer="91"/>
 <junction x="-175.26" y="129.54"/>
 <pinref part="IC3" gate="G$1" pin="VIN"/>
 <pinref part="C48" gate="G$1" pin="+"/>
@@ -25568,6 +25602,9 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <pinref part="C53" gate="G$1" pin="1"/>
 <junction x="-200.66" y="129.54"/>
 <pinref part="P+5" gate="1" pin="+5V"/>
+<pinref part="C66" gate="G$1" pin="+"/>
+<wire x1="-187.96" y1="129.54" x2="-175.26" y2="129.54" width="0.1524" layer="91"/>
+<junction x="-187.96" y="129.54"/>
 </segment>
 <segment>
 <pinref part="R25" gate="G$1" pin="2"/>
@@ -25745,6 +25782,8 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <pinref part="P+1" gate="1" pin="+12V"/>
 <junction x="-195.58" y="167.64"/>
 <junction x="-203.2" y="167.64"/>
+<pinref part="C65" gate="G$1" pin="+"/>
+<wire x1="-185.42" y1="167.64" x2="-195.58" y2="167.64" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <wire x1="-256.54" y1="-93.98" x2="-256.54" y2="-95.504" width="0.1524" layer="91"/>
@@ -25827,6 +25866,10 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <pinref part="IC5" gate="MCU" pin="NRST"/>
 <wire x1="-180.34" y1="-38.1" x2="-198.12" y2="-38.1" width="0.1524" layer="91"/>
 <label x="-198.12" y="-38.1" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="JP10" gate="G$1" pin="1"/>
+<wire x1="-215.9" y1="-68.58" x2="-187.96" y2="-68.58" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RES" class="0">
