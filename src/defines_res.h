@@ -42,7 +42,7 @@
 // encoder
 //// timer
 #define ENC0_TIM TIM1
-#define ENC0_TIM_RCC RCC_APB1Periph_TIM1
+#define ENC0_TIM_RCC RCC_APB2Periph_TIM1
 
 #define ENC1_TIM TIM3
 #define ENC1_TIM_RCC RCC_APB1Periph_TIM3
@@ -92,6 +92,18 @@
 
 #define UART_DRV USART2
 #define UART_DRV_RCC RCC_APB1Periph_USART2
+
+//// dma
+#define UART_DRV_RX_DMA DMA1_Stream5
+#define UART_DRV_RX_DMA_RCC RCC_AHB1Periph_DMA1
+#define UART_DRV_RX_DMA_CHAN DMA_Channel_4
+#define UART_DRV_RX_DMA_IRQN DMA1_Stream5_IRQn
+
+#define UART_DRV_TX_DMA DMA1_Stream6
+#define UART_DRV_TX_DMA_RCC RCC_AHB1Periph_DMA1
+#define UART_DRV_TX_DMA_CHAN DMA_Channel_4
+#define UART_DRV_TX_DMA_IRQN DMA1_Stream6_IRQn
+#define UART_DRV_TX_DMA_TCIF DMA_FLAG_TCIF6
 
 //// gpio
 #define UART_CMD_RX_PIN GPIO_Pin_7

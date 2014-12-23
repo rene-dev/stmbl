@@ -8,40 +8,40 @@ MEM(int e_res) = 0.0;
 INIT(
   e_res = (int)PIN(res);
   // enable pin clock
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  RCC_AHB1PeriphClockCmd(ENC0_A_IO_RCC, ENABLE);
 
-  // enable tim3 clock
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+  // enable clock
+  RCC_APB2PeriphClockCmd(ENC0_TIM_RCC, ENABLE);
 
   // pin mode: af
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
+  GPIO_InitStructure.GPIO_Pin = ENC0_A_PIN | ENC0_B_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_Init(ENC0_A_PORT, &GPIO_InitStructure);
 
-  // pin af -> tim3
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_TIM3);
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_TIM3);
+  // pin af -> tim
+  GPIO_PinAFConfig(ENC0_A_PORT, ENC0_A_PIN_SOURCE, ENC0_A_AF_SOURCE);
+  GPIO_PinAFConfig(ENC0_B_PORT, ENC0_B_PIN_SOURCE, ENC0_B_AF_SOURCE);
 
-  // tim3 mode: count on A and B on rising edge
-  TIM_EncoderInterfaceConfig(TIM3, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+  // tim mode: count on A and B on rising edge
+  TIM_EncoderInterfaceConfig(ENC0_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
 
   // enc res / turn
-  TIM_SetAutoreload(TIM3, e_res - 1);
+  TIM_SetAutoreload(ENC0_TIM, e_res - 1);
 
-  // enable tim3
-  TIM_Cmd(TIM3, ENABLE);
+  // enable tim
+  TIM_Cmd(ENC0_TIM, ENABLE);
 );
 
 RT_IN(
   int i = (int)PIN(res);
-  PIN(pos) = mod(TIM_GetCounter(TIM3) * 2.0f * M_PI / (float)e_res);
+  PIN(pos) = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res);
   if(e_res != i){
     e_res = i;
-    TIM_SetAutoreload(TIM3, e_res - 1);
+    TIM_SetAutoreload(ENC0_TIM, e_res - 1);
   }
 );
 

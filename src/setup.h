@@ -12,6 +12,7 @@
 #include <stm32f4_discovery.h>
 #include <stm32f4xx_conf.h>
 #include "misc.h"
+#include "defines_res.h"
 
 #ifdef USBTERM
 #include "stm32_ub_usb_cdc.h"

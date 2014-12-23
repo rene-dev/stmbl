@@ -22,16 +22,6 @@ void setup(){
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//wird in UB_USB_CDC_Init() nochmal gesetzt!
-    //res erreger
-
-
-    //messpin
-    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_4;
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-    GPIO_Init(GPIOC, &GPIO_InitStructure);
 
     /* int set up, TIM2*/
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -54,6 +44,7 @@ void setup(){
     setup_adc();
     //setup_dma();
     setup_pid_timer();
+	setup_led();
 	setup_usart();
 
 	// systick timer
@@ -70,25 +61,46 @@ void setup(){
     #endif
 }
 
+void setup_led(){
+	RCC_AHB1PeriphClockCmd(LED_R_IO_RCC, ENABLE);
+	RCC_AHB1PeriphClockCmd(LED_Y_IO_RCC, ENABLE);
+	RCC_AHB1PeriphClockCmd(LED_G_IO_RCC, ENABLE);
+	
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+
+    GPIO_InitStructure.GPIO_Pin   = LED_R_PIN;
+    GPIO_Init(LED_R_PORT, &GPIO_InitStructure);
+	
+    GPIO_InitStructure.GPIO_Pin   = LED_Y_PIN;
+    GPIO_Init(LED_Y_PORT, &GPIO_InitStructure);
+	
+    GPIO_InitStructure.GPIO_Pin   = LED_G_PIN;
+    GPIO_Init(LED_G_PORT, &GPIO_InitStructure);
+}
+
 void setup_usart(){
 	GPIO_InitTypeDef GPIO_InitStruct;
 	USART_InitTypeDef USART_InitStruct;
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+	RCC_APB1PeriphClockCmd(UART_DRV_RCC, ENABLE);
+	RCC_AHB1PeriphClockCmd(UART_DRV_RX_IO_RCC, ENABLE);
+	RCC_AHB1PeriphClockCmd(UART_DRV_TX_IO_RCC, ENABLE);
 
 	//USART TX
-	GPIO_PinAFConfig(GPIOD, GPIO_PinSource8, GPIO_AF_USART3);
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8;
+	GPIO_PinAFConfig(UART_DRV_TX_PORT, UART_DRV_TX_PIN_SOURCE, UART_DRV_TX_AF_SOURCE);
+	GPIO_InitStruct.GPIO_Pin = UART_DRV_TX_PIN;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
-	GPIO_Init(GPIOD, &GPIO_InitStruct);
+	GPIO_Init(UART_DRV_TX_PORT, &GPIO_InitStruct);
 
 	//USART RX
-	GPIO_PinAFConfig(GPIOD, GPIO_PinSource9, GPIO_AF_USART3);
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
-	GPIO_Init(GPIOD, &GPIO_InitStruct);
+	GPIO_PinAFConfig(UART_DRV_RX_PORT, UART_DRV_RX_PIN_SOURCE, UART_DRV_RX_AF_SOURCE);
+	GPIO_InitStruct.GPIO_Pin = UART_DRV_RX_PIN;
+	GPIO_Init(UART_DRV_RX_PORT, &GPIO_InitStruct);
 
 	USART_InitStruct.USART_BaudRate = 2000000;//2000000
 	USART_InitStruct.USART_WordLength = USART_WordLength_9b;
@@ -97,20 +109,20 @@ void setup_usart(){
 	USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
-	USART_Init(USART3, &USART_InitStruct);
+	USART_Init(UART_DRV, &USART_InitStruct);
 	/* Enable the USART */
-	USART_Cmd(USART3, ENABLE);
+	USART_Cmd(UART_DRV, ENABLE);
 	
     // Clock Enable
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
+    RCC_AHB1PeriphClockCmd(UART_DRV_TX_DMA_RCC, ENABLE);
 
     // DMA-Disable
-    DMA_Cmd(DMA1_Stream3, DISABLE);
-    DMA_DeInit(DMA1_Stream3);
+    DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
+    DMA_DeInit(UART_DRV_TX_DMA);
 
     // DMA2-Config
-    DMA_InitStructure.DMA_Channel = DMA_Channel_4;
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
+    DMA_InitStructure.DMA_Channel = UART_DRV_TX_DMA_CHAN;
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_DRV->DR);
     DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&UART_DMA_Buffer;
     DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
     DMA_InitStructure.DMA_BufferSize = DATALENGTH*2+1;//uint32_t + start
@@ -124,11 +136,11 @@ void setup_usart(){
     DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
     DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
     DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-    DMA_Init(DMA1_Stream3, &DMA_InitStructure);
+    DMA_Init(UART_DRV_TX_DMA, &DMA_InitStructure);
 
-    DMA_Cmd(DMA1_Stream3, ENABLE);
+    DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
 
-	USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
+	USART_DMACmd(UART_DRV, USART_DMAReq_Tx, ENABLE);
 }
 
 
@@ -195,21 +207,21 @@ void setup_dma(){
 
 // Setup ADC
 void setup_adc(){
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+    RCC_AHB1PeriphClockCmd(SIN_IO_RCC, ENABLE);
+    RCC_AHB1PeriphClockCmd(COS_IO_RCC, ENABLE);
     /* ADC clock enable */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC2, ENABLE);
+    RCC_APB2PeriphClockCmd(SIN_ADC_RCC | COS_ADC_RCC, ENABLE);
 
     //Analog pin configuration
-    GPIO_InitStructure.GPIO_Pin = RES_SIN_PIN;
+    GPIO_InitStructure.GPIO_Pin = SIN_PIN;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_Init(RES_SIN_PORT,&GPIO_InitStructure);
+    GPIO_Init(SIN_PORT,&GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = RES_COS_PIN;
+    GPIO_InitStructure.GPIO_Pin = COS_PIN;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_Init(RES_COS_PORT,&GPIO_InitStructure);
+    GPIO_Init(COS_PORT,&GPIO_InitStructure);
 
     //ADC structure configuration
     ADC_DeInit();
@@ -221,8 +233,8 @@ void setup_adc(){
     ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
     ADC_InitStructure.ADC_NbrOfConversion = 1;//I think this one is clear :p
     ADC_InitStructure.ADC_ScanConvMode = ENABLE;//The scan is configured in one channel
-    ADC_Init(ADC1,&ADC_InitStructure);//Initialize ADC with the previous configuration
-    ADC_Init(ADC2,&ADC_InitStructure);//Initialize ADC with the previous configuration
+    ADC_Init(SIN_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
+    ADC_Init(COS_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
 
     ADC_CommonInitTypeDef ADC_CommonInitStructure;
     ADC_CommonInitStructure.ADC_Mode = ADC_DualMode_InjecSimult;
@@ -231,29 +243,29 @@ void setup_adc(){
     ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
     ADC_CommonInit(&ADC_CommonInitStructure);
 
-    ADC_InjectedSequencerLengthConfig(ADC1, 4);
-    ADC_InjectedChannelConfig(ADC1, RES_SIN_CHANNEL, 1, RES_SampleTime);
-    ADC_InjectedChannelConfig(ADC1, RES_SIN_CHANNEL, 2, RES_SampleTime);
-    ADC_InjectedChannelConfig(ADC1, RES_SIN_CHANNEL, 3, RES_SampleTime);
-    ADC_InjectedChannelConfig(ADC1, RES_SIN_CHANNEL, 4, RES_SampleTime);
-    ADC_ExternalTrigInjectedConvConfig(ADC1, ADC_ExternalTrigInjecConv_T2_TRGO);
-    ADC_ExternalTrigInjectedConvEdgeConfig(ADC1, ADC_ExternalTrigInjecConvEdge_Rising);
-    ADC_InjectedDiscModeCmd(ADC1, DISABLE);
-    ADC_ITConfig(ADC1, ADC_IT_JEOC, ENABLE);
+    ADC_InjectedSequencerLengthConfig(SIN_ADC, 4);
+    ADC_InjectedChannelConfig(SIN_ADC, SIN_ADC_CHAN, 1, RES_SampleTime);
+    ADC_InjectedChannelConfig(SIN_ADC, SIN_ADC_CHAN, 2, RES_SampleTime);
+    ADC_InjectedChannelConfig(SIN_ADC, SIN_ADC_CHAN, 3, RES_SampleTime);
+    ADC_InjectedChannelConfig(SIN_ADC, SIN_ADC_CHAN, 4, RES_SampleTime);
+    ADC_ExternalTrigInjectedConvConfig(SIN_ADC, ADC_ExternalTrigInjecConv_T2_TRGO);
+    ADC_ExternalTrigInjectedConvEdgeConfig(SIN_ADC, ADC_ExternalTrigInjecConvEdge_Rising);
+    ADC_InjectedDiscModeCmd(SIN_ADC, DISABLE);
+    ADC_ITConfig(SIN_ADC, ADC_IT_JEOC, ENABLE);
 
-    ADC_InjectedSequencerLengthConfig(ADC2, 4);
-    ADC_InjectedChannelConfig(ADC2, RES_COS_CHANNEL, 1, RES_SampleTime);
-    ADC_InjectedChannelConfig(ADC2, RES_COS_CHANNEL, 2, RES_SampleTime);
-    ADC_InjectedChannelConfig(ADC2, RES_COS_CHANNEL, 3, RES_SampleTime);
-    ADC_InjectedChannelConfig(ADC2, RES_COS_CHANNEL, 4, RES_SampleTime);
+    ADC_InjectedSequencerLengthConfig(COS_ADC, 4);
+    ADC_InjectedChannelConfig(COS_ADC, COS_ADC_CHAN, 1, RES_SampleTime);
+    ADC_InjectedChannelConfig(COS_ADC, COS_ADC_CHAN, 2, RES_SampleTime);
+    ADC_InjectedChannelConfig(COS_ADC, COS_ADC_CHAN, 3, RES_SampleTime);
+    ADC_InjectedChannelConfig(COS_ADC, COS_ADC_CHAN, 4, RES_SampleTime);
     //ADC_ExternalTrigInjectedConvConfig(ADC2, ADC_ExternalTrigInjecConv_T2_TRGO);
     //ADC_ExternalTrigInjectedConvEdgeConfig(ADC2, ADC_ExternalTrigInjecConvEdge_Rising);
-    ADC_InjectedDiscModeCmd(ADC2, DISABLE);
-    ADC_ITConfig(ADC2, ADC_IT_JEOC, DISABLE);
+    ADC_InjectedDiscModeCmd(COS_ADC, DISABLE);
+    ADC_ITConfig(COS_ADC, ADC_IT_JEOC, DISABLE);
 
     //Enable ADC conversion
-    ADC_Cmd(ADC1,ENABLE);
-    ADC_Cmd(ADC2,ENABLE);
+    ADC_Cmd(SIN_ADC,ENABLE);
+    ADC_Cmd(COS_ADC,ENABLE);
 
     // analog NVIC
     NVIC_InitTypeDef NVIC_InitStructure;

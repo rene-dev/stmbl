@@ -44,9 +44,9 @@ RT_OUT(
   UART_DMA_Buffer[6] = data.byte[5];
 
   //start DMA transfer
-  DMA_Cmd(DMA1_Stream3, DISABLE);
-  DMA_ClearFlag(DMA1_Stream3, DMA_FLAG_TCIF3);
-  DMA_Cmd(DMA1_Stream3, ENABLE);
+  DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
+  DMA_ClearFlag(UART_DRV_TX_DMA, UART_DRV_TX_DMA_TCIF);
+  DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
 );
 
 ENDCOMP;
