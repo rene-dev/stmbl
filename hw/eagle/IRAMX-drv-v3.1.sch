@@ -27548,7 +27548,7 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <part name="X2" library="reroolib" deviceset="RJ45" device=""/>
 <part name="X6" library="con-wago-508" deviceset="W237-02P" device=""/>
 <part name="IC5" library="micro-stm_v2" deviceset="STM32F405R*T" device="" technology="G"/>
-<part name="R29" library="rcl" deviceset="R-EU_" device="R0805" value="500"/>
+<part name="R29" library="rcl" deviceset="R-EU_" device="R0805" value="470"/>
 <part name="C41" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
 <part name="C42" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
 <part name="R31" library="rcl" deviceset="R-EU_" device="R0805" value="1k"/>
