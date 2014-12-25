@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stm32f4_discovery.h>
+//#include <stm32f4_discovery.h>
 #include <stm32f4xx_conf.h>
 #include "printf.h"
 #include "scanf.h"
@@ -238,8 +238,15 @@ int main(void)
 {
 	float period = 0.0;
 	float lasttime = 0.0;
+	
+	
 	setup();
+	
+	GPIO_SetBits(LED_R_PORT,LED_R_PIN);//led
+	GPIO_SetBits(LED_Y_PORT,LED_Y_PIN);//led
+	GPIO_SetBits(LED_G_PORT,LED_G_PIN);//led
 
+	
 
 	#include "comps/frt.comp"
 	#include "comps/rt.comp"
@@ -249,15 +256,16 @@ int main(void)
 	#include "comps/pwm2uvw.comp"
 	#include "comps/pwmout.comp"
 	#include "comps/pwm2uart.comp"
+
 	#include "comps/enc.comp"
 	#include "comps/res.comp"
-	//#include "comps/pid.comp"
+	#include "comps/pid.comp"
 	#include "comps/term.comp"
 	#include "comps/sim.comp"
 	#include "comps/pderiv.comp"
 	#include "comps/pderiv.comp"
 	#include "comps/autophase.comp"
-	#include "comps/vel_observer.comp"
+	//#include "comps/vel_observer.comp"
 
 	set_comp_type("net");
 	HAL_PIN(enable) = 0.0;
@@ -278,21 +286,21 @@ int main(void)
 	link_ac_sync_res();
 	set_hal_pin("ap0.start", 1.0);
 
-	link_hal_pins("sim0.sin", "net0.cmd");
-	link_hal_pins("net0.cmd", "vel_ob0.pos_in");
-	link_hal_pins("net0.cmd", "term0.wave0");
-	link_hal_pins("net0.cmd_d", "term0.wave1");
-	link_hal_pins("vel_ob0.pos_out", "term0.wave2");
-	link_hal_pins("vel_ob0.vel_out", "term0.wave3");
-	link_hal_pins("vel_ob0.trg", "rt0.trg0");
-	set_hal_pin("term0.gain0", 10.0);
-	set_hal_pin("term0.gain1", 10.0);
-	set_hal_pin("term0.gain2", 10.0);
-	set_hal_pin("term0.gain3", 10.0);
-	set_hal_pin("sim0.amp", 1.0);
-	set_hal_pin("sim0.freq", 0.5);
-	set_hal_pin("vel_ob0.alpha", 1.0);
-	set_hal_pin("vel_ob0.beta", 0.1);
+	// link_hal_pins("sim0.sin", "net0.cmd");
+	// link_hal_pins("net0.cmd", "vel_ob0.pos_in");
+	// link_hal_pins("net0.cmd", "term0.wave0");
+	// link_hal_pins("net0.cmd_d", "term0.wave1");
+	// link_hal_pins("vel_ob0.pos_out", "term0.wave2");
+	// link_hal_pins("vel_ob0.vel_out", "term0.wave3");
+	// link_hal_pins("vel_ob0.trg", "rt0.trg0");
+	// set_hal_pin("term0.gain0", 10.0);
+	// set_hal_pin("term0.gain1", 10.0);
+	// set_hal_pin("term0.gain2", 10.0);
+	// set_hal_pin("term0.gain3", 10.0);
+	// set_hal_pin("sim0.amp", 1.0);
+	// set_hal_pin("sim0.freq", 0.5);
+	// set_hal_pin("vel_ob0.alpha", 1.0);
+	// set_hal_pin("vel_ob0.beta", 0.1);
 	
 
 	while(1)  // Do not exit
