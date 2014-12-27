@@ -1,4 +1,8 @@
 # put your *.o targets here, make should handle the rest!
+#TODO
+#dependency files
+#ld gcollection
+#komische flags
 
 SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c printf.c scanf.c setup.c hal.c misc.c
 #USB

@@ -104,7 +104,7 @@ void tim1_init(){
 	
 	/* Channel 1, 2 and 3 Configuration in PWM mode */
 	TIM_TimeBaseStructure.TIM_Period = 2400;
-	TIM_TimeBaseStructure.TIM_Prescaler = 2;
+	TIM_TimeBaseStructure.TIM_Prescaler = 1;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
