@@ -169,30 +169,57 @@ void link_ac_sync_enc(){//berger lahr
 	set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 }
-
-void DMA2_Stream2_IRQHandler(void){
+volatile int irqfoo = 0;
+void DMA2_Stream0_IRQHandler(void){
 	// welches flag?
-	//DMA_ClearFlag(DMA2_FLAG_IT);
-	DMA_ClearITPendingBit(DMA2_Stream2, DMA_IT_TCIF2);
-	printf_("DMA\n");
+	// DMA_Cmd(DMA2_Stream0, DISABLE);
+	// DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TCIF0);
+	//    DMA2->LIFCR = DMA_LIFCR_CTCIF0;
+   //    DMA2->LIFCR;  // dummy read to prevent IRQ glitches
+   DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
+	//DMA_Cmd(DMA2_Stream0, DISABLE);
+
+   //DMA_ClearFlag(DMA2_Stream0, DMA_FLAG_TCIF0);
+	//DMA_SetCurrDataCounter(DMA2_Stream0,4);
+	//DMA_Cmd(DMA2_Stream0, ENABLE);
+   //setup_adc();
+   //setup_dma();
+	
+	GPIO_ResetBits(LED_R_PORT,LED_R_PIN);//led
+
+
+
+		
+		int freq = 20000;
+		float period = 1.0 / freq;
+		//GPIO_ResetBits(GPIOC,GPIO_Pin_4);//messpin
+
+		for(int i = 0; i < hal.fast_rt_func_count; i++){
+			hal.fast_rt[i](period);
+		}
+		
+	//printf_("DMA\n");
+	irqfoo++;
 }
 
 void TIM2_IRQHandler(void){ //20KHz
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
+	//ADC_SoftwareStartConv(ADC1);
+	//ADC_SoftwareStartConv(ADC2);
+	//GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
 }
 
 void ADC_IRQHandler(void) // 20khz
 {
-	int freq = 20000;
-	float period = 1.0 / freq;
-	while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_JEOC));
-	ADC_ClearITPendingBit(ADC1, ADC_IT_JEOC);
-	GPIO_ResetBits(GPIOC,GPIO_Pin_4);//messpin
-
-	for(int i = 0; i < hal.fast_rt_func_count; i++){
-		hal.fast_rt[i](period);
-	}
+	// int freq = 20000;
+	// float period = 1.0 / freq;
+	// while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_JEOC));
+	 ADC_ClearITPendingBit(ADC1, ADC_IT_JEOC);
+	// GPIO_ResetBits(GPIOC,GPIO_Pin_4);//messpin
+	//
+	// for(int i = 0; i < hal.fast_rt_func_count; i++){
+	// 	hal.fast_rt[i](period);
+	// }
 }
 
 void TIM5_IRQHandler(void){ //5KHz
@@ -241,7 +268,7 @@ int main(void)
 	
 	
 	setup();
-	
+	//ADC_SoftwareStartConv(ADC1);
 	GPIO_SetBits(LED_R_PORT,LED_R_PIN);//led
 	GPIO_SetBits(LED_Y_PORT,LED_Y_PIN);//led
 	GPIO_SetBits(LED_G_PORT,LED_G_PIN);//led
@@ -306,6 +333,8 @@ int main(void)
 	while(1)  // Do not exit
 	{
 		Wait(10);
+		//printf_("%i\n",irqfoo);
+		GPIO_SetBits(LED_R_PORT,LED_R_PIN);//led
 		period = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
 		lasttime = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){

@@ -43,7 +43,7 @@
 //sample times for F4: 3,15,28,56,84,112,144,480
 #define RES_SampleTime ADC_SampleTime_28Cycles
 
-#define  ADC2d_ANZ   3
+#define  ADC2d_ANZ   1
 
 void setup();
 void setup_adc();
@@ -51,6 +51,7 @@ void setup_pwm();
 void setup_pid_timer();
 void setup_usart();
 void setup_dma();
+void setup_led();
 void SysTick_Handler(void);
 
 volatile unsigned int time;
