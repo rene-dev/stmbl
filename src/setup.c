@@ -37,7 +37,7 @@ void setup(){
 
 	 //messpin
 	 RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-	 GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3;
+	 GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3 | GPIO_Pin_4;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -264,7 +264,7 @@ void setup_res(){
     DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC->CDR;
     DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ADC_DMA_Buffer;
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-    DMA_InitStructure.DMA_BufferSize = ADC_ANZ;
+    DMA_InitStructure.DMA_BufferSize = ADC_ANZ*PID_WAVES;
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;

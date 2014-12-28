@@ -44,6 +44,7 @@
 #define RES_SampleTime ADC_SampleTime_28Cycles
 
 #define  ADC_ANZ 8
+#define  PID_WAVES 4
 
 void setup();
 void setup_res();
@@ -55,7 +56,7 @@ void SysTick_Handler(void);
 
 volatile unsigned int time;
 
-volatile uint32_t ADC_DMA_Buffer[ADC_ANZ];
+volatile uint32_t ADC_DMA_Buffer[ADC_ANZ*PID_WAVES];
 volatile uint16_t UART_DMA_Buffer[7];
 
 #define DATALENGTH 3

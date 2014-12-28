@@ -172,14 +172,36 @@ void link_ac_sync_enc(){//berger lahr
 
 void DMA2_Stream0_IRQHandler(void){
    DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
+	GPIO_SetBits(GPIOB,GPIO_Pin_4);
 	GPIO_ResetBits(LED_R_PORT,LED_R_PIN);//led
-		int freq = 20000;
+		int freq = 5000;
 		float period = 1.0 / freq;
 		GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
 
 		for(int i = 0; i < hal.fast_rt_func_count; i++){
 			hal.fast_rt[i](period);
 		}
+		
+		for(int i = 0; i < hal.rt_in_func_count; i++){
+			hal.rt_in[i](period);
+		}
+
+		for(int i = 0; i < hal.rt_filter_func_count; i++){
+			hal.rt_filter[i](period);
+		}
+
+		for(int i = 0; i < hal.rt_pid_func_count; i++){
+			hal.rt_pid[i](period);
+		}
+
+		for(int i = 0; i < hal.rt_calc_func_count; i++){
+			hal.rt_calc[i](period);
+		}
+
+		for(int i = 0; i < hal.rt_out_func_count; i++){
+			hal.rt_out[i](period);
+		}
+	GPIO_ResetBits(GPIOB,GPIO_Pin_4);
 }
 
 void TIM8_UP_TIM13_IRQHandler(void){ //20KHz
@@ -189,8 +211,7 @@ void TIM8_UP_TIM13_IRQHandler(void){ //20KHz
 
 void TIM5_IRQHandler(void){ //5KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
-	int freq = 5000;
-	float period = 1.0 / freq;
+
 /*
 	if(read_hal_pin(&ferror) > 0.0 && ABS(pid2ps.pos_error) > read_hal_pin(&ferror)){
 		disable();
@@ -205,25 +226,7 @@ void TIM5_IRQHandler(void){ //5KHz
 		pid2ps.enable = 0;
 	}
 */
-	for(int i = 0; i < hal.rt_in_func_count; i++){
-		hal.rt_in[i](period);
-	}
 
-	for(int i = 0; i < hal.rt_filter_func_count; i++){
-		hal.rt_filter[i](period);
-	}
-
-	for(int i = 0; i < hal.rt_pid_func_count; i++){
-		hal.rt_pid[i](period);
-	}
-
-	for(int i = 0; i < hal.rt_calc_func_count; i++){
-		hal.rt_calc[i](period);
-	}
-
-	for(int i = 0; i < hal.rt_out_func_count; i++){
-		hal.rt_out[i](period);
-	}
 }
 
 int main(void)
