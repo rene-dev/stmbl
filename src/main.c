@@ -182,8 +182,8 @@ void DMA2_Stream0_IRQHandler(void){
 		}
 }
 
-void TIM2_IRQHandler(void){ //20KHz
-	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+void TIM8_UP_TIM13_IRQHandler(void){ //20KHz
+	TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
 	GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
 }
 
@@ -270,7 +270,7 @@ int main(void)
 		hal.init[i]();
 	}
 
-	TIM_Cmd(TIM2, ENABLE);//int
+	TIM_Cmd(TIM8, ENABLE);//int
 	TIM_Cmd(TIM4, ENABLE);//PWM
 	TIM_Cmd(TIM5, ENABLE);//PID
 
