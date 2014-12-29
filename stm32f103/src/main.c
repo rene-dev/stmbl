@@ -16,7 +16,7 @@ typedef union{
 	uint8_t byte[DATALENGTH*2];
 }data_t;
 
-volatile unsigned int time = 0;
+volatile unsigned int systime = 0;
 volatile float u,v,w;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -29,14 +29,14 @@ USART_InitTypeDef USART_InitStruct;
 __IO uint16_t ADCConvertedValue[ADC_channels];
 
 void Wait(unsigned int ms){
-	volatile unsigned int t = time + ms;
-	while(t >= time){
+	volatile unsigned int t = systime + ms;
+	while(t >= systime){
 	}
 }
 
 void SysTick_Handler(void)
 {
-  time++;
+  systime++;
 }
 
 //set pll to 24MHz

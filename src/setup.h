@@ -9,8 +9,8 @@
 #ifndef test_setup_h
 #define test_setup_h
 
-#include <stm32f4_discovery.h>
-#include <stm32f4xx_conf.h>
+#include "stm32f4_discovery.h"
+#include "stm32f4xx_conf.h"
 #include "misc.h"
 #include "defines_res.h"
 
@@ -21,25 +21,6 @@
 //#define mag_res 5250
 #define mag_res 8400
 
-
-// res in:
-// ADC1: SIN: PA3 ADC1 IN3, ADC2 IN3, ADC3 IN3
-// ADC2: COS: PB1 ADC1 IN9, ADC2 IN9
-// TODO: RCC_AHB1PeriphClockCmd hardcoded in setup.c
-#define RES_SIN_PIN GPIO_Pin_3
-#define RES_SIN_PORT GPIOA
-#define RES_SIN_CHANNEL ADC_Channel_3
-
-#define RES_COS_PIN GPIO_Pin_1
-#define RES_COS_PORT GPIOB
-#define RES_COS_CHANNEL ADC_Channel_9
-
-#define PWM_U TIM4->CCR1
-#define PWM_V TIM4->CCR2
-#define PWM_W TIM4->CCR3
-#define PWM_E TIM4->CCR4
-
-
 //sample times for F4: 3,15,28,56,84,112,144,480
 #define RES_SampleTime ADC_SampleTime_28Cycles
 
@@ -49,18 +30,17 @@
 void setup();
 void setup_res();
 void setup_pwm();
-void setup_pid_timer();
 void setup_usart();
 void setup_led();
 void SysTick_Handler(void);
 
-volatile unsigned int time;
-
-volatile uint32_t ADC_DMA_Buffer[ADC_ANZ*PID_WAVES];
-volatile uint16_t UART_DMA_Buffer[7];
+volatile unsigned int systime;
 
 #define DATALENGTH 3
 #define DATABAUD 2000000;
+
+volatile uint32_t ADC_DMA_Buffer[ADC_ANZ*PID_WAVES];
+volatile uint16_t UART_DMA_Buffer[DATALENGTH*2+1];
 
 typedef union{
 	uint16_t data[DATALENGTH];

@@ -1,10 +1,5 @@
 // defines für stm32f405
 
-// pid timer
-#define PID_TIM TIM5
-#define PID_TIM_RCC RCC_APB1Periph_TIM5
-#define PID_TIM_IRQN TIM5_IRQn
-
 // resolver
 //// adc
 #define SIN_ADC ADC1

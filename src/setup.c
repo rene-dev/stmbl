@@ -8,104 +8,26 @@
 
 #include "setup.h"
 
-void setup_led(){
-	RCC_AHB1PeriphClockCmd(LED_R_IO_RCC, ENABLE);
-	RCC_AHB1PeriphClockCmd(LED_Y_IO_RCC, ENABLE);
-	RCC_AHB1PeriphClockCmd(LED_G_IO_RCC, ENABLE);
-	
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-
-    GPIO_InitStructure.GPIO_Pin   = LED_R_PIN;
-    GPIO_Init(LED_R_PORT, &GPIO_InitStructure);
-	
-    GPIO_InitStructure.GPIO_Pin   = LED_Y_PIN;
-    GPIO_Init(LED_Y_PORT, &GPIO_InitStructure);
-	
-    GPIO_InitStructure.GPIO_Pin   = LED_G_PIN;
-    GPIO_Init(LED_G_PORT, &GPIO_InitStructure);
-}
-
 void setup(){
-
-    //PC6 PB5
-    //UB_ENCODER_TIM3_Init(ENC_T3_MODE_4AB, ENC_T3_A, 2000);
-    //TIM4:PWM
-    //TIM8:int
-
-	 //messpin
-	 RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-	 GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3 | GPIO_Pin_4;
+    //messpin
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3 | GPIO_Pin_4;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-    //int timer
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
-
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//wird in UB_USB_CDC_Init() nochmal gesetzt!
 
-    /* int set up, TIM8*/
-    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStructure.TIM_Period = 420*2;//20kHz
-    TIM_TimeBaseStructure.TIM_Prescaler = 9;
-    //TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-    TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
-    TIM_ITConfig(TIM8, TIM_IT_Update, ENABLE);
-    TIM_SelectOutputTrigger(TIM8, TIM_TRGOSource_Update);
-	 
- 	 RCC_AHB1PeriphClockCmd(RES_IO_RCC, ENABLE);
-     GPIO_InitStructure.GPIO_Pin   = RES_PIN;
-	  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-     GPIO_Init(RES_PORT, &GPIO_InitStructure);
-	  
-	  GPIO_PinAFConfig(RES_PORT, GPIO_PinSource5, GPIO_AF_TIM8);
-	  
-
-	  
-  	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
-  	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Disable;
-  	TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
-  	TIM_OCInitStructure.TIM_Pulse = 300;
-  	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-  	TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
-  	TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
-  	TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
-	  
-
-	  /* PWM1 Mode configuration: Channel1 */
-	  TIM_OC1Init(TIM8, &TIM_OCInitStructure);
-	  TIM_OC1PreloadConfig(TIM8, TIM_OCPreload_Enable);
-	  
-	  //TIM8->CCR1 = 300;
-	  
-	  TIM_CtrlPWMOutputs(TIM8, ENABLE);
-
-    /* int NVIC setup */
-    NVIC_InitStructure.NVIC_IRQChannel = TIM8_UP_TIM13_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-
-    NVIC_Init(&NVIC_InitStructure);
-
 	setup_usart();
-   setup_res();
-   setup_pid_timer();
+    setup_res();
 	setup_led();
 
 	// systick timer
-	time = 0;
+	systime = 0;
 
 	RCC_GetClocksFreq(&RCC_Clocks);
 	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
@@ -116,6 +38,26 @@ void setup(){
     #ifdef USBTERM
     UB_USB_CDC_Init();
     #endif
+}
+
+void setup_led(){
+    RCC_AHB1PeriphClockCmd(LED_R_IO_RCC, ENABLE);
+    RCC_AHB1PeriphClockCmd(LED_Y_IO_RCC, ENABLE);
+    RCC_AHB1PeriphClockCmd(LED_G_IO_RCC, ENABLE);
+    
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+    
+    GPIO_InitStructure.GPIO_Pin   = LED_R_PIN;
+    GPIO_Init(LED_R_PORT, &GPIO_InitStructure);
+    
+    GPIO_InitStructure.GPIO_Pin   = LED_Y_PIN;
+    GPIO_Init(LED_Y_PORT, &GPIO_InitStructure);
+    
+    GPIO_InitStructure.GPIO_Pin   = LED_G_PIN;
+    GPIO_Init(LED_G_PORT, &GPIO_InitStructure);
 }
 
 void setup_usart(){
@@ -139,7 +81,7 @@ void setup_usart(){
 	GPIO_InitStruct.GPIO_Pin = UART_DRV_RX_PIN;
 	GPIO_Init(UART_DRV_RX_PORT, &GPIO_InitStruct);
 
-	USART_InitStruct.USART_BaudRate = 2000000;//2000000
+	USART_InitStruct.USART_BaudRate = DATABAUD;
 	USART_InitStruct.USART_WordLength = USART_WordLength_9b;
 	USART_InitStruct.USART_StopBits = USART_StopBits_1;
 	USART_InitStruct.USART_Parity = USART_Parity_No;
@@ -180,30 +122,54 @@ void setup_usart(){
 	USART_DMACmd(UART_DRV, USART_DMAReq_Tx, ENABLE);
 }
 
-
-void setup_pid_timer(){
-    /* TIM5 clock enable */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
-
-    /* pid int set up, TIM5*/
+// Setup Resolver Interface
+// TIM8 triggers ADC1 and 2 at 20kHz
+// TIM8 OC1 generates resolver reference signal at 10kHz
+// DMA2 moves 4 samples to memory, generates transfer complete interrupt at 5kHz
+void setup_res(){
+    //resolver timer
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
+    
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStructure.TIM_Period = 1680;//5kHz
+    TIM_TimeBaseStructure.TIM_Period = 420*2;//20kHz
     TIM_TimeBaseStructure.TIM_Prescaler = 9;
-    //TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-    TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
-    TIM_ITConfig(TIM5, TIM_IT_Update, ENABLE);
-
+    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+    TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
+    TIM_ITConfig(TIM8, TIM_IT_Update, DISABLE);
+    TIM_SelectOutputTrigger(TIM8, TIM_TRGOSource_Update);//trigger ADC
+    
+    //resolver ref signal generation
+    RCC_AHB1PeriphClockCmd(RES_IO_RCC, ENABLE);
+    GPIO_InitStructure.GPIO_Pin   = RES_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+    GPIO_Init(RES_PORT, &GPIO_InitStructure);
+    
+    GPIO_PinAFConfig(RES_PORT, GPIO_PinSource5, GPIO_AF_TIM8);
+    
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Disable;
+    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
+    TIM_OCInitStructure.TIM_Pulse = 300;
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
+    TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
+    
+    TIM_OC1Init(TIM8, &TIM_OCInitStructure);
+    TIM_OC1PreloadConfig(TIM8, TIM_OCPreload_Enable);
+    TIM_CtrlPWMOutputs(TIM8, ENABLE);
+    
     /* int NVIC setup */
-    NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannel = TIM8_UP_TIM13_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 12;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_Init(&NVIC_InitStructure);
-}
-
-// Setup ADC
-void setup_res(){
+    
     RCC_AHB1PeriphClockCmd(SIN_IO_RCC, ENABLE);
     RCC_AHB1PeriphClockCmd(COS_IO_RCC, ENABLE);
     /* ADC clock enable */
@@ -231,26 +197,26 @@ void setup_res(){
     ADC_InitStructure.ADC_NbrOfConversion = ADC_ANZ;//I think this one is clear :p
     ADC_InitStructure.ADC_ScanConvMode = ENABLE;//The scan is configured in one channel
     ADC_Init(SIN_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
-	 ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
-	 ADC_Init(COS_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
+    ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+    ADC_Init(COS_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
 
-	 ADC_CommonInitTypeDef ADC_CommonInitStructure;
-	 ADC_CommonInitStructure.ADC_Mode = ADC_DualMode_RegSimult;
-	 ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;
-	 ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_2;
-	 ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
-	 ADC_CommonInit(&ADC_CommonInitStructure);
+    ADC_CommonInitTypeDef ADC_CommonInitStructure;
+    ADC_CommonInitStructure.ADC_Mode = ADC_DualMode_RegSimult;
+    ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;
+    ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_2;
+    ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
+    ADC_CommonInit(&ADC_CommonInitStructure);
 
-	 for(int i = 1;i<=ADC_ANZ;i++){
-		 ADC_RegularChannelConfig(SIN_ADC, SIN_ADC_CHAN, i, RES_SampleTime);
-		 ADC_RegularChannelConfig(COS_ADC, COS_ADC_CHAN, i, RES_SampleTime);
-	 }
+    for(int i = 1;i<=ADC_ANZ;i++){
+        ADC_RegularChannelConfig(SIN_ADC, SIN_ADC_CHAN, i, RES_SampleTime);
+        ADC_RegularChannelConfig(COS_ADC, COS_ADC_CHAN, i, RES_SampleTime);
+    }
 		 
-	 ADC_MultiModeDMARequestAfterLastTransferCmd(ENABLE); 
+    ADC_MultiModeDMARequestAfterLastTransferCmd(ENABLE);
 	 
-	 //Enable ADC conversion
-	 ADC_Cmd(SIN_ADC,ENABLE);
-	 ADC_Cmd(COS_ADC,ENABLE);
+    //Enable ADC conversion
+    ADC_Cmd(SIN_ADC,ENABLE);
+    ADC_Cmd(COS_ADC,ENABLE);
 	 
     // Clock Enable
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
@@ -290,5 +256,5 @@ void setup_res(){
 
 void SysTick_Handler(void)
 {
-  time++;
+  systime++;
 }

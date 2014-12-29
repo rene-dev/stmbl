@@ -18,7 +18,7 @@ term/win32/bin
 
 sim/sim
 sim/plot
-
+stmblx
 *.ngc
 
 # Ignore list for Eagle, a PCB layout tool

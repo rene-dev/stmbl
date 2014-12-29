@@ -18,8 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//#include <stm32f4_discovery.h>
-#include <stm32f4xx_conf.h>
+#include "stm32f4xx_conf.h"
 #include "printf.h"
 #include "scanf.h"
 #include "hal.h"
@@ -170,47 +169,44 @@ void link_ac_sync_enc(){//berger lahr
 	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 }
 
-void DMA2_Stream0_IRQHandler(void){
-   DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
-	GPIO_SetBits(GPIOB,GPIO_Pin_4);
-	GPIO_ResetBits(LED_R_PORT,LED_R_PIN);//led
-		int freq = 5000;
-		float period = 1.0 / freq;
-		//GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
-
-		for(int i = 0; i < hal.fast_rt_func_count; i++){
-			hal.fast_rt[i](period);
-		}
-		
-		for(int i = 0; i < hal.rt_in_func_count; i++){
-			hal.rt_in[i](period);
-		}
-
-		for(int i = 0; i < hal.rt_filter_func_count; i++){
-			hal.rt_filter[i](period);
-		}
-
-		for(int i = 0; i < hal.rt_pid_func_count; i++){
-			hal.rt_pid[i](period);
-		}
-
-		for(int i = 0; i < hal.rt_calc_func_count; i++){
-			hal.rt_calc[i](period);
-		}
-
-		for(int i = 0; i < hal.rt_out_func_count; i++){
-			hal.rt_out[i](period);
-		}
-		GPIO_ResetBits(GPIOB,GPIO_Pin_4);
+void DMA2_Stream0_IRQHandler(void){ //5kHz
+    DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
+    GPIO_SetBits(GPIOB,GPIO_Pin_4);
+    GPIO_ResetBits(LED_R_PORT,LED_R_PIN);//led
+    int freq = 5000;
+    float period = 1.0 / freq;
+    //GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
+    
+    for(int i = 0; i < hal.fast_rt_func_count; i++){
+        hal.fast_rt[i](period);
+    }
+    
+    for(int i = 0; i < hal.rt_in_func_count; i++){
+        hal.rt_in[i](period);
+    }
+    
+    for(int i = 0; i < hal.rt_filter_func_count; i++){
+        hal.rt_filter[i](period);
+    }
+    
+    for(int i = 0; i < hal.rt_pid_func_count; i++){
+        hal.rt_pid[i](period);
+    }
+    
+    for(int i = 0; i < hal.rt_calc_func_count; i++){
+        hal.rt_calc[i](period);
+    }
+    
+    for(int i = 0; i < hal.rt_out_func_count; i++){
+        hal.rt_out[i](period);
+    }
+    GPIO_ResetBits(GPIOB,GPIO_Pin_4);
 }
 
+//disabled in setup.c
 void TIM8_UP_TIM13_IRQHandler(void){ //20KHz
 	TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
 	//GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
-}
-
-void TIM5_IRQHandler(void){ //5KHz
-	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
 }
 
 int main(void)
@@ -259,7 +255,6 @@ int main(void)
 
 	TIM_Cmd(TIM8, ENABLE);//int
 	TIM_Cmd(TIM4, ENABLE);//PWM
-	TIM_Cmd(TIM5, ENABLE);//PID
 
 	link_pid();
 	link_ac_sync_res();
@@ -286,8 +281,8 @@ int main(void)
 	{
 		Wait(10);
 		GPIO_SetBits(LED_R_PORT,LED_R_PIN);//led
-		period = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
-		lasttime = time/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
+		period = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
+		lasttime = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){
 			hal.nrt[i](period);
 		}
@@ -295,7 +290,7 @@ int main(void)
 }
 
 void Wait(unsigned int ms){
-	volatile unsigned int t = time + ms;
-	while(t >= time){
+	volatile unsigned int t = systime + ms;
+	while(t >= systime){
 	}
 }
