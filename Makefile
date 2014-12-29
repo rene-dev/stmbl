@@ -29,6 +29,7 @@ OBJCOPY=arm-none-eabi-objcopy
 CFLAGS  = -g -Wall -Tstm32_flash.ld -std=gnu99 -fno-builtin
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork -nostartfiles
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -nostartfiles -fsingle-precision-constant
+CFLAGS += -ffunction-sections -fdata-sections
 #USB
 CFLAGS += -DUSBTERM
 CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals -Isrc/ub_lib -Isrc/ub_lib/usb_cdc_lolevel
@@ -70,7 +71,7 @@ proj: 	$(PROJ_NAME).elf
 
 
 $(PROJ_NAME).elf: $(SRCS)
-	$(CC) $(CFLAGS) $^ -o $@ -Llib -lstm32f4 -Wl,-Map -Wl,$(PROJ_NAME).map
+	$(CC) $(CFLAGS) $^ -o $@ -Llib -lstm32f4 -Wl,--gc-sections -Wl,-Map -Wl,$(PROJ_NAME).map
 	$(OBJCOPY) -O ihex $(PROJ_NAME).elf $(PROJ_NAME).hex
 	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
 	arm-none-eabi-size main.elf
