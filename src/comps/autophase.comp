@@ -22,7 +22,7 @@ MEM(float fb_offset) = 0;
 MEM(int count) = 0;
 MEM(float time) = 0.0;
 MEM(float min_s) = 0.0;
-MEM(float max_e) = 0.0;
+//MEM(float max_e) = 0.0;
 MEM(float max_t) = 0.0;
 MEM(float pos) = 0.0;
 
@@ -43,7 +43,7 @@ RT_CALC(
       if(start_ == 1.0){
         ready_ = 0.0;
         min_s = PIN(min_step);
-        max_e = PIN(max_error);
+        //max_e = PIN(max_error);
         max_t = PIN(max_time);
         fb_offset = PIN(fb_offset_in);
         pos = fb;
