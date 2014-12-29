@@ -9,8 +9,8 @@ HAL_PIN(acc_max) = 21000; // max 200000rpm / s
 HAL_PIN(res) = 100000;
 
 MEM(float last_in) = 0.0;
-MEM(float last_last_in) = 0.0;
-MEM(float last_last_last_in) = 0.0;
+//MEM(float last_last_in) = 0.0;
+//MEM(float last_last_last_in) = 0.0;
 MEM(float last_out) = 0.0;
 MEM(float last_dp) = 0.0;
 
@@ -36,8 +36,8 @@ RT_FILTER(
   last_out = CLAMP(last_out, last_out - mdd * period, last_out + mdd * period);
 
   PIN(out) = last_out;
-  last_last_last_in = last_last_in;
-  last_last_in = last_in;
+  //last_last_last_in = last_last_in;
+  //last_last_in = last_in;
   last_in = i;
 
 );

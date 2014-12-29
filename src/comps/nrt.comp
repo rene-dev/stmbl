@@ -10,15 +10,14 @@ HAL_PIN(trg6) = 0.0;
 HAL_PIN(trg7) = 0.0;
 
 NRT(
-  volatile float df = 0.0;
-  df = PIN(trg0);
-  df = PIN(trg1);
-  df = PIN(trg2);
-  df = PIN(trg3);
-  df = PIN(trg4);
-  df = PIN(trg5);
-  df = PIN(trg6);
-  df = PIN(trg7);
+  PIN(trg0);
+  PIN(trg1);
+  PIN(trg2);
+  PIN(trg3);
+  PIN(trg4);
+  PIN(trg5);
+  PIN(trg6);
+  PIN(trg7);
 );
 
 ENDCOMP;
