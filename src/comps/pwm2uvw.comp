@@ -10,14 +10,41 @@ HAL_PIN(u) = 0.0;
 HAL_PIN(v) = 0.0;
 HAL_PIN(w) = 0.0;
 
+HAL_PIN(abpwm) = 0.0;
+
 RT_CALC(
   float pos = PIN(magpos) * (int)PIN(poles);
   float pwm_ = LIMIT(PIN(pwm), PIN(pwm_max));
   float volt_ = PIN(volt);
+  float u_;
+  float v_;
+  float w_;
+  
+  u_ = (sinf(pos + 2.0 * M_PI / 3.0 * 0.0) * pwm_ + 1.0) / 2.0;
+  v_ = (sinf(pos + 2.0 * M_PI / 3.0 * 1.0) * pwm_ + 1.0) / 2.0;
+  w_ = (sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * pwm_ + 1.0) / 2.0;
+  
+  if(PIN(abpwm) > 0){
+	  float  ofs;
+	  if (u_ > w_) {
+		  if      (v_ > u_)  ofs = u_/2;
+		  else if (v_ > w_)  ofs = v_/2;
+		  else     ofs = w_/2;
+	  }
+	  else {
+		  if      (u_ > v_)  ofs = u_/2;
+		  else if (w_ > v_)  ofs = v_/2;
+		  else     ofs = w_/2;
+	  }
 
-  PIN(u) = (sinf(pos + 2.0 * M_PI / 3.0 * 0.0) * pwm_ + 1.0) / 2.0 * volt_;
-  PIN(v) = (sinf(pos + 2.0 * M_PI / 3.0 * 1.0) * pwm_ + 1.0) / 2.0 * volt_;
-  PIN(w) = (sinf(pos + 2.0 * M_PI / 3.0 * 2.0) * pwm_ + 1.0) / 2.0 * volt_;
+	  u_ += ofs;
+	  v_ += ofs;
+	  w_ += ofs;
+  }
+
+  PIN(u) = u_ * volt_;
+  PIN(v) = v_ * volt_;
+  PIN(w) = w_ * volt_;
 );
 
 ENDCOMP;
