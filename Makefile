@@ -73,6 +73,7 @@ $(PROJ_NAME).elf: $(SRCS)
 	$(CC) $(CFLAGS) $^ -o $@ -Llib -lstm32f4 -Wl,-Map -Wl,$(PROJ_NAME).map
 	$(OBJCOPY) -O ihex $(PROJ_NAME).elf $(PROJ_NAME).hex
 	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
+	arm-none-eabi-size main.elf
 
 clean:
 	rm -f *.o *.i
