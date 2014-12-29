@@ -1,89 +1,91 @@
 COMP(res);
 
 HAL_PIN(pos) = 0.0;
-HAL_PIN(amp1) = 0.0;
-HAL_PIN(amp2) = 0.0;
+HAL_PIN(amp) = 0.0;
+HAL_PIN(s) = 0.0;
+HAL_PIN(c) = 0.0;
+
+HAL_PIN(reverse) = 0.0;
+
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
 
-MEM(float t1_mid) = 0.0;
-MEM(float t2_mid) = 0.0;
-MEM(float t1_last) = 0.0;
-MEM(float t2_last) = 0.0;
-
-MEM(float a1) = 0.0;
-MEM(float a2) = 0.0;
-
-MEM(float data[2][2][2]);
-MEM(int l) = 0;
-MEM(int k) = 0;
-MEM(int ref) = 0;
+MEM(float s_mid) = 0.0;
+MEM(float c_mid) = 0.0;
 
 INIT(
 
 );
 
 FRT(
-	float t1 = 0;
-	float t2 = 0;
+	float si[ADC_ANZ];
+	float co[ADC_ANZ];
+	uint32_t sc[ADC_ANZ];
 
- 	for(int i = 0;i<ADC_ANZ;i++){
-		t1 += (uint16_t)(ADC_DMA_Buffer[i] & 0x0000ffff);
-		t2 += (uint16_t)(ADC_DMA_Buffer[i] >> 16);
-	}
+	GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
 
-	float s = 0.0;
-	float c = 0.0;
+	for(int i = 0; i < PID_WAVES; i++){
+		sc[i] = 0.0;
 
-	t1_mid = t1_mid * 0.95 + (t1+t1_last)/2 * 0.05;
-	t2_mid = t2_mid * 0.95 + (t2+t2_last)/2 * 0.05;
-
-	if(PIN(enable) > 0.0){//erreger signal aktiv
-		if(ref){//eine halbwelle
-			a1 = ((t1-t1_mid)*(t1-t1_mid)+(t2-t2_mid)*(t2-t2_mid)) * 0.1 + a1 * 0.9;
-			data[k][0][0] = t1 - t1_mid;
-			data[k][0][1] = t2 - t2_mid;
-			k++;
-		}else{//andere halbwelle
-			a2 = ((t1_mid-t1)*(t1_mid-t1)+(t2_mid-t2)*(t2_mid-t2)) * 0.1 + a2 * 0.9;
-			data[l][1][0] = t1_mid - t1;
-			data[l][1][1] = t2_mid - t2;
-			l++;
-		}
-		if(l == 2 && k == 2){
-			l = 0;
-			k = 0;
-			for(int i = 0;i<2;i++){
-				s += data[i][0][0];
-				c += data[i][0][1];
-			}
-			for(int i = 0;i<2;i++){
-				s += data[i][1][0];
-				c += data[i][1][1];
-			}
-			if(a1 < 50000 && a2 < 50000){//TODO nur letzter wert!
-				PIN(error) = 1.0;
-			}
-			else{
-				PIN(error) = 0.0;
-				PIN(pos) = atan2f(s,c);
-			}
-
-			PIN(amp1) = a1;
-			PIN(amp2) = a2;
-		}
-	}else{//mittelpunkt messen
-		if(t1_mid == 0 && t2_mid == 0){//erster durchlauf
-			t1_mid = t1;
-			t2_mid = t2;
-		}else{//restliche durchläufe
-			t1_mid = t1_mid * 0.95 + t1 * 0.05;
-			t2_mid = t2_mid * 0.95 + t2 * 0.05;
+		for(int j = 0; j < ADC_ANZ; j++){
+			//si[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff);
+			//co[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16);
+			sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
 		}
 	}
-	t1_last = t1;
-	t2_last = t2;
-	ref = !ref; // 10khz
+
+	GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
+
+	for(int i = 0; i < PID_WAVES; i++){
+		si[i] = 0.0;
+		co[i] = 0.0;
+
+		si[i] = sc[i] & 0x0000ffff;
+		co[i] = sc[i] >> 16;
+	}
+
+	for(int i = 0; i < PID_WAVES; i++){
+		s_mid = s_mid * 0.99 + si[i] * 0.01;
+		c_mid = c_mid * 0.99 + co[i] * 0.01;
+	}
+
+	for(int i = 0; i < PID_WAVES; i++){
+		if(i % 2){
+			si[i] = si[i] - s_mid;
+			co[i] = co[i] - c_mid;
+		}
+		else{
+			si[i] = s_mid - si[i];
+			co[i] = c_mid - co[i];
+		}
+	}
+
+	float a = si[PID_WAVES - 1] * si[PID_WAVES - 1] + co[PID_WAVES - 1] * co[PID_WAVES - 1]; // nur letzte wave
+
+
+	float s_;
+	float c_;
+
+	if(PIN(reverse) > 0.0){
+		s_ = co[PID_WAVES - 1];
+		c_ = si[PID_WAVES - 1];
+	}
+	else{
+		s_ = si[PID_WAVES - 1];
+		c_ = co[PID_WAVES - 1];
+	}
+
+	if(a < 50000){
+		PIN(error) = 1.0;
+	}
+	else{
+		PIN(error) = 0.0;
+		PIN(pos) = atan2f(s_, c_);
+	}
+
+	PIN(amp) = a;
+	PIN(s) = s_;
+	PIN(c) = c_;
 );
 
 
