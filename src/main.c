@@ -64,9 +64,9 @@ void link_pid(){
 	// timer pwm
 	link_hal_pins("pid0.pwm_cmd", "ap0.pwm_in");
 	link_hal_pins("ap0.pwm_out", "p2uvw0.pwm");
-	link_hal_pins("p2uvw0.u", "pwmout0.u");
-	link_hal_pins("p2uvw0.v", "pwmout0.v");
-	link_hal_pins("p2uvw0.w", "pwmout0.w");
+	// link_hal_pins("p2uvw0.u", "pwmout0.u");
+	// link_hal_pins("p2uvw0.v", "pwmout0.v");
+	// link_hal_pins("p2uvw0.w", "pwmout0.w");
 	//pwm over uart
 	link_hal_pins("p2uvw0.u", "pwm2uart0.u");
 	link_hal_pins("p2uvw0.v", "pwm2uart0.v");
@@ -92,9 +92,9 @@ void link_pid(){
 	set_hal_pin("net0.enable", 1.0);
 
 	// misc
-	set_hal_pin("pwmout0.enable", 0.9);
-	set_hal_pin("pwmout0.volt", 130.0);
-	set_hal_pin("pwmout0.pwm_max", 0.9);
+	// set_hal_pin("pwmout0.enable", 0.9);
+	// set_hal_pin("pwmout0.volt", 130.0);
+	// set_hal_pin("pwmout0.pwm_max", 0.9);
 	
 	set_hal_pin("pwm2uart0.enable", 0.9);
 	set_hal_pin("pwm2uart0.volt", 130.0);
@@ -102,7 +102,7 @@ void link_pid(){
 	
 	set_hal_pin("p2uvw0.volt", 130.0);
 	set_hal_pin("p2uvw0.pwm_max", 0.9);
-	set_hal_pin("pid0.volt", 130.0);
+	set_hal_pin("pid0.volt", 60.0);
 	set_hal_pin("p2uvw0.poles", 1.0);
 	set_hal_pin("pid0.enable", 1.0);
 }
@@ -119,7 +119,7 @@ void link_ac_sync_res(){//bosch
 	link_hal_pins("res0.pos", "net0.fb");
 	set_hal_pin("res0.enable", 1.0);
 	set_hal_pin("pderiv1.in_lp", 1);
-	set_hal_pin("pderiv1.out_lp", 0.2);
+	set_hal_pin("pderiv1.out_lp", 1);
 	set_hal_pin("pderiv1.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
@@ -132,7 +132,7 @@ void link_ac_sync_res(){//bosch
 	// pid
 	set_hal_pin("pid0.pos_p", 100.0);
 	set_hal_pin("pid0.pos_lp", 1.0);
-	set_hal_pin("pid0.vel_lp", 0.4);
+	set_hal_pin("pid0.vel_lp", 0.5);
 	set_hal_pin("pid0.cur_lp", 0.5);
 	set_hal_pin("pid0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pid0.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
@@ -176,7 +176,7 @@ void DMA2_Stream0_IRQHandler(void){
 	GPIO_ResetBits(LED_R_PORT,LED_R_PIN);//led
 		int freq = 5000;
 		float period = 1.0 / freq;
-		GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
+		//GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
 
 		for(int i = 0; i < hal.fast_rt_func_count; i++){
 			hal.fast_rt[i](period);
@@ -201,32 +201,16 @@ void DMA2_Stream0_IRQHandler(void){
 		for(int i = 0; i < hal.rt_out_func_count; i++){
 			hal.rt_out[i](period);
 		}
-	GPIO_ResetBits(GPIOB,GPIO_Pin_4);
+		GPIO_ResetBits(GPIOB,GPIO_Pin_4);
 }
 
 void TIM8_UP_TIM13_IRQHandler(void){ //20KHz
 	TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
-	GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
+	//GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
 }
 
 void TIM5_IRQHandler(void){ //5KHz
 	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
-
-/*
-	if(read_hal_pin(&ferror) > 0.0 && ABS(pid2ps.pos_error) > read_hal_pin(&ferror)){
-		disable();
-		write_hal_pin(&en, 0.0);
-		state = EFOLLOW;
-		pid2ps.enable = 0;
-	}
-	if(pid2ps.saturated_s >= read_hal_pin(&overload_s) && read_hal_pin(&overload_s) > 0.0){
-		disable();
-		state = EOVERLOAD;
-		write_hal_pin(&en, 0.0);
-		pid2ps.enable = 0;
-	}
-*/
-
 }
 
 int main(void)
@@ -249,14 +233,14 @@ int main(void)
 
 	#include "comps/pos_minus.comp"
 	#include "comps/pwm2uvw.comp"
-	#include "comps/pwmout.comp"
+	//#include "comps/pwmout.comp"
 	#include "comps/pwm2uart.comp"
 
 	#include "comps/enc.comp"
 	#include "comps/res.comp"
 	#include "comps/pid.comp"
 	#include "comps/term.comp"
-	#include "comps/sim.comp"
+	//#include "comps/sim.comp"
 	#include "comps/pderiv.comp"
 	#include "comps/pderiv.comp"
 	#include "comps/autophase.comp"

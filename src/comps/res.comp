@@ -10,8 +10,8 @@ HAL_PIN(reverse) = 0.0;
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
 
-MEM(float s_mid) = 0.0;
-MEM(float c_mid) = 0.0;
+MEM(float s_mid) = 4096 / 2 * ADC_ANZ;//50% ADC
+MEM(float c_mid) = 4096 / 2 * ADC_ANZ;
 
 INIT(
 
