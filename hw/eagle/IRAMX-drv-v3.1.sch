@@ -14140,7 +14140,7 @@ Source: www.kingbright.com</description>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="IRAM" prefix="IC">
+<deviceset name="IRAM" prefix="IC" uservalue="yes">
 <gates>
 <gate name="G$1" symbol="IRAM-B" x="0" y="55.88"/>
 </gates>
@@ -27461,7 +27461,7 @@ Source: www.sumida.com/products/pdf/CEP125.pdf</description>
 <part name="LED1" library="led" deviceset="LED" device="3MM" value="GELB"/>
 <part name="R13" library="rcl" deviceset="R-EU_" device="R0805" value="180"/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
-<part name="IC1" library="iram-b" deviceset="IRAM" device="TOP"/>
+<part name="IC1" library="iram-b" deviceset="IRAM" device="TOP" value="IRAMX16UP60B"/>
 <part name="X3" library="con-wago-508" deviceset="W237-03P" device=""/>
 <part name="X4" library="con-wago-508" deviceset="W237-02P" device=""/>
 <part name="C17" library="rcl" deviceset="CPOL-EU" device="E10-35" value="820µ"/>

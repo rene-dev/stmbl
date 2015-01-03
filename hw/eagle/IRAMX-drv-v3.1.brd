@@ -3520,7 +3520,7 @@ design rules under a new name.</description>
 <element name="C14" library="rcl" package="C0805K" value="100n" x="63.5" y="15.4975" rot="MR270"/>
 <element name="LED1" library="led" package="LED3MM" value="GELB" x="63.7475" y="3.255" rot="R270"/>
 <element name="R13" library="rcl" package="R0805" value="180" x="65.4975" y="5.2475" rot="MR90"/>
-<element name="IC1" library="iram-b" package="SIP23_TOP" value="IRAMTOP" x="91.495" y="62.9975" rot="R90"/>
+<element name="IC1" library="iram-b" package="SIP23_TOP" value="IRAMX16UP60B" x="91.495" y="62.9975" rot="R90"/>
 <element name="X3" library="con-wago-508" package="W237-133" value="" x="83.505" y="69.9975" rot="R180">
 <attribute name="OC_NEWARK" value="unknown" x="83.505" y="69.9975" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="MPN" value="" x="83.505" y="69.9975" size="1.778" layer="27" rot="R180" display="off"/>
