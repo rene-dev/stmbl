@@ -33,8 +33,8 @@ void dqDraw::Update()
     M_perm = 1.5f * P *  Psi * Iq;
     M_rel  = 1.5f * P * (Ld - Lq) * Id * Iq;
     M_ges  = M_rel + M_perm;
-    Pe = Uabs*Iabs;
-    Pm = Omega*M_ges;
+    Pe = Uabs * Iabs;
+    Pm = Omega / P * M_ges;
 }
 
 
