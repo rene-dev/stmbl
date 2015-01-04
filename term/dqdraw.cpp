@@ -66,7 +66,6 @@ void dqDraw::mouseEvent(wxMouseEvent & evt)
         //std::cout << x << " " << y << std::endl;
         SetVoltage(x,y);
         text->SetLabel(wxString::Format("x,y %.0f,%.0f\nId,Iq %.0f,%.0f\nUd,Uq %.0f,%.0f\n",x,y,Id,Iq,Ud,Uq));
-        panel->Layout();
         //SetCurrent(x, y);
     }
 

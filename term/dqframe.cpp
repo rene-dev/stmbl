@@ -12,9 +12,9 @@ dqFrame::dqFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     wxStaticText *text = new wxStaticText(panel, wxID_ANY, wxEmptyString, wxPoint(25, 80));
     dqdraw = new dqDraw((wxFrame*)panel);
     dqdraw->text = text;
-    dqdraw->panel = panel;
     
     mainsizer->Add(dqdraw, 1,wxEXPAND,0);
+    datasizer->SetMinSize(120, 0);
     mainsizer->Add(datasizer, 0,wxRIGHT | wxALL,3);
     datasizer->Add(text, 1,wxEXPAND | wxALL,3);
 
