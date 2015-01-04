@@ -41,6 +41,8 @@ public:
     
     double In,Un;
     
+    double Pm,Pe;
+    
     double scale;
 
 private:

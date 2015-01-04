@@ -9,11 +9,13 @@ dqDraw::dqDraw(wxFrame* parent) : wxPanel(parent){
     Un = 150;
     
     Rs = 7.6;
-    Omega = 0;
+    Omega = 100;
     Psi = 0.5411;
     P = 4;
     Ld = 0.0041;
     Lq = 0.0041;
+    Pm = 0;
+    Pe = 0;
 }
 
 void dqDraw::Update()
@@ -26,6 +28,8 @@ void dqDraw::Update()
     M_perm = 1.5f * P *  Psi * Iq;
     M_rel  = 1.5f * P * (Ld - Lq) * Id * Iq;
     M_ges  = M_rel + M_perm;
+    Pe = Uabs*Iabs;
+    Pm = Omega*M_ges;
 }
 
 
@@ -65,7 +69,7 @@ void dqDraw::mouseEvent(wxMouseEvent & evt)
         y = (h/2-evt.GetY())*scale;
         //std::cout << x << " " << y << std::endl;
         SetVoltage(x,y);
-        text->SetLabel(wxString::Format("x,y %.0f,%.0f\nId,Iq %.0f,%.0f\nUd,Uq %.0f,%.0f\n",x,y,Id,Iq,Ud,Uq));
+        text->SetLabel(wxString::Format("x,y %.0f,%.0f\nId,Iq %.0f,%.0f\nUd,Uq %.0f,%.0f\n M_ges:%.0f\n Pe:%.0f\n Pm:%.0f",x,y,Id,Iq,Ud,Uq,M_ges,Pe,Pm));
         //SetCurrent(x, y);
     }
 
