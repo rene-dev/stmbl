@@ -3,13 +3,15 @@
 #include <wx/filedlg.h>
 
 #include "mainframe.hpp"
+#include "dqframe.hpp"
 
 class Servoterm: public wxApp
 {
 public:
     bool OnInit();
 private:
-    MainFrame* frame;
+    MainFrame* servoframe;
+    dqFrame* dqframe;
     void OnAbout(wxCommandEvent& WXUNUSED(event));
 };
 
@@ -17,7 +19,8 @@ IMPLEMENT_APP(Servoterm)
 
 bool Servoterm::OnInit()
 {
-    frame = new MainFrame(wxT("Servoterm"));
+    servoframe = new MainFrame(wxT("Servoterm"));
+    dqframe = new dqFrame(wxT("dq"));
     wxMenuBar *menuBar = new wxMenuBar;
     
     wxMenu *helpMenu = new wxMenu;
@@ -25,12 +28,13 @@ bool Servoterm::OnInit()
     helpMenu->Append(wxID_ABOUT);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnAbout, this, wxID_ABOUT);
 
-    frame->SetMenuBar( menuBar );
+    servoframe->SetMenuBar( menuBar );
 
     //frame->CreateStatusBar();
     //frame->SetStatusText("Statuskram und so");
  
-    frame->Show(TRUE);
+    servoframe->Show(TRUE);
+    dqframe->Show(TRUE);
     return TRUE;
 }
 

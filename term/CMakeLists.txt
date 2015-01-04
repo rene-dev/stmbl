@@ -19,6 +19,8 @@ set(SRC_LIST
 main.cpp
 mainframe.cpp mainframe.hpp
 basicdrawpane.cpp basicdrawpane.hpp
+dqframe.cpp dqframe.hpp
+dqdraw.cpp dqdraw.hpp
 )
 
 set(wxWidgets_CONFIGURATION mswu)
