@@ -24,6 +24,8 @@ public:
     wxPoint mousepos;
     bool drag;
     wxCoord w,h;
+    wxStaticText *text;
+    wxPanel *panel;
     
     //motor model
     double Omega;

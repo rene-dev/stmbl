@@ -4,7 +4,7 @@ dqDraw::dqDraw(wxFrame* parent) : wxPanel(parent){
     Bind(wxEVT_PAINT, &dqDraw::paintEvent, this);
     Bind(wxEVT_MOTION, &dqDraw::mouseEvent, this);
     
-    scale = 3;
+    scale = 1;
     In = 2;
     Un = 150;
     
@@ -65,6 +65,8 @@ void dqDraw::mouseEvent(wxMouseEvent & evt)
         y = (h/2-evt.GetY())*scale;
         //std::cout << x << " " << y << std::endl;
         SetVoltage(x,y);
+        text->SetLabel(wxString::Format("x,y %.0f,%.0f\nId,Iq %.0f,%.0f\nUd,Uq %.0f,%.0f\n",x,y,Id,Iq,Ud,Uq));
+        panel->Layout();
         //SetCurrent(x, y);
     }
 
