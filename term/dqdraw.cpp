@@ -93,6 +93,10 @@ void dqDraw::render(wxDC&  dc)
 {
     dc.GetSize(&w, &h);
     
+    dc.SetPen(*wxGREY_PEN);
+    dc.DrawLine( 0, h/2, w, h/2 );
+    dc.DrawLine( w/2, 0, w/2, h );
+    
     // ursprung oben links
     
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
@@ -102,8 +106,4 @@ void dqDraw::render(wxDC&  dc)
     dc.SetPen(*wxBLUE_PEN);
     dc.DrawLine( w/2, h/2, Id*scale+w/2, h/2-Iq*scale);
     dc.DrawCircle(w/2, h/2, In*scale);
-
-    dc.SetPen(*wxGREY_PEN);
-    dc.DrawLine( 0, h/2, w, h/2 );
-    dc.DrawLine( w/2, 0, w/2, h );
 }
