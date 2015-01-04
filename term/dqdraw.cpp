@@ -3,19 +3,24 @@
 dqDraw::dqDraw(wxFrame* parent) : wxPanel(parent){
     Bind(wxEVT_PAINT, &dqDraw::paintEvent, this);
     Bind(wxEVT_MOTION, &dqDraw::mouseEvent, this);
+    Bind(wxEVT_MOUSEWHEEL , &dqDraw::scrollEvent, this);
     
-    scale = 1;
+    scale = 5;
     In = 2;
-    Un = 150;
+    Un = 60;
     
     Rs = 7.6;
-    Omega = 100;
+    Omega = 10;
     Psi = 0.5411;
     P = 4;
     Ld = 0.0041;
     Lq = 0.0041;
-    Pm = 0;
-    Pe = 0;
+}
+
+void dqDraw::scrollEvent(wxMouseEvent & evt){
+    float move = (float)evt.m_wheelRotation / evt.m_wheelDelta;
+    scale = CLAMP(scale -= move,0.5,50);
+    Refresh();
 }
 
 void dqDraw::Update()
@@ -65,12 +70,12 @@ void dqDraw::mouseEvent(wxMouseEvent & evt)
 {
     if(evt.LeftIsDown() && evt.Dragging()){
         double x,y;
-        x = (evt.GetX()-w/2)*scale;
-        y = (h/2-evt.GetY())*scale;
+        x = (evt.GetX()-w/2)/scale;
+        y = (h/2-evt.GetY())/scale;
         //std::cout << x << " " << y << std::endl;
         SetVoltage(x,y);
-        text->SetLabel(wxString::Format("x,y %.0f,%.0f\nId,Iq %.0f,%.0f\nUd,Uq %.0f,%.0f\n M_ges:%.0f\n Pe:%.0f\n Pm:%.0f",x,y,Id,Iq,Ud,Uq,M_ges,Pe,Pm));
         //SetCurrent(x, y);
+        text->SetLabel(wxString::Format("x,y %.2f,%.2f\nId,Iq %.2f,%.2f\nUd,Uq %.2f,%.2f\n M_ges:%.2f\n Pe:%.2f\n Pm:%.2f",x,y,Id,Iq,Ud,Uq,M_ges,Pe,Pm));
     }
 
     //Update();
@@ -92,10 +97,10 @@ void dqDraw::render(wxDC&  dc)
     
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
     dc.SetPen(*wxRED_PEN);
-    dc.DrawLine( w/2, h/2, Ud/scale+w/2, h/2-Uq/scale);
+    dc.DrawLine( w/2, h/2, Ud*scale+w/2, h/2-Uq*scale);
     dc.DrawCircle(w/2, h/2, Un*scale);
     dc.SetPen(*wxBLUE_PEN);
-    dc.DrawLine( w/2, h/2, Id/scale+w/2, h/2-Iq/scale);
+    dc.DrawLine( w/2, h/2, Id*scale+w/2, h/2-Iq*scale);
     dc.DrawCircle(w/2, h/2, In*scale);
 
     dc.SetPen(*wxGREY_PEN);

@@ -14,6 +14,8 @@
 #include <vector>
 #include <libserialport.h>
 
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
 class dqDraw : public wxPanel
 {
 public:
@@ -21,6 +23,7 @@ public:
     void paintEvent(wxPaintEvent & evt);
     void render(wxDC& dc);
     void mouseEvent(wxMouseEvent & evt);
+    void scrollEvent(wxMouseEvent & evt);
     wxPoint mousepos;
     bool drag;
     wxCoord w,h;
