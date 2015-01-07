@@ -177,29 +177,41 @@ int addf_nrt(void (*nrt)(float period));
  src_pin.read_callback = dst_pin.read_callback;
 
 #define SM(sm_code) \
+{ \
+inline void sm_function(){ \
 static float sm_time_count; \
-static int jump_lable_pointer = -1; \
-switch(jump_lable_pointer){ \
-case -1:; \
+(void) sm_time_count; \
+static int jump_label_pointer = -__COUNTER__ - 1; \
+switch(jump_label_pointer){ \
+case -__COUNTER__ - 2:; \
   sm_code; \
-  jump_lable_sm_end: \
+default: \
+goto jump_label_sm_end; \
+jump_label_sm_end: \
   break; \
+}\
+}\
+sm_function(); \
 }
 
-#define GOTO(sm_lable) \
-jump_lable_pointer = sm_lable; \
-goto jump_lable_sm_end;
+
+#define GOTO(sm_label) \
+jump_label_pointer = sm_label; \
+break;
+
+#define NEXT(sm_label) \
+jump_label_pointer = sm_label;
 
 #define STATE(sm_state) \
-goto jump_lable_sm_end; \
+break; \
 case sm_state:
 
 #define SLEEP(time) \
 sm_time_count = 0.0; \
-case -__LINE__:; jump_lable_pointer =  -__LINE__; \
+case -__COUNTER__ - 2:; jump_label_pointer =  -__COUNTER__ - 1; \
 if(sm_time_count < time){ \
   sm_time_count += period; \
-  goto jump_lable_sm_end; \
+  goto jump_label_sm_end; \
 }
 
 #define ENDCOMP \
