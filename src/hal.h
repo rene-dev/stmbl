@@ -176,6 +176,32 @@ int addf_nrt(void (*nrt)(float period));
 #define LINK_RC(src_pin, dst_pin)                    \
  src_pin.read_callback = dst_pin.read_callback;
 
+#define SM(sm_code) \
+static float sm_time_count; \
+static int jump_lable_pointer = -1; \
+switch(jump_lable_pointer){ \
+case -1:; \
+  sm_code; \
+  jump_lable_sm_end: \
+  break; \
+}
+
+#define GOTO(sm_lable) \
+jump_lable_pointer = sm_lable; \
+goto jump_lable_sm_end;
+
+#define STATE(sm_state) \
+goto jump_lable_sm_end; \
+case sm_state:
+
+#define SLEEP(time) \
+sm_time_count = 0.0; \
+case -__LINE__:; jump_lable_pointer =  -__LINE__; \
+if(sm_time_count < time){ \
+  sm_time_count += period; \
+  goto jump_lable_sm_end; \
+}
+
 #define ENDCOMP \
   addf_init(init); \
   addf_fast_rt(fast_rt); \
