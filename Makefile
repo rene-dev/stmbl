@@ -26,7 +26,7 @@ CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 #CCDIR = /Users/rene/Downloads/gcc-arm-none-eabi-4_7-2013q3/bin
 
-CFLAGS  = -g -Wall -Tstm32_flash.ld -std=gnu99 -fno-builtin
+CFLAGS  = -g -Wall -Tstm32_flash.ld -std=gnu99 -fno-builtin -CC
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork -nostartfiles
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -nostartfiles -fsingle-precision-constant
 CFLAGS += -ffunction-sections -fdata-sections
