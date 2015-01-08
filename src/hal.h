@@ -176,41 +176,41 @@ int addf_nrt(void (*nrt)(float period));
 #define LINK_RC(src_pin, dst_pin)                    \
  src_pin.read_callback = dst_pin.read_callback;
 
-#define SM(sm_code) \
+#define HT(ht_code) \
 { \
-inline void sm_function(){ \
-static float sm_time_count; \
-(void) sm_time_count; \
+inline void ht_function(){ \
+static float ht_time_count; \
+(void) ht_time_count; \
 static int jump_label_pointer = -__COUNTER__ - 1; \
 switch(jump_label_pointer){ \
 case -__COUNTER__ - 2:; \
-  sm_code; \
+  ht_code; \
 default: \
-goto jump_label_sm_end; \
-jump_label_sm_end: \
+goto jump_label_ht_end; \
+jump_label_ht_end: \
   break; \
 }\
 }\
-sm_function(); \
+ht_function(); \
 }
 
-#define GOTO(sm_label) \
-jump_label_pointer = (sm_label); \
+#define GOTO(ht_label) \
+jump_label_pointer = (ht_label); \
 break;
 
-#define NEXT(sm_label) \
-jump_label_pointer = (sm_label);
+#define NEXT(ht_label) \
+jump_label_pointer = (ht_label);
 
-#define STATE(sm_state) \
+#define STATE(ht_state) \
 break; \
-case (sm_state):
+case (ht_state):
 
 #define SLEEP(time) \
-sm_time_count = 0.0; \
+ht_time_count = 0.0; \
 case -__COUNTER__ - 2:; jump_label_pointer =  -__COUNTER__ - 1; \
-if(sm_time_count < (time)){ \
-  sm_time_count += period; \
-  goto jump_label_sm_end; \
+if(ht_time_count < (time)){ \
+  ht_time_count += period; \
+  goto jump_label_ht_end; \
 }
 
 #define ENDCOMP \
