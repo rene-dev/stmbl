@@ -1,0 +1,57 @@
+COMP(auto);
+
+HAL_PIN(pwm_in) = 0.0;
+HAL_PIN(mag_pos_in) = 0.0;
+HAL_PIN(pwm_out) = 0.0;
+HAL_PIN(mag_pos_out) = 0.0;
+
+HAL_PIN(start) = 0.0;
+HAL_PIN(ready) = 0.0;
+
+HAL_PIN(offset) = 0.0;
+
+HAL_PIN(fb) = 0.0;
+
+HAL_PIN(freq) = 500.0;
+HAL_PIN(time) = 0.0;
+HAL_PIN(scale) = 0.5;
+
+MEM(float mpos) = 0.0;
+MEM(float start_pos) = 0.0;
+MEM(int integrate) = 0;
+
+RT_CALC(
+
+  SM(
+    GOTO(0);
+    STATE(0){
+      mpos = mod(DEG(180.0) + mpos);
+      SLEEP(0.5 / PIN(freq));
+    }
+  );
+
+  SM(
+    GOTO(0);
+    STATE(0);
+      //SLEEP(1);
+      PIN(pwm_out) = PIN(scale);
+  );
+
+  // if(state){
+  //   mpos = PIN(pos);
+  // }
+  // else{
+  //   mpos = mod(DEG(180.0) + PIN(pos));
+  // }
+  // _time++;
+  // if(_time > PIN(time)){
+  //   state = 1 - state;
+  //   _time = 0;
+  // }
+
+  PIN(pwm_out) = PIN(scale);
+  PIN(mag_pos_out) = mpos;
+);
+
+
+ENDCOMP;

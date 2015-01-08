@@ -194,22 +194,21 @@ jump_label_sm_end: \
 sm_function(); \
 }
 
-
 #define GOTO(sm_label) \
-jump_label_pointer = sm_label; \
+jump_label_pointer = (sm_label); \
 break;
 
 #define NEXT(sm_label) \
-jump_label_pointer = sm_label;
+jump_label_pointer = (sm_label);
 
 #define STATE(sm_state) \
 break; \
-case sm_state:
+case (sm_state):
 
 #define SLEEP(time) \
 sm_time_count = 0.0; \
 case -__COUNTER__ - 2:; jump_label_pointer =  -__COUNTER__ - 1; \
-if(sm_time_count < time){ \
+if(sm_time_count < (time)){ \
   sm_time_count += period; \
   goto jump_label_sm_end; \
 }
