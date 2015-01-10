@@ -172,7 +172,6 @@ void link_ac_sync_enc(){//berger lahr
 void DMA2_Stream0_IRQHandler(void){ //5kHz
     DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
     GPIO_SetBits(GPIOB,GPIO_Pin_4);
-    GPIO_ResetBits(LED_R_PORT,LED_R_PIN);//led
     int freq = 5000;
     float period = 1.0 / freq;
     //GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
@@ -217,11 +216,6 @@ int main(void)
 
 	setup();
 	//ADC_SoftwareStartConv(ADC1);
-	GPIO_SetBits(LED_R_PORT,LED_R_PIN);//led
-	GPIO_SetBits(LED_Y_PORT,LED_Y_PIN);//led
-	GPIO_SetBits(LED_G_PORT,LED_G_PIN);//led
-
-
 
 	#include "comps/frt.comp"
 	#include "comps/rt.comp"
@@ -241,6 +235,7 @@ int main(void)
 	#include "comps/pderiv.comp"
 	//#include "comps/autophase.comp"
 	#include "comps/auto.comp"
+	#include "comps/led.comp"
 
 	//#include "comps/vel_observer.comp"
 
@@ -282,7 +277,6 @@ int main(void)
 	while(1)  // Do not exit
 	{
 		Wait(10);
-		GPIO_SetBits(LED_R_PORT,LED_R_PIN);//led
 		period = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
 		lasttime = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){
