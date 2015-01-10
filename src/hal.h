@@ -181,9 +181,10 @@ int addf_nrt(void (*nrt)(float period));
 inline void ht_function(){ \
 static float ht_time_count; \
 (void) ht_time_count; \
-static int jump_label_pointer = -__COUNTER__ - 1; \
+static int jump_label_pointer = -__COUNTER__ - 2; \
+static int jump_label_pointer_old = 0; \
 switch(jump_label_pointer){ \
-case -__COUNTER__ - 2:; \
+case -__COUNTER__ - 1:; \
   ht_code; \
 default: \
 goto jump_label_ht_end; \
@@ -207,11 +208,14 @@ case (ht_state):
 
 #define SLEEP(time) \
 ht_time_count = 0.0; \
+jump_label_pointer_old = jump_label_pointer; \
 case -__COUNTER__ - 2:; jump_label_pointer =  -__COUNTER__ - 1; \
-if(ht_time_count < (systime_s)){ \
+if(ht_time_count < (time)){ \
   ht_time_count += period; \
   goto jump_label_ht_end; \
-}
+} \
+jump_label_pointer = jump_label_pointer_old;
+
 
 #define ENDCOMP \
   addf_init(init); \

@@ -1,12 +1,16 @@
+#include "../hal.h"
 COMP(test);
 
-HAL_PIN(test0) = 0.0;
-HAL_PIN(test1) = 0.0;
-HAL_PIN(test2) = 0.0;
+HAL_PIN(test0) = 1.0;
+HAL_PIN(test1) = 1.0;
+HAL_PIN(test2) = 1.0;
 HAL_PIN(start) = 0.0;
 
 RT_CALC(
   HT(
+    PIN(test0) = 0.0;
+    PIN(test1) = 0.0;
+    PIN(test2) = 0.0;
     GOTO(0);
     STATE(0){
       PIN(test0) = 1.0;
@@ -24,7 +28,7 @@ RT_CALC(
       SLEEP(0.5);
       PIN(test0) = 0.0;
       PIN(test1) = 0.0;
-      PIN(test2) = 2.0;
+      PIN(test2) = 1.0;
       SLEEP(0.5);
       GOTO(0);
     }

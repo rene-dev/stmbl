@@ -42,6 +42,7 @@ void link_pid(){
 	link_hal_pins("net0.fb", "pos_minus0.in1");
 	link_hal_pins("pos_minus0.out", "pid0.pos_error");
 	link_hal_pins("net0.fb", "auto0.fb_in");
+	link_hal_pins("net0.fb_d", "auto0.fb_d_in");
 
 
 	// vel
@@ -259,6 +260,18 @@ int main(void)
 
 	link_pid();
 	link_ac_sync_res();
+	link_hal_pins("led0.r", "test0.test0");
+	link_hal_pins("led0.y", "test0.test1");
+	link_hal_pins("led0.g", "test0.test2");
+
+	link_hal_pins("auto0.mag_pos_out", "term0.wave0");
+	link_hal_pins("auto0.pwm_out", "term0.wave1");
+	link_hal_pins("net0.fb_d", "term0.wave2");
+	link_hal_pins("auto0.state", "term0.wave3");
+	set_hal_pin("term0.gain2", 10.0);
+	set_hal_pin("term0.gain3", 50.0);
+
+
 	//set_hal_pin("ap0.start", 1.0);
 
 	// link_hal_pins("sim0.sin", "net0.cmd");
