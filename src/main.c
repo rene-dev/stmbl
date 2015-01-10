@@ -30,6 +30,7 @@
 #endif
 
 int __errno;
+volatile float systime_s = 0.0;
 void Wait(unsigned int ms);
 
 #define NO 0
@@ -176,6 +177,7 @@ void DMA2_Stream0_IRQHandler(void){ //5kHz
     int freq = 5000;
     float period = 1.0 / freq;
     //GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
+		systime_s += period;
 
     for(int i = 0; i < hal.fast_rt_func_count; i++){
         hal.fast_rt[i](period);
@@ -241,6 +243,8 @@ int main(void)
 	#include "comps/pderiv.comp"
 	//#include "comps/autophase.comp"
 	#include "comps/auto.comp"
+	#include "comps/test.comp"
+
 
 	//#include "comps/vel_observer.comp"
 
@@ -260,7 +264,7 @@ int main(void)
 
 	link_pid();
 	link_ac_sync_res();
-	set_hal_pin("ap0.start", 1.0);
+	//set_hal_pin("ap0.start", 1.0);
 
 	// link_hal_pins("sim0.sin", "net0.cmd");
 	// link_hal_pins("net0.cmd", "vel_ob0.pos_in");

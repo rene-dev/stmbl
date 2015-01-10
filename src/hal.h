@@ -208,7 +208,7 @@ case (ht_state):
 #define SLEEP(time) \
 ht_time_count = 0.0; \
 case -__COUNTER__ - 2:; jump_label_pointer =  -__COUNTER__ - 1; \
-if(ht_time_count < (time)){ \
+if(ht_time_count < (systime_s)){ \
   ht_time_count += period; \
   goto jump_label_ht_end; \
 }
