@@ -14,7 +14,7 @@ HAL_PIN(fb_in) = 0.0;
 HAL_PIN(pole_count) = 0.0;
 
 HAL_PIN(freq) = 500.0;
-HAL_PIN(time) = 0.0;
+HAL_PIN(time) = 0.1;
 HAL_PIN(scale) = 0.5;
 
 MEM(float mpos) = 0.0;

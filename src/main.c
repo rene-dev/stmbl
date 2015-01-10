@@ -40,7 +40,7 @@ void link_pid(){
 	link_hal_pins("net0.cmd", "pos_minus0.in0");
 	link_hal_pins("net0.fb", "pos_minus0.in1");
 	link_hal_pins("pos_minus0.out", "pid0.pos_error");
-	link_hal_pins("net0.fb", "ap0.fb_in");
+	link_hal_pins("net0.fb", "auto0.fb_in");
 
 
 	// vel
@@ -61,8 +61,8 @@ void link_pid(){
 	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
 	// timer pwm
-	link_hal_pins("pid0.pwm_cmd", "ap0.pwm_in");
-	link_hal_pins("ap0.pwm_out", "p2uvw0.pwm");
+	link_hal_pins("pid0.pwm_cmd", "auto0.pwm_in");
+	link_hal_pins("auto0.pwm_out", "p2uvw0.pwm");
 	// link_hal_pins("p2uvw0.u", "pwmout0.u");
 	// link_hal_pins("p2uvw0.v", "pwmout0.v");
 	// link_hal_pins("p2uvw0.w", "pwmout0.w");
@@ -70,10 +70,10 @@ void link_pid(){
 	link_hal_pins("p2uvw0.u", "pwm2uart0.u");
 	link_hal_pins("p2uvw0.v", "pwm2uart0.v");
 	link_hal_pins("p2uvw0.w", "pwm2uart0.w");
-	
+
 
 	// magpos
-	link_hal_pins("ap0.mag_pos_out", "p2uvw0.magpos");
+	link_hal_pins("auto0.mag_pos_out", "p2uvw0.magpos");
 
 	// term
 	link_hal_pins("net0.cmd", "term0.wave0");
@@ -94,11 +94,11 @@ void link_pid(){
 	// set_hal_pin("pwmout0.enable", 0.9);
 	// set_hal_pin("pwmout0.volt", 130.0);
 	// set_hal_pin("pwmout0.pwm_max", 0.9);
-	
+
 	set_hal_pin("pwm2uart0.enable", 0.9);
 	set_hal_pin("pwm2uart0.volt", 130.0);
 	set_hal_pin("pwm2uart0.pwm_max", 0.9);
-	
+
 	set_hal_pin("p2uvw0.volt", 130.0);
 	set_hal_pin("p2uvw0.pwm_max", 0.9);
 	set_hal_pin("pid0.volt", 60.0);
@@ -123,10 +123,10 @@ void link_ac_sync_res(){//bosch
 	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
 	// res_offset
-	set_hal_pin("ap0.fb_offset_in", -0.64);
+	//set_hal_pin("ap0.fb_offset_in", -0.64);
 
 	// pole count
-	set_hal_pin("ap0.pole_count", 4.0);
+	set_hal_pin("auto0.pole_count", 4.0);
 
 	// pid
 	set_hal_pin("pid0.pos_p", 100.0);
@@ -176,27 +176,27 @@ void DMA2_Stream0_IRQHandler(void){ //5kHz
     int freq = 5000;
     float period = 1.0 / freq;
     //GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
-    
+
     for(int i = 0; i < hal.fast_rt_func_count; i++){
         hal.fast_rt[i](period);
     }
-    
+
     for(int i = 0; i < hal.rt_in_func_count; i++){
         hal.rt_in[i](period);
     }
-    
+
     for(int i = 0; i < hal.rt_filter_func_count; i++){
         hal.rt_filter[i](period);
     }
-    
+
     for(int i = 0; i < hal.rt_pid_func_count; i++){
         hal.rt_pid[i](period);
     }
-    
+
     for(int i = 0; i < hal.rt_calc_func_count; i++){
         hal.rt_calc[i](period);
     }
-    
+
     for(int i = 0; i < hal.rt_out_func_count; i++){
         hal.rt_out[i](period);
     }
@@ -213,15 +213,15 @@ int main(void)
 {
 	float period = 0.0;
 	float lasttime = 0.0;
-	
-	
+
+
 	setup();
 	//ADC_SoftwareStartConv(ADC1);
 	GPIO_SetBits(LED_R_PORT,LED_R_PIN);//led
 	GPIO_SetBits(LED_Y_PORT,LED_Y_PIN);//led
 	GPIO_SetBits(LED_G_PORT,LED_G_PIN);//led
 
-	
+
 
 	#include "comps/frt.comp"
 	#include "comps/rt.comp"
@@ -239,7 +239,9 @@ int main(void)
 	//#include "comps/sim.comp"
 	#include "comps/pderiv.comp"
 	#include "comps/pderiv.comp"
-	#include "comps/autophase.comp"
+	//#include "comps/autophase.comp"
+	#include "comps/auto.comp"
+
 	//#include "comps/vel_observer.comp"
 
 	set_comp_type("net");
@@ -275,7 +277,7 @@ int main(void)
 	// set_hal_pin("sim0.freq", 0.5);
 	// set_hal_pin("vel_ob0.alpha", 1.0);
 	// set_hal_pin("vel_ob0.beta", 0.1);
-	
+
 
 	while(1)  // Do not exit
 	{
