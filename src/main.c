@@ -290,6 +290,12 @@ int main(void)
 	// set_hal_pin("sim0.freq", 0.5);
 	// set_hal_pin("vel_ob0.alpha", 1.0);
 	// set_hal_pin("vel_ob0.beta", 0.1);
+	
+	//->otg->GCCFG &= ~GCCFG_VBUSBSEN
+	Wait(1000);
+	#ifdef USBTERM
+	UB_USB_CDC_Init();
+	#endif
 
 
 	while(1)  // Do not exit

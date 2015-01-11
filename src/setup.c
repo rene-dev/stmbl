@@ -33,10 +33,6 @@ void setup(){
     //systick prio
 
     NVIC_SetPriority(SysTick_IRQn, 14);
-
-    #ifdef USBTERM
-    UB_USB_CDC_Init();
-    #endif
 }
 
 void setup_usart(){
