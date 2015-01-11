@@ -15,32 +15,51 @@ HAL_PIN(fb_d_in) = 0.0;
 
 HAL_PIN(pole_count) = 0.0;
 
-HAL_PIN(freq) = 77.0;
+HAL_PIN(freq) = 200.0;
 HAL_PIN(time) = 0.1;
 HAL_PIN(scale) = 0.9;
-HAL_PIN(cvs) = 0.0;
-HAL_PIN(cvc) = 0.0;
+HAL_PIN(real) = 0.0;
+HAL_PIN(amp) = 0.9;
+HAL_PIN(phase) = 0.0;
+HAL_PIN(imag) = 0.0;
 HAL_PIN(state) = 0.0;
 
 MEM(float mpos) = 0.0;
-MEM(float mpos_avg) = 0.0;
-MEM(float fb_d_avg) = 0.0;
+MEM(float q0) = 0.0;
+MEM(float q1) = 0.0;
+MEM(float q2) = 0.0;
+MEM(float w) = 0.0;
+MEM(float sine) = 0.0;
+MEM(float cosine) = 0.0;
+MEM(float coeff) = 0.0;
+MEM(int N) = 100;
+MEM(int k) = 0;
+MEM(int i) = 0;
+MEM(float f) = 0.0;
+
+
+
 MEM(float startpos) = 0.0;
 MEM(float cov) = 0.0;
 MEM(float covs) = 0.0;
 MEM(float covc) = 0.0;
 MEM(float pwm) = 0.0;
 MEM(float offset_) = 0.0;
+MEM(float offset1_) = DEG(90);
 
 
 RT_CALC(
   float fb = PIN(fb_in);
   float fb_d = PIN(fb_d_in);
+  float re;
+  float im;
+  //offset_ = 0.0;//PIN(offset);
 
   HT(
     GOTO(0);
     STATE(0){
-      mpos = mod(DEG(180.0) + mpos);
+      offset1_ = mod(DEG(180.0) + offset1_);
+
       SLEEP((0.5 / PIN(freq)));
     }
   );
@@ -48,68 +67,48 @@ RT_CALC(
   HT(
     GOTO(0);
     STATE(0){
-      mpos_avg = mpos_avg * 0.9 + mpos * 0.1;
-      fb_d_avg = fb_d_avg * 0.9 + fb_d * 0.1;
+      offset_ = mod(offset_ += DEG(10));
 
-      cov += (mpos - mpos_avg) * (fb_d - fb_d_avg);
+      f = PIN(freq);
+      k = (int)(0.5 + N * f * period);
+      w = 2.0 * M_PI * k / N;
+      sine = sinf(w);
+      cosine = cosf(w);
+      coeff = 2.0 * cosine;
+
+      q0 = 0.0;
+      q1 = 0.0;
+      q2 = 0.0;
+      i = 0;
+
+      SLEEP(0.025);
     }
   );
 
   HT(
     GOTO(0);
     STATE(0){
-      PIN(state) = 0.0;
-      pwm = PIN(pwm_in);
-      mpos = mod(fb * PIN(pole_count) + DEG(90) + offset_);
-      PIN(ready) = 1.0;
-      if(PIN(start) > 0.0){
-        PIN(state) = 0.5;
-        PIN(ready) = 0.0;
-        GOTO(1);
-      }
-    }
-    STATE(1){
-      PIN(state) = 1.0;
-      pwm = 0.0;
-      SLEEP(PIN(time));
-      startpos = fb;
-      mpos = 0.0;
-      mpos_avg = 0.0;
-      fb_d_avg = 0.0;
-      cov = 0.0;
-      pwm = PIN(scale);
-      PIN(state) = 1.1;
-      SLEEP(PIN(time));
-      PIN(state) = 1.2;
-      covs = cov;
-      pwm = 0.0;
-      SLEEP(PIN(time));
-      PIN(state) = 1.3;
-      cov = 0.0;
-      mpos = DEG(90.0);
-      mpos_avg = 0.0;
-      fb_d_avg = 0.0;
-      pwm = PIN(scale);
-      SLEEP(PIN(time));
-      PIN(state) = 1.4;
-      covc = cov;
-      pwm = 0.0;
-      offset_ = minus(mod(startpos * PIN(pole_count)), atan2f(-covc, -covs)); // TODO polecount ...
-      PIN(ready) = 1.0;
-      GOTO(2);
-    }
-    STATE(2){
-      PIN(state) = 2.0;
-      pwm = PIN(pwm_in);
-      mpos = mod(fb * PIN(pole_count) + DEG(90) + offset_);
-      if(PIN(start) == 0.0){
-        GOTO(0);
+      i++;
+      q0 = coeff * q1 - q2 + fb;
+      q2 = q1;
+      q1 = q0;
+      if(i == N){
+        re = (q1 - q2 * cosine) * 2.0;
+        im = (q2 * sine) * 2.0;
+        PIN(real) = re;
+        PIN(imag) = im;
+
+        PIN(amp) = re * re + im * im;
+        PIN(phase) = atan2f(im, re);
       }
     }
   );
 
-  PIN(cvs) = covs;
-  PIN(cvc) = covc;
+
+  mpos = mod(fb * PIN(pole_count) + offset_ + offset1_);
+  pwm = PIN(scale);
+
+
 
   PIN(offset) = offset_;
   PIN(pwm_out) = pwm;

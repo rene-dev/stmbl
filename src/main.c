@@ -264,14 +264,16 @@ int main(void)
 	link_hal_pins("led0.y", "test0.test1");
 	link_hal_pins("led0.g", "test0.test2");
 
-	link_hal_pins("auto0.mag_pos_out", "term0.wave0");
-	link_hal_pins("auto0.pwm_out", "term0.wave1");
-	link_hal_pins("net0.fb_d", "term0.wave2");
-	link_hal_pins("auto0.state", "term0.wave3");
-	set_hal_pin("term0.gain2", 10.0);
+	link_hal_pins("auto0.amp", "term0.wave0");
+	link_hal_pins("auto0.phase", "term0.wave1");
+	link_hal_pins("auto0.real", "term0.wave2");
+	link_hal_pins("auto0.imag", "term0.wave3");
+	set_hal_pin("term0.gain0", 50.0);
+	set_hal_pin("term0.gain1", 50.0);
+	set_hal_pin("term0.gain2", 50.0);
 	set_hal_pin("term0.gain3", 50.0);
 	link_hal_pins("auto0.ready", "pid0.enable");
-	link_hal_pins("net0.cmd", "auto0.offset");
+	//link_hal_pins("net0.cmd", "auto0.offset");
 
 
 	//set_hal_pin("ap0.start", 1.0);
@@ -291,7 +293,7 @@ int main(void)
 	// set_hal_pin("sim0.freq", 0.5);
 	// set_hal_pin("vel_ob0.alpha", 1.0);
 	// set_hal_pin("vel_ob0.beta", 0.1);
-	
+
 	//->otg->GCCFG &= ~GCCFG_VBUSBSEN
 	Wait(1000);
 	#ifdef USBTERM
