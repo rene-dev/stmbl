@@ -124,7 +124,7 @@ void MainFrame::OnKeyDown(wxKeyEvent& event){
 			histpos++;
 			textinput->SetValue(wxT(""));
 		}
-	}
+    }else if (event.GetKeyCode() == 9){}//tab
 	else{
 		event.Skip();
 	}
