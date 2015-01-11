@@ -6,15 +6,23 @@ dqDraw::dqDraw(wxFrame* parent) : wxPanel(parent){
     Bind(wxEVT_MOUSEWHEEL , &dqDraw::scrollEvent, this);
     
     scale = 5;
-    In = 2;
-    Un = 60;
+    iscale = 1;
+    In = 10;
+    Un = 20;
     
-    Rs = 7.6;
-    Omega = 10;
-    Psi = 0.5411;
-    P = 4;
-    Ld = 0.0041;
-    Lq = 0.0041;
+//    Rs = 15;//7.6;
+//    Psi = 0.37;//0.5411;
+//    P = 3;
+//    Omega = 12000/60*P*M_PI_2;
+//    Ld = 0.0023;
+//    Lq = 0.0023;
+
+    Rs = 0.1;//7.6;
+    Psi = (1/1.4)*60/1000/2/M_PI;//0.5411;
+    P = 7;
+    Omega = 15000/60*P*M_PI_2;
+    Ld = 9*0.000001;
+    Lq = 9*0.000001;
 }
 
 void dqDraw::scrollEvent(wxMouseEvent & evt){
@@ -104,6 +112,6 @@ void dqDraw::render(wxDC&  dc)
     dc.DrawLine( w/2, h/2, Ud*scale+w/2, h/2-Uq*scale);
     dc.DrawCircle(w/2, h/2, Un*scale);
     dc.SetPen(*wxBLUE_PEN);
-    dc.DrawLine( w/2, h/2, Id*scale+w/2, h/2-Iq*scale);
-    dc.DrawCircle(w/2, h/2, In*scale);
+    dc.DrawLine( w/2, h/2, Id*scale*iscale+w/2, h/2-Iq*scale*iscale);
+    dc.DrawCircle(w/2, h/2, In*scale*iscale);
 }

@@ -47,6 +47,7 @@ public:
     double Pm,Pe;
     
     double scale;
+    double iscale;
 
 private:
 };
