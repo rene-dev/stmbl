@@ -183,6 +183,7 @@ static float ht_time_count; \
 (void) ht_time_count; \
 static int jump_label_pointer = -__COUNTER__ - 2; \
 static int jump_label_pointer_old = 0; \
+(void) jump_label_pointer_old; \
 switch(jump_label_pointer){ \
 case -__COUNTER__ - 1:; \
   ht_code; \
