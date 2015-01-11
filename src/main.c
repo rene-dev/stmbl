@@ -271,6 +271,7 @@ int main(void)
 	set_hal_pin("term0.gain2", 10.0);
 	set_hal_pin("term0.gain3", 50.0);
 	link_hal_pins("auto0.ready", "pid0.enable");
+	link_hal_pins("net0.cmd", "auto0.offset");
 
 
 	//set_hal_pin("ap0.start", 1.0);
