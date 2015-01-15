@@ -27,6 +27,7 @@ private:
     wxButton *clear;
     wxRadioButton *uhu;
     wxRadioButton *stmbl;
+    wxTimer * timer;
     wxConfig *config;
     struct sp_port **ports;
     struct sp_port *port;
@@ -43,7 +44,7 @@ private:
     void OnPosChange(wxCommandEvent& event);
     void OnGainChange(wxCommandEvent& event);
     void OnKeyDown(wxKeyEvent& event);
-    void OnIdle(wxIdleEvent& evt);
+    void OnTimer(wxTimerEvent& evt);
     void send(std::string& s,bool h = false);
     void connect();
     void disconnect();

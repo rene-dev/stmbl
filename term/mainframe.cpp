@@ -19,7 +19,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	mainsplitter->SetMinimumPaneSize(100);
 	mainsizer->Add(mainsplitter, 1,wxEXPAND,0);
 
-	Bind(wxEVT_IDLE,&MainFrame::MainFrame::OnIdle, this, wxID_ANY);
+    timer = new wxTimer(this, wxID_ANY);
+    Bind(wxEVT_TIMER,&MainFrame::OnTimer,this,wxID_ANY);
 
 	//oben
 	wxPanel *top = new wxPanel(mainsplitter, wxID_ANY);
@@ -55,6 +56,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     waves.push_back("net0.fb");
     waves.push_back("pid0.pwm_cmd");
     waves.push_back("pos_minus0.out");
+    
 
     //channels
     channelstartID = currentID-1;//next ID
@@ -175,7 +177,7 @@ void MainFrame::send(string& s,bool h){
     }
 }
 
-void MainFrame::OnIdle(wxIdleEvent& evt){
+void MainFrame::OnTimer(wxTimerEvent& evt){
 	int ret;
 	if(connected){
 		ret = sp_nonblocking_read(port, buf, bufsize);
@@ -204,12 +206,8 @@ void MainFrame::OnIdle(wxIdleEvent& evt){
                     }
                 }
             }
-			//std::cout << buf;
 		}
-		wxMilliSleep(3);//örks
 	}
-	//wxWakeUpIdle();
-	evt.RequestMore();
 }
 
 void MainFrame::OnRefresh(wxCommandEvent& WXUNUSED(event)){
@@ -266,6 +264,7 @@ void MainFrame::connect(){
         uhu->Disable();
         stmbl->Disable();
 		textinput->SetFocus();
+        timer->Start(50);
 	}else{
 		wxMessageBox( wxT("Fehler beim Öffnen"), wxT("Error"), wxICON_EXCLAMATION);
 		listports();
@@ -280,6 +279,7 @@ void MainFrame::disconnect(){
 		choose_port->Enable();
         uhu->Enable();
         stmbl->Enable();
+        timer->Stop();
 	}
 }
 
