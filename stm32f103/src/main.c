@@ -19,13 +19,17 @@ typedef union{
 volatile unsigned int systime = 0;
 volatile float u,v,w;
 
+uint16_t buf = 0x0000;
+data_t data;
+int32_t datapos = -1;
+
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef  TIM_OCInitStructure;
 NVIC_InitTypeDef NVIC_InitStructure;
 GPIO_InitTypeDef GPIO_InitStructure;
 USART_InitTypeDef USART_InitStruct;
 
-#define ADC_channels 13
+#define ADC_channels 3
 __IO uint16_t ADCConvertedValue[ADC_channels];
 
 void Wait(unsigned int ms){
@@ -160,6 +164,14 @@ void usart_init(){
     USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
     USART_Init(USART2, &USART_InitStruct);
+    USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+    
+    NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+    
     /* Enable the USART2 */
     USART_Cmd(USART2, ENABLE);
 }
@@ -189,12 +201,10 @@ DMA_InitTypeDef DMA_InitStructure;
   /* Enable ADC1 and GPIOC clock */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA, ENABLE);
 
-  /* Configure PC.04 (ADC Channel14) as analog input -------------------------*/
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
   
-  /* DMA1 channel1 configuration ----------------------------------------------*/
   DMA_DeInit(DMA1_Channel1);
   DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
   DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADCConvertedValue;
@@ -231,20 +241,9 @@ DMA_InitTypeDef DMA_InitStructure;
   ADC_TempSensorVrefintCmd(ENABLE);
   /* ADC1 regular channel14 configuration */ 
   //ADC_channels anpassen!
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 2, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SampleTime_13Cycles5); 
-  
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 4, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 5, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 6, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 7, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 8, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 9, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 10, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 11, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 12, ADC_SampleTime_13Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 13, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_13Cycles5);//amp
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 2, ADC_SampleTime_13Cycles5);//vlt
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 3, ADC_SampleTime_13Cycles5);
  
 
   /* Enable ADC1 DMA */
@@ -257,7 +256,7 @@ DMA_InitTypeDef DMA_InitStructure;
   ADC_ResetCalibration(ADC1);
   /* Check the end of ADC1 reset calibration register */
   while(ADC_GetResetCalibrationStatus(ADC1));
-  //TODO wat
+
   /* Start ADC1 calibration */
   ADC_StartCalibration(ADC1);
   /* Check the end of ADC1 calibration */
@@ -269,6 +268,7 @@ DMA_InitTypeDef DMA_InitStructure;
 
 void TIM1_UP_IRQHandler(){
 	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
+    ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 	if(timeout > 30){
 		GPIO_ResetBits(GPIOB,GPIO_Pin_6);//disable
 		GPIO_SetBits(GPIOC,GPIO_Pin_1);//gelb
@@ -279,12 +279,14 @@ void TIM1_UP_IRQHandler(){
 		GPIO_ResetBits(GPIOC,GPIO_Pin_1);//gelb
 		timeout ++;
 	}
-	//ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 	//GPIO_SetBits(GPIOB,GPIO_Pin_12);
 }
 
 void DMA1_Channel1_IRQHandler(){
 	DMA_ClearITPendingBit(DMA1_IT_TC1);
+    GPIO_SetBits(GPIOC,GPIO_Pin_0);
+    //while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+    USART_SendData(USART2, (uint16_t)(ADCConvertedValue[1] & 0xff));
 	/*
 	int strom = 0;
 	for(int i = 3;i<13;i++){
@@ -309,6 +311,25 @@ void DMA1_Channel1_IRQHandler(){
 	*/
 }
 
+void USART2_IRQHandler(){
+    USART_ClearITPendingBit(USART2, USART_IT_RXNE);
+    buf = USART_ReceiveData(USART2);
+    if(buf == 0x155){//start condition
+        datapos = 0;
+        //GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
+    }else if(datapos >= 0 && datapos < DATALENGTH*2){
+        data.byte[datapos++] = (uint8_t)buf;
+    }
+    if(datapos == DATALENGTH*2){//all data received
+        datapos = -1;
+        TIM1->CCR1 = data.data[0];
+        TIM1->CCR2 = data.data[1];
+        TIM1->CCR3 = data.data[2];
+        timeout = 0;
+        //GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
+    }
+}
+
 int main(void)
 {
 	//PLL_Configurattion();
@@ -319,15 +340,13 @@ int main(void)
 	//GPIO_SetBits(GPIOC,GPIO_Pin_1);//gelb
 	//GPIO_SetBits(GPIOC,GPIO_Pin_2);//grün
 
-	data_t data;
-	int32_t datapos = -1;
-	uint16_t buf = 0x0000;
+
 	
 	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
 	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000 - 1);
 
-	//setup_adc();
+	setup_adc();
 	tim1_init();
 	usart_init();
 
@@ -336,22 +355,8 @@ int main(void)
 	TIM1->CCR3 = 0;
 
 	while(1){
-		if((USART_GetFlagStatus(USART2, USART_FLAG_RXNE) != RESET)){//rx buf not empty
-			buf = USART_ReceiveData(USART2);
-			if(buf == 0x155){//start condition
-				datapos = 0;
-				//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
-			}else if(datapos >= 0 && datapos < DATALENGTH*2){
-				data.byte[datapos++] = (uint8_t)buf;
-			}
-			if(datapos == DATALENGTH*2){//all data received
-				datapos = -1;
-				TIM1->CCR1 = data.data[0];
-				TIM1->CCR2 = data.data[1];
-				TIM1->CCR3 = data.data[2];
-				timeout = 0;
-				//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
-			}
-		}
+        //GPIOA->BSRR = (GPIOA->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//toggle red led
+        //Wait(1);
+
 	}
 }

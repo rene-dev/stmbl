@@ -87,8 +87,16 @@ void setup_usart(){
 	USART_InitStruct.USART_Parity = USART_Parity_No;
 	USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-
 	USART_Init(UART_DRV, &USART_InitStruct);
+    
+    USART_ITConfig(UART_DRV, USART_IT_RXNE, ENABLE);
+    
+    NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+    
 	/* Enable the USART */
 	USART_Cmd(UART_DRV, ENABLE);
 	
