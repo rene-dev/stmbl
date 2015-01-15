@@ -176,6 +176,48 @@ int addf_nrt(void (*nrt)(float period));
 #define LINK_RC(src_pin, dst_pin)                    \
  src_pin.read_callback = dst_pin.read_callback;
 
+#define HT(ht_code) \
+{ \
+inline void ht_function(){ \
+static float ht_time_count; \
+(void) ht_time_count; \
+static int jump_label_pointer = -__COUNTER__ - 2; \
+static int jump_label_pointer_old = 0; \
+(void) jump_label_pointer_old; \
+switch(jump_label_pointer){ \
+case -__COUNTER__ - 1:; \
+  ht_code; \
+default: \
+goto jump_label_ht_end; \
+jump_label_ht_end: \
+  break; \
+}\
+}\
+ht_function(); \
+}
+
+#define GOTO(ht_label) \
+jump_label_pointer = (ht_label); \
+break;
+
+#define NEXT(ht_label) \
+jump_label_pointer = (ht_label);
+
+#define STATE(ht_state) \
+break; \
+case (ht_state):
+
+#define SLEEP(time) \
+ht_time_count = 0.0; \
+jump_label_pointer_old = jump_label_pointer; \
+case -__COUNTER__ - 2:; jump_label_pointer =  -__COUNTER__ - 1; \
+if(ht_time_count < (time)){ \
+  ht_time_count += period; \
+  goto jump_label_ht_end; \
+} \
+jump_label_pointer = jump_label_pointer_old;
+
+
 #define ENDCOMP \
   addf_init(init); \
   addf_fast_rt(fast_rt); \

@@ -24,7 +24,6 @@ void setup(){
 
 	setup_usart();
     setup_res();
-	setup_led();
 
 	// systick timer
 	systime = 0;
@@ -34,30 +33,6 @@ void setup(){
     //systick prio
 
     NVIC_SetPriority(SysTick_IRQn, 14);
-
-    #ifdef USBTERM
-    UB_USB_CDC_Init();
-    #endif
-}
-
-void setup_led(){
-    RCC_AHB1PeriphClockCmd(LED_R_IO_RCC, ENABLE);
-    RCC_AHB1PeriphClockCmd(LED_Y_IO_RCC, ENABLE);
-    RCC_AHB1PeriphClockCmd(LED_G_IO_RCC, ENABLE);
-    
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-    
-    GPIO_InitStructure.GPIO_Pin   = LED_R_PIN;
-    GPIO_Init(LED_R_PORT, &GPIO_InitStructure);
-    
-    GPIO_InitStructure.GPIO_Pin   = LED_Y_PIN;
-    GPIO_Init(LED_Y_PORT, &GPIO_InitStructure);
-    
-    GPIO_InitStructure.GPIO_Pin   = LED_G_PIN;
-    GPIO_Init(LED_G_PORT, &GPIO_InitStructure);
 }
 
 void setup_usart(){

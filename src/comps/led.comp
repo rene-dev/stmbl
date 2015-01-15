@@ -1,0 +1,42 @@
+COMP(led);
+
+HAL_PIN(r) = 0.0;
+HAL_PIN(g) = 0.0;
+HAL_PIN(y) = 0.0;
+
+INIT(
+    RCC_AHB1PeriphClockCmd(LED_R_IO_RCC, ENABLE);
+    RCC_AHB1PeriphClockCmd(LED_Y_IO_RCC, ENABLE);
+    RCC_AHB1PeriphClockCmd(LED_G_IO_RCC, ENABLE);
+    
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+    
+    GPIO_InitStructure.GPIO_Pin   = LED_R_PIN;
+    GPIO_Init(LED_R_PORT, &GPIO_InitStructure);
+    
+    GPIO_InitStructure.GPIO_Pin   = LED_Y_PIN;
+    GPIO_Init(LED_Y_PORT, &GPIO_InitStructure);
+    
+    GPIO_InitStructure.GPIO_Pin   = LED_G_PIN;
+    GPIO_Init(LED_G_PORT, &GPIO_InitStructure);
+);
+
+RT_OUT(
+	if(PIN(r) > 0)
+		GPIO_SetBits(LED_R_PORT,LED_R_PIN);
+	else
+		GPIO_ResetBits(LED_R_PORT,LED_R_PIN);
+	if(PIN(g) > 0)
+		GPIO_SetBits(LED_G_PORT,LED_G_PIN);
+	else
+		GPIO_ResetBits(LED_G_PORT,LED_G_PIN);
+	if(PIN(y) > 0)
+		GPIO_SetBits(LED_Y_PORT,LED_Y_PIN);
+	else
+		GPIO_ResetBits(LED_Y_PORT,LED_Y_PIN);
+);
+
+ENDCOMP;
