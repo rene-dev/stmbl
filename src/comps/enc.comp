@@ -2,9 +2,13 @@ COMP(enc);
 
 HAL_PIN(res0) = 2048.0;
 HAL_PIN(pos0) = 0.0;
+HAL_PIN(reverse0) = 0.0;
+
 
 HAL_PIN(res1) = 2048.0;
 HAL_PIN(pos1) = 0.0;
+HAL_PIN(reverse1) = 0.0;
+
 
 MEM(int e_res0) = 0.0;
 MEM(int e_res1) = 0.0;
@@ -39,14 +43,14 @@ INIT(
 
   // enable tim
   TIM_Cmd(ENC0_TIM, ENABLE);
-  
+
   e_res1 = (int)PIN(res1);
 
   // enable pin clock
   RCC_AHB1PeriphClockCmd(ENC1_A_IO_RCC, ENABLE);
 
   // enable clock
-  RCC_APB2PeriphClockCmd(ENC1_TIM_RCC, ENABLE);
+  RCC_APB1PeriphClockCmd(ENC1_TIM_RCC, ENABLE);
 
   // pin mode: af
   GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
@@ -71,15 +75,25 @@ INIT(
 );
 
 RT_IN(
+  float p = 0.0;
   int i = (int)PIN(res0);
-  PIN(pos0) = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res0);
+
+  p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res0);
+  if(PIN(reverse0) > 0.0){
+    p = minus(0, p);
+  }
+  PIN(pos0) = p;
   if(e_res0 != i){
     e_res0 = i;
     TIM_SetAutoreload(ENC0_TIM, e_res0 - 1);
   }
-  
+
   i = (int)PIN(res1);
-  PIN(pos1) = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res1);
+  p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res1);
+  if(PIN(reverse1) > 0.0){
+    p = minus(0, p);
+  }
+  PIN(pos1) = p;
   if(e_res1 != i){
     e_res1 = i;
     TIM_SetAutoreload(ENC1_TIM, e_res1 - 1);

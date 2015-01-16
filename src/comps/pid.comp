@@ -68,7 +68,7 @@ HAL_PIN(force_p) = 3.667;
 HAL_PIN(cur_p) = 0.0;
 HAL_PIN(cur_ff) = 15.0;
 //HAL_PIN(cur_i) = 0.0;
-HAL_PIN(cur_d) = 0.01;
+HAL_PIN(cur_d) = 0.0;
 HAL_PIN(cur_ind) = 0.57;
 HAL_PIN(cur_lp) = 1.0;
 

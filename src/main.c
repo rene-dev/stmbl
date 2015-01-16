@@ -110,7 +110,7 @@ void link_pid(){
 
 void link_ac_sync_res(){//bosch
 	// cmd
-	link_hal_pins("enc0.pos", "net0.cmd");
+	link_hal_pins("enc0.pos0", "net0.cmd");
 	set_hal_pin("pderiv0.in_lp", 1);
 	set_hal_pin("pderiv0.out_lp", 1);
 	set_hal_pin("pderiv0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
@@ -149,8 +149,8 @@ void link_ac_sync_enc(){//berger lahr
 	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
 	// fb
-	link_hal_pins("enc0.pos", "net0.fb");
-	set_hal_pin("enc0.res", 4096.0);
+	link_hal_pins("enc0.pos0", "net0.fb");
+	set_hal_pin("enc0.res0", 4096.0);
 	set_hal_pin("res0.enable", 1.0);
 	set_hal_pin("pderiv1.in_lp", 1);
 	set_hal_pin("pderiv1.out_lp", 1);
@@ -169,6 +169,55 @@ void link_ac_sync_enc(){//berger lahr
 	set_hal_pin("pid0.vel_lp", 0.6);
 	set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+}
+
+void link_ac_sync_manutec(){//berger lahr
+	// cmd
+	link_hal_pins("enc0.pos0", "net0.cmd");
+	set_hal_pin("enc0.res0", 2000.0);
+	set_hal_pin("res0.enable", 1.0);
+	set_hal_pin("pderiv0.in_lp", 1);
+	set_hal_pin("pderiv0.out_lp", 1);
+	set_hal_pin("pderiv0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
+	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+
+	// fb
+	link_hal_pins("enc0.pos1", "cauto0.fb_in");
+	link_hal_pins("cauto0.fb_out", "net0.fb");
+	set_hal_pin("enc0.res1", 2400.0);
+	set_hal_pin("res0.enable", 1.0);
+	set_hal_pin("pderiv1.in_lp", 1);
+	set_hal_pin("pderiv1.out_lp", 1);
+	set_hal_pin("pderiv1.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
+	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+
+	set_hal_pin("pderiv0.out_lp", 0.5);
+	// pole count
+	set_hal_pin("cauto0.pole_count", 3.0);
+
+	// auto time
+	set_hal_pin("cauto0.time", 0.5);
+
+	// auto scale
+	set_hal_pin("cauto0.scale", 0.6);
+
+	// pid
+	set_hal_pin("pid0.pos_p", 26.0);
+	set_hal_pin("pid0.vel_p", 1.0);
+	set_hal_pin("pid0.vel_i", 80.0);
+	set_hal_pin("pid0.pos_lp", 1.0);
+	set_hal_pin("pid0.vel_lp", 1.0);
+	set_hal_pin("pid0.cur_ff", 10.0);
+	set_hal_pin("pid0.vel_d", 0.0);
+
+	set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
+	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+
+	link_hal_pins("pid0.pwm_cmd", "cauto0.pwm_in");
+	link_hal_pins("cauto0.pwm_out", "p2uvw0.pwm");
+
+	// magpos
+	link_hal_pins("cauto0.mag_pos_out", "p2uvw0.magpos");
 }
 
 void DMA2_Stream0_IRQHandler(void){ //5kHz
@@ -233,11 +282,11 @@ int main(void)
 	#include "comps/res.comp"
 	#include "comps/pid.comp"
 	#include "comps/term.comp"
-	//#include "comps/sim.comp"
+	#include "comps/sim.comp"
 	#include "comps/pderiv.comp"
 	#include "comps/pderiv.comp"
 	//#include "comps/autophase.comp"
-	#include "comps/auto.comp"
+	#include "comps/cauto.comp"
 	#include "comps/test.comp"
 
 	#include "comps/led.comp"
@@ -259,40 +308,16 @@ int main(void)
 	TIM_Cmd(TIM4, ENABLE);//PWM
 
 	link_pid();
-	link_ac_sync_res();
-	link_hal_pins("led0.r", "test0.test0");
-	link_hal_pins("led0.y", "test0.test1");
-	link_hal_pins("led0.g", "test0.test2");
+	link_ac_sync_manutec();
+	link_hal_pins("cauto0.ready", "led0.g");
+	link_hal_pins("cauto0.start", "led0.r");
+	//link_hal_pins("led0.g", "test0.test2");
 
-	link_hal_pins("auto0.amp", "term0.wave0");
-	link_hal_pins("auto0.phase", "term0.wave1");
-	link_hal_pins("auto0.real", "term0.wave2");
-	link_hal_pins("auto0.imag", "term0.wave3");
-	set_hal_pin("term0.gain0", 50.0);
-	set_hal_pin("term0.gain1", 50.0);
-	set_hal_pin("term0.gain2", 50.0);
-	set_hal_pin("term0.gain3", 50.0);
-	link_hal_pins("auto0.ready", "pid0.enable");
+	link_hal_pins("cauto0.ready", "pid0.enable");
 	//link_hal_pins("net0.cmd", "auto0.offset");
 
+	set_hal_pin("cauto0.start", 1.0);
 
-	//set_hal_pin("ap0.start", 1.0);
-
-	// link_hal_pins("sim0.sin", "net0.cmd");
-	// link_hal_pins("net0.cmd", "vel_ob0.pos_in");
-	// link_hal_pins("net0.cmd", "term0.wave0");
-	// link_hal_pins("net0.cmd_d", "term0.wave1");
-	// link_hal_pins("vel_ob0.pos_out", "term0.wave2");
-	// link_hal_pins("vel_ob0.vel_out", "term0.wave3");
-	// link_hal_pins("vel_ob0.trg", "rt0.trg0");
-	// set_hal_pin("term0.gain0", 10.0);
-	// set_hal_pin("term0.gain1", 10.0);
-	// set_hal_pin("term0.gain2", 10.0);
-	// set_hal_pin("term0.gain3", 10.0);
-	// set_hal_pin("sim0.amp", 1.0);
-	// set_hal_pin("sim0.freq", 0.5);
-	// set_hal_pin("vel_ob0.alpha", 1.0);
-	// set_hal_pin("vel_ob0.beta", 0.1);
 
 	//->otg->GCCFG &= ~GCCFG_VBUSBSEN
 	Wait(1000);
