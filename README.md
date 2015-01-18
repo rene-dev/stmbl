@@ -1,27 +1,36 @@
 stmbl
 =====
+stmbl is an open source servo drive designed for Retrofitting CNC machines and Robots. It supports Indutrial AC and DC servos with up to 320V and 1kW. 
+##### Hardware version 31
+![bot](http://rene-dev.github.io/iramx31bot.jpg)
+![top](http://rene-dev.github.io/iramx31top.jpg)
 
-
-###AC Servo Driver for STM32F4
 ##### Driving a Bosch Turboscara
 https://www.youtube.com/watch?v=Ue98HE76paI
 ##### Drivetest
 https://www.youtube.com/watch?v=sMeV4SCu4TA
+##### Drivetest with asymmetrical load
+https://www.youtube.com/watch?v=seEV_i7o1NI
 
-####Things that work
-* Synchronous AC servos with resolver or incremental encoder
-* DC servos with encoder
+####Supported Motors
+* Synchronous AC Servos
+* DC Servos
 * IRAMXv2 Hardware testet up to 320V
 
+####Supported Feedback systems
+* Resolvers
+* Incremental encoders
+* sin/cos encoder interpolation
+
 ####TODO
-* autophasing for Synchronous AC servos with encoder
 * AC Async
 * saving parameters to flash
 
 ####Directories
 * hw/eagle/ Eagle board files and schematics
 * hw/spice/ Spice simulation for resolver interface
-* src/ STM32 code
+* src/ STM32F4 code, command, feedback and control loop
+* stm32f103/ STM32F1 code, running on the HV side, generating PWM
 * term/ Terminal with scope and local history. Supports UHU servo and stmbl.
 
 
