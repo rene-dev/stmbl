@@ -49,7 +49,7 @@ private:
     void connect();
     void disconnect();
     void listports();
-    static const int bufsize = 1000;
+    static const int bufsize = 10000;
     unsigned char buf[MainFrame::bufsize+1];
     wxTextCtrl *text;
     wxTextCtrl *textinput;
