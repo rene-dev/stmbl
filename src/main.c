@@ -108,16 +108,38 @@ void link_pid(){
 	set_hal_pin("pid0.enable", 1.0);
 }
 
-void link_ac_sync_res(){//bosch
+void link_ac_sync_res(){
+	link_pid();
 	// cmd
 	link_hal_pins("enc0.pos0", "net0.cmd");
+	// fb
+	link_hal_pins("res0.pos", "net0.fb");
+}
+
+void link_ac_sync_enc(){
+	link_pid();
+	// cmd
+	link_hal_pins("enc0.pos0", "net0.cmd");
+	link_hal_pins("pid0.pwm_cmd", "cauto0.pwm_in");
+	link_hal_pins("cauto0.pwm_out", "p2uvw0.pwm");
+
+	// magpos
+	link_hal_pins("cauto0.mag_pos_out", "p2uvw0.magpos");
+	link_hal_pins("enc0.pos1", "cauto0.fb_in");
+	link_hal_pins("cauto0.fb_out", "net0.fb");
+}
+
+void set_bosch(){
+	link_ac_sync_res();
+	// pole count
+	set_hal_pin("auto0.pole_count", 4.0);
+
 	set_hal_pin("pderiv0.in_lp", 1);
 	set_hal_pin("pderiv0.out_lp", 1);
 	set_hal_pin("pderiv0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv0.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
-	// fb
-	link_hal_pins("res0.pos", "net0.fb");
+
 	set_hal_pin("res0.enable", 1.0);
 	set_hal_pin("pderiv1.in_lp", 1);
 	set_hal_pin("pderiv1.out_lp", 1);
@@ -126,10 +148,6 @@ void link_ac_sync_res(){//bosch
 
 	// res_offset
 	//set_hal_pin("ap0.fb_offset_in", -0.64);
-
-	// pole count
-	set_hal_pin("auto0.pole_count", 4.0);
-
 	// pid
 	set_hal_pin("pid0.pos_p", 100.0);
 	set_hal_pin("pid0.pos_lp", 1.0);
@@ -138,42 +156,9 @@ void link_ac_sync_res(){//bosch
 	set_hal_pin("pid0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pid0.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 }
-
-void link_ac_sync_enc(){//berger lahr
-	// cmd
-	link_hal_pins("res0.pos", "net0.cmd");
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv0.in_lp", 1);
-	set_hal_pin("pderiv0.out_lp", 1);
-	set_hal_pin("pderiv0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
-
-	// fb
-	link_hal_pins("enc0.pos0", "net0.fb");
-	set_hal_pin("enc0.res0", 4096.0);
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv1.in_lp", 1);
-	set_hal_pin("pderiv1.out_lp", 1);
-	set_hal_pin("pderiv1.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
-
-	// res_offset
-	set_hal_pin("ap0.fb_offset_in", 0.0);
-
-	// pole count
-	set_hal_pin("ap0.pole_count", 3.0);
-
-	// pid
-	set_hal_pin("pid0.pos_p", 80.0);
-	set_hal_pin("pid0.pos_lp", 1.0);
-	set_hal_pin("pid0.vel_lp", 0.6);
-	set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
-}
-
-void link_ac_sync_manutec(){//berger lahr
-	// cmd
-	link_hal_pins("enc0.pos0", "net0.cmd");
+void set_manutec(){
+	link_ac_sync_enc();
+	
 	set_hal_pin("enc0.res0", 2000.0);
 	set_hal_pin("res0.enable", 1.0);
 	set_hal_pin("pderiv0.in_lp", 1);
@@ -182,8 +167,6 @@ void link_ac_sync_manutec(){//berger lahr
 	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
 	// fb
-	link_hal_pins("enc0.pos1", "cauto0.fb_in");
-	link_hal_pins("cauto0.fb_out", "net0.fb");
 	set_hal_pin("enc0.res1", 2400.0);
 	set_hal_pin("res0.enable", 1.0);
 	set_hal_pin("pderiv1.in_lp", 1);
@@ -212,12 +195,50 @@ void link_ac_sync_manutec(){//berger lahr
 
 	set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+}
 
-	link_hal_pins("pid0.pwm_cmd", "cauto0.pwm_in");
-	link_hal_pins("cauto0.pwm_out", "p2uvw0.pwm");
+void set_bergerlahr(){
+	link_ac_sync_enc();
+	
+	set_hal_pin("enc0.res0", 4096.0);
+	set_hal_pin("res0.enable", 1.0);
+	set_hal_pin("pderiv0.in_lp", 1);
+	set_hal_pin("pderiv0.out_lp", 1);
+	set_hal_pin("pderiv0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
+	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
-	// magpos
-	link_hal_pins("cauto0.mag_pos_out", "p2uvw0.magpos");
+	// fb
+	set_hal_pin("enc0.res1", 4096.0);
+	set_hal_pin("res0.enable", 1.0);
+	set_hal_pin("pderiv1.in_lp", 1);
+	set_hal_pin("pderiv1.out_lp", 1);
+	set_hal_pin("pderiv1.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
+	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+
+	set_hal_pin("pderiv0.out_lp", 0.5);
+	// pole count
+	set_hal_pin("cauto0.pole_count", 3.0);
+
+	// auto time
+	set_hal_pin("cauto0.time", 0.5);
+
+	// auto scale
+	set_hal_pin("cauto0.scale", 0.6);
+
+	// pid
+	set_hal_pin("pid0.pos_p", 35.0);
+	set_hal_pin("pid0.vel_p", 1.0);
+	set_hal_pin("pid0.vel_i", 50.0);
+	set_hal_pin("pid0.pos_lp", 1.0);
+	set_hal_pin("pid0.force_p", 1.0);
+	set_hal_pin("pid0.cur_ind", 2.34);
+	set_hal_pin("pid0.pos_lp", 1.0);
+	set_hal_pin("pid0.vel_lp", 1.0);
+	set_hal_pin("pid0.cur_ff", 28.0);//dc wicklungswiederstand
+	set_hal_pin("pid0.vel_d", 0.0);
+
+	set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
+	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 }
 
 void DMA2_Stream0_IRQHandler(void){ //5kHz
@@ -307,8 +328,8 @@ int main(void)
 	TIM_Cmd(TIM8, ENABLE);//int
 	TIM_Cmd(TIM4, ENABLE);//PWM
 
-	link_pid();
-	link_ac_sync_manutec();
+
+	set_bergerlahr();
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");
 	//link_hal_pins("led0.g", "test0.test2");
