@@ -64,10 +64,10 @@ void BasicDrawPane::plotvalue(float values[])
         data[i].at(xpos) = (float)values[i];
     }
     xpos = (xpos+1)%data[0].size();
-    if(wxGetUTCTimeMillis()-time > 50){
+    //if(wxGetUTCTimeMillis()-time > 50){
         Refresh();
-        time = wxGetUTCTimeMillis();
-    }
+    //    time = wxGetUTCTimeMillis();
+    //}
     //oder
     //Update();
 }

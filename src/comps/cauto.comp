@@ -1,0 +1,76 @@
+COMP(cauto);
+
+HAL_PIN(pwm_in) = 0.0;
+HAL_PIN(pwm_out) = 0.0;
+HAL_PIN(mag_pos_out) = 0.0;
+
+HAL_PIN(start) = 0.0;
+HAL_PIN(ready) = 1.0;
+
+HAL_PIN(offset) = 0.0;
+
+HAL_PIN(fb_in) = 0.0;
+HAL_PIN(fb_out) = 0.0;
+
+
+HAL_PIN(pole_count) = 3.0;
+
+HAL_PIN(scale) = 0.5;
+HAL_PIN(time) = 0.1;
+
+
+MEM(float fbi) = 0.0;
+MEM(float fb) = 0.0;
+MEM(float mpos) = 0.0;
+MEM(float pwm) = 0.0;
+MEM(float offset_) = 0.0;
+MEM(float offset1_) = DEG(90);
+
+
+RT_CALC(
+  fbi = PIN(fb_in);
+  fb = minus(fbi, offset_);
+
+  HT(
+    GOTO(0);
+    STATE(0){
+      pwm = PIN(pwm_in);
+      mpos = mod(minus(fbi, offset_) * PIN(pole_count) + offset1_);
+      if(PIN(start) > 0.0){
+        GOTO(1);
+      }
+    }
+    STATE(1){
+      PIN(ready) = 0.0;
+      pwm = PIN(scale);
+      mpos = 0.0;
+      fb = 0.0;
+      SLEEP(PIN(time));
+      GOTO(2);
+    }
+    STATE(2){
+      PIN(ready) = 0.5;
+      offset_ = fbi;
+      pwm = 0.0;
+      SLEEP(PIN(time));
+      GOTO(3);
+    }
+    STATE(3){
+      PIN(ready) = 1.0;
+      pwm = PIN(pwm_in);
+      mpos = mod(minus(fbi, offset_) * PIN(pole_count) + offset1_);
+      if(PIN(start) == 0.0){
+        GOTO(0);
+      }
+    }
+  );
+
+
+  PIN(offset) = offset_;
+  PIN(pwm_out) = pwm;
+  PIN(mag_pos_out) = mpos;
+  PIN(fb_out) = fb;
+);
+
+
+ENDCOMP;
