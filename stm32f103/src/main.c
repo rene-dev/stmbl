@@ -161,10 +161,12 @@ void usart_init(){
     USART_InitStruct.USART_StopBits = USART_StopBits_1;
     USART_InitStruct.USART_Parity = USART_Parity_No;
     USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-    USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+    USART_InitStruct.USART_Mode = USART_Mode_Rx;
 
     USART_Init(USART2, &USART_InitStruct);
     USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+	//USART_ITConfig(USART2, USART_IT_PE, ENABLE);
+	//USART_ITConfig(USART2, USART_IT_ERR, ENABLE);
     
     NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
@@ -284,9 +286,9 @@ void TIM1_UP_IRQHandler(){
 
 void DMA1_Channel1_IRQHandler(){
 	DMA_ClearITPendingBit(DMA1_IT_TC1);
-    GPIO_SetBits(GPIOC,GPIO_Pin_0);
+    //GPIO_SetBits(GPIOC,GPIO_Pin_0);
     //while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-    USART_SendData(USART2, (uint16_t)(ADCConvertedValue[1] & 0xff));
+    //USART_SendData(USART2, (uint16_t)(ADCConvertedValue[1] & 0xff));
 	/*
 	int strom = 0;
 	for(int i = 3;i<13;i++){
@@ -312,22 +314,44 @@ void DMA1_Channel1_IRQHandler(){
 }
 
 void USART2_IRQHandler(){
-    USART_ClearITPendingBit(USART2, USART_IT_RXNE);
-    buf = USART_ReceiveData(USART2);
-    if(buf == 0x155){//start condition
-        datapos = 0;
-        //GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
-    }else if(datapos >= 0 && datapos < DATALENGTH*2){
-        data.byte[datapos++] = (uint8_t)buf;
-    }
-    if(datapos == DATALENGTH*2){//all data received
-        datapos = -1;
-        TIM1->CCR1 = data.data[0];
-        TIM1->CCR2 = data.data[1];
-        TIM1->CCR3 = data.data[2];
-        timeout = 0;
-        //GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
-    }
+	GPIO_SetBits(GPIOC,GPIO_Pin_0);
+	//USART_GetFlagStatus(USART2,USART_FLAG_FE);
+	//if(USART_GetITStatus(USART2, USART_IT_RXNE) == SET){
+		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
+		buf = USART_ReceiveData(USART2);
+		if(buf == 0x155){//start condition
+			datapos = 0;
+			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
+		}else if(datapos >= 0 && datapos < DATALENGTH*2){
+			data.byte[datapos++] = (uint8_t)buf;
+		}
+		if(datapos == DATALENGTH*2){//all data received
+			datapos = -1;
+			TIM1->CCR1 = data.data[0];
+			TIM1->CCR2 = data.data[1];
+			TIM1->CCR3 = data.data[2];
+			timeout = 0;
+			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
+		}
+		//}
+		/*
+	if(USART_GetITStatus(USART2, USART_IT_FE) == SET){
+		USART_ClearITPendingBit(USART2, USART_IT_FE);
+		buf = USART_ReceiveData(USART2);
+	}
+	if(USART_GetITStatus(USART2, USART_IT_NE) == SET){
+		USART_ClearITPendingBit(USART2, USART_IT_NE);
+		buf = USART_ReceiveData(USART2);
+	}
+	if(USART_GetITStatus(USART2, USART_IT_ORE) == SET){
+		USART_ClearITPendingBit(USART2, USART_IT_ORE);
+		buf = USART_ReceiveData(USART2);
+	}
+	if(USART_GetITStatus(USART2, USART_IT_PE) == SET){
+		USART_ClearITPendingBit(USART2, USART_IT_PE);
+		buf = USART_ReceiveData(USART2);
+	}
+		*/
 }
 
 int main(void)
@@ -355,6 +379,10 @@ int main(void)
 	TIM1->CCR3 = 0;
 
 	while(1){
+		// if(USART_GetFlagStatus(USART2, USART_FLAG_FE) == RESET){
+		// 	GPIO_SetBits(GPIOC,GPIO_Pin_0);
+		// 	buf = USART_ReceiveData(USART2);
+		// }
         //GPIOA->BSRR = (GPIOA->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//toggle red led
         //Wait(1);
 
