@@ -379,7 +379,8 @@ int main(void)
 	TIM1->CCR3 = 0;
 
 	while(1){
-		// if(USART_GetFlagStatus(USART2, USART_FLAG_FE) == RESET){
+		//USART_GetFlagStatus(USART2, USART_FLAG_NE);
+		//USART_ReceiveData(USART2);
 		// 	GPIO_SetBits(GPIOC,GPIO_Pin_0);
 		// 	buf = USART_ReceiveData(USART2);
 		// }
