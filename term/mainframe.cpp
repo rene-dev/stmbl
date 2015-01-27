@@ -5,7 +5,7 @@ using std::endl;
 using std::string;
 using std::to_string;
 
-MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
+ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     currentID = wxID_LOWEST;
     addr = -1;
 	connected = false;
@@ -20,7 +20,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	mainsizer->Add(mainsplitter, 1,wxEXPAND,0);
 
     timer = new wxTimer(this, wxID_ANY);
-    Bind(wxEVT_TIMER,&MainFrame::OnTimer,this,wxID_ANY);
+    Bind(wxEVT_TIMER,&ServoFrame::OnTimer,this,wxID_ANY);
 
 	//oben
 	wxPanel *top = new wxPanel(mainsplitter, wxID_ANY);
@@ -36,9 +36,9 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	stmbl = new wxRadioButton(top, wxID_ANY,"STMBL");
 	stmbl->SetValue(true);
 
-	refresh->Bind(wxEVT_BUTTON, &MainFrame::OnRefresh, this, wxID_ANY);
-	connectbutton->Bind(wxEVT_BUTTON, &MainFrame::OnConnect, this, wxID_ANY);
-	clear->Bind(wxEVT_BUTTON, &MainFrame::OnClear, this, wxID_ANY);
+	refresh->Bind(wxEVT_BUTTON, &ServoFrame::OnRefresh, this, wxID_ANY);
+	connectbutton->Bind(wxEVT_BUTTON, &ServoFrame::OnConnect, this, wxID_ANY);
+	clear->Bind(wxEVT_BUTTON, &ServoFrame::OnClear, this, wxID_ANY);
 	listports();
 	leiste->Add(choose_port, 0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(connectbutton,0,wxALIGN_LEFT|wxALL,3);
@@ -63,16 +63,16 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     for(int i = 0;i<drawpanel->channels;i++){
         wxBoxSizer *channelsizer = new wxBoxSizer(wxVERTICAL);
         channelchoice.push_back(new wxChoice (top, ++currentID));
-        channelchoice.back()->Bind(wxEVT_CHOICE,&MainFrame::OnChannelChange, this, currentID);
+        channelchoice.back()->Bind(wxEVT_CHOICE,&ServoFrame::OnChannelChange, this, currentID);
         channelchoice.back()->Set(waves);
         channelchoice.back()->SetSelection(0);
         cout << channelchoice.back()->GetId() << endl;
         
         channelpos.push_back(new wxSlider(top, ++currentID, 0, -100, 100));
-        channelpos.back()->Bind(wxEVT_SLIDER,&MainFrame::OnChannelChange, this, currentID);
+        channelpos.back()->Bind(wxEVT_SLIDER,&ServoFrame::OnChannelChange, this, currentID);
         
         channelgain.push_back(new wxSlider(top, ++currentID, 10, 1, 100));
-        channelgain.back()->Bind(wxEVT_SLIDER,&MainFrame::OnChannelChange, this, currentID);
+        channelgain.back()->Bind(wxEVT_SLIDER,&ServoFrame::OnChannelChange, this, currentID);
         
         wxPanel *c_panel;
         c_panel = new wxPanel(top, wxID_NEW, wxPoint(150, 20), wxSize(20, 20), wxBORDER_NONE);
@@ -99,8 +99,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	wxPanel *bottom = new wxPanel(mainsplitter, wxID_ANY);
 	text = new wxTextCtrl((wxFrame*)bottom,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	textinput = new wxTextCtrl((wxFrame*)bottom,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
-	textinput->Bind(wxEVT_TEXT_ENTER, &MainFrame::OnInput, this, wxID_ANY);
-	textinput->Bind(wxEVT_KEY_DOWN, &MainFrame::OnKeyDown, this, wxID_ANY);
+	textinput->Bind(wxEVT_TEXT_ENTER, &ServoFrame::OnInput, this, wxID_ANY);
+	textinput->Bind(wxEVT_KEY_DOWN, &ServoFrame::OnKeyDown, this, wxID_ANY);
 	wxBoxSizer *bottomsizer = new wxBoxSizer(wxVERTICAL);
 	bottomsizer->Add(text, 1,wxEXPAND|wxALL,3);
 	bottomsizer->Add(textinput, 0,wxEXPAND|wxALL,3);
@@ -111,7 +111,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	mainsizer->SetSizeHints(this);
 }
 
-void MainFrame::OnKeyDown(wxKeyEvent& event){
+void ServoFrame::OnKeyDown(wxKeyEvent& event){
 	if(event.GetKeyCode() == 315){//up
 		if(histpos > 0 && history.size()>0){
 			textinput->SetValue(history.at(--histpos));
@@ -132,7 +132,7 @@ void MainFrame::OnKeyDown(wxKeyEvent& event){
 	}
 }
 
-void MainFrame::OnChannelChange(wxCommandEvent& event){
+void ServoFrame::OnChannelChange(wxCommandEvent& event){
     int param = (event.GetId()-channelstartID-2)%3;
     int channel = (int)((event.GetId()-channelstartID-2)/3);
     string params[] = {"term0.wave","term0.offset","term0.gain"};
@@ -157,7 +157,7 @@ void MainFrame::OnChannelChange(wxCommandEvent& event){
     send(df);
 }
 
-void MainFrame::send(string& s,bool h){
+int ServoFrame::send(string& s,bool h){
     cout << s << endl;
     if(connected){
         if(h){//history
@@ -171,13 +171,16 @@ void MainFrame::send(string& s,bool h){
         if(ret1 != s.length() || ret2!=1){
             wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
             disconnect();
+            return 0;
         }
     }else{
         wxMessageBox( wxT("Nicht verbunden"), wxT("Error"), wxICON_EXCLAMATION);
+        return 0;
     }
+    return 1;
 }
 
-void MainFrame::OnTimer(wxTimerEvent& evt){
+void ServoFrame::OnTimer(wxTimerEvent& evt){
 	int ret;
 	if(connected){
 		ret = sp_nonblocking_read(port, buf, bufsize);
@@ -210,11 +213,11 @@ void MainFrame::OnTimer(wxTimerEvent& evt){
 	}
 }
 
-void MainFrame::OnRefresh(wxCommandEvent& WXUNUSED(event)){
+void ServoFrame::OnRefresh(wxCommandEvent& WXUNUSED(event)){
 	listports();
 }
 
-void MainFrame::listports(){
+void ServoFrame::listports(){
 	if (!ports) {
 		sp_free_port_list(ports);
 	}
@@ -230,19 +233,19 @@ void MainFrame::listports(){
 	}
 }
 
-void MainFrame::OnClear(wxCommandEvent& WXUNUSED(event)){
+void ServoFrame::OnClear(wxCommandEvent& WXUNUSED(event)){
 	text->Clear();
     drawpanel->Clear();
 }
 
-void MainFrame::OnConnect(wxCommandEvent& WXUNUSED(event)){
+void ServoFrame::OnConnect(wxCommandEvent& WXUNUSED(event)){
 	if(connected)
 		disconnect();
 	else
 		connect();
 }
 
-void MainFrame::connect(){
+void ServoFrame::connect(){
 	if(choose_port->IsEmpty())
         return;
     port = ports[choose_port->GetSelection()];
@@ -271,7 +274,7 @@ void MainFrame::connect(){
 	}
 }
 
-void MainFrame::disconnect(){
+void ServoFrame::disconnect(){
 	if(sp_close(port) == SP_OK){
 		connected = false;
 		connectbutton->SetLabel(wxT("&Connect"));
@@ -283,7 +286,7 @@ void MainFrame::disconnect(){
 	}
 }
 
-void MainFrame::OnInput(wxCommandEvent& event){
+void ServoFrame::OnInput(wxCommandEvent& event){
     string s =string(textinput->GetValue().mb_str());
     send(s,true);
 	textinput->Clear();

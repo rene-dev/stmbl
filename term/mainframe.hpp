@@ -17,10 +17,11 @@
 #include <libserialport.h>
 #include "basicdrawpane.hpp"
 
-class MainFrame : public wxFrame
+class ServoFrame : public wxFrame
 {
 public:
-    MainFrame(const wxString& title);
+    ServoFrame(const wxString& title);
+    int send(std::string& s,bool h = false);
 private:
     wxButton *connectbutton;
     wxButton *refresh;
@@ -45,12 +46,11 @@ private:
     void OnGainChange(wxCommandEvent& event);
     void OnKeyDown(wxKeyEvent& event);
     void OnTimer(wxTimerEvent& evt);
-    void send(std::string& s,bool h = false);
     void connect();
     void disconnect();
     void listports();
     static const int bufsize = 10000;
-    unsigned char buf[MainFrame::bufsize+1];
+    unsigned char buf[ServoFrame::bufsize+1];
     wxTextCtrl *text;
     wxTextCtrl *textinput;
     wxWindowID currentID;
