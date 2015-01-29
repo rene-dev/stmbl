@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
-#include <unordered_set>
 #include <map>
 #include <vector>
 
@@ -27,7 +26,6 @@ int main(){
 
 	map<string, comp_t> comps;
 
-	vector<string> links;
 	ifstream halfile("test.hal", fstream::in);
 	ofstream dotfile("test.dot", fstream::out);
 	string s((std::istreambuf_iterator<char>(halfile)), std::istreambuf_iterator<char>());
@@ -52,7 +50,6 @@ int main(){
   dotfile << "overlap = false;" << endl;
   dotfile << "start = regular;" << endl;
   dotfile << "forcelabels = true;" << endl;
-
 
 	for(auto &comp:comps){
 	  dotfile << "subgraph cluster_" << comp.second.name << "{" << endl;
