@@ -42,16 +42,16 @@ int main(){
 		}
 		s = m.suffix().str();
 	}
-	
+
 	dotfile << "digraph G {" << endl;
   dotfile << "rankdir = LR;" << endl;
   dotfile << "splines = spline;" << endl;
-  dotfile << "ratio = 1;" << endl;
+  //dotfile << "ratio = 1;" << endl;
   dotfile << "overlap = false;" << endl;
   dotfile << "start = regular;" << endl;
   dotfile << "forcelabels = true;" << endl;
-	
-	
+
+
 	for(auto &comp:comps){
 	  dotfile << "subgraph cluster_" << comp.first << "{" << endl;
 	  dotfile << "  style = rounded;" << endl;
@@ -61,7 +61,7 @@ int main(){
 	  }
 		dotfile << "}" << endl;
 	}
-	
+
 	for(auto &link:links){
 		dotfile << link << endl;
 	}
