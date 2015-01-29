@@ -12,11 +12,15 @@ class Servoterm: public wxApp
 public:
     bool OnInit();
     void OnOpen(wxCommandEvent& WXUNUSED(event));
-    void OnSend(wxCommandEvent& WXUNUSED(event));
+    void OnWrite(wxCommandEvent& WXUNUSED(event));
+    void OnRead(wxCommandEvent& WXUNUSED(event));
+    void OnSave(wxCommandEvent& WXUNUSED(event));
 private:
     ServoFrame* servoframe;
     wxString filename;
     dqFrame* dqframe;
+    int writeID;
+    int readID;
     void OnAbout(wxCommandEvent& WXUNUSED(event));
 };
 
@@ -34,12 +38,18 @@ bool Servoterm::OnInit()
     wxMenuBar *menuBar = new wxMenuBar;
     wxMenu *fileMenu = new wxMenu;
     filename = "";
+    writeID = wxNewId();
+    readID = wxNewId();
     
     menuBar->Append(fileMenu, "&File");
     fileMenu->Append(wxID_OPEN);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnOpen, this, wxID_OPEN);
-    //fileMenu->Append(wxID_ANY, "&Send\tCTRL+S");
-    //Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnSend, this, wxID_ANY);
+    //fileMenu->Append(wxID_SAVE);
+    //Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnSave, this, wxID_SAVE);
+    fileMenu->Append(writeID, "&Write");
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnWrite, this, writeID);
+    fileMenu->Append(readID, "&Read");
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnRead, this, readID);
     
     wxMenu *helpMenu = new wxMenu;
     menuBar->Append(helpMenu, "&Help" );
@@ -56,7 +66,22 @@ bool Servoterm::OnInit()
     return TRUE;
 }
 
-void Servoterm::OnSend(wxCommandEvent& WXUNUSED(event)){
+void Servoterm::OnRead(wxCommandEvent& WXUNUSED(event)){
+
+}
+
+void Servoterm::OnWrite(wxCommandEvent& WXUNUSED(event)){
+    ifstream infile(filename);
+    string line;
+    while (std::getline(infile, line))
+    {
+        if(!servoframe->send(line))
+            break;
+    }
+
+}
+
+void Servoterm::OnSave(wxCommandEvent& WXUNUSED(event)){
     
 }
 
@@ -64,13 +89,8 @@ void Servoterm::OnOpen(wxCommandEvent& WXUNUSED(event)){
     wxFileDialog openFileDialog(servoframe, wxEmptyString, SRCDIR"/..", "","*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return;
-    ifstream infile(openFileDialog.GetPath());
-    string line;
-    while (std::getline(infile, line))
-    {
-        if(!servoframe->send(line))
-            break;
-    }
+    filename = openFileDialog.GetPath();
+    servoframe->SetTitle(filename);
 }
 
 
