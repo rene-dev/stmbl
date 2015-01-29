@@ -10,11 +10,23 @@
 using namespace std;
 
 typedef struct{
-	vector<string> pins;
+	string name;
+	string drv_comp_name;
+	string drv_pin_name;
+	float value;
+}pin_t;
+
+typedef struct{
+	string name;
+	map<string,pin_t> pins;
 }comp_t;
 
 int main(){
-	map<string,comp_t> comps;
+	bool include_unlinked_comps = false;
+	bool include_unlinked_pins = true;
+
+	map<string, comp_t> comps;
+
 	vector<string> links;
 	ifstream halfile("test.hal", fstream::in);
 	ofstream dotfile("test.dot", fstream::out);
@@ -23,47 +35,43 @@ int main(){
 	//m[]     1      2         3      4        5
 	regex  e("(\\w+).(\\w+) <= (\\w+).(\\w+) = (.+)");
 	while(std::regex_search (s,m,e)){
-		comps[m[1].str()].pins.push_back(m[2].str());
-		if(m[1].str() == m[3].str() && m[2].str() == m[4].str()){//if connected to itself
-			//wert foo
-		}else{
-			string link;
-			link.append(m[3].str());
-			link.append("_");
-			link.append(m[4].str());
-			link.append(" -> ");
-			link.append(m[1].str());
-			link.append("_");
-			link.append(m[2].str());
-			link.append("[label=\"");
-			link.append(m[5].str());
-			link.append("\"];");
-			links.push_back(link);
-		}
+		comps[m[1].str()].name = m[1].str();
+		comps[m[1].str()].pins[m[2].str()].name = m[2].str();
+		comps[m[1].str()].pins[m[2].str()].drv_comp_name = m[3].str();
+		comps[m[1].str()].pins[m[2].str()].drv_pin_name = m[4].str();
+		comps[m[1].str()].pins[m[2].str()].value = stod(m[5].str());
+		
 		s = m.suffix().str();
 	}
 
 	dotfile << "digraph G {" << endl;
   dotfile << "rankdir = LR;" << endl;
   dotfile << "splines = spline;" << endl;
-  //dotfile << "ratio = 1;" << endl;
   dotfile << "overlap = false;" << endl;
   dotfile << "start = regular;" << endl;
   dotfile << "forcelabels = true;" << endl;
 
 
 	for(auto &comp:comps){
-	  dotfile << "subgraph cluster_" << comp.first << "{" << endl;
+	  dotfile << "subgraph cluster_" << comp.second.name << "{" << endl;
 	  dotfile << "  style = rounded;" << endl;
-	  dotfile << "  label = \"" << comp.first << "\";" << endl;
+	  dotfile << "  label = \"" << comp.second.name << "\";" << endl;
+
 		for(auto &pin:comp.second.pins){
-			dotfile << "  " << comp.first << "_" << pin << " [shape = box, style = filled, color = lightgrey, label = \"" << pin << "\"];" << endl;
+			if(include_unlinked_pins || comp.second.name != pin.second.drv_comp_name || pin.second.name != pin.second.drv_pin_name){
+				dotfile << "  " << comp.second.name << "_" << pin.second.name << " [shape = box, style = filled, color = lightgrey, label = \"" << pin.second.name << " = " << pin.second.value << " \"];" << endl;
+			}
 	  }
+
 		dotfile << "}" << endl;
 	}
 
-	for(auto &link:links){
-		dotfile << link << endl;
+	for(auto &comp:comps){
+		for(auto &pin:comp.second.pins){
+			if(comp.second.name != pin.second.drv_comp_name || pin.second.name != pin.second.drv_pin_name){
+				dotfile << " " << pin.second.drv_comp_name << "_" << pin.second.drv_pin_name << " -> " << comp.second.name << "_" << pin.second.name << ";" << endl;
+			}
+		}
 	}
 
 	dotfile << "}" << endl;
