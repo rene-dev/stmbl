@@ -40,13 +40,15 @@ int main(){
 		comps[m[1].str()].pins[m[2].str()].drv_comp_name = m[3].str();
 		comps[m[1].str()].pins[m[2].str()].drv_pin_name = m[4].str();
 		comps[m[1].str()].pins[m[2].str()].value = stod(m[5].str());
-		
+
 		s = m.suffix().str();
 	}
 
 	dotfile << "digraph G {" << endl;
   dotfile << "rankdir = LR;" << endl;
-  dotfile << "splines = spline;" << endl;
+	dotfile << "ranksep = \"3 equally\";" << endl;
+	dotfile << "remincross = true;" << endl;
+	dotfile << "splines = spline;" << endl;
   dotfile << "overlap = false;" << endl;
   dotfile << "start = regular;" << endl;
   dotfile << "forcelabels = true;" << endl;
