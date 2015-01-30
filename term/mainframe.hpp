@@ -52,6 +52,7 @@ private:
     static const int bufsize = 10000;
     unsigned char buf[ServoFrame::bufsize+1];
     wxTextCtrl *text;
+    wxTextCtrl *text2;
     wxTextCtrl *textinput;
     wxWindowID currentID;
     wxWindowID channelstartID;//StartID of channel config

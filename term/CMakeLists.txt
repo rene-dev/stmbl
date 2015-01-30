@@ -21,6 +21,7 @@ mainframe.cpp mainframe.hpp
 basicdrawpane.cpp basicdrawpane.hpp
 dqframe.cpp dqframe.hpp
 dqdraw.cpp dqdraw.hpp
+scope.cpp scope.hpp
 )
 
 set(wxWidgets_CONFIGURATION mswu)

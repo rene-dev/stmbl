@@ -11,13 +11,98 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	connected = false;
 	histpos = 0;
 	config = new wxConfig("Servoterm");
-	wxBoxSizer *mainsizer = new wxBoxSizer(wxHORIZONTAL);
+    
+    
+    wxBoxSizer *sizermain = new wxBoxSizer(wxHORIZONTAL);
+    wxSplitterWindow *splittermain = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxSize(1024, 512),wxSP_LIVE_UPDATE|wxSP_3DSASH);
+    splittermain->SetSashGravity(0.5);
+    splittermain->SetMinimumPaneSize(100); // Smalest size the
+    sizermain->Add(splittermain, 1,wxEXPAND,0);
+    
+    wxPanel *pnl_up = new wxPanel(splittermain, wxID_ANY, wxDefaultPosition, wxSize(1024, 256));
+    
+    wxBoxSizer *sizer_up =new wxBoxSizer(wxVERTICAL);
+    pnl_up->SetSizer(sizer_up);
+    wxBoxSizer *sizer_leiste = new wxBoxSizer(wxHORIZONTAL);
+//    choose_port = new wxChoice (pnl_up, wxID_ANY);
+    
+//    connectbutton = new wxButton(pnl_up, wxID_ANY, wxT("&Connect"));
+//    clear = new wxButton(pnl_up, wxID_ANY, wxT("Clear"));
+//    refresh = new wxButton(pnl_up, wxID_ANY, wxT("&Refresh"));
+//    uhu = new wxRadioButton(pnl_up,wxID_ANY, "UHU");
+//    stmbl = new wxRadioButton(pnl_up, wxID_ANY,"STMBL");
+//    stmbl->SetValue(true);
+//    
+//    refresh->Bind(wxEVT_BUTTON, &ServoFrame::OnRefresh, this, wxID_ANY);
+//    connectbutton->Bind(wxEVT_BUTTON, &ServoFrame::OnConnect, this, wxID_ANY);
+//    clear->Bind(wxEVT_BUTTON, &ServoFrame::OnClear, this, wxID_ANY);
+//    listports();
+//    sizer_leiste->Add(choose_port, 0,wxALIGN_LEFT|wxALL,3);
+//    sizer_leiste->Add(connectbutton,0,wxALIGN_LEFT|wxALL,3);
+//    sizer_leiste->Add(refresh,0,wxALIGN_LEFT|wxALL,3);
+//    sizer_leiste->Add(clear,0,wxALIGN_LEFT|wxALL,3);
+//    sizer_leiste->Add(uhu,0,wxALIGN_LEFT|wxALL,3);
+//    sizer_leiste->Add(stmbl,0,wxALIGN_LEFT|wxALL,3);
+    drawpanel = new BasicDrawPane((wxFrame*)pnl_up,4);
+    wxTextCtrl * df = new wxTextCtrl(pnl_up, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, 100), wxTE_MULTILINE | wxTE_READONLY);
+    df->AppendText("df");
+    sizer_up->Add(sizer_leiste, 0, wxEXPAND | wxALL, 0);
+    sizer_up->Add(df, 1, wxEXPAND | wxALL, 0);
+    
+    
+    wxPanel *pnl_down = new wxPanel(splittermain, wxID_ANY);
+    
+    wxBoxSizer *sizersub = new wxBoxSizer(wxHORIZONTAL);
+    //wxSplitterWindow *splittersub = new wxSplitterWindow(pnl_down, wxID_ANY, wxDefaultPosition, wxDefaultSize,wxSP_LIVE_UPDATE|wxSP_3DSASH);
+    //splittersub->SetSashGravity(0.5);
+    //splittersub->SetMinimumPaneSize(100);
+    //sizersub->Add(splittersub, 1, wxEXPAND, 0);
+    pnl_down->SetSizer(sizersub);
+    
+    
+    wxPanel *pnl_left = new wxPanel(pnl_down, wxID_ANY);
+    wxPanel *pnl_right = new wxPanel(pnl_down, wxID_ANY, wxDefaultPosition, wxSize(100, 100));
+    sizersub->Add(pnl_left, 1, wxEXPAND, 0);
+    sizersub->Add(pnl_right, 0, wxEXPAND, 0);
+    
+
+    wxBoxSizer *consolesizer = new wxBoxSizer(wxVERTICAL);
+    wxTextCtrl *console = new wxTextCtrl(pnl_left, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
+    wxTextCtrl *command = new wxTextCtrl(pnl_left, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    console->AppendText("console");
+    command->AppendText("command");
+    command->Bind(wxEVT_TEXT_ENTER, &ServoFrame::OnInput, this, wxID_ANY);
+    command->Bind(wxEVT_KEY_DOWN, &ServoFrame::OnKeyDown, this, wxID_ANY);
+    consolesizer->Add(console, 1,wxEXPAND|wxALL,0);
+    consolesizer->Add(command, 0,wxEXPAND|wxALL,0);
+    pnl_left->SetSizer(consolesizer);
+    
+//    wxBoxSizer *txt3sizer = new wxBoxSizer(wxVERTICAL);
+//    wxTextCtrl *txt3 = new wxTextCtrl(pnl_right, wxID_ANY);
+//    txt3->AppendText("txt3");
+//    txt3sizer->Add(txt3, 1,wxEXPAND,0);
+//    pnl_right->SetSizer(txt3sizer);
+    
+    splittermain->SplitHorizontally(pnl_up, pnl_down);
+    //splittersub->SplitVertically(pnl_left, pnl_right);
+
+    this->SetSizer(sizermain);
+    sizermain->SetSizeHints(this);
+    //sizersub->SetSizeHints(pnl_down);
+    
+    
+	/*wxBoxSizer *mainsizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *subsizer = new wxBoxSizer(wxVERTICAL);
 	wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
+    wxSplitterWindow *subsplitter = new wxSplitterWindow(this);
 	wxImage::AddHandler(new wxGIFHandler);
 
 	mainsplitter->SetSashGravity(0);
 	mainsplitter->SetMinimumPaneSize(100);
 	mainsizer->Add(mainsplitter, 1,wxEXPAND,0);
+    subsplitter->SetSashGravity(0.0);
+    subsplitter->SetMinimumPaneSize(100);
+    subsizer->Add(subsplitter, 1, wxEXPAND, 0);
 
     timer = new wxTimer(this, wxID_ANY);
     Bind(wxEVT_TIMER,&ServoFrame::OnTimer,this,wxID_ANY);
@@ -60,6 +145,33 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 
     //channels
     channelstartID = currentID-1;//next ID
+    
+
+    top->SetSizer(topsizer);
+
+	//unten
+    wxPanel *left = new wxPanel(subsplitter, wxID_ANY);
+	text = new wxTextCtrl((wxFrame*)left,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
+	textinput = new wxTextCtrl((wxFrame*)left,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
+	textinput->Bind(wxEVT_TEXT_ENTER, &ServoFrame::OnInput, this, wxID_ANY);
+	textinput->Bind(wxEVT_KEY_DOWN, &ServoFrame::OnKeyDown, this, wxID_ANY);
+	wxBoxSizer *leftsizer = new wxBoxSizer(wxVERTICAL);
+    leftsizer->Add(text);
+    leftsizer->Add(textinput);
+    
+	//leftsizer->Add(text, 1,wxEXPAND|wxALL,3);
+	//leftsizer->Add(textinput, 0,wxEXPAND|wxALL,3);
+	left->SetSizer(leftsizer);
+    
+    wxPanel *right = new wxPanel(subsplitter, wxID_ANY);
+    text2 = new wxTextCtrl((wxFrame*)right,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
+    wxBoxSizer *rightsizer = new wxBoxSizer(wxVERTICAL);
+    rightsizer->Add(text2);
+    //rightsizer->Add(text, 1,wxEXPAND|wxALL,3);
+    //rightsizer->Add(textinput, 0,wxEXPAND|wxALL,3);
+    right->SetSizer(rightsizer);
+    
+    
     for(int i = 0;i<drawpanel->channels;i++){
         wxBoxSizer *channelsizer = new wxBoxSizer(wxVERTICAL);
         channelchoice.push_back(new wxChoice (top, ++currentID));
@@ -90,25 +202,14 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
         channelsizer->Add(sizer3);
         channelleiste->Add(channelsizer);
     }
-    
-	topsizer->Add(channelleiste);
-    
-    top->SetSizer(topsizer);
+    rightsizer->Add(channelleiste);
 
-	//unten
-	wxPanel *bottom = new wxPanel(mainsplitter, wxID_ANY);
-	text = new wxTextCtrl((wxFrame*)bottom,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
-	textinput = new wxTextCtrl((wxFrame*)bottom,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
-	textinput->Bind(wxEVT_TEXT_ENTER, &ServoFrame::OnInput, this, wxID_ANY);
-	textinput->Bind(wxEVT_KEY_DOWN, &ServoFrame::OnKeyDown, this, wxID_ANY);
-	wxBoxSizer *bottomsizer = new wxBoxSizer(wxVERTICAL);
-	bottomsizer->Add(text, 1,wxEXPAND|wxALL,3);
-	bottomsizer->Add(textinput, 0,wxEXPAND|wxALL,3);
-	bottom->SetSizer(bottomsizer);
-
-	mainsplitter->SplitHorizontally(top, bottom,500);
+    
+    subsplitter->SplitVertically(left, right, 500);
+	mainsplitter->SplitHorizontally(top, subsplitter,100);
 	this->SetSizer(mainsizer);
-	mainsizer->SetSizeHints(this);
+    mainsplitter->SetSizer(subsizer);
+	mainsizer->SetSizeHints(this);*/
 }
 
 void ServoFrame::OnKeyDown(wxKeyEvent& event){
