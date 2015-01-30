@@ -15,12 +15,14 @@ public:
     void OnWrite(wxCommandEvent& WXUNUSED(event));
     void OnRead(wxCommandEvent& WXUNUSED(event));
     void OnSave(wxCommandEvent& WXUNUSED(event));
+    void OnDq(wxCommandEvent& WXUNUSED(event));
 private:
     ServoFrame* servoframe;
     wxString filename;
     dqFrame* dqframe;
     int writeID;
     int readID;
+    int dqID;
     void OnAbout(wxCommandEvent& WXUNUSED(event));
 };
 
@@ -34,12 +36,13 @@ using std::string;
 bool Servoterm::OnInit()
 {
     servoframe = new ServoFrame(wxT("Servoterm"));
-    dqframe = new dqFrame(wxT("dq"));
     wxMenuBar *menuBar = new wxMenuBar;
     wxMenu *fileMenu = new wxMenu;
+    wxMenu *viewMenu = new wxMenu;
     filename = "";
     writeID = wxNewId();
     readID = wxNewId();
+    dqID = wxNewId();
     
     menuBar->Append(fileMenu, "&File");
     fileMenu->Append(wxID_OPEN);
@@ -50,6 +53,10 @@ bool Servoterm::OnInit()
     Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnWrite, this, writeID);
     fileMenu->Append(readID, "&Read");
     Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnRead, this, readID);
+    
+    menuBar->Append(viewMenu, "&View");
+    viewMenu->Append(dqID, "&DQsim");
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnDq, this, dqID);
     
     wxMenu *helpMenu = new wxMenu;
     menuBar->Append(helpMenu, "&Help" );
@@ -62,8 +69,12 @@ bool Servoterm::OnInit()
     //frame->SetStatusText("Statuskram und so");
  
     servoframe->Show(TRUE);
-    dqframe->Show(TRUE);
     return TRUE;
+}
+
+void Servoterm::OnDq(wxCommandEvent& WXUNUSED(event)){
+    dqframe = new dqFrame(wxT("dq"));
+    dqframe->Show(TRUE);
 }
 
 void Servoterm::OnRead(wxCommandEvent& WXUNUSED(event)){
