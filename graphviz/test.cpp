@@ -43,16 +43,17 @@ int main(){
 	}
 
 	dotfile << "digraph G {" << endl;
-  dotfile << "rankdir = LR;" << endl;
-	dotfile << "ranksep = \"3 equally\";" << endl;
-	dotfile << "remincross = true;" << endl;
-	dotfile << "splines = spline;" << endl;
-  dotfile << "overlap = false;" << endl;
-  dotfile << "start = regular;" << endl;
-  dotfile << "forcelabels = true;" << endl;
+  dotfile << " rankdir = LR;" << endl;
+	dotfile << " ranksep = \"3 equally\";" << endl;
+	dotfile << " remincross = true;" << endl;
+	dotfile << " splines = true;" << endl;
+  dotfile << " overlap = false;" << endl;
+	dotfile << " concentrate = true;" << endl;
+  dotfile << " start = regular;" << endl;
+  dotfile << " forcelabels = true;" << endl;
 
 	for(auto &comp:comps){
-	  dotfile << "subgraph cluster_" << comp.second.name << "{" << endl;
+	  dotfile << " subgraph cluster_" << comp.second.name << "{" << endl;
 	  dotfile << "  style = rounded;" << endl;
 	  dotfile << "  label = \"" << comp.second.name << "\";" << endl;
 
@@ -62,7 +63,7 @@ int main(){
 			}
 	  }
 
-		dotfile << "}" << endl;
+		dotfile << " }" << endl;
 	}
 
 	for(auto &comp:comps){

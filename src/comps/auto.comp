@@ -89,7 +89,7 @@ RT_CALC(
     GOTO(0);
     STATE(0){
       i++;
-      q0 = coeff * q1 - q2 + fb;
+      q0 = coeff * q1 - q2 + fb_d;
       q2 = q1;
       q1 = q0;
       if(i == N){

@@ -49,16 +49,16 @@ void link_pid(){
 	link_hal_pins("net0.cmd", "pderiv0.in");
 	link_hal_pins("pderiv0.out", "net0.cmd_d");
 	link_hal_pins("net0.cmd_d", "pid0.vel_ext_cmd");
-	set_hal_pin("pderiv0.in_lp", 1);
-	set_hal_pin("pderiv0.out_lp", 1);
+	set_hal_pin("pderiv0.in_lp", 1.0);
+	set_hal_pin("pderiv0.out_lp", 1.0);
 	set_hal_pin("pderiv0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv0.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
 	link_hal_pins("net0.fb", "pderiv1.in");
 	link_hal_pins("pderiv1.out", "net0.fb_d");
 	link_hal_pins("net0.fb_d", "pid0.vel_fb");
-	set_hal_pin("pderiv1.in_lp", 1);
-	set_hal_pin("pderiv1.out_lp", 1);
+	set_hal_pin("pderiv1.in_lp", 1.0);
+	set_hal_pin("pderiv1.out_lp", 1.0);
 	set_hal_pin("pderiv1.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
@@ -134,15 +134,15 @@ void set_bosch(){
 	// pole count
 	set_hal_pin("auto0.pole_count", 4.0);
 
-	set_hal_pin("pderiv0.in_lp", 1);
-	set_hal_pin("pderiv0.out_lp", 1);
+	set_hal_pin("pderiv0.in_lp", 1.0);
+	set_hal_pin("pderiv0.out_lp", 1.0);
 	set_hal_pin("pderiv0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv0.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
 
 	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv1.in_lp", 1);
-	set_hal_pin("pderiv1.out_lp", 1);
+	set_hal_pin("pderiv1.in_lp", 1.0);
+	set_hal_pin("pderiv1.out_lp", 1.0);
 	set_hal_pin("pderiv1.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
@@ -151,30 +151,30 @@ void set_bosch(){
 	// pid
 	set_hal_pin("pid0.pos_p", 100.0);
 	set_hal_pin("pid0.pos_lp", 1.0);
-	set_hal_pin("pid0.vel_lp", 0.5);
-	set_hal_pin("pid0.cur_lp", 0.5);
+	set_hal_pin("pid0.vel_lp", 1.0);
+	set_hal_pin("pid0.cur_lp", 1.0);
 	set_hal_pin("pid0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pid0.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 }
 void set_manutec(){
 	link_ac_sync_enc();
-	
+
 	set_hal_pin("enc0.res0", 2000.0);
 	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv0.in_lp", 1);
-	set_hal_pin("pderiv0.out_lp", 1);
+	set_hal_pin("pderiv0.in_lp", 1.0);
+	set_hal_pin("pderiv0.out_lp", 1.0);
 	set_hal_pin("pderiv0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
 	// fb
 	set_hal_pin("enc0.res1", 2400.0);
 	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv1.in_lp", 1);
-	set_hal_pin("pderiv1.out_lp", 1);
+	set_hal_pin("pderiv1.in_lp", 1.0);
+	set_hal_pin("pderiv1.out_lp", 1.0);
 	set_hal_pin("pderiv1.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
-	set_hal_pin("pderiv0.out_lp", 0.5);
+	set_hal_pin("pderiv0.out_lp", 1.0);
 	// pole count
 	set_hal_pin("cauto0.pole_count", 3.0);
 
@@ -199,23 +199,23 @@ void set_manutec(){
 
 void set_bergerlahr(){
 	link_ac_sync_enc();
-	
+
 	set_hal_pin("enc0.res0", 4096.0);
 	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv0.in_lp", 1);
-	set_hal_pin("pderiv0.out_lp", 1);
+	set_hal_pin("pderiv0.in_lp", 1.0);
+	set_hal_pin("pderiv0.out_lp", 1.0);
 	set_hal_pin("pderiv0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
 	// fb
 	set_hal_pin("enc0.res1", 4096.0);
 	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv1.in_lp", 1);
-	set_hal_pin("pderiv1.out_lp", 1);
+	set_hal_pin("pderiv1.in_lp", 1.0);
+	set_hal_pin("pderiv1.out_lp", 1.0);
 	set_hal_pin("pderiv1.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
-	set_hal_pin("pderiv0.out_lp", 0.5);
+	set_hal_pin("pderiv0.out_lp", 1.0);
 	// pole count
 	set_hal_pin("cauto0.pole_count", 3.0);
 
@@ -290,9 +290,9 @@ int main(void)
 	setup();
 	//ADC_SoftwareStartConv(ADC1);
 
-	#include "comps/frt.comp"
-	#include "comps/rt.comp"
-	#include "comps/nrt.comp"
+	//#include "comps/frt.comp"
+	//#include "comps/rt.comp"
+	//#include "comps/nrt.comp"
 
 	#include "comps/pos_minus.comp"
 	#include "comps/pwm2uvw.comp"
@@ -308,7 +308,7 @@ int main(void)
 	#include "comps/pderiv.comp"
 	//#include "comps/autophase.comp"
 	#include "comps/cauto.comp"
-	#include "comps/test.comp"
+	//#include "comps/test.comp"
 
 	#include "comps/led.comp"
 
@@ -339,6 +339,12 @@ int main(void)
 
 	set_hal_pin("cauto0.start", 1.0);
 
+	/*set_hal_pin("term0.gain0", 10000.0);
+	set_hal_pin("term0.gain1", 10000.0);
+	set_hal_pin("term0.gain2", 10.0);
+	link_hal_pins("enc0.pos1", "term0.wave0");
+	link_hal_pins("enc0.ipos1", "term0.wave1");
+	link_hal_pins("enc0.iposd1", "term0.wave2");*/
 
 	//->otg->GCCFG &= ~GCCFG_VBUSBSEN
 	Wait(1000);
@@ -349,7 +355,7 @@ int main(void)
 
 	while(1)  // Do not exit
 	{
-		Wait(10);
+		Wait(1);
 		period = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
 		lasttime = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){

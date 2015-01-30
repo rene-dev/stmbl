@@ -16,29 +16,82 @@ HAL_PIN(wave3) = 0.0;
 HAL_PIN(gain3) = 10.0;
 HAL_PIN(offset3) = 0.0;
 
+HAL_PIN(send_step) = 10.0;
+
+HAL_PIN(buf_use) = 0.0;
+
+#define TERM_BUF_SIZE 50
+
+MEM(float w0[TERM_BUF_SIZE]);
+MEM(float w1[TERM_BUF_SIZE]);
+MEM(float w2[TERM_BUF_SIZE]);
+MEM(float w3[TERM_BUF_SIZE]);
+MEM(unsigned int read_pos) = 0;
+MEM(unsigned int write_pos) = 0;
+MEM(unsigned int send_counter) = 0;
+
+RT_OUT(
+  if(send_counter++ >= PIN(send_div) - 1){
+    w0[write_pos] = PIN(wave0);
+    w1[write_pos] = PIN(wave1);
+    w2[write_pos] = PIN(wave2);
+    w3[write_pos] = PIN(wave3);
+
+    write_pos++;
+    write_pos %= TERM_BUF_SIZE;
+    send_counter = 0;
+  }
+);
+
 NRT(
   int e = 0;
   unsigned char buf[4 + 2];
 
-  e = (PIN(wave0) + PIN(offset0)) * PIN(gain0) + 128;
-  buf[1] = CLAMP(e,1,254);
-
-  e = (PIN(wave1) + PIN(offset1)) * PIN(gain1) + 128;
-  buf[2] = CLAMP(e,1,254);
-
-  e = (PIN(wave2) + PIN(offset2)) * PIN(gain2) + 128;
-  buf[3] = CLAMP(e,1,254);
-
-  e = (PIN(wave3) + PIN(offset3)) * PIN(gain3) + 128;
-  buf[4] = CLAMP(e,1,254);
-
   buf[0] = 255;
   buf[4 + 1] = 0;
+
+  float o0 = PIN(offset0);
+  float o1 = PIN(offset1);
+  float o2 = PIN(offset2);
+  float o3 = PIN(offset3);
+  float g0 = PIN(gain0);
+  float g1 = PIN(gain1);
+  float g2 = PIN(gain2);
+  float g3 = PIN(gain3);
+
+  unsigned int wp = write_pos;
+  unsigned int bc = 0;
+
+  while(read_pos != wp){
+    bc++;
+    e = (w0[read_pos] + o0) * g0 + 128;
+    buf[1] = CLAMP(e,1,254);
+
+    e = (w1[read_pos] + o1) * g1 + 128;
+    buf[2] = CLAMP(e,1,254);
+
+    e = (w2[read_pos] + o2) * g2 + 128;
+    buf[3] = CLAMP(e,1,254);
+
+    e = (w3[read_pos] + o3) * g3 + 128;
+    buf[4] = CLAMP(e,1,254);
+
+    read_pos++;
+    read_pos %= TERM_BUF_SIZE;
+
+#ifdef USBTERM
+    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
+      UB_USB_CDC_SendString((char*)buf, NONE);
+    }
+#endif
+  }
+
+  PIN(buf_use) = bc;
 
 
   #ifdef USBTERM
     if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-      UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
+      //UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
 
       char source[APP_TX_BUF_SIZE];
       char sink[APP_TX_BUF_SIZE];
@@ -50,7 +103,7 @@ NRT(
           printf_("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
         }
         else{
-          printf_("not found\n");
+          printf_("not found: %s\n", sink);
         }
       }
       else if(i == 5){
@@ -63,7 +116,7 @@ NRT(
           printf_("OK %s = %f\n", sink, get_hal_pin(sink));
         }
         else{
-          printf_("not found\n");
+          printf_("not found: %s\n", sink);
         }
       }
       else if(i == -1){
