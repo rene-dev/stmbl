@@ -379,7 +379,10 @@ int main(void)
 
 
 	//set_bergerlahr();
-	set_festo();
+	//set_festo();
+	//set_manutec();
+	set_bosch();
+	
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");
 	//link_hal_pins("led0.g", "test0.test2");
