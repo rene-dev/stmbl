@@ -1,6 +1,6 @@
 stmbl
 =====
-stmbl is an open source servo drive designed for Retrofitting CNC machines and Robots. It supports Indutrial AC and DC servos with up to 320V and 1kW. 
+stmbl is an open source servo drive designed for Retrofitting CNC machines and Robots. It supports Industrial AC and DC servos with up to 320V and 1kW. 
 ##### Hardware version 31
 ![bot](http://rene-dev.github.io/iramx31bot.jpg)
 ![top](http://rene-dev.github.io/iramx31top.jpg)

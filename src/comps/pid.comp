@@ -164,15 +164,19 @@ RT_PID(
     if(velen == 0.0){
       velp = 0.0;
       veli = 0.0;
+      veld = 0.0;
     }
+    acccmd = velp * velerr + veld * (velerr - vel_err_old) / period + accff * accextcmd;
+    vel_err_old = velerr;
     if(veli > 0.0){
-      vel_error_sum = LIMIT(vel_error_sum + velerr * period, velerrsummax);
+      //vel_error_sum = LIMIT(vel_error_sum + velerr * period, velerrsummax);
+      vel_error_sum = LIMIT(vel_error_sum  + velerr * period, (accmax - ABS(acccmd)) / veli);
     }
     else{
       vel_error_sum = 0.0;
     }
-    acccmd = LIMIT(velp * velerr + veli * vel_error_sum + veld * (velerr - vel_err_old) / period + accff * accextcmd, accmax) * vellp + acccmd * (1 - vellp);
-    vel_err_old = velerr;
+    acccmd = LIMIT(acccmd + veli * vel_error_sum, accmax) * vellp + acccmd * (1 - vellp);
+
     // acc -> force
     if(accen == 0.0){
       accp = 0.0;

@@ -8,10 +8,25 @@ HAL_PIN(reverse0) = 0.0;
 HAL_PIN(res1) = 2048.0;
 HAL_PIN(pos1) = 0.0;
 HAL_PIN(reverse1) = 0.0;
+HAL_PIN(ireverse1) = 0.0;
+HAL_PIN(ipos1) = 0.0;
+HAL_PIN(iposd1) = 0.0;
+HAL_PIN(s) = 0.0;
+HAL_PIN(c) = 0.0;
+
 
 
 MEM(int e_res0) = 0.0;
 MEM(int e_res1) = 0.0;
+
+MEM(float s_) = 0.0;
+MEM(float c_) = 0.0;
+
+MEM(float smin) = 16384.0;
+MEM(float smax) = 0.0;
+MEM(float cmin) = 16384.0;
+MEM(float cmax) = 0.0;
+
 
 INIT(
   e_res0 = (int)PIN(res0);
@@ -74,6 +89,45 @@ INIT(
   TIM_Cmd(ENC1_TIM, ENABLE);
 );
 
+FRT(
+  float si[ADC_ANZ];
+  float co[ADC_ANZ];
+  uint32_t sc[ADC_ANZ];
+
+  for(int i = 0; i < PID_WAVES; i++){
+    sc[i] = 0.0;
+
+    for(int j = 0; j < ADC_ANZ; j++){
+      //si[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff);
+      //co[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16);
+      sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
+    }
+  }
+
+  for(int i = 0; i < PID_WAVES; i++){
+    si[i] = 0.0;
+    co[i] = 0.0;
+
+    si[i] = sc[i] & 0x0000ffff;
+    co[i] = sc[i] >> 16;
+  }
+
+  //PIN(iamp) = si[PID_WAVES - 1] * si[PID_WAVES - 1] + co[PID_WAVES - 1] * co[PID_WAVES - 1]; // nur letzte wave
+
+  if(PIN(ireverse1) > 0.0){
+    s_ = co[PID_WAVES - 1] - 18000;
+    c_ = si[PID_WAVES - 1] - 18000;
+  }
+  else{
+    s_ = si[PID_WAVES - 1] - 18000;
+    c_ = co[PID_WAVES - 1] - 18000;
+  }
+
+  PIN(s) = s_;
+  PIN(c) = c_;
+
+);
+
 RT_IN(
   float p = 0.0;
   int i = (int)PIN(res0);
@@ -94,10 +148,14 @@ RT_IN(
     p = minus(0, p);
   }
   PIN(pos1) = p;
+  PIN(ipos1) = mod(p + mod(atan2f(s_, c_) * 4.0 + M_PI) / (float)e_res1);
+  PIN(iposd1) = mod(atan2f(s_, c_) * 4.0) / 4.0;
+
   if(e_res1 != i){
     e_res1 = i;
     TIM_SetAutoreload(ENC1_TIM, e_res1 - 1);
   }
+
 );
 
 ENDCOMP;
