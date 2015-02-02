@@ -6,7 +6,7 @@ HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
 HAL_PIN(square) = 0.0;
 HAL_PIN(vel) = 0.0;
-HAL_PIN(res) = 2000.0;
+HAL_PIN(res) = 100000.0;
 
 MEM(float time) = 0.0;
 
