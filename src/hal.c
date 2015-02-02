@@ -106,6 +106,20 @@ float get_hal_pin(HPNAME name){
   return(0.0);
 }
 
+struct hal_pin map_hal_pin(HPNAME name){
+    for(int i = 0; i < hal.hal_pin_count; i++){
+      if(!strcmp(hal.hal_pins[i]->name, name)){
+		  return(*hal.hal_pins[i]);
+      }
+    }
+	struct hal_pin tmp;
+//	tmp.name = "";
+	tmp.value = 0.0;
+	tmp.read_callback = 0;
+	tmp.source = &tmp;
+    return(tmp);
+}
+
 void write_hal_pin(struct hal_pin* pin, float value){
   pin->value = value;
   pin->source = pin;

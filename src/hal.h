@@ -92,6 +92,8 @@ int is_hal_pin(HPNAME name);
 
 float get_hal_pin(HPNAME name);
 
+struct hal_pin map_hal_pin(HPNAME name);
+
 void write_hal_pin(struct hal_pin* pin, float value);
 
 float read_hal_pin(struct hal_pin* pin);
@@ -130,6 +132,9 @@ int addf_nrt(void (*nrt)(float period));
   static struct hal_pin name;       \
   init_hal_pin(#name, &name, 0.0);  \
   (name.value)
+
+#define GLOBAL_HAL_PIN(name)               \
+  volatile struct hal_pin name;       
 
 #define MEM(var) static var
 

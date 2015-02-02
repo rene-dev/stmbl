@@ -29,6 +29,11 @@
 #include "stm32_ub_usb_cdc.h"
 #endif
 
+volatile uint16_t rxbuf;
+GLOBAL_HAL_PIN(g_amp);
+GLOBAL_HAL_PIN(g_vlt);
+GLOBAL_HAL_PIN(g_tmp);
+
 int __errno;
 volatile float systime_s = 0.0;
 void Wait(unsigned int ms);
@@ -292,7 +297,7 @@ void set_bergerlahr(){
 
 void DMA2_Stream0_IRQHandler(void){ //5kHz
     DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
-    GPIO_SetBits(GPIOB,GPIO_Pin_4);
+    GPIO_SetBits(GPIOB,GPIO_Pin_8);
     int freq = 5000;
     float period = 1.0 / freq;
     //GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
@@ -321,13 +326,40 @@ void DMA2_Stream0_IRQHandler(void){ //5kHz
     for(int i = 0; i < hal.rt_out_func_count; i++){
         hal.rt_out[i](period);
     }
-    GPIO_ResetBits(GPIOB,GPIO_Pin_4);
+    GPIO_ResetBits(GPIOB,GPIO_Pin_8);
 }
 
 //disabled in setup.c
 void TIM8_UP_TIM13_IRQHandler(void){ //20KHz
 	TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
 	//GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
+}
+
+void USART2_IRQHandler(){
+	GPIO_SetBits(GPIOB,GPIO_Pin_9);
+	static int32_t datapos = -1;
+	static data_t data;
+	USART_ClearITPendingBit(USART2, USART_IT_RXNE);
+	USART_ClearFlag(USART2, USART_FLAG_RXNE);
+	rxbuf = USART2->DR;
+	//rxbuf = USART_ReceiveData(USART2);
+	
+	if(rxbuf == 0x154){//start condition
+		datapos = 0;
+		//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
+	}else if(datapos >= 0 && datapos < DATALENGTH*2){
+		data.byte[datapos++] = (uint8_t)rxbuf;
+	}
+	if(datapos == DATALENGTH*2){//all data received
+		datapos = -1;
+		PIN(g_amp) = (data.data[0] * 3.3 / 4096 - 0.3) / (0.0181 * 10) * 11;
+		PIN(g_vlt) = data.data[1] / 4096.0 * 3.3 / 280.0 * (36000.0 + 280.0);
+		if(data.data[2] < 4096)
+			PIN(g_tmp) = log10f(data.data[2] * 3.3 / 4096 * 10000 / (3.3 - data.data[2] * 3.3 / 4096)) * (-53) + 290;
+	}
+	
+ GPIO_ResetBits(GPIOB,GPIO_Pin_9);
+   
 }
 
 int main(void)
@@ -369,20 +401,23 @@ int main(void)
 	HAL_PIN(fb) = 0.0;
 	HAL_PIN(cmd_d) = 0.0;
 	HAL_PIN(fb_d) = 0.0;
+	HAL_PIN(amp) = 0.0;
+	HAL_PIN(vlt) = 0.0;
+	HAL_PIN(tmp) = 0.0;
+	
+	g_amp = map_hal_pin("net0.amp");
+	g_vlt = map_hal_pin("net0.vlt");
+	g_tmp = map_hal_pin("net0.tmp");
 
 	for(int i = 0; i < hal.init_func_count; i++){
 		hal.init[i]();
 	}
 
-	TIM_Cmd(TIM8, ENABLE);//int
-	TIM_Cmd(TIM4, ENABLE);//PWM
-
-
-	//set_bergerlahr();
+	set_bergerlahr();
 	//set_festo();
 	//set_manutec();
-	set_bosch();
-	
+	//set_bosch();
+
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");
 	//link_hal_pins("led0.g", "test0.test2");
@@ -392,28 +427,24 @@ int main(void)
 
 	set_hal_pin("cauto0.start", 1.0);
 
-	/*set_hal_pin("term0.gain0", 10000.0);
-	set_hal_pin("term0.gain1", 10000.0);
-	set_hal_pin("term0.gain2", 10.0);
-	link_hal_pins("enc0.pos1", "term0.wave0");
-	link_hal_pins("enc0.ipos1", "term0.wave1");
-	link_hal_pins("enc0.iposd1", "term0.wave2");*/
+	set_hal_pin("led0.y", 1.0);	
+	TIM_Cmd(TIM8, ENABLE);//int
 
-	//->otg->GCCFG &= ~GCCFG_VBUSBSEN
 	Wait(1000);
 	#ifdef USBTERM
 	UB_USB_CDC_Init();
 	#endif
 
-
 	while(1)  // Do not exit
 	{
 		Wait(1);
+		GPIO_SetBits(GPIOB,GPIO_Pin_7);
 		period = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
 		lasttime = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){
 			hal.nrt[i](period);
 		}
+		GPIO_ResetBits(GPIOB,GPIO_Pin_7);
 	}
 }
 

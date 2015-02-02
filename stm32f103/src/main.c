@@ -18,9 +18,12 @@ typedef union{
 
 volatile unsigned int systime = 0;
 volatile float u,v,w;
+volatile int send = 0;
+volatile int uartsend = 0;
 
 uint16_t buf = 0x0000;
 data_t data;
+data_t databack;
 int32_t datapos = -1;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -161,7 +164,7 @@ void usart_init(){
     USART_InitStruct.USART_StopBits = USART_StopBits_1;
     USART_InitStruct.USART_Parity = USART_Parity_No;
     USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-    USART_InitStruct.USART_Mode = USART_Mode_Rx;
+    USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
     USART_Init(USART2, &USART_InitStruct);
     USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
@@ -201,11 +204,15 @@ DMA_InitTypeDef DMA_InitStructure;
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
   /* Enable ADC1 and GPIOC clock */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
+  
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
   
   DMA_DeInit(DMA1_Channel1);
   DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
@@ -243,9 +250,10 @@ DMA_InitTypeDef DMA_InitStructure;
   ADC_TempSensorVrefintCmd(ENABLE);
   /* ADC1 regular channel14 configuration */ 
   //ADC_channels anpassen!
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_13Cycles5);//amp
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 2, ADC_SampleTime_13Cycles5);//vlt
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 3, ADC_SampleTime_13Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_13Cycles5);// amp
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 2, ADC_SampleTime_13Cycles5);// vlt
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 3, ADC_SampleTime_13Cycles5);// iramx temp
+ // ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 3, ADC_SampleTime_13Cycles5);
  
 
   /* Enable ADC1 DMA */
@@ -288,7 +296,13 @@ void DMA1_Channel1_IRQHandler(){
 	DMA_ClearITPendingBit(DMA1_IT_TC1);
     //GPIO_SetBits(GPIOC,GPIO_Pin_0);
     //while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-    //USART_SendData(USART2, (uint16_t)(ADCConvertedValue[1] & 0xff));
+	if(send > 10){
+		databack.data[0] = ADCConvertedValue[0];
+		databack.data[1] = ADCConvertedValue[1];
+		databack.data[2] = ADCConvertedValue[2];
+		//uartsend = 1;
+		send = 0;
+	}
 	/*
 	int strom = 0;
 	for(int i = 3;i<13;i++){
@@ -321,6 +335,7 @@ void USART2_IRQHandler(){
 		buf = USART_ReceiveData(USART2);
 		if(buf == 0x155){//start condition
 			datapos = 0;
+			uartsend = 1;
 			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
 		}else if(datapos >= 0 && datapos < DATALENGTH*2){
 			data.byte[datapos++] = (uint8_t)buf;
@@ -331,6 +346,7 @@ void USART2_IRQHandler(){
 			TIM1->CCR2 = data.data[1];
 			TIM1->CCR3 = data.data[2];
 			timeout = 0;
+			send++;
 			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
 		}
 		//}
@@ -379,6 +395,15 @@ int main(void)
 	TIM1->CCR3 = 0;
 
 	while(1){
+		if(uartsend == 1){
+			uartsend = 0;
+			while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+			USART_SendData(USART2, 0x154);
+			for(int j = 0;j<6;j++){
+				while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+    			USART_SendData(USART2, databack.byte[j]);
+			}
+		}
 		//USART_GetFlagStatus(USART2, USART_FLAG_NE);
 		//USART_ReceiveData(USART2);
 		// 	GPIO_SetBits(GPIOC,GPIO_Pin_0);

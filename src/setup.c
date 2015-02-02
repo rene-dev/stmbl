@@ -11,8 +11,8 @@
 void setup(){
     //messpin
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3 | GPIO_Pin_4;
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
+ 	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
@@ -67,7 +67,7 @@ void setup_usart(){
     USART_ITConfig(UART_DRV, USART_IT_RXNE, ENABLE);
     
     NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
@@ -146,13 +146,6 @@ void setup_res(){
     TIM_OC1PreloadConfig(TIM8, TIM_OCPreload_Enable);
     TIM_CtrlPWMOutputs(TIM8, ENABLE);
     
-    /* int NVIC setup */
-    NVIC_InitStructure.NVIC_IRQChannel = TIM8_UP_TIM13_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-    NVIC_Init(&NVIC_InitStructure);
-    
     RCC_AHB1PeriphClockCmd(SIN_IO_RCC, ENABLE);
     RCC_AHB1PeriphClockCmd(COS_IO_RCC, ENABLE);
     /* ADC clock enable */
@@ -227,7 +220,7 @@ void setup_res(){
     DMA_Init(DMA2_Stream0, &DMA_InitStructure);
 
     NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream0_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
