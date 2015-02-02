@@ -62,6 +62,7 @@ void link_pid(){
 	link_hal_pins("net0.fb", "pderiv1.in");
 	link_hal_pins("pderiv1.out", "net0.fb_d");
 	link_hal_pins("net0.fb_d", "pid0.vel_fb");
+	link_hal_pins("net0.vlt", "pid0.volt");
 	set_hal_pin("pderiv1.in_lp", 1.0);
 	set_hal_pin("pderiv1.out_lp", 1.0);
 	set_hal_pin("pderiv1.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
@@ -108,7 +109,6 @@ void link_pid(){
 
 	set_hal_pin("p2uvw0.volt", 130.0);
 	set_hal_pin("p2uvw0.pwm_max", 0.9);
-	set_hal_pin("pid0.volt", 60.0);
 	set_hal_pin("p2uvw0.poles", 1.0);
 	set_hal_pin("pid0.enable", 1.0);
 	
@@ -354,7 +354,7 @@ void USART2_IRQHandler(){
 		datapos = -1;
 		PIN(g_amp) = (data.data[0] * 3.3 / 4096 - 0.3) / (0.0181 * 10) * 11;
 		PIN(g_vlt) = data.data[1] / 4096.0 * 3.3 / 280.0 * (36000.0 + 280.0);
-		if(data.data[2] < 4096)
+		if(data.data[2] < 4096 && data.data[2] > 0.0)
 			PIN(g_tmp) = log10f(data.data[2] * 3.3 / 4096 * 10000 / (3.3 - data.data[2] * 3.3 / 4096)) * (-53) + 290;
 	}
 	
