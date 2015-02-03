@@ -166,7 +166,7 @@ RT_PID(
       veli = 0.0;
       veld = 0.0;
     }
-    acccmd = velp * velerr + veld * (velerr - vel_err_old) / period + accff * accextcmd;
+    acccmd = LIMIT(velp * velerr + veld * (velerr - vel_err_old) / period + accff * accextcmd,accmax);
     vel_err_old = velerr;
     if(veli > 0.0){
 	  vel_error_sum = LIMIT(vel_error_sum + velerr * period, velerrsummax);
