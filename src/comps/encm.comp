@@ -1,0 +1,107 @@
+COMP(encm);
+
+HAL_PIN(res0) = 2048.0;
+HAL_PIN(pos0) = 0.0;
+HAL_PIN(reverse0) = 0.0;
+
+
+HAL_PIN(res1) = 2048.0;
+HAL_PIN(pos1) = 0.0;
+HAL_PIN(reverse1) = 0.0;
+HAL_PIN(ireverse1) = 0.0;
+HAL_PIN(ipos1) = 0.0;
+HAL_PIN(iposd1) = 0.0;
+HAL_PIN(s) = 0.0;
+HAL_PIN(c) = 0.0;
+
+
+
+MEM(int e_res0) = 0.0;
+MEM(int e_res1) = 0.0;
+
+MEM(float s_) = 0.0;
+MEM(float c_) = 0.0;
+
+MEM(float smin) = 16384.0;
+MEM(float smax) = 0.0;
+MEM(float cmin) = 16384.0;
+MEM(float cmax) = 0.0;
+
+
+INIT(
+  e_res0 = (int)PIN(res0);
+
+  GPIO_InitTypeDef GPIO_InitStruct;
+  USART_InitTypeDef USART_InitStruct;
+  RCC_APB2PeriphClockCmd(UART_CMD_RCC, ENABLE);
+  RCC_AHB1PeriphClockCmd(UART_CMD_RX_IO_RCC, ENABLE);
+  RCC_AHB1PeriphClockCmd(UART_CMD_TX_IO_RCC, ENABLE);
+
+  //USART TX
+  GPIO_PinAFConfig(UART_CMD_TX_PORT, UART_CMD_TX_PIN_SOURCE, UART_CMD_TX_AF_SOURCE);
+  GPIO_InitStruct.GPIO_Pin = UART_CMD_TX_PIN;
+  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
+  GPIO_Init(UART_CMD_TX_PORT, &GPIO_InitStruct);
+
+  //USART RX
+  GPIO_PinAFConfig(UART_CMD_RX_PORT, UART_CMD_RX_PIN_SOURCE, UART_CMD_RX_AF_SOURCE);
+  GPIO_InitStruct.GPIO_Pin = UART_CMD_RX_PIN;
+  GPIO_Init(UART_CMD_RX_PORT, &GPIO_InitStruct);
+
+  USART_InitStruct.USART_BaudRate = 2500000;
+  USART_InitStruct.USART_WordLength = USART_WordLength_8b;
+  USART_InitStruct.USART_StopBits = USART_StopBits_1;
+  USART_InitStruct.USART_Parity = USART_Parity_No;
+  USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStruct.USART_Mode = /*USART_Mode_Rx | */USART_Mode_Tx;
+  USART_Init(UART_CMD, &USART_InitStruct);
+
+  //USART_ITConfig(UART_CMD, USART_IT_RXNE, ENABLE);
+
+  NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
+
+  /* Enable the USART */
+  USART_Cmd(UART_CMD, ENABLE);
+
+  // Clock Enable
+  //RCC_AHB1PeriphClockCmd(UART_CMD_TX_DMA_RCC, ENABLE);
+
+  // DMA-Disable
+  //DMA_Cmd(UART_CMD_TX_DMA, DISABLE);
+  //DMA_DeInit(UART_CMD_TX_DMA);
+
+  // DMA2-Config
+  /*DMA_InitStructure.DMA_Channel = UART_CMD_TX_DMA_CHAN;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_CMD->DR);
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&UART_DMA_Buffer;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+  DMA_InitStructure.DMA_BufferSize = DATALENGTH*2+1;//uint32_t + start
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_HalfWord;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;*/
+  //DMA_Init(UART_CMD_TX_DMA, &DMA_InitStructure);
+
+  //DMA_Cmd(UART_CMD_TX_DMA, ENABLE);
+
+  //USART_DMACmd(UART_CMD, USART_DMAReq_Tx, ENABLE);
+);
+
+FRT(
+  USART_SendData(UART_CMD, 0x02);
+);
+
+ENDCOMP;
