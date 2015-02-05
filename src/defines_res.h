@@ -83,7 +83,7 @@
 
 // uart
 #define UART_CMD USART1
-#define UART_CMD_RCC RCC_APB1Periph_USART1
+#define UART_CMD_RCC RCC_APB2Periph_USART1
 
 #define UART_DRV USART2
 #define UART_DRV_RCC RCC_APB1Periph_USART2

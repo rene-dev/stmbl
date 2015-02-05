@@ -111,8 +111,8 @@ void link_pid(){
 	set_hal_pin("p2uvw0.pwm_max", 0.9);
 	set_hal_pin("p2uvw0.poles", 1.0);
 	set_hal_pin("pid0.enable", 1.0);
-	
-	
+
+
 	link_hal_pins("pid0.pwm_cmd", "cauto0.pwm_in");
 	link_hal_pins("cauto0.pwm_out", "p2uvw0.pwm");
 
@@ -343,7 +343,7 @@ void USART2_IRQHandler(){
 	USART_ClearFlag(USART2, USART_FLAG_RXNE);
 	rxbuf = USART2->DR;
 	//rxbuf = USART_ReceiveData(USART2);
-	
+
 	if(rxbuf == 0x154){//start condition
 		datapos = 0;
 		//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
@@ -358,9 +358,9 @@ void USART2_IRQHandler(){
 		if(data.data[2] < ARES && data.data[2] > 0.0)
 			PIN(g_tmp) = log10f(data.data[2] * AREF / ARES * TPULLUP / (AREF - data.data[2] * AREF / ARES)) * (-53) + 290;
 	}
-	
+
  GPIO_ResetBits(GPIOB,GPIO_Pin_9);
-   
+
 }
 
 int main(void)
@@ -390,7 +390,7 @@ int main(void)
 	#include "comps/pderiv.comp"
 	//#include "comps/autophase.comp"
 	#include "comps/cauto.comp"
-	//#include "comps/test.comp"
+	#include "comps/encm.comp"
 
 	#include "comps/led.comp"
 
@@ -405,7 +405,7 @@ int main(void)
 	HAL_PIN(amp) = 0.0;
 	HAL_PIN(vlt) = 0.0;
 	HAL_PIN(tmp) = 0.0;
-	
+
 	g_amp = map_hal_pin("net0.amp");
 	g_vlt = map_hal_pin("net0.vlt");
 	g_tmp = map_hal_pin("net0.tmp");
@@ -428,7 +428,7 @@ int main(void)
 
 	set_hal_pin("cauto0.start", 1.0);
 
-	set_hal_pin("led0.y", 1.0);	
+	set_hal_pin("led0.y", 1.0);
 	TIM_Cmd(TIM8, ENABLE);//int
 
 	Wait(1000);
@@ -439,13 +439,11 @@ int main(void)
 	while(1)  // Do not exit
 	{
 		Wait(1);
-		GPIO_SetBits(GPIOB,GPIO_Pin_7);
 		period = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
 		lasttime = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){
 			hal.nrt[i](period);
 		}
-		GPIO_ResetBits(GPIOB,GPIO_Pin_7);
 	}
 }
 

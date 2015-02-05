@@ -11,7 +11,7 @@
 void setup(){
     //messpin
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
+	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_8 | GPIO_Pin_9;
  	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -63,18 +63,18 @@ void setup_usart(){
 	USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
 	USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 	USART_Init(UART_DRV, &USART_InitStruct);
-    
+
     USART_ITConfig(UART_DRV, USART_IT_RXNE, ENABLE);
-    
+
     NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
-    
+
 	/* Enable the USART */
 	USART_Cmd(UART_DRV, ENABLE);
-	
+
     // Clock Enable
     RCC_AHB1PeriphClockCmd(UART_DRV_TX_DMA_RCC, ENABLE);
 
@@ -112,7 +112,7 @@ void setup_usart(){
 void setup_res(){
     //resolver timer
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
-    
+
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
     TIM_TimeBaseStructure.TIM_Period = 420*2;//20kHz
@@ -121,7 +121,7 @@ void setup_res(){
     TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
     TIM_ITConfig(TIM8, TIM_IT_Update, DISABLE);
     TIM_SelectOutputTrigger(TIM8, TIM_TRGOSource_Update);//trigger ADC
-    
+
     //resolver ref signal generation
     RCC_AHB1PeriphClockCmd(RES_IO_RCC, ENABLE);
     GPIO_InitStructure.GPIO_Pin   = RES_PIN;
@@ -130,9 +130,9 @@ void setup_res(){
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
     GPIO_Init(RES_PORT, &GPIO_InitStructure);
-    
+
     GPIO_PinAFConfig(RES_PORT, GPIO_PinSource5, GPIO_AF_TIM8);
-    
+
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Disable;
     TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
@@ -141,11 +141,11 @@ void setup_res(){
     TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
     TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
     TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
-    
+
     TIM_OC1Init(TIM8, &TIM_OCInitStructure);
     TIM_OC1PreloadConfig(TIM8, TIM_OCPreload_Enable);
     TIM_CtrlPWMOutputs(TIM8, ENABLE);
-    
+
     RCC_AHB1PeriphClockCmd(SIN_IO_RCC, ENABLE);
     RCC_AHB1PeriphClockCmd(COS_IO_RCC, ENABLE);
     /* ADC clock enable */
@@ -161,7 +161,7 @@ void setup_res(){
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(COS_PORT,&GPIO_InitStructure);
-	
+
     //ADC structure configuration
     ADC_DeInit();
 
@@ -187,13 +187,13 @@ void setup_res(){
         ADC_RegularChannelConfig(SIN_ADC, SIN_ADC_CHAN, i, RES_SampleTime);
         ADC_RegularChannelConfig(COS_ADC, COS_ADC_CHAN, i, RES_SampleTime);
     }
-		 
+
     ADC_MultiModeDMARequestAfterLastTransferCmd(ENABLE);
-	 
+
     //Enable ADC conversion
     ADC_Cmd(SIN_ADC,ENABLE);
     ADC_Cmd(COS_ADC,ENABLE);
-	 
+
     // Clock Enable
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
 
