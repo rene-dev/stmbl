@@ -29,7 +29,7 @@
 
 //iramx v31 hardware
 #define AREF 3.3// analog reference voltage
-#define ARES 4096// analog resolution, 12 bit
+#define ARES 4096.0// analog resolution, 12 bit
 #define RCUR 0.0181//shunt
 #define TPULLUP 10000//iramx temperature pullup
 #define VDIVUP 36000.0//HV div pullup
