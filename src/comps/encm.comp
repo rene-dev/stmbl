@@ -1,36 +1,15 @@
 COMP(encm);
 
-HAL_PIN(res0) = 2048.0;
-HAL_PIN(pos0) = 0.0;
-HAL_PIN(reverse0) = 0.0;
+HAL_PIN(reverse) = 0.0;
 
+HAL_PIN(pos) = 0.0;
 
-HAL_PIN(res1) = 2048.0;
-HAL_PIN(pos1) = 0.0;
-HAL_PIN(reverse1) = 0.0;
-HAL_PIN(ireverse1) = 0.0;
-HAL_PIN(ipos1) = 0.0;
-HAL_PIN(iposd1) = 0.0;
-HAL_PIN(s) = 0.0;
-HAL_PIN(c) = 0.0;
+HAL_PIN(error) = 0;
+HAL_PIN(cmd) = 2.0;
 
-
-
-MEM(int e_res0) = 0.0;
-MEM(int e_res1) = 0.0;
-
-MEM(float s_) = 0.0;
-MEM(float c_) = 0.0;
-
-MEM(float smin) = 16384.0;
-MEM(float smax) = 0.0;
-MEM(float cmin) = 16384.0;
-MEM(float cmax) = 0.0;
-
+MEM(uint32_t error_) = 0.0;
 
 INIT(
-  e_res0 = (int)PIN(res0);
-
   GPIO_InitTypeDef GPIO_InitStruct;
   USART_InitTypeDef USART_InitStruct;
   RCC_APB2PeriphClockCmd(UART_CMD_RCC, ENABLE);
@@ -56,12 +35,13 @@ INIT(
   USART_InitStruct.USART_StopBits = USART_StopBits_1;
   USART_InitStruct.USART_Parity = USART_Parity_No;
   USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStruct.USART_Mode = /*USART_Mode_Rx | */USART_Mode_Tx;
+  USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
   USART_Init(UART_CMD, &USART_InitStruct);
 
-  //USART_ITConfig(UART_CMD, USART_IT_RXNE, ENABLE);
+  USART_ITConfig(UART_CMD, USART_IT_RXNE, ENABLE);
+  USART_ITConfig(UART_CMD, USART_IT_TC, ENABLE);
 
-  NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -101,7 +81,22 @@ INIT(
 );
 
 FRT(
-  USART_SendData(UART_CMD, 0x02);
+  uint32_t tpos;
+  if(menc_pos == 9 && menc_buf[0] == 0x02 && menc_buf[0] ^ menc_buf[1] ^ menc_buf[2] ^ menc_buf[3] ^ menc_buf[4] ^ menc_buf[5] ^ menc_buf[6] ^ menc_buf[7] ^ menc_buf[8] ^ menc_buf[9] == 0){
+  //if(menc_pos >= 5 && menc_buf[0] == 0x02){
+    tpos = menc_buf[2]+menc_buf[3]*256+menc_buf[4]*65536;
+    if(PIN(reverse) > 0.0){
+      PIN(pos) = minus(0,(tpos * M_PI * 2.0 / 131072.0) - M_PI);
+    }else{
+      PIN(pos) = (tpos * M_PI * 2.0 / 131072.0) - M_PI;
+	}
+  }else{
+    error_++;
+    PIN(error) = error_;
+  }
+  GPIO_SetBits(GPIOB,GPIO_Pin_5);
+  USART_SendData(UART_CMD, (unsigned char)PIN(cmd));
+  menc_pos = 0;	
 );
 
 ENDCOMP;

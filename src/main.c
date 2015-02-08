@@ -38,6 +38,10 @@ int __errno;
 volatile float systime_s = 0.0;
 void Wait(unsigned int ms);
 
+//menc
+volatile int menc_pos = -1;
+volatile uint16_t menc_buf[10];
+
 #define NO 0
 #define YES 1
 
@@ -295,6 +299,52 @@ void set_bergerlahr(){
 	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 }
 
+void set_mitsubishi(){
+	link_pid();
+	link_hal_pins("enc0.pos0", "net0.cmd");
+	link_hal_pins("encm0.pos", "cauto0.fb_in");
+	set_hal_pin("encm0.reverse", 1.0);
+
+	set_hal_pin("enc0.res0", 4096.0);
+	set_hal_pin("res0.enable", 1.0);
+	set_hal_pin("pderiv0.in_lp", 1.0);
+	set_hal_pin("pderiv0.out_lp", 1.0);
+	set_hal_pin("pderiv0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
+	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+
+	// fb
+	set_hal_pin("pderiv1.in_lp", 1.0);
+	set_hal_pin("pderiv1.out_lp", 1.0);
+	set_hal_pin("pderiv1.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
+	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+
+	set_hal_pin("pderiv0.out_lp", 1.0);
+	// pole count
+	set_hal_pin("cauto0.pole_count", 2.0);
+
+	// auto time
+	set_hal_pin("cauto0.time", 0.5);
+
+	// auto scale
+	set_hal_pin("cauto0.scale", 0.6);
+
+	// pid
+	set_hal_pin("pid0.pos_p", 10.0);
+	set_hal_pin("pid0.vel_p", 1.0);
+	set_hal_pin("pid0.vel_i", 20.0);
+	set_hal_pin("pid0.pos_lp", 1.0);
+	set_hal_pin("pid0.force_p", 1.0);
+	set_hal_pin("pid0.cur_ind", 2.34);
+	set_hal_pin("pid0.pos_lp", 1.0);
+	set_hal_pin("pid0.vel_lp", 1.0);
+	//set_hal_pin("pid0.cur_ff", 1.5);//dc wicklungswiederstand
+	set_hal_pin("pid0.cur_ff", 25);//dc wicklungswiederstand
+	set_hal_pin("pid0.vel_d", 0.0);
+
+	set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
+	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+}
+
 void DMA2_Stream0_IRQHandler(void){ //5kHz
     DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
     GPIO_SetBits(GPIOB,GPIO_Pin_8);
@@ -335,8 +385,27 @@ void TIM8_UP_TIM13_IRQHandler(void){ //20KHz
 	//GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
 }
 
-void USART2_IRQHandler(){
+void USART1_IRQHandler(){
+	GPIO_ResetBits(GPIOB,GPIO_Pin_5);
 	GPIO_SetBits(GPIOB,GPIO_Pin_9);
+	uint16_t buf;
+	if(USART_GetITStatus(USART1, USART_IT_RXNE)){
+		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+		USART_ClearFlag(USART1, USART_FLAG_RXNE);
+		buf = USART1->DR;
+		if(menc_pos >= 0 && menc_pos <= 8){
+			menc_buf[menc_pos++] = buf;
+		}
+	}
+	if(USART_GetITStatus(USART1, USART_IT_TC)){
+		USART_ClearITPendingBit(USART1, USART_IT_TC);
+		USART_ClearFlag(USART1, USART_FLAG_TC);
+		buf = USART1->DR;
+	}
+	 GPIO_ResetBits(GPIOB,GPIO_Pin_9);
+}
+
+void USART2_IRQHandler(){
 	static int32_t datapos = -1;
 	static data_t data;
 	USART_ClearITPendingBit(USART2, USART_IT_RXNE);
@@ -359,7 +428,6 @@ void USART2_IRQHandler(){
 			PIN(g_tmp) = log10f(data.data[2] * AREF / ARES * TPULLUP / (AREF - data.data[2] * AREF / ARES)) * (-53) + 290;
 	}
 
- GPIO_ResetBits(GPIOB,GPIO_Pin_9);
 
 }
 
@@ -414,7 +482,8 @@ int main(void)
 		hal.init[i]();
 	}
 
-	set_bergerlahr();
+	//set_bergerlahr();
+	set_mitsubishi();
 	//set_festo();
 	//set_manutec();
 	//set_bosch();
