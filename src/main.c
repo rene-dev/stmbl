@@ -419,10 +419,9 @@ void USART2_IRQHandler(){
 	}else if(datapos >= 0 && datapos < DATALENGTH*2){
 		data.byte[datapos++] = (uint8_t)rxbuf;
 	}
-
 	if(datapos == DATALENGTH*2){//all data received
 		datapos = -1;
-		PIN(g_amp) = (data.data[0] * AREF / ARES - 0.3) / (RCUR * 10) * 11;
+		PIN(g_amp) = (data.data[0] * AREF / ARES - AREF / (R10 + R11) * R11) / (RCUR * R10) * (R10 + R11);
 		PIN(g_vlt) = data.data[1] / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN);
 		if(data.data[2] < ARES && data.data[2] > 0.0)
 			PIN(g_tmp) = log10f(data.data[2] * AREF / ARES * TPULLUP / (AREF - data.data[2] * AREF / ARES)) * (-53) + 290;
