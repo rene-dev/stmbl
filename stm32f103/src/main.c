@@ -280,13 +280,13 @@ void TIM1_UP_IRQHandler(){
 	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
     ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 	if(timeout > 30){
-		GPIO_ResetBits(GPIOB,GPIO_Pin_6);//disable
-		GPIO_SetBits(GPIOC,GPIO_Pin_1);//gelb
-		GPIO_ResetBits(GPIOC,GPIO_Pin_2);//grün
+		GPIO_ResetBits(GPIOB,GPIO_Pin_6);//disable driver
+		GPIO_SetBits(GPIOC,GPIO_Pin_1);//yellow led on
+		GPIO_ResetBits(GPIOC,GPIO_Pin_2);//greep led off
 	}else{
-		GPIO_SetBits(GPIOB,GPIO_Pin_6);//Enable
-		GPIO_SetBits(GPIOC,GPIO_Pin_2);//grün
-		GPIO_ResetBits(GPIOC,GPIO_Pin_1);//gelb
+		GPIO_SetBits(GPIOB,GPIO_Pin_6);//Enable driver
+		GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
+		GPIO_ResetBits(GPIOC,GPIO_Pin_1);//yellow led off
 		timeout ++;
 	}
 	//GPIO_SetBits(GPIOB,GPIO_Pin_12);
@@ -294,6 +294,15 @@ void TIM1_UP_IRQHandler(){
 
 void DMA1_Channel1_IRQHandler(){
 	DMA_ClearITPendingBit(DMA1_IT_TC1);
+	
+	if(ADCConvertedValue[0] > 374){//current limit (371 zero)
+		GPIO_ResetBits(GPIOB,GPIO_Pin_6);//disable driver
+		GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
+	}else{
+		GPIO_SetBits(GPIOB,GPIO_Pin_6);//Enable driver
+		GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
+	}
+	
     //GPIO_SetBits(GPIOC,GPIO_Pin_0);
     //while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
 	if(send > 10){
@@ -303,32 +312,10 @@ void DMA1_Channel1_IRQHandler(){
 		//uartsend = 1;
 		send = 0;
 	}
-	/*
-	int strom = 0;
-	for(int i = 3;i<13;i++){
-		strom += ADCConvertedValue[i];
-	}
-	int e;
-	//strom /= 5;
-	if(strom*50 < ADCConvertedValue[0]){
-		e = strom - ADCConvertedValue[0]/100;
-		float amp = 1.0;
-		//amp = 1.0-e*(ADCConvertedValue[7]/4000);
-		GPIO_ResetBits(GPIOB,GPIO_Pin_12);
-		TIM1->CCR1 = u*amp;
-		TIM1->CCR2 = v*amp;
-		TIM1->CCR3 = w*amp;
-	}else{
-		GPIO_SetBits(GPIOB,GPIO_Pin_12);
-		TIM1->CCR1 = 1200;
-		TIM1->CCR2 = 1200;
-		TIM1->CCR3 = 1200;
-	}
-	*/
 }
 
 void USART2_IRQHandler(){
-	GPIO_SetBits(GPIOC,GPIO_Pin_0);
+	//GPIO_SetBits(GPIOC,GPIO_Pin_0);
 	//USART_GetFlagStatus(USART2,USART_FLAG_FE);
 	//if(USART_GetITStatus(USART2, USART_IT_RXNE) == SET){
 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
