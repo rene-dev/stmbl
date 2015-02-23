@@ -278,7 +278,7 @@ DMA_InitTypeDef DMA_InitStructure;
 
 void TIM1_UP_IRQHandler(){
 	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
-    ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+    ADC_SoftwareStartConvCmd(ADC1, ENABLE);//trigger ADC
 	if(timeout > 30){
 		GPIO_ResetBits(GPIOB,GPIO_Pin_6);//disable driver
 		GPIO_SetBits(GPIOC,GPIO_Pin_1);//yellow led on
@@ -367,8 +367,6 @@ int main(void)
 	//GPIO_SetBits(GPIOC,GPIO_Pin_1);//gelb
 	//GPIO_SetBits(GPIOC,GPIO_Pin_2);//grün
 
-
-	
 	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
 	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000 - 1);
