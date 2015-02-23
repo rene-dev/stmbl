@@ -5454,6 +5454,12 @@ design rules under a new name.</description>
 <wire x1="28.1" y1="8.5" x2="29.762" y2="8.5" width="0.2" layer="16"/>
 <wire x1="29.762" y1="8.5" x2="30.75" y2="8.262" width="0.2" layer="16"/>
 </signal>
+<signal name="N$55">
+<contactref element="IC5" pad="30"/>
+</signal>
+<signal name="N$56">
+<contactref element="IC5" pad="29"/>
+</signal>
 </signals>
 <errors>
 <approved hash="1,20,55af94cf95ee548e"/>

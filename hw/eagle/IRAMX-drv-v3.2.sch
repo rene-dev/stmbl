@@ -28026,6 +28026,18 @@ http://www.zetex.com&lt;p&gt;
 <pinref part="SJ1" gate="1" pin="1"/>
 </segment>
 </net>
+<net name="N$55" class="0">
+<segment>
+<pinref part="IC5" gate="MCU" pin="PB11"/>
+<wire x1="-134.62" y1="22.86" x2="-124.46" y2="22.86" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$56" class="0">
+<segment>
+<pinref part="IC5" gate="MCU" pin="PB10"/>
+<wire x1="-134.62" y1="20.32" x2="-124.46" y2="20.32" width="0.1524" layer="91"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>
