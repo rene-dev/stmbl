@@ -57,8 +57,8 @@ HAL_PIN(cur_en) = 1.0;
 HAL_PIN(time) = 0.0002;
 
 HAL_PIN(mot_r) = 30.0;
-HAL_PIN(mot_l) = 30.0;
-HAL_PIN(mot_j) = 30.0;
+HAL_PIN(mot_l) = 0.01;
+HAL_PIN(mot_j) = 0.001;
 HAL_PIN(mot_km) = 30.0;
 
 HAL_PIN(mot_fr) = 30.0;
@@ -87,34 +87,34 @@ HAL_PIN(volt) = 130;
 
 
 // user limits
-HAL_PIN(vel_limit) = 0.0;
-HAL_PIN(acc_limit) = 0.0;
-HAL_PIN(force_limit) = 0.0;
-HAL_PIN(cur_limit) = 0.0;
-HAL_PIN(volt_limit) = 130.0;
+HAL_PIN(vel_limit) = 1300.0;
+HAL_PIN(acc_limit) = 300000.0;
+HAL_PIN(force_limit) = 100.0;
+HAL_PIN(cur_limit) = 10.0;
+HAL_PIN(volt_limit) = 400.0;
 HAL_PIN(pwm_limit) = 0.9;
 
 // max limits
-HAL_PIN(max_vel) = 62.9;
-HAL_PIN(max_acc) = 1200.0;
+HAL_PIN(max_vel) = 1300.0;
+HAL_PIN(max_acc) = 300000.0;
 HAL_PIN(max_force) = 100.0;
-HAL_PIN(max_cur) = 6.0;
-HAL_PIN(max_volt) = 130.0;
-HAL_PIN(max_pwm) = 0.9;
+HAL_PIN(max_cur) = 10.0;
+HAL_PIN(max_volt) = 400.0;
+HAL_PIN(max_pwm) = 0.95;
 
 // system limits
-HAL_PIN(vel_min) = 62.9;
-HAL_PIN(vel_max) = 62.9;
-HAL_PIN(acc_min) = 1200.0;
-HAL_PIN(acc_max) = 1200.0;
-HAL_PIN(force_min) = 100.0;
-HAL_PIN(force_max) = 100.0;
-HAL_PIN(cur_min) = 6.0;
-HAL_PIN(cur_max) = 6.0;
-HAL_PIN(volt_min) = 130.0;
-HAL_PIN(volt_max) = 130.0;
-HAL_PIN(pwm_min) = 0.9;
-HAL_PIN(pwm_max) = 0.9;
+HAL_PIN(vel_min) = 0.0;
+HAL_PIN(vel_max) = 0.0;
+HAL_PIN(acc_min) = 0.0;
+HAL_PIN(acc_max) = 0.0;
+HAL_PIN(force_min) = 0.0;
+HAL_PIN(force_max) = 0.0;
+HAL_PIN(cur_min) = 0.0;
+HAL_PIN(cur_max) = 0.0;
+HAL_PIN(volt_min) = 0.0;
+HAL_PIN(volt_max) = 0.0;
+HAL_PIN(pwm_min) = 0.0;
+HAL_PIN(pwm_max) = 0.0;
 
 
 HAL_PIN(vel_sat) = 0.0;
@@ -160,10 +160,22 @@ float pwmcmd;
 float pwmsat;
 
 float r = PIN(mot_r);
+if(r == 0.0){
+  r = 1.0;
+}
 float l = PIN(mot_l);
 float j = PIN(mot_j);
+if(j == 0.0){
+  j = 1.0;
+}
 float m = PIN(mot_km);
+if(m == 0.0){
+  m = 1.0;
+}
 float t = PIN(time);
+if(t == 0.0){
+  t = 0.0002;
+}
 
 float vlt = PIN(volt);
 
@@ -179,6 +191,8 @@ float voltmax = MIN(MIN(PIN(volt_limit), PIN(max_volt)), vlt);
 float voltmin = -voltmax;
 float pwmmax = MIN(PIN(pwm_limit), PIN(max_pwm));
 float pwmmin = -pwmmax;
+voltmax *= pwmmax;
+voltmin = -voltmax;
 
 float ind = velfb * m;
 
@@ -286,6 +300,19 @@ PIN(cur_sat) = cursat;
 PIN(volt_sat) = voltsat;
 PIN(pwm_sat) = pwmsat;
 PIN(saturated) = sat;
+
+PIN(vel_min) = velmin;
+PIN(vel_max) = velmax;
+PIN(acc_min) = accmin_;
+PIN(acc_max) = accmax_;
+PIN(force_min) = forcemin_;
+PIN(force_max) = forcemax_;
+PIN(cur_min) = curmin_;
+PIN(cur_max) = curmax_;
+PIN(volt_min) = voltmin;
+PIN(volt_max) = voltmax;
+PIN(pwm_min) = pwmmin;
+PIN(pwm_max) = pwmmax;
 );
 
 ENDCOMP;
