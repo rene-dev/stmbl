@@ -45,6 +45,91 @@ volatile uint16_t menc_buf[10];
 #define NO 0
 #define YES 1
 
+void link_pid2(){
+	// pos
+	//link_hal_pins("net0.cmd", "pos_minus0.in0");
+	//link_hal_pins("net0.fb", "pos_minus0.in1");
+	//link_hal_pins("pos_minus0.out", "pid0.pos_error");
+	
+	link_hal_pins("enc0.pos0", "net0.cmd");
+	link_hal_pins("enc0.pos1", "cauto0.fb_in");
+	
+	link_hal_pins("cauto0.fb_out", "net0.fb");
+
+	link_hal_pins("net0.cmd","pid0.pos_ext_cmd");
+	link_hal_pins("net0.fb","pid0.pos_fb");
+
+	// vel
+	link_hal_pins("net0.cmd", "pderiv0.in");
+	link_hal_pins("pderiv0.out", "net0.cmd_d");
+	link_hal_pins("net0.cmd_d", "pid0.vel_ext_cmd");
+	set_hal_pin("pderiv0.in_lp", 1.0);
+	set_hal_pin("pderiv0.out_lp", 1.0);
+	set_hal_pin("pderiv0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
+	set_hal_pin("pderiv0.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
+
+	link_hal_pins("net0.fb", "pderiv1.in");
+	link_hal_pins("pderiv1.out", "net0.fb_d");
+	link_hal_pins("net0.fb_d", "pid0.vel_fb");
+	link_hal_pins("net0.vlt", "pid0.volt");
+	set_hal_pin("pderiv1.in_lp", 1.0);
+	set_hal_pin("pderiv1.out_lp", 1.0);
+	set_hal_pin("pderiv1.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
+	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
+
+	// timer pwm
+	link_hal_pins("pid0.pwm_cmd", "auto0.pwm_in");
+	link_hal_pins("auto0.pwm_out", "p2uvw0.pwm");
+	// link_hal_pins("p2uvw0.u", "pwmout0.u");
+	// link_hal_pins("p2uvw0.v", "pwmout0.v");
+	// link_hal_pins("p2uvw0.w", "pwmout0.w");
+	//pwm over uart
+	link_hal_pins("p2uvw0.u", "pwm2uart0.u");
+	link_hal_pins("p2uvw0.v", "pwm2uart0.v");
+	link_hal_pins("p2uvw0.w", "pwm2uart0.w");
+
+
+	// magpos
+	link_hal_pins("auto0.mag_pos_out", "p2uvw0.magpos");
+
+	// term
+	link_hal_pins("net0.cmd", "term0.wave0");
+	link_hal_pins("net0.fb", "term0.wave1");
+	link_hal_pins("net0.cmd_d", "term0.wave2");
+	link_hal_pins("net0.fb_d", "term0.wave3");
+	set_hal_pin("term0.gain0", 10.0);
+	set_hal_pin("term0.gain1", 10.0);
+	set_hal_pin("term0.gain2", 1.0);
+	set_hal_pin("term0.gain3", 1.0);
+
+
+	// enable
+	link_hal_pins("pid0.enable", "net0.enable");
+	set_hal_pin("net0.enable", 1.0);
+
+	// misc
+	// set_hal_pin("pwmout0.enable", 0.9);
+	// set_hal_pin("pwmout0.volt", 130.0);
+	// set_hal_pin("pwmout0.pwm_max", 0.9);
+
+	set_hal_pin("pwm2uart0.enable", 0.9);
+	set_hal_pin("pwm2uart0.volt", 130.0);
+	set_hal_pin("pwm2uart0.pwm_max", 0.9);
+
+	set_hal_pin("p2uvw0.volt", 130.0);
+	set_hal_pin("p2uvw0.pwm_max", 0.9);
+	set_hal_pin("p2uvw0.poles", 1.0);
+	set_hal_pin("pid0.enable", 1.0);
+
+
+	link_hal_pins("pid0.pwm_cmd", "cauto0.pwm_in");
+	link_hal_pins("cauto0.pwm_out", "p2uvw0.pwm");
+
+	// magpos
+	link_hal_pins("cauto0.mag_pos_out", "p2uvw0.magpos");
+	link_hal_pins("cauto0.fb_out", "net0.fb");
+}
+
 void link_pid(){
 	// pos
 	link_hal_pins("net0.cmd", "pos_minus0.in0");
@@ -291,7 +376,8 @@ void set_manutec(){
 }
 
 void set_bergerlahr(){
-	link_ac_sync_enc();
+	//link_ac_sync_enc();
+	link_pid2();
 
 	set_hal_pin("enc0.res0", 4096.0);
 	set_hal_pin("res0.enable", 1.0);
@@ -533,7 +619,7 @@ int main(void)
 
 	#include "comps/enc.comp"
 	#include "comps/res.comp"
-	#include "comps/pid.comp"
+	#include "comps/pid2.comp"
 	#include "comps/term.comp"
 	#include "comps/sim.comp"
 	#include "comps/pderiv.comp"
@@ -564,12 +650,13 @@ int main(void)
 		hal.init[i]();
 	}
 
-	//set_bergerlahr();
-	set_mitsubishi();
+	set_bergerlahr();
+	//set_mitsubishi();
 	//set_festo();
 	//set_manutec();
 	//set_bosch();
-
+	//set_sanyo();
+	
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");
 	//link_hal_pins("led0.g", "test0.test2");
