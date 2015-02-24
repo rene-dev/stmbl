@@ -20,30 +20,30 @@
 
 COMP(pid);
 
-HAL_PIN(pos_ext_cmd) = 0.0;//pos command
-HAL_PIN(pos_fb) = 0.0;//pos feedback
-//HAL_PIN(pos_cmd) = 0.0;
-HAL_PIN(pos_error) = 0.0;//error output
 
-HAL_PIN(vel_ext_cmd) = 0.0;//input
-HAL_PIN(vel_fb) = 0.0;//fb vel input
-HAL_PIN(vel_cmd) = 0.0;//cmd vel output
-HAL_PIN(vel_error) = 0.0;//vel error output
+HAL_PIN(pos_ext_cmd) = 0.0; // cmd in (rad)
+HAL_PIN(pos_fb) = 0.0; // feedback in (rad)
+HAL_PIN(pos_error) = 0.0; // error out (rad)
 
-HAL_PIN(acc_ext_cmd) = 0.0;//ext acc input
-HAL_PIN(acc_cmd) = 0.0;//acc output
+HAL_PIN(vel_ext_cmd) = 0.0; // cmd in (rad/s)
+HAL_PIN(vel_fb) = 0.0; // feedback in (rad/s)
+HAL_PIN(vel_cmd) = 0.0; // cmd out (rad/s)
+HAL_PIN(vel_error) = 0.0; // error out (rad/s)
 
-HAL_PIN(force_ext_cmd) = 0.0;//force input
-HAL_PIN(force_cmd) = 0.0;//force output
+HAL_PIN(acc_ext_cmd) = 0.0; // cmd in (rad/s^2)
+HAL_PIN(acc_cmd) = 0.0; // cmd out (rad/s^2)
 
-HAL_PIN(cur_ext_cmd) = 0.0;//input
-HAL_PIN(cur_fb) = 0.0;//input
-HAL_PIN(cur_cmd) = 0.0;//output
-HAL_PIN(cur_error) = 0.0;//output
+HAL_PIN(force_ext_cmd) = 0.0; // cmd in (Nm)
+HAL_PIN(force_cmd) = 0.0; // cmd out (Nm)
 
-HAL_PIN(volt_cmd) = 0.0;//output
+HAL_PIN(cur_ext_cmd) = 0.0; // cmd in (A)
+//HAL_PIN(cur_fb) = 0.0; // fb in (A)
+HAL_PIN(cur_cmd) = 0.0; // cmd out (A)
+//HAL_PIN(cur_error) = 0.0; // error out (A)
 
-HAL_PIN(pwm_cmd) = 0.0;//output
+HAL_PIN(volt_cmd) = 0.0; // cmd out (V)
+
+HAL_PIN(pwm_cmd) = 0.0; // cmd out (V)
 
 
 HAL_PIN(enable) = 0.0;
@@ -54,67 +54,67 @@ HAL_PIN(force_en) = 1.0;
 HAL_PIN(cur_en) = 1.0;
 
 
-HAL_PIN(time) = 0.0002;
+HAL_PIN(time) = 0.0002; (s)
 
-HAL_PIN(mot_r) = 30.0;
-HAL_PIN(mot_l) = 30.0;
-HAL_PIN(mot_j) = 0.000026;
-HAL_PIN(mot_km) = 0.3724;
+HAL_PIN(mot_r) = 23.7; // resistance (ohm)
+HAL_PIN(mot_l) = 0.01; // inductance (henry)
+HAL_PIN(mot_j) = 0.000026; // inertia (kgm^2)
+HAL_PIN(mot_km) = 0.3724; // torque constant (Nm/A, V/rad/s)
 
-HAL_PIN(mot_fr) = 30.0;
-HAL_PIN(mot_fd) = 30.0;
-HAL_PIN(mot_fl) = 30.0;
+HAL_PIN(mot_fr) = 30.0; // friction (Nm)
+HAL_PIN(mot_fd) = 30.0; // damping (Nm/rad/s)
+HAL_PIN(mot_fl) = 30.0; // load (Nm)
 
 
 HAL_PIN(pos_p) = 100.0;
 
-HAL_PIN(vel_p) = 1.0;
+HAL_PIN(vel_p) = 0.5;
 HAL_PIN(vel_ff) = 1.0;
 
-HAL_PIN(acc_p) = 0.1;
-HAL_PIN(acc_pi) = 3.667;
+HAL_PIN(acc_p) = 0.5;
+HAL_PIN(acc_pi) = 0.0;
 HAL_PIN(acc_ff) = 1.0;
 
-HAL_PIN(force_p) = 3.667;
+HAL_PIN(force_p) = 0.5;
 HAL_PIN(force_ff) = 1.0;
 
-HAL_PIN(cur_p) = 1.0;
+HAL_PIN(cur_p) = 0.5;
 HAL_PIN(cur_ff) = 1.0;
-HAL_PIN(cur_kp) = 0.0;
-HAL_PIN(cur_ki) = 0.0;
+//HAL_PIN(cur_kp) = 0.0;
+//HAL_PIN(cur_ki) = 0.0;
 
 HAL_PIN(volt) = 130;
 
 
 // user limits
-HAL_PIN(vel_limit) = 62.9;
-HAL_PIN(acc_limit) = 1200.0;
-HAL_PIN(force_limit) = 100.0;
+HAL_PIN(vel_limit) = 1250.0;
+HAL_PIN(acc_limit) = 300000.0;
+HAL_PIN(force_limit) = 3.0;
 HAL_PIN(cur_limit) = 6.0;
-HAL_PIN(volt_limit) = 130.0;
-HAL_PIN(pwm_limit) = 0.9;
+HAL_PIN(volt_limit) = 400.0;
+HAL_PIN(pwm_limit) = 0.95;
 
 // max limits
-HAL_PIN(max_vel) = 62.9;
-HAL_PIN(max_acc) = 1200.0;
-HAL_PIN(max_force) = 100.0;
+HAL_PIN(max_vel) = 1250.0;
+HAL_PIN(max_acc) = 300000.0;
+HAL_PIN(max_force) = 3.0;
 HAL_PIN(max_cur) = 6.0;
-HAL_PIN(max_volt) = 130.0;
-HAL_PIN(max_pwm) = 0.9;
+HAL_PIN(max_volt) = 400.0;
+HAL_PIN(max_pwm) = 0.95;
 
 // system limits
-HAL_PIN(vel_min) = 62.9;
-HAL_PIN(vel_max) = 62.9;
-HAL_PIN(acc_min) = 1200.0;
-HAL_PIN(acc_max) = 1200.0;
-HAL_PIN(force_min) = 100.0;
-HAL_PIN(force_max) = 100.0;
-HAL_PIN(cur_min) = 6.0;
-HAL_PIN(cur_max) = 6.0;
-HAL_PIN(volt_min) = 130.0;
-HAL_PIN(volt_max) = 130.0;
-HAL_PIN(pwm_min) = 0.9;
-HAL_PIN(pwm_max) = 0.9;
+HAL_PIN(vel_min) = 0.0;
+HAL_PIN(vel_max) = 0.0;
+HAL_PIN(acc_min) = 0.0;
+HAL_PIN(acc_max) = 0.0;
+HAL_PIN(force_min) = 0.0;
+HAL_PIN(force_max) = 0.0;
+HAL_PIN(cur_min) = 0.0;
+HAL_PIN(cur_max) = 0.0;
+HAL_PIN(volt_min) = 0.0;
+HAL_PIN(volt_max) = 0.0;
+HAL_PIN(pwm_min) = 0.0;
+HAL_PIN(pwm_max) = 0.0;
 
 
 HAL_PIN(vel_sat) = 0.0;
@@ -148,9 +148,9 @@ float forcecmd;
 float forcesat;
 
 float curextcmd = PIN(cur_ext_cmd);
-float curfb = PIN(cur_fb);
+//float curfb = PIN(cur_fb);
 float curcmd;
-float curerr = 0.0;
+//float curerr = 0.0;
 float cursat;
 
 float voltcmd;
@@ -160,12 +160,27 @@ float pwmcmd;
 float pwmsat;
 
 float r = PIN(mot_r);
+if(r == 0.0){
+  r = 1.0;
+}
 float l = PIN(mot_l);
 float j = PIN(mot_j);
+if(j == 0.0){
+  j = 0.0001;
+}
 float m = PIN(mot_km);
+if(m == 0.0){
+  m = 0.5;
+}
 float t = PIN(time);
+if(t == 0.0){
+  t = 0.0002;
+}
 
 float vlt = PIN(volt);
+if(vlt == 0.0){
+  vlt = 0.1;
+}
 
 float velmax = MIN(PIN(vel_limit), PIN(max_vel));
 float velmin = -velmax;
@@ -179,6 +194,8 @@ float voltmax = MIN(MIN(PIN(volt_limit), PIN(max_volt)), vlt);
 float voltmin = -voltmax;
 float pwmmax = MIN(PIN(pwm_limit), PIN(max_pwm));
 float pwmmin = -pwmmax;
+voltmax *= pwmmax;
+voltmin = -voltmax;
 
 float ind = velfb * m;
 
@@ -219,11 +236,11 @@ if(PIN(enable) > 0.0){
     accp = 0.0;
     force_error_sum = 0.0;
   }
-  forcecmd = accp * acccmd / j + PIN(force_ff) * forceextcmd;
+  forcecmd = accp * acccmd * j + PIN(force_ff) * forceextcmd;
   force_error_sum += velerr * t * accp * accpi;
   force_error_sum = CLAMP(force_error_sum, forcemin_, forcemax_); //TODO
   if(accpi == 0.0){
-	  force_error_sum = 0.0;
+    force_error_sum = 0.0;
   }
   forcecmd += force_error_sum;
   forcesat = SAT2(forcecmd, forcemin_, forcemax_);
@@ -280,7 +297,7 @@ PIN(vel_error) = velerr;
 PIN(acc_cmd) = acccmd;
 PIN(force_cmd) = forcecmd;
 PIN(cur_cmd) = curcmd;
-PIN(cur_error) = curerr;
+//PIN(cur_error) = curerr;
 PIN(volt_cmd) = voltcmd;
 PIN(pwm_cmd) = pwmcmd;
 PIN(vel_sat) = velsat;
@@ -290,6 +307,19 @@ PIN(cur_sat) = cursat;
 PIN(volt_sat) = voltsat;
 PIN(pwm_sat) = pwmsat;
 PIN(saturated) = sat;
+
+PIN(vel_min) = velmin;
+PIN(vel_max) = velmax;
+PIN(acc_min) = accmin_;
+PIN(acc_max) = accmax_;
+PIN(force_min) = forcemin_;
+PIN(force_max) = forcemax_;
+PIN(cur_min) = curmin_;
+PIN(cur_max) = curmax_;
+PIN(volt_min) = voltmin;
+PIN(volt_max) = voltmax;
+PIN(pwm_min) = pwmmin;
+PIN(pwm_max) = pwmmax;
 );
 
 ENDCOMP;
