@@ -53,7 +53,7 @@ HAL_PIN(force_en) = 1.0;
 HAL_PIN(cur_en) = 1.0;
 
 
-HAL_PIN(time) = 0.0002; (s)
+HAL_PIN(time) = 0.0002;// (s)
 
 HAL_PIN(mot_r) = 23.7; // resistance (ohm)
 HAL_PIN(mot_l) = 0.01; // inductance (henry)
@@ -262,9 +262,9 @@ if(PIN(enable) > 0.0){
   voltcmd = CLAMP(voltcmd, voltmin, voltmax);
 
   // volt -> pwm
-  else{
+  //else{
     pwmcmd = voltcmd / vlt;
-  }
+  //}
   pwmsat = SAT2(pwmcmd, pwmmin, pwmmax);
   pwmcmd = CLAMP(pwmcmd, pwmmin, pwmmax);
 
