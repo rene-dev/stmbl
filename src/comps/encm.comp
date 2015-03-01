@@ -5,7 +5,19 @@ HAL_PIN(reverse) = 0.0;
 HAL_PIN(pos) = 0.0;
 
 HAL_PIN(error) = 0;
-HAL_PIN(cmd) = 2.0;
+//HAL_PIN(cmd) = 50.0;
+
+/*
+HAL_PIN(b0) = 0;
+HAL_PIN(b1) = 0;
+HAL_PIN(b2) = 0;
+HAL_PIN(b3) = 0;
+HAL_PIN(b4) = 0;
+HAL_PIN(b5) = 0;
+HAL_PIN(b6) = 0;
+HAL_PIN(b7) = 0;
+HAL_PIN(b8) = 0;
+*/
 
 MEM(uint32_t error_) = 0.0;
 
@@ -82,9 +94,20 @@ INIT(
 
 FRT(
   uint32_t tpos;
-  if(menc_pos == 9 && menc_buf[0] == 0x02 && menc_buf[0] ^ menc_buf[1] ^ menc_buf[2] ^ menc_buf[3] ^ menc_buf[4] ^ menc_buf[5] ^ menc_buf[6] ^ menc_buf[7] ^ menc_buf[8] ^ menc_buf[9] == 0){
-  //if(menc_pos >= 5 && menc_buf[0] == 0x02){
-    tpos = menc_buf[2]+menc_buf[3]*256+menc_buf[4]*65536;
+  if(menc_pos == 9 && menc_buf[0] == 0x32 && menc_buf[0] ^ menc_buf[1] ^ menc_buf[2] ^ menc_buf[3] ^ menc_buf[4] ^ menc_buf[5] ^ menc_buf[6] ^ menc_buf[7] ^ menc_buf[8] == 0){
+    //tpos = menc_buf[2]+menc_buf[3]*256+menc_buf[4]*65536; //length = 9, res = 17 bit, cmd = 2
+	tpos = ((menc_buf[2] & 0x80) >> 7) + menc_buf[3]*2 + menc_buf[4]*512;//length = 9, res = 17 bit, cmd = 50(0x32)
+	/*
+	PIN(b0) = menc_buf[0];
+	PIN(b1) = menc_buf[1];
+	PIN(b2) = menc_buf[2];
+	PIN(b3) = menc_buf[3];
+	PIN(b4) = menc_buf[4];
+	PIN(b5) = menc_buf[5];
+	PIN(b6) = menc_buf[6];
+	PIN(b7) = menc_buf[7];
+	PIN(b8) = menc_buf[8];
+	*/
     if(PIN(reverse) > 0.0){
       PIN(pos) = minus(0,(tpos * M_PI * 2.0 / 131072.0) - M_PI);
     }else{
@@ -95,7 +118,7 @@ FRT(
     PIN(error) = error_;
   }
   GPIO_SetBits(GPIOB,GPIO_Pin_5);
-  USART_SendData(UART_CMD, (unsigned char)PIN(cmd));
+  USART_SendData(UART_CMD, 0x32/*(unsigned char)PIN(cmd)*/);
   menc_pos = 0;	
 );
 
