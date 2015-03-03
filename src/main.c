@@ -45,7 +45,7 @@ volatile uint16_t menc_buf[10];
 #define NO 0
 #define YES 1
 
-void link_pid(){	
+void link_pid(){
 	link_hal_pins("cauto0.fb_out", "net0.fb");
 
 	link_hal_pins("net0.cmd","pid0.pos_ext_cmd");
@@ -313,6 +313,25 @@ void set_bergerlahr(){
 
 	// auto scale
 	set_hal_pin("cauto0.scale", 0.6);
+
+	// pid
+	set_hal_pin("pid0.mot_r", 23.7);
+	set_hal_pin("pid0.mot_l", 0.01);
+	set_hal_pin("pid0.mot_j", 0.000026);
+	set_hal_pin("pid0.mot_km", 0.3724);
+
+	set_hal_pin("pid0.pos_p", 100.0);
+	set_hal_pin("pid0.acc_pi", 20.0);
+
+	set_hal_pin("pid0.max_vel", 1250.0);
+	set_hal_pin("pid0.max_acc", 300000.0);
+	set_hal_pin("pid0.max_force", 3.0);
+	set_hal_pin("pid0.max_cur", 6.0);
+
+	set_hal_pin("pid0.vel_limit", 1250.0);
+	set_hal_pin("pid0.acc_limit", 300000.0);
+	set_hal_pin("pid0.force_limit", 3.0);
+	set_hal_pin("pid0.cur_limit", 6.0);
 }
 
 void set_sanyo(){
@@ -343,7 +362,7 @@ void set_sanyo(){
 
 	// auto scale
 	set_hal_pin("cauto0.scale", 0.6);
-	
+
 	//pid
 	set_hal_pin("pid0.mot_r", 0.4);//0.4 coil => 0.8 total
 	set_hal_pin("pid0.mot_l", 1.0);//unknown, not used
@@ -383,14 +402,24 @@ void set_mitsubishi(){
 	// auto scale
 	set_hal_pin("cauto0.scale", 0.6);
 
-	//pid
-	set_hal_pin("pid0.mot_r", 1.5);//gemessen
-	set_hal_pin("pid0.mot_l", 0.003);//gemessen //berger lahr: 65mH
-	set_hal_pin("pid0.mot_j", 0.0001);
-	set_hal_pin("pid0.mot_km", 0.25);
+	// pid
+	set_hal_pin("pid0.mot_r", 1.5);
+	set_hal_pin("pid0.mot_l", 0.003);
+	set_hal_pin("pid0.mot_j", 0.00005);
+	set_hal_pin("pid0.mot_km", 0.5);
 
-	set_hal_pin("pid0.cur_p", 1.0);
-	set_hal_pin("pid0.acc_pi", 0.0);
+	set_hal_pin("pid0.pos_p", 100.0);
+	set_hal_pin("pid0.acc_pi", 20.0);
+
+	set_hal_pin("pid0.max_vel", 835.0);
+	set_hal_pin("pid0.max_acc", 170000.0);
+	set_hal_pin("pid0.max_force", 2.5);
+	set_hal_pin("pid0.max_cur", 5.0);
+
+	set_hal_pin("pid0.vel_limit", 835.0);
+	set_hal_pin("pid0.acc_limit", 170000.0);
+	set_hal_pin("pid0.force_limit", 2.5);
+	set_hal_pin("pid0.cur_limit", 5.0);
 }
 
 void DMA2_Stream0_IRQHandler(void){ //5kHz
@@ -535,7 +564,7 @@ int main(void)
 	//set_manutec();
 	//set_bosch();//pid2: ok
 	//set_sanyo();//pid2: ok
-	
+
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");
 	//link_hal_pins("led0.g", "test0.test2");
