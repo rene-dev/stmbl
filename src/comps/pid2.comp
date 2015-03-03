@@ -71,7 +71,7 @@ HAL_PIN(vel_p) = 0.5;
 HAL_PIN(vel_ff) = 1.0;
 
 HAL_PIN(acc_p) = 0.5;
-HAL_PIN(acc_pi) = 0.0;
+HAL_PIN(acc_pi) = 20.0;
 HAL_PIN(acc_ff) = 1.0;
 
 HAL_PIN(force_p) = 0.5;

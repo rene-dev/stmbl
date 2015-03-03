@@ -318,21 +318,6 @@ void set_bergerlahr(){
 
 	// auto scale
 	set_hal_pin("cauto0.scale", 0.6);
-
-	// pid
-	set_hal_pin("pid0.pos_p", 35.0);
-	set_hal_pin("pid0.vel_p", 1.0);
-	set_hal_pin("pid0.vel_i", 50.0);
-	set_hal_pin("pid0.pos_lp", 1.0);
-	set_hal_pin("pid0.force_p", 1.0);
-	set_hal_pin("pid0.cur_ind", 2.34);
-	set_hal_pin("pid0.pos_lp", 1.0);
-	set_hal_pin("pid0.vel_lp", 1.0);
-	set_hal_pin("pid0.cur_ff", 28.0);//dc wicklungswiederstand
-	set_hal_pin("pid0.vel_d", 0.0);
-
-	set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 }
 
 void set_sanyo(){
@@ -424,11 +409,11 @@ void set_mitsubishi(){
 	//set_hal_pin("pid0.cur_ind", 2.34);
 	//set_hal_pin("pid0.pos_lp", 1.0);
 	//set_hal_pin("pid0.vel_lp", 1.0);
-	set_hal_pin("pid0.cur_ff", 28.0);//dc wicklungswiederstand
+	//set_hal_pin("pid0.cur_ff", 28.0);//dc wicklungswiederstand
 	//set_hal_pin("pid0.vel_d", 0.0);
 
-	set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	//set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
+	//set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 	
 	// pid
 	//set_hal_pin("pid0.pos_p", 10.0);
