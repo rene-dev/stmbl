@@ -45,10 +45,7 @@ volatile uint16_t menc_buf[10];
 #define NO 0
 #define YES 1
 
-void link_pid(){
-	link_hal_pins("enc0.pos0", "net0.cmd");
-	link_hal_pins("enc0.pos1", "cauto0.fb_in");
-	
+void link_pid(){	
 	link_hal_pins("cauto0.fb_out", "net0.fb");
 
 	link_hal_pins("net0.cmd","pid0.pos_ext_cmd");
@@ -126,15 +123,15 @@ void link_pid(){
 }
 
 void link_ac_sync_res(){
-	link_pid();
 	link_hal_pins("enc0.pos0", "net0.cmd");
 	link_hal_pins("res0.pos", "cauto0.fb_in");
+	link_pid();
 }
 
 void link_ac_sync_enc(){
-	link_pid();
 	link_hal_pins("enc0.pos0", "net0.cmd");
 	link_hal_pins("enc0.pos1", "cauto0.fb_in");
+	link_pid();
 }
 
 void set_bosch(){
@@ -160,15 +157,14 @@ void set_bosch(){
 	set_hal_pin("pderiv1.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
-	// res_offset
-	//set_hal_pin("ap0.fb_offset_in", -0.64);
-	// pid
-	set_hal_pin("pid0.pos_p", 100.0);
-	set_hal_pin("pid0.pos_lp", 1.0);
-	set_hal_pin("pid0.vel_lp", 1.0);
-	set_hal_pin("pid0.cur_lp", 1.0);
-	set_hal_pin("pid0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pid0.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	//pid
+	set_hal_pin("pid0.mot_r", 15.0);//typenschild
+	set_hal_pin("pid0.mot_l", 1.0);//unknown, not used
+	set_hal_pin("pid0.mot_j", 0.000141);//typenschild
+	set_hal_pin("pid0.mot_km", 0.4);//noch nicht berechnet
+
+	set_hal_pin("pid0.cur_p", 3.0);
+	set_hal_pin("pid0.acc_pi", 0.0);
 }
 
 void set_kuka(){
@@ -291,8 +287,7 @@ void set_manutec(){
 }
 
 void set_bergerlahr(){
-	//link_ac_sync_enc();
-	link_pid();
+	link_ac_sync_enc();
 
 	set_hal_pin("enc0.res0", 4096.0);
 	set_hal_pin("res0.enable", 1.0);
@@ -321,10 +316,7 @@ void set_bergerlahr(){
 }
 
 void set_sanyo(){
-	//link_ac_sync_enc();
-	link_pid();
-	link_hal_pins("enc0.pos0", "net0.cmd");
-	link_hal_pins("enc0.pos1", "cauto0.fb_in");
+	link_ac_sync_enc();
 
 	set_hal_pin("enc0.res0", 4096.0);
 	set_hal_pin("res0.enable", 1.0);
@@ -351,21 +343,15 @@ void set_sanyo(){
 
 	// auto scale
 	set_hal_pin("cauto0.scale", 0.6);
+	
+	//pid
+	set_hal_pin("pid0.mot_r", 0.4);//0.4 coil => 0.8 total
+	set_hal_pin("pid0.mot_l", 1.0);//unknown, not used
+	set_hal_pin("pid0.mot_j", 0.000265);
+	set_hal_pin("pid0.mot_km", 0.553);
 
-	// pid
-	set_hal_pin("pid0.pos_p", 35.0);
-	set_hal_pin("pid0.vel_p", 1.0);
-	set_hal_pin("pid0.vel_i", 50.0);
-	set_hal_pin("pid0.pos_lp", 1.0);
-	set_hal_pin("pid0.force_p", 1.0);
-	set_hal_pin("pid0.cur_ind", 2.34);
-	set_hal_pin("pid0.pos_lp", 1.0);
-	set_hal_pin("pid0.vel_lp", 1.0);
-	set_hal_pin("pid0.cur_ff", 30.0);//dc wicklungswiederstand
-	set_hal_pin("pid0.vel_d", 0.0);
-
-	set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	set_hal_pin("pid0.cur_p", 18.0);
+	set_hal_pin("pid0.acc_pi", 0.0);
 }
 
 void set_mitsubishi(){
@@ -397,39 +383,14 @@ void set_mitsubishi(){
 	// auto scale
 	set_hal_pin("cauto0.scale", 0.6);
 
+	//pid
 	set_hal_pin("pid0.mot_r", 1.5);//gemessen
 	set_hal_pin("pid0.mot_l", 0.003);//gemessen //berger lahr: 65mH
-	
-	// pid
-	//set_hal_pin("pid0.pos_p", 35.0);
-	//set_hal_pin("pid0.vel_p", 1.0);
-	//set_hal_pin("pid0.vel_i", 50.0);
-	//set_hal_pin("pid0.pos_lp", 1.0);
-	//set_hal_pin("pid0.force_p", 1.0);
-	//set_hal_pin("pid0.cur_ind", 2.34);
-	//set_hal_pin("pid0.pos_lp", 1.0);
-	//set_hal_pin("pid0.vel_lp", 1.0);
-	//set_hal_pin("pid0.cur_ff", 28.0);//dc wicklungswiederstand
-	//set_hal_pin("pid0.vel_d", 0.0);
+	set_hal_pin("pid0.mot_j", 0.0001);
+	set_hal_pin("pid0.mot_km", 0.25);
 
-	//set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	//set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
-	
-	// pid
-	//set_hal_pin("pid0.pos_p", 10.0);
-	//set_hal_pin("pid0.vel_p", 1.0);
-	//set_hal_pin("pid0.vel_i", 20.0);
-	//set_hal_pin("pid0.pos_lp", 1.0);
-	//set_hal_pin("pid0.force_p", 1.0);
-	//set_hal_pin("pid0.cur_ind", 2.34);
-	//set_hal_pin("pid0.pos_lp", 1.0);
-	//set_hal_pin("pid0.vel_lp", 1.0);
-	//set_hal_pin("pid0.cur_ff", 1.5);//dc wicklungswiederstand
-	//set_hal_pin("pid0.cur_ff", 25);//dc wicklungswiederstand
-	//set_hal_pin("pid0.vel_d", 0.0);
-
-	//set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	//set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	set_hal_pin("pid0.cur_p", 1.0);
+	set_hal_pin("pid0.acc_pi", 0.0);
 }
 
 void DMA2_Stream0_IRQHandler(void){ //5kHz
@@ -568,12 +529,12 @@ int main(void)
 		hal.init[i]();
 	}
 
-	set_bergerlahr();
-	//set_mitsubishi();
+	set_bergerlahr();//pid2: ok
+	//set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
-	//set_bosch();
-	//set_sanyo();
+	//set_bosch();//pid2: ok
+	//set_sanyo();//pid2: ok
 	
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");
