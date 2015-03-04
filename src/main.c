@@ -315,6 +315,7 @@ void set_bergerlahr(){
 	set_hal_pin("cauto0.scale", 0.6);
 }
 
+//P50B08100DXS
 void set_sanyo(){
 	link_ac_sync_enc();
 
@@ -345,12 +346,25 @@ void set_sanyo(){
 	set_hal_pin("cauto0.scale", 0.6);
 	
 	//pid
-	set_hal_pin("pid0.mot_r", 0.4);//0.4 coil => 0.8 total
+	set_hal_pin("pid0.mot_r", 0.8);//0.4 coil => 0.8 total //datasheet
 	set_hal_pin("pid0.mot_l", 1.0);//unknown, not used
-	set_hal_pin("pid0.mot_j", 0.000265);
-	set_hal_pin("pid0.mot_km", 0.553);
+	set_hal_pin("pid0.mot_j", KGCM2(2.65));//datasheet
+	set_hal_pin("pid0.mot_km", 0.553);//datasheet
+	set_hal_pin("pid0.max_vel", RPM(4500));//datasheet
+	set_hal_pin("pid0.max_acc", RPM(4500)/0.005);
+	set_hal_pin("pid0.max_force", 11.76);//datasheet
+	set_hal_pin("pid0.max_cur", 25.7);//datasheet
+	
+	set_hal_pin("pid0.vel_limit", RPM(4500));
+	set_hal_pin("pid0.acc_limit", RPM(4500)/0.005);
+	set_hal_pin("pid0.force_limit", 11.76);
+	set_hal_pin("pid0.cur_limit", 10.0);
+	
 
-	set_hal_pin("pid0.cur_p", 18.0);
+	set_hal_pin("pid0.cur_p", 1.0);
+	set_hal_pin("pid0.acc_p", 1.0);
+	set_hal_pin("pid0.vel_p", 1.0);
+	set_hal_pin("pid0.force_p", 1.0);
 	set_hal_pin("pid0.acc_pi", 0.0);
 }
 
@@ -529,12 +543,12 @@ int main(void)
 		hal.init[i]();
 	}
 
-	set_bergerlahr();//pid2: ok
+	//set_bergerlahr();//pid2: ok
 	//set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
 	//set_bosch();//pid2: ok
-	//set_sanyo();//pid2: ok
+	set_sanyo();//pid2: ok
 	
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");

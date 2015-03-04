@@ -36,6 +36,11 @@ extern "C" {
 #define DEG(a) ((a)*M_PI/180.0)
 #define RAD(a) ((a)*180.0/M_PI)
 #define SIGN(a) (((a) < 0.0) ? (-1.0) : (((a) > 0.0) ? (1.0) : (0.0)))
+	
+//pid krams
+#define RPM(a) ((a)/60.0*M_2_PI)
+#define KGCM2(a) ((a)/1000.0)
+
 
 float minus(float a, float b);
 float mod(float a);
