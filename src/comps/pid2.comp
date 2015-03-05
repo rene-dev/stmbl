@@ -66,24 +66,30 @@ HAL_PIN(mot_fl) = 30.0; // load (Nm)
 
 
 HAL_PIN(pos_p) = 100.0;
+HAL_PIN(pos_lp) = 5000.0;
 
-HAL_PIN(vel_p) = 0.5;
+HAL_PIN(vel_p) = 1.0;
+HAL_PIN(vel_lp) = 5000.0;
 HAL_PIN(vel_ff) = 1.0;
 
-HAL_PIN(acc_p) = 0.5;
+HAL_PIN(acc_p) = 1.0;
+HAL_PIN(acc_lp) = 5000.0;
 HAL_PIN(acc_pi) = 20.0;
 HAL_PIN(acc_ff) = 1.0;
 
-HAL_PIN(force_p) = 0.5;
+HAL_PIN(force_p) = 1.0;
+HAL_PIN(force_lp) = 5000.0;
 HAL_PIN(force_ff) = 1.0;
 
-HAL_PIN(cur_p) = 0.5;
+HAL_PIN(cur_p) = 1.0;
+HAL_PIN(cur_lp) = 5000.0;
 HAL_PIN(cur_ff) = 1.0;
 //HAL_PIN(cur_kp) = 0.0;
 //HAL_PIN(cur_ki) = 0.0;
 
-HAL_PIN(volt) = 130;
-
+HAL_PIN(volt) = 130.0;
+HAL_PIN(induction) = 0.0;
+HAL_PIN(resistance) = 0.0;
 
 // user limits
 HAL_PIN(vel_limit) = 1250.0;
@@ -127,6 +133,12 @@ HAL_PIN(saturated) = 0.0;
 MEM(float sat) = 0.0;
 MEM(float force_error_sum) = 0.0;
 
+MEM(float velcmd) = 0.0;
+MEM(float acccmd) = 0.0;
+MEM(float forcecmd) = 0.0;
+MEM(float curcmd) = 0.0;
+MEM(float voltcmd) = 0.0;
+
 RT_PID(
 float posextcmd = PIN(pos_ext_cmd);
 float posfb = PIN(pos_fb);
@@ -134,31 +146,31 @@ float poserr = minus(posextcmd, posfb);
 
 float velextcmd = PIN(vel_ext_cmd);
 float velfb = PIN(vel_fb);
-float velcmd;
+//float velcmd;
 float velerr;
 float velsat;
 
 float accextcmd = PIN(acc_ext_cmd);
-float acccmd;
+//float acccmd;
 float accsat;
 
 float forceextcmd = PIN(force_ext_cmd);
-float forcecmd;
+//float forcecmd;
 float forcesat;
 
 float curextcmd = PIN(cur_ext_cmd);
 //float curfb = PIN(cur_fb);
-float curcmd;
+//float curcmd;
 //float curerr = 0.0;
 float cursat;
 
-float voltcmd;
+//float voltcmd;
 float voltsat;
 
 float pwmcmd;
 float pwmsat;
 
-float r = PIN(mot_r);
+float r = PIN(mot_r) + PIN(mot_l) * 2.0 * 3.14 * 15000.0;
 if(r == 0.0){
   r = 1.0;
 }
@@ -200,33 +212,42 @@ float ind = velfb * m;
 
 float curmax_ = MIN(curmax, (voltmax - ind) / r);
 float curmin_ = MAX(curmin, (voltmin - ind) / r);
-float forcemax_ = MIN(forcemax, curmax * m);
-float forcemin_ = MAX(forcemin, curmin * m);
-float accmax_ = MIN(accmax, forcemax / j);
-float accmin_ = MAX(accmin, forcemin / j);
+float forcemax_ = MIN(forcemax, curmax_ * m);
+float forcemin_ = MAX(forcemin, curmin_ * m);
+float accmax_ = MIN(accmax, forcemax_ / j);
+float accmin_ = MAX(accmin, forcemin_ / j);
+float velmax_ = vlt / m;
+float velmin_ = -velmax_;
 
 float posp = PIN(pos_p);
+float poslp = LP_HZ(PIN(pos_lp));
 float velp = PIN(vel_p);
+float vellp = LP_HZ(PIN(vel_lp));
 float accp = PIN(acc_p);
 float accpi = PIN(acc_pi);
+float acclp = LP_HZ(PIN(acc_lp));
 float forcep = PIN(force_p);
+float forcelp = LP_HZ(PIN(force_lp));
 float curp = PIN(cur_p);
+float curlp = LP_HZ(PIN(cur_lp));
 
 if(PIN(enable) > 0.0){
   // pos -> vel
   if(PIN(pos_en) == 0.0){
     posp = 0.0;
   }
-  velcmd = posp * poserr + PIN(vel_ff) * velextcmd; // TODO
-  velsat = SAT2(velcmd, velmin, velmax);
-  velcmd = CLAMP(velcmd, velmin, velmax);
+  velcmd = (posp * poserr + PIN(vel_ff) * velextcmd / velp) * poslp + (1.0 - poslp) * velcmd; // TODO
+  velcmd *= velp;
+  velsat = SAT2(velcmd, velmin_, velmax_);
+  velcmd = CLAMP(velcmd, velmin_, velmax_);
 
   // vel -> acc
   velerr = velcmd - velfb;
   if(PIN(vel_en) == 0.0){
     velp = 0.0;
   }
-  acccmd = velp * velerr / t + PIN(acc_ff) * accextcmd;
+  acccmd = (velerr / t + PIN(acc_ff) * accextcmd / accp) * vellp + (1.0 - vellp) * acccmd;
+  acccmd *= accp;
   accsat = SAT2(acccmd, accmin_, accmax_);
   acccmd = CLAMP(acccmd, accmin_, accmax_);
 
@@ -235,13 +256,14 @@ if(PIN(enable) > 0.0){
     accp = 0.0;
     force_error_sum = 0.0;
   }
-  forcecmd = accp * acccmd * j + PIN(force_ff) * forceextcmd;
+  forcecmd = (acccmd * j + PIN(force_ff) * forceextcmd / forcep) * acclp + (1.0 - acclp) * forcecmd;
   force_error_sum += velerr * t * accp * accpi;
   force_error_sum = CLAMP(force_error_sum, forcemin_, forcemax_); //TODO
   if(accpi == 0.0){
     force_error_sum = 0.0;
   }
   forcecmd += force_error_sum;
+  forcecmd *= forcep;
   forcesat = SAT2(forcecmd, forcemin_, forcemax_);
   forcecmd = CLAMP(forcecmd, forcemin_, forcemax_);
 
@@ -249,7 +271,8 @@ if(PIN(enable) > 0.0){
   if(PIN(force_en) == 0.0){
     forcep = 0.0;
   }
-  curcmd = forcep * forcecmd / m + PIN(cur_ff) * curextcmd;
+  curcmd = (forcecmd / m + PIN(cur_ff) * curextcmd / curp) * forcelp + (1.0 - forcelp) * curcmd;
+  curcmd *= curp;
   cursat = SAT2(curcmd, curmin_, curmax_);
   curcmd = CLAMP(curcmd, curmin_, curmax_);
 
@@ -257,7 +280,7 @@ if(PIN(enable) > 0.0){
   if(PIN(cur_en) == 0.0){
     curp = 0.0;
   }
-  voltcmd = curp * curcmd * r + ind;
+  voltcmd = (curcmd * r + ind) * curlp + (1.0 - curlp) * voltcmd;
   voltsat = SAT2(voltcmd, voltmin, voltmax);
   voltcmd = CLAMP(voltcmd, voltmin, voltmax);
 
@@ -303,8 +326,11 @@ PIN(volt_sat) = voltsat;
 PIN(pwm_sat) = pwmsat;
 PIN(saturated) = sat;
 
-PIN(vel_min) = velmin;
-PIN(vel_max) = velmax;
+PIN(induction) = ind;
+PIN(resistance) = r;
+
+PIN(vel_min) = velmin_;
+PIN(vel_max) = velmax_;
 PIN(acc_min) = accmin_;
 PIN(acc_max) = accmax_;
 PIN(force_min) = forcemin_;
