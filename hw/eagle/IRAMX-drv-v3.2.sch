@@ -29352,11 +29352,6 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <pinref part="GND51" gate="1" pin="GND"/>
 </segment>
 <segment>
-<wire x1="-114.3" y1="96.52" x2="-96.52" y2="96.52" width="0.1524" layer="91"/>
-<label x="-109.22" y="96.52" size="1.778" layer="95"/>
-<pinref part="JP3" gate="A" pin="2"/>
-</segment>
-<segment>
 <wire x1="-121.92" y1="66.04" x2="-134.62" y2="66.04" width="0.1524" layer="91"/>
 <label x="-134.62" y="66.04" size="1.778" layer="95"/>
 <pinref part="JP11" gate="G$1" pin="GND"/>
@@ -29572,6 +29567,11 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <wire x1="-185.42" y1="78.74" x2="-180.34" y2="78.74" width="0.1524" layer="91"/>
 <pinref part="C22" gate="G$1" pin="2"/>
 <junction x="-185.42" y="78.74"/>
+</segment>
+<segment>
+<pinref part="JP3" gate="A" pin="2"/>
+<wire x1="-114.3" y1="96.52" x2="-96.52" y2="96.52" width="0.1524" layer="91"/>
+<label x="-109.22" y="96.52" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="+3V3_DRV" class="0">
