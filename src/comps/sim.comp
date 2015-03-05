@@ -3,8 +3,12 @@ COMP(sim);
 HAL_PIN(amp) = 0.1;
 HAL_PIN(freq) = 0.1591549;
 HAL_PIN(sin) = 0.0;
+HAL_PIN(sin2) = 0.0;
+HAL_PIN(phase) = 0.0;
 HAL_PIN(cos) = 0.0;
+HAL_PIN(offset) = 0.0;
 HAL_PIN(square) = 0.0;
+HAL_PIN(square2) = 0.0;
 HAL_PIN(vel) = 0.0;
 HAL_PIN(res) = 100000.0;
 
@@ -13,7 +17,9 @@ MEM(float time) = 0.0;
 RT_IN(
   float amp_ = PIN(amp);
   float freq_ = PIN(freq);
+  float offset_ = PIN(offset);
   float sin_;
+  float sin2_;
   float cos_;
   float r = PIN(res);
   float square_;
@@ -24,12 +30,16 @@ RT_IN(
     time = 0.0;
   }
 
-  sin_ = amp_ * sinf(freq_ * time);
-  cos_ = amp_ * cosf(freq_ * time);
+  sin_ = offset_ + amp_ * sinf(freq_ * time);
+  sin2_ = offset_ + amp_ * sinf(freq_ * time + PIN(phase));
+  cos_ = offset_ + amp_ * cosf(freq_ * time);
 
   PIN(sin) = mod(((int)(sin_ * r)) / r);
+  PIN(sin2) = mod(((int)(sin2_ * r)) / r);
+
   PIN(cos) = mod(((int)(cos_ * r)) / r);
-  PIN(square) = (sin_ > 0.0) ? (amp_) : (-amp_);
+  PIN(square) = (sin_ > offset_) ? (offset_ + amp_) : (offset_ + -amp_);
+  PIN(square2) = (sin2_ > offset_) ? (offset_ + amp_) : (offset_ + -amp_);
   PIN(vel) = mod(((int)(freq_ * time * r)) / r);
 );
 

@@ -380,6 +380,22 @@ void set_mitsubishi(){
 	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
 }
 
+void set_precise(){
+	set_hal_pin("sim0.offset", 1.5);
+	set_hal_pin("sim0.amp", 1.0);
+	set_hal_pin("sim0.freq", 100.0);
+	set_hal_pin("sim0.phase", 1.5);
+	
+	
+	set_hal_pin("pwm2uart0.volt", 3.14);
+	set_hal_pin("pwm2uart0.enable", 1.0);
+	set_hal_pin("pwm2uart0.pwm_max", 0.9);
+	
+	link_hal_pins("sim0.sin2", "pwm2uart0.u");
+	set_hal_pin("pwm2uart0.v", 1.5);
+	link_hal_pins("sim0.sin", "pwm2uart0.w");
+}
+
 void DMA2_Stream0_IRQHandler(void){ //5kHz
     DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
     GPIO_SetBits(GPIOB,GPIO_Pin_8);
@@ -521,6 +537,7 @@ int main(void)
 	//set_festo();
 	//set_manutec();
 	//set_bosch();
+	//set_precise();
 
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");
