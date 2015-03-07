@@ -35,7 +35,7 @@
 #define VDIVUP 36000.0//HV div pullup R1,R12
 #define VDIVDOWN 280.0//HV div pulldown R2,R9
 #define R10 10000
-#define R11 1000
+#define R11 180
 
 void setup();
 void setup_res();
