@@ -1,0 +1,113 @@
+COMP(cur);
+
+HAL_PIN(i) = 0.0;
+HAL_PIN(magpos) = 0.0;
+
+HAL_PIN(u) = 0.0;
+HAL_PIN(v) = 0.0;
+HAL_PIN(w) = 0.0;
+
+HAL_PIN(uv) = 0.0;
+HAL_PIN(vw) = 0.0;
+HAL_PIN(wu) = 0.0;
+
+HAL_PIN(uvi) = 0.0;
+HAL_PIN(vwi) = 0.0;
+HAL_PIN(wui) = 0.0;
+
+HAL_PIN(iu) = 0.0;
+HAL_PIN(iv) = 0.0;
+HAL_PIN(iw) = 0.0;
+
+HAL_PIN(r) = 1.5;
+HAL_PIN(l) = 0.0006;
+HAL_PIN(freq) = 5000.0;
+
+HAL_PIN(volt) = 100.0;
+
+HAL_PIN(pwm_max) = 0.9;
+
+HAL_PIN(p) = 0.0;
+HAL_PIN(ff) = 1.0;
+
+
+MEM(float iuv_) = 0.0;
+MEM(float ivw_) = 0.0;
+MEM(float iwu_) = 0.0;
+
+RT_CALC(
+  float r_ = PIN(r) * 3.0 / 2.0;
+  float l_ = PIN(l) * 3.0 / 2.0;
+  float freq_ = PIN(freq);
+  float i_ = PIN(i);
+  float magpos_ = PIN(magpos);
+
+  float iuv = i_ * sinf(magpos_ + 2.0 * M_PI / 3.0 * 0.0);
+  float ivw = i_ * sinf(magpos_ + 2.0 * M_PI / 3.0 * 1.0);
+  float iwu = i_ * sinf(magpos_ + 2.0 * M_PI / 3.0 * 2.0);
+
+  float ff_ = PIN(ff);
+  float p_ = l_ / r_ * freq_;
+
+  float pwm_max_ = PIN(pwm_max);
+  float vlt = PIN(volt);
+  float vmax = vlt * pwm_max_;
+  float vmin = vlt * (1 - pwm_max_);
+
+  float uv_ = CLAMP(ff_ * r_ * iuv + p_ * (iuv - iuv_), -vmax , vmax);
+  float vw_ = CLAMP(ff_ * r_ * ivw + p_ * (ivw - ivw_), -vmax , vmax);
+  float wu_ = CLAMP(ff_ * r_ * iwu + p_ * (iwu - iwu_), -vmax , vmax);
+
+  PIN(uv) = uv_;
+  PIN(vw) = vw_;
+  PIN(wu) = wu_;
+
+  iuv_ += (uv_ - iuv_ * r_) / l_ / freq_;
+  ivw_ += (vw_ - ivw_ * r_) / l_ / freq_;
+  iwu_ += (wu_ - iwu_ * r_) / l_ / freq_;
+
+  float u_ = 0.0;
+  float v_ = 0.0;
+  float w_ = 0.0;
+
+  if(ABS(uv_) > ABS(vw_)){
+    if(ABS(uv_) > ABS(wu_)){ // uv_
+      u_ = (vlt - uv_) / 2.0;
+      v_ = (vlt + uv_) / 2.0;
+      w_ = v_ + vw_;
+    }
+    else{ // wu_
+      u_ = (vlt + wu_) / 2.0;
+      w_ = (vlt - wu_) / 2.0;
+      v_ = u_ + uv_;
+    }
+  }
+  else{
+    if(ABS(vw_) > ABS(wu_)){ // vw_
+      v_ = (vlt - vw_) / 2.0;
+      w_ = (vlt + vw_) / 2.0;
+      u_ = w_ + wu_;
+    }
+    else{ // wu_
+      u_ = (vlt + wu_) / 2.0;
+      w_ = (vlt - wu_) / 2.0;
+      v_ = u_ + uv_;
+    }
+  }
+
+  PIN(u) = u_;
+  PIN(v) = v_;
+  PIN(w) = w_;
+
+  PIN(uvi) = v_ - u_;
+  PIN(vwi) = w_ - v_;
+  PIN(wui) = u_ - w_;
+
+  PIN(iu) = iuv_;
+  PIN(iv) = ivw_;
+  PIN(iw) = iwu_;
+
+  PIN(p) = p_;
+);
+
+ENDCOMP;

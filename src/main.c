@@ -69,21 +69,13 @@ void link_pid(){
 	set_hal_pin("pderiv1.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
 	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
 
-	// timer pwm
-	link_hal_pins("pid0.pwm_cmd", "auto0.pwm_in");
-	link_hal_pins("auto0.pwm_out", "p2uvw0.pwm");
-	// link_hal_pins("p2uvw0.u", "pwmout0.u");
-	// link_hal_pins("p2uvw0.v", "pwmout0.v");
-	// link_hal_pins("p2uvw0.w", "pwmout0.w");
 	//pwm over uart
-	link_hal_pins("p2uvw0.u", "pwm2uart0.u");
-	link_hal_pins("p2uvw0.v", "pwm2uart0.v");
-	link_hal_pins("p2uvw0.w", "pwm2uart0.w");
-	link_hal_pins("net0.vlt", "p2uvw0.volt");
 	link_hal_pins("net0.vlt", "pwm2uart0.volt");
+	link_hal_pins("net0.vlt", "cur0.volt");
 
-	// magpos
-	link_hal_pins("auto0.mag_pos_out", "p2uvw0.magpos");
+	link_hal_pins("cur0.u", "pwm2uart0.u");
+	link_hal_pins("cur0.v", "pwm2uart0.v");
+	link_hal_pins("cur0.w", "pwm2uart0.w");
 
 	// term
 	link_hal_pins("net0.cmd", "term0.wave0");
@@ -106,20 +98,18 @@ void link_pid(){
 	// set_hal_pin("pwmout0.pwm_max", 0.9);
 
 	set_hal_pin("pwm2uart0.enable", 0.9);
-	set_hal_pin("pwm2uart0.volt", 130.0);
+	//set_hal_pin("pwm2uart0.volt", 130.0);
 	set_hal_pin("pwm2uart0.pwm_max", 0.9);
 
-	set_hal_pin("p2uvw0.volt", 130.0);
-	set_hal_pin("p2uvw0.pwm_max", 0.9);
-	set_hal_pin("p2uvw0.poles", 1.0);
+	set_hal_pin("cur0.pwm_max", 0.9);
 	set_hal_pin("pid0.enable", 1.0);
 
 
-	link_hal_pins("pid0.pwm_cmd", "cauto0.pwm_in");
-	link_hal_pins("cauto0.pwm_out", "p2uvw0.pwm");
+	link_hal_pins("pid0.cur_cmd", "cauto0.i_in");
+	link_hal_pins("cauto0.i_out", "cur0.i");
 
 	// magpos
-	link_hal_pins("cauto0.mag_pos_out", "p2uvw0.magpos");
+	link_hal_pins("cauto0.magpos", "cur0.magpos");
 	link_hal_pins("cauto0.fb_out", "net0.fb");
 }
 
@@ -144,7 +134,7 @@ void set_bosch(){
 	set_hal_pin("cauto0.time", 0.5);
 
 	// auto scale
-	set_hal_pin("cauto0.scale", 0.6);
+	set_hal_pin("cauto0.cur", 1.0);
 
 	set_hal_pin("pderiv0.in_lp", 1.0);
 	set_hal_pin("pderiv0.out_lp", 1.0);
@@ -177,7 +167,7 @@ void set_kuka(){
 	set_hal_pin("cauto0.time", 0.5);
 
 	// auto scale
-	set_hal_pin("cauto0.scale", 0.6);
+	set_hal_pin("cauto0.cur", 1.0);
 
 	set_hal_pin("pderiv0.in_lp", 1.0);
 	set_hal_pin("pderiv0.out_lp", 1.0);
@@ -228,7 +218,7 @@ void set_festo(){
 	set_hal_pin("cauto0.time", 0.5);
 
 	// auto scale
-	set_hal_pin("cauto0.scale", 0.6);
+	set_hal_pin("cauto0.cur", 1.0);
 
 	// pid
 	set_hal_pin("pid0.pos_p", 35.0);
@@ -272,7 +262,7 @@ void set_manutec(){
 	set_hal_pin("cauto0.time", 0.5);
 
 	// auto scale
-	set_hal_pin("cauto0.scale", 0.6);
+	set_hal_pin("cauto0.cur", 1.0);
 
 	// pid
 	set_hal_pin("pid0.pos_p", 26.0);
@@ -313,7 +303,7 @@ void set_bergerlahr(){
 	set_hal_pin("cauto0.time", 0.5);
 
 	// auto scale
-	set_hal_pin("cauto0.scale", 0.6);
+	set_hal_pin("cauto0.cur", 1.0);
 
 	// pid
 	set_hal_pin("pid0.mot_r", 23.7);
@@ -415,7 +405,7 @@ void set_mitsubishi(){
 	set_hal_pin("cauto0.time", 0.5);
 
 	// auto scale
-	set_hal_pin("cauto0.scale", 0.5);
+	set_hal_pin("cauto0.cur", 1.0);
 
 	// pid
 	set_hal_pin("pid0.mot_r", 1.5);
@@ -444,6 +434,7 @@ void set_mitsubishi(){
 	set_hal_pin("pid0.acc_limit", RPM(8000) / 0.005);
 	set_hal_pin("pid0.force_limit", 1.38);
 	set_hal_pin("pid0.cur_limit", 6.0);
+
 }
 
 void DMA2_Stream0_IRQHandler(void){ //5kHz
@@ -559,7 +550,7 @@ int main(void)
 	//#include "comps/autophase.comp"
 	#include "comps/cauto.comp"
 	#include "comps/encm.comp"
-
+	#include "comps/cur.comp"
 	#include "comps/led.comp"
 
 	//#include "comps/vel_observer.comp"
