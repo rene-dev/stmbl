@@ -170,7 +170,7 @@ float voltsat;
 float pwmcmd;
 float pwmsat;
 
-float r = PIN(mot_r) + PIN(mot_l) * 2.0 * 3.14 * 15000.0;
+float r = PIN(mot_r);
 if(r == 0.0){
   r = 1.0;
 }

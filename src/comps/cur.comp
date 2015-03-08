@@ -26,8 +26,8 @@ HAL_PIN(freq) = 5000.0;
 
 HAL_PIN(volt) = 50.0;
 
-HAL_PIN(pwm_max) = 0.9;
-HAL_PIN(cur_max) = 6.0;
+HAL_PIN(pwm_max) = 0.95;
+HAL_PIN(cur_max) = 10.0;
 
 HAL_PIN(p) = 0.0;
 HAL_PIN(ff) = 1.0;

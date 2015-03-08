@@ -311,7 +311,7 @@ void set_bergerlahr(){
 	set_hal_pin("pid0.mot_j", 0.000026);
 	set_hal_pin("pid0.mot_km", 0.3724);
 
-	set_hal_pin("pid0.pos_p", 100.0);
+	set_hal_pin("pid0.pos_p", 300.0);
 	set_hal_pin("pid0.acc_pi", 20.0);
 
 	set_hal_pin("pid0.max_vel", 1250.0);
@@ -323,6 +323,17 @@ void set_bergerlahr(){
 	set_hal_pin("pid0.acc_limit", 300000.0);
 	set_hal_pin("pid0.force_limit", 3.0);
 	set_hal_pin("pid0.cur_limit", 6.0);
+
+	set_hal_pin("cur0.cur_max", 10.0);
+	set_hal_pin("cur0.l", 0.053);
+	set_hal_pin("cur0.r", 23.7);
+	set_hal_pin("cauto0.cur", 0.5);
+
+	set_hal_pin("cur0.lp", 0.5);
+	set_hal_pin("pid0.cur_p", 1.0);
+	set_hal_pin("pid0.force_p", 0.3);
+	set_hal_pin("pid0.vel_p", 1.0);
+	set_hal_pin("pid0.acc_p", 0.1);
 }
 
 //P50B08100DXS
@@ -409,18 +420,18 @@ void set_mitsubishi(){
 
 	// pid
 	set_hal_pin("pid0.mot_r", 1.5);
-	set_hal_pin("pid0.mot_l", 0.0006);
+	set_hal_pin("pid0.mot_l", 0.0025);
 	set_hal_pin("pid0.mot_j", 0.00005);
 	set_hal_pin("pid0.mot_km", 0.23);
 
-	set_hal_pin("pid0.pos_p", 40.0);
+	set_hal_pin("pid0.pos_p", 250.0);
 	set_hal_pin("pid0.pos_lp", 10000.0);
 	set_hal_pin("pid0.vel_p", 0.7);
 	set_hal_pin("pid0.vel_lp", 10000.0);
-	set_hal_pin("pid0.acc_p", 0.7);
+	set_hal_pin("pid0.acc_p", 0.2);
 	set_hal_pin("pid0.acc_lp", 10000.0);
-	set_hal_pin("pid0.acc_pi", 20.0);
-	set_hal_pin("pid0.force_p", 0.7);
+	set_hal_pin("pid0.acc_pi", 50.0);
+	set_hal_pin("pid0.force_p", 0.3);
 	set_hal_pin("pid0.force_lp", 10000.0);
 	set_hal_pin("pid0.cur_p", 0.5);
 	set_hal_pin("pid0.cur_lp", 10000.0);
@@ -434,6 +445,20 @@ void set_mitsubishi(){
 	set_hal_pin("pid0.acc_limit", RPM(8000) / 0.005);
 	set_hal_pin("pid0.force_limit", 1.38);
 	set_hal_pin("pid0.cur_limit", 6.0);
+
+
+	set_hal_pin("cur0.cur_max", 15.0);
+	set_hal_pin("cur0.l", 0.0025);
+	set_hal_pin("cur0.r", 1.5);
+	set_hal_pin("cauto0.cur", 0.5);
+	// pid0.cur_p 0.5
+	// pid0.force_p 0.3
+	// pid0.acc_p 0.2
+	// pid0.vel_p 0.7
+	// pid0.pos_p 250
+	// pid0.mot_l 0.0025
+	// pid0.acc_pi 50
+
 
 }
 
@@ -573,8 +598,8 @@ int main(void)
 		hal.init[i]();
 	}
 
-	//set_bergerlahr();//pid2: ok
-	set_mitsubishi();//pid2: ok
+	set_bergerlahr();//pid2: ok
+	//set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
 	//set_bosch();//pid2: ok
