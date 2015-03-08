@@ -8,20 +8,20 @@
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
-<layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
-<layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
-<layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="no"/>
-<layer number="20" name="Dimension" color="15" fill="1" visible="no" active="no"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="no"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="no"/>
-<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="no"/>
-<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="no"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="no" active="no"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="no" active="no"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="no" active="no"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="no" active="no"/>
+<layer number="1" name="Top" color="4" fill="1" visible="yes" active="no"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="no"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="no"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="no"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="no"/>
+<layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="no"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="no"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="no"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="no"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="no"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="no"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="no"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="no"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="no"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="no"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="no"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="no"/>
@@ -30,8 +30,8 @@
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="no"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="no"/>
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="no"/>
-<layer number="37" name="tTest" color="7" fill="1" visible="no" active="no"/>
-<layer number="38" name="bTest" color="7" fill="1" visible="no" active="no"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="yes" active="no"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="yes" active="no"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="no"/>
 <layer number="40" name="bKeepout" color="1" fill="11" visible="no" active="no"/>
 <layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="no"/>
@@ -39,17 +39,17 @@
 <layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="no"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="no"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="no" active="no"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="no" active="no"/>
-<layer number="47" name="Measures" color="7" fill="1" visible="no" active="no"/>
-<layer number="48" name="Document" color="7" fill="1" visible="no" active="no"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="no" active="no"/>
-<layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
-<layer number="51" name="tDocu" color="7" fill="1" visible="no" active="no"/>
-<layer number="52" name="bDocu" color="7" fill="1" visible="no" active="no"/>
-<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
-<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
-<layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
-<layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="no"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="yes" active="no"/>
+<layer number="48" name="Document" color="7" fill="1" visible="yes" active="no"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="no"/>
+<layer number="50" name="dxf" color="7" fill="1" visible="yes" active="no"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="no"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="no"/>
+<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="yes" active="no"/>
+<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="yes" active="no"/>
+<layer number="56" name="wert" color="7" fill="1" visible="yes" active="no"/>
+<layer number="57" name="tCAD" color="7" fill="1" visible="yes" active="no"/>
 <layer number="90" name="Modules" color="5" fill="1" visible="yes" active="yes"/>
 <layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
@@ -27574,6 +27574,92 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="SparkFun-Passives">
+<description>&lt;h3&gt;SparkFun Electronics' preferred foot prints&lt;/h3&gt;
+In this library you'll find resistors, capacitors, inductors, test points, jumper pads, etc.&lt;br&gt;&lt;br&gt;
+We've spent an enormous amount of time creating and checking these footprints and parts, but it is the end user's responsibility to ensure correctness and suitablity for a given componet or application. If you enjoy using this library, please buy one of our products at www.sparkfun.com.
+&lt;br&gt;&lt;br&gt;
+&lt;b&gt;Licensing:&lt;/b&gt; Creative Commons ShareAlike 4.0 International - https://creativecommons.org/licenses/by-sa/4.0/ 
+&lt;br&gt;&lt;br&gt;
+You are welcome to use this library for commercial purposes. For attribution, we ask that when you begin to sell your device using our footprint, you email us with a link to the product being sold. We want bragging rights that we helped (in a very small part) to create your 8th world wonder. We would like the opportunity to feature your device on our homepage.</description>
+<packages>
+<package name="PAD.02X.02">
+<smd name="P$1" x="0" y="0" dx="0.508" dy="0.508" layer="1"/>
+</package>
+<package name="PAD.03X.03">
+<smd name="P$1" x="0" y="0" dx="0.762" dy="0.762" layer="1" roundness="100" cream="no"/>
+</package>
+<package name="PAD.03X.05">
+<smd name="P$1" x="0" y="0" dx="1.27" dy="1.27" layer="1" roundness="100" cream="no"/>
+</package>
+<package name="PAD.03X.04">
+<smd name="P$1" x="0" y="0" dx="1.016" dy="1.016" layer="1" roundness="100" cream="no"/>
+</package>
+<package name="TP_15TH">
+<pad name="P$1" x="0" y="0" drill="0.381" diameter="0.6096" stop="no"/>
+<circle x="0" y="0" radius="0.381" width="0" layer="30"/>
+</package>
+</packages>
+<symbols>
+<symbol name="TEST-POINT">
+<wire x1="2.54" y1="0" x2="0" y2="0" width="0.1524" layer="94"/>
+<wire x1="3.302" y1="0.762" x2="3.302" y2="-0.762" width="0.1524" layer="94" curve="180"/>
+<text x="-2.54" y="2.54" size="1.778" layer="95">&gt;Name</text>
+<text x="-2.54" y="-2.54" size="1.778" layer="96">&gt;Value</text>
+<pin name="1" x="0" y="0" visible="off" length="point" rot="R180"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="TEST-POINT" prefix="TP">
+<description>Bare copper test points for troubleshooting or ICT</description>
+<gates>
+<gate name="G$1" symbol="TEST-POINT" x="0" y="0"/>
+</gates>
+<devices>
+<device name="2" package="PAD.02X.02">
+<connects>
+<connect gate="G$1" pin="1" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="3" package="PAD.03X.03">
+<connects>
+<connect gate="G$1" pin="1" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="3X5" package="PAD.03X.05">
+<connects>
+<connect gate="G$1" pin="1" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="3X4" package="PAD.03X.04">
+<connects>
+<connect gate="G$1" pin="1" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="TP_15TH_THRU" package="TP_15TH">
+<connects>
+<connect gate="G$1" pin="1" pad="P$1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -27594,24 +27680,24 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <part name="C1" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
 <part name="C2" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
 <part name="C3" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
-<part name="C8" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
+<part name="C8" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
-<part name="C10" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
+<part name="C10" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
-<part name="R11" library="rcl" deviceset="R-EU_" device="R0805" value="1k"/>
-<part name="C14" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
+<part name="R11" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
+<part name="C14" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="LED1" library="led" deviceset="LED" device="3MM" value="GELB"/>
-<part name="R13" library="rcl" deviceset="R-EU_" device="R0805" value="180"/>
+<part name="R13" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
 <part name="IC1" library="iram-b" deviceset="IRAM" device="TOP" value="IRAMX16UP60B"/>
 <part name="X3" library="con-wago-508" deviceset="W237-03P" device=""/>
 <part name="X4" library="con-wago-508" deviceset="W237-02P" device=""/>
 <part name="C17" library="rcl" deviceset="CPOL-EU" device="E10-35" value="820µ"/>
-<part name="R10" library="rcl" deviceset="R-EU_" device="R0805" value="10k"/>
+<part name="R10" library="rcl" deviceset="R-EU_" device="R0603" value="10k"/>
 <part name="P+9" library="supply1" deviceset="+15V" device=""/>
 <part name="GND22" library="supply1" deviceset="GND" device=""/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
-<part name="R23" library="rcl" deviceset="R-EU_" device="R0805" value="1k"/>
+<part name="R23" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="GND32" library="supply1" deviceset="GND" device=""/>
 <part name="P+11" library="supply1" deviceset="+15V" device=""/>
 <part name="H1" library="holes" deviceset="MOUNT-PAD-ROUND" device="3.2"/>
@@ -27624,8 +27710,8 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <part name="C16" library="rcl" deviceset="C-EU" device="C1206K" value="10n"/>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
 <part name="C24" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
-<part name="C23" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
-<part name="C25" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
+<part name="C23" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
+<part name="C25" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="C26" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
 <part name="C27" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
 <part name="C28" library="rcl" deviceset="CPOL-EU" device="A/3216-18R" value="10µ"/>
@@ -27635,29 +27721,29 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <part name="R2" library="rcl" deviceset="R-EU_" device="R0805" value="560"/>
 <part name="C9" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
-<part name="C19" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
+<part name="C19" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
-<part name="R4" library="rcl" deviceset="R-EU_" device="R0805" value="10k"/>
+<part name="R4" library="rcl" deviceset="R-EU_" device="R0603" value="10k"/>
 <part name="U$1" library="reroolib" deviceset="SI8621" device=""/>
 <part name="+3V3" library="supply1" deviceset="+3V3" device=""/>
 <part name="+3V4" library="supply1" deviceset="+3V3" device=""/>
 <part name="+3V6" library="supply1" deviceset="+3V3" device=""/>
-<part name="R3" library="rcl" deviceset="R-EU_" device="R0805" value="180"/>
+<part name="R3" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
 <part name="LED3" library="led" deviceset="LED" device="3MM" value="GRÜN"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
-<part name="R5" library="rcl" deviceset="R-EU_" device="R0805" value="180"/>
+<part name="R5" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
 <part name="LED4" library="led" deviceset="LED" device="3MM" value="ROT"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
-<part name="C7" library="rcl" deviceset="C-EU" device="C0805" value="18p"/>
-<part name="C12" library="rcl" deviceset="C-EU" device="C0805" value="18p"/>
+<part name="C7" library="rcl" deviceset="C-EU" device="C0603" value="18p"/>
+<part name="C12" library="rcl" deviceset="C-EU" device="C0603" value="18p"/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
-<part name="C13" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
-<part name="C18" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
-<part name="R6" library="rcl" deviceset="R-EU_" device="R0805" value="1k"/>
-<part name="R7" library="rcl" deviceset="R-EU_" device="R0805" value="1k"/>
+<part name="C13" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
+<part name="C18" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
+<part name="R6" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
+<part name="R7" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
 <part name="+3V5" library="supply1" deviceset="+3V3" device=""/>
 <part name="D2" library="diode" deviceset="ZENER-DIODE" device="SOD80C" value="3v3"/>
@@ -27791,7 +27877,7 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <part name="GND57" library="supply1" deviceset="GND" device=""/>
 <part name="LOGO1" library="wz" deviceset="OSHW-LOGO" device="L"/>
 <part name="LOGO2" library="wz" deviceset="OSHW-LOGO" device="L"/>
-<part name="C69" library="rcl" deviceset="C-EU" device="C0805K" value="100n"/>
+<part name="C69" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="C68" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND58" library="supply1" deviceset="GND" device=""/>
 <part name="R8" library="rcl" deviceset="R-EU_" device="R0805" value="1k"/>
@@ -27846,6 +27932,23 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <part name="R38" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="GND63" library="supply1" deviceset="GND" device=""/>
 <part name="GND64" library="supply1" deviceset="GND" device=""/>
+<part name="TP1" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP2" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP3" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP4" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP5" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP6" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP7" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP8" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP9" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP10" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP11" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP12" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP13" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP14" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="C50" library="rcl" deviceset="CPOL-EU" device="153CLV-0405"/>
+<part name="TP15" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
+<part name="TP16" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
 </parts>
 <sheets>
 <sheet>
@@ -28122,6 +28225,23 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <instance part="U$4" gate="G$3" x="-332.74" y="-53.34"/>
 <instance part="GND63" gate="1" x="-358.14" y="-48.26" rot="R270"/>
 <instance part="GND64" gate="1" x="-358.14" y="-58.42" rot="R270"/>
+<instance part="TP1" gate="G$1" x="-58.42" y="91.44"/>
+<instance part="TP2" gate="G$1" x="-58.42" y="88.9"/>
+<instance part="TP3" gate="G$1" x="-215.9" y="10.16"/>
+<instance part="TP4" gate="G$1" x="-215.9" y="7.62"/>
+<instance part="TP5" gate="G$1" x="-215.9" y="5.08"/>
+<instance part="TP6" gate="G$1" x="-304.8" y="30.48"/>
+<instance part="TP7" gate="G$1" x="-304.8" y="27.94"/>
+<instance part="TP8" gate="G$1" x="-180.34" y="76.2"/>
+<instance part="TP9" gate="G$1" x="-180.34" y="73.66"/>
+<instance part="TP10" gate="G$1" x="-243.84" y="129.54" rot="R90"/>
+<instance part="TP11" gate="G$1" x="-200.66" y="129.54" rot="R90"/>
+<instance part="TP12" gate="G$1" x="-195.58" y="167.64"/>
+<instance part="TP13" gate="G$1" x="10.16" y="109.22" rot="R90"/>
+<instance part="TP14" gate="G$1" x="50.8" y="109.22" rot="R90"/>
+<instance part="C50" gate="G$1" x="0" y="109.22"/>
+<instance part="TP15" gate="G$1" x="-7.62" y="91.44"/>
+<instance part="TP16" gate="G$1" x="-7.62" y="88.9"/>
 </instances>
 <busses>
 </busses>
@@ -28401,6 +28521,7 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <pinref part="U$1" gate="G$1" pin="IN2"/>
 <wire x1="-10.16" y1="88.9" x2="-7.62" y2="88.9" width="0.1524" layer="91"/>
 <label x="-12.7" y="88.9" size="1.778" layer="95"/>
+<pinref part="TP16" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="RX" class="0">
@@ -28413,6 +28534,7 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <pinref part="U$1" gate="G$1" pin="OUT1"/>
 <wire x1="-10.16" y1="91.44" x2="-7.62" y2="91.44" width="0.1524" layer="91"/>
 <label x="-12.7" y="91.44" size="1.778" layer="95"/>
+<pinref part="TP15" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="SWDIO" class="0">
@@ -28742,6 +28864,7 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <label x="-226.06" y="-17.78" size="1.778" layer="95"/>
 <wire x1="-215.9" y1="5.08" x2="-220.98" y2="5.08" width="0.1524" layer="91"/>
 <wire x1="-220.98" y1="5.08" x2="-220.98" y2="-17.78" width="0.1524" layer="91"/>
+<pinref part="TP5" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="IC5" gate="MCU" pin="PC5"/>
@@ -28757,8 +28880,11 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="IN1"/>
-<wire x1="-38.1" y1="91.44" x2="-81.28" y2="91.44" width="0.1524" layer="91"/>
+<wire x1="-38.1" y1="91.44" x2="-58.42" y2="91.44" width="0.1524" layer="91"/>
 <label x="-81.28" y="91.44" size="1.778" layer="95"/>
+<pinref part="TP1" gate="G$1" pin="1"/>
+<wire x1="-58.42" y1="91.44" x2="-81.28" y2="91.44" width="0.1524" layer="91"/>
+<junction x="-58.42" y="91.44"/>
 </segment>
 </net>
 <net name="RX2_RES" class="0">
@@ -28769,8 +28895,11 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="OUT2"/>
-<wire x1="-38.1" y1="88.9" x2="-81.28" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="-38.1" y1="88.9" x2="-58.42" y2="88.9" width="0.1524" layer="91"/>
 <label x="-81.28" y="88.9" size="1.778" layer="95"/>
+<pinref part="TP2" gate="G$1" pin="1"/>
+<wire x1="-58.42" y1="88.9" x2="-81.28" y2="88.9" width="0.1524" layer="91"/>
+<junction x="-58.42" y="88.9"/>
 </segment>
 </net>
 <net name="CAN_TX/I2C_SDA" class="0">
@@ -28869,6 +28998,7 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <label x="-226.06" y="22.86" size="1.778" layer="95"/>
 <wire x1="-215.9" y1="7.62" x2="-220.98" y2="7.62" width="0.1524" layer="91"/>
 <wire x1="-220.98" y1="7.62" x2="-220.98" y2="22.86" width="0.1524" layer="91"/>
+<pinref part="TP4" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="IC5" gate="MCU" pin="PC4"/>
@@ -29009,10 +29139,13 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <pinref part="GND22" gate="1" pin="GND"/>
 <wire x1="10.16" y1="104.14" x2="10.16" y2="101.6" width="0.1524" layer="91"/>
 <wire x1="10.16" y1="101.6" x2="10.16" y2="91.44" width="0.1524" layer="91"/>
-<wire x1="-7.62" y1="104.14" x2="10.16" y2="104.14" width="0.1524" layer="91"/>
+<wire x1="-7.62" y1="104.14" x2="0" y2="104.14" width="0.1524" layer="91"/>
 <pinref part="U$2" gate="G$1" pin="VOUT-"/>
 <pinref part="C64" gate="G$1" pin="2"/>
 <junction x="10.16" y="101.6"/>
+<pinref part="C50" gate="G$1" pin="-"/>
+<wire x1="0" y1="104.14" x2="10.16" y2="104.14" width="0.1524" layer="91"/>
+<junction x="0" y="104.14"/>
 </segment>
 <segment>
 <pinref part="GND3" gate="1" pin="GND"/>
@@ -29514,6 +29647,7 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <pinref part="P+5" gate="1" pin="+5V"/>
 <wire x1="-200.66" y1="129.54" x2="-175.26" y2="129.54" width="0.1524" layer="91"/>
 <pinref part="T1" gate="A" pin="E"/>
+<pinref part="TP11" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="R25" gate="G$1" pin="2"/>
@@ -29596,6 +29730,8 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <junction x="71.12" y="109.22"/>
 <pinref part="T2" gate="A" pin="C"/>
 <wire x1="50.8" y1="109.22" x2="71.12" y2="109.22" width="0.1524" layer="91"/>
+<pinref part="TP14" gate="G$1" pin="1"/>
+<junction x="50.8" y="109.22"/>
 </segment>
 <segment>
 <pinref part="R10" gate="G$1" pin="1"/>
@@ -29679,6 +29815,7 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <wire x1="-236.22" y1="129.54" x2="-243.84" y2="129.54" width="0.1524" layer="91"/>
 <wire x1="-254" y1="129.54" x2="-243.84" y2="129.54" width="0.1524" layer="91"/>
 <junction x="-243.84" y="129.54"/>
+<pinref part="TP10" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="C21" gate="G$1" pin="1"/>
@@ -29703,16 +29840,19 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <wire x1="-226.06" y1="167.64" x2="-228.6" y2="167.64" width="0.1524" layer="91"/>
 <pinref part="X6" gate="-1" pin="KL"/>
 <pinref part="C62" gate="G$1" pin="1"/>
-<wire x1="-228.6" y1="167.64" x2="-236.22" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="-228.6" y1="167.64" x2="-231.14" y2="167.64" width="0.1524" layer="91"/>
 <junction x="-254" y="167.64"/>
 <junction x="-228.6" y="167.64"/>
 <pinref part="C70" gate="G$1" pin="+"/>
 <pinref part="C34" gate="G$1" pin="+"/>
-<wire x1="-236.22" y1="167.64" x2="-243.84" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="-231.14" y1="167.64" x2="-236.22" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="-236.22" y1="167.64" x2="-238.76" y2="167.64" width="0.1524" layer="91"/>
 <junction x="-236.22" y="167.64"/>
 <pinref part="C48" gate="G$1" pin="+"/>
+<wire x1="-238.76" y1="167.64" x2="-243.84" y2="167.64" width="0.1524" layer="91"/>
 <wire x1="-243.84" y1="167.64" x2="-254" y2="167.64" width="0.1524" layer="91"/>
 <junction x="-243.84" y="167.64"/>
+<wire x1="-231.14" y1="167.64" x2="-238.76" y2="167.64" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="+12V_RES" class="0">
@@ -29722,6 +29862,7 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <wire x1="-205.74" y1="167.64" x2="-195.58" y2="167.64" width="0.1524" layer="91"/>
 <pinref part="P+1" gate="1" pin="+12V"/>
 <junction x="-195.58" y="167.64"/>
+<pinref part="TP12" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <wire x1="-256.54" y1="-93.98" x2="-256.54" y2="-95.504" width="0.1524" layer="91"/>
@@ -29757,7 +29898,11 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <wire x1="27.94" y1="109.22" x2="35.56" y2="109.22" width="0.1524" layer="91"/>
 <pinref part="P+9" gate="1" pin="+15V"/>
 <junction x="27.94" y="109.22"/>
-<wire x1="-7.62" y1="109.22" x2="10.16" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="-7.62" y1="109.22" x2="-5.08" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="-5.08" y1="111.76" x2="0" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="0" y1="111.76" x2="5.08" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="5.08" y1="111.76" x2="7.62" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="7.62" y1="109.22" x2="10.16" y2="109.22" width="0.1524" layer="91"/>
 <wire x1="10.16" y1="109.22" x2="20.32" y2="109.22" width="0.1524" layer="91"/>
 <wire x1="20.32" y1="109.22" x2="27.94" y2="109.22" width="0.1524" layer="91"/>
 <junction x="27.94" y="109.22"/>
@@ -29771,6 +29916,9 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <junction x="35.56" y="109.22"/>
 <pinref part="T2" gate="A" pin="E"/>
 <wire x1="35.56" y1="109.22" x2="40.64" y2="109.22" width="0.1524" layer="91"/>
+<pinref part="TP13" gate="G$1" pin="1"/>
+<pinref part="C50" gate="G$1" pin="+"/>
+<junction x="0" y="111.76"/>
 </segment>
 <segment>
 <pinref part="IC1" gate="G$1" pin="VCC"/>
@@ -29820,6 +29968,7 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <segment>
 <wire x1="-215.9" y1="10.16" x2="-215.9" y2="22.86" width="0.1524" layer="91"/>
 <label x="-215.9" y="22.86" size="1.778" layer="95"/>
+<pinref part="TP3" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="IC5" gate="MCU" pin="PA5"/>
@@ -29910,6 +30059,7 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <junction x="-304.8" y="30.48"/>
 <pinref part="R50" gate="G$1" pin="1"/>
 <junction x="-289.56" y="27.94"/>
+<pinref part="TP6" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="N$34" class="0">
@@ -29924,6 +30074,7 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <junction x="-304.8" y="27.94"/>
 <pinref part="R50" gate="G$1" pin="2"/>
 <junction x="-299.72" y="27.94"/>
+<pinref part="TP7" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="N$46" class="0">
@@ -30110,6 +30261,8 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <wire x1="-200.66" y1="73.66" x2="-210.82" y2="73.66" width="0.1524" layer="91"/>
 <pinref part="R49" gate="G$1" pin="2"/>
 <wire x1="-210.82" y1="73.66" x2="-210.82" y2="76.2" width="0.1524" layer="91"/>
+<pinref part="TP9" gate="G$1" pin="1"/>
+<junction x="-180.34" y="73.66"/>
 </segment>
 </net>
 <net name="N$58" class="0">
@@ -30119,6 +30272,8 @@ wire to board 2.54 mm (.1 inch) pitch header</description>
 <wire x1="-200.66" y1="76.2" x2="-180.34" y2="76.2" width="0.1524" layer="91"/>
 <pinref part="R49" gate="G$1" pin="1"/>
 <junction x="-200.66" y="76.2"/>
+<pinref part="TP8" gate="G$1" pin="1"/>
+<junction x="-180.34" y="76.2"/>
 </segment>
 </net>
 <net name="N$61" class="0">
