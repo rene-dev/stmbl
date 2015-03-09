@@ -16653,8 +16653,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <rectangle x1="1.1" y1="-1.6" x2="1.4" y2="1.6" layer="51" rot="R180"/>
 </package>
 <package name="CER">
-<pad name="P$1" x="-2.54" y="0" drill="0.85" diameter="2.54" shape="octagon"/>
-<pad name="P$2" x="2.54" y="0" drill="0.85" diameter="2.54" shape="octagon"/>
+<pad name="P$1" x="-2.54" y="0" drill="0.9" diameter="2.54"/>
+<pad name="P$2" x="2.54" y="0" drill="0.9" diameter="2.54"/>
 <wire x1="7.62" y1="5.08" x2="7.62" y2="-5.08" width="0.127" layer="21"/>
 <wire x1="7.62" y1="5.08" x2="-7.62" y2="5.08" width="0.127" layer="21"/>
 <wire x1="-7.62" y1="5.08" x2="-7.62" y2="-5.08" width="0.127" layer="21"/>
@@ -25086,9 +25086,7 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <part name="C24" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
 <part name="C23" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="C25" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
-<part name="C26" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="C27" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
-<part name="C28" library="rcl" deviceset="CPOL-EU" device="A/3216-18R" value="10µ"/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="+3V1" library="supply1" deviceset="+3V3" device=""/>
 <part name="+3V2" library="supply1" deviceset="+3V3" device=""/>
@@ -25378,9 +25376,7 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <instance part="IC2" gate="PWR" x="-45.72" y="-40.64"/>
 <instance part="C23" gate="G$1" x="-25.4" y="-25.4"/>
 <instance part="C25" gate="G$1" x="-15.24" y="-25.4"/>
-<instance part="C26" gate="G$1" x="-10.16" y="-25.4"/>
 <instance part="C27" gate="G$1" x="-20.32" y="-25.4"/>
-<instance part="C28" gate="G$1" x="7.62" y="-25.4"/>
 <instance part="GND4" gate="1" x="-53.34" y="-60.96"/>
 <instance part="+3V1" gate="G$1" x="71.12" y="111.76"/>
 <instance part="+3V2" gate="G$1" x="-5.08" y="-20.32"/>
@@ -25406,8 +25402,8 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <instance part="C12" gate="G$1" x="5.08" y="-50.8" rot="R90"/>
 <instance part="GND9" gate="1" x="-2.54" y="-50.8" rot="R270"/>
 <instance part="GND10" gate="1" x="-2.54" y="-40.64" rot="R270"/>
-<instance part="C13" gate="G$1" x="-5.08" y="-25.4"/>
-<instance part="C18" gate="G$1" x="0" y="-25.4"/>
+<instance part="C13" gate="G$1" x="-10.16" y="-25.4"/>
+<instance part="C18" gate="G$1" x="-5.08" y="-25.4"/>
 <instance part="R6" gate="G$1" x="198.12" y="-53.34" rot="R90"/>
 <instance part="R7" gate="G$1" x="198.12" y="-38.1" rot="R90"/>
 <instance part="GND11" gate="1" x="198.12" y="-63.5"/>
@@ -26484,8 +26480,6 @@ Source: www.epcos.com .. 01430148.pdf</description>
 </net>
 <net name="GND_DRV" class="0">
 <segment>
-<pinref part="C28" gate="G$1" pin="-"/>
-<wire x1="7.62" y1="-30.48" x2="-10.16" y2="-30.48" width="0.1524" layer="91"/>
 <wire x1="-10.16" y1="-30.48" x2="-15.24" y2="-30.48" width="0.1524" layer="91"/>
 <wire x1="-15.24" y1="-30.48" x2="-20.32" y2="-30.48" width="0.1524" layer="91"/>
 <wire x1="-20.32" y1="-30.48" x2="-25.4" y2="-30.48" width="0.1524" layer="91"/>
@@ -26503,8 +26497,6 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <junction x="-43.18" y="-58.42"/>
 <pinref part="IC2" gate="PWR" pin="VSS@4"/>
 <junction x="-38.1" y="-58.42"/>
-<pinref part="C26" gate="G$1" pin="2"/>
-<junction x="-10.16" y="-30.48"/>
 <pinref part="C25" gate="G$1" pin="2"/>
 <junction x="-15.24" y="-30.48"/>
 <pinref part="C27" gate="G$1" pin="2"/>
@@ -26514,17 +26506,15 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <pinref part="GND4" gate="1" pin="GND"/>
 <pinref part="C8" gate="G$1" pin="2"/>
 <junction x="-30.48" y="-30.48"/>
-<pinref part="C18" gate="G$1" pin="2"/>
-<wire x1="7.62" y1="-30.48" x2="-5.08" y2="-30.48" width="0.1524" layer="91"/>
-<pinref part="C13" gate="G$1" pin="2"/>
-<junction x="-5.08" y="-30.48"/>
-<wire x1="-5.08" y1="-30.48" x2="0" y2="-30.48" width="0.1524" layer="91"/>
-<junction x="7.62" y="-30.48"/>
 <wire x1="-15.24" y1="-76.2" x2="-15.24" y2="-78.74" width="0.1524" layer="91"/>
 <wire x1="-15.24" y1="-78.74" x2="-30.48" y2="-78.74" width="0.1524" layer="91"/>
 <wire x1="-30.48" y1="-78.74" x2="-30.48" y2="-58.42" width="0.1524" layer="91"/>
 <junction x="-30.48" y="-58.42"/>
 <pinref part="C69" gate="G$1" pin="2"/>
+<pinref part="C18" gate="G$1" pin="2"/>
+<pinref part="C13" gate="G$1" pin="2"/>
+<wire x1="-10.16" y1="-30.48" x2="-5.08" y2="-30.48" width="0.1524" layer="91"/>
+<junction x="-10.16" y="-30.48"/>
 </segment>
 <segment>
 <pinref part="GND7" gate="1" pin="GND"/>
@@ -27162,42 +27152,6 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <wire x1="96.52" y1="38.1" x2="96.52" y2="33.02" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="C28" gate="G$1" pin="+"/>
-<pinref part="IC2" gate="PWR" pin="VDD@1"/>
-<wire x1="7.62" y1="-22.86" x2="-10.16" y2="-22.86" width="0.1524" layer="91"/>
-<pinref part="IC2" gate="PWR" pin="VDD@2"/>
-<junction x="-48.26" y="-22.86"/>
-<wire x1="-10.16" y1="-22.86" x2="-15.24" y2="-22.86" width="0.1524" layer="91"/>
-<wire x1="-15.24" y1="-22.86" x2="-20.32" y2="-22.86" width="0.1524" layer="91"/>
-<wire x1="-20.32" y1="-22.86" x2="-25.4" y2="-22.86" width="0.1524" layer="91"/>
-<wire x1="-25.4" y1="-22.86" x2="-30.48" y2="-22.86" width="0.1524" layer="91"/>
-<wire x1="-30.48" y1="-22.86" x2="-38.1" y2="-22.86" width="0.1524" layer="91"/>
-<wire x1="-38.1" y1="-22.86" x2="-43.18" y2="-22.86" width="0.1524" layer="91"/>
-<wire x1="-43.18" y1="-22.86" x2="-48.26" y2="-22.86" width="0.1524" layer="91"/>
-<wire x1="-48.26" y1="-22.86" x2="-53.34" y2="-22.86" width="0.1524" layer="91"/>
-<pinref part="IC2" gate="PWR" pin="VDD@3"/>
-<junction x="-43.18" y="-22.86"/>
-<pinref part="IC2" gate="PWR" pin="VDD@4"/>
-<junction x="-38.1" y="-22.86"/>
-<pinref part="C23" gate="G$1" pin="1"/>
-<junction x="-25.4" y="-22.86"/>
-<pinref part="C27" gate="G$1" pin="1"/>
-<junction x="-20.32" y="-22.86"/>
-<pinref part="C25" gate="G$1" pin="1"/>
-<junction x="-15.24" y="-22.86"/>
-<pinref part="C26" gate="G$1" pin="1"/>
-<junction x="-10.16" y="-22.86"/>
-<pinref part="+3V2" gate="G$1" pin="+3V3"/>
-<junction x="7.62" y="-22.86"/>
-<pinref part="C8" gate="G$1" pin="1"/>
-<junction x="-30.48" y="-22.86"/>
-<pinref part="C18" gate="G$1" pin="1"/>
-<pinref part="C13" gate="G$1" pin="1"/>
-<junction x="-5.08" y="-22.86"/>
-<wire x1="-5.08" y1="-22.86" x2="0" y2="-22.86" width="0.1524" layer="91"/>
-<wire x1="7.62" y1="-22.86" x2="-5.08" y2="-22.86" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="R4" gate="G$1" pin="1"/>
 <pinref part="+3V4" gate="G$1" pin="+3V3"/>
 <wire x1="99.06" y1="0" x2="99.06" y2="-2.54" width="0.1524" layer="91"/>
@@ -27226,6 +27180,37 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <pinref part="C14" gate="G$1" pin="2"/>
 <pinref part="+3V6" gate="G$1" pin="+3V3"/>
 <wire x1="96.52" y1="12.7" x2="96.52" y2="15.24" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="C18" gate="G$1" pin="1"/>
+<pinref part="+3V2" gate="G$1" pin="+3V3"/>
+<pinref part="C13" gate="G$1" pin="1"/>
+<junction x="-10.16" y="-22.86"/>
+<wire x1="-10.16" y1="-22.86" x2="-5.08" y2="-22.86" width="0.1524" layer="91"/>
+<pinref part="IC2" gate="PWR" pin="VDD@1"/>
+<pinref part="IC2" gate="PWR" pin="VDD@2"/>
+<junction x="-48.26" y="-22.86"/>
+<wire x1="-5.08" y1="-22.86" x2="-15.24" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="-15.24" y1="-22.86" x2="-20.32" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="-20.32" y1="-22.86" x2="-25.4" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="-25.4" y1="-22.86" x2="-30.48" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="-30.48" y1="-22.86" x2="-38.1" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="-38.1" y1="-22.86" x2="-43.18" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="-22.86" x2="-48.26" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="-48.26" y1="-22.86" x2="-53.34" y2="-22.86" width="0.1524" layer="91"/>
+<pinref part="IC2" gate="PWR" pin="VDD@3"/>
+<junction x="-43.18" y="-22.86"/>
+<pinref part="IC2" gate="PWR" pin="VDD@4"/>
+<junction x="-38.1" y="-22.86"/>
+<pinref part="C23" gate="G$1" pin="1"/>
+<junction x="-25.4" y="-22.86"/>
+<pinref part="C27" gate="G$1" pin="1"/>
+<junction x="-20.32" y="-22.86"/>
+<pinref part="C25" gate="G$1" pin="1"/>
+<junction x="-15.24" y="-22.86"/>
+<pinref part="C8" gate="G$1" pin="1"/>
+<junction x="-30.48" y="-22.86"/>
+<junction x="-5.08" y="-22.86"/>
 </segment>
 </net>
 <net name="+24V_RES" class="0">
