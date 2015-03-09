@@ -26025,7 +26025,7 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <junction x="12.7" y="-50.8"/>
 </segment>
 </net>
-<net name="V-" class="2">
+<net name="V-" class="0">
 <segment>
 <wire x1="58.42" y1="63.5" x2="66.04" y2="63.5" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="V-"/>
