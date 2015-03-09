@@ -175,6 +175,7 @@ A B</text>
 V3.2</text>
 <text x="50" y="1.5" size="1.778" layer="30" font="fixed" rot="MR0" align="bottom-center">STMBL
 V3.2</text>
+<text x="56.75" y="12.25" size="1" layer="112" font="fixed" rot="R90" align="bottom-center">3V A5 A6 A7 0V</text>
 </plain>
 <libraries>
 <library name="rcl">
