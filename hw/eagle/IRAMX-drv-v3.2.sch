@@ -25283,6 +25283,8 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <part name="X8" library="reroolib" deviceset="AKL230-02" device=""/>
 <part name="X9" library="reroolib" deviceset="AKL230-02" device=""/>
 <part name="X3" library="reroolib" deviceset="AKL230-03" device=""/>
+<part name="R51" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
+<part name="+3V9" library="supply1" deviceset="+3V3" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -25584,6 +25586,8 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <instance part="X3" gate="-1" x="76.2" y="55.88" rot="R180"/>
 <instance part="X3" gate="-2" x="76.2" y="45.72" rot="R180"/>
 <instance part="X3" gate="-3" x="76.2" y="35.56" rot="R180"/>
+<instance part="R51" gate="G$1" x="-314.96" y="165.1" rot="R270"/>
+<instance part="+3V9" gate="G$1" x="-314.96" y="175.26"/>
 </instances>
 <busses>
 </busses>
@@ -26997,6 +27001,11 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <wire x1="-38.1" y1="93.98" x2="-81.28" y2="93.98" width="0.1524" layer="91"/>
 <pinref part="+3V8" gate="G$1" pin="+3V3"/>
 </segment>
+<segment>
+<pinref part="R51" gate="G$1" pin="1"/>
+<pinref part="+3V9" gate="G$1" pin="+3V3"/>
+<wire x1="-314.96" y1="172.72" x2="-314.96" y2="170.18" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="+5V_RES" class="0">
 <segment>
@@ -27765,6 +27774,12 @@ Source: www.epcos.com .. 01430148.pdf</description>
 <pinref part="R38" gate="G$1" pin="1"/>
 <wire x1="-314.96" y1="160.02" x2="-309.88" y2="160.02" width="0.1524" layer="91"/>
 <label x="-314.96" y="160.02" size="1.778" layer="95"/>
+<pinref part="R51" gate="G$1" pin="2"/>
+<junction x="-314.96" y="160.02"/>
+</segment>
+<segment>
+<pinref part="IC5" gate="MCU" pin="PC13"/>
+<wire x1="-180.34" y1="27.94" x2="-198.12" y2="27.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PWM" class="0">
