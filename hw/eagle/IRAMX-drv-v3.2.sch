@@ -27684,7 +27684,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
 <part name="C10" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
-<part name="R11" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
+<part name="R11" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
 <part name="C14" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="LED1" library="led" deviceset="LED" device="3MM" value="GELB"/>
 <part name="R13" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
