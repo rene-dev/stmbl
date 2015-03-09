@@ -3598,7 +3598,7 @@ Block, Siemens and generic&lt;p&gt;
 <clearance class="6" value="1"/>
 </class>
 </classes>
-<designrules name="osh *">
+<designrules name="osh">
 <description language="de">&lt;b&gt;EAGLE Design Rules&lt;/b&gt;
 &lt;p&gt;
 Die Standard-Design-Rules sind so gewählt, dass sie für 
@@ -3662,7 +3662,7 @@ Please make sure your boards conform to these design rules.</description>
 <param name="mlMaxStopFrame" value="3mil"/>
 <param name="mlMinCreamFrame" value="0mil"/>
 <param name="mlMaxCreamFrame" value="0mil"/>
-<param name="mlViaStopLimit" value="13mil"/>
+<param name="mlViaStopLimit" value="0mil"/>
 <param name="srRoundness" value="0"/>
 <param name="srMinRoundness" value="0mil"/>
 <param name="srMaxRoundness" value="0mil"/>
@@ -4535,7 +4535,7 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="C42" pad="1"/>
 <contactref element="R31" pad="1"/>
 <contactref element="U$4" pad="13"/>
-<wire x1="34.6265" y1="7.8735" x2="34.5" y2="8.25" width="0.2" layer="16"/>
+<wire x1="34.6265" y1="8.1235" x2="34.5" y2="8.25" width="0.2" layer="16"/>
 <via x="34.5" y="8.25" extent="1-16" drill="0.3302"/>
 <wire x1="34.5" y1="8.25" x2="33.75" y2="8.25" width="0.2" layer="1"/>
 <wire x1="33.75" y1="8.25" x2="31.25" y2="10.75" width="0.2" layer="1"/>
@@ -4543,7 +4543,7 @@ Please make sure your boards conform to these design rules.</description>
 <via x="31.25" y="16.5" extent="1-16" drill="0.3302"/>
 <wire x1="31.25" y1="16.5" x2="31.25" y2="17.65" width="0.2" layer="16"/>
 <wire x1="34.6265" y1="2.252" x2="34.6265" y2="4.5" width="0.2" layer="16"/>
-<wire x1="34.6265" y1="4.5" x2="34.6265" y2="7.8735" width="0.2" layer="16"/>
+<wire x1="34.6265" y1="4.5" x2="34.6265" y2="8.1235" width="0.2" layer="16"/>
 <wire x1="29.25" y1="4.4" x2="29.65" y2="4.5" width="0.2" layer="16"/>
 <wire x1="29.65" y1="4.5" x2="34.6265" y2="4.5" width="0.2" layer="16"/>
 </signal>
@@ -4959,14 +4959,14 @@ Please make sure your boards conform to these design rules.</description>
 <vertex x="45.75" y="0"/>
 </polygon>
 <via x="60.25" y="23.5" extent="1-16" drill="0.3302"/>
-<via x="55.5" y="73.5" extent="1-16" drill="0.3302"/>
+<via x="57.25" y="74" extent="1-16" drill="0.3302"/>
 <via x="82.5" y="17.5" extent="1-16" drill="0.3302"/>
 <via x="59.5" y="70.5" extent="1-16" drill="0.3302"/>
 <via x="71.75" y="12.75" extent="1-16" drill="0.3302"/>
 <via x="70" y="28" extent="1-16" drill="0.3302"/>
 <via x="79" y="4" extent="1-16" drill="0.3302"/>
 <via x="80.5" y="8.5" extent="1-16" drill="0.3302"/>
-<via x="46.5" y="1.25" extent="1-16" drill="0.3302"/>
+<via x="46.25" y="1" extent="1-16" drill="0.3302"/>
 <contactref element="D1" pad="A"/>
 <contactref element="C69" pad="2"/>
 <contactref element="C5" pad="2"/>
@@ -5016,7 +5016,7 @@ Please make sure your boards conform to these design rules.</description>
 <via x="89.5" y="32" extent="1-16" drill="0.3302"/>
 <via x="89.5" y="30" extent="1-16" drill="0.3302"/>
 <via x="89.5" y="28" extent="1-16" drill="0.3302"/>
-<via x="98.5" y="39.5" extent="1-16" drill="0.3302"/>
+<via x="98.75" y="40" extent="1-16" drill="0.3302"/>
 <via x="63" y="26" extent="1-16" drill="0.3302"/>
 <via x="64" y="27" extent="1-16" drill="0.3302"/>
 <via x="59" y="27.5" extent="1-16" drill="0.3302"/>
@@ -5025,9 +5025,9 @@ Please make sure your boards conform to these design rules.</description>
 <via x="58.99" y="29.348" extent="1-16" drill="0.3302"/>
 <via x="50" y="24.25" extent="1-16" drill="0.3302"/>
 <via x="49" y="19" extent="1-16" drill="0.3302"/>
-<via x="83" y="1.25" extent="1-16" drill="0.3302"/>
-<via x="99" y="17" extent="1-16" drill="0.3302"/>
-<via x="46.5" y="73.5" extent="1-16" drill="0.3302"/>
+<via x="83.25" y="1" extent="1-16" drill="0.3302"/>
+<via x="98.75" y="17" extent="1-16" drill="0.3302"/>
+<via x="46.25" y="74" extent="1-16" drill="0.3302"/>
 <via x="53.5" y="48.5" extent="1-16" drill="0.3302"/>
 <via x="55" y="48.5" extent="1-16" drill="0.3302"/>
 <via x="54.5" y="36.5" extent="1-16" drill="0.3302"/>
@@ -5139,7 +5139,7 @@ Please make sure your boards conform to these design rules.</description>
 <via x="25.5" y="50.75" extent="1-16" drill="0.3302"/>
 <via x="25.5" y="53" extent="1-16" drill="0.3302"/>
 <via x="10.5" y="29.5" extent="1-16" drill="0.3302"/>
-<via x="13.5" y="27.5" extent="1-16" drill="0.3302"/>
+<via x="13.25" y="27.5" extent="1-16" drill="0.3302"/>
 <via x="18.75" y="32.5" extent="1-16" drill="0.3302"/>
 <via x="21.25" y="32.5" extent="1-16" drill="0.3302"/>
 <via x="25.25" y="39.25" extent="1-16" drill="0.3302"/>
@@ -5155,14 +5155,14 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="U$4" pad="11"/>
 <via x="11.5" y="44.5" extent="1-16" drill="0.3302"/>
 <via x="37.75" y="30.25" extent="1-16" drill="0.3302"/>
-<via x="42" y="1.25" extent="1-16" drill="0.3302"/>
+<via x="42" y="1" extent="1-16" drill="0.3302"/>
 <via x="32" y="24.75" extent="1-16" drill="0.3302"/>
 <via x="40.75" y="50" extent="1-16" drill="0.3302"/>
-<via x="40.75" y="52" extent="1-16" drill="0.3302"/>
+<via x="42" y="51.25" extent="1-16" drill="0.3302"/>
 <via x="33.5" y="50" extent="1-16" drill="0.3302"/>
 <via x="18.75" y="46.5" extent="1-16" drill="0.3302"/>
 <via x="41" y="40.75" extent="1-16" drill="0.3302"/>
-<via x="32.75" y="8.25" extent="1-16" drill="0.3302"/>
+<via x="32.5" y="8.5" extent="1-16" drill="0.3302"/>
 <via x="36.5" y="8.5" extent="1-16" drill="0.3302"/>
 <via x="33.5" y="6" extent="1-16" drill="0.3302"/>
 <via x="38.5" y="6" extent="1-16" drill="0.3302"/>
@@ -5224,9 +5224,9 @@ Please make sure your boards conform to these design rules.</description>
 <via x="15.5" y="46.5" extent="1-16" drill="0.3302"/>
 <contactref element="R41" pad="2"/>
 <via x="42.087" y="25.123" extent="1-16" drill="0.3302"/>
-<via x="41.5" y="73.75" extent="1-16" drill="0.3302"/>
-<via x="1.25" y="73.75" extent="1-16" drill="0.3302"/>
-<via x="1.25" y="1.25" extent="1-16" drill="0.3302"/>
+<via x="42" y="74" extent="1-16" drill="0.3302"/>
+<via x="1" y="74" extent="1-16" drill="0.3302"/>
+<via x="1" y="1" extent="1-16" drill="0.3302"/>
 <via x="37.25" y="50" extent="1-16" drill="0.3302"/>
 <via x="39" y="45" extent="1-16" drill="0.3302"/>
 <via x="36.5" y="45" extent="1-16" drill="0.3302"/>
@@ -5424,9 +5424,9 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="39.75" y1="7.5" x2="41.75" y2="9.5" width="0.4" layer="1"/>
 <wire x1="41.75" y1="9.5" x2="41.75" y2="24.25" width="0.4" layer="1"/>
 <wire x1="41.75" y1="24.25" x2="41.25" y2="24.75" width="0.4" layer="1"/>
-<wire x1="41.25" y1="24.75" x2="41.25" y2="25.75" width="0.4" layer="1"/>
-<wire x1="41.25" y1="25.75" x2="41.75" y2="26.25" width="0.4" layer="1"/>
-<wire x1="41.75" y1="26.25" x2="41.75" y2="50.25" width="0.4" layer="1"/>
+<wire x1="41.25" y1="24.75" x2="41.25" y2="25.5" width="0.4" layer="1"/>
+<wire x1="41.25" y1="25.5" x2="41.75" y2="26" width="0.4" layer="1"/>
+<wire x1="41.75" y1="26" x2="41.75" y2="50.25" width="0.4" layer="1"/>
 <wire x1="41.75" y1="50.25" x2="41" y2="51" width="0.4" layer="1"/>
 <wire x1="20" y1="7.25" x2="20.25" y2="7.25" width="0.4" layer="1"/>
 <wire x1="20.25" y1="7.25" x2="39.5" y2="7.25" width="0.4" layer="1"/>
@@ -6509,14 +6509,42 @@ Please make sure your boards conform to these design rules.</description>
 <approved hash="3,16,314fcd57748a1f57"/>
 <approved hash="3,16,9ccb4c400c2e54fa"/>
 <approved hash="3,16,6684074202b56373"/>
+<approved hash="7,40,81a58357877f81a9"/>
+<approved hash="7,40,28842c2a7d58e190"/>
+<approved hash="7,40,819b875d83658183"/>
+<approved hash="7,40,844bae247783cb5a"/>
+<approved hash="7,40,b2a000700f6db27f"/>
+<approved hash="7,40,b2a05404c1b25468"/>
+<approved hash="7,40,53a85e40cbfe57fa"/>
+<approved hash="7,40,b12803f00521b1ff"/>
+<approved hash="7,40,2b942f3a6920e260"/>
 <approved hash="7,40,990a9ffd9be6e340"/>
 <approved hash="7,40,4cabb7cd5e9a4b64"/>
-<approved hash="7,40,98bd8ab90f2a62c1"/>
 <approved hash="7,40,5bf8b6515907b4d0"/>
-<approved hash="7,40,e2c1988145c00df8"/>
+<approved hash="7,40,98bd8ab90f2a62c1"/>
 <approved hash="7,40,564f9f4ce5f2f06f"/>
 <approved hash="7,40,0dc61ffd8f2a7785"/>
+<approved hash="7,40,e2c1988145c00df8"/>
 <approved hash="5,1,5ce2a285c5753b12"/>
+<approved hash="5,16,d728a8b53efa4324"/>
+<approved hash="5,16,12299e664767eb29"/>
+<approved hash="5,16,9fbfd61ac942ad96"/>
+<approved hash="5,16,db071a106e5ec0b1"/>
+<approved hash="5,16,6207e2fd881257dd"/>
+<approved hash="5,16,55ec347b886780e0"/>
+<approved hash="5,16,acf6839f8911f80f"/>
+<approved hash="5,16,d5f794c30f1d6f61"/>
+<approved hash="5,16,4c1392f7eb2ca918"/>
+<approved hash="5,16,9c162bf6c09c5fc9"/>
+<approved hash="5,16,dbdf9bb7994cd4a2"/>
+<approved hash="5,16,6883ad2beea0ebdb"/>
+<approved hash="5,16,091777694b0a04b9"/>
+<approved hash="5,16,002eda99500ffcf0"/>
+<approved hash="5,16,481bc9a8c118299a"/>
+<approved hash="5,16,dee228ff2fff0820"/>
+<approved hash="5,16,8d1494380cdb62b8"/>
+<approved hash="5,16,88eca88b0a9887ee"/>
+<approved hash="5,16,48dd3738958c9b86"/>
 <approved hash="5,16,5ce2a285c5753b12"/>
 </errors>
 </board>
