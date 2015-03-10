@@ -27540,6 +27540,7 @@ W = angled&lt;p&gt;
 <pinref part="C68" gate="G$1" pin="1"/>
 <wire x1="-205.74" y1="-68.58" x2="-187.96" y2="-68.58" width="0.1524" layer="91"/>
 <junction x="-205.74" y="-68.58"/>
+<label x="-203.2" y="-68.58" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="JP7" gate="A" pin="4"/>
@@ -27987,6 +27988,7 @@ W = angled&lt;p&gt;
 <segment>
 <pinref part="IC5" gate="MCU" pin="PC13"/>
 <wire x1="-180.34" y1="27.94" x2="-198.12" y2="27.94" width="0.1524" layer="91"/>
+<label x="-198.12" y="27.94" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="PWM" class="0">
@@ -28025,9 +28027,6 @@ W = angled&lt;p&gt;
 </nets>
 </sheet>
 </sheets>
-<errors>
-<approved hash="113,1,75.119,35.56,X3,,,,,"/>
-</errors>
 </schematic>
 </drawing>
 </eagle>
