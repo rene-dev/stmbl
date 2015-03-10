@@ -3,6 +3,7 @@ COMP(sim);
 HAL_PIN(amp) = 0.1;
 HAL_PIN(freq) = 0.1591549;
 HAL_PIN(sin) = 0.0;
+//HAL_PIN(uf) = 0.000300;
 HAL_PIN(sin2) = 0.0;
 HAL_PIN(phase) = 0.0;
 HAL_PIN(cos) = 0.0;
@@ -17,6 +18,7 @@ MEM(float time) = 0.0;
 RT_IN(
   float amp_ = PIN(amp);
   float freq_ = PIN(freq);
+  //float amp_ = PIN(uf)*freq_;
   float offset_ = PIN(offset);
   float sin_;
   float sin2_;
