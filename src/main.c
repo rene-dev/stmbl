@@ -72,6 +72,7 @@ void link_pid(){
 	//pwm over uart
 	link_hal_pins("net0.vlt", "pwm2uart0.volt");
 	link_hal_pins("net0.vlt", "cur0.volt");
+	link_hal_pins("pid0.induction", "cur0.induction");
 
 	link_hal_pins("cur0.u", "pwm2uart0.u");
 	link_hal_pins("cur0.v", "pwm2uart0.v");
@@ -152,7 +153,7 @@ void set_bosch(){
 	set_hal_pin("pid0.mot_r", 15.0);//typenschild
 	set_hal_pin("pid0.mot_l", 1.0);//unknown, not used
 	set_hal_pin("pid0.mot_j", 0.000141);//typenschild
-	set_hal_pin("pid0.mot_km", 0.4);//noch nicht berechnet
+	set_hal_pin("pid0.mot_km", 0.11);//noch nicht berechnet
 
 	set_hal_pin("pid0.cur_p", 3.0);
 	set_hal_pin("pid0.acc_pi", 0.0);
@@ -598,8 +599,8 @@ int main(void)
 		hal.init[i]();
 	}
 
-	set_bergerlahr();//pid2: ok
-	//set_mitsubishi();//pid2: ok
+	//set_bergerlahr();//pid2: ok
+	set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
 	//set_bosch();//pid2: ok

@@ -231,31 +231,43 @@ float forcelp = LP_HZ(PIN(force_lp));
 float curp = PIN(cur_p);
 float curlp = LP_HZ(PIN(cur_lp));
 
+float old_velcmd = velcmd;
+float old_acccmd = acccmd;
+
 if(PIN(enable) > 0.0){
   // pos -> vel
   if(PIN(pos_en) == 0.0){
     posp = 0.0;
   }
-  velcmd = (posp * poserr + PIN(vel_ff) * velextcmd / velp) * poslp + (1.0 - poslp) * velcmd; // TODO
+  if(PIN(vel_en) == 0.0){
+    velp = 0.0;
+  }
+  if(PIN(acc_en) == 0.0){
+    accp = 0.0;
+    force_error_sum = 0.0;
+  }
+  if(PIN(force_en) == 0.0){
+    forcep = 0.0;
+  }
+  if(PIN(cur_en) == 0.0){
+    curp = 0.0;
+  }
+  velcmd = posp * poserr + PIN(vel_ff) * velextcmd / velp;
   velcmd *= velp;
+  velcmd = CLAMP(velcmd, velfb + accmin_ * t, velfb + accmax_ * t);
+  velcmd = velcmd * poslp + (1.0 - poslp) * old_velcmd; // TODO
   velsat = SAT2(velcmd, velmin_, velmax_);
   velcmd = CLAMP(velcmd, velmin_, velmax_);
 
   // vel -> acc
   velerr = velcmd - velfb;
-  if(PIN(vel_en) == 0.0){
-    velp = 0.0;
-  }
-  acccmd = (velerr / t + PIN(acc_ff) * accextcmd / accp) * vellp + (1.0 - vellp) * acccmd;
+  acccmd = velerr / t + PIN(acc_ff) * accextcmd / accp;
   acccmd *= accp;
+  acccmd = acccmd * vellp + (1.0 - vellp) * old_acccmd;
   accsat = SAT2(acccmd, accmin_, accmax_);
   acccmd = CLAMP(acccmd, accmin_, accmax_);
 
   // acc -> force
-  if(PIN(acc_en) == 0.0){
-    accp = 0.0;
-    force_error_sum = 0.0;
-  }
   forcecmd = (acccmd * j + PIN(force_ff) * forceextcmd / forcep) * acclp + (1.0 - acclp) * forcecmd;
   force_error_sum += velerr * t * accp * accpi;
   force_error_sum = CLAMP(force_error_sum, forcemin_, forcemax_); //TODO
@@ -268,18 +280,12 @@ if(PIN(enable) > 0.0){
   forcecmd = CLAMP(forcecmd, forcemin_, forcemax_);
 
   // force -> current
-  if(PIN(force_en) == 0.0){
-    forcep = 0.0;
-  }
   curcmd = (forcecmd / m + PIN(cur_ff) * curextcmd / curp) * forcelp + (1.0 - forcelp) * curcmd;
   curcmd *= curp;
   cursat = SAT2(curcmd, curmin_, curmax_);
   curcmd = CLAMP(curcmd, curmin_, curmax_);
 
   // current -> volt
-  if(PIN(cur_en) == 0.0){
-    curp = 0.0;
-  }
   voltcmd = (curcmd * r + ind) * curlp + (1.0 - curlp) * voltcmd;
   voltsat = SAT2(voltcmd, voltmin, voltmax);
   voltcmd = CLAMP(voltcmd, voltmin, voltmax);
