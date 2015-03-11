@@ -71,6 +71,7 @@ HAL_PIN(pos_lp) = 5000.0;
 HAL_PIN(vel_p) = 1.0;
 HAL_PIN(vel_lp) = 5000.0;
 HAL_PIN(vel_ff) = 1.0;
+HAL_PIN(vel_fb_lp) = 4000.0;
 
 HAL_PIN(acc_p) = 1.0;
 HAL_PIN(acc_lp) = 5000.0;
@@ -138,6 +139,8 @@ MEM(float acccmd) = 0.0;
 MEM(float forcecmd) = 0.0;
 MEM(float curcmd) = 0.0;
 MEM(float voltcmd) = 0.0;
+MEM(float velfb_) = 0.0;
+
 
 RT_PID(
 float posextcmd = PIN(pos_ext_cmd);
@@ -223,6 +226,7 @@ float posp = PIN(pos_p);
 float poslp = LP_HZ(PIN(pos_lp));
 float velp = PIN(vel_p);
 float vellp = LP_HZ(PIN(vel_lp));
+float velfblp = LP_HZ(PIN(vel_fb_lp));
 float accp = PIN(acc_p);
 float accpi = PIN(acc_pi);
 float acclp = LP_HZ(PIN(acc_lp));
@@ -233,6 +237,8 @@ float curlp = LP_HZ(PIN(cur_lp));
 
 float old_velcmd = velcmd;
 float old_acccmd = acccmd;
+
+velfb_ = velfb * velfblp + (1 - velfblp) * velfb_;
 
 if(PIN(enable) > 0.0){
   if(PIN(pos_en) == 0.0){
@@ -253,8 +259,8 @@ if(PIN(enable) > 0.0){
   }
 
   // pos -> vel
-  velcmd = posp * poserr + PIN(vel_ff) * velextcmd / velp;  // vel ~ pos_error + ff1
-  velcmd = CLAMP(velcmd, velfb + accmin_ * t, velfb + accmax_ * t); // dynamic clamping
+  velcmd = posp * poserr + PIN(vel_ff) * velextcmd / velp;  // vel = p * pos_error + ff1
+  velcmd = CLAMP(velcmd, velfb_ + accmin_ * t, velfb + accmax_ * t); // dynamic clamping
   velcmd *= velp; // damping
   velcmd = velcmd * poslp + (1.0 - poslp) * old_velcmd; // lowpass
   velsat = SAT2(velcmd, velmin_, velmax_);
