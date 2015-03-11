@@ -151,7 +151,7 @@ void set_bosch(){
 
 	//pid
 	set_hal_pin("pid0.mot_r", 15.0);//typenschild
-	set_hal_pin("pid0.mot_l", 1.0);//unknown, not used
+	set_hal_pin("pid0.mot_l", 1.0);//unknown
 	set_hal_pin("pid0.mot_j", 0.000141);//typenschild
 	set_hal_pin("pid0.mot_km", 0.11);//noch nicht berechnet
 

@@ -40,10 +40,10 @@ MEM(float iwu_) = 0.0;
 
 RT_CALC(
   float r_ = MAX(PIN(r) * 3.0 / 2.0, 0.1);
-  float l_ = MAX(PIN(l) * 3.0 / 2.0, 0.0001);
+  float l_ = MAX(PIN(l) * 3.0 / 2.0, 0.00005);
   float freq_ = MAX(PIN(freq), 1);
-  float vlt = MAX(PIN(volt) - PIN(induction), 0.1);
-  float ib_ = PIN(i);
+  float vlt = MAX(PIN(volt), 0.1);
+  float ib_ = PIN(i) + PIN(induction) / r_;
   float im_ = MIN(sqrtf(ABS(ib_) * vlt / r_), PIN(cur_max));
   im_ *=  SIGN(ib_);
   float magpos_ = PIN(magpos);
