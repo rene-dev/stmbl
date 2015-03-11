@@ -25,6 +25,7 @@ HAL_PIN(l) = 0.0025;
 HAL_PIN(freq) = 5000.0;
 
 HAL_PIN(volt) = 50.0;
+HAL_PIN(induction) = 0.0;
 
 HAL_PIN(pwm_max) = 0.95;
 HAL_PIN(cur_max) = 10.0;
@@ -39,10 +40,10 @@ MEM(float iwu_) = 0.0;
 
 RT_CALC(
   float r_ = MAX(PIN(r) * 3.0 / 2.0, 0.1);
-  float l_ = MAX(PIN(l) * 3.0 / 2.0, 0.0001);
+  float l_ = MAX(PIN(l) * 3.0 / 2.0, 0.00005);
   float freq_ = MAX(PIN(freq), 1);
   float vlt = MAX(PIN(volt), 0.1);
-  float ib_ = PIN(i);
+  float ib_ = PIN(i) + PIN(induction) / r_;
   float im_ = MIN(sqrtf(ABS(ib_) * vlt / r_), PIN(cur_max));
   im_ *=  SIGN(ib_);
   float magpos_ = PIN(magpos);

@@ -72,6 +72,7 @@ void link_pid(){
 	//pwm over uart
 	link_hal_pins("net0.vlt", "pwm2uart0.volt");
 	link_hal_pins("net0.vlt", "cur0.volt");
+	link_hal_pins("pid0.induction", "cur0.induction");
 
 	link_hal_pins("cur0.u", "pwm2uart0.u");
 	link_hal_pins("cur0.v", "pwm2uart0.v");
@@ -150,9 +151,9 @@ void set_bosch(){
 
 	//pid
 	set_hal_pin("pid0.mot_r", 15.0);//typenschild
-	set_hal_pin("pid0.mot_l", 1.0);//unknown, not used
+	set_hal_pin("pid0.mot_l", 1.0);//unknown
 	set_hal_pin("pid0.mot_j", 0.000141);//typenschild
-	set_hal_pin("pid0.mot_km", 0.4);//noch nicht berechnet
+	set_hal_pin("pid0.mot_km", 0.11);//noch nicht berechnet
 
 	set_hal_pin("pid0.cur_p", 3.0);
 	set_hal_pin("pid0.acc_pi", 0.0);
@@ -460,23 +461,22 @@ void set_mitsubishi(){
 	set_hal_pin("res0.enable", 1.0);
 	set_hal_pin("pderiv0.in_lp", 1.0);
 	set_hal_pin("pderiv0.out_lp", 1.0);
-	set_hal_pin("pderiv0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	set_hal_pin("pderiv0.vel_max", RPM(8000));
+	set_hal_pin("pderiv0.acc_max", RPM(8000) / 0.005);
 
 	// fb
 	set_hal_pin("pderiv1.in_lp", 1.0);
 	set_hal_pin("pderiv1.out_lp", 1.0);
-	set_hal_pin("pderiv1.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	set_hal_pin("pderiv1.vel_max", RPM(8000));
+	set_hal_pin("pderiv1.acc_max", RPM(8000) / 0.005);
 
-	set_hal_pin("pderiv0.out_lp", 1.0);
 	// pole count
 	set_hal_pin("cauto0.pole_count", 2.0);
 
 	// auto time
 	set_hal_pin("cauto0.time", 0.5);
 
-	// auto scale
+	// auto cur
 	set_hal_pin("cauto0.cur", 1.0);
 
 	// pid
@@ -489,6 +489,7 @@ void set_mitsubishi(){
 	set_hal_pin("pid0.pos_lp", 10000.0);
 	set_hal_pin("pid0.vel_p", 0.7);
 	set_hal_pin("pid0.vel_lp", 10000.0);
+	set_hal_pin("pid0.vel_fb_lp", 10000.0);
 	set_hal_pin("pid0.acc_p", 0.2);
 	set_hal_pin("pid0.acc_lp", 10000.0);
 	set_hal_pin("pid0.acc_pi", 50.0);
@@ -659,8 +660,8 @@ int main(void)
 		hal.init[i]();
 	}
 
-	set_bergerlahr();//pid2: ok
-	//set_mitsubishi();//pid2: ok
+	//set_bergerlahr();//pid2: ok
+	set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
 	//set_bosch();//pid2: ok
