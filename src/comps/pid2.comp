@@ -277,7 +277,7 @@ if(PIN(enable) > 0.0){
   // acc -> force
   forcecmd = (acccmd * j + PIN(force_ff) * forceextcmd / forcep) * acclp + (1.0 - acclp) * forcecmd;  // force = acc * inertia, + lowpass
   force_error_sum += velerr * t * accp * accpi; // integrate vel_error
-  force_error_sum = CLAMP(force_error_sum, forcemin_, forcemax_); //TODO clamp integral
+  force_error_sum = CLAMP(force_error_sum, forcemin_ - forcecmd, forcemax_ - forcecmd); // clamp integral
   if(accpi == 0.0){
     force_error_sum = 0.0;
   }
