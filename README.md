@@ -21,6 +21,7 @@ https://www.youtube.com/watch?v=seEV_i7o1NI
 * Resolvers
 * Incremental encoders
 * sin/cos encoder interpolation
+* Mitsubishi absolute encoders
 
 ####TODO
 * AC Async
