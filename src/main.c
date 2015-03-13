@@ -371,7 +371,7 @@ void set_sankyo(){
 	set_hal_pin("pid0.mot_r", 14.0);
 	set_hal_pin("pid0.mot_l", 0.01);
 	set_hal_pin("pid0.mot_j", 0.000026);
-	set_hal_pin("pid0.mot_km", 0.3724);
+	set_hal_pin("pid0.mot_km", 0.12);
 
 	set_hal_pin("pid0.pos_p", 300.0);
 	set_hal_pin("pid0.acc_pi", 20.0);
