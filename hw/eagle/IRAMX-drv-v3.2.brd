@@ -3930,12 +3930,12 @@ Please make sure your boards conform to these design rules.</description>
 <element name="D1" library="diode" package="SOD80C" value="3v3" x="57.25" y="9.25" rot="MR90"/>
 <element name="C69" library="rcl" package="C0603" value="100n" x="72.75" y="6.25" rot="MR270"/>
 <element name="C68" library="rcl" package="C0603" value="100n" x="40.5" y="33.5" rot="MR180"/>
-<element name="R8" library="rcl" package="R0805" value="1k" x="9.25" y="48.25" rot="MR180"/>
-<element name="R43" library="rcl" package="R0805" value="1k" x="9.25" y="46.25" rot="MR180"/>
+<element name="R8" library="rcl" package="R0805" value="22" x="9.25" y="48.25" rot="MR180"/>
+<element name="R43" library="rcl" package="R0805" value="22" x="9.25" y="46.25" rot="MR180"/>
 <element name="JP11" library="daspilker" package="FCI-10103594-0001LF" value="USB-RECEPTABLE" x="0" y="51.25" rot="MR90"/>
 <element name="U$6" library="reroolib" package="SOIC08" value="ADM485SOIC8" x="19.75" y="28.75" rot="MR270"/>
 <element name="U$7" library="reroolib" package="SOIC08" value="ADM485SOIC8" x="19.75" y="23.5" rot="MR270"/>
-<element name="C70" library="rcl" package="153CLV-0405" value="" x="36.75" y="61" rot="MR180"/>
+<element name="C70" library="rcl" package="153CLV-0405" value="2.2u" x="36.75" y="61" rot="MR180"/>
 <element name="C5" library="rcl" package="C0805" value="4.7u" x="50.5" y="39.5" rot="MR0"/>
 <element name="C6" library="rcl" package="C0805" value="4.7u" x="49" y="35.5" rot="MR0"/>
 <element name="T1" library="zetex" package="SOT223" value="zldo1117" x="37.75" y="14.75" rot="MR270">
@@ -3980,8 +3980,8 @@ Please make sure your boards conform to these design rules.</description>
 </element>
 <element name="JP1" library="pinhead" package="1X04" value="" x="57.75" y="25.25"/>
 <element name="C33" library="rcl" package="C0603" value="100n" x="14.25" y="10.25" rot="MR270"/>
-<element name="C34" library="rcl" package="153CLV-0405" value="" x="36.75" y="61"/>
-<element name="C48" library="rcl" package="E2,5-6E" value="" x="32.25" y="61.5" rot="R270"/>
+<element name="C34" library="rcl" package="153CLV-0405" value="2.2u" x="36.75" y="61"/>
+<element name="C48" library="rcl" package="E2,5-6E" value="2.2u" x="32.25" y="61.5" rot="R270"/>
 <element name="C49" library="rcl" package="C0603" value="100n" x="9.5" y="31.5" rot="MR180"/>
 <element name="J1" library="con-molex" package="6410-03" value="22-27-2031-03" x="13.25" y="70.5" rot="R180">
 <attribute name="OC_NEWARK" value="unknown" x="13.25" y="70.5" size="1.778" layer="27" rot="R180" display="off"/>
@@ -4008,10 +4008,10 @@ Please make sure your boards conform to these design rules.</description>
 <element name="TP12" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="22" y="60.5"/>
 <element name="TP13" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="56.25" y="35"/>
 <element name="TP14" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="56.25" y="31"/>
-<element name="C50" library="rcl" package="153CLV-0405" value="" x="50.5" y="35"/>
+<element name="C50" library="rcl" package="153CLV-0405" value="2.2u" x="50.5" y="35"/>
 <element name="TP15" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="47.75" y="21.25"/>
 <element name="TP16" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="47.75" y="22.75"/>
-<element name="C51" library="rcl" package="E2,5-6E" value="" x="50.5" y="37.5" rot="R180"/>
+<element name="C51" library="rcl" package="E2,5-6E" value="2.2u" x="50.5" y="37.5" rot="R180"/>
 <element name="TP17" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="28" y="60.5"/>
 <element name="TP18" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="35" y="28.75"/>
 <element name="R41" library="varistor" package="R-5" value="VARISTOR-5" x="41.25" y="62.25" rot="R90"/>

@@ -25383,12 +25383,12 @@ W = angled&lt;p&gt;
 <part name="C69" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="C68" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND58" library="supply1" deviceset="GND" device=""/>
-<part name="R8" library="rcl" deviceset="R-EU_" device="R0805" value="1k"/>
-<part name="R43" library="rcl" deviceset="R-EU_" device="R0805" value="1k"/>
+<part name="R8" library="rcl" deviceset="R-EU_" device="R0805" value="22"/>
+<part name="R43" library="rcl" deviceset="R-EU_" device="R0805" value="22"/>
 <part name="JP11" library="daspilker" deviceset="USB-RECEPTABLE" device=""/>
 <part name="U$6" library="reroolib" deviceset="ADM485" device="SOIC8"/>
 <part name="U$7" library="reroolib" deviceset="ADM485" device="SOIC8"/>
-<part name="C70" library="rcl" deviceset="CPOL-EU" device="153CLV-0405"/>
+<part name="C70" library="rcl" deviceset="CPOL-EU" device="153CLV-0405" value="2.2u"/>
 <part name="C5" library="rcl" deviceset="C-EU" device="C0805" value="4.7u"/>
 <part name="C6" library="rcl" deviceset="C-EU" device="C0805" value="4.7u"/>
 <part name="T1" library="zetex" deviceset="NPNSOT223" device="" value="zldo1117"/>
@@ -25420,8 +25420,8 @@ W = angled&lt;p&gt;
 <part name="JP1" library="pinhead" deviceset="PINHD-1X4" device=""/>
 <part name="C33" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND61" library="supply1" deviceset="GND" device=""/>
-<part name="C34" library="rcl" deviceset="CPOL-EU" device="153CLV-0405"/>
-<part name="C48" library="rcl" deviceset="CPOL-EU" device="E2,5-6E"/>
+<part name="C34" library="rcl" deviceset="CPOL-EU" device="153CLV-0405" value="2.2u"/>
+<part name="C48" library="rcl" deviceset="CPOL-EU" device="E2,5-6E" value="2.2u"/>
 <part name="C49" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND47" library="supply1" deviceset="GND" device=""/>
 <part name="J1" library="con-molex" deviceset="22-?-03" device="27-2031"/>
@@ -25448,10 +25448,10 @@ W = angled&lt;p&gt;
 <part name="TP12" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
 <part name="TP13" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
 <part name="TP14" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
-<part name="C50" library="rcl" deviceset="CPOL-EU" device="153CLV-0405"/>
+<part name="C50" library="rcl" deviceset="CPOL-EU" device="153CLV-0405" value="2.2u"/>
 <part name="TP15" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
 <part name="TP16" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
-<part name="C51" library="rcl" deviceset="CPOL-EU" device="E2,5-6E"/>
+<part name="C51" library="rcl" deviceset="CPOL-EU" device="E2,5-6E" value="2.2u"/>
 <part name="TP17" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
 <part name="GND65" library="supply1" deviceset="GND" device=""/>
 <part name="TP18" library="SparkFun-Passives" deviceset="TEST-POINT" device="3"/>
