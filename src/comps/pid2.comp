@@ -219,20 +219,20 @@ float forcemax_ = MIN(forcemax, curmax_ * m);
 float forcemin_ = MAX(forcemin, curmin_ * m);
 float accmax_ = MIN(accmax, forcemax_ / j);
 float accmin_ = MAX(accmin, forcemin_ / j);
-float velmax_ = vlt / m;
+float velmax_ = MIN(vlt / m, velmax);
 float velmin_ = -velmax_;
 
-float posp = PIN(pos_p);
+float posp = MAX(PIN(pos_p), 0.001);
 float poslp = LP_HZ(PIN(pos_lp));
-float velp = PIN(vel_p);
+float velp = MIN(MAX(PIN(vel_p), 0.001), 1.0);
 float vellp = LP_HZ(PIN(vel_lp));
 float velfblp = LP_HZ(PIN(vel_fb_lp));
-float accp = PIN(acc_p);
+float accp = MIN(MAX(PIN(acc_p), 0.001), 1.0);
 float accpi = PIN(acc_pi);
 float acclp = LP_HZ(PIN(acc_lp));
-float forcep = PIN(force_p);
+float forcep = MIN(MAX(PIN(force_p), 0.001), 1.0);
 float forcelp = LP_HZ(PIN(force_lp));
-float curp = PIN(cur_p);
+float curp = MAX(PIN(cur_p), 0.001);
 float curlp = LP_HZ(PIN(cur_lp));
 
 float old_velcmd = velcmd;
@@ -260,7 +260,7 @@ if(PIN(enable) > 0.0){
 
   // pos -> vel
   velcmd = posp * poserr + PIN(vel_ff) * velextcmd / velp;  // vel = p * pos_error + ff1
-  velcmd = CLAMP(velcmd, velfb_ + accmin_ * t, velfb + accmax_ * t); // dynamic clamping
+  //velcmd = CLAMP(velcmd, velfb_ + accmin_ * t, velfb + accmax_ * t); // dynamic clamping
   velcmd *= velp; // damping
   velcmd = velcmd * poslp + (1.0 - poslp) * old_velcmd; // lowpass
   velsat = SAT2(velcmd, velmin_, velmax_);
@@ -277,11 +277,12 @@ if(PIN(enable) > 0.0){
   // acc -> force
   forcecmd = (acccmd * j + PIN(force_ff) * forceextcmd / forcep) * acclp + (1.0 - acclp) * forcecmd;  // force = acc * inertia, + lowpass
   force_error_sum += velerr * t * accp * accpi; // integrate vel_error
-  force_error_sum = CLAMP(force_error_sum, CLAMP(forcemin_ - forcecmd,forcemin_ ,0.0), CLAMP(forcemax_ - forcecmd, 0.0, forcemax_)); // clamp integral
+  //force_error_sum = CLAMP(force_error_sum, CLAMP(forcemin_ - forcecmd,forcemin_ ,0.0), CLAMP(forcemax_ - forcecmd, 0.0, forcemax_)); // clamp integral
+  force_error_sum = CLAMP(force_error_sum, forcemin_, forcemax_); // clamp integral
   if(accpi == 0.0){
     force_error_sum = 0.0;
   }
-  forcecmd += force_error_sum;  // add integral
+  forcecmd += force_error_sum / forcep;  // add integral
   forcecmd *= forcep; // damping
   forcesat = SAT2(forcecmd, forcemin_, forcemax_);
   forcecmd = CLAMP(forcecmd, forcemin_, forcemax_); // min/max clamping

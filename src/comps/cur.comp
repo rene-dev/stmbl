@@ -26,6 +26,7 @@ HAL_PIN(freq) = 5000.0;
 
 HAL_PIN(volt) = 50.0;
 HAL_PIN(induction) = 0.0;
+HAL_PIN(ind_p) = 0.0;
 
 HAL_PIN(pwm_max) = 0.95;
 HAL_PIN(cur_max) = 10.0;
@@ -43,7 +44,9 @@ RT_CALC(
   float l_ = MAX(PIN(l) * 3.0 / 2.0, 0.00005);
   float freq_ = MAX(PIN(freq), 1);
   float vlt = MAX(PIN(volt), 0.1);
-  float ib_ = PIN(i) + PIN(induction) / r_;
+  float ib_ = PIN(i);// + PIN(induction) / r_;
+  float ind = PIN(induction);
+  float ind_p_ = PIN(ind_p);
   float im_ = MIN(sqrtf(ABS(ib_) * vlt / r_), PIN(cur_max));
   im_ *=  SIGN(ib_);
   float magpos_ = PIN(magpos);
@@ -52,15 +55,20 @@ RT_CALC(
   float ivw = im_ * sinf(magpos_ + 2.0 * M_PI / 3.0 * 1.0);
   float iwu = im_ * sinf(magpos_ + 2.0 * M_PI / 3.0 * 2.0);
 
+  float uuv = ind * sinf(magpos_ + 2.0 * M_PI / 3.0 * 0.0);
+  float uvw = ind * sinf(magpos_ + 2.0 * M_PI / 3.0 * 1.0);
+  float uwu = ind * sinf(magpos_ + 2.0 * M_PI / 3.0 * 2.0);
+
+
   float ff_ = PIN(ff);
   float p_ = l_ * freq_ * PIN(lp);
 
   float pwm_max_ = PIN(pwm_max);
   float vmax = vlt * pwm_max_;
 
-  float uv_ = CLAMP(ff_ * r_ * iuv + p_ * (iuv - iuv_), -vmax , vmax);
-  float vw_ = CLAMP(ff_ * r_ * ivw + p_ * (ivw - ivw_), -vmax , vmax);
-  float wu_ = CLAMP(ff_ * r_ * iwu + p_ * (iwu - iwu_), -vmax , vmax);
+  float uv_ = CLAMP(ff_ * r_ * iuv + p_ * (iuv - iuv_) + uuv * ind_p_, -vmax , vmax);
+  float vw_ = CLAMP(ff_ * r_ * ivw + p_ * (ivw - ivw_) + uvw * ind_p_, -vmax , vmax);
+  float wu_ = CLAMP(ff_ * r_ * iwu + p_ * (iwu - iwu_) + uwu * ind_p_, -vmax , vmax);
 
   PIN(uv) = uv_;
   PIN(vw) = vw_;

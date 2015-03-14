@@ -462,13 +462,13 @@ void set_mitsubishi(){
 	set_hal_pin("pderiv0.in_lp", 1.0);
 	set_hal_pin("pderiv0.out_lp", 1.0);
 	set_hal_pin("pderiv0.vel_max", RPM(8000));
-	set_hal_pin("pderiv0.acc_max", RPM(8000) / 0.005);
+	set_hal_pin("pderiv0.acc_max", RPM(8000) / 0.002);
 
 	// fb
 	set_hal_pin("pderiv1.in_lp", 1.0);
 	set_hal_pin("pderiv1.out_lp", 1.0);
 	set_hal_pin("pderiv1.vel_max", RPM(8000));
-	set_hal_pin("pderiv1.acc_max", RPM(8000) / 0.005);
+	set_hal_pin("pderiv1.acc_max", RPM(8000) / 0.002);
 
 	// pole count
 	set_hal_pin("cauto0.pole_count", 2.0);
@@ -483,35 +483,37 @@ void set_mitsubishi(){
 	set_hal_pin("pid0.mot_r", 1.5);
 	set_hal_pin("pid0.mot_l", 0.0025);
 	set_hal_pin("pid0.mot_j", 0.00005);
-	set_hal_pin("pid0.mot_km", 0.23);
+	set_hal_pin("pid0.mot_km", 0.22);
 
-	set_hal_pin("pid0.pos_p", 250.0);
-	set_hal_pin("pid0.pos_lp", 10000.0);
-	set_hal_pin("pid0.vel_p", 0.7);
-	set_hal_pin("pid0.vel_lp", 10000.0);
-	set_hal_pin("pid0.vel_fb_lp", 10000.0);
-	set_hal_pin("pid0.acc_p", 0.2);
-	set_hal_pin("pid0.acc_lp", 10000.0);
+	set_hal_pin("pid0.pos_p", 70.0);
+	set_hal_pin("pid0.pos_lp", 4000.0);
+	set_hal_pin("pid0.vel_p", 1.0);
+	set_hal_pin("pid0.vel_lp", 4000.0);
+	set_hal_pin("pid0.vel_fb_lp", 4000.0);
+	set_hal_pin("pid0.acc_p", 0.01);
+	set_hal_pin("pid0.acc_lp", 4000.0);
 	set_hal_pin("pid0.acc_pi", 50.0);
-	set_hal_pin("pid0.force_p", 0.3);
-	set_hal_pin("pid0.force_lp", 10000.0);
-	set_hal_pin("pid0.cur_p", 0.5);
+	set_hal_pin("pid0.force_p", 1.0);
+	set_hal_pin("pid0.force_lp", 4000.0);
+	set_hal_pin("pid0.cur_p", 1.0);
 	set_hal_pin("pid0.cur_lp", 10000.0);
 
 	set_hal_pin("pid0.max_vel", RPM(8000));
-	set_hal_pin("pid0.max_acc", RPM(8000) / 0.005);
-	set_hal_pin("pid0.max_force", 1.38);
+	set_hal_pin("pid0.max_acc", RPM(8000) / 0.002);
+	set_hal_pin("pid0.max_force", 2.0);
 	set_hal_pin("pid0.max_cur", 6.0);
 
 	set_hal_pin("pid0.vel_limit", RPM(8000));
-	set_hal_pin("pid0.acc_limit", RPM(8000) / 0.005);
-	set_hal_pin("pid0.force_limit", 1.38);
+	set_hal_pin("pid0.acc_limit", RPM(8000) / 0.002);
+	set_hal_pin("pid0.force_limit", 2.0);
 	set_hal_pin("pid0.cur_limit", 6.0);
 
 
 	set_hal_pin("cur0.cur_max", 15.0);
 	set_hal_pin("cur0.l", 0.0025);
 	set_hal_pin("cur0.r", 1.5);
+	set_hal_pin("cur0.lp", 1.0);
+
 	set_hal_pin("cauto0.cur", 0.5);
 	// pid0.cur_p 0.5
 	// pid0.force_p 0.3
@@ -686,7 +688,7 @@ int main(void)
 
 	while(1)  // Do not exit
 	{
-		Wait(1);
+		Wait(2);
 		period = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
 		lasttime = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
 		for(int i = 0; i < hal.nrt_func_count; i++){

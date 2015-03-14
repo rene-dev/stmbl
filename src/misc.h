@@ -38,9 +38,9 @@ extern "C" {
 #define SIGN(a) (((a) < 0.0) ? (-1.0) : (((a) > 0.0) ? (1.0) : (0.0)))
 
 //pid krams
-#define RPM(a) ((a)/60.0*M_2_PI)
+#define RPM(a) ((a)/60.0 * M_PI * 2.0)
 #define KGCM2(a) ((a)/1000.0)
-#define LP_HZ(a) (1.0 / (5000.0 / ((a) * M_PI_2) + 1.0))
+#define LP_HZ(a) (1.0 / (5000.0 / ((a) * M_PI * 2.0) + 1.0))
 
 float minus(float a, float b);
 float mod(float a);
