@@ -12,10 +12,12 @@ HAL_PIN(vel) = 0.0;
 HAL_PIN(res) = 100000.0;
 
 MEM(float time) = 0.0;
+MEM(float amp_) = 0.0;
+MEM(float freq_) = 0.0;
 
 RT_IN(
-  float amp_ = PIN(amp);
-  float freq_ = PIN(freq);
+  amp_ = PIN(amp) * 0.001 + amp_ * 0.999;
+  freq_ = PIN(freq) * 0.001 + freq_ * 0.999;
   float sin_;
   float cos_;
   float r = PIN(res);
