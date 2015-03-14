@@ -16,7 +16,7 @@ RT_IN(
   float sin_;
   float cos_;
   float r = PIN(res);
-  float square_;
+  //float square_;
 
   time += period;
 

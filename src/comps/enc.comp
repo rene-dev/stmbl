@@ -22,10 +22,10 @@ MEM(int e_res1) = 0.0;
 MEM(float s_) = 0.0;
 MEM(float c_) = 0.0;
 
-MEM(float smin) = 16384.0;
-MEM(float smax) = 0.0;
-MEM(float cmin) = 16384.0;
-MEM(float cmax) = 0.0;
+//MEM(float smin) = 16384.0;
+//MEM(float smax) = 0.0;
+//MEM(float cmin) = 16384.0;
+//MEM(float cmax) = 0.0;
 
 
 INIT(
