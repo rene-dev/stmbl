@@ -25,7 +25,7 @@ RT_IN(
 
   time += period;
 
-  if(freq_ * time >= 2.0 * M_PI){
+  if(ABS(freq_ * time) >= 2.0 * M_PI){
     time = 0.0;
   }
 
