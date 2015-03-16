@@ -1,0 +1,15 @@
+COMP(lowpass);
+
+HAL_PIN(in) = 0.0;
+HAL_PIN(out) = 0.0;
+HAL_PIN(scale) = 1.0;
+HAL_PIN(gain) = 1.0;
+
+MEM(float value) = 0.0;
+
+RT_FILTER(
+  value += (PIN(in) - value) * CLAMP(PIN(gain),0.00001,1.0);
+  PIN(out) = mod(value * PIN(scale));
+);
+
+ENDCOMP;

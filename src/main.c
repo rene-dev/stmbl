@@ -190,6 +190,13 @@ void set_bosch4(){ // achse 4
 
 void set_bosch1(){ // achse 1
 	link_ac_sync_res();
+	
+	set_hal_pin("enc0.res0", 2000.0);
+	link_hal_pins("enc0.pos0", "lowpass0.in");
+	link_hal_pins("lowpass0.out", "net0.cmd");
+	set_hal_pin("lowpass0.gain", 0.002);
+	set_hal_pin("lowpass0.scale", 100.0);
+	
 	// pole count
 	set_hal_pin("cauto0.pole_count", 4.0);
 
@@ -729,6 +736,7 @@ int main(void)
 	#include "comps/pderiv.comp"
 	#include "comps/pderiv.comp"
 	//#include "comps/autophase.comp"
+	#include "comps/lowpass.comp"
 	#include "comps/cauto.comp"
 	#include "comps/encm.comp"
 	#include "comps/cur.comp"
