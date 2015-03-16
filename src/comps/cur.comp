@@ -51,14 +51,17 @@ RT_CALC(
   im_ *=  SIGN(ib_);
   float magpos_ = PIN(magpos);
 
-  float iuv = im_ * sinf(magpos_ + 2.0 * M_PI / 3.0 * 0.0);
-  float ivw = im_ * sinf(magpos_ + 2.0 * M_PI / 3.0 * 1.0);
-  float iwu = im_ * sinf(magpos_ + 2.0 * M_PI / 3.0 * 2.0);
+  float s0 = sinf(magpos_ + 2.0 * M_PI / 3.0 * 0.0);
+  float s1 = sinf(magpos_ + 2.0 * M_PI / 3.0 * 1.0);
+  float s2 = sinf(magpos_ + 2.0 * M_PI / 3.0 * 2.0);
 
-  float uuv = ind * sinf(magpos_ + 2.0 * M_PI / 3.0 * 0.0);
-  float uvw = ind * sinf(magpos_ + 2.0 * M_PI / 3.0 * 1.0);
-  float uwu = ind * sinf(magpos_ + 2.0 * M_PI / 3.0 * 2.0);
+  float iuv = im_ * s0;
+  float ivw = im_ * s1;
+  float iwu = im_ * s2;
 
+  float uuv = ind * s0;
+  float uvw = ind * s1;
+  float uwu = ind * s2;
 
   float ff_ = PIN(ff);
   float p_ = l_ * freq_ * PIN(lp);

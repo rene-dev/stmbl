@@ -716,8 +716,8 @@ int main(void)
 	//#include "comps/rt.comp"
 	//#include "comps/nrt.comp"
 
-	#include "comps/pos_minus.comp"
-	#include "comps/pwm2uvw.comp"
+	//#include "comps/pos_minus.comp"
+	//#include "comps/pwm2uvw.comp"
 	//#include "comps/pwmout.comp"
 	#include "comps/pwm2uart.comp"
 
