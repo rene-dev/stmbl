@@ -41,6 +41,7 @@ RT_IN(
   cos_ = offset_ + amp_ * cosf(freq_ * time);
 
   PIN(sin) = ((int)(sin_ * r)) / r;
+  PIN(sin) = ((int)(sin2_ * r)) / r;
   PIN(msin) = mod(((int)(sin_ * r)) / r);
   PIN(cos) = ((int)(cos_ * r)) / r;
   PIN(mcos) = mod(((int)(cos_ * r)) / r);
