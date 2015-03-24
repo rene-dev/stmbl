@@ -1,9 +1,22 @@
+DISCLAIMER
+===
+THE AUTHORS OF THIS SOFTWARE ACCEPT ABSOLUTELY NO LIABILITY FOR
+ANY HARM OR LOSS RESULTING FROM ITS USE.  IT IS _EXTREMELY_ UNWISE
+TO RELY ON SOFTWARE ALONE FOR SAFETY.  Any machinery capable of
+harming persons must have provisions for completely removing power
+from all motors, etc, before persons enter any danger area.  All
+machinery must be designed to comply with local and national safety
+codes, and the authors of this software can not, and do not, take
+any responsibility for such compliance.
+
+This software is released under the GPLv3.
+
 stmbl
 =====
 stmbl is an open source servo drive designed for Retrofitting CNC machines and Robots. It supports Industrial AC and DC servos with up to 320V and 1kW. 
-##### Hardware version 31
-![bot](http://rene-dev.github.io/iramx31bot.jpg)
-![top](http://rene-dev.github.io/iramx31top.jpg)
+##### Hardware version 32
+![top](http://rene-dev.github.io/iramx32top.jpg)
+![bot](http://rene-dev.github.io/iramx32bot.jpg)
 
 ##### Driving a Bosch Turboscara
 https://www.youtube.com/watch?v=Ue98HE76paI
@@ -15,6 +28,7 @@ https://www.youtube.com/watch?v=seEV_i7o1NI
 ####Supported Motors
 * Synchronous AC Servos
 * DC Servos
+* 2 Phase HF spindle motors
 * IRAMXv2 Hardware testet up to 320V
 
 ####Supported Feedback systems
