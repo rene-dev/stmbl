@@ -285,7 +285,7 @@ void TIM1_UP_IRQHandler(){
 		GPIO_ResetBits(GPIOC,GPIO_Pin_2);//greep led off
 	}else{
 		GPIO_SetBits(GPIOB,GPIO_Pin_6);//Enable driver
-		GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
+		//GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
 		GPIO_ResetBits(GPIOC,GPIO_Pin_1);//yellow led off
 		timeout ++;
 	}

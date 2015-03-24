@@ -73,13 +73,19 @@
 #define LED_R_PORT GPIOC
 #define LED_R_IO_RCC RCC_AHB1Periph_GPIOC
 
-#define LED_Y_PIN GPIO_Pin_11
-#define LED_Y_PORT GPIOC
-#define LED_Y_IO_RCC RCC_AHB1Periph_GPIOC
-
-#define LED_G_PIN GPIO_Pin_12
+#define LED_G_PIN GPIO_Pin_11
 #define LED_G_PORT GPIOC
 #define LED_G_IO_RCC RCC_AHB1Periph_GPIOC
+
+// brake
+#define BRAKE_PIN GPIO_Pin_9
+#define BRAKE_PORT GPIOC
+#define BRAKE_IO_RCC RCC_AHB1Periph_GPIOC
+
+// fan
+#define FAN_PIN GPIO_Pin_8
+#define FAN_PORT GPIOC
+#define FAN_IO_RCC RCC_AHB1Periph_GPIOC
 
 // uart
 #define UART_CMD USART1
