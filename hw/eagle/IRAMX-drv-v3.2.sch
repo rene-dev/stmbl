@@ -25189,9 +25189,9 @@ W = angled&lt;p&gt;
 </class>
 </classes>
 <parts>
-<part name="C1" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
-<part name="C2" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
-<part name="C3" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
+<part name="C1" library="rcl" deviceset="C-EU" device="C0805" value="4.7u"/>
+<part name="C2" library="rcl" deviceset="C-EU" device="C0805" value="4.7u"/>
+<part name="C3" library="rcl" deviceset="C-EU" device="C0805" value="4.7u"/>
 <part name="C8" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
 <part name="C10" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
@@ -25219,7 +25219,7 @@ W = angled&lt;p&gt;
 <part name="C15" library="rcl" deviceset="C-EU" device="C1206K" value="100p"/>
 <part name="C16" library="rcl" deviceset="C-EU" device="C1206K" value="10n"/>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
-<part name="C24" library="rcl" deviceset="C-EU" device="C0805K" value="4.7µ"/>
+<part name="C24" library="rcl" deviceset="C-EU" device="C0805" value="4.7u"/>
 <part name="C23" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="C25" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="C27" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
@@ -25337,8 +25337,8 @@ W = angled&lt;p&gt;
 <part name="P+5" library="supply1" deviceset="+5V" device=""/>
 <part name="P+6" library="supply1" deviceset="+5V" device=""/>
 <part name="P+7" library="supply1" deviceset="+5V" device=""/>
-<part name="C57" library="rcl" deviceset="C-EU" device="C0603" value="2.2µ"/>
-<part name="C58" library="rcl" deviceset="C-EU" device="C0603" value="2.2µ"/>
+<part name="C57" library="rcl" deviceset="C-EU" device="C0603" value="2.2u"/>
+<part name="C58" library="rcl" deviceset="C-EU" device="C0603" value="2.2u"/>
 <part name="GND41" library="supply1" deviceset="GND" device=""/>
 <part name="+3V11" library="supply1" deviceset="+3V3" device=""/>
 <part name="C31" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
@@ -25383,8 +25383,8 @@ W = angled&lt;p&gt;
 <part name="C69" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="C68" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND58" library="supply1" deviceset="GND" device=""/>
-<part name="R8" library="rcl" deviceset="R-EU_" device="R0805" value="22"/>
-<part name="R43" library="rcl" deviceset="R-EU_" device="R0805" value="22"/>
+<part name="R8" library="rcl" deviceset="R-EU_" device="R0603" value="22"/>
+<part name="R43" library="rcl" deviceset="R-EU_" device="R0603" value="22"/>
 <part name="JP11" library="daspilker" deviceset="USB-RECEPTABLE" device=""/>
 <part name="U$6" library="reroolib" deviceset="ADM485" device="SOIC8"/>
 <part name="U$7" library="reroolib" deviceset="ADM485" device="SOIC8"/>
