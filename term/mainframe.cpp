@@ -28,7 +28,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	wxBoxSizer *leiste = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer *channelleiste = new wxBoxSizer(wxHORIZONTAL);
 	choose_port = new wxChoice (top, wxID_ANY);
-    
+
 	connectbutton = new wxButton(top, wxID_ANY, wxT("&Connect"));
 	clear = new wxButton(top, wxID_ANY, wxT("Clear"));
 	refresh = new wxButton(top, wxID_ANY, wxT("&Refresh"));
@@ -47,8 +47,8 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	leiste->Add(uhu,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(stmbl,0,wxALIGN_LEFT|wxALL,3);
 	topsizer->Add(leiste);
-	drawpanel = new BasicDrawPane((wxFrame*)top,4);
-    
+	drawpanel = new BasicDrawPane((wxFrame*)top,8);
+
     topsizer->Add(drawpanel, 1,wxEXPAND,0);
     wxArrayString waves;
     waves.push_back("-");
@@ -56,7 +56,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     waves.push_back("net0.fb");
     waves.push_back("pid0.pwm_cmd");
     waves.push_back("pos_minus0.out");
-    
+
 
     //channels
     channelstartID = currentID-1;//next ID
@@ -67,17 +67,17 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
         channelchoice.back()->Set(waves);
         channelchoice.back()->SetSelection(0);
         cout << channelchoice.back()->GetId() << endl;
-        
+
         channelpos.push_back(new wxSlider(top, ++currentID, 0, -100, 100));
         channelpos.back()->Bind(wxEVT_SLIDER,&ServoFrame::OnChannelChange, this, currentID);
-        
+
         channelgain.push_back(new wxSlider(top, ++currentID, 10, 1, 100));
         channelgain.back()->Bind(wxEVT_SLIDER,&ServoFrame::OnChannelChange, this, currentID);
-        
+
         wxPanel *c_panel;
         c_panel = new wxPanel(top, wxID_NEW, wxPoint(150, 20), wxSize(20, 20), wxBORDER_NONE);
         c_panel->SetBackgroundColour(drawpanel->pen[i].GetColour());
-        
+
         wxBoxSizer *sizer1 = new wxBoxSizer(wxHORIZONTAL);
         wxBoxSizer *sizer2 = new wxBoxSizer(wxHORIZONTAL);
         wxBoxSizer *sizer3 = new wxBoxSizer(wxHORIZONTAL);
@@ -90,9 +90,9 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
         channelsizer->Add(sizer3);
         channelleiste->Add(channelsizer);
     }
-    
+
 	topsizer->Add(channelleiste);
-    
+
     top->SetSizer(topsizer);
 
 	//unten
@@ -198,7 +198,7 @@ void ServoFrame::OnTimer(wxTimerEvent& evt){
                 for (int i=0; i<ret; i++){
                     if(addr >= 0){
                         values[addr++] = (buf[i]-128) / 128.0;
-                        if(addr == 4){
+                        if(addr == 8){
                             drawpanel->plotvalue(values);
                             addr = -1;
                         }

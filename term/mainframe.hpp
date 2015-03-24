@@ -49,7 +49,7 @@ private:
     void connect();
     void disconnect();
     void listports();
-    static const int bufsize = 10000;
+    static const int bufsize = 20000;
     unsigned char buf[ServoFrame::bufsize+1];
     wxTextCtrl *text;
     wxTextCtrl *textinput;
@@ -59,5 +59,5 @@ private:
     std::vector<wxString> history;
     int histpos;
     int addr;
-    float values[8];
+    float values[16];
 };

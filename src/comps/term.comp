@@ -16,6 +16,22 @@ HAL_PIN(wave3) = 0.0;
 HAL_PIN(gain3) = 10.0;
 HAL_PIN(offset3) = 0.0;
 
+HAL_PIN(wave4) = 0.0;
+HAL_PIN(gain4) = 10.0;
+HAL_PIN(offset4) = 0.0;
+
+HAL_PIN(wave5) = 0.0;
+HAL_PIN(gain5) = 10.0;
+HAL_PIN(offset5) = 0.0;
+
+HAL_PIN(wave6) = 0.0;
+HAL_PIN(gain6) = 10.0;
+HAL_PIN(offset6) = 0.0;
+
+HAL_PIN(wave7) = 0.0;
+HAL_PIN(gain7) = 10.0;
+HAL_PIN(offset7) = 0.0;
+
 HAL_PIN(send_step) = 10.0;
 
 HAL_PIN(buf_use) = 0.0;
@@ -26,6 +42,11 @@ MEM(float w0[TERM_BUF_SIZE]);
 MEM(float w1[TERM_BUF_SIZE]);
 MEM(float w2[TERM_BUF_SIZE]);
 MEM(float w3[TERM_BUF_SIZE]);
+MEM(float w4[TERM_BUF_SIZE]);
+MEM(float w5[TERM_BUF_SIZE]);
+MEM(float w6[TERM_BUF_SIZE]);
+MEM(float w7[TERM_BUF_SIZE]);
+
 MEM(unsigned int read_pos) = 0;
 MEM(unsigned int write_pos) = 0;
 MEM(unsigned int send_counter) = 0;
@@ -36,6 +57,10 @@ RT_OUT(
     w1[write_pos] = PIN(wave1);
     w2[write_pos] = PIN(wave2);
     w3[write_pos] = PIN(wave3);
+    w4[write_pos] = PIN(wave4);
+    w5[write_pos] = PIN(wave5);
+    w6[write_pos] = PIN(wave6);
+    w7[write_pos] = PIN(wave7);
 
     write_pos++;
     write_pos %= TERM_BUF_SIZE;
@@ -45,19 +70,27 @@ RT_OUT(
 
 NRT(
   int e = 0;
-  unsigned char buf[4 + 2];
+  unsigned char buf[8 + 2];
 
   buf[0] = 255;
-  buf[4 + 1] = 0;
+  buf[8 + 1] = 0;
 
   float o0 = PIN(offset0);
   float o1 = PIN(offset1);
   float o2 = PIN(offset2);
   float o3 = PIN(offset3);
+  float o4 = PIN(offset4);
+  float o5 = PIN(offset5);
+  float o6 = PIN(offset6);
+  float o7 = PIN(offset7);
   float g0 = PIN(gain0);
   float g1 = PIN(gain1);
   float g2 = PIN(gain2);
   float g3 = PIN(gain3);
+  float g4 = PIN(gain4);
+  float g5 = PIN(gain5);
+  float g6 = PIN(gain6);
+  float g7 = PIN(gain7);
 
   unsigned int wp = write_pos;
   unsigned int bc = 0;
@@ -76,10 +109,24 @@ NRT(
     e = (w3[read_pos] + o3) * g3 + 128;
     buf[4] = CLAMP(e,1,254);
 
+    e = (w4[read_pos] + o4) * g4 + 128;
+    buf[5] = CLAMP(e,1,254);
+
+    e = (w5[read_pos] + o5) * g5 + 128;
+    buf[6] = CLAMP(e,1,254);
+
+    e = (w6[read_pos] + o6) * g6 + 128;
+    buf[7] = CLAMP(e,1,254);
+
+    e = (w7[read_pos] + o7) * g7 + 128;
+    buf[8] = CLAMP(e,1,254);
+
     read_pos++;
     read_pos %= TERM_BUF_SIZE;
 
 #ifdef USBTERM
+  buf[8 + 1] = 0;
+
     if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
       UB_USB_CDC_SendString((char*)buf, NONE);
     }

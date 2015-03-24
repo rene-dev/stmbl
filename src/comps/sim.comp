@@ -8,27 +8,31 @@ HAL_PIN(sin2) = 0.0;
 HAL_PIN(phase) = 0.0;
 HAL_PIN(cos) = 0.0;
 HAL_PIN(offset) = 0.0;
+HAL_PIN(msin) = 0.0;
+HAL_PIN(mcos) = 0.0;
 HAL_PIN(square) = 0.0;
-HAL_PIN(square2) = 0.0;
+HAL_PIN(msquare) = 0.0;
 HAL_PIN(vel) = 0.0;
 HAL_PIN(res) = 100000.0;
 
 MEM(float time) = 0.0;
+MEM(float amp_) = 0.0;
+MEM(float freq_) = 0.0;
 
 RT_IN(
-  float amp_ = PIN(amp);
-  float freq_ = PIN(freq);
   //float amp_ = PIN(uf)*freq_;
   float offset_ = PIN(offset);
+  amp_ = PIN(amp) * 0.001 + amp_ * 0.999;
+  freq_ = PIN(freq) * 0.001 + freq_ * 0.999;
   float sin_;
   float sin2_;
   float cos_;
   float r = PIN(res);
-  float square_;
+  //float square_;
 
   time += period;
 
-  if(freq_ * time >= 2.0 * M_PI){
+  if(ABS(freq_ * time) >= 2.0 * M_PI){
     time = 0.0;
   }
 
@@ -36,12 +40,12 @@ RT_IN(
   sin2_ = offset_ + amp_ * sinf(freq_ * time + PIN(phase));
   cos_ = offset_ + amp_ * cosf(freq_ * time);
 
-  PIN(sin) = mod(((int)(sin_ * r)) / r);
-  PIN(sin2) = mod(((int)(sin2_ * r)) / r);
-
-  PIN(cos) = mod(((int)(cos_ * r)) / r);
+  PIN(sin) = ((int)(sin_ * r)) / r;
+  PIN(msin) = mod(((int)(sin_ * r)) / r);
+  PIN(cos) = ((int)(cos_ * r)) / r;
+  PIN(mcos) = mod(((int)(cos_ * r)) / r);
   PIN(square) = (sin_ > offset_) ? (offset_ + amp_) : (offset_ + -amp_);
-  PIN(square2) = (sin2_ > offset_) ? (offset_ + amp_) : (offset_ + -amp_);
+  PIN(msquare) = mod((sin_ > offset_) ? (offset_ + amp_) : (offset_ + -amp_));
   PIN(vel) = mod(((int)(freq_ * time * r)) / r);
 );
 

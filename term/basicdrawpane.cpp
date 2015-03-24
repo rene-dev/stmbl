@@ -1,6 +1,6 @@
 #include "basicdrawpane.hpp"
 
-const wxPen BasicDrawPane::pen[] = {*wxBLACK_PEN, *wxRED_PEN, *wxBLUE_PEN, *wxGREEN_PEN};
+const wxPen BasicDrawPane::pen[] = {*wxBLACK_PEN, *wxRED_PEN, *wxBLUE_PEN, *wxGREEN_PEN, *wxCYAN_PEN, *wxYELLOW_PEN, *wxGREY_PEN, *wxWHITE_PEN};
 
 BasicDrawPane::BasicDrawPane(wxFrame* parent, int ch) : wxPanel(parent){
     time = wxGetUTCTimeMillis();
@@ -95,17 +95,17 @@ void BasicDrawPane::render(wxDC&  dc)
 {
     wxCoord w,h;
     dc.GetSize(&w, &h);
-    
+
     // ursprung oben links
     // draw some text
-    
+
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
-    
+
 //    dc.SetPen(*wxBLACK_PEN);
 //    dc.DrawText(wxString::Format(wxT("%i"),diff*50), 40, 60);
 //    dc.DrawLine( 40, 60, 40+50, 60 );
-    
-    
+
+
 
 
     for (int i = 0; i<channels; i++) {
@@ -121,7 +121,7 @@ void BasicDrawPane::render(wxDC&  dc)
             x += xstep;
         }
     }
-    
+
     //mittellinie
     dc.SetPen(*wxGREY_PEN);
     dc.DrawLine( 0, h/2, w, h/2 );

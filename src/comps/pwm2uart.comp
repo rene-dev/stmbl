@@ -18,7 +18,7 @@ INIT(
 );
 
 RT_OUT(
-  const int res = 2400;
+  const int res = 1200;
   float vlt = PIN(volt);
   float e = PIN(enable);
   int min = CLAMP((1 - PIN(pwm_max)) / 2.0, 0.0, 1.0) * res;
