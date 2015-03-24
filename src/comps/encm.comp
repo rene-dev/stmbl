@@ -21,26 +21,37 @@ HAL_PIN(b8) = 0;
 
 MEM(uint32_t error_) = 0.0;
 
+//UART3
 INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
   USART_InitTypeDef USART_InitStruct;
-  RCC_APB2PeriphClockCmd(UART_CMD_RCC, ENABLE);
-  RCC_AHB1PeriphClockCmd(UART_CMD_RX_IO_RCC, ENABLE);
-  RCC_AHB1PeriphClockCmd(UART_CMD_TX_IO_RCC, ENABLE);
+
+  //txen
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
+	
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  //RCC_AHB1PeriphClockCmd(UART_CMD_TX_IO_RCC, ENABLE);
 
   //USART TX
-  GPIO_PinAFConfig(UART_CMD_TX_PORT, UART_CMD_TX_PIN_SOURCE, UART_CMD_TX_AF_SOURCE);
-  GPIO_InitStruct.GPIO_Pin = UART_CMD_TX_PIN;
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_USART3);
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
-  GPIO_Init(UART_CMD_TX_PORT, &GPIO_InitStruct);
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   //USART RX
-  GPIO_PinAFConfig(UART_CMD_RX_PORT, UART_CMD_RX_PIN_SOURCE, UART_CMD_RX_AF_SOURCE);
-  GPIO_InitStruct.GPIO_Pin = UART_CMD_RX_PIN;
-  GPIO_Init(UART_CMD_RX_PORT, &GPIO_InitStruct);
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource11, GPIO_AF_USART3);
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   USART_InitStruct.USART_BaudRate = 2500000;
   USART_InitStruct.USART_WordLength = USART_WordLength_8b;
@@ -48,19 +59,19 @@ INIT(
   USART_InitStruct.USART_Parity = USART_Parity_No;
   USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  USART_Init(UART_CMD, &USART_InitStruct);
+  USART_Init(USART3, &USART_InitStruct);
 
-  USART_ITConfig(UART_CMD, USART_IT_RXNE, ENABLE);
-  USART_ITConfig(UART_CMD, USART_IT_TC, ENABLE);
+  USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
+  USART_ITConfig(USART3, USART_IT_TC, ENABLE);
 
-  NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
   /* Enable the USART */
-  USART_Cmd(UART_CMD, ENABLE);
+  USART_Cmd(USART3, ENABLE);
 
   // Clock Enable
   //RCC_AHB1PeriphClockCmd(UART_CMD_TX_DMA_RCC, ENABLE);
@@ -117,8 +128,8 @@ FRT(
     error_++;
     PIN(error) = error_;
   }
-  GPIO_SetBits(GPIOB,GPIO_Pin_5);
-  USART_SendData(UART_CMD, 0x32/*(unsigned char)PIN(cmd)*/);
+  GPIO_SetBits(GPIOB,GPIO_Pin_12);
+  USART_SendData(USART3, 0x32/*(unsigned char)PIN(cmd)*/);
   menc_pos = 0;	
 );
 

@@ -665,22 +665,22 @@ void TIM8_UP_TIM13_IRQHandler(void){ //20KHz
 	//GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
 }
 
-void USART1_IRQHandler(){
-	GPIO_ResetBits(GPIOB,GPIO_Pin_5);
+void USART3_IRQHandler(){
+	GPIO_ResetBits(GPIOB,GPIO_Pin_12);
 	GPIO_SetBits(GPIOB,GPIO_Pin_9);
 	uint16_t buf;
-	if(USART_GetITStatus(USART1, USART_IT_RXNE)){
-		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
-		USART_ClearFlag(USART1, USART_FLAG_RXNE);
-		buf = USART1->DR;
+	if(USART_GetITStatus(USART3, USART_IT_RXNE)){
+		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
+		USART_ClearFlag(USART3, USART_FLAG_RXNE);
+		buf = USART3->DR;
 		if(menc_pos >= 0 && menc_pos <= 8){
 			menc_buf[menc_pos++] = buf;
 		}
 	}
-	if(USART_GetITStatus(USART1, USART_IT_TC)){
-		USART_ClearITPendingBit(USART1, USART_IT_TC);
-		USART_ClearFlag(USART1, USART_FLAG_TC);
-		buf = USART1->DR;
+	if(USART_GetITStatus(USART3, USART_IT_TC)){
+		USART_ClearITPendingBit(USART3, USART_IT_TC);
+		USART_ClearFlag(USART3, USART_FLAG_TC);
+		buf = USART3->DR;
 	}
 	 GPIO_ResetBits(GPIOB,GPIO_Pin_9);
 }
