@@ -548,6 +548,7 @@ void set_sanyo(){
 	set_hal_pin("pid0.acc_pi", 0.0);
 }
 
+//Mitsubishi HA-FF38-UE-S1
 void set_mitsubishi(){
 	link_pid();
 	link_hal_pins("enc0.pos0", "net0.cmd");
@@ -625,6 +626,7 @@ void set_mitsubishi(){
 
 }
 
+//precise 2 phase induction motor
 void set_precise(){
 	set_hal_pin("sim0.offset", 1.5);
 	set_hal_pin("sim0.amp", 1.0);
@@ -681,16 +683,17 @@ void TIM8_UP_TIM13_IRQHandler(void){ //20KHz
 	//GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
 }
 
+//feedback UART
 void USART3_IRQHandler(){
-	GPIO_ResetBits(GPIOB,GPIO_Pin_12);
-	GPIO_SetBits(GPIOB,GPIO_Pin_9);
+	GPIO_ResetBits(GPIOB,GPIO_Pin_12);//reset tx enable
+	//GPIO_SetBits(GPIOB,GPIO_Pin_9);//testpin
 	uint16_t buf;
 	if(USART_GetITStatus(USART3, USART_IT_RXNE)){
 		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
 		USART_ClearFlag(USART3, USART_FLAG_RXNE);
 		buf = USART3->DR;
 		if(menc_pos >= 0 && menc_pos <= 8){
-			menc_buf[menc_pos++] = buf;
+			menc_buf[menc_pos++] = buf;//append data to buffer
 		}
 	}
 	if(USART_GetITStatus(USART3, USART_IT_TC)){
@@ -698,9 +701,10 @@ void USART3_IRQHandler(){
 		USART_ClearFlag(USART3, USART_FLAG_TC);
 		buf = USART3->DR;
 	}
-	 GPIO_ResetBits(GPIOB,GPIO_Pin_9);
+	 //GPIO_ResetBits(GPIOB,GPIO_Pin_9);//testpin
 }
 
+//DRV UART
 void USART2_IRQHandler(){
 	static int32_t datapos = -1;
 	static data_t data;
@@ -713,7 +717,7 @@ void USART2_IRQHandler(){
 		datapos = 0;
 		//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
 	}else if(datapos >= 0 && datapos < DATALENGTH*2){
-		data.byte[datapos++] = (uint8_t)rxbuf;
+		data.byte[datapos++] = (uint8_t)rxbuf;//append data to buffer
 	}
 	if(datapos == DATALENGTH*2){//all data received
 		datapos = -1;
@@ -722,15 +726,12 @@ void USART2_IRQHandler(){
 		if(data.data[2] < ARES && data.data[2] > 0.0)
 			PIN(g_tmp) = log10f(data.data[2] * AREF / ARES * TPULLUP / (AREF - data.data[2] * AREF / ARES)) * (-53) + 290;
 	}
-
-
 }
 
 int main(void)
 {
 	float period = 0.0;
 	float lasttime = 0.0;
-
 
 	setup();
 	//ADC_SoftwareStartConv(ADC1);
