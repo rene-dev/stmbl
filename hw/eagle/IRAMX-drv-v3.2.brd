@@ -3810,7 +3810,7 @@ Please make sure your boards conform to these design rules.</description>
 <element name="R11" library="rcl" package="R0603" value="180" x="91.5" y="19.2525" rot="MR90"/>
 <element name="C14" library="rcl" package="C0603" value="100n" x="63.5" y="15.4975" rot="MR270"/>
 <element name="LED1" library="led" package="LED3MM" value="GELB" x="63.7475" y="3.255" rot="R270"/>
-<element name="R13" library="rcl" package="R0603" value="330" x="65.4975" y="5.2475" rot="MR90"/>
+<element name="R13" library="rcl" package="R0603" value="470" x="65.4975" y="5.2475" rot="MR90"/>
 <element name="IC1" library="iram-b" package="SIP23_TOP" value="IRAMX16UP60B" x="91.5" y="62.9995" rot="R90"/>
 <element name="C17" library="rcl" package="EB35D" value="820µ" x="73" y="47.75" rot="R225"/>
 <element name="R10" library="rcl" package="R0603" value="10k" x="61.5025" y="15.495" rot="MR90"/>
@@ -3832,9 +3832,9 @@ Please make sure your boards conform to these design rules.</description>
 <element name="C19" library="rcl" package="C0603" value="100n" x="62.5" y="20.5" rot="MR90"/>
 <element name="R4" library="rcl" package="R0603" value="10k" x="68.75" y="26.75" rot="MR90"/>
 <element name="U$1" library="reroolib" package="SOIC08" value="SI8621" x="44" y="22" rot="MR90"/>
-<element name="R3" library="rcl" package="R0603" value="330" x="59.25" y="7" rot="MR90"/>
+<element name="R3" library="rcl" package="R0603" value="470" x="59.25" y="7" rot="MR90"/>
 <element name="LED3" library="led" package="LED3MM" value="GRÜN" x="59.25" y="3.25" rot="R270"/>
-<element name="R5" library="rcl" package="R0603" value="330" x="70.25" y="6" rot="MR90"/>
+<element name="R5" library="rcl" package="R0603" value="470" x="70.25" y="6" rot="MR90"/>
 <element name="LED4" library="led" package="LED3MM" value="ROT" x="68.25" y="3.25" rot="R270"/>
 <element name="C7" library="rcl" package="C0603" value="18p" x="79.75" y="7.25" rot="MR0"/>
 <element name="C12" library="rcl" package="C0603" value="18p" x="79.75" y="5.75" rot="MR0"/>
@@ -3898,9 +3898,9 @@ Please make sure your boards conform to these design rules.</description>
 <element name="C58" library="rcl" package="C0603" value="2.2u" x="24.25" y="41.5" rot="MR270"/>
 <element name="C31" library="rcl" package="C0603" value="100n" x="40.5" y="31.5" rot="MR0"/>
 <element name="C36" library="rcl" package="C0603" value="100n" x="20" y="6.75" rot="MR90"/>
-<element name="R36" library="rcl" package="R0603" value="330" x="5.75" y="61.75" rot="MR180"/>
+<element name="R36" library="rcl" package="R0603" value="470" x="5.75" y="61.75" rot="MR180"/>
 <element name="LED5" library="led" package="LED3MM" value="GRÜN" x="3" y="63" rot="R90"/>
-<element name="R37" library="rcl" package="R0603" value="330" x="5.75" y="56.75" rot="MR180"/>
+<element name="R37" library="rcl" package="R0603" value="470" x="5.75" y="56.75" rot="MR180"/>
 <element name="LED6" library="led" package="LED3MM" value="ROT" x="3" y="58" rot="R90"/>
 <element name="JP5" library="pinhead" package="1X03" value="" x="17.5" y="5.5" rot="R90"/>
 <element name="JP6" library="jumper" package="SJ_2" value="" x="10" y="52" rot="MR180"/>
