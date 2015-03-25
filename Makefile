@@ -60,6 +60,11 @@ again: clean all
 burn: main.elf
 	st-flash --reset write $(PROJ_NAME).bin 0x8000000
 
+btburn: main.bin
+	printf "bootloader\r" > /dev/cu.usbmodem14611 || true
+	sleep 1
+	dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D main.bin
+
 # Create tags; assumes ctags exists
 ctags:
 	ctags -R --exclude=*cm0.h --exclude=*cm3.h .

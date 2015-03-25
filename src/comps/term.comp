@@ -148,6 +148,9 @@ NRT(
       if(i == 2){ // read
         if(is_hal_pin(sink)){
           printf_("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
+        }else if(!strcmp(sink, "bootloader")){
+  		  *((unsigned long *)0x2001C000) = 0xDEADBEEF;
+  		  NVIC_SystemReset();
         }
         else{
           printf_("not found: %s\n", sink);
