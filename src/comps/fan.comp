@@ -6,7 +6,7 @@ HAL_PIN(tacho) = 0.0;
 
 INIT(
     RCC_AHB1PeriphClockCmd(FAN_IO_RCC, ENABLE);
-    RCC_AHB1PeriphClockCmd(GPIOC, ENABLE);
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
