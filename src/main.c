@@ -107,7 +107,9 @@ void link_pid(){
 
 
 	link_hal_pins("pid0.cur_cmd", "cauto0.i_in");
-	link_hal_pins("cauto0.i_out", "cur0.iq");
+	link_hal_pins("cauto0.i_q", "cur0.iq");
+	link_hal_pins("cauto0.i_d", "cur0.id");
+
 
 	// magpos
 	link_hal_pins("cauto0.magpos", "cur0.magpos");

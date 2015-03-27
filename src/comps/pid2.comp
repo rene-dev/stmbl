@@ -313,6 +313,7 @@ if(PIN(enable) > 0.0){
   }
 }
 else{
+  force_error_sum = 0.0;
   velcmd = 0.0;
   velerr = 0.0;
   acccmd = 0.0;
