@@ -25199,7 +25199,7 @@ W = angled&lt;p&gt;
 <part name="R11" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
 <part name="C14" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="LED1" library="led" deviceset="LED" device="3MM" value="GELB"/>
-<part name="R13" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
+<part name="R13" library="rcl" deviceset="R-EU_" device="R0603" value="470"/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
 <part name="IC1" library="iram-b" deviceset="IRAM" device="TOP" value="IRAMX16UP60B"/>
 <part name="C17" library="rcl" deviceset="CPOL-EU" device="E10-35" value="820µ"/>
@@ -25236,10 +25236,10 @@ W = angled&lt;p&gt;
 <part name="+3V3" library="supply1" deviceset="+3V3" device=""/>
 <part name="+3V4" library="supply1" deviceset="+3V3" device=""/>
 <part name="+3V6" library="supply1" deviceset="+3V3" device=""/>
-<part name="R3" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
+<part name="R3" library="rcl" deviceset="R-EU_" device="R0603" value="470"/>
 <part name="LED3" library="led" deviceset="LED" device="3MM" value="GRÜN"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
-<part name="R5" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
+<part name="R5" library="rcl" deviceset="R-EU_" device="R0603" value="470"/>
 <part name="LED4" library="led" deviceset="LED" device="3MM" value="ROT"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
@@ -25351,10 +25351,10 @@ W = angled&lt;p&gt;
 <part name="GND44" library="supply1" deviceset="GND" device=""/>
 <part name="GND45" library="supply1" deviceset="GND" device=""/>
 <part name="GND46" library="supply1" deviceset="GND" device=""/>
-<part name="R36" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
+<part name="R36" library="rcl" deviceset="R-EU_" device="R0603" value="470"/>
 <part name="LED5" library="led" deviceset="LED" device="3MM" value="GRÜN"/>
 <part name="GND48" library="supply1" deviceset="GND" device=""/>
-<part name="R37" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
+<part name="R37" library="rcl" deviceset="R-EU_" device="R0603" value="470"/>
 <part name="LED6" library="led" deviceset="LED" device="3MM" value="ROT"/>
 <part name="GND49" library="supply1" deviceset="GND" device=""/>
 <part name="JP5" library="pinhead" deviceset="PINHD-1X3" device=""/>
