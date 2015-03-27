@@ -577,7 +577,7 @@ void set_mitsubishi(){
 	link_pid();
 	link_hal_pins("enc0.pos0", "net0.cmd");
 	link_hal_pins("encm0.pos", "cauto0.fb_in");
-	set_hal_pin("encm0.reverse", 1.0);
+	set_hal_pin("encm0.reverse", 0.0);
 
 	set_hal_pin("enc0.res0", 4096.0);
 	set_hal_pin("res0.enable", 1.0);
@@ -612,7 +612,7 @@ void set_mitsubishi(){
 	set_hal_pin("pid0.vel_p", 1.0);
 	set_hal_pin("pid0.vel_lp", 4000.0);
 	set_hal_pin("pid0.vel_fb_lp", 4000.0);
-	set_hal_pin("pid0.acc_p", 0.2);
+	set_hal_pin("pid0.acc_p", 0.15);
 	set_hal_pin("pid0.acc_lp", 4000.0);
 	set_hal_pin("pid0.acc_pi", 50.0);
 	set_hal_pin("pid0.force_p", 1.0);
@@ -637,7 +637,7 @@ void set_mitsubishi(){
 	set_hal_pin("cur0.lp", 1.0);
 
 	set_hal_pin("cauto0.cur", 0.5);
-	set_hal_pin("cauto0.start_offset", 2.633170);
+	//set_hal_pin("cauto0.start_offset", 2.633170);
 
 	// pid0.cur_p 0.5
 	// pid0.force_p 0.3
