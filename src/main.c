@@ -146,6 +146,7 @@ void set_bosch4(){ // achse 4
 
 
 	set_hal_pin("res0.enable", 1.0);
+	set_hal_pin("res0.reverse", 1.0);
 	set_hal_pin("pderiv1.in_lp", 1.0);
 	set_hal_pin("pderiv1.out_lp", 1.0);
 	set_hal_pin("pderiv1.vel_max", RPM(1000));
@@ -163,7 +164,7 @@ void set_bosch4(){ // achse 4
 	set_hal_pin("pid0.vel_p", 1.0);
 	set_hal_pin("pid0.vel_lp", 4000.0);
 	set_hal_pin("pid0.vel_fb_lp", 4000.0);
-	set_hal_pin("pid0.acc_p", 0.015);
+	set_hal_pin("pid0.acc_p", 0.02);
 	set_hal_pin("pid0.acc_lp", 4000.0);
 	set_hal_pin("pid0.acc_pi", 70.0);
 	set_hal_pin("pid0.force_p", 1.0);
@@ -806,11 +807,11 @@ int main(void)
 	}
 
 	//set_bergerlahr();//pid2: ok
-	set_mitsubishi();//pid2: ok
+	//set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
 	//set_precise();
-	//set_bosch4();//pid2: ok
+	set_bosch4();//pid2: ok
 	//set_bosch1();//pid2: ok
 	//set_sanyo();//pid2: ok
 
