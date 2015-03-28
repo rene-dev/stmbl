@@ -184,7 +184,7 @@ void set_bosch4(){ // achse 4
 
 
 	set_hal_pin("cur0.cur_max", 5.3);
-	set_hal_pin("cur0.l", 0.002);
+	set_hal_pin("cur0.l", 0.016);
 	set_hal_pin("cur0.r", 15.0);
 	set_hal_pin("cur0.lp", 0.3);
 	set_hal_pin("cauto0.start_offset", 1.311);
@@ -633,7 +633,7 @@ void set_mitsubishi(){
 
 
 	set_hal_pin("cur0.cur_max", 15.0);
-	set_hal_pin("cur0.l", 0.0025);
+	set_hal_pin("cur0.l", 0.005);
 	set_hal_pin("cur0.r", 1.5);
 	set_hal_pin("cur0.lp", 1.0);
 
@@ -649,6 +649,67 @@ void set_mitsubishi(){
 	// pid0.acc_pi 50
 
 
+}
+
+void set_br(){ // achse 4
+	link_ac_sync_res();
+	// pole count
+	set_hal_pin("cauto0.pole_count", 3.0);
+
+	// auto time
+	set_hal_pin("cauto0.time", 0.5);
+
+	// auto scale
+	set_hal_pin("cauto0.cur", 0.5);
+
+	set_hal_pin("pderiv0.in_lp", 1.0);
+	set_hal_pin("pderiv0.out_lp", 1.0);
+	set_hal_pin("pderiv0.vel_max", RPM(6000));
+	set_hal_pin("pderiv0.acc_max", RPM(6000) / 0.002);
+
+
+	set_hal_pin("res0.enable", 1.0);
+	set_hal_pin("res0.reverse", 1.0);
+	set_hal_pin("pderiv1.in_lp", 1.0);
+	set_hal_pin("pderiv1.out_lp", 1.0);
+	set_hal_pin("pderiv1.vel_max", RPM(6000));
+	set_hal_pin("pderiv1.acc_max", RPM(6000) / 0.002);
+
+	//pid
+	set_hal_pin("pid0.mot_r", 51.0);//typenschild
+	set_hal_pin("pid0.mot_l", 0.02);//unknown
+	set_hal_pin("pid0.mot_j", KGCM2(0.008));//typenschild
+	set_hal_pin("pid0.mot_km", 0.6);//typenschild
+
+
+	set_hal_pin("pid0.pos_p", 60.0);
+	set_hal_pin("pid0.pos_lp", 4000.0);
+	set_hal_pin("pid0.vel_p", 1.0);
+	set_hal_pin("pid0.vel_lp", 4000.0);
+	set_hal_pin("pid0.vel_fb_lp", 4000.0);
+	set_hal_pin("pid0.acc_p", 0.05);
+	set_hal_pin("pid0.acc_lp", 4000.0);
+	set_hal_pin("pid0.acc_pi", 40.0);
+	set_hal_pin("pid0.force_p", 1.0);
+	set_hal_pin("pid0.force_lp", 4000.0);
+	set_hal_pin("pid0.cur_p", 1.0);
+	set_hal_pin("pid0.cur_lp", 10000.0);
+
+	set_hal_pin("pid0.max_vel", RPM(6000));
+	set_hal_pin("pid0.max_acc", RPM(6000) / 0.002);
+	set_hal_pin("pid0.max_force", 1.6);
+	set_hal_pin("pid0.max_cur", 2.9);
+
+	set_hal_pin("pid0.vel_limit", RPM(6000));
+	set_hal_pin("pid0.acc_limit", RPM(6000) / 0.002);
+	set_hal_pin("pid0.force_limit", 1.6);
+	set_hal_pin("pid0.cur_limit", 2.9);
+
+
+	set_hal_pin("cur0.cur_max", 2.9);
+	set_hal_pin("cur0.l", 0.02);
+	set_hal_pin("cur0.r", 51.0);
+	set_hal_pin("cur0.lp", 0.0);
 }
 
 //precise 2 phase induction motor
@@ -814,6 +875,7 @@ int main(void)
 	set_bosch4();//pid2: ok
 	//set_bosch1();//pid2: ok
 	//set_sanyo();//pid2: ok
+	//set_br();
 
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");

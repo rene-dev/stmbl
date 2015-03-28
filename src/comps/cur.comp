@@ -22,7 +22,7 @@ HAL_PIN(freq) = 5000.0;
 
 HAL_PIN(volt) = 50.0;
 HAL_PIN(induction) = 0.0;
-HAL_PIN(ind_p) = 1.0;
+HAL_PIN(ind_p) = 0.0;
 
 HAL_PIN(pwm_max) = 0.95;
 HAL_PIN(cur_max) = 10.0;
@@ -67,15 +67,15 @@ RT_CALC(
   float iwu_ = iu_ - iw_;
 
 
-  float ud_ = ind;
-  float uq_ = 0.0;
+  float ud_ = 0.0;
+  float uq_ = ind;
 
   float ua_ = ud_ * c + uq_ * s; // inverse park
   float ub_ = ud_ * s + uq_ * c;
 
   float uu_ = ua_; // inverse clarke
-  float uv_ = ua_ / 2.0 + ub_ * 2.0 / s3;
-  float uw_ = ua_ / 2.0 - ub_ * 2.0 / s3;
+  float uv_ = - ua_ / 2.0 + ub_ / 2.0 * s3;
+  float uw_ = - ua_ / 2.0 - ub_ / 2.0 * s3;
 
   float uuv_ = uv_ - uu_;
   float uvw_ = uw_ - uv_;
