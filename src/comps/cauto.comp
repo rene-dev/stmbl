@@ -28,8 +28,6 @@ MEM(float mpos) = 0.0;
 MEM(float id) = 0.0;
 MEM(float iq) = 0.0;
 MEM(float offset_) = 0.0;
-MEM(float offset1_) = DEG(90);
-
 
 RT_CALC(
   fbi = PIN(fb_in);
