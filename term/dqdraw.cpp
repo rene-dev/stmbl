@@ -20,7 +20,7 @@ dqDraw::dqDraw(wxFrame* parent) : wxPanel(parent){
     Rs = 0.1;//7.6;
     Psi = (1/1.4)*60/1000/2/M_PI;//0.5411;
     P = 7;
-    Omega = 15000/60*P*M_PI_2;
+    Omega = 15000/60*P*M_PI/2;
     Ld = 9*0.000001;
     Lq = 9*0.000001;
 }
