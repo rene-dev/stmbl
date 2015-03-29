@@ -77,6 +77,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
         wxPanel *c_panel;
         c_panel = new wxPanel(top, wxID_NEW, wxPoint(150, 20), wxSize(20, 20), wxBORDER_NONE);
         c_panel->SetBackgroundColour(drawpanel->pen[i].GetColour());
+        c_panel->Bind(wxEVT_LEFT_UP, &ServoFrame::OnColorChange, this, wxID_ANY);
 
         wxBoxSizer *sizer1 = new wxBoxSizer(wxHORIZONTAL);
         wxBoxSizer *sizer2 = new wxBoxSizer(wxHORIZONTAL);
@@ -130,6 +131,10 @@ void ServoFrame::OnKeyDown(wxKeyEvent& event){
 	else{
 		event.Skip();
 	}
+}
+
+void ServoFrame::OnColorChange(wxMouseEvent& event){
+    
 }
 
 void ServoFrame::OnChannelChange(wxCommandEvent& event){
