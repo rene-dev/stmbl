@@ -191,7 +191,7 @@ void ServoFrame::OnTimer(wxTimerEvent& evt){
                     if ((buf[i]>>7)) {
                         drawpanel->plotvalue((buf[i]+128/2) / 64.0);
                     }else{
-                        text->AppendText((char)buf[i]);
+                        text->AppendText(wxString::FromAscii(buf[i] & 0x7f));
                     }
                 }
             }else if(stmbl->GetValue()){
@@ -205,7 +205,7 @@ void ServoFrame::OnTimer(wxTimerEvent& evt){
                     }else if (buf[i] == 0xff) {
                         addr = 0;
                     }else{
-                        text->AppendText((char)buf[i]);
+                        text->AppendText(wxString::FromAscii(buf[i] & 0x7f));
                     }
                 }
             }
