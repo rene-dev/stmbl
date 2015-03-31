@@ -23,6 +23,7 @@
 #include "scanf.h"
 #include "hal.h"
 #include "setup.h"
+#include "eeprom.h"
 #include <math.h>
 
 #ifdef USBTERM
