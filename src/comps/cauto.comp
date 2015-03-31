@@ -1,6 +1,5 @@
 COMP(cauto);
 
-HAL_PIN(i_in) = 0.0;
 HAL_PIN(i_q) = 0.0;
 HAL_PIN(i_d) = 0.0;
 
@@ -36,7 +35,7 @@ RT_CALC(
   HT(
     GOTO(0);
     STATE(0){
-      iq = PIN(i_in);
+      iq = 0.0;
       id = 0.0;
       mpos = mod(minus(fbi, offset_) * PIN(pole_count));
       if(PIN(start) > 0.0){
@@ -64,7 +63,7 @@ RT_CALC(
     }
     STATE(3){
       PIN(ready) = 1.0;
-      iq = PIN(i_in);
+      iq = 0.0;
       id = 0.0;
       mpos = mod(minus(fbi, offset_) * PIN(pole_count));
       if(PIN(start) == 0.0){

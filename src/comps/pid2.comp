@@ -159,7 +159,7 @@ float curextcmd = PIN(cur_ext_cmd);
 //float curerr = 0.0;
 float cursat;
 
-float r = PIN(mot_r);
+float r = PIN(mot_r) / 2.0;
 if(r == 0.0){
   r = 1.0;
 }
@@ -230,16 +230,28 @@ if(PIN(enable) > 0.0){
     posp = 0.0;
   }
   if(PIN(vel_en) == 0.0){
+    posp = 0.0;
     velp = 0.0;
   }
   if(PIN(acc_en) == 0.0){
+    posp = 0.0;
+    velp = 0.0;
     accp = 0.0;
     force_error_sum = 0.0;
   }
   if(PIN(force_en) == 0.0){
+    posp = 0.0;
+    velp = 0.0;
+    accp = 0.0;
+    force_error_sum = 0.0;
     forcep = 0.0;
   }
   if(PIN(cur_en) == 0.0){
+    posp = 0.0;
+    velp = 0.0;
+    accp = 0.0;
+    force_error_sum = 0.0;
+    forcep = 0.0;
     curp = 0.0;
   }
 
