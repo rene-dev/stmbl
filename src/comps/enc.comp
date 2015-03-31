@@ -2,15 +2,13 @@ COMP(enc);
 
 HAL_PIN(res0) = 2048.0;
 HAL_PIN(pos0) = 0.0;
-HAL_PIN(reverse0) = 0.0;
-
 
 HAL_PIN(res1) = 2048.0;
 HAL_PIN(pos1) = 0.0;
-HAL_PIN(reverse1) = 0.0;
-HAL_PIN(ireverse1) = 0.0;
+
 HAL_PIN(ipos1) = 0.0;
 HAL_PIN(iposd1) = 0.0;
+
 HAL_PIN(s) = 0.0;
 HAL_PIN(c) = 0.0;
 HAL_PIN(quad_en0) = 0.0;
@@ -114,14 +112,10 @@ FRT(
 
   //PIN(iamp) = si[PID_WAVES - 1] * si[PID_WAVES - 1] + co[PID_WAVES - 1] * co[PID_WAVES - 1]; // nur letzte wave
 
-  if(PIN(ireverse1) > 0.0){
-    s_ = co[PID_WAVES - 1] - 18000;
-    c_ = si[PID_WAVES - 1] - 18000;
-  }
-  else{
-    s_ = si[PID_WAVES - 1] - 18000;
-    c_ = co[PID_WAVES - 1] - 18000;
-  }
+
+  s_ = si[PID_WAVES - 1] - 18000;
+  c_ = co[PID_WAVES - 1] - 18000;
+
 
   PIN(s) = s_;
   PIN(c) = c_;
@@ -216,9 +210,7 @@ RT_IN(
   int res = (int)PIN(res0);
 
   p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res0);
-  if(PIN(reverse0) > 0.0){
-    p = minus(0, p);
-  }
+
   PIN(pos0) = p;
   if(e_res0 != res){
     e_res0 = res;
@@ -227,9 +219,7 @@ RT_IN(
 
   res = (int)PIN(res1);
   p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res1);
-  if(PIN(reverse1) > 0.0){
-    p = minus(0, p);
-  }
+
   PIN(pos1) = p;
   PIN(ipos1) = mod(p + mod(atan2f(s_, c_) * 4.0 + M_PI) / (float)e_res1);
   PIN(iposd1) = mod(atan2f(s_, c_) * 4.0) / 4.0;
