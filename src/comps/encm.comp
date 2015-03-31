@@ -130,7 +130,7 @@ FRT(
     error_++;
     PIN(error) = error_;
   }
-  if(PIN(enable) >= 0.0){
+  if(PIN(enable) > 0.0){
     GPIO_SetBits(GPIOB,GPIO_Pin_12);
     USART_SendData(USART3, 0x32/*(unsigned char)PIN(cmd)*/);
   }
