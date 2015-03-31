@@ -23,6 +23,7 @@
 #include "scanf.h"
 #include "hal.h"
 #include "setup.h"
+#include "eeprom.h"
 #include "link.h"
 #include <math.h>
 
