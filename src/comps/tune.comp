@@ -1,0 +1,86 @@
+COMP(tune);
+
+HAL_PIN(iq) = 0.0;
+HAL_PIN(id) = 0.0;
+HAL_PIN(lp) = 0.0;
+HAL_PIN(r) = 1.0;
+
+HAL_PIN(amp) = 0.0;
+
+HAL_PIN(start) = 0.0;
+HAL_PIN(ready) = 1.0;
+
+HAL_PIN(start_r) = 1.0;
+HAL_PIN(re) = 0.0;
+HAL_PIN(l) = 0.0;
+
+HAL_PIN(time) = 0.1;
+
+HAL_PIN(freq) = 1.0;
+HAL_PIN(cur) = 1.0;
+
+
+MEM(float c) = 0.0;
+MEM(float i) = 0.0;
+
+
+RT_CALC(
+  i = ABS(PIN(amp)) * 0.01 + i * 0.99;
+  float f = PIN(freq);
+  PIN(re) = PIN(cur) * PIN(start_r) / i;
+
+
+  HT(
+    GOTO(0);
+    STATE(0){
+      PIN(ready) = 1.0;
+      if(PIN(start) > 0.0){
+        c = PIN(cur) * PIN(start_r);
+        PIN(r) = PIN(start_r);
+        PIN(ready) = 0.0;
+        GOTO(1);
+      }
+    }
+    STATE(1){
+      c = -c;
+      if(PIN(start) <= 0.0){
+        c = 0.0;
+        GOTO(0);
+      }
+      SLEEP(0.5 / f);
+    }
+  );
+
+  /*HT(
+    GOTO(0);
+    STATE(0){
+      PIN(iq) = 0.0;
+      PIN(id) = 0.0;
+      PIN(ready) = 1.0;
+      mpos = mod(minus(fbi, offset_) * PIN(pole_count));
+      if(PIN(start) > 0.0){
+        c = PIN(cur);
+        GOTO(1);
+      }
+    }
+    STATE(1){
+      PIN(ready) = 0.0;
+      SLEEP(PIN(time) / 10.0);
+      GOTO(2);
+    }
+    STATE(2){
+      PIN(ready) = 0.0;
+      SLEEP(PIN(time));
+      GOTO(2);
+    }
+  );*/
+
+  PIN(id) = c;
+
+
+);
+
+
+
+
+ENDCOMP;

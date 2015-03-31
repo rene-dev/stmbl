@@ -24,7 +24,7 @@
 
 #pragma once
 
-#define MAX_HAL_PINS 256
+#define MAX_HAL_PINS 512
 #define MAX_HPNAME 32
 #define MAX_COMP_TYPES 32
 #define MAX_COMP_FUNCS 32
@@ -134,7 +134,7 @@ int addf_nrt(void (*nrt)(float period));
   (name.value)
 
 #define GLOBAL_HAL_PIN(name)               \
-  volatile struct hal_pin name;       
+  volatile struct hal_pin name;
 
 #define MEM(var) static var
 
