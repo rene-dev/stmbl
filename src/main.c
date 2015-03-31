@@ -656,6 +656,17 @@ void USART3_IRQHandler(){
 	 //GPIO_ResetBits(GPIOB,GPIO_Pin_9);//testpin
 }
 
+//on dir pin change reverse position timer
+void EXTI9_5_IRQHandler(){
+    if (EXTI_GetITStatus(EXTI_Line8) != RESET) {
+	    if(GPIO_ReadInputDataBit(ENC0_A_PORT, ENC0_A_PIN))
+			TIM1->CR1 |= TIM_CR1_DIR;
+	    else
+			TIM1->CR1 &= ~TIM_CR1_DIR;
+        EXTI_ClearITPendingBit(EXTI_Line8);
+    }
+}
+
 //DRV UART
 void USART2_IRQHandler(){
 	static int32_t datapos = -1;
