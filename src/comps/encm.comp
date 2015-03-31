@@ -2,6 +2,8 @@ COMP(encm);
 
 HAL_PIN(reverse) = 0.0;
 
+HAL_PIN(enable) = 0.0;
+
 HAL_PIN(pos) = 0.0;
 
 HAL_PIN(error) = 0;
@@ -34,7 +36,7 @@ INIT(
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIOB, &GPIO_InitStruct);
-	
+
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   //RCC_AHB1PeriphClockCmd(UART_CMD_TX_IO_RCC, ENABLE);
@@ -123,14 +125,16 @@ FRT(
       PIN(pos) = minus(0,(tpos * M_PI * 2.0 / 131072.0) - M_PI);
     }else{
       PIN(pos) = (tpos * M_PI * 2.0 / 131072.0) - M_PI;
-	}
+	  }
   }else{
     error_++;
     PIN(error) = error_;
   }
-  GPIO_SetBits(GPIOB,GPIO_Pin_12);
-  USART_SendData(USART3, 0x32/*(unsigned char)PIN(cmd)*/);
-  menc_pos = 0;	
+  if(PIN(enable) >= 0.0){
+    GPIO_SetBits(GPIOB,GPIO_Pin_12);
+    USART_SendData(USART3, 0x32/*(unsigned char)PIN(cmd)*/);
+  }
+  menc_pos = 0;
 );
 
 ENDCOMP;
