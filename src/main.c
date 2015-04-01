@@ -331,7 +331,6 @@ void DMA2_Stream0_IRQHandler(void){ //5kHz
 
 		unsigned int end = SysTick->VAL;
 
-		float t = 0.0;
 		if(start > end){
 			PIN(rt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
 		}
