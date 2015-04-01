@@ -10,6 +10,10 @@ HAL_PIN(iu) = 0.0;
 HAL_PIN(iv) = 0.0;
 HAL_PIN(iw) = 0.0;
 
+HAL_PIN(i_u) = 0.0;
+HAL_PIN(i_v) = 0.0;
+HAL_PIN(i_w) = 0.0;
+
 HAL_PIN(u) = 0.0;
 HAL_PIN(v) = 0.0;
 HAL_PIN(w) = 0.0;
@@ -31,13 +35,13 @@ HAL_PIN(p) = 0.0;
 HAL_PIN(ff) = 1.0;
 HAL_PIN(lp) = 1.0;
 
-MEM(float iuv_old) = 0.0;
-MEM(float ivw_old) = 0.0;
-MEM(float iwu_old) = 0.0;
+MEM(float iu_old) = 0.0;
+MEM(float iv_old) = 0.0;
+MEM(float iw_old) = 0.0;
 
-RT_CALC(
-  float r_ = MAX(PIN(r) * 3.0 / 2.0, 0.1);
-  float l_ = MAX(PIN(l) * 3.0 / 2.0, 0.0005);
+RT(
+  float r_ = MAX(PIN(r) / 2.0, 0.1);
+  float l_ = MAX(PIN(l) / 2.0, 0.001);
   float freq_ = MAX(PIN(freq), 1);
   float vlt = MAX(PIN(volt), 0.1);
   //float ib_ = PIN(i);// + PIN(induction) / r_;
@@ -62,10 +66,6 @@ RT_CALC(
   float iv_ = - ia_ / 2.0 + ib_ / 2.0 * s3;
   float iw_ = - ia_ / 2.0 - ib_ / 2.0 * s3;
 
-  float iuv_ = iv_ - iu_;
-  float ivw_ = iw_ - iv_;
-  float iwu_ = iu_ - iw_;
-
 
   float ud_ = 0.0;
   float uq_ = ind;
@@ -77,10 +77,6 @@ RT_CALC(
   float uv_ = - ua_ / 2.0 + ub_ / 2.0 * s3;
   float uw_ = - ua_ / 2.0 - ub_ / 2.0 * s3;
 
-  float uuv_ = uv_ - uu_;
-  float uvw_ = uw_ - uv_;
-  float uwu_ = uu_ - uw_;
-
 
   float ff_ = PIN(ff);
   float p_ = l_ * freq_ * PIN(lp);
@@ -88,20 +84,15 @@ RT_CALC(
   float pwm_max_ = PIN(pwm_max);
   float vmax = vlt * pwm_max_;
 
-  float _uv = CLAMP(ff_ * r_ * iuv_ + p_ * (iuv_ - iuv_old) + uuv_ * ind_p_, -vmax , vmax);
-  float _vw = CLAMP(ff_ * r_ * ivw_ + p_ * (ivw_ - ivw_old) + uvw_ * ind_p_, -vmax , vmax);
-  float _wu = CLAMP(ff_ * r_ * iwu_ + p_ * (iwu_ - iwu_old) + uwu_ * ind_p_, -vmax , vmax);
+  float _u = CLAMP(ff_ * r_ * iu_ + p_ * (iu_ - iu_old) + uu_ * ind_p_, -vmax / 2.0, vmax / 2.0);
+  float _v = CLAMP(ff_ * r_ * iv_ + p_ * (iv_ - iv_old) + uv_ * ind_p_, -vmax / 2.0, vmax / 2.0);
+  float _w = CLAMP(ff_ * r_ * iw_ + p_ * (iw_ - iw_old) + uw_ * ind_p_, -vmax / 2.0, vmax / 2.0);
 
-  iuv_old += (_uv - iuv_old * r_ - uuv_) / l_ / freq_;
-  ivw_old += (_vw - ivw_old * r_ - uvw_) / l_ / freq_;
-  iwu_old += (_wu - iwu_old * r_ - uwu_) / l_ / freq_;
+  iu_old += (_u - iu_old * r_ - uu_) / l_ / freq_;
+  iv_old += (_v - iv_old * r_ - uv_) / l_ / freq_;
+  iw_old += (_w - iw_old * r_ - uw_) / l_ / freq_;
 
-
-  float _u = 0.0;
-  float _v = 0.0;
-  float _w = 0.0;
-
-  if(ABS(_uv) > ABS(_vw)){
+/*  if(ABS(_uv) > ABS(_vw)){
     if(ABS(_uv) > ABS(_wu)){ // _uv
       _u = (vlt - _uv) / 2.0;
       _v = (vlt + _uv) / 2.0;
@@ -125,7 +116,11 @@ RT_CALC(
       _v = _u + _uv;
     }
   }
+*/
 
+  _u += vlt / 2.0;
+  _v += vlt / 2.0;
+  _w += vlt / 2.0;
 
   PIN(u) = _u;
   PIN(v) = _v;
@@ -137,6 +132,10 @@ RT_CALC(
   PIN(iu) = iu_;
   PIN(iv) = iv_;
   PIN(iw) = iw_;
+
+  PIN(i_u) = iu_old;
+  PIN(i_v) = iv_old;
+  PIN(i_w) = iw_old;
 
   PIN(p) = p_;
 );

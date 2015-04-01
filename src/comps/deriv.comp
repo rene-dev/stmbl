@@ -9,7 +9,7 @@ MEM(float last_time) = 0.0;
 MEM(float last_in) = 0.0;
 MEM(float last_out) = 0.0;
 
-FRT(
+RT(
   if(time >= 1.0 && time == last_time){
     time = 0.0;
     last_time = 0.0;

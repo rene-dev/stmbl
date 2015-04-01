@@ -11,7 +11,7 @@ MEM(float last_time) = 0.0;
 MEM(float o) = 0.0;
 MEM(float vel) = 0.0;
 
-FRT(
+RT(
   if(time >= 1.0 && time == last_time){
     time = 0.0;
     last_time = 0.0;
@@ -19,7 +19,7 @@ FRT(
   time += period;
 );
 
-RT_FILTER(
+RT(
   float dt = period;//time - last_time;
   float vm = PIN(vel_max);
   float am = PIN(acc_max);

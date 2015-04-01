@@ -33,17 +33,11 @@ void init_hal(){
     hal.comp_types_counter[i] = 0;
   }
   hal.hal_pin_count = 0;
-  hal.fast_rt_lock = 0;
   hal.rt_lock = 0;
   hal.nrt_lock = 0;
 
   hal.init_func_count = 0;
-  hal.fast_rt_func_count = 0;
-  hal.rt_in_func_count = 0;
-  hal.rt_filter_func_count = 0;
-  hal.rt_pid_func_count = 0;
-  hal.rt_calc_func_count = 0;
-  hal.rt_out_func_count = 0;
+  hal.rt_func_count = 0;
   hal.nrt_func_count = 0;
 }
 
@@ -213,50 +207,10 @@ int addf_init(void (*init)()){
   return(-1);
 }
 
-int addf_fast_rt(void (*fast_rt)(float period)){
-  if(fast_rt != 0 && hal.fast_rt_func_count < MAX_COMP_FUNCS){
-    hal.fast_rt[hal.fast_rt_func_count++] = fast_rt;
-    return(hal.fast_rt_func_count);
-  }
-  return(-1);
-}
-
-int addf_rt_in(void (*rt_in)(float period)){
-  if(rt_in != 0 && hal.rt_in_func_count < MAX_COMP_FUNCS){
-    hal.rt_in[hal.rt_in_func_count++] = rt_in;
-    return(hal.rt_in_func_count);
-  }
-  return(-1);
-}
-
-int addf_rt_filter(void (*rt_filter)(float period)){
-  if(rt_filter != 0 && hal.rt_filter_func_count < MAX_COMP_FUNCS){
-    hal.rt_filter[hal.rt_filter_func_count++] = rt_filter;
-    return(hal.rt_filter_func_count);
-  }
-  return(-1);
-}
-
-int addf_rt_pid(void (*rt_pid)(float period)){
-  if(rt_pid != 0 && hal.rt_pid_func_count < MAX_COMP_FUNCS){
-    hal.rt_pid[hal.rt_pid_func_count++] = rt_pid;
-    return(hal.rt_pid_func_count);
-  }
-  return(-1);
-}
-
-int addf_rt_calc(void (*rt_calc)(float period)){
-  if(rt_calc != 0 && hal.rt_calc_func_count < MAX_COMP_FUNCS){
-    hal.rt_calc[hal.rt_calc_func_count++] = rt_calc;
-    return(hal.rt_calc_func_count);
-  }
-  return(-1);
-}
-
-int addf_rt_out(void (*rt_out)(float period)){
-  if(rt_out != 0 && hal.rt_out_func_count < MAX_COMP_FUNCS){
-    hal.rt_out[hal.rt_out_func_count++] = rt_out;
-    return(hal.rt_out_func_count);
+int addf_rt(void (*rt)(float period)){
+  if(rt != 0 && hal.rt_func_count < MAX_COMP_FUNCS){
+    hal.rt[hal.rt_func_count++] = rt;
+    return(hal.rt_func_count);
   }
   return(-1);
 }

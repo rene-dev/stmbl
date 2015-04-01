@@ -51,7 +51,7 @@ MEM(unsigned int read_pos) = 0;
 MEM(unsigned int write_pos) = 0;
 MEM(unsigned int send_counter) = 0;
 
-RT_OUT(
+RT(
   if(send_counter++ >= PIN(send_step) - 1){
     w0[write_pos] = PIN(wave0);
     w1[write_pos] = PIN(wave1);
@@ -137,7 +137,7 @@ NRT(
 
 
   #ifdef USBTERM
-    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
+    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED && systime >= 2000){
       //UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
 
       char source[APP_TX_BUF_SIZE];

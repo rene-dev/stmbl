@@ -48,7 +48,7 @@ MEM(float offset_) = 0.0;
 MEM(float offset1_) = DEG(90);
 
 
-RT_CALC(
+RT(
   float fb = PIN(fb_in);
   float fb_d = PIN(fb_d_in);
   float re;

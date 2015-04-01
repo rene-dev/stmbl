@@ -12,7 +12,7 @@ MEM(float in1) = 0.0;
 MEM(float in2) = 0.0;
 MEM(float in3) = 0.0;
 
-RT_FILTER(
+RT(
   in0 = PIN(in);
   PIN(out) = in0 * PIN(f0) + in1 * PIN(f1) + in2 * PIN(f2) + in3 * PIN(f3);
   in3 = in2;

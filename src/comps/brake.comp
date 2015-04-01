@@ -15,7 +15,7 @@ INIT(
     GPIO_Init(BRAKE_PORT, &GPIO_InitStructure);
 );
 
-RT_OUT(
+NRT(
 	if(PIN(brake) > 0.0)
 		GPIO_SetBits(BRAKE_PORT, BRAKE_PIN);
 	else

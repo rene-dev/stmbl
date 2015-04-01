@@ -1,0 +1,94 @@
+COMP(dmux);
+
+HAL_PIN(out0) = 0.0;
+HAL_PIN(out1) = 0.0;
+HAL_PIN(out2) = 0.0;
+HAL_PIN(out3) = 0.0;
+HAL_PIN(out4) = 0.0;
+HAL_PIN(out5) = 0.0;
+HAL_PIN(out6) = 0.0;
+HAL_PIN(out7) = 0.0;
+HAL_PIN(out8) = 0.0;
+HAL_PIN(out9) = 0.0;
+HAL_PIN(out10) = 0.0;
+HAL_PIN(out11) = 0.0;
+HAL_PIN(out12) = 0.0;
+HAL_PIN(out13) = 0.0;
+HAL_PIN(out14) = 0.0;
+HAL_PIN(out15) = 0.0;
+
+HAL_PIN(in) = 0.0;
+
+HAL_PIN(select) = 0.0;
+
+RT(
+  PIN(out0) = 0.0;
+  PIN(out1) = 0.0;
+  PIN(out2) = 0.0;
+  PIN(out3) = 0.0;
+  PIN(out4) = 0.0;
+  PIN(out5) = 0.0;
+  PIN(out6) = 0.0;
+  PIN(out7) = 0.0;
+  PIN(out8) = 0.0;
+  PIN(out9) = 0.0;
+  PIN(out10) = 0.0;
+  PIN(out11) = 0.0;
+  PIN(out12) = 0.0;
+  PIN(out13) = 0.0;
+  PIN(out14) = 0.0;
+  PIN(out15) = 0.0;
+
+  switch((int)PIN(select)){
+    case 0:
+      PIN(out0) = PIN(in);
+      break;
+    case 1:
+      PIN(out1) = PIN(in);
+      break;
+    case 2:
+      PIN(out2) = PIN(in);
+      break;
+    case 3:
+      PIN(out3) = PIN(in);
+      break;
+    case 4:
+      PIN(out4) = PIN(in);
+      break;
+    case 5:
+      PIN(out5) = PIN(in);
+      break;
+    case 6:
+      PIN(out6) = PIN(in);
+      break;
+    case 7:
+      PIN(out7) = PIN(in);
+      break;
+    case 8:
+      PIN(out8) = PIN(in);
+      break;
+    case 9:
+      PIN(out9) = PIN(in);
+      break;
+    case 10:
+      PIN(out10) = PIN(in);
+      break;
+    case 11:
+      PIN(out11) = PIN(in);
+      break;
+    case 12:
+      PIN(out12) = PIN(in);
+      break;
+    case 13:
+      PIN(out13) = PIN(in);
+      break;
+    case 14:
+      PIN(out14) = PIN(in);
+      break;
+    case 15:
+      PIN(out15) = PIN(in);
+      break;
+  }
+);
+
+ENDCOMP;

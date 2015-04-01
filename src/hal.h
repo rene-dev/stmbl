@@ -24,10 +24,10 @@
 
 #pragma once
 
-#define MAX_HAL_PINS 256
+#define MAX_HAL_PINS 512
 #define MAX_HPNAME 32
-#define MAX_COMP_TYPES 32
-#define MAX_COMP_FUNCS 32
+#define MAX_COMP_TYPES 64
+#define MAX_COMP_FUNCS 128
 
 
 typedef char HPNAME[MAX_HPNAME];
@@ -49,23 +49,8 @@ struct hal_struct{
   void (*init[MAX_COMP_FUNCS])();
   int init_func_count;
 
-  void (*fast_rt[MAX_COMP_FUNCS])(float period);
-  int fast_rt_func_count;
-
-  void (*rt_in[MAX_COMP_FUNCS])(float period);
-  int rt_in_func_count;
-
-  void (*rt_filter[MAX_COMP_FUNCS])(float period);
-  int rt_filter_func_count;
-
-  void (*rt_pid[MAX_COMP_FUNCS])(float period);
-  int rt_pid_func_count;
-
-  void (*rt_calc[MAX_COMP_FUNCS])(float period);
-  int rt_calc_func_count;
-
-  void (*rt_out[MAX_COMP_FUNCS])(float period);
-  int rt_out_func_count;
+  void (*rt[MAX_COMP_FUNCS])(float period);
+  int rt_func_count;
 
   void (*nrt[MAX_COMP_FUNCS])(float period);
   int nrt_func_count;
@@ -73,7 +58,6 @@ struct hal_struct{
   struct hal_pin* hal_pins[MAX_HAL_PINS];
   int hal_pin_count;
 
-  int fast_rt_lock;
   int rt_lock;
   int nrt_lock;
 } hal;
@@ -107,12 +91,7 @@ float read_float(char* buf);
 void call(void (*func)());
 
 int addf_init(void (*init)());
-int addf_fast_rt(void (*fast_rt)(float period));
-int addf_rt_in(void (*rt_in)(float period));
-int addf_rt_filter(void (*rt_filter)(float period));
-int addf_rt_pid(void (*rt_pid)(float period));
-int addf_rt_calc(void (*rt_calc)(float period));
-int addf_rt_out(void (*rt_out)(float period));
+int addf_rt(void (*rt)(float period));
 int addf_nrt(void (*nrt)(float period));
 
 
@@ -120,13 +99,9 @@ int addf_nrt(void (*nrt)(float period));
 {                                   \
   set_comp_type(#type);             \
   void (*init)() = 0;               \
-  void (*fast_rt)(float period) = 0;\
-  void (*rt_in)(float period) = 0;     \
-  void (*rt_filter)(float period) = 0;     \
-  void (*rt_pid)(float period) = 0;     \
-  void (*rt_calc)(float period) = 0;     \
-  void (*rt_out)(float period) = 0;     \
-  void (*nrt)(float period) = 0;
+  void (*rt)(float period) = 0;\
+  void (*nrt)(float period) = 0; \
+  HAL_PIN(calc_time) = 0.0;
 
 #define HAL_PIN(name)               \
   static struct hal_pin name;       \
@@ -134,7 +109,7 @@ int addf_nrt(void (*nrt)(float period));
   (name.value)
 
 #define GLOBAL_HAL_PIN(name)               \
-  volatile struct hal_pin name;       
+  volatile struct hal_pin name;
 
 #define MEM(var) static var
 
@@ -149,23 +124,15 @@ int addf_nrt(void (*nrt)(float period));
 #define INIT(func)                    \
  init = ({ void function(){func} function;});
 
-#define FRT(func)                    \
- fast_rt = ({ void function(float period){func} function;});
-
-#define RT_IN(func)                    \
- rt_in = ({ void function(float period){func} function;});
-
-#define RT_FILTER(func)                    \
- rt_filter = ({ void function(float period){func} function;});
-
-#define RT_PID(func)                    \
- rt_pid = ({ void function(float period){func} function;});
-
-#define RT_CALC(func)                    \
- rt_calc = ({ void function(float period){func} function;});
-
-#define RT_OUT(func)                    \
- rt_out = ({ void function(float period){func} function;});
+#define RT(func)                    \
+ rt = ({ void function(float period){ \
+   unsigned int __start_time__ = SysTick->VAL; \
+   func \
+   unsigned int __end_time__ = SysTick->VAL; \
+   if(__start_time__ > __end_time__){ \
+     PIN(calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
+   } \
+   } function;});
 
 #define NRT(func)                    \
  nrt = ({ void function(float period){func} function;});
@@ -225,11 +192,6 @@ jump_label_pointer = jump_label_pointer_old;
 
 #define ENDCOMP \
   addf_init(init); \
-  addf_fast_rt(fast_rt); \
-  addf_rt_in(rt_in); \
-  addf_rt_filter(rt_filter); \
-  addf_rt_pid(rt_pid); \
-  addf_rt_calc(rt_calc); \
-  addf_rt_out(rt_out); \
+  addf_rt(rt); \
   addf_nrt(nrt); \
 }

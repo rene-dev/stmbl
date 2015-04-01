@@ -2,69 +2,65 @@ COMP(enc);
 
 HAL_PIN(res0) = 2048.0;
 HAL_PIN(pos0) = 0.0;
-HAL_PIN(reverse0) = 0.0;
-
 
 HAL_PIN(res1) = 2048.0;
 HAL_PIN(pos1) = 0.0;
-HAL_PIN(reverse1) = 0.0;
-HAL_PIN(ireverse1) = 0.0;
+
 HAL_PIN(ipos1) = 0.0;
 HAL_PIN(iposd1) = 0.0;
-HAL_PIN(s) = 0.0;
-HAL_PIN(c) = 0.0;
 
+HAL_PIN(sin) = 0.0;
+HAL_PIN(cos) = 0.0;
 
+HAL_PIN(quad_en0) = 0.0;
+HAL_PIN(quad_en1) = 0.0;
+HAL_PIN(stepdir_en0) = 0.0;
+HAL_PIN(stepdir_en1) = 0.0;
 
 MEM(int e_res0) = 0.0;
 MEM(int e_res1) = 0.0;
-
-MEM(float s_) = 0.0;
-MEM(float c_) = 0.0;
-
-//MEM(float smin) = 16384.0;
-//MEM(float smax) = 0.0;
-//MEM(float cmin) = 16384.0;
-//MEM(float cmax) = 0.0;
-
+MEM(float e_q0) = -1;
+MEM(float e_q1) = -1;
+MEM(float e_sd0) = -1;
+MEM(float e_sd1) = -1;
 
 INIT(
+  GPIO_InitTypeDef GPIO_InitStructure;
+  /***************** port 0, quadrature or step/dir *********************/
   e_res0 = (int)PIN(res0);
-
-  // enable pin clock
+  // enable clocks
   RCC_AHB1PeriphClockCmd(ENC0_A_IO_RCC, ENABLE);
-
-  // enable clock
+  RCC_AHB1PeriphClockCmd(ENC0_B_IO_RCC, ENABLE);
   RCC_APB2PeriphClockCmd(ENC0_TIM_RCC, ENABLE);
 
-  // pin mode: af
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = ENC0_A_PIN | ENC0_B_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(ENC0_A_PORT, &GPIO_InitStructure);
+  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource8);
+
+  EXTI_InitTypeDef EXTI_InitStruct;
+  EXTI_InitStruct.EXTI_Line = EXTI_Line8;
+  EXTI_InitStruct.EXTI_LineCmd = ENABLE;
+  EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+  EXTI_Init(&EXTI_InitStruct);
+
+  NVIC_InitTypeDef NVIC_InitStruct;
+  NVIC_InitStruct.NVIC_IRQChannel = EXTI9_5_IRQn;
+  NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0x00;
+  NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0x00;
+  NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStruct);
 
   // pin af -> tim
-  GPIO_PinAFConfig(ENC0_A_PORT, ENC0_A_PIN_SOURCE, ENC0_A_AF_SOURCE);
-  GPIO_PinAFConfig(ENC0_B_PORT, ENC0_B_PIN_SOURCE, ENC0_B_AF_SOURCE);
-
-  // tim mode: count on A and B on rising edge
-  TIM_EncoderInterfaceConfig(ENC0_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+  GPIO_PinAFConfig(ENC0_A_PORT, ENC0_A_PIN_SOURCE, ENC0_A_AF_SOURCE);//ch1
+  GPIO_PinAFConfig(ENC0_B_PORT, ENC0_B_PIN_SOURCE, ENC0_B_AF_SOURCE);//ch2 / clk
 
   // enc res / turn
   TIM_SetAutoreload(ENC0_TIM, e_res0 - 1);
 
-  // enable tim
-  TIM_Cmd(ENC0_TIM, ENABLE);
-
+  /***************** port 1, quadrature , sin/cos or resolver *********************/
   e_res1 = (int)PIN(res1);
-
-  // enable pin clock
+  // enable clocks
   RCC_AHB1PeriphClockCmd(ENC1_A_IO_RCC, ENABLE);
-
-  // enable clock
+  RCC_AHB1PeriphClockCmd(ENC1_B_IO_RCC, ENABLE);
   RCC_APB1PeriphClockCmd(ENC1_TIM_RCC, ENABLE);
 
   // pin mode: af
@@ -89,73 +85,111 @@ INIT(
   TIM_Cmd(ENC1_TIM, ENABLE);
 );
 
-FRT(
-  float si[ADC_ANZ];
-  float co[ADC_ANZ];
-  uint32_t sc[ADC_ANZ];
-
-  for(int i = 0; i < PID_WAVES; i++){
-    sc[i] = 0.0;
-
-    for(int j = 0; j < ADC_ANZ; j++){
-      //si[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff);
-      //co[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16);
-      sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
-    }
-  }
-
-  for(int i = 0; i < PID_WAVES; i++){
-    si[i] = 0.0;
-    co[i] = 0.0;
-
-    si[i] = sc[i] & 0x0000ffff;
-    co[i] = sc[i] >> 16;
-  }
-
-  //PIN(iamp) = si[PID_WAVES - 1] * si[PID_WAVES - 1] + co[PID_WAVES - 1] * co[PID_WAVES - 1]; // nur letzte wave
-
-  if(PIN(ireverse1) > 0.0){
-    s_ = co[PID_WAVES - 1] - 18000;
-    c_ = si[PID_WAVES - 1] - 18000;
-  }
-  else{
-    s_ = si[PID_WAVES - 1] - 18000;
-    c_ = co[PID_WAVES - 1] - 18000;
-  }
-
-  PIN(s) = s_;
-  PIN(c) = c_;
-
-);
-
-RT_IN(
+RT(
   float p = 0.0;
-  int i = (int)PIN(res0);
+  float q0 = PIN(quad_en0);
+  float q1 = PIN(quad_en1);
+  float sd0 = PIN(stepdir_en0);
+  float sd1 = PIN(stepdir_en1);
+
+  if(e_sd0 != sd0 || e_sd1 != sd1 || e_q0 != q0 || e_q1 != q1){
+    if(q0 >= 0.0){ // quad 0
+      e_q0 = q0;
+      TIM_Cmd(ENC0_TIM, DISABLE);
+      NVIC_DisableIRQ(EXTI9_5_IRQn);
+  		TIM1->CR1 |= TIM_CR1_DIR;
+      GPIO_InitStructure.GPIO_Pin = ENC0_A_PIN | ENC0_B_PIN;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+      GPIO_Init(ENC0_A_PORT, &GPIO_InitStructure);
+  		TIM_EncoderInterfaceConfig(ENC0_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+      TIM_Cmd(ENC0_TIM, ENABLE);
+    }
+    /*if(q1 >= 0.0){ // quad 1
+      e_q1 = q1;
+      TIM_Cmd(ENC1_TIM, DISABLE);
+      //NVIC_DisableIRQ(EXTI9_5_IRQn); TODO
+  		//TIM1->CR1 |= TIM_CR1_DIR; TODO
+      GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+      GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
+      TIM_EncoderInterfaceConfig(ENC1_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+      TIM_Cmd(ENC1_TIM, ENABLE);
+
+    }*/
+    if(sd0 >= 0.0){ // stepdir 0
+      e_sd0 = sd0;
+      TIM_Cmd(ENC0_TIM, DISABLE);
+      //clk
+      GPIO_InitStructure.GPIO_Pin = ENC0_B_PIN;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+      GPIO_Init(ENC0_B_PORT, &GPIO_InitStructure);
+
+      //dir
+      GPIO_InitStructure.GPIO_Pin = ENC0_A_PIN;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+      GPIO_Init(ENC0_A_PORT, &GPIO_InitStructure);
+      TIM_ETRClockMode1Config(ENC0_TIM,TIM_ExtTRGPSC_OFF, TIM_ExtTRGPolarity_NonInverted, 0x00);
+      TIM_TIxExternalClockConfig(ENC0_TIM,TIM_TIxExternalCLK1Source_TI2, TIM_ICPolarity_Rising, 0x00);
+      NVIC_EnableIRQ(EXTI9_5_IRQn);
+      TIM_Cmd(ENC0_TIM, ENABLE);
+    }
+    /*if(sd1 >= 0.0){ // stepdir 1
+      e_sd1 = sd1;
+      TIM_Cmd(ENC1_TIM, DISABLE);
+      //clk
+      GPIO_InitStructure.GPIO_Pin = ENC1_B_PIN;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+      GPIO_Init(ENC1_B_PORT, &GPIO_InitStructure);
+
+      //dir
+      GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+      GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
+      TIM_ETRClockMode1Config(ENC1_TIM,TIM_ExtTRGPSC_OFF, TIM_ExtTRGPolarity_NonInverted, 0x00);
+      TIM_TIxExternalClockConfig(ENC1_TIM,TIM_TIxExternalCLK1Source_TI2, TIM_ICPolarity_Rising, 0x00);
+      //NVIC_EnableIRQ(EXTI9_5_IRQn); TODO
+      TIM_Cmd(ENC1_TIM, ENABLE);
+    }*/
+  }
+
+  int res = (int)PIN(res0);
 
   p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res0);
-  if(PIN(reverse0) > 0.0){
-    p = minus(0, p);
-  }
+
   PIN(pos0) = p;
-  if(e_res0 != i){
-    e_res0 = i;
+  if(e_res0 != res){
+    e_res0 = res;
     TIM_SetAutoreload(ENC0_TIM, e_res0 - 1);
   }
 
-  i = (int)PIN(res1);
+  res = (int)PIN(res1);
   p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res1);
-  if(PIN(reverse1) > 0.0){
-    p = minus(0, p);
-  }
-  PIN(pos1) = p;
-  PIN(ipos1) = mod(p + mod(atan2f(s_, c_) * 4.0 + M_PI) / (float)e_res1);
-  PIN(iposd1) = mod(atan2f(s_, c_) * 4.0) / 4.0;
 
-  if(e_res1 != i){
-    e_res1 = i;
+  PIN(pos1) = p;
+  PIN(ipos1) = mod(p + mod(atan2f(PIN(sin), PIN(cos)) * 4.0 + M_PI) / (float)e_res1);
+
+  if(e_res1 != res){
+    e_res1 = res;
     TIM_SetAutoreload(ENC1_TIM, e_res1 - 1);
   }
-
 );
 
 ENDCOMP;

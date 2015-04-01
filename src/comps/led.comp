@@ -19,7 +19,7 @@ INIT(
     GPIO_Init(LED_G_PORT, &GPIO_InitStructure);
 );
 
-RT_OUT(
+NRT(
 	if(PIN(r) > 0)
 		GPIO_SetBits(LED_R_PORT, LED_R_PIN);
 	else

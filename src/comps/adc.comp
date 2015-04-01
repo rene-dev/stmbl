@@ -1,0 +1,66 @@
+COMP(adc);
+
+HAL_PIN(sin) = 0.0;
+HAL_PIN(cos) = 0.0;
+HAL_PIN(sin3) = 0.0;
+HAL_PIN(cos3) = 0.0;
+
+HAL_PIN(res_en) = 0.0;
+
+HAL_PIN(sin_gain) = 1.0;
+HAL_PIN(cos_gain) = 1.0;
+
+HAL_PIN(sin_offset) = 0.0;
+HAL_PIN(cos_offset) = 0.0;
+
+RT(
+  uint32_t si[ADC_ANZ];
+  uint32_t co[ADC_ANZ];
+  uint32_t sc[ADC_ANZ];
+
+  for(int i = 0; i < PID_WAVES; i++){
+    sc[i] = 0.0;
+    for(int j = 0; j < ADC_ANZ; j++){
+      sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
+    }
+  }
+
+  for(int i = 0; i < PID_WAVES; i++){
+    si[i] = 0.0;
+    co[i] = 0.0;
+
+    si[i] = sc[i] & 0x0000ffff;
+    co[i] = sc[i] >> 16;
+  }
+
+  //PIN(iamp) = si[PID_WAVES - 1] * si[PID_WAVES - 1] + co[PID_WAVES - 1] * co[PID_WAVES - 1]; // nur letzte wave
+
+  float s_o = PIN(sin_offset);
+  float c_o = PIN(cos_offset);
+  float s_g = PIN(sin_gain);
+  float c_g = PIN(sin_gain);
+
+
+
+  float s = (si[3] + s_o) * s_g;
+  float c = (co[3] + c_o) * c_g;
+
+  PIN(sin3) = s;
+  PIN(cos3) = c;
+
+  if(PIN(res_en) == 0.0){
+    s = 0.5 * (si[3] + s_o) * s_g + 0.25 * (si[2] + s_o) * s_g + 0.125 * (si[1] + s_o) * s_g + 0.125 * (si[0] + s_o) * s_g;
+    c = 0.5 * (co[3] + c_o) * c_g + 0.25 * (co[2] + c_o) * c_g + 0.125 * (co[1] + c_o) * c_g + 0.125 * (co[0] + c_o) * c_g;
+  }
+  else{
+    s = 0.5 * (si[3] + s_o) * s_g - 0.25 * (si[2] + s_o) * s_g + 0.125 * (si[1] + s_o) * s_g - 0.125 * (si[0] + s_o) * s_g;
+    c = 0.5 * (co[3] + c_o) * c_g - 0.25 * (co[2] + c_o) * c_g + 0.125 * (co[1] + c_o) * c_g - 0.125 * (co[0] + c_o) * c_g;
+  }
+
+  PIN(sin) = s;
+  PIN(cos) = c;
+
+
+);
+
+ENDCOMP;

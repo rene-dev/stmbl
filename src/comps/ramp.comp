@@ -8,7 +8,7 @@ HAL_PIN(out) = 0.0;
 MEM(float o) = 0.0;
 MEM(float vel) = 0.0;
 
-RT_FILTER(
+RT(
   float dt = period;//time - last_time;
   float vm = PIN(vel_max);
   float am = PIN(acc_max);

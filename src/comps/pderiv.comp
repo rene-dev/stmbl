@@ -1,45 +1,54 @@
 COMP(pderiv);
 
 HAL_PIN(in) = 0.0;
-HAL_PIN(in_lp) = 1.0;
+HAL_PIN(t) = 0.0;
+HAL_PIN(lp) = 5000.0;
 HAL_PIN(out) = 0.0;
-HAL_PIN(out_lp) = 1.0;
-HAL_PIN(vel_max) = 105; // max 1000rpm
-HAL_PIN(acc_max) = 21000; // max 200000rpm / s
-HAL_PIN(res) = 100000;
+HAL_PIN(in_res) = 10000.0;
+HAL_PIN(res) = 0.0;
+HAL_PIN(max_time) = 0.01;
 
 MEM(float last_in) = 0.0;
-//MEM(float last_last_in) = 0.0;
-//MEM(float last_last_last_in) = 0.0;
-MEM(float last_out) = 0.0;
-MEM(float last_dp) = 0.0;
 
-RT_FILTER(
-  float il = PIN(in_lp);
-  float ol = PIN(out_lp);
-  float md = PIN(vel_max);
-  float mdd = PIN(acc_max);
-  float r = PIN(res);
-  float i = ((int)(PIN(in) * r)) / r;
-  float dp = minus(i, last_in);
+MEM(float time_count) = 0.0;
+MEM(float last_time) = 0.0;
+
+RT(
+  float il = LP_HZ(PIN(lp));
+  float s = MAX(PIN(in_res), 1.0) * 10.0;
+  float mt = MAX(PIN(max_time), 0.00001);
+  float r = MAX(PIN(res), 0.0);
+  float i = PIN(in);
 
   // smooth input
-  last_dp = dp * il + last_dp * (1 - il);
+  i = i * il + last_in * (1 - il);
 
-  // limit output
-  last_dp = LIMIT(last_dp, md * period);
+  if(r > 0.0){
+    i = ((int)(i * r)) / r;
+  }
 
-  // smooth output
-  last_out = last_dp / period * ol + last_out * (1 - ol);
+  float diff = minus(i, last_in);
 
-  // limit output deriv
-  last_out = CLAMP(last_out, last_out - mdd * period, last_out + mdd * period);
+  time_count += period;
 
-  PIN(out) = last_out;
-  //last_last_last_in = last_last_in;
-  //last_last_in = last_in;
-  last_in = i;
+  if(time_count >= mt){
+    time_count = mt;
+    last_time = mt;
+    last_in = i;
+  }
 
+  if(ABS(diff) >= 2.0 * M_PI / s){
+    last_in = i;
+    last_time = time_count;
+    time_count = 0.0;
+  }
+
+  PIN(t) = time_count;
+
+
+  float o = diff / last_time;
+
+  PIN(out) = o;
 );
 
 ENDCOMP;
