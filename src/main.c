@@ -510,6 +510,8 @@ int main(void)
 	//set_sanyo();//pid2: ok
 	//set_br();
 
+	set_cmd_enc0();
+
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");
 	//link_hal_pins("led0.g", "test0.test2");
