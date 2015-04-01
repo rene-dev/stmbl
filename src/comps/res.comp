@@ -2,10 +2,15 @@ COMP(res);
 
 HAL_PIN(pos) = 0.0;
 HAL_PIN(amp) = 0.0;
-HAL_PIN(s) = 0.0;
-HAL_PIN(c) = 0.0;
 
-HAL_PIN(reverse) = 0.0;
+/*HAL_PIN(sin0) = 0.0;
+HAL_PIN(cos0) = 0.0;
+HAL_PIN(sin1) = 0.0;
+HAL_PIN(cos1) = 0.0;
+HAL_PIN(sin2) = 0.0;
+HAL_PIN(cos2) = 0.0;*/
+HAL_PIN(sin3) = 0.0;
+HAL_PIN(cos3) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
@@ -13,38 +18,10 @@ HAL_PIN(error) = 0.0;
 MEM(float s_mid) = 4096 / 2 * ADC_ANZ;//50% ADC
 MEM(float c_mid) = 4096 / 2 * ADC_ANZ;
 
-INIT(
-
-);
-
-FRT(
-	float si[ADC_ANZ];
-	float co[ADC_ANZ];
-	uint32_t sc[ADC_ANZ];
-
-	GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
-
-	for(int i = 0; i < PID_WAVES; i++){
-		sc[i] = 0.0;
-
-		for(int j = 0; j < ADC_ANZ; j++){
-			//si[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff);
-			//co[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16);
-			sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
-		}
-	}
-
+RT_IN(
 	GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
 
-	for(int i = 0; i < PID_WAVES; i++){
-		si[i] = 0.0;
-		co[i] = 0.0;
-
-		si[i] = sc[i] & 0x0000ffff;
-		co[i] = sc[i] >> 16;
-	}
-
-	for(int i = 0; i < PID_WAVES; i++){
+	/*for(int i = 0; i < PID_WAVES; i++){
 		s_mid = s_mid * 0.99 + si[i] * 0.01;
 		c_mid = c_mid * 0.99 + co[i] * 0.01;
 	}
@@ -59,33 +36,29 @@ FRT(
 			co[i] = c_mid - co[i];
 		}
 	}
+	*/
 
-	float a = si[PID_WAVES - 1] * si[PID_WAVES - 1] + co[PID_WAVES - 1] * co[PID_WAVES - 1]; // nur letzte wave
+	float s = PIN(sin3);
+	float c = PIN(cos3);
+
+	s_mid = s_mid * 0.99 + s * 0.01;
+	c_mid = c_mid * 0.99 + c * 0.01;
+
+	s = s - s_mid;
+	c = c - c_mid;
+
+	float a = s * s + c * c;
 
 
-	float s_;
-	float c_;
-
-	if(PIN(reverse) > 0.0){
-		s_ = co[PID_WAVES - 1];
-		c_ = si[PID_WAVES - 1];
-	}
-	else{
-		s_ = si[PID_WAVES - 1];
-		c_ = co[PID_WAVES - 1];
-	}
-
-	if(a < 50000){
+	if(a < 0.5){
 		PIN(error) = 1.0;
 	}
 	else{
 		PIN(error) = 0.0;
-		PIN(pos) = atan2f(s_, c_);
+		PIN(pos) = atan2f(s, c);
 	}
 
 	PIN(amp) = a;
-	PIN(s) = s_;
-	PIN(c) = c_;
 );
 
 

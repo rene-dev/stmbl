@@ -700,7 +700,7 @@ int main(void)
 	setup();
 	//ADC_SoftwareStartConv(ADC1);
 
-
+	#include "comps/adc.comp"
 	#include "comps/enc.comp"
 	#include "comps/res.comp"
 	#include "comps/encm.comp"
@@ -764,6 +764,14 @@ int main(void)
 	HAL_PIN(ccmd) = 0.0;
 	HAL_PIN(fb_rev) = 0.0;
 	HAL_PIN(cmd_rev) = 0.0;
+	HAL_PIN(fb_res) = 0.0;
+	HAL_PIN(cmd_res) = 0.0;
+	HAL_PIN(sin_offset) = 0.0;
+	HAL_PIN(cos_offset) = 0.0;
+	HAL_PIN(sin_gain) = 1.0;
+	HAL_PIN(cos_gain) = 1.0;
+
+
 
 
 	g_amp = map_hal_pin("net0.amp");

@@ -9,8 +9,9 @@ HAL_PIN(pos1) = 0.0;
 HAL_PIN(ipos1) = 0.0;
 HAL_PIN(iposd1) = 0.0;
 
-HAL_PIN(s) = 0.0;
-HAL_PIN(c) = 0.0;
+HAL_PIN(sin) = 0.0;
+HAL_PIN(cos) = 0.0;
+
 HAL_PIN(quad_en0) = 0.0;
 HAL_PIN(quad_en1) = 0.0;
 HAL_PIN(stepdir_en0) = 0.0;
@@ -22,9 +23,6 @@ MEM(float e_q0) = -1;
 MEM(float e_q1) = -1;
 MEM(float e_sd0) = -1;
 MEM(float e_sd1) = -1;
-
-MEM(float s_) = 0.0;
-MEM(float c_) = 0.0;
 
 INIT(
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -87,41 +85,6 @@ INIT(
   TIM_Cmd(ENC1_TIM, ENABLE);
 );
 
-FRT(
-  float si[ADC_ANZ];
-  float co[ADC_ANZ];
-  uint32_t sc[ADC_ANZ];
-
-  for(int i = 0; i < PID_WAVES; i++){
-    sc[i] = 0.0;
-
-    for(int j = 0; j < ADC_ANZ; j++){
-      //si[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff);
-      //co[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16);
-      sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
-    }
-  }
-
-  for(int i = 0; i < PID_WAVES; i++){
-    si[i] = 0.0;
-    co[i] = 0.0;
-
-    si[i] = sc[i] & 0x0000ffff;
-    co[i] = sc[i] >> 16;
-  }
-
-  //PIN(iamp) = si[PID_WAVES - 1] * si[PID_WAVES - 1] + co[PID_WAVES - 1] * co[PID_WAVES - 1]; // nur letzte wave
-
-
-  s_ = si[PID_WAVES - 1] - 18000;
-  c_ = co[PID_WAVES - 1] - 18000;
-
-
-  PIN(s) = s_;
-  PIN(c) = c_;
-
-);
-
 RT_IN(
   float p = 0.0;
   float q0 = PIN(quad_en0);
@@ -144,7 +107,7 @@ RT_IN(
   		TIM_EncoderInterfaceConfig(ENC0_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
       TIM_Cmd(ENC0_TIM, ENABLE);
     }
-    if(q1 >= 0.0){ // quad 1
+    /*if(q1 >= 0.0){ // quad 1
       e_q1 = q1;
       TIM_Cmd(ENC1_TIM, DISABLE);
       //NVIC_DisableIRQ(EXTI9_5_IRQn); TODO
@@ -158,7 +121,7 @@ RT_IN(
       TIM_EncoderInterfaceConfig(ENC1_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
       TIM_Cmd(ENC1_TIM, ENABLE);
 
-    }
+    }*/
     if(sd0 >= 0.0){ // stepdir 0
       e_sd0 = sd0;
       TIM_Cmd(ENC0_TIM, DISABLE);
@@ -182,7 +145,7 @@ RT_IN(
       NVIC_EnableIRQ(EXTI9_5_IRQn);
       TIM_Cmd(ENC0_TIM, ENABLE);
     }
-    if(sd1 >= 0.0){ // stepdir 1
+    /*if(sd1 >= 0.0){ // stepdir 1
       e_sd1 = sd1;
       TIM_Cmd(ENC1_TIM, DISABLE);
       //clk
@@ -204,7 +167,7 @@ RT_IN(
       TIM_TIxExternalClockConfig(ENC1_TIM,TIM_TIxExternalCLK1Source_TI2, TIM_ICPolarity_Rising, 0x00);
       //NVIC_EnableIRQ(EXTI9_5_IRQn); TODO
       TIM_Cmd(ENC1_TIM, ENABLE);
-    }
+    }*/
   }
 
   int res = (int)PIN(res0);
@@ -221,8 +184,7 @@ RT_IN(
   p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res1);
 
   PIN(pos1) = p;
-  PIN(ipos1) = mod(p + mod(atan2f(s_, c_) * 4.0 + M_PI) / (float)e_res1);
-  PIN(iposd1) = mod(atan2f(s_, c_) * 4.0) / 4.0;
+  PIN(ipos1) = mod(p + mod(atan2f(PIN(sin), PIN(cos)) * 4.0 + M_PI) / (float)e_res1);
 
   if(e_res1 != res){
     e_res1 = res;
