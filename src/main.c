@@ -35,6 +35,8 @@ volatile uint16_t rxbuf;
 GLOBAL_HAL_PIN(g_amp);
 GLOBAL_HAL_PIN(g_vlt);
 GLOBAL_HAL_PIN(g_tmp);
+GLOBAL_HAL_PIN(rt_time);
+
 
 int __errno;
 volatile double systime_s = 0.0;
@@ -321,9 +323,18 @@ void DMA2_Stream0_IRQHandler(void){ //5kHz
     //GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
 		systime_s += period;
 
+		unsigned int start = SysTick->VAL;
+
     for(int i = 0; i < hal.rt_func_count; i++){
         hal.rt[i](period);
     }
+
+		unsigned int end = SysTick->VAL;
+
+		float t = 0.0;
+		if(start > end){
+			PIN(rt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+		}
 
     GPIO_ResetBits(GPIOB,GPIO_Pin_8);
 }
@@ -445,6 +456,7 @@ int main(void)
 	HAL_PIN(amp) = 0.0;
 	HAL_PIN(vlt) = 0.0;
 	HAL_PIN(tmp) = 0.0;
+	HAL_PIN(rt_calc_time) = 0.0;
 
 	set_comp_type("conf");
 	HAL_PIN(r) = 0.0;
@@ -479,6 +491,7 @@ int main(void)
 	g_amp = map_hal_pin("net0.amp");
 	g_vlt = map_hal_pin("net0.vlt");
 	g_tmp = map_hal_pin("net0.tmp");
+	rt_time = map_hal_pin("net0.rt_calc_time");
 
 	for(int i = 0; i < hal.init_func_count; i++){
 		hal.init[i]();
@@ -509,7 +522,7 @@ int main(void)
 	set_hal_pin("led0.y", 1.0);
 	TIM_Cmd(TIM8, ENABLE);//int
 
-	Wait(5000);
+	Wait(2000);
 	#ifdef USBTERM
 	UB_USB_CDC_Init();
 	#endif

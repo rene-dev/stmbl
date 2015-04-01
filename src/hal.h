@@ -100,7 +100,8 @@ int addf_nrt(void (*nrt)(float period));
   set_comp_type(#type);             \
   void (*init)() = 0;               \
   void (*rt)(float period) = 0;\
-  void (*nrt)(float period) = 0;
+  void (*nrt)(float period) = 0; \
+  HAL_PIN(calc_time) = 0.0;
 
 #define HAL_PIN(name)               \
   static struct hal_pin name;       \
@@ -124,7 +125,14 @@ int addf_nrt(void (*nrt)(float period));
  init = ({ void function(){func} function;});
 
 #define RT(func)                    \
- rt = ({ void function(float period){func} function;});
+ rt = ({ void function(float period){ \
+   unsigned int __start_time__ = SysTick->VAL; \
+   func \
+   unsigned int __end_time__ = SysTick->VAL; \
+   if(__start_time__ > __end_time__){ \
+     PIN(calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
+   } \
+   } function;});
 
 #define NRT(func)                    \
  nrt = ({ void function(float period){func} function;});
