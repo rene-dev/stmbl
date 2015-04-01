@@ -20,7 +20,7 @@
 
 #include "misc.h"
 
-float minus(float a, float b){
+inline float minus(float a, float b){
 	if(ABS(a - b) < M_PI){
 		return(a - b);
 	}
@@ -32,7 +32,7 @@ float minus(float a, float b){
 	}
 }
 
-float mod(float a){
+inline float mod(float a){
 	while(a < -M_PI){
 		a += 2.0 * M_PI;
 	}

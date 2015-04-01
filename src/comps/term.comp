@@ -137,7 +137,7 @@ NRT(
 
 
   #ifdef USBTERM
-    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
+    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED && systime >= 2000){
       //UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
 
       char source[APP_TX_BUF_SIZE];
