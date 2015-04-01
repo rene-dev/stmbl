@@ -5,7 +5,7 @@
 
 void link_pid(){
   // cmd
-  link_hal_pins("conf0.ccmd", "mux0.select");
+  link_hal_pins("conf0.cmd_type", "mux0.select");
   link_hal_pins("conf0.cmd_rev", "rev0.rev");
 
   set_hal_pin("mux0.in0", 0.0);
@@ -36,7 +36,7 @@ void link_pid(){
 
 
   // fb
-  link_hal_pins("conf0.cfb", "mux1.select");
+  link_hal_pins("conf0.fb_type", "mux1.select");
   link_hal_pins("conf0.fb_rev", "rev1.rev");
 
   set_hal_pin("mux1.in0", 0.0);

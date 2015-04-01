@@ -37,7 +37,7 @@ GLOBAL_HAL_PIN(g_vlt);
 GLOBAL_HAL_PIN(g_tmp);
 
 int __errno;
-volatile float systime_s = 0.0;
+volatile double systime_s = 0.0;
 void Wait(unsigned int ms);
 
 //menc
@@ -48,17 +48,60 @@ volatile uint16_t menc_buf[10];
 #define YES 1
 
 
+void set_cmd_enc0(){
+	set_hal_pin("conf0.cmd_type", 1.0);
+}
 
-void set_bosch4(){ // achse 4
+void set_cmd_enc1(){
+	set_hal_pin("conf0.cmd_type", 2.0);
+}
+
+void set_cmd_res1(){
+	set_hal_pin("conf0.cmd_type", 3.0);
+}
+
+void set_cmd_mitsu0(){
+	set_hal_pin("conf0.cmd_type", 4.0);
+}
+
+void set_cmd_mtisu1(){
+	set_hal_pin("conf0.cmd_type", 5.0);
+}
+
+void set_cmd_sincos1(){
+	set_hal_pin("conf0.cmd_type", 6.0);
+}
+
+void set_cmd_stepdir0(){
+	set_hal_pin("conf0.cmd_type", 7.0);
+}
+
+void set_cmd_stepdir1(){
+	set_hal_pin("conf0.cmd_type", 8.0);
+}
+
+void set_cmd_sin(){
+	set_hal_pin("conf0.cmd_type", 9.0);
+}
+
+void set_cmd_vel(){
+	set_hal_pin("conf0.cmd_type", 10.0);
+}
+
+void set_cmd_square(){
+	set_hal_pin("conf0.cmd_type", 11.0);
+}
+
+void set_bosch4(){ // TODO
 	set_hal_pin("conf0.pole_count", 4.0);
 	set_hal_pin("conf0.max_vel", RPM(1000));
 	set_hal_pin("conf0.max_acc", RPM(1000) / 0.002);
 	set_hal_pin("conf0.max_force", 1.5);
 	set_hal_pin("conf0.max_cur", 5.3);
 
-	set_hal_pin("conf0.ccmd", 1.0);
-	set_hal_pin("conf0.cfb", 3.0);
+	set_hal_pin("conf0.fb_type", 3.0);
 	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 1.0);
 	set_hal_pin("conf0.r", 15.0);//typenschild
 	set_hal_pin("conf0.l", 0.002);//unknown
 	set_hal_pin("conf0.j", 0.000141);//typenschild
@@ -70,530 +113,204 @@ void set_bosch4(){ // achse 4
 	set_hal_pin("conf0.cur_lp", 0.4);
 }
 
-void set_bosch1(){ // achse 1
+void set_bosch1(){ // TODO
+	set_hal_pin("conf0.pole_count", 4.0);
+	set_hal_pin("conf0.max_vel", RPM(8000));
+	set_hal_pin("conf0.max_acc", RPM(8000) / 0.002);
+	set_hal_pin("conf0.max_force", 4.8);
+	set_hal_pin("conf0.max_cur", 13.0);
 
-	set_hal_pin("enc0.res0", 2000.0);
-	link_hal_pins("enc0.pos0", "net0.cmd");
+	set_hal_pin("conf0.fb_type", 3.0);
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 1.0);
+	set_hal_pin("conf0.r", 4.9);//typenschild
+	set_hal_pin("conf0.l", 0.0006);//gemessen
+	set_hal_pin("conf0.j", KGCM2(0.39));//typenschild
+	set_hal_pin("conf0.km", 0.366);//typenschild
 
-	// pole count
-	set_hal_pin("cauto0.pole_count", 4.0);
-
-	// auto time
-	set_hal_pin("cauto0.time", 0.5);
-
-	// auto scale
-	set_hal_pin("cauto0.cur", 1.0);
-
-	set_hal_pin("pderiv0.in_lp", 1.0);
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	set_hal_pin("pderiv0.vel_max", RPM(8000));
-	set_hal_pin("pderiv0.acc_max", RPM(8000) / 0.002);
-
-
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv1.in_lp", 1.0);
-	set_hal_pin("pderiv1.out_lp", 1.0);
-	set_hal_pin("pderiv1.vel_max", RPM(8000));
-	set_hal_pin("pderiv1.acc_max", RPM(8000) / 0.002);
-
-	//pid
-	set_hal_pin("pid0.mot_r", 4.9);//typenschild
-	set_hal_pin("pid0.mot_l", 0.0002);//unknown
-	set_hal_pin("pid0.mot_j", KGCM2(0.39));//typenschild 0.39
-	set_hal_pin("pid0.mot_km", 0.366);//typenschild
-
-
-	set_hal_pin("pid0.pos_p", 60.0);
-	set_hal_pin("pid0.pos_lp", 4000.0);
-	set_hal_pin("pid0.vel_p", 1.0);
-	set_hal_pin("pid0.vel_lp", 4000.0);
-	set_hal_pin("pid0.vel_fb_lp", 4000.0);
-	set_hal_pin("pid0.acc_p", 0.01);
-	set_hal_pin("pid0.acc_lp", 4000.0);
-	set_hal_pin("pid0.acc_pi", 70.0);
-	set_hal_pin("pid0.force_p", 1.0);
-	set_hal_pin("pid0.force_lp", 4000.0);
-	set_hal_pin("pid0.cur_p", 1.0);
-	set_hal_pin("pid0.cur_lp", 10000.0);
-
-	set_hal_pin("pid0.max_vel", RPM(8000));
-	set_hal_pin("pid0.max_acc", RPM(8000) / 0.002);
-	set_hal_pin("pid0.max_force", 4.8);
-	set_hal_pin("pid0.max_cur", 13.0);
-
-	set_hal_pin("pid0.vel_limit", RPM(8000));
-	set_hal_pin("pid0.acc_limit", RPM(8000) / 0.002);
-	set_hal_pin("pid0.force_limit", 4.8);
-	set_hal_pin("pid0.cur_limit", 13.0);
-
-
-	set_hal_pin("cur0.cur_max", 13.0);
-	set_hal_pin("cur0.l", 0.0006);
-	set_hal_pin("cur0.r", 4.9);
-	set_hal_pin("cur0.lp", 0.0);
-	set_hal_pin("cauto0.start_offset", 1.311);
+	set_hal_pin("conf0.pos_p", 60.0);
+	set_hal_pin("conf0.acc_p", 0.01);
+	set_hal_pin("conf0.acc_pi", 70.0);
+	set_hal_pin("conf0.cur_lp", 1.0);
 }
 
-void set_kuka(){
-	// pole count
-	set_hal_pin("cauto0.pole_count", 1.0);
+void set_kuka(){ // TODO
+	set_hal_pin("conf0.pole_count", 1.0);
+	set_hal_pin("conf0.max_vel", RPM(3000));
+	set_hal_pin("conf0.max_acc", RPM(3000) / 0.002);
+	set_hal_pin("conf0.max_force", 4.8);
+	set_hal_pin("conf0.max_cur", 13.0);
 
-	// auto time
-	set_hal_pin("cauto0.time", 0.5);
+	set_hal_pin("conf0.fb_type", 3.0);
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 1.0);
+	set_hal_pin("conf0.r", 2.0);
+	set_hal_pin("conf0.l", 0.0006);
+	set_hal_pin("conf0.j", KGCM2(0.39));
+	set_hal_pin("conf0.km", 0.366);
 
-	// auto scale
-	set_hal_pin("cauto0.cur", 1.0);
-
-	set_hal_pin("pderiv0.in_lp", 1.0);
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	set_hal_pin("pderiv0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv0.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
-
-
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv1.in_lp", 1.0);
-	set_hal_pin("pderiv1.out_lp", 1.0);
-	set_hal_pin("pderiv1.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv1.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
-
-	// res_offset
-	//set_hal_pin("ap0.fb_offset_in", -0.64);
-	// pid
-	set_hal_pin("pid0.pos_p", 100.0);
-	set_hal_pin("pid0.pos_lp", 1.0);
-	set_hal_pin("pid0.vel_lp", 1.0);
-	set_hal_pin("pid0.cur_lp", 1.0);
-	set_hal_pin("pid0.cur_ff", 2.0);//dc wicklungswiederstand
-	set_hal_pin("pid0.vel_max", 1000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pid0.acc_max", 1000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	set_hal_pin("conf0.pos_p", 60.0);
+	set_hal_pin("conf0.acc_p", 0.01);
+	set_hal_pin("conf0.acc_pi", 70.0);
+	set_hal_pin("conf0.cur_lp", 1.0);
 }
 
-void set_festo(){
-	link_hal_pins("enc0.pos0", "net0.cmd");
-	link_hal_pins("res0.pos", "cauto0.fb_in");
+void set_festo(){ // TODO
+	set_hal_pin("conf0.pole_count", 4.0);
+	set_hal_pin("conf0.max_vel", RPM(8090));
+	set_hal_pin("conf0.max_acc", RPM(8090) / 0.002);
+	set_hal_pin("conf0.max_force", 2.8);
+	set_hal_pin("conf0.max_cur", 6.4);
 
-	set_hal_pin("enc0.res0", 4096.0);
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv0.in_lp", 1.0);
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	set_hal_pin("pderiv0.vel_max", RPM(8090));
-	set_hal_pin("pderiv0.acc_max", RPM(8090) / 0.002);
+	set_hal_pin("conf0.fb_type", 3.0);
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 1.0);
+	set_hal_pin("conf0.r", 9.6);//typenschild
+	set_hal_pin("conf0.l", 0.0133);//gemessen
+	set_hal_pin("conf0.j", KGCM2(0.26));//typenschild
+	set_hal_pin("conf0.km", 0.457);//typenschild
 
-	// fb
-	set_hal_pin("pderiv1.in_lp", 1.0);
-	set_hal_pin("pderiv1.out_lp", 1.0);
-	set_hal_pin("pderiv1.vel_max", RPM(8090));
-	set_hal_pin("pderiv1.acc_max", RPM(8090) / 0.002);
-
-	// pole count
-	set_hal_pin("cauto0.pole_count", 4.0);
-
-	// auto time
-	set_hal_pin("cauto0.time", 0.5);
-
-	// auto cur
-	set_hal_pin("cauto0.cur", 1.0);
-
-	// pid
-	set_hal_pin("pid0.mot_r", 9.6);
-	set_hal_pin("pid0.mot_l", 0.0133);
-	set_hal_pin("pid0.mot_j", KGCM2(0.26));
-	set_hal_pin("pid0.mot_km", 0.457);
-
-	set_hal_pin("pid0.pos_p", 150.0);
-	set_hal_pin("pid0.pos_lp", 4000.0);
-	set_hal_pin("pid0.vel_p", 1.0);
-	set_hal_pin("pid0.vel_lp", 4000.0);
-	set_hal_pin("pid0.vel_fb_lp", 4000.0);
-	set_hal_pin("pid0.acc_p", 0.025);
-	set_hal_pin("pid0.acc_lp", 4000.0);
-	set_hal_pin("pid0.acc_pi", 70.0);
-	set_hal_pin("pid0.force_p", 1.0);
-	set_hal_pin("pid0.force_lp", 4000.0);
-	set_hal_pin("pid0.cur_p", 1.0);
-	set_hal_pin("pid0.cur_lp", 10000.0);
-
-	set_hal_pin("pid0.max_vel", RPM(8090));
-	set_hal_pin("pid0.max_acc", RPM(8090) / 0.002);
-	set_hal_pin("pid0.max_force", 2.8);
-	set_hal_pin("pid0.max_cur", 6.4);
-
-	set_hal_pin("pid0.vel_limit", RPM(8090));
-	set_hal_pin("pid0.acc_limit", RPM(8090) / 0.002);
-	set_hal_pin("pid0.force_limit", 2.8);
-	set_hal_pin("pid0.cur_limit", 6.4);
-
-
-	set_hal_pin("cur0.cur_max", 6.4);
-	set_hal_pin("cur0.l", 0.0133);
-	set_hal_pin("cur0.r", 9.6);
-	set_hal_pin("cur0.lp", 0.0);
+	set_hal_pin("conf0.pos_p", 60.0);
+	set_hal_pin("conf0.acc_p", 0.02);
+	set_hal_pin("conf0.acc_pi", 70.0);
+	set_hal_pin("conf0.cur_lp", 0.0);
 
 	set_hal_pin("brake0.brake", 1.0);
 }
 
-void set_manutec(){
+void set_manutec(){ // TODO
+	set_hal_pin("conf0.pole_count", 3.0);
+	set_hal_pin("conf0.max_vel", RPM(8000));
+	set_hal_pin("conf0.max_acc", RPM(8000) / 0.002);
+	set_hal_pin("conf0.max_force", 4.8);
+	set_hal_pin("conf0.max_cur", 13.0);
 
-	set_hal_pin("enc0.res0", 2000.0);
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv0.in_lp", 1.0);
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	set_hal_pin("pderiv0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	set_hal_pin("conf0.fb_type", 2.0);
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 2400.0);
+	set_hal_pin("conf0.r", 4.9);
+	set_hal_pin("conf0.l", 0.0006);
+	set_hal_pin("conf0.j", KGCM2(0.39));
+	set_hal_pin("conf0.km", 0.366);
 
-	// fb
-	set_hal_pin("enc0.res1", 2400.0);
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv1.in_lp", 1.0);
-	set_hal_pin("pderiv1.out_lp", 1.0);
-	set_hal_pin("pderiv1.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
-
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	// pole count
-	set_hal_pin("cauto0.pole_count", 3.0);
-
-	// auto time
-	set_hal_pin("cauto0.time", 0.5);
-
-	// auto scale
-	set_hal_pin("cauto0.cur", 1.0);
-
-	// pid
-	set_hal_pin("pid0.pos_p", 26.0);
-	set_hal_pin("pid0.vel_p", 1.0);
-	set_hal_pin("pid0.vel_i", 80.0);
-	set_hal_pin("pid0.pos_lp", 1.0);
-	set_hal_pin("pid0.vel_lp", 1.0);
-	set_hal_pin("pid0.cur_ff", 10.0);
-	set_hal_pin("pid0.vel_d", 0.0);
-
-	set_hal_pin("pid0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pid0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	set_hal_pin("conf0.pos_p", 50.0);
+	set_hal_pin("conf0.acc_p", 0.01);
+	set_hal_pin("conf0.acc_pi", 70.0);
+	set_hal_pin("conf0.cur_lp", 1.0);
 }
 
-void set_bergerlahr(){
+void set_bergerlahr(){ // TODO
+	set_hal_pin("conf0.pole_count", 3.0);
+	set_hal_pin("conf0.max_vel", RPM(12000));
+	set_hal_pin("conf0.max_acc", RPM(12000) / 0.003);
+	set_hal_pin("conf0.max_force", 3.0);
+	set_hal_pin("conf0.max_cur", 6.0);
 
-	set_hal_pin("enc0.res0", 4096.0);
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv0.in_lp", 1.0);
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	set_hal_pin("pderiv0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	set_hal_pin("conf0.fb_type", 2.0); // 6
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 4096.0);
+	set_hal_pin("conf0.r", 23.7);//datenblatt
+	set_hal_pin("conf0.l", 0.053);//datenblatt
+	set_hal_pin("conf0.j", KGCM2(0.26));//datenblatt
+	set_hal_pin("conf0.km", 0.3724);//datenblatt
 
-	// fb
-	set_hal_pin("enc0.res1", 4096.0);
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv1.in_lp", 1.0);
-	set_hal_pin("pderiv1.out_lp", 1.0);
-	set_hal_pin("pderiv1.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
-
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	// pole count
-	set_hal_pin("cauto0.pole_count", 3.0);
-
-	// auto time
-	set_hal_pin("cauto0.time", 0.5);
-
-	// auto scale
-	set_hal_pin("cauto0.cur", 1.0);
-
-	// pid
-	set_hal_pin("pid0.mot_r", 23.7);
-	set_hal_pin("pid0.mot_l", 0.01);
-	set_hal_pin("pid0.mot_j", 0.000026);
-	set_hal_pin("pid0.mot_km", 0.3724);
-
-	set_hal_pin("pid0.pos_p", 300.0);
-	set_hal_pin("pid0.acc_pi", 20.0);
-
-	set_hal_pin("pid0.max_vel", 1250.0);
-	set_hal_pin("pid0.max_acc", 300000.0);
-	set_hal_pin("pid0.max_force", 3.0);
-	set_hal_pin("pid0.max_cur", 6.0);
-
-	set_hal_pin("pid0.vel_limit", 1250.0);
-	set_hal_pin("pid0.acc_limit", 300000.0);
-	set_hal_pin("pid0.force_limit", 3.0);
-	set_hal_pin("pid0.cur_limit", 6.0);
-
-	set_hal_pin("cur0.cur_max", 10.0);
-	set_hal_pin("cur0.l", 0.053);
-	set_hal_pin("cur0.r", 23.7);
-	set_hal_pin("cauto0.cur", 0.5);
-
-	set_hal_pin("cur0.lp", 0.5);
-	set_hal_pin("pid0.cur_p", 1.0);
-	set_hal_pin("pid0.force_p", 0.3);
-	set_hal_pin("pid0.vel_p", 1.0);
-	set_hal_pin("pid0.acc_p", 0.1);
+	set_hal_pin("conf0.pos_p", 60.0);
+	set_hal_pin("conf0.acc_p", 0.01);
+	set_hal_pin("conf0.acc_pi", 70.0);
+	set_hal_pin("conf0.cur_lp", 0.5);
 }
 
 //mc101ns
 //100w 3000rpm 0.8A
-void set_sankyo(){
+void set_sankyo(){ // TODO
+	set_hal_pin("conf0.pole_count", 4.0);
+	set_hal_pin("conf0.max_vel", RPM(3000));
+	set_hal_pin("conf0.max_acc", RPM(3000) / 0.002);
+	set_hal_pin("conf0.max_force", 3.0);
+	set_hal_pin("conf0.max_cur", 6.0);
 
-	set_hal_pin("enc0.res0", 4096.0);
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv0.in_lp", 1.0);
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	set_hal_pin("pderiv0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	set_hal_pin("conf0.fb_type", 2.0);
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 8192.0);
+	set_hal_pin("conf0.r", 14.0);
+	set_hal_pin("conf0.l", 0.01);
+	set_hal_pin("conf0.j", KGCM2(0.26));
+	set_hal_pin("conf0.km", 0.12);
 
-	// fb
-	set_hal_pin("enc0.res1", 8192.0);
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv1.in_lp", 1.0);
-	set_hal_pin("pderiv1.out_lp", 1.0);
-	set_hal_pin("pderiv1.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
-
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	// pole count
-	set_hal_pin("cauto0.pole_count", 4.0);
-
-	// auto time
-	set_hal_pin("cauto0.time", 0.5);
-
-	// auto scale
-	set_hal_pin("cauto0.cur", 1.0);
-
-	// pid
-	set_hal_pin("pid0.mot_r", 14.0);
-	set_hal_pin("pid0.mot_l", 0.01);
-	set_hal_pin("pid0.mot_j", 0.000026);
-	set_hal_pin("pid0.mot_km", 0.12);
-
-	set_hal_pin("pid0.pos_p", 300.0);
-	set_hal_pin("pid0.acc_pi", 20.0);
-
-	set_hal_pin("pid0.max_vel", 1250.0);
-	set_hal_pin("pid0.max_acc", 300000.0);
-	set_hal_pin("pid0.max_force", 3.0);
-	set_hal_pin("pid0.max_cur", 6.0);
-
-	set_hal_pin("pid0.vel_limit", 1250.0);
-	set_hal_pin("pid0.acc_limit", 300000.0);
-	set_hal_pin("pid0.force_limit", 3.0);
-	set_hal_pin("pid0.cur_limit", 6.0);
-
-	set_hal_pin("cur0.cur_max", 10.0);
-	set_hal_pin("cur0.l", 0.053);
-	set_hal_pin("cur0.r", 14.0);
-	set_hal_pin("cauto0.cur", 0.5);
-
-	set_hal_pin("cur0.lp", 0.5);
-	set_hal_pin("pid0.cur_p", 1.0);
-	set_hal_pin("pid0.force_p", 0.3);
-	set_hal_pin("pid0.vel_p", 1.0);
-	set_hal_pin("pid0.acc_p", 0.1);
+	set_hal_pin("conf0.pos_p", 60.0);
+	set_hal_pin("conf0.acc_p", 0.01);
+	set_hal_pin("conf0.acc_pi", 70.0);
+	set_hal_pin("conf0.cur_lp", 0.5);
 }
 
 //P50B08100DXS
-void set_sanyo(){
+void set_sanyo(){ // TODO
+	set_hal_pin("conf0.pole_count", 2.0);
+	set_hal_pin("conf0.max_vel", RPM(4500));
+	set_hal_pin("conf0.max_acc", RPM(4500) / 0.002);
+	set_hal_pin("conf0.max_force", 11.76);
+	set_hal_pin("conf0.max_cur", 25.7);
 
-	set_hal_pin("enc0.res0", 4096.0);
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv0.in_lp", 1.0);
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	set_hal_pin("pderiv0.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv0.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
+	set_hal_pin("conf0.fb_type", 2.0);
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 16384.0);
+	set_hal_pin("conf0.r", 0.8);
+	set_hal_pin("conf0.l", 0.01);
+	set_hal_pin("conf0.j", KGCM2(2.65));
+	set_hal_pin("conf0.km", 0.553);
 
-	// fb
-	set_hal_pin("enc0.res1", 16384.0);
-	set_hal_pin("enc0.reverse1", 1.0);
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv1.in_lp", 1.0);
-	set_hal_pin("pderiv1.out_lp", 1.0);
-	set_hal_pin("pderiv1.vel_max", 13000.0 / 60.0 * 2.0 * M_PI);
-	set_hal_pin("pderiv1.acc_max", 13000.0 / 60.0 * 2.0 * M_PI / 0.005);
-
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	// pole count
-	set_hal_pin("cauto0.pole_count", 2.0);
-
-	// auto time
-	set_hal_pin("cauto0.time", 0.5);
-
-	// auto scale
-	set_hal_pin("cauto0.scale", 0.6);
-
-	//pid
-	set_hal_pin("pid0.mot_r", 0.8);//0.4 coil => 0.8 total //datasheet
-	set_hal_pin("pid0.mot_l", 1.0);//unknown, not used
-	set_hal_pin("pid0.mot_j", KGCM2(2.65));//datasheet
-	set_hal_pin("pid0.mot_km", 0.553);//datasheet
-	set_hal_pin("pid0.max_vel", RPM(4500));//datasheet
-	set_hal_pin("pid0.max_acc", RPM(4500)/0.005);
-	set_hal_pin("pid0.max_force", 11.76);//datasheet
-	set_hal_pin("pid0.max_cur", 25.7);//datasheet
-
-	set_hal_pin("pid0.vel_limit", RPM(4500));
-	set_hal_pin("pid0.acc_limit", RPM(4500)/0.005);
-	set_hal_pin("pid0.force_limit", 11.76);
-	set_hal_pin("pid0.cur_limit", 10.0);
-
-
-	set_hal_pin("pid0.cur_p", 1.0);
-	set_hal_pin("pid0.acc_p", 1.0);
-	set_hal_pin("pid0.vel_p", 1.0);
-	set_hal_pin("pid0.force_p", 1.0);
-	set_hal_pin("pid0.acc_pi", 0.0);
+	set_hal_pin("conf0.pos_p", 60.0);
+	set_hal_pin("conf0.acc_p", 0.01);
+	set_hal_pin("conf0.acc_pi", 70.0);
+	set_hal_pin("conf0.cur_lp", 0.5);
 }
 
 //Mitsubishi HA-FF38-UE-S1
-void set_mitsubishi(){
-	link_hal_pins("enc0.pos0", "net0.cmd");
-	link_hal_pins("encm0.pos", "cauto0.fb_in");
-	set_hal_pin("encm0.reverse", 0.0);
+void set_mitsubishi(){ // TODO
+	set_hal_pin("conf0.pole_count", 2.0);
+	set_hal_pin("conf0.max_vel", RPM(8000));
+	set_hal_pin("conf0.max_acc", RPM(8000) / 0.002);
+	set_hal_pin("conf0.max_force", 2.0);
+	set_hal_pin("conf0.max_cur", 6.0);
 
-	set_hal_pin("enc0.res0", 4096.0);
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("pderiv0.in_lp", 1.0);
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	set_hal_pin("pderiv0.vel_max", RPM(8000));
-	set_hal_pin("pderiv0.acc_max", RPM(8000) / 0.002);
+	set_hal_pin("conf0.fb_type", 5.0);
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 16384.0);
+	set_hal_pin("conf0.r", 1.5);
+	set_hal_pin("conf0.l", 0.0025);
+	set_hal_pin("conf0.j", KGCM2(0.5));
+	set_hal_pin("conf0.km", 0.22);
 
-	// fb
-	set_hal_pin("pderiv1.in_lp", 1.0);
-	set_hal_pin("pderiv1.out_lp", 1.0);
-	set_hal_pin("pderiv1.vel_max", RPM(8000));
-	set_hal_pin("pderiv1.acc_max", RPM(8000) / 0.002);
-
-	// pole count
-	set_hal_pin("cauto0.pole_count", 2.0);
-
-	// auto time
-	set_hal_pin("cauto0.time", 0.5);
-
-	// auto cur
-	set_hal_pin("cauto0.cur", 1.0);
-
-	// pid
-	set_hal_pin("pid0.mot_r", 1.5);
-	set_hal_pin("pid0.mot_l", 0.0025);
-	set_hal_pin("pid0.mot_j", 0.00005);
-	set_hal_pin("pid0.mot_km", 0.22);
-
-	set_hal_pin("pid0.pos_p", 70.0);
-	set_hal_pin("pid0.pos_lp", 4000.0);
-	set_hal_pin("pid0.vel_p", 1.0);
-	set_hal_pin("pid0.vel_lp", 4000.0);
-	set_hal_pin("pid0.vel_fb_lp", 4000.0);
-	set_hal_pin("pid0.acc_p", 0.15);
-	set_hal_pin("pid0.acc_lp", 4000.0);
-	set_hal_pin("pid0.acc_pi", 50.0);
-	set_hal_pin("pid0.force_p", 1.0);
-	set_hal_pin("pid0.force_lp", 4000.0);
-	set_hal_pin("pid0.cur_p", 1.0);
-	set_hal_pin("pid0.cur_lp", 10000.0);
-
-	set_hal_pin("pid0.max_vel", RPM(8000));
-	set_hal_pin("pid0.max_acc", RPM(8000) / 0.002);
-	set_hal_pin("pid0.max_force", 2.0);
-	set_hal_pin("pid0.max_cur", 6.0);
-
-	set_hal_pin("pid0.vel_limit", RPM(8000));
-	set_hal_pin("pid0.acc_limit", RPM(8000) / 0.002);
-	set_hal_pin("pid0.force_limit", 2.0);
-	set_hal_pin("pid0.cur_limit", 6.0);
-
-
-	set_hal_pin("cur0.cur_max", 15.0);
-	set_hal_pin("cur0.l", 0.005);
-	set_hal_pin("cur0.r", 1.5);
-	set_hal_pin("cur0.lp", 1.0);
-
-	set_hal_pin("cauto0.cur", 0.5);
-	//set_hal_pin("cauto0.start_offset", 2.633170);
-
-	// pid0.cur_p 0.5
-	// pid0.force_p 0.3
-	// pid0.acc_p 0.2
-	// pid0.vel_p 0.7
-	// pid0.pos_p 250
-	// pid0.mot_l 0.0025
-	// pid0.acc_pi 50
-
-
+	set_hal_pin("conf0.pos_p", 60.0);
+	set_hal_pin("conf0.acc_p", 0.15);
+	set_hal_pin("conf0.acc_pi", 50.0);
+	set_hal_pin("conf0.cur_lp", 0.5);
 }
 
-void set_br(){ // achse 4
-	// pole count
-	set_hal_pin("cauto0.pole_count", 3.0);
+void set_br(){
+	set_hal_pin("conf0.pole_count", 3.0);
+	set_hal_pin("conf0.max_vel", RPM(6000));
+	set_hal_pin("conf0.max_acc", RPM(6000) / 0.002);
+	set_hal_pin("conf0.max_force", 1.6);
+	set_hal_pin("conf0.max_cur", 2.9);
 
-	// auto time
-	set_hal_pin("cauto0.time", 0.5);
+	set_hal_pin("conf0.fb_type", 3.0);
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 16384.0);
+	set_hal_pin("conf0.r", 51.0);
+	set_hal_pin("conf0.l", 0.02);
+	set_hal_pin("conf0.j", KGCM2(0.008));
+	set_hal_pin("conf0.km", 0.6);
 
-	// auto scale
-	set_hal_pin("cauto0.cur", 0.5);
-
-	set_hal_pin("pderiv0.in_lp", 1.0);
-	set_hal_pin("pderiv0.out_lp", 1.0);
-	set_hal_pin("pderiv0.vel_max", RPM(6000));
-	set_hal_pin("pderiv0.acc_max", RPM(6000) / 0.002);
-
-
-	set_hal_pin("res0.enable", 1.0);
-	set_hal_pin("res0.reverse", 1.0);
-	set_hal_pin("pderiv1.in_lp", 1.0);
-	set_hal_pin("pderiv1.out_lp", 1.0);
-	set_hal_pin("pderiv1.vel_max", RPM(6000));
-	set_hal_pin("pderiv1.acc_max", RPM(6000) / 0.002);
-
-	//pid
-	set_hal_pin("pid0.mot_r", 51.0);//typenschild
-	set_hal_pin("pid0.mot_l", 0.02);//unknown
-	set_hal_pin("pid0.mot_j", KGCM2(0.008));//typenschild
-	set_hal_pin("pid0.mot_km", 0.6);//typenschild
-
-
-	set_hal_pin("pid0.pos_p", 60.0);
-	set_hal_pin("pid0.pos_lp", 4000.0);
-	set_hal_pin("pid0.vel_p", 1.0);
-	set_hal_pin("pid0.vel_lp", 4000.0);
-	set_hal_pin("pid0.vel_fb_lp", 4000.0);
-	set_hal_pin("pid0.acc_p", 0.05);
-	set_hal_pin("pid0.acc_lp", 4000.0);
-	set_hal_pin("pid0.acc_pi", 40.0);
-	set_hal_pin("pid0.force_p", 1.0);
-	set_hal_pin("pid0.force_lp", 4000.0);
-	set_hal_pin("pid0.cur_p", 1.0);
-	set_hal_pin("pid0.cur_lp", 10000.0);
-
-	set_hal_pin("pid0.max_vel", RPM(6000));
-	set_hal_pin("pid0.max_acc", RPM(6000) / 0.002);
-	set_hal_pin("pid0.max_force", 1.6);
-	set_hal_pin("pid0.max_cur", 2.9);
-
-	set_hal_pin("pid0.vel_limit", RPM(6000));
-	set_hal_pin("pid0.acc_limit", RPM(6000) / 0.002);
-	set_hal_pin("pid0.force_limit", 1.6);
-	set_hal_pin("pid0.cur_limit", 2.9);
-
-
-	set_hal_pin("cur0.cur_max", 2.9);
-	set_hal_pin("cur0.l", 0.02);
-	set_hal_pin("cur0.r", 51.0);
-	set_hal_pin("cur0.lp", 0.0);
+	set_hal_pin("conf0.pos_p", 60.0);
+	set_hal_pin("conf0.acc_p", 0.1);
+	set_hal_pin("conf0.acc_pi", 50.0);
+	set_hal_pin("conf0.cur_lp", 0.0);
 }
 
 //precise 2 phase induction motor
 void set_precise(){
-	set_hal_pin("sim0.offset", 1.5);
-	set_hal_pin("sim0.amp", 1.0);
-	set_hal_pin("sim0.freq", 100.0);
-	set_hal_pin("sim0.phase", 1.5);
 
-
-	set_hal_pin("pwm2uart0.volt", 3.14);
-	set_hal_pin("pwm2uart0.enable", 1.0);
-	set_hal_pin("pwm2uart0.pwm_max", 0.9);
-
-	link_hal_pins("sim0.sin2", "pwm2uart0.u");
-	set_hal_pin("pwm2uart0.v", 1.5);
-	link_hal_pins("sim0.sin", "pwm2uart0.w");
 }
 
 void DMA2_Stream0_IRQHandler(void){ //5kHz
@@ -745,12 +462,12 @@ int main(void)
 	HAL_PIN(max_acc) = 0.0;
 	HAL_PIN(max_force) = 0.0;
 	HAL_PIN(max_cur) = 0.0;
-	HAL_PIN(cfb) = 0.0;
-	HAL_PIN(ccmd) = 0.0;
+	HAL_PIN(fb_type) = 0.0;
+	HAL_PIN(cmd_type) = 0.0;
 	HAL_PIN(fb_rev) = 0.0;
 	HAL_PIN(cmd_rev) = 0.0;
-	HAL_PIN(fb_res) = 0.0;
-	HAL_PIN(cmd_res) = 0.0;
+	HAL_PIN(fb_res) = 1.0;
+	HAL_PIN(cmd_res) = 2000.0;
 	HAL_PIN(sin_offset) = 0.0;
 	HAL_PIN(cos_offset) = 0.0;
 	HAL_PIN(sin_gain) = 1.0;

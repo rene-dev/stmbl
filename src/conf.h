@@ -35,6 +35,7 @@ typedef struct mot{
   float fb_offset;
   float fb_reverse;
   float fb_pole_count;
+  float fb_res;
   float pos_p;
   float acc_p;
   float acc_pi;
@@ -53,5 +54,6 @@ typedef struct mot{
 typedef struct conf{
   pos_iface cmd;
   float cmd_reverse;
+  float cmd_res;
   mot motor;
 };
