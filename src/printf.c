@@ -7,6 +7,7 @@
 
 #include <stdarg.h>     // (...) parameter handling
 //#include "stlinky.h"
+#include <math.h>
 #ifdef USBTERM
 #include "stm32_ub_usb_cdc.h"
 #endif
@@ -196,6 +197,28 @@ int vfprintf_(char *buffer, const char* str,  va_list arp){
 					case 'f': // "%f"
 						tmp_pos = 0;
 						f = va_arg(arp, double); // change to float for stm32
+
+						if(isnan(f) || f != f){
+							buffer[buffer_pos++] = 'N';
+							buffer[buffer_pos++] = 'a';
+							buffer[buffer_pos++] = 'N';
+							break;
+						}
+						if(f == INFINITY){
+							buffer[buffer_pos++] = '+';
+							buffer[buffer_pos++] = 'i';
+							buffer[buffer_pos++] = 'n';
+							buffer[buffer_pos++] = 'f';
+							break;
+						}
+						if(f == -INFINITY){
+							buffer[buffer_pos++] = '-';
+							buffer[buffer_pos++] = 'i';
+							buffer[buffer_pos++] = 'n';
+							buffer[buffer_pos++] = 'f';
+							break;
+						}
+
 
 						if(f < 0){
 							buffer[buffer_pos++] = '-';
