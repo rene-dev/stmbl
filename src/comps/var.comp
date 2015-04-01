@@ -6,7 +6,7 @@ HAL_PIN(var) = 0.0;
 MEM(float data[100]);
 MEM(int pos) = 0;
 
-TRG(
+RT(
   float i = PIN(in);
   float avg = 0.0;
   float o = 0.0;

@@ -1,0 +1,121 @@
+COMP(motsim);
+
+// phase voltages
+HAL_PIN(u) = 0.0;
+HAL_PIN(v) = 0.0;
+HAL_PIN(w) = 0.0;
+
+// state
+HAL_PIN(pos) = 0.0;
+HAL_PIN(vel) = 0.0;
+HAL_PIN(acc) = 0.0;
+HAL_PIN(torq) = 0.0;
+HAL_PIN(mag_pos) = 0.0;
+HAL_PIN(volt_d) = 0.0;
+HAL_PIN(volt_q) = 0.0;
+HAL_PIN(cur_d) = 0.0;
+HAL_PIN(cur_q) = 0.0;
+
+HAL_PIN(ind_u) = 0.0; // phase induction
+HAL_PIN(ind_v) = 0.0;
+HAL_PIN(ind_w) = 0.0;
+HAL_PIN(cur_u) = 0.0; // phase current
+HAL_PIN(cur_v) = 0.0;
+HAL_PIN(cur_w) = 0.0;
+
+// elec specs
+HAL_PIN(r) = 0.0; // resistance phase <-> phase ohm
+HAL_PIN(l) = 0.0; // inductance phase <-> phase henry
+HAL_PIN(i) = 0.0; // induction volt/rad/sec
+
+// mech specs
+HAL_PIN(poles) = 0.0;
+
+HAL_PIN(friction) = 0.0; // Nm
+HAL_PIN(damping) = 0.0; // Nm/rad/sec
+HAL_PIN(innertia) = 0.0; // Nm/rad/sec^2
+
+// load
+HAL_PIN(load_force) = 0.0; // Nm
+HAL_PIN(load_friction) = 0.0; // Nm
+HAL_PIN(load_damping) = 0.0; // Nm/rad/sec
+HAL_PIN(load_innertia) = 0.0; // Nm/rad/sec^2
+
+// internal state
+MEM(float pos_) = 0.0;
+MEM(float vel_) = 0.0;
+MEM(float cur_u_) = 0.0;
+MEM(float cur_v_) = 0.0;
+MEM(float cur_w_) = 0.0;
+
+RT(
+  float u_ = PIN(u);
+  float v_ = PIN(v);
+  float w_ = PIN(w);
+
+  float uvw = (u_ + v_ + w_) / 3.0;
+
+  float r_ = PIN(r) / 2.0;
+  float l_ = PIN(l) / 2.0;
+  float i_ = PIN(i); // TODO scale
+
+  float ind_u_ = vel_ * i_ * sinf(pos_ + 0.0 * M_PI_2 / 3.0);
+  float ind_v_ = vel_ * i_ * sinf(pos_ + 1.0 * M_PI_2 / 3.0);
+  float ind_w_ = vel_ * i_ * sinf(pos_ + 2.0 * M_PI_2 / 3.0);
+
+  cur_u_ += (u_ - uvw - ind_u_ - cur_u_ * r_) / l_ * period;
+  cur_v_ += (v_ - uvw - ind_v_ - cur_v_ * r_) / l_ * period;
+  cur_w_ += (w_ - uvw - ind_w_ - cur_w_ * r_) / l_ * period;
+
+  float cur_d_ = cur_u_ * cosf(pos_ + 0.0 * M_PI_2 / 3.0) + cur_v_ * cosf(pos_ + 1.0 * M_PI_2 / 3.0) + cur_w_ * cosf(pos_ + 2.0 * M_PI_2 / 3.0);
+  float cur_q_ = cur_u_ * sinf(pos_ + 0.0 * M_PI_2 / 3.0) + cur_v_ * sinf(pos_ + 1.0 * M_PI_2 / 3.0) + cur_w_ * sinf(pos_ + 2.0 * M_PI_2 / 3.0);
+
+  float p_ = PIN(p);
+  float Nm_a = 1.5 * PIN(i) * p_;
+  float torq_ = cur_d_ * Nm_a;
+);
+
+
+FRT(
+float poles_ = PIN(poles);
+float volt;
+float ind_;
+float torq_
+float fric = PIN(friction) + PIN(load_friction);
+float acc_;
+
+if(PIN(ac) > 0.0){
+  volt = 2/3 * (-sinf(pos_ * poles_) * PIN(u) - sinf(pos_ * poles_ - 2/3 * M_PI) * PIN(v) - sinf(pos_ * poles_ + 2/3 * M_PI) * PIN(w));
+}
+else{
+  volt = PIN(u) - PIN(v);
+}
+
+ind_ = vel_ * PIN(v_rps);
+cur_ += (volt - ind_ - cur_ * PIN(r)) / PIN(l) * period;
+//cur_ = CLAMP(state.cur, -elec_spec.max_i, elec_spec.max_i);
+//state.cur = (state.volt - state.ind) / elec_spec.r;
+torq_ = cur_ * PIN(nm_a) - (PIN(damping) + PIN(load_damping)) * vel_ + PIN(load_force);
+if(abs(torq_) < fric_){
+  torq_ = 0.0;
+}
+else{
+  torq_ = torq_ - SIGN(torq_) * fric_;
+}
+
+acc_ = torq_ / (PIN(inertia) + PIN(load_inertia));
+vel_ += acc_ * period;
+pos_ += vel_ * period;
+pos_ = mod(pos_);
+
+PIN(pos) = pos_;
+PIN(vel) = vel_;
+PIN(acc) = acc_;
+PIN(torq) = torq_;
+PIN(ind) = ind_;
+PIN(cur) = cur_;
+);
+
+
+
+ENDCOMP;

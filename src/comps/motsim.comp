@@ -34,7 +34,7 @@ MEM(float pos_) = 0.0;
 MEM(float vel_) = 0.0;
 MEM(float cur_) = 0.0;
 
-FRT(
+RT(
   float poles_ = PIN(poles);
   float volt;
   float ind_;

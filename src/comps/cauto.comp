@@ -28,7 +28,7 @@ MEM(float id) = 0.0;
 MEM(float iq) = 0.0;
 MEM(float offset_) = 0.0;
 
-RT_CALC(
+RT(
   fbi = PIN(fb_in);
   fb = minus(fbi, offset_);
 

@@ -6,7 +6,7 @@ HAL_PIN(out) = 0.0;
 
 MEM(float avg) = 0.0;
 
-RT_FILTER(
+RT(
   float i = PIN(in);
   float a = PIN(ac);
 

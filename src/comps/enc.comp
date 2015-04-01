@@ -85,7 +85,7 @@ INIT(
   TIM_Cmd(ENC1_TIM, ENABLE);
 );
 
-RT_IN(
+RT(
   float p = 0.0;
   float q0 = PIN(quad_en0);
   float q1 = PIN(quad_en1);

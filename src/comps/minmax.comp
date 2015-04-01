@@ -8,7 +8,7 @@ HAL_PIN(hist) = 100.0;
 MEM(float history[100]);
 MEM(int histpos = 0);
 
-RT_FILTER(
+RT(
   float in_ = PIN(in);
   float min_ = in_;
   float max_ = in_;

@@ -6,7 +6,7 @@ HAL_PIN(test1) = 1.0;
 HAL_PIN(test2) = 1.0;
 HAL_PIN(start) = 0.0;
 
-RT_CALC(
+RT(
   HT(
     PIN(test0) = 0.0;
     PIN(test1) = 0.0;

@@ -27,7 +27,7 @@ MEM(float max_t) = 0.0;
 MEM(float pos) = 0.0;
 
 
-RT_CALC(
+RT(
   float start_ = PIN(start);
   float ready_ = 0.0;
   float magp = 0.0;

@@ -21,7 +21,7 @@ HAL_PIN(out) = 0.0;
 
 HAL_PIN(select) = 0.0;
 
-RT_CALC(
+RT(
   switch((int)PIN(select)){
     case 0:
       PIN(out) = PIN(in0);

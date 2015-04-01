@@ -17,7 +17,7 @@ INIT(
 
 );
 
-RT_OUT(
+RT(
   const int res = 1200;
   float vlt = PIN(volt);
   float e = PIN(enable);

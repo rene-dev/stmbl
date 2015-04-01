@@ -9,7 +9,7 @@ MEM(float data[1000]);
 MEM(int pos) = 0;
 MEM(int pos_out) = 0;
 
-RT_FILTER(
+RT(
 	float e = PIN(enable);
 	if(e > 0.0 && pos < 1000){
 		data[pos++] = PIN(in);

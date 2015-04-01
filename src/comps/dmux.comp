@@ -21,7 +21,7 @@ HAL_PIN(in) = 0.0;
 
 HAL_PIN(select) = 0.0;
 
-RT_CALC(
+RT(
   PIN(out0) = 0.0;
   PIN(out1) = 0.0;
   PIN(out2) = 0.0;
@@ -38,8 +38,8 @@ RT_CALC(
   PIN(out13) = 0.0;
   PIN(out14) = 0.0;
   PIN(out15) = 0.0;
-  
-  switch((outt)PIN(select)){
+
+  switch((int)PIN(select)){
     case 0:
       PIN(out0) = PIN(in);
       break;
@@ -88,7 +88,6 @@ RT_CALC(
     case 15:
       PIN(out15) = PIN(in);
       break;
-    default:
   }
 );
 

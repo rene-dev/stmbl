@@ -103,7 +103,7 @@ INIT(
   //USART_DMACmd(UART_CMD, USART_DMAReq_Tx, ENABLE);
 );
 
-FRT(
+RT(
   uint32_t tpos;
   if(menc_pos == 9 && menc_buf[0] == 0x32 && ((menc_buf[0] ^ menc_buf[1] ^ menc_buf[2] ^ menc_buf[3] ^ menc_buf[4] ^ menc_buf[5] ^ menc_buf[6] ^ menc_buf[7] ^ menc_buf[8]) == 0)){
     //tpos = menc_buf[2]+menc_buf[3]*256+menc_buf[4]*65536; //length = 9, res = 17 bit, cmd = 2

@@ -1,4 +1,4 @@
-COMP(enc);
+COMP(adc);
 
 HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
@@ -13,7 +13,7 @@ HAL_PIN(cos_gain) = 1.0;
 HAL_PIN(sin_offset) = 0.0;
 HAL_PIN(cos_offset) = 0.0;
 
-FRT(
+RT(
   uint32_t si[ADC_ANZ];
   uint32_t co[ADC_ANZ];
   uint32_t sc[ADC_ANZ];
@@ -56,7 +56,7 @@ FRT(
     s = 0.5 * (si[3] + s_o) * s_g - 0.25 * (si[2] + s_o) * s_g + 0.125 * (si[1] + s_o) * s_g - 0.125 * (si[0] + s_o) * s_g;
     c = 0.5 * (co[3] + c_o) * c_g - 0.25 * (co[2] + c_o) * c_g + 0.125 * (co[1] + c_o) * c_g - 0.125 * (co[0] + c_o) * c_g;
   }
-  
+
   PIN(sin) = s;
   PIN(cos) = c;
 

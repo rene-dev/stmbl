@@ -604,29 +604,10 @@ void DMA2_Stream0_IRQHandler(void){ //5kHz
     //GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
 		systime_s += period;
 
-    for(int i = 0; i < hal.fast_rt_func_count; i++){
-        hal.fast_rt[i](period);
+    for(int i = 0; i < hal.rt_func_count; i++){
+        hal.rt[i](period);
     }
 
-    for(int i = 0; i < hal.rt_in_func_count; i++){
-        hal.rt_in[i](period);
-    }
-
-    for(int i = 0; i < hal.rt_filter_func_count; i++){
-        hal.rt_filter[i](period);
-    }
-
-    for(int i = 0; i < hal.rt_pid_func_count; i++){
-        hal.rt_pid[i](period);
-    }
-
-    for(int i = 0; i < hal.rt_calc_func_count; i++){
-        hal.rt_calc[i](period);
-    }
-
-    for(int i = 0; i < hal.rt_out_func_count; i++){
-        hal.rt_out[i](period);
-    }
     GPIO_ResetBits(GPIOB,GPIO_Pin_8);
 }
 
@@ -717,7 +698,9 @@ int main(void)
 	#include "comps/pderiv.comp"
 	#include "comps/pderiv.comp"
 
-	#include "comps/pid2.comp"
+	#include "comps/pid.comp"
+
+	#include "comps/dmux.comp"
 
 	#include "comps/cur.comp"
 
@@ -730,6 +713,8 @@ int main(void)
 	#include "comps/fan.comp"
 	#include "comps/brake.comp"
 	#include "comps/tune.comp"
+	#include "comps/dmux.comp"
+	#include "comps/dmux.comp"
 
 
 	//#include "comps/vel_observer.comp"
@@ -807,7 +792,7 @@ int main(void)
 	set_hal_pin("led0.y", 1.0);
 	TIM_Cmd(TIM8, ENABLE);//int
 
-	Wait(1000);
+	Wait(5000);
 	#ifdef USBTERM
 	UB_USB_CDC_Init();
 	#endif

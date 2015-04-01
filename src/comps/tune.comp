@@ -24,7 +24,7 @@ MEM(float c) = 0.0;
 MEM(float i) = 0.0;
 
 
-RT_CALC(
+RT(
   i = ABS(PIN(amp)) * 0.01 + i * 0.99;
   float f = PIN(freq);
   PIN(re) = PIN(cur) * PIN(start_r) / i;

@@ -4,7 +4,7 @@ HAL_PIN(in) = 0.0;
 HAL_PIN(out) = 0.0;
 HAL_PIN(rev) = 0.0;
 
-RT_CALC(
+RT(
   if(PIN(rev) > 0.0){
     PIN(out) = minus(0, PIN(in));
   }

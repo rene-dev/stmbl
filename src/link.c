@@ -32,8 +32,7 @@ void link_pid(){
   link_hal_pins("net0.cmd","pid0.pos_ext_cmd");
   link_hal_pins("net0.cmd_d", "pid0.vel_ext_cmd");
 
-  set_hal_pin("pderiv0.in_lp", 1.0);
-  set_hal_pin("pderiv0.out_lp", 1.0);
+  link_hal_pins("conf0.cmd_res", "pderiv0.in_res");
 
 
   // fb
@@ -65,8 +64,7 @@ void link_pid(){
   link_hal_pins("net0.fb","pid0.pos_fb");
   link_hal_pins("net0.fb_d", "pid0.vel_fb");
 
-  set_hal_pin("pderiv1.in_lp", 1.0);
-  set_hal_pin("pderiv1.out_lp", 1.0);
+  link_hal_pins("conf0.fb_res", "pderiv1.in_res");
 
 
   // cauto

@@ -39,7 +39,7 @@ MEM(float iu_old) = 0.0;
 MEM(float iv_old) = 0.0;
 MEM(float iw_old) = 0.0;
 
-RT_CALC(
+RT(
   float r_ = MAX(PIN(r) / 2.0, 0.1);
   float l_ = MAX(PIN(l) / 2.0, 0.001);
   float freq_ = MAX(PIN(freq), 1);

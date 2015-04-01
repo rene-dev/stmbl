@@ -18,7 +18,7 @@ HAL_PIN(error) = 0.0;
 MEM(float s_mid) = 4096 / 2 * ADC_ANZ;//50% ADC
 MEM(float c_mid) = 4096 / 2 * ADC_ANZ;
 
-RT_IN(
+RT(
 	GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
 
 	/*for(int i = 0; i < PID_WAVES; i++){

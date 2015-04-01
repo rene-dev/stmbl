@@ -19,7 +19,7 @@ MEM(float time) = 0.0;
 MEM(float amp_) = 0.0;
 MEM(float freq_) = 0.0;
 
-RT_IN(
+RT(
   //float amp_ = PIN(uf)*freq_;
   float offset_ = PIN(offset);
   amp_ = PIN(amp) * 0.001 + amp_ * 0.999;
