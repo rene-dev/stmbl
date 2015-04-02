@@ -25,6 +25,7 @@
 #include "setup.h"
 #include "eeprom.h"
 #include "link.h"
+#include "math.h"
 #include <math.h>
 
 #ifdef USBTERM
@@ -502,10 +503,10 @@ int main(void)
 	HAL_PIN(cmd_rev) = 0.0;
 	HAL_PIN(fb_res) = 1.0;
 	HAL_PIN(cmd_res) = 2000.0;
-	HAL_PIN(sin_offset) = 0.0;
-	HAL_PIN(cos_offset) = 0.0;
-	HAL_PIN(sin_gain) = 1.0;
-	HAL_PIN(cos_gain) = 1.0;
+	HAL_PIN(sin_offset) = -17371.0;
+	HAL_PIN(cos_offset) = -17661.0;
+	HAL_PIN(sin_gain) = 0.0001;
+	HAL_PIN(cos_gain) = 0.0001;
 
 
 
@@ -546,7 +547,7 @@ int main(void)
 	set_hal_pin("led0.y", 1.0);
 	TIM_Cmd(TIM8, ENABLE);//int
 
-	Wait(2000);
+	//Wait(2000);
 	#ifdef USBTERM
 	UB_USB_CDC_Init();
 	#endif
