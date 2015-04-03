@@ -9,6 +9,10 @@ HAL_PIN(pos1) = 0.0;
 HAL_PIN(ipos1) = 0.0;
 HAL_PIN(iposd1) = 0.0;
 
+HAL_PIN(enable0) = 0.0;
+HAL_PIN(enable1) = 0.0;
+HAL_PIN(enable_sc1) = 0.0;
+
 HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
 
@@ -172,20 +176,26 @@ RT(
 
   int res = (int)PIN(res0);
 
-  p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res0);
-
-  PIN(pos0) = p;
+  if(PIN(enable0) > 0.0){
+    p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res0);
+    PIN(pos0) = p;
+  }
   if(e_res0 != res){
     e_res0 = res;
     TIM_SetAutoreload(ENC0_TIM, e_res0 - 1);
   }
 
+
   res = (int)PIN(res1);
-  p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res1);
 
-  PIN(pos1) = p;
-  PIN(ipos1) = mod(p + mod(atan2f(PIN(sin), PIN(cos)) * 4.0 + M_PI) / (float)e_res1);
+  if(PIN(enable1) > 0.0 || PIN(enable_sc1) > 0.0){
+    p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res1);
+    PIN(pos1) = p;
 
+    if(PIN(enable_sc1) > 0.0){
+      PIN(ipos1) = mod(p + mod(atan2f(PIN(sin), PIN(cos)) * 4.0 + M_PI) / (float)e_res1);
+    }
+  }
   if(e_res1 != res){
     e_res1 = res;
     TIM_SetAutoreload(ENC1_TIM, e_res1 - 1);

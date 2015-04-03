@@ -139,4 +139,9 @@ void link_pid(){
   set_hal_pin("term0.gain1", 10.0);
   set_hal_pin("term0.gain2", 1.0);
   set_hal_pin("term0.gain3", 1.0);
+
+  link_hal_pins("conf0.sin_gain", "adc0.sin_gain");
+  link_hal_pins("conf0.cos_gain", "adc0.cos_gain");
+  link_hal_pins("conf0.sin_offset", "adc0.sin_offset");
+  link_hal_pins("conf0.cos_offset", "adc0.cos_offset");
 }

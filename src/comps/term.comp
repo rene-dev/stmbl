@@ -36,7 +36,7 @@ HAL_PIN(send_step) = 10.0;
 
 HAL_PIN(buf_use) = 0.0;
 
-#define TERM_BUF_SIZE 50
+#define TERM_BUF_SIZE 24
 
 MEM(float w0[TERM_BUF_SIZE]);
 MEM(float w1[TERM_BUF_SIZE]);
@@ -137,7 +137,7 @@ NRT(
 
 
   #ifdef USBTERM
-    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED && systime >= 2000){
+    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED && systime >= 1000){
       //UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
 
       char source[APP_TX_BUF_SIZE];

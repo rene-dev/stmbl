@@ -21,44 +21,33 @@ MEM(float c_mid) = 4096 / 2 * ADC_ANZ;
 RT(
 	GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
 
-	/*for(int i = 0; i < PID_WAVES; i++){
-		s_mid = s_mid * 0.99 + si[i] * 0.01;
-		c_mid = c_mid * 0.99 + co[i] * 0.01;
-	}
+	float s = 0.0;
+	float c = 0.0;
+	float a = 0.0;
 
-	for(int i = 0; i < PID_WAVES; i++){
-		if(i % 2){
-			si[i] = si[i] - s_mid;
-			co[i] = co[i] - c_mid;
+	if(PIN(enable) > 0.0){
+		s = PIN(sin3);
+		c = PIN(cos3);
+
+		s_mid = s_mid * 0.99 + s * 0.01;
+		c_mid = c_mid * 0.99 + c * 0.01;
+
+		s = s - s_mid;
+		c = c - c_mid;
+
+		a = s * s + c * c;
+
+
+		if(a < 0.2){
+			PIN(error) = 1.0;
 		}
 		else{
-			si[i] = s_mid - si[i];
-			co[i] = c_mid - co[i];
+			PIN(error) = 0.0;
+			PIN(pos) = atan2f(s, c);
 		}
+
+		PIN(amp) = a;
 	}
-	*/
-
-	float s = PIN(sin3);
-	float c = PIN(cos3);
-
-	s_mid = s_mid * 0.99 + s * 0.01;
-	c_mid = c_mid * 0.99 + c * 0.01;
-
-	s = s - s_mid;
-	c = c - c_mid;
-
-	float a = s * s + c * c;
-
-
-	if(a < 0.5){
-		PIN(error) = 1.0;
-	}
-	else{
-		PIN(error) = 0.0;
-		PIN(pos) = atan2f(s, c);
-	}
-
-	PIN(amp) = a;
 );
 
 

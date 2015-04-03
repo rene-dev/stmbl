@@ -500,17 +500,20 @@ int main(void)
 	link_pid();
 
 	//set_bergerlahr();//pid2: ok
-	//set_mitsubishi();//pid2: ok
+	set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
 	//set_precise();
-	set_bosch4();//pid2: ok
+	//set_bosch4();//pid2: ok
 	//set_hal_pin("res0.reverse", 0.0);
 	//set_bosch1();//pid2: ok
 	//set_sanyo();//pid2: ok
 	//set_br();
 
-	set_cmd_enc0();
+	set_cmd_sin();
+	set_hal_pin("encm0.enable", 1.0);
+
+
 
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");

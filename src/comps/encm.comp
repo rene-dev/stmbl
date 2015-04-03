@@ -105,27 +105,17 @@ INIT(
 
 RT(
   uint32_t tpos;
-  if(menc_pos == 9 && menc_buf[0] == 0x32 && ((menc_buf[0] ^ menc_buf[1] ^ menc_buf[2] ^ menc_buf[3] ^ menc_buf[4] ^ menc_buf[5] ^ menc_buf[6] ^ menc_buf[7] ^ menc_buf[8]) == 0)){
-    //tpos = menc_buf[2]+menc_buf[3]*256+menc_buf[4]*65536; //length = 9, res = 17 bit, cmd = 2
-  	tpos = ((menc_buf[2] & 0x80) >> 7) + menc_buf[3]*2 + menc_buf[4]*512;//length = 9, res = 17 bit, cmd = 50(0x32)
-  	/*
-  	PIN(b0) = menc_buf[0];
-  	PIN(b1) = menc_buf[1];
-  	PIN(b2) = menc_buf[2];
-  	PIN(b3) = menc_buf[3];
-  	PIN(b4) = menc_buf[4];
-  	PIN(b5) = menc_buf[5];
-  	PIN(b6) = menc_buf[6];
-  	PIN(b7) = menc_buf[7];
-  	PIN(b8) = menc_buf[8];
-  	*/
 
-    PIN(pos) = (tpos * M_PI * 2.0 / 131072.0) - M_PI;
-  }else if(PIN(enable) > 0.0){
-    error_++;
-    PIN(error) = error_;
-  }
   if(PIN(enable) > 0.0){
+    if(menc_pos == 9 && menc_buf[0] == 0x32 && ((menc_buf[0] ^ menc_buf[1] ^ menc_buf[2] ^ menc_buf[3] ^ menc_buf[4] ^ menc_buf[5] ^ menc_buf[6] ^ menc_buf[7] ^ menc_buf[8]) == 0)){
+      //tpos = menc_buf[2]+menc_buf[3]*256+menc_buf[4]*65536; //length = 9, res = 17 bit, cmd = 2
+      tpos = ((menc_buf[2] & 0x80) >> 7) + menc_buf[3]*2 + menc_buf[4]*512;//length = 9, res = 17 bit, cmd = 50(0x32)
+      PIN(pos) = (tpos * M_PI * 2.0 / 131072.0) - M_PI;
+    }else if(PIN(enable) > 0.0){
+      error_++;
+      PIN(error) = error_;
+    }
+    
     GPIO_SetBits(GPIOB,GPIO_Pin_12);
     USART_SendData(USART3, 0x32/*(unsigned char)PIN(cmd)*/);
   }
