@@ -25,7 +25,7 @@
 #include "setup.h"
 #include "eeprom.h"
 #include "link.h"
-#include "math.h"
+//#include "math.h"
 #include <math.h>
 
 #ifdef USBTERM
@@ -103,9 +103,9 @@ void set_rexroth(){
 	set_hal_pin("conf0.max_force", 1.8);
 	set_hal_pin("conf0.max_cur", 6.8);
 
-	set_hal_pin("conf0.ccmd", 1.0);
-	set_hal_pin("conf0.cfb", 6.0);
-	set_hal_pin("conf0.fb_rev", 0.0);
+	set_hal_pin("conf0.fb_type", 6.0);
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 512.0);
 	set_hal_pin("conf0.r", 7.5);//mess
 	set_hal_pin("conf0.l", 0.008);//mess
 	set_hal_pin("conf0.j", 0.000013);//data
@@ -300,14 +300,14 @@ void set_mitsubishi(){ // TODO
 	set_hal_pin("conf0.max_cur", 6.0);
 
 	set_hal_pin("conf0.fb_type", 5.0);
-	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_rev", 0.0);
 	set_hal_pin("conf0.fb_res", 16384.0);
 	set_hal_pin("conf0.r", 1.5);
 	set_hal_pin("conf0.l", 0.0025);
 	set_hal_pin("conf0.j", KGCM2(0.5));
 	set_hal_pin("conf0.km", 0.22);
 
-	set_hal_pin("conf0.pos_p", 60.0);
+	set_hal_pin("conf0.pos_p", 50.0);
 	set_hal_pin("conf0.acc_p", 0.15);
 	set_hal_pin("conf0.acc_pi", 50.0);
 	set_hal_pin("conf0.cur_lp", 0.5);
@@ -446,8 +446,8 @@ int main(void)
 
 	#include "comps/cauto.comp"
 
-	#include "comps/pderiv.comp"
-	#include "comps/pderiv.comp"
+	#include "comps/pderiv2.comp"
+	#include "comps/pderiv2.comp"
 
 	#include "comps/pid.comp"
 
@@ -532,6 +532,13 @@ int main(void)
 	//set_bosch1();//pid2: ok
 	//set_sanyo();//pid2: ok
 	//set_br();
+	//set_hal_pin("enc0.iquad_en1", 1.0);
+	set_hal_pin("enc0.quad_en1", 1.0);
+	set_hal_pin("enc0.iquad_en1", 1.0);
+
+	set_hal_pin("conf0.fb_type", 6.0);
+
+	//link_hal_pins("pderiv1.out2", "net0.fb_d");
 
 	set_cmd_enc0();
 

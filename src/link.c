@@ -144,4 +144,10 @@ void link_pid(){
   link_hal_pins("conf0.cos_gain", "adc0.cos_gain");
   link_hal_pins("conf0.sin_offset", "adc0.sin_offset");
   link_hal_pins("conf0.cos_offset", "adc0.cos_offset");
+
+  link_hal_pins("adc0.sin", "enc0.sin");
+  link_hal_pins("adc0.cos", "enc0.cos");
+
+  link_hal_pins("adc0.sin", "res0.sin");
+  link_hal_pins("adc0.cos", "res0.cos");
 }

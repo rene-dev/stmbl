@@ -9,15 +9,13 @@ HAL_PIN(pos1) = 0.0;
 HAL_PIN(ipos1) = 0.0;
 HAL_PIN(iposd1) = 0.0;
 
-HAL_PIN(enable0) = 0.0;
-HAL_PIN(enable1) = 0.0;
-HAL_PIN(enable_sc1) = 0.0;
 
 HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
 
 HAL_PIN(quad_en0) = 0.0;
 HAL_PIN(quad_en1) = 0.0;
+HAL_PIN(iquad_en1) = 0.0;
 HAL_PIN(stepdir_en0) = 0.0;
 HAL_PIN(stepdir_en1) = 0.0;
 
@@ -93,6 +91,7 @@ RT(
   float p = 0.0;
   float q0 = PIN(quad_en0);
   float q1 = PIN(quad_en1);
+  float iq1 = PIN(iquad_en1);
   float sd0 = PIN(stepdir_en0);
   float sd1 = PIN(stepdir_en1);
 
@@ -176,7 +175,7 @@ RT(
 
   int res = (int)PIN(res0);
 
-  if(PIN(enable0) > 0.0){
+  if(q0 > 0.0){
     p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res0);
     PIN(pos0) = p;
   }
@@ -188,12 +187,12 @@ RT(
 
   res = (int)PIN(res1);
 
-  if(PIN(enable1) > 0.0 || PIN(enable_sc1) > 0.0){
+  if(q1 > 0.0 || iq1 > 0.0){
     p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res1);
     PIN(pos1) = p;
 
-    if(PIN(enable_sc1) > 0.0){
-      PIN(ipos1) = mod(p + mod(atan2f(PIN(sin), PIN(cos)) * 4.0 + M_PI) / (float)e_res1);
+    if(iq1 > 0.0){
+      PIN(ipos1) = mod(p + ((int)(8.0 * mod(atan2f(PIN(sin), PIN(cos)) * 4.0 + M_PI))) / 8.0  / (float)e_res1);
     }
   }
   if(e_res1 != res){

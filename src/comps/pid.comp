@@ -111,10 +111,10 @@ HAL_PIN(saturated) = 0.0;
 MEM(float sat) = 0.0;
 MEM(float force_error_sum) = 0.0;
 
-MEM(float old_velcmd) = 0.0;
-MEM(float old_acccmd) = 0.0;
-MEM(float old_forcecmd) = 0.0;
-MEM(float old_curcmd) = 0.0;
+MEM(float velcmd) = 0.0;
+MEM(float acccmd) = 0.0;
+MEM(float forcecmd) = 0.0;
+MEM(float curcmd) = 0.0;
 
 
 RT(
@@ -180,10 +180,10 @@ float acclp = LP_HZ(PIN(acc_lp));
 float forcep = MIN(MAX(PIN(force_p), 0.001), 1.0);
 float forcelp = LP_HZ(PIN(force_lp));
 
-float velcmd = 0.0;
-float acccmd = 0.0;
-float forcecmd = 0.0;
-float curcmd = 0.0;
+float old_velcmd = velcmd;
+float old_acccmd = acccmd;
+float old_forcecmd = forcecmd;
+float old_curcmd = curcmd;
 
 if(PIN(enable) > 0.0){
   if(PIN(pos_en) == 0.0){
@@ -220,40 +220,39 @@ if(PIN(enable) > 0.0){
   // pos -> vel
   velcmd = posp * poserr + PIN(vel_ff) * velextcmd;  // vel = p * pos_error + ff1
   PIN(vel_cmd) = velcmd;
-  velcmd = velcmd * poslp;
+  velcmd = velcmd * poslp + (1.0 - poslp) * old_velcmd; // lowpass
   velsat = SAT2(velcmd, velmin_, velmax_);
   velcmd = CLAMP(velcmd, velmin_, velmax_); // min/max clamping
 
   // vel -> acc
   velerr = velcmd - velfb;
   acccmd = velerr / t * velp + PIN(acc_ff) * accextcmd; // acc = vel_error / period + ff2
-  //acccmd = acccmd * vellp + (1.0 - vellp) * old_acccmd; // lowpass
+  acccmd = acccmd * vellp + (1.0 - vellp) * old_acccmd; // lowpass
   accsat = SAT2(acccmd, accmin_, accmax_);
   acccmd = CLAMP(acccmd, accmin_, accmax_); // min/max clamping
-  old_acccmd = acccmd;
 
   // acc -> force
   forcecmd = acccmd * j * accp + PIN(force_ff) * forceextcmd; // force = acc * inertia + ext cmd
   force_error_sum += velerr * t * accp * accpi; // integrate vel_error
-  force_error_sum = CLAMP(force_error_sum, forcemin_ - forcemax_, forcemax_ - forcemin_); // clamp integral
+  force_error_sum = CLAMP(force_error_sum, forcemin_, forcemax_); // clamp integral
   if(accpi == 0.0){
     force_error_sum = 0.0;
   }
   forcecmd += force_error_sum;  // add integral
   //forcecmd = forcecmd * acclp + (1.0 - acclp) * old_forcecmd; // lowpass
-  float tmp_forcecmd = forcecmd;
+  //float tmp_forcecmd = forcecmd;
+  forcecmd = forcecmd * acclp + (1.0 - acclp) * old_forcecmd; // lowpass
   forcesat = SAT2(forcecmd, forcemin_, forcemax_);
   forcecmd = CLAMP(forcecmd, forcemin_, forcemax_); // min/max clamping
-  force_error_sum += accaw * (forcecmd - tmp_forcecmd); // anti windup
-  old_forcecmd = forcecmd;
+  //force_error_sum += accaw * (forcecmd - tmp_forcecmd); // anti windup
+  //old_forcecmd = forcecmd;
 
 
   // force -> current
   curcmd = forcecmd / m * forcep + PIN(cur_ff) * curextcmd;  // current = force / torque constant + ext cmd
-  //curcmd = curcmd * forcelp + (1.0 - forcelp) * old_curcmd; // lowpass
+  curcmd = curcmd * forcelp + (1.0 - forcelp) * old_curcmd; // lowpass
   cursat = SAT2(curcmd, curmin_, curmax_);
   curcmd = CLAMP(curcmd, curmin_, curmax_); // min/max clamping
-  old_curcmd = curcmd;
 
   if(ABS(velsat) + ABS(accsat) + ABS(forcesat) + ABS(cursat) > 0.0){
     sat += period;

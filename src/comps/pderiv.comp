@@ -4,6 +4,7 @@ HAL_PIN(in) = 0.0;
 HAL_PIN(t) = 0.0;
 HAL_PIN(lp) = 5000.0;
 HAL_PIN(out) = 0.0;
+HAL_PIN(out2) = 0.0;
 HAL_PIN(in_res) = 10000.0;
 HAL_PIN(res) = 0.0;
 HAL_PIN(max_time) = 0.01;
@@ -12,6 +13,8 @@ MEM(float last_in) = 0.0;
 
 MEM(float time_count) = 0.0;
 MEM(float last_time) = 0.0;
+MEM(float last_in2) = 0.0;
+
 
 RT(
   float il = LP_HZ(PIN(lp));
@@ -28,6 +31,10 @@ RT(
   }
 
   float diff = minus(i, last_in);
+  float diff2 = minus(i, last_in2);
+  last_in2 = i;
+
+  PIN(out2) = diff2 / period;
 
   time_count += period;
 
