@@ -12,14 +12,12 @@ HAL_PIN(out8) = 0.0;
 HAL_PIN(out9) = 0.0;
 HAL_PIN(out10) = 0.0;
 HAL_PIN(out11) = 0.0;
-HAL_PIN(out12) = 0.0;
-HAL_PIN(out13) = 0.0;
-HAL_PIN(out14) = 0.0;
-HAL_PIN(out15) = 0.0;
 
-HAL_PIN(in) = 0.0;
+HAL_PIN(in0) = 0.0;
+HAL_PIN(in1) = 0.0;
 
-HAL_PIN(select) = 0.0;
+HAL_PIN(select_cmd) = 0.0;
+HAL_PIN(select_fb) = 0.0;
 
 RT(
   PIN(out0) = 0.0;
@@ -34,59 +32,71 @@ RT(
   PIN(out9) = 0.0;
   PIN(out10) = 0.0;
   PIN(out11) = 0.0;
-  PIN(out12) = 0.0;
-  PIN(out13) = 0.0;
-  PIN(out14) = 0.0;
-  PIN(out15) = 0.0;
-
-  switch((int)PIN(select)){
-    case 0:
-      PIN(out0) = PIN(in);
+ 
+  switch((int)PIN(select_fb)){
+    case ENC0:
+      PIN(out1) = PIN(in0);
       break;
-    case 1:
-      PIN(out1) = PIN(in);
+    case ENC1:
+	 case SINCOS1:
+      PIN(out2) = PIN(in0);
       break;
-    case 2:
-      PIN(out2) = PIN(in);
+    case RES1:
+      PIN(out3) = PIN(in0);
       break;
-    case 3:
-      PIN(out3) = PIN(in);
+    case MITSU0:
+      PIN(out4) = PIN(in0);
       break;
-    case 4:
-      PIN(out4) = PIN(in);
+    case MITSU1:
+      PIN(out5) = PIN(in0);
       break;
-    case 5:
-      PIN(out5) = PIN(in);
+    case STEPDIR0:
+      PIN(out7) = PIN(in0);
       break;
-    case 6:
-      PIN(out6) = PIN(in);
+    case STEPDIR1:
+      PIN(out8) = PIN(in0);
       break;
-    case 7:
-      PIN(out7) = PIN(in);
+    case SIN:
+      PIN(out9) = PIN(in0);
       break;
-    case 8:
-      PIN(out8) = PIN(in);
+    case VEL:
+      PIN(out10) = PIN(in0);
       break;
-    case 9:
-      PIN(out9) = PIN(in);
+    case SQUARE:
+      PIN(out11) = PIN(in0);
       break;
-    case 10:
-      PIN(out10) = PIN(in);
+  }
+  switch((int)PIN(select_fb)){
+    case ENC0:
+      PIN(out1) = PIN(in0);
       break;
-    case 11:
-      PIN(out11) = PIN(in);
+    case ENC1:
+	 case SINCOS1:
+      PIN(out2) = PIN(in0);
       break;
-    case 12:
-      PIN(out12) = PIN(in);
+    case RES1:
+      PIN(out3) = PIN(in0);
       break;
-    case 13:
-      PIN(out13) = PIN(in);
+    case MITSU0:
+      PIN(out4) = PIN(in0);
       break;
-    case 14:
-      PIN(out14) = PIN(in);
+    case MITSU1:
+      PIN(out5) = PIN(in0);
       break;
-    case 15:
-      PIN(out15) = PIN(in);
+    case STEPDIR0:
+      PIN(out7) = PIN(in0);
+      break;
+    case STEPDIR1:
+      PIN(out8) = PIN(in0);
+      break;
+    case SIN:
+      PIN(out9) = PIN(in0);
+      break;
+    case VEL:
+      PIN(out10) = PIN(in0);
+      break;
+    case SQUARE:
+      PIN(out11) = PIN(in0);
       break;
   }
 );
