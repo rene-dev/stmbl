@@ -30,6 +30,9 @@ INIT(
   GPIO_InitTypeDef GPIO_InitStructure;
   /***************** port 0, quadrature or step/dir *********************/
   e_res0 = (int)PIN(res0);
+  if(e_res0 < 1){
+	  e_res0 = 1;
+  }
   // enable clocks
   RCC_AHB1PeriphClockCmd(ENC0_A_IO_RCC, ENABLE);
   RCC_AHB1PeriphClockCmd(ENC0_B_IO_RCC, ENABLE);
@@ -60,6 +63,9 @@ INIT(
 
   /***************** port 1, quadrature , sin/cos or resolver *********************/
   e_res1 = (int)PIN(res1);
+  if(e_res1 < 1){
+	  e_res1 = 1;
+  }
   // enable clocks
   RCC_AHB1PeriphClockCmd(ENC1_A_IO_RCC, ENABLE);
   RCC_AHB1PeriphClockCmd(ENC1_B_IO_RCC, ENABLE);
@@ -174,6 +180,9 @@ RT(
   }
 
   int res = (int)PIN(res0);
+  if(res < 1){
+	  res = 1;
+  }
 
   if(q0 > 0.0){
     p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res0);
@@ -186,6 +195,9 @@ RT(
 
 
   res = (int)PIN(res1);
+  if(res < 1){
+	  res = 1;
+  }
 
   if(q1 > 0.0 || iq1 > 0.0){
     p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res1);
