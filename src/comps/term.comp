@@ -82,12 +82,37 @@ void listhal(){
 	}
 }
 
+void save(){
+	typedef union{
+		float f;
+		uint16_t byte[2];
+	}param_t;
+	param_t param;
+	for(int i = 0; i < hal.hal_pin_count; i++){
+		char name[7];
+		int address = 0;
+		strncpy(name,hal.hal_pins[i]->name,5);
+		name[6] =  '\0';
+		if(!strcmp(name, "conf0")){
+			param.f = hal.hal_pins[i]->source->source->value;
+			printf_("param:\n");
+			printf_("%i,%i\n",param.byte[0],param.byte[1]);
+			//address+=2;
+			//printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
+			Wait(1);
+		}
+	}
+}
+
 void cmd(char * s){
 	if(!strcmp(s, "bootloader")){
 		bootloader();
 	}
 	else if(!strcmp(s, "list")){
 		listhal();
+	}
+	else if(!strcmp(s, "save")){
+		save();
 	}
 	else{
 		printf_("command: %s\n",s);
