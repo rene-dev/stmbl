@@ -28,9 +28,7 @@
 //#include "math.h"
 #include <math.h>
 
-#ifdef USBTERM
 #include "stm32_ub_usb_cdc.h"
-#endif
 
 volatile uint16_t rxbuf;
 GLOBAL_HAL_PIN(g_amp);
@@ -250,9 +248,7 @@ int main(void)
 	TIM_Cmd(TIM8, ENABLE);//int
 
 	//Wait(2000);
-	#ifdef USBTERM
 	UB_USB_CDC_Init();
-	#endif
 
 	while(1)  // Do not exit
 	{

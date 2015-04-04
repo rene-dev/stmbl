@@ -30,8 +30,7 @@ CFLAGS  = -g -Wall -Tstm32_flash.ld -std=gnu99 -fno-builtin -CC -fdiagnostics-co
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork -nostartfiles
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -nostartfiles -fsingle-precision-constant
 CFLAGS += -ffunction-sections -fdata-sections
-#USB
-CFLAGS += -DUSBTERM
+
 CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals -Isrc/ub_lib -Isrc/ub_lib/usb_cdc_lolevel
 
 ###################################################

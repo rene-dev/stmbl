@@ -69,6 +69,31 @@ RT(
 );
 
 NRT(
+
+void bootloader(){
+	*((unsigned long *)0x2001C000) = 0xDEADBEEF;
+	NVIC_SystemReset();
+}
+
+void listhal(){
+	for(int i = 0; i < hal.hal_pin_count; i++){
+		printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
+		Wait(1);
+	}
+}
+
+void cmd(char * s){
+	if(!strcmp(s, "bootloader")){
+		bootloader();
+	}
+	else if(!strcmp(s, "list")){
+		listhal();
+	}
+	else{
+		printf_("command: %s\n",s);
+	}
+}
+
   int e = 0;
   unsigned char buf[8 + 2];
 
@@ -124,62 +149,46 @@ NRT(
     read_pos++;
     read_pos %= TERM_BUF_SIZE;
 
-#ifdef USBTERM
   buf[8 + 1] = 0;
 
     if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
       UB_USB_CDC_SendString((char*)buf, NONE);
     }
-#endif
   }
 
   PIN(buf_use) = bc;
 
-
-  #ifdef USBTERM
     if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED && systime >= 1000){
-      //UB_USB_CDC_SendString((char*)buf, NONE);//schleppfehler senden
 
-      char source[APP_TX_BUF_SIZE];
-      char sink[APP_TX_BUF_SIZE];
+		char source[APP_TX_BUF_SIZE];
+		char sink[APP_TX_BUF_SIZE];
 
-      int i = scanf_("%N = %N",sink ,source);
-
-      if(i == 2){ // read
+		int i = -1;
+		char rx_buf[APP_TX_BUF_SIZE];
+		if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY){
+			i = sscanf_(rx_buf, "%N = %N",sink ,source);
+		}
+      if(i == 2){ // read hal pin
         if(is_hal_pin(sink)){
           printf_("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
-        }else if(!strcmp(sink, "bootloader")){
-  		  *((unsigned long *)0x2001C000) = 0xDEADBEEF;
-  		  NVIC_SystemReset();
-        }
-        else{
-          printf_("not found: %s\n", sink);
+        }else{
+			  cmd(rx_buf);
         }
       }
-      else if(i == 5){
+      else if(i == 5){// link hal pin
         if(is_hal_pin(source) && is_hal_pin(sink)){
           link_hal_pins(source, sink);
           printf_("OK %s <= %s = %f\n", sink, source, get_hal_pin(sink));
         }
-        else if(is_hal_pin(sink)){
+        else if(is_hal_pin(sink)){// set hal pin
           set_hal_pin(sink, read_float(source));
           printf_("OK %s = %f\n", sink, get_hal_pin(sink));
         }
-        else{
+        else{// hal pin not found
           printf_("not found: %s\n", sink);
         }
       }
-      else if(i == -1){
-
-      }
-      else{
-        for(int i = 0; i < hal.hal_pin_count; i++){
-          printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
-          Wait(1);
-        }
-      }
     }
-  #endif
 
 );
 
