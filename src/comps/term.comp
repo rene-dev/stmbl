@@ -174,7 +174,7 @@ void cmd(char * s){
     read_pos++;
     read_pos %= TERM_BUF_SIZE;
 
-  buf[4 + 1] = 0;
+  buf[8 + 1] = 0;
 
     if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
       UB_USB_CDC_SendString((char*)buf, NONE);
