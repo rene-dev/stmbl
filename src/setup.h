@@ -14,9 +14,7 @@
 #include "misc.h"
 #include "defines_res.h"
 
-#ifdef USBTERM
 #include "stm32_ub_usb_cdc.h"
-#endif
 
 //#define mag_res 5250
 #define mag_res 8400

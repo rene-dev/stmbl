@@ -10,7 +10,6 @@
 
 int scanf_(const char *format, ...){
 	int ret = 0;
-#ifdef USBTERM
 	char rx_buf[APP_TX_BUF_SIZE];
 	va_list arg;
 	if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
@@ -22,7 +21,6 @@ int scanf_(const char *format, ...){
 			ret = -1;
 		}
 	}
-#endif
 	return(ret);
 }
 

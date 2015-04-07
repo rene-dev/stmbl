@@ -6,9 +6,6 @@
 //  Copyright (c) 2013 Rene Hopf. All rights reserved.
 //
 
-#ifndef test_printf_h
-#define test_printf_h
+#pragma once
 
 int printf_(const char *format, ...);
-
-#endif

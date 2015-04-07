@@ -25,6 +25,8 @@
 extern "C" {
 #endif
 
+#define NO 0
+#define YES 1
 #define ABS(a)	   (((a) < 0.0) ? -(a) : (a))
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 #define LIMIT(x, lowhigh)  (((lowhigh) > 0.0) ? (((x) > (lowhigh)) ? (lowhigh) : (((x) < (-lowhigh)) ? (-lowhigh) : (x))) : (x))

@@ -21,13 +21,11 @@ public:
     void paintEvent(wxPaintEvent & evt);
     void paintNow();
     void plotvalue(float[]);
-    void plotvalue(float);
     void Clear();
-    void render(wxDC& dc);
     int channels;
     static const wxPen pen[];
 private:
     wxLongLong time;
     std::vector<std::vector<float>> data;
-    int x,y,xold,yold,xpos,xstep;
+    int x,y,xpos,xstep;
 };
