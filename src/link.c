@@ -379,6 +379,7 @@ void set_mitsubishi(){ // TODO
 	set_hal_pin("conf0.acc_p", 0.15);
 	set_hal_pin("conf0.acc_pi", 50.0);
 	set_hal_pin("conf0.cur_lp", 0.5);
+	set_hal_pin("encm0.enable", 1.0);
 }
 
 void set_br(){
@@ -400,4 +401,32 @@ void set_br(){
 	set_hal_pin("conf0.acc_p", 0.1);
 	set_hal_pin("conf0.acc_pi", 50.0);
 	set_hal_pin("conf0.cur_lp", 0.0);
+}
+//linear 25 ohm
+//e250 15
+void set_e240(){ // TODO
+	set_hal_pin("conf0.pole_count", 1.0);
+	set_hal_pin("conf0.max_vel", RPM(8000));
+	set_hal_pin("conf0.max_acc", RPM(8000) / 0.002);
+	set_hal_pin("conf0.max_force", 4.8);
+	set_hal_pin("conf0.max_cur", 13.0);
+
+	set_hal_pin("conf0.fb_type", ENC1);
+	set_hal_pin("conf0.fb_rev", 0.0);
+	set_hal_pin("conf0.fb_res", 2048.0);
+	//set_hal_pin("conf0.r", 5.4);
+	//set_hal_pin("conf0.l", 0.0082);
+	//set_hal_pin("conf0.j", KGCM2(0.268));
+	//set_hal_pin("conf0.km", 0.135);
+	set_hal_pin("conf0.r", 25.0);
+	set_hal_pin("conf0.l", 0.003);
+	set_hal_pin("conf0.j", KGCM2(0.268));
+	set_hal_pin("conf0.km", 0.068);
+
+	set_hal_pin("conf0.pos_p", 45.0);
+	set_hal_pin("conf0.acc_p", 0.025);
+	set_hal_pin("conf0.acc_pi", 10.0);
+	set_hal_pin("conf0.cur_lp", 0.0);
+	set_hal_pin("cur0.magpos", 0.0);
+	set_hal_pin("enc0.quad_en0", 1.0);
 }

@@ -26,3 +26,4 @@ void set_sankyo();
 void set_sanyo();
 void set_mitsubishi();
 void set_br();
+void set_e240();

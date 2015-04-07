@@ -216,7 +216,8 @@ int main(void)
 
 	link_pid();
 
-	set_bergerlahr();//pid2: ok
+	set_e240();
+	//set_bergerlahr();//pid2: ok
 	//set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
