@@ -111,9 +111,9 @@ void set_rexroth(){
 	set_hal_pin("conf0.j", 0.000013);//data
 	set_hal_pin("conf0.km", 0.29);//data
 
-	set_hal_pin("conf0.pos_p", 80.0);
-	set_hal_pin("conf0.acc_p", 0.15);
-	set_hal_pin("conf0.acc_pi", 50.0);
+	set_hal_pin("conf0.pos_p", 100.0);
+	set_hal_pin("conf0.acc_p", 0.2);
+	set_hal_pin("conf0.acc_pi", 70.0);
 	set_hal_pin("conf0.cur_lp", 0.4);
 	set_hal_pin("enc0.res1", 512.0);
 }
@@ -457,6 +457,7 @@ int main(void)
 
 	#include "comps/pwm2uart.comp"
 
+	#include "comps/absavg.comp"
 
 
 	#include "comps/term.comp"
@@ -541,6 +542,10 @@ int main(void)
 	//link_hal_pins("pderiv1.out2", "net0.fb_d");
 
 	set_cmd_enc0();
+
+	link_hal_pins("pid0.pos_error", "avg0.in");
+	set_hal_pin("avg0.ac", 0.0001);
+
 
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");
