@@ -150,36 +150,36 @@
 <dimension x1="5" y1="5" x2="0" y2="5" x3="2.5" y3="-7.5" textsize="1.778" layer="47"/>
 <dimension x1="95" y1="5" x2="95" y2="0" x3="105.75" y3="2.5" textsize="1.778" layer="47"/>
 <dimension x1="95" y1="5" x2="95" y2="70" x3="105.75" y3="37.5" textsize="1.778" layer="48"/>
-<text x="25.75" y="66.5" size="1.778" layer="112" font="fixed" rot="SR0" align="bottom-center">-BRAKE+</text>
-<text x="37.5" y="66.5" size="1.778" layer="112" font="fixed" rot="SR0" align="bottom-center">-24V+</text>
+<text x="25.75" y="66.5" size="1.5" layer="112" font="fixed" rot="SR0" align="bottom-center">-BRAKE+</text>
+<text x="37.5" y="66.5" size="1.5" layer="112" font="fixed" rot="SR0" align="bottom-center">-24V+</text>
 <text x="13.25" y="63.75" size="1.5" layer="112" font="fixed" rot="SR0" align="bottom-center">- + T
 FAN</text>
 <text x="4.25" y="51.25" size="1.5" layer="112" font="fixed" rot="SR90" align="bottom-center">USB</text>
-<text x="15" y="36.25" size="1.778" layer="112" font="fixed" rot="SR90" align="bottom-center">CMD</text>
-<text x="15" y="18.25" size="1.778" layer="112" font="fixed" rot="SR90" align="bottom-center">FB</text>
-<text x="20.5" y="5.5" size="1.3" layer="21" font="fixed" rot="SR90" align="bottom-center">12V 5V</text>
-<text x="13" y="1.75" size="1" layer="21" font="fixed" rot="SR0" align="bottom-center">RES:||</text>
-<text x="83.5" y="66.5" size="1.778" layer="112" font="fixed" rot="SR0" align="bottom-center">U  V  W</text>
-<text x="69.5" y="66.5" size="1.778" layer="112" font="fixed" rot="SR0" align="bottom-center">-HV+</text>
-<text x="7" y="63" size="1.778" layer="112" font="fixed" rot="SR90" align="bottom-center">G</text>
-<text x="7" y="58" size="1.778" layer="112" font="fixed" rot="SR90" align="bottom-center">R</text>
-<text x="59.25" y="5.75" size="1.778" layer="112" font="fixed" align="bottom-center">G</text>
-<text x="63.75" y="5.75" size="1.778" layer="112" font="fixed" align="bottom-center">Y</text>
-<text x="68.25" y="5.75" size="1.778" layer="112" font="fixed" align="bottom-center">R</text>
+<text x="15" y="36.25" size="1.5" layer="112" font="fixed" rot="SR90" align="bottom-center">CMD</text>
+<text x="15" y="18.25" size="1.5" layer="112" font="fixed" rot="SR90" align="bottom-center">FB</text>
+<text x="20.5" y="5.5" size="1" layer="112" font="fixed" rot="SR90" align="bottom-center">12V 5V </text>
+<text x="13" y="1.75" size="1" layer="112" font="fixed" rot="SR0" align="bottom-center">RES:||</text>
+<text x="83.5" y="66.5" size="1.5" layer="112" font="fixed" rot="SR0" align="bottom-center">U   V   W</text>
+<text x="69.5" y="66.5" size="1.5" layer="112" font="fixed" rot="SR0" align="bottom-center">-HV+</text>
+<text x="6.75" y="63" size="1.5" layer="112" font="fixed" rot="SR90" align="bottom-center">G</text>
+<text x="6.75" y="58" size="1.5" layer="112" font="fixed" rot="SR90" align="bottom-center">R</text>
+<text x="59.25" y="5.75" size="1.5" layer="112" font="fixed" align="bottom-center">G</text>
+<text x="63.75" y="5.75" size="1.5" layer="112" font="fixed" align="bottom-center">Y</text>
+<text x="68.25" y="5.75" size="1.5" layer="112" font="fixed" align="bottom-center">R</text>
 <text x="25" y="59.25" size="0.6" layer="112" font="fixed" rot="SR0" align="bottom-center">12V 24V 5V  0V</text>
-<text x="16.25" y="23.5" size="0.85" layer="112" font="fixed" rot="SR90" align="bottom-center">RS485
+<text x="16.25" y="23.5" size="0.8" layer="112" font="fixed" rot="SR90" align="bottom-center">RS485
 A B</text>
 <text x="39.5" y="22" size="0.8" layer="112" font="fixed" rot="SR90" align="bottom-center">TXRX</text>
 <text x="28.5" y="42" size="1" layer="112" font="fixed" rot="SR0" align="bottom-center">3V MI TX RC TD
 0V SC MO RX 5V</text>
-<text x="16.25" y="28.75" size="0.85" layer="112" font="fixed" rot="SR90" align="bottom-center">RS485
+<text x="16.25" y="28.75" size="0.8" layer="112" font="fixed" rot="SR90" align="bottom-center">RS485
 A B</text>
 <text x="49" y="22" size="0.8" layer="112" font="fixed" rot="SR90" align="bottom-center">RXTX</text>
 <text x="58.5" y="33" size="0.8" layer="112" font="fixed" rot="R90" align="bottom-center">3V 0V 15V</text>
 <text x="39.5" y="10.25" size="0.8" layer="112" font="fixed" rot="SR90" align="bottom-center">3V</text>
-<text x="50" y="1.5" size="1.778" layer="51" font="fixed" align="bottom-center">STMBL
+<text x="50" y="1.5" size="1.5" layer="29" font="fixed" align="bottom-center">STMBL
 V3.3</text>
-<text x="50" y="1.5" size="1.778" layer="52" font="fixed" rot="MR0" align="bottom-center">STMBL
+<text x="50" y="1.5" size="1.5" layer="30" font="fixed" rot="MR0" align="bottom-center">STMBL
 V3.3</text>
 <text x="52" y="12.5" size="1" layer="112" font="fixed" rot="R90" align="bottom-center">3V A5 A6 A7 0V</text>
 <wire x1="43" y1="48" x2="45" y2="48" width="0" layer="20"/>
@@ -191,19 +191,20 @@ V3.3</text>
 <wire x1="45" y1="19" x2="43" y2="19" width="0" layer="20"/>
 <wire x1="43" y1="19" x2="43" y2="25" width="0" layer="20"/>
 <text x="39.5" y="8.25" size="0.8" layer="112" font="fixed" rot="SR90" align="bottom-center">0V</text>
-<text x="30.5" y="28.25" size="1" layer="51" font="fixed" rot="R270" align="center-left">COS</text>
-<text x="32" y="28.25" size="1" layer="51" font="fixed" rot="R270" align="center-left">SIN</text>
-<text x="33.5" y="28.25" size="1" layer="51" font="fixed" rot="R270" align="center-left">RES</text>
-<text x="35" y="28.25" size="1" layer="51" font="fixed" rot="R270" align="center-left">GND</text>
-<text x="12.25" y="46.75" size="1" layer="51" font="fixed" rot="R270" align="center-left">CLK</text>
-<text x="15" y="46.75" size="1" layer="51" font="fixed" rot="R270" align="center-left">GND</text>
+<text x="30.5" y="28.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">COS</text>
+<text x="32" y="28.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">SIN</text>
+<text x="33.5" y="28.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">RES</text>
+<text x="35" y="28.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">GND</text>
+<text x="12.25" y="46.75" size="1" layer="112" font="fixed" rot="R270" align="center-left">CLK</text>
+<text x="15" y="46.75" size="1" layer="112" font="fixed" rot="R270" align="center-left">GND</text>
 <text x="17.5" y="46.75" size="1" layer="51" font="fixed" rot="R270" align="center-left">DIO</text>
 <text x="20" y="46.75" size="1" layer="51" font="fixed" rot="R270" align="center-left">RST</text>
-<text x="54" y="23.25" size="1" layer="51" font="fixed" rot="R270" align="center-left">CLK</text>
-<text x="56.5" y="23.25" size="1" layer="51" font="fixed" rot="R270" align="center-left">GND</text>
-<text x="59" y="23.25" size="1" layer="51" font="fixed" rot="R270" align="center-left">DIO</text>
-<text x="61.5" y="23.25" size="1" layer="51" font="fixed" rot="R270" align="center-left">RST</text>
-<text x="20" y="0.75" size="1" layer="21" font="fixed">github.com/rene-dev/stmbl</text>
+<text x="54" y="23.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">CLK</text>
+<text x="56.5" y="23.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">GND</text>
+<text x="59" y="23.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">DIO</text>
+<text x="61.5" y="23.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">RST</text>
+<text x="20" y="0.75" size="1" layer="112" font="fixed">github.com/rene-dev/stmbl</text>
+<text x="22.75" y="61.75" size="0.8" layer="112" font="fixed" rot="SR0" align="bottom-center">12V 24V</text>
 </plain>
 <libraries>
 <library name="rcl">
