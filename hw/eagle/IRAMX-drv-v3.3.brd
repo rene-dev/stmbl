@@ -162,7 +162,7 @@ FAN</text>
 <text x="83.5" y="66.5" size="1.5" layer="112" font="fixed" rot="SR0" align="bottom-center">U   V   W</text>
 <text x="69.5" y="66.5" size="1.5" layer="112" font="fixed" rot="SR0" align="bottom-center">-HV+</text>
 <text x="6.75" y="63" size="1.5" layer="112" font="fixed" rot="SR90" align="bottom-center">G</text>
-<text x="7" y="58" size="1.5" layer="112" font="fixed" rot="SR90" align="bottom-center">R</text>
+<text x="6.75" y="58" size="1.5" layer="112" font="fixed" rot="SR90" align="bottom-center">R</text>
 <text x="59.25" y="5.75" size="1.5" layer="112" font="fixed" align="bottom-center">G</text>
 <text x="63.75" y="5.75" size="1.5" layer="112" font="fixed" align="bottom-center">Y</text>
 <text x="68.25" y="5.75" size="1.5" layer="112" font="fixed" align="bottom-center">R</text>
