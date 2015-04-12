@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.2.0">
+<eagle version="7.1.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -18,7 +18,7 @@
 <layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="no" active="yes"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="26" name="bNames" color="7" fill="1" visible="no" active="yes"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="no" active="yes"/>
 <layer number="28" name="bValues" color="7" fill="1" visible="no" active="yes"/>
@@ -161,11 +161,6 @@ FAN</text>
 <text x="13" y="1.75" size="1" layer="112" font="fixed" rot="SR0" align="bottom-center">RES:||</text>
 <text x="83.5" y="66.5" size="1.5" layer="112" font="fixed" rot="SR0" align="bottom-center">U   V   W</text>
 <text x="69.5" y="66.5" size="1.5" layer="112" font="fixed" rot="SR0" align="bottom-center">-HV+</text>
-<text x="6.75" y="63" size="1.5" layer="112" font="fixed" rot="SR90" align="bottom-center">G</text>
-<text x="6.75" y="58" size="1.5" layer="112" font="fixed" rot="SR90" align="bottom-center">R</text>
-<text x="59.25" y="5.75" size="1.5" layer="112" font="fixed" align="bottom-center">G</text>
-<text x="63.75" y="5.75" size="1.5" layer="112" font="fixed" align="bottom-center">Y</text>
-<text x="68.25" y="5.75" size="1.5" layer="112" font="fixed" align="bottom-center">R</text>
 <text x="25" y="59.25" size="0.6" layer="112" font="fixed" rot="SR0" align="bottom-center">12V 24V 5V  0V</text>
 <text x="16.25" y="23.5" size="0.8" layer="112" font="fixed" rot="SR90" align="bottom-center">RS485
 A B</text>
@@ -177,9 +172,9 @@ A B</text>
 <text x="49" y="22" size="0.8" layer="112" font="fixed" rot="SR90" align="bottom-center">RXTX</text>
 <text x="58.5" y="33" size="0.8" layer="112" font="fixed" rot="R90" align="bottom-center">3V 0V 15V</text>
 <text x="39.5" y="10.25" size="0.8" layer="112" font="fixed" rot="SR90" align="bottom-center">3V</text>
-<text x="50" y="1.5" size="1.5" layer="29" font="fixed" align="bottom-center">STMBL
+<text x="50" y="1.5" size="1.5" layer="121" font="fixed" align="bottom-center">STMBL
 V3.3</text>
-<text x="50" y="1.5" size="1.5" layer="30" font="fixed" rot="MR0" align="bottom-center">STMBL
+<text x="50" y="1.5" size="1.5" layer="122" font="fixed" rot="MR0" align="bottom-center">STMBL
 V3.3</text>
 <text x="52" y="12.5" size="1" layer="112" font="fixed" rot="R90" align="bottom-center">3V A5 A6 A7 0V</text>
 <wire x1="43" y1="48" x2="45" y2="48" width="0" layer="20"/>
@@ -197,8 +192,8 @@ V3.3</text>
 <text x="35" y="28.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">GND</text>
 <text x="12.25" y="46.75" size="1" layer="112" font="fixed" rot="R270" align="center-left">CLK</text>
 <text x="15" y="46.75" size="1" layer="112" font="fixed" rot="R270" align="center-left">GND</text>
-<text x="17.5" y="46.75" size="1" layer="51" font="fixed" rot="R270" align="center-left">DIO</text>
-<text x="20" y="46.75" size="1" layer="51" font="fixed" rot="R270" align="center-left">RST</text>
+<text x="17.5" y="46.75" size="1" layer="121" font="fixed" rot="R270" align="center-left">DIO</text>
+<text x="20" y="46.75" size="1" layer="112" font="fixed" rot="R270" align="center-left">RST</text>
 <text x="54" y="23.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">CLK</text>
 <text x="56.5" y="23.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">GND</text>
 <text x="59" y="23.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">DIO</text>
@@ -1453,11 +1448,11 @@ Extended by Federico Battaglin &lt;author&gt;&amp;lt;federico.rd@fdpinternationa
 <pad name="10" x="-16" y="-5" drill="0.8" shape="long" rot="R90"/>
 <pad name="23" x="-42" y="-5" drill="0.8" shape="long" rot="R90"/>
 <pad name="22" x="-40" y="0" drill="0.8" shape="long" rot="R90"/>
-<wire x1="-51" y1="-8.2" x2="11" y2="-8.2" width="0.127" layer="22"/>
-<wire x1="11" y1="-8.2" x2="11" y2="-2.7" width="0.127" layer="22"/>
-<wire x1="11" y1="-2.7" x2="-51" y2="-2.7" width="0.127" layer="22"/>
-<wire x1="-51" y1="-2.7" x2="-51" y2="-8.2" width="0.127" layer="22"/>
-<circle x="10" y="-7" radius="0.6" width="0" layer="22"/>
+<wire x1="-51" y1="-8.2" x2="11" y2="-8.2" width="0.127" layer="21"/>
+<wire x1="11" y1="-8.2" x2="11" y2="-2.7" width="0.127" layer="21"/>
+<wire x1="11" y1="-2.7" x2="-51" y2="-2.7" width="0.127" layer="21"/>
+<wire x1="-51" y1="-2.7" x2="-51" y2="-8.2" width="0.127" layer="21"/>
+<circle x="10" y="-7" radius="0.6" width="0" layer="21"/>
 <text x="-50.56" y="-2.1" size="1.27" layer="25">&gt;NAME</text>
 </package>
 </packages>
@@ -3876,7 +3871,10 @@ design rules under a new name.</description>
 <element name="C10" library="rcl" package="C0603" value="100n" x="88.5" y="37.75" rot="MR270"/>
 <element name="R11" library="rcl" package="R0603" value="180" x="91.5" y="19.2525" rot="MR90"/>
 <element name="C14" library="rcl" package="C0603" value="100n" x="63.5" y="15.4975" rot="MR270"/>
-<element name="LED1" library="led" package="LED3MM" value="GELB" x="63.7475" y="3.255" rot="R270"/>
+<element name="LED2" library="led" package="LED3MM" value="GELB" x="63.7475" y="3.255" smashed="yes" rot="R270">
+<attribute name="NAME" x="63.3785" y="10.1" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="62.0965" y="1.35" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
 <element name="R13" library="rcl" package="R0603" value="470" x="65.4975" y="5.2475" rot="MR90"/>
 <element name="IC1" library="iram-b" package="SIP23_TOP" value="IRAMX16UP60B" x="91.5" y="62.9995" rot="R90"/>
 <element name="C17" library="rcl" package="EB35D" value="820µ" x="73" y="47.75" rot="R225"/>
@@ -3900,9 +3898,15 @@ design rules under a new name.</description>
 <element name="R4" library="rcl" package="R0603" value="10k" x="68.75" y="26.75" rot="MR90"/>
 <element name="U$1" library="reroolib" package="SOIC08" value="SI8621" x="44" y="22" rot="MR90"/>
 <element name="R3" library="rcl" package="R0603" value="470" x="59.25" y="7" rot="MR90"/>
-<element name="LED3" library="led" package="LED3MM" value="GRÜN" x="59.25" y="3.25" rot="R270"/>
+<element name="LED1" library="led" package="LED3MM" value="GRÜN" x="59.25" y="3.25" smashed="yes" rot="R270">
+<attribute name="NAME" x="58.631" y="10.095" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="57.599" y="1.345" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
 <element name="R5" library="rcl" package="R0603" value="470" x="70.25" y="6" rot="MR90"/>
-<element name="LED4" library="led" package="LED3MM" value="ROT" x="68.25" y="3.25" rot="R270"/>
+<element name="LED3" library="led" package="LED3MM" value="ROT" x="68.25" y="3.25" smashed="yes" rot="R270">
+<attribute name="NAME" x="67.631" y="10.095" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="66.599" y="1.345" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
 <element name="C7" library="rcl" package="C0603" value="18p" x="79.75" y="7.25" rot="MR0"/>
 <element name="C12" library="rcl" package="C0603" value="18p" x="79.75" y="5.75" rot="MR0"/>
 <element name="C13" library="rcl" package="C0603" value="100n" x="65.75" y="13.5" rot="MR270"/>
@@ -3917,7 +3921,10 @@ design rules under a new name.</description>
 <element name="C29" library="rcl" package="C0603" value="100n" x="35.5" y="43" rot="MR90"/>
 <element name="C30" library="rcl" package="C0603" value="100n" x="37.5" y="42.5" rot="MR90"/>
 <element name="C32" library="rcl" package="C0603" value="100n" x="25.75" y="28" rot="MR270"/>
-<element name="X1" library="reroolib" package="RJ45" value="" x="3" y="18.25" rot="R270"/>
+<element name="X1" library="reroolib" package="RJ45" value="" x="3" y="18.25" smashed="yes" rot="R270">
+<attribute name="NAME" x="15.36" y="13.373" size="1.778" layer="25" rot="R90"/>
+<attribute name="VALUE" x="2.873" y="8.09" size="1.778" layer="27"/>
+</element>
 <element name="R14" library="rcl" package="R0603" value="470" x="15" y="16.75" rot="MR90"/>
 <element name="C37" library="rcl" package="C0603" value="1n" x="30.75" y="22.5" rot="MR270"/>
 <element name="R15" library="rcl" package="R0603" value="1k" x="17.5" y="18.25" rot="MR0"/>
@@ -3927,7 +3934,10 @@ design rules under a new name.</description>
 <element name="R21" library="rcl" package="R0603" value="180" x="32" y="22.5" rot="MR270"/>
 <element name="R22" library="rcl" package="R0603" value="3.9k" x="25.5" y="9" rot="MR0"/>
 <element name="C38" library="rcl" package="C0603" value="1n" x="20" y="16.5" rot="MR270"/>
-<element name="X2" library="reroolib" package="RJ45" value="" x="3" y="36.25" rot="R270"/>
+<element name="X2" library="reroolib" package="RJ45" value="" x="3" y="36.25" smashed="yes" rot="R270">
+<attribute name="NAME" x="15.36" y="39.623" size="1.778" layer="25" rot="R90"/>
+<attribute name="VALUE" x="2.873" y="26.09" size="1.778" layer="27"/>
+</element>
 <element name="IC5" library="micro-stm_v2" package="LQFP64" value="STM32F405RGT" x="31.75" y="34.75" rot="MR270"/>
 <element name="R29" library="rcl" package="R0603" value="470" x="33.375" y="22.5" rot="MR270"/>
 <element name="C41" library="rcl" package="C0603" value="100n" x="34.625" y="22.5" rot="MR90"/>
@@ -3945,15 +3955,24 @@ design rules under a new name.</description>
 <element name="C40" library="rcl" package="C0603" value="1n" x="20" y="13.5" rot="MR90"/>
 <element name="U$4" library="tca0372dw" package="TCA0372DM2" value="TCA0372DWDM2" x="35.25" y="6" rot="MR180"/>
 <element name="U$5" library="reroolib" package="SO16" value="AM26LS32ACD" x="17.5" y="38" rot="MR270"/>
-<element name="JP3" library="pinhead" package="2X05" value="" x="28.5" y="47.25" rot="R180"/>
+<element name="JP3" library="pinhead" package="2X05" value="" x="28.5" y="47.25" smashed="yes" rot="R180">
+<attribute name="NAME" x="26.35" y="51.325" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="34.85" y="51.695" size="1.27" layer="27" rot="R180"/>
+</element>
 <element name="C43" library="rcl" package="C0603" value="18p" x="39.5" y="36" rot="MR90"/>
 <element name="C44" library="rcl" package="C0603" value="18p" x="41.5" y="36" rot="MR90"/>
 <element name="R1" library="reroolib" package="CER" value="18k" x="52.5" y="69.25" rot="R180"/>
 <element name="R9" library="rcl" package="R0805" value="560" x="55.25" y="54.75" rot="MR90"/>
 <element name="R12" library="reroolib" package="CER" value="18k" x="50" y="56.5" rot="R270"/>
 <element name="C45" library="rcl" package="C0805" value="4.7u" x="41.25" y="8" rot="MR270"/>
-<element name="IC6" library="reroolib" package="R-78E" value="78" x="34" y="53.5" rot="R180"/>
-<element name="IC7" library="linear" package="TO220V" value="7812TV" x="22" y="53.5" rot="R180"/>
+<element name="IC6" library="reroolib" package="R-78E" value="78" x="34" y="53.5" smashed="yes" rot="R180">
+<attribute name="NAME" x="40.4548" y="55.83" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="39.08" y="61.12" size="1.27" layer="27" ratio="10" rot="R180"/>
+</element>
+<element name="IC7" library="linear" package="TO220V" value="7812TV" x="22" y="53.5" smashed="yes" rot="R180">
+<attribute name="NAME" x="19.83" y="59.5452" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="27.08" y="61.12" size="1.27" layer="27" ratio="10" rot="R180"/>
+</element>
 <element name="C53" library="rcl" package="C0603" value="100n" x="32.25" y="52.75" rot="MR180"/>
 <element name="C46" library="rcl" package="C0603" value="100n" x="20.5" y="58.75" rot="MR180"/>
 <element name="R33" library="rcl" package="R0603" value="1k" x="5.5" y="36.25" rot="MR90"/>
@@ -3966,10 +3985,19 @@ design rules under a new name.</description>
 <element name="C31" library="rcl" package="C0603" value="2.2u" x="40.5" y="31.5" rot="MR0"/>
 <element name="C36" library="rcl" package="C0603" value="100n" x="20" y="6.75" rot="MR90"/>
 <element name="R36" library="rcl" package="R0603" value="470" x="5.75" y="61.75" rot="MR180"/>
-<element name="LED5" library="led" package="LED3MM" value="GRÜN" x="3" y="63" rot="R90"/>
+<element name="LED4" library="led" package="LED3MM" value="GRÜN" x="3" y="63" smashed="yes" rot="R90">
+<attribute name="NAME" x="5.405" y="62.381" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="4.651" y="64.905" size="1.27" layer="27" ratio="10" rot="R90"/>
+</element>
 <element name="R37" library="rcl" package="R0603" value="470" x="5.75" y="56.75" rot="MR180"/>
-<element name="LED6" library="led" package="LED3MM" value="ROT" x="3" y="58" rot="R90"/>
-<element name="JP5" library="pinhead" package="1X03" value="" x="17.5" y="5.5" rot="R90"/>
+<element name="LED5" library="led" package="LED3MM" value="ROT" x="3" y="58" smashed="yes" rot="R90">
+<attribute name="NAME" x="5.655" y="57.381" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="4.651" y="59.905" size="1.27" layer="27" ratio="10" rot="R90"/>
+</element>
+<element name="JP5" library="pinhead" package="1X03" value="" x="17.5" y="5.5" smashed="yes" rot="R90">
+<attribute name="NAME" x="18.1712" y="9.6138" size="1.27" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="20.675" y="1.69" size="1.27" layer="27" rot="R90"/>
+</element>
 <element name="JP6" library="jumper" package="SJ_2" value="" x="10" y="52.25"/>
 <element name="C35" library="rcl" package="C0603" value="100n" x="35.25" y="27" rot="MR0"/>
 <element name="R39" library="rcl" package="R0603" value="33" x="7.5" y="16" rot="MR270"/>
@@ -4010,7 +4038,10 @@ design rules under a new name.</description>
 <element name="R45" library="rcl" package="R0603" value="1k" x="23.5" y="2" rot="MR0"/>
 <element name="R46" library="rcl" package="R0603" value="1k" x="23" y="5" rot="MR90"/>
 <element name="SJ1" library="jumper" package="SJ" value="" x="26.25" y="3" rot="MR90"/>
-<element name="JP7" library="pinhead" package="1X04" value="" x="16.25" y="48.5"/>
+<element name="JP7" library="pinhead" package="1X04" value="" x="16.25" y="48.5" smashed="yes">
+<attribute name="NAME" x="17.5938" y="50.3288" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="11.17" y="45.325" size="1.27" layer="27"/>
+</element>
 <element name="U$8" library="adafruit" package="FIDUCIAL_1MM" value="FIDUCIAL" x="90" y="10" rot="MR0"/>
 <element name="U$9" library="adafruit" package="FIDUCIAL_1MM" value="FIDUCIAL" x="10" y="65" rot="MR0"/>
 <element name="Q3" library="reroolib" package="MICRO3" value="IRLML6344" x="25.75" y="65" rot="MR0"/>
@@ -4036,19 +4067,30 @@ design rules under a new name.</description>
 <element name="JP1" library="pinhead" package="1X04" value="" x="57.75" y="25"/>
 <element name="C33" library="rcl" package="C0603" value="100n" x="14.25" y="10.25" rot="MR270"/>
 <element name="C34" library="rcl" package="153CLV-0405" value="2.2u" x="36.75" y="61"/>
-<element name="C48" library="rcl" package="E2,5-6E" value="2.2u" x="32.25" y="61.5" rot="R270"/>
+<element name="C48" library="rcl" package="E2,5-6E" value="2.2u" x="32.25" y="61.5" smashed="yes" rot="R270">
+<attribute name="NAME" x="30.917" y="64.274" size="1.27" layer="25" ratio="10"/>
+<attribute name="VALUE" x="29.71" y="58.833" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
 <element name="C49" library="rcl" package="C0603" value="100n" x="9.5" y="31.5" rot="MR180"/>
-<element name="J1" library="con-molex" package="6410-03" value="22-27-2031-03" x="13.25" y="70.5" rot="R180">
+<element name="J1" library="con-molex" package="6410-03" value="22-27-2031-03" x="13.25" y="70.5" smashed="yes" rot="R180">
 <attribute name="OC_NEWARK" value="unknown" x="13.25" y="70.5" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="MPN" value="" x="13.25" y="70.5" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="MF" value="" x="13.25" y="70.5" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="13.25" y="70.5" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="NAME" x="9.2831" y="67.4749" size="1.016" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="17.0331" y="75.0989" size="0.8128" layer="27" ratio="10" rot="R180"/>
 </element>
 <element name="Q1" library="reroolib" package="MICRO3" value="IRLML6344" x="13.75" y="65.5" rot="MR0"/>
 <element name="D5" library="adafruit" package="SOD-123" value="" x="11.75" y="68" rot="MR0"/>
-<element name="R30" library="rcl" package="R0603" value="1k" x="17" y="66" rot="MR180"/>
+<element name="R30" library="rcl" package="R0603" value="1k" x="17" y="66" smashed="yes" rot="MR180">
+<attribute name="NAME" x="16.365" y="65.365" size="1.27" layer="26" rot="MR180"/>
+<attribute name="VALUE" x="16.365" y="67.905" size="1.27" layer="28" rot="MR180"/>
+</element>
 <element name="R35" library="rcl" package="R0603" value="33" x="17" y="64" rot="MR180"/>
-<element name="R38" library="rcl" package="R0603" value="1k" x="23.5" y="61.25" rot="MR90"/>
+<element name="R38" library="rcl" package="R0603" value="1k" x="23.5" y="61.25" smashed="yes" rot="MR90">
+<attribute name="NAME" x="24.135" y="60.615" size="1.27" layer="26" rot="MR90"/>
+<attribute name="VALUE" x="21.595" y="60.615" size="1.27" layer="28" rot="MR90"/>
+</element>
 <element name="TP1" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="40.25" y="21.25"/>
 <element name="TP2" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="40.25" y="22.75"/>
 <element name="TP3" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="33.5" y="28.75"/>
@@ -4059,14 +4101,20 @@ design rules under a new name.</description>
 <element name="TP8" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="17" y="29.5"/>
 <element name="TP9" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="17" y="28"/>
 <element name="TP10" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="24" y="60.5"/>
-<element name="TP11" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="26" y="60.5"/>
+<element name="TP11" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="26" y="60.5" smashed="yes"/>
 <element name="TP12" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="22" y="60.5"/>
 <element name="TP13" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="57" y="35"/>
 <element name="TP14" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="57" y="31"/>
-<element name="C50" library="rcl" package="153CLV-0405" value="2.2u" x="50.5" y="36.25"/>
+<element name="C50" library="rcl" package="153CLV-0405" value="2.2u" x="50.5" y="36.25" smashed="yes">
+<attribute name="NAME" x="45.51" y="39.73" size="1.27" layer="25"/>
+<attribute name="VALUE" x="48.225" y="32.515" size="1.27" layer="27"/>
+</element>
 <element name="TP15" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="47.75" y="21.25"/>
 <element name="TP16" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="47.75" y="22.75"/>
-<element name="C51" library="rcl" package="E2,5-6E" value="2.2u" x="50.5" y="37.5" rot="R180"/>
+<element name="C51" library="rcl" package="E2,5-6E" value="2.2u" x="50.5" y="37.5" smashed="yes" rot="R180">
+<attribute name="NAME" x="45.774" y="38.333" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="47.833" y="40.04" size="1.27" layer="27" ratio="10" rot="R180"/>
+</element>
 <element name="TP17" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="28" y="60.5"/>
 <element name="TP18" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="35" y="28.75"/>
 <element name="R41" library="varistor" package="R-5" value="VARISTOR-5" x="41.25" y="62.25" rot="R90"/>
@@ -4076,34 +4124,48 @@ design rules under a new name.</description>
 <element name="TP19" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="57" y="33"/>
 <element name="TP20" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="38" y="10.25"/>
 <element name="TP21" library="SparkFun-Passives" package="PAD.03X.03" value="TEST-POINT3" x="38" y="8.25"/>
-<element name="X7" library="reroolib" package="AKL230-02" value="" x="25.75" y="70.5">
+<element name="X7" library="reroolib" package="AKL230-02" value="" x="25.75" y="70.5" smashed="yes">
 <attribute name="OC_NEWARK" value="unknown" x="25.75" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="MPN" value="" x="25.75" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="MF" value="" x="25.75" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="25.75" y="70.5" size="1.778" layer="27" display="off"/>
+<attribute name="VALUE" x="21.94" y="64.15" size="1.27" layer="27" ratio="10"/>
+<attribute name="NAME" x="18.94" y="66.817" size="1.27" layer="25" ratio="10"/>
 </element>
-<element name="X8" library="reroolib" package="AKL230-02" value="" x="37.25" y="70.5">
+<element name="X8" library="reroolib" package="AKL230-02" value="" x="37.25" y="70.5" smashed="yes">
 <attribute name="OC_NEWARK" value="unknown" x="37.25" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="MPN" value="" x="37.25" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="MF" value="" x="37.25" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="37.25" y="70.5" size="1.778" layer="27" display="off"/>
+<attribute name="VALUE" x="33.44" y="64.15" size="1.27" layer="27" ratio="10"/>
+<attribute name="NAME" x="31.69" y="66.817" size="1.27" layer="25" ratio="10"/>
 </element>
-<element name="X9" library="reroolib" package="AKL230-02" value="" x="69.5" y="70.5">
+<element name="X9" library="reroolib" package="AKL230-02" value="" x="69.5" y="70.5" smashed="yes">
 <attribute name="OC_NEWARK" value="unknown" x="69.5" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="MPN" value="" x="69.5" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="MF" value="" x="69.5" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="69.5" y="70.5" size="1.778" layer="27" display="off"/>
+<attribute name="VALUE" x="65.69" y="64.15" size="1.27" layer="27" ratio="10"/>
+<attribute name="NAME" x="63.94" y="66.817" size="1.27" layer="25" ratio="10"/>
 </element>
-<element name="X3" library="reroolib" package="AKL230-03" value="" x="83.5" y="70.5">
+<element name="X3" library="reroolib" package="AKL230-03" value="" x="83.5" y="70.5" smashed="yes">
 <attribute name="OC_NEWARK" value="unknown" x="83.5" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="MPN" value="" x="83.5" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="MF" value="" x="83.5" y="70.5" size="1.778" layer="27" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="83.5" y="70.5" size="1.778" layer="27" display="off"/>
+<attribute name="VALUE" x="77.15" y="66.817" size="1.27" layer="27" ratio="10"/>
+<attribute name="NAME" x="75.15" y="66.527" size="1.27" layer="25" ratio="10"/>
 </element>
 <element name="R51" library="rcl" package="R0603" value="1k" x="36.25" y="49.75" rot="MR90"/>
 <element name="SV2" library="pinhead" package="1X05" value="" x="54" y="12.5" rot="R270"/>
-<element name="JP2" library="pinhead" package="1X02" value="" x="54.75" y="38.5" rot="R270"/>
-<element name="JP4" library="jumper" package="SJ_2" value="" x="22.75" y="64" rot="R180"/>
+<element name="JP2" library="pinhead" package="1X02" value="" x="54.75" y="38.5" smashed="yes" rot="R270">
+<attribute name="NAME" x="56.3288" y="38.6162" size="1.27" layer="25" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="51.575" y="41.04" size="1.27" layer="27" rot="R270"/>
+</element>
+<element name="JP4" library="jumper" package="SJ_2" value="" x="22.75" y="64" smashed="yes" rot="R180">
+<attribute name="NAME" x="20.163" y="64.48" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="22.8501" y="64" size="0.02" layer="27" rot="R180"/>
+</element>
 <element name="C26" library="rcl" package="C0603" value="10n" x="1.75" y="45.75" rot="MR270"/>
 <element name="R52" library="rcl" package="R0603" value="10k" x="3.75" y="45.75" rot="MR270"/>
 <element name="LOGO1" library="SparkFun-Aesthetics" package="OSHW-LOGO-L" value="OSHW-LOGOL" x="26.25" y="11.25"/>
@@ -4318,7 +4380,7 @@ design rules under a new name.</description>
 <wire x1="72" y1="71" x2="72" y2="70.5" width="0.5" layer="1"/>
 </signal>
 <signal name="N$43">
-<contactref element="LED1" pad="A"/>
+<contactref element="LED2" pad="A"/>
 <contactref element="R13" pad="1"/>
 <wire x1="65.4975" y1="4.3975" x2="63.875" y2="4.3975" width="0.2" layer="16"/>
 <wire x1="63.875" y1="4.3975" x2="63.7475" y2="4.525" width="0.2" layer="16"/>
@@ -4492,12 +4554,12 @@ design rules under a new name.</description>
 <wire x1="79.2394125" y1="21" x2="79.24246875" y2="21.00305625" width="0.2" layer="16"/>
 </signal>
 <signal name="N$8">
-<contactref element="LED3" pad="A"/>
+<contactref element="LED1" pad="A"/>
 <contactref element="R3" pad="1"/>
 <wire x1="59.25" y1="6.15" x2="59.25" y2="4.52" width="0.2" layer="16"/>
 </signal>
 <signal name="N$9">
-<contactref element="LED4" pad="A"/>
+<contactref element="LED3" pad="A"/>
 <contactref element="R5" pad="1"/>
 <wire x1="70.25" y1="5.15" x2="68.88" y2="5.15" width="0.2" layer="16"/>
 <wire x1="68.88" y1="5.15" x2="68.25" y2="4.52" width="0.2" layer="16"/>
@@ -5037,9 +5099,9 @@ design rules under a new name.</description>
 <contactref element="C24" pad="2"/>
 <contactref element="C10" pad="2"/>
 <contactref element="C19" pad="2"/>
+<contactref element="LED2" pad="K"/>
 <contactref element="LED1" pad="K"/>
 <contactref element="LED3" pad="K"/>
-<contactref element="LED4" pad="K"/>
 <contactref element="R6" pad="1"/>
 <polygon width="0.3" layer="16" rank="2">
 <vertex x="45.75" y="75"/>
@@ -5223,8 +5285,8 @@ design rules under a new name.</description>
 <contactref element="C37" pad="2"/>
 <contactref element="R27" pad="2"/>
 <contactref element="C39" pad="2"/>
+<contactref element="LED4" pad="K"/>
 <contactref element="LED5" pad="K"/>
-<contactref element="LED6" pad="K"/>
 <contactref element="X1" pad="8"/>
 <contactref element="X2" pad="8"/>
 <contactref element="C35" pad="1"/>
@@ -6036,13 +6098,13 @@ design rules under a new name.</description>
 <via x="33.5" y="25.75" extent="1-16" drill="0.3302"/>
 </signal>
 <signal name="N$11">
-<contactref element="LED5" pad="A"/>
+<contactref element="LED4" pad="A"/>
 <contactref element="R36" pad="1"/>
 <wire x1="4.9" y1="61.75" x2="3.02" y2="61.75" width="0.2" layer="16"/>
 <wire x1="3.02" y1="61.75" x2="3" y2="61.73" width="0.2" layer="16"/>
 </signal>
 <signal name="N$20">
-<contactref element="LED6" pad="A"/>
+<contactref element="LED5" pad="A"/>
 <contactref element="R37" pad="1"/>
 <wire x1="4.9" y1="56.75" x2="3.02" y2="56.75" width="0.2" layer="16"/>
 <wire x1="3.02" y1="56.75" x2="3" y2="56.73" width="0.2" layer="16"/>
@@ -7397,8 +7459,8 @@ design rules under a new name.</description>
 <approved hash="7,40,090a0fd4c550ecf6"/>
 <approved hash="7,40,050a2bd5bb51fef6"/>
 <approved hash="7,40,44428cbe7752d4d6"/>
-<approved hash="18,29,fb18655f9b410506"/>
 <approved hash="18,29,f3346cff92e10d2a"/>
+<approved hash="18,29,fb18655f9b410506"/>
 <approved hash="18,29,5b36c5713b7ea539"/>
 <approved hash="18,29,531accd132dead15"/>
 <approved hash="5,1,5ce2a285c5753b12"/>
