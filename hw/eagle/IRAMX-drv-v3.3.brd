@@ -5916,7 +5916,7 @@ design rules under a new name.</description>
 <via x="10.75" y="5.5" extent="1-16" drill="0.3302"/>
 <via x="12.75" y="7.75" extent="1-16" drill="0.3302"/>
 <via x="15.5" y="8.75" extent="1-16" drill="0.3302"/>
-<via x="18.5" y="1.5" extent="1-16" drill="0.3302"/>
+<via x="18.5" y="1" extent="1-16" drill="0.3302"/>
 <via x="36" y="3.75" extent="1-16" drill="0.3302"/>
 <via x="40" y="3.75" extent="1-16" drill="0.3302"/>
 <via x="38.25" y="21.25" extent="1-16" drill="0.3302"/>
