@@ -22,8 +22,8 @@
 <layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="27" name="tValues" color="7" fill="1" visible="no" active="yes"/>
 <layer number="28" name="bValues" color="7" fill="1" visible="no" active="yes"/>
-<layer number="29" name="tStop" color="7" fill="3" visible="yes" active="yes"/>
-<layer number="30" name="bStop" color="7" fill="6" visible="yes" active="yes"/>
+<layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
+<layer number="30" name="bStop" color="7" fill="6" visible="no" active="yes"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="yes" active="yes"/>
 <layer number="32" name="bCream" color="7" fill="5" visible="yes" active="yes"/>
 <layer number="33" name="tFinish" color="6" fill="3" visible="no" active="yes"/>
@@ -1679,6 +1679,8 @@ Extended by Federico Battaglin &lt;author&gt;&amp;lt;federico.rd@fdpinternationa
 <wire x1="10.78" y1="-4.8" x2="-8.24" y2="-4.8" width="0.127" layer="21"/>
 <wire x1="-8.24" y1="-4.8" x2="-8.24" y2="1.2" width="0.127" layer="21"/>
 <wire x1="0" y1="0" x2="0" y2="-3.81" width="0.127" layer="21" style="longdash"/>
+<text x="-7.62" y="-3.81" size="1.27" layer="25">&gt;NAME</text>
+<text x="3.81" y="-3.81" size="1.27" layer="27">&gt;VALUE</text>
 </package>
 <package name="RJ45">
 <description>&lt;b&gt;Modular Jack&lt;/b&gt;&lt;p&gt;PC Board Ground</description>
@@ -1816,6 +1818,8 @@ body 3.9 mm/JEDEC MS-012AC</description>
 <wire x1="7.62" y1="5.08" x2="-7.62" y2="5.08" width="0.127" layer="21"/>
 <wire x1="-7.62" y1="5.08" x2="-7.62" y2="-5.08" width="0.127" layer="21"/>
 <wire x1="-7.62" y1="-5.08" x2="7.62" y2="-5.08" width="0.127" layer="21"/>
+<text x="-6.35" y="-3.81" size="1.27" layer="25">&gt;NAME</text>
+<text x="-6.35" y="2.54" size="1.27" layer="27">&gt;VALUE</text>
 </package>
 <package name="R-78E">
 <wire x1="5.08" y1="-1.143" x2="4.953" y2="-4.064" width="0.127" layer="21"/>
@@ -3340,8 +3344,8 @@ precision wire wound</description>
 <circle x="0" y="0" radius="0.6604" width="0.1524" layer="51"/>
 <smd name="1" x="-1.2" y="0" dx="1.4" dy="2.4" layer="1"/>
 <smd name="2" x="1.2" y="0" dx="1.4" dy="2.4" layer="1"/>
-<text x="-1.27" y="1.524" size="1.27" layer="25">&gt;NAME</text>
-<text x="-1.27" y="-2.794" size="1.27" layer="27">&gt;VALUE</text>
+<text x="-1.905" y="1.905" size="1.27" layer="25">&gt;NAME</text>
+<text x="-1.905" y="-3.175" size="1.27" layer="27">&gt;VALUE</text>
 <rectangle x1="0.7366" y1="-1.27" x2="1.3208" y2="1.27" layer="51"/>
 <rectangle x1="-1.3208" y1="-1.27" x2="-0.7366" y2="1.27" layer="51"/>
 <rectangle x1="-0.3" y1="-0.7" x2="0.3" y2="0.7" layer="35"/>
@@ -4023,7 +4027,10 @@ design rules under a new name.</description>
 <attribute name="NAME" x="39" y="49.5" size="0.5" layer="26" rot="MR180" align="center"/>
 <attribute name="VALUE" x="38.365" y="50.405" size="1.27" layer="28" rot="MR180"/>
 </element>
-<element name="IC14" library="reroolib" package="SIP7" value="rk-2415s" x="44" y="46" smashed="yes"/>
+<element name="IC14" library="reroolib" package="SIP7" value="rk-2415s" x="44" y="46" smashed="yes">
+<attribute name="NAME" x="48.38" y="42.69" size="1.27" layer="25"/>
+<attribute name="VALUE" x="47.81" y="42.19" size="1.27" layer="27"/>
+</element>
 <element name="C20" library="rcl" package="C0603" value="100n" x="26.25" y="41.5" smashed="yes" rot="MR90">
 <attribute name="NAME" x="25.25" y="41.5" size="0.5" layer="26" rot="MR90" align="center"/>
 <attribute name="VALUE" x="24.345" y="40.865" size="1.27" layer="28" rot="MR90"/>
@@ -4158,12 +4165,12 @@ design rules under a new name.</description>
 <attribute name="NAME" x="40.5" y="36" size="0.5" layer="26" rot="MR90" align="center"/>
 <attribute name="VALUE" x="39.595" y="35.365" size="1.27" layer="28" rot="MR90"/>
 </element>
-<element name="R1" library="reroolib" package="CER" value="18k" x="52.5" y="69.25" smashed="yes" rot="R180"/>
+<element name="R1" library="reroolib" package="CER" value="18k" x="52.5" y="69.25" rot="R180"/>
 <element name="R9" library="rcl" package="R0805" value="560" x="55.25" y="54.75" smashed="yes" rot="MR90">
 <attribute name="NAME" x="55.25" y="57" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="52.71" y="54.115" size="1.27" layer="28" rot="MR90"/>
 </element>
-<element name="R12" library="reroolib" package="CER" value="18k" x="50" y="56.5" smashed="yes" rot="R270"/>
+<element name="R12" library="reroolib" package="CER" value="18k" x="50" y="56.5" rot="R270"/>
 <element name="C45" library="rcl" package="C0805" value="4.7u" x="41.25" y="8" smashed="yes" rot="MR270">
 <attribute name="NAME" x="41.25" y="5.75" size="0.5" layer="26" rot="MR180" align="center"/>
 <attribute name="VALUE" x="43.79" y="9.27" size="1.27" layer="28" rot="MR270"/>
@@ -4332,7 +4339,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="51" y="35.5" size="0.5" layer="26" rot="MR270" align="center"/>
 <attribute name="VALUE" x="50.27" y="32.96" size="1.27" layer="28" rot="MR0"/>
 </element>
-<element name="T1" library="zetex" package="SOT223" value="zldo1117" x="37.75" y="14.75" smashed="yes" rot="MR270">
+<element name="IC3" library="zetex" package="SOT223" value="zldo1117" x="37.75" y="14.75" smashed="yes" rot="MR270">
 <attribute name="OC_NEWARK" value="25R4490" x="37.75" y="14.75" size="1.778" layer="28" rot="MR270" display="off"/>
 <attribute name="MPN" value="DJT4031N-13" x="37.75" y="14.75" size="1.778" layer="28" rot="MR270" display="off"/>
 <attribute name="MF" value="" x="37.75" y="14.75" size="1.778" layer="28" rot="MR270" display="off"/>
@@ -4340,7 +4347,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="38.5" y="18.5" size="0.5" layer="26" rot="MR180" align="center"/>
 <attribute name="VALUE" x="39.0708" y="17.29" size="1.27" layer="28" rot="MR270"/>
 </element>
-<element name="T2" library="zetex" package="SOT223" value="zldo1117" x="50" y="30" smashed="yes" rot="MR180">
+<element name="IC4" library="zetex" package="SOT223" value="zldo1117" x="50" y="30" smashed="yes" rot="MR180">
 <attribute name="OC_NEWARK" value="25R4490" x="50" y="30" size="1.778" layer="28" rot="MR180" display="off"/>
 <attribute name="MPN" value="DJT4031N-13" x="50" y="30" size="1.778" layer="28" rot="MR180" display="off"/>
 <attribute name="MF" value="" x="50" y="30" size="1.778" layer="28" rot="MR180" display="off"/>
@@ -4454,7 +4461,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="13.75" y="64.25" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="15.25" y="62.1" size="1.778" layer="28" rot="MR0"/>
 </element>
-<element name="D5" library="adafruit" package="SOD-123" value="" x="11.75" y="68" smashed="yes" rot="MR0">
+<element name="D4" library="adafruit" package="SOD-123" value="" x="11.75" y="68" smashed="yes" rot="MR0">
 <attribute name="NAME" x="11.75" y="66.75" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="12.85" y="66.716" size="0.4064" layer="28" rot="MR0"/>
 </element>
@@ -5074,10 +5081,8 @@ design rules under a new name.</description>
 <wire x1="29.5" y1="21.65" x2="29.5" y2="21.25" width="0.2" layer="16"/>
 <wire x1="29.5" y1="21.25" x2="28.75" y2="20.5" width="0.2" layer="16"/>
 <wire x1="28.75" y1="20.5" x2="28.5" y2="20.5" width="0.2" layer="16"/>
-<wire x1="28.5" y1="20.5" x2="28" y2="20" width="0.2" layer="16"/>
-<wire x1="28" y1="20" x2="28" y2="19.75" width="0.2" layer="16"/>
-<wire x1="28" y1="19.75" x2="27.5" y2="19.25" width="0.2" layer="16"/>
-<wire x1="27.5" y1="19.25" x2="27.5" y2="17.25" width="0.2" layer="16"/>
+<wire x1="28.5" y1="20.5" x2="27.5" y2="19.5" width="0.2" layer="16"/>
+<wire x1="27.5" y1="19.5" x2="27.5" y2="17.25" width="0.2" layer="16"/>
 <wire x1="27" y1="9.65" x2="26.35" y2="9" width="0.2" layer="16"/>
 <wire x1="27" y1="16.75" x2="27.5" y2="17.25" width="0.2" layer="16"/>
 <wire x1="27.5" y1="17.25" x2="29.2615" y2="17.25" width="0.2" layer="16"/>
@@ -5541,7 +5546,7 @@ design rules under a new name.</description>
 <contactref element="D1" pad="A"/>
 <contactref element="C5" pad="2"/>
 <contactref element="C6" pad="2"/>
-<contactref element="T2" pad="1"/>
+<contactref element="IC4" pad="1"/>
 <contactref element="JP1" pad="2"/>
 <via x="82.5" y="23.5" extent="1-16" drill="0.3302"/>
 <contactref element="C50" pad="-"/>
@@ -5754,7 +5759,7 @@ design rules under a new name.</description>
 <contactref element="X2" pad="G3"/>
 <contactref element="X2" pad="G4"/>
 <contactref element="JP11" pad="5"/>
-<contactref element="T1" pad="1"/>
+<contactref element="IC3" pad="1"/>
 <contactref element="JP7" pad="2"/>
 <contactref element="IC9" pad="5"/>
 <contactref element="IC8" pad="5"/>
@@ -5951,8 +5956,8 @@ design rules under a new name.</description>
 <contactref element="C61" pad="1"/>
 <contactref element="JP3" pad="9"/>
 <contactref element="IC12" pad="1"/>
-<contactref element="T1" pad="4"/>
-<contactref element="T1" pad="2"/>
+<contactref element="IC3" pad="4"/>
+<contactref element="IC3" pad="2"/>
 <wire x1="40.9266" y1="20.095" x2="40.75" y2="20" width="0.2" layer="16"/>
 <wire x1="40.75" y1="20" x2="39" y2="20" width="0.2" layer="16"/>
 <wire x1="39" y1="20" x2="38.405" y2="20.595" width="0.2" layer="16"/>
@@ -6082,7 +6087,7 @@ design rules under a new name.</description>
 <contactref element="R31" pad="2"/>
 <contactref element="IC13" pad="4"/>
 <contactref element="JP9" pad="1"/>
-<contactref element="T1" pad="3"/>
+<contactref element="IC3" pad="3"/>
 <contactref element="R46" pad="2"/>
 <wire x1="18.35" y1="10.25" x2="18.5" y2="10.25" width="0.2" layer="16"/>
 <wire x1="18.5" y1="10.25" x2="19.25" y2="11" width="0.2" layer="16"/>
@@ -6215,8 +6220,8 @@ design rules under a new name.</description>
 <wire x1="85" y1="24.2" x2="85" y2="23.6" width="0.2" layer="16"/>
 <wire x1="61.5025" y1="14.645" x2="61.55" y2="14.4975" width="0.2" layer="16"/>
 <contactref element="C6" pad="1"/>
-<contactref element="T2" pad="4"/>
-<contactref element="T2" pad="2"/>
+<contactref element="IC4" pad="4"/>
+<contactref element="IC4" pad="2"/>
 <wire x1="47.75" y1="20.095" x2="47.0734" y2="20.095" width="0.2" layer="16"/>
 <wire x1="63" y1="31" x2="57" y2="31" width="0.2" layer="1"/>
 <wire x1="77.25" y1="11.5" x2="77.25" y2="13.5" width="0.2" layer="16"/>
@@ -6483,7 +6488,7 @@ design rules under a new name.</description>
 <wire x1="88.4975" y1="38.7525" x2="88.5" y2="38.6" width="0.2" layer="16"/>
 <wire x1="88.7775" y1="39.0275" x2="88.5" y2="38.6" width="0.2" layer="16"/>
 <contactref element="C5" pad="1"/>
-<contactref element="T2" pad="3"/>
+<contactref element="IC4" pad="3"/>
 <wire x1="52.3114" y1="39.5" x2="52.3114" y2="37.5" width="0.4" layer="16"/>
 <contactref element="TP13" pad="P$1"/>
 <contactref element="C50" pad="+"/>
@@ -7036,7 +7041,7 @@ design rules under a new name.</description>
 <wire x1="27.4" y1="61.65" x2="27.4" y2="62.5" width="0.2" layer="16"/>
 </signal>
 <signal name="N$42">
-<contactref element="D5" pad="A"/>
+<contactref element="D4" pad="A"/>
 <contactref element="J1" pad="1"/>
 <wire x1="10.71" y1="70.5" x2="9.9" y2="69.69" width="0.4" layer="16"/>
 <wire x1="9.9" y1="69.69" x2="9.9" y2="68" width="0.4" layer="16"/>
@@ -7142,7 +7147,7 @@ design rules under a new name.</description>
 </signal>
 <signal name="N$52">
 <contactref element="J1" pad="2"/>
-<contactref element="D5" pad="C"/>
+<contactref element="D4" pad="C"/>
 <contactref element="JP4" pad="2"/>
 <wire x1="13.25" y1="70.5" x2="13.6" y2="70.5" width="0.2" layer="16"/>
 <wire x1="13.6" y1="70.5" x2="13.6" y2="68" width="0.4" layer="16"/>
@@ -7914,6 +7919,10 @@ design rules under a new name.</description>
 <approved hash="7,40,420d14ee12f2423f"/>
 <approved hash="7,40,cc6f9a809c9fcc5a"/>
 <approved hash="7,40,42cd1422123c42c5"/>
+<approved hash="18,29,f3346cff92e10d2a"/>
+<approved hash="18,29,fb18655f9b410506"/>
+<approved hash="18,29,531accd132dead15"/>
+<approved hash="18,29,5b36c5713b7ea539"/>
 <approved hash="3,16,bf43ec16b3d30dbb"/>
 <approved hash="3,1,bf43ec16b3d30dbb"/>
 <approved hash="3,16,1d30d2b6d31b1c9d"/>
@@ -7942,10 +7951,6 @@ design rules under a new name.</description>
 <approved hash="3,1,f162f072f885f5b7"/>
 <approved hash="3,1,989f596f5aa39b53"/>
 <approved hash="3,1,205ed0aedfd72f27"/>
-<approved hash="18,29,f3346cff92e10d2a"/>
-<approved hash="18,29,fb18655f9b410506"/>
-<approved hash="18,29,531accd132dead15"/>
-<approved hash="18,29,5b36c5713b7ea539"/>
 <approved hash="5,1,5ce2a285c5753b12"/>
 <approved hash="5,16,7aad4d5d67c8f56d"/>
 <approved hash="5,16,1c3c712979b7ce42"/>
