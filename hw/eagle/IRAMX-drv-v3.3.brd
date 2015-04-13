@@ -3870,19 +3870,19 @@ design rules under a new name.</description>
 </autorouter>
 <elements>
 <element name="C1" library="rcl" package="C0805" value="4.7u" x="95.5" y="51" smashed="yes" rot="MR0">
-<attribute name="NAME" x="95.4975" y="49.7475" size="0.5" layer="26" rot="MR0" align="center"/>
+<attribute name="NAME" x="95.5" y="49.75" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="96.77" y="48.46" size="1.27" layer="28" rot="MR0"/>
 </element>
 <element name="C2" library="rcl" package="C0805" value="4.7u" x="95.5" y="57" smashed="yes" rot="MR0">
-<attribute name="NAME" x="95.4975" y="55.745" size="0.5" layer="26" rot="MR0" align="center"/>
+<attribute name="NAME" x="95.5" y="55.75" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="96.77" y="54.46" size="1.27" layer="28" rot="MR0"/>
 </element>
 <element name="C3" library="rcl" package="C0805" value="4.7u" x="95.5" y="63" smashed="yes" rot="MR0">
-<attribute name="NAME" x="95.4975" y="61.7525" size="0.5" layer="26" rot="MR0" align="center"/>
+<attribute name="NAME" x="95.5" y="61.75" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="96.77" y="60.46" size="1.27" layer="28" rot="MR0"/>
 </element>
 <element name="C8" library="rcl" package="C0603" value="100n" x="67.75" y="11" smashed="yes" rot="MR0">
-<attribute name="NAME" x="67.7525" y="11.9975" size="0.5" layer="26" rot="MR0" align="center"/>
+<attribute name="NAME" x="67.75" y="12" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="68.385" y="9.095" size="1.27" layer="28" rot="MR0"/>
 </element>
 <element name="C10" library="rcl" package="C0603" value="100n" x="88.5" y="37.75" smashed="yes" rot="MR270">
@@ -3890,41 +3890,41 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="90.405" y="38.385" size="1.27" layer="28" rot="MR270"/>
 </element>
 <element name="R11" library="rcl" package="R0603" value="180" x="91.5" y="19.25" smashed="yes" rot="MR90">
-<attribute name="NAME" x="92.5" y="19.2475" size="0.5" layer="26" rot="MR90" align="center"/>
+<attribute name="NAME" x="92.5" y="19.25" size="0.5" layer="26" rot="MR90" align="center"/>
 <attribute name="VALUE" x="89.595" y="18.615" size="1.27" layer="28" rot="MR90"/>
 </element>
 <element name="C14" library="rcl" package="C0603" value="100n" x="63.5" y="15.5" smashed="yes" rot="MR270">
-<attribute name="NAME" x="62.5" y="15.5025" size="0.5" layer="26" rot="MR270" align="center"/>
+<attribute name="NAME" x="62.5" y="15.5" size="0.5" layer="26" rot="MR270" align="center"/>
 <attribute name="VALUE" x="65.405" y="16.135" size="1.27" layer="28" rot="MR270"/>
 </element>
-<element name="LED2" library="led" package="LED3MM" value="GELB" x="63.7475" y="3.255" smashed="yes" rot="R270">
+<element name="LED2" library="led" package="LED3MM" value="GELB" x="63.75" y="3.25" smashed="yes" rot="R270">
 <attribute name="NAME" x="63.75" y="7" size="0.8" layer="25" ratio="10" rot="R270" align="center"/>
-<attribute name="VALUE" x="62.0965" y="1.35" size="1.27" layer="27" ratio="10" rot="R270"/>
+<attribute name="VALUE" x="62.099" y="1.345" size="1.27" layer="27" ratio="10" rot="R270"/>
 </element>
 <element name="R13" library="rcl" package="R0603" value="470" x="65.5" y="5.25" smashed="yes" rot="MR90">
-<attribute name="NAME" x="66.5025" y="5.2525" size="0.5" layer="26" rot="MR90" align="center"/>
+<attribute name="NAME" x="66.5" y="5.25" size="0.5" layer="26" rot="MR90" align="center"/>
 <attribute name="VALUE" x="63.595" y="4.615" size="1.27" layer="28" rot="MR90"/>
 </element>
 <element name="IC1" library="iram-b" package="SIP23_TOP" value="IRAMX16UP60B" x="91.5" y="63" smashed="yes" rot="R90">
-<attribute name="NAME" x="93.35" y="36.94" size="0.8" layer="25" rot="R90" align="center"/>
+<attribute name="NAME" x="93.5" y="37" size="0.8" layer="25" rot="R90" align="center"/>
 </element>
 <element name="C17" library="rcl" package="EB35D" value="820µ" x="73" y="47.75" smashed="yes" rot="R225">
 <attribute name="NAME" x="73" y="29.25" size="0.8" layer="25" ratio="10" rot="R180" align="center"/>
 <attribute name="VALUE" x="71.203946875" y="56.730253125" size="1.778" layer="27" ratio="10" rot="R225"/>
 </element>
 <element name="R10" library="rcl" package="R0603" value="10k" x="61.5" y="15.5" smashed="yes" rot="MR90">
-<attribute name="NAME" x="60.4975" y="15.505" size="0.5" layer="26" rot="MR90" align="center"/>
+<attribute name="NAME" x="60.5" y="15.5" size="0.5" layer="26" rot="MR90" align="center"/>
 <attribute name="VALUE" x="59.595" y="14.865" size="1.27" layer="28" rot="MR90"/>
 </element>
 <element name="R23" library="rcl" package="R0603" value="1k" x="87.25" y="16.5" smashed="yes" rot="MR180">
-<attribute name="NAME" x="87.2525" y="17.5" size="0.5" layer="26" rot="MR180" align="center"/>
+<attribute name="NAME" x="87.25" y="17.5" size="0.5" layer="26" rot="MR180" align="center"/>
 <attribute name="VALUE" x="86.615" y="18.405" size="1.27" layer="28" rot="MR180"/>
 </element>
 <element name="H1" library="holes" package="3,2-PAD" value="MOUNT-PAD-ROUND3.2" x="95" y="70" smashed="yes"/>
 <element name="H2" library="holes" package="3,2-PAD" value="MOUNT-PAD-ROUND3.2" x="95" y="5" smashed="yes"/>
 <element name="H3" library="holes" package="3,2-PAD" value="MOUNT-PAD-ROUND3.2" x="5" y="5" smashed="yes"/>
 <element name="IC2" library="micro-stm_v2" package="LQFP64" value="STM32F103R6T" x="73.5" y="17.25" smashed="yes" rot="MR0">
-<attribute name="NAME" x="73.50753125" y="23.99694375" size="0.5" layer="26" rot="MR0" align="center"/>
+<attribute name="NAME" x="73.5" y="24" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="76.46" y="15.07" size="1.27" layer="28" rot="MR0"/>
 </element>
 <element name="C4" library="rcl" package="C1206K" value="100p" x="87.25" y="45" smashed="yes" rot="MR270">
@@ -3943,9 +3943,9 @@ design rules under a new name.</description>
 <attribute name="NAME" x="89.25" y="48.25" size="0.5" layer="26" rot="MR270" align="center"/>
 <attribute name="VALUE" x="91.35" y="46.6" size="1.016" layer="28" rot="MR270"/>
 </element>
-<element name="C24" library="rcl" package="C0805" value="4.7u" x="86.4975" y="37.7525" smashed="yes" rot="MR270">
+<element name="C24" library="rcl" package="C0805" value="4.7u" x="86.5" y="37.75" smashed="yes" rot="MR270">
 <attribute name="NAME" x="85.25" y="37.75" size="0.5" layer="26" rot="MR270" align="center"/>
-<attribute name="VALUE" x="89.0375" y="39.0225" size="1.27" layer="28" rot="MR270"/>
+<attribute name="VALUE" x="89.04" y="39.02" size="1.27" layer="28" rot="MR270"/>
 </element>
 <element name="C23" library="rcl" package="C0603" value="100n" x="81.25" y="14" smashed="yes" rot="MR90">
 <attribute name="NAME" x="82.25" y="14" size="0.5" layer="26" rot="MR90" align="center"/>
@@ -4029,7 +4029,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="38.365" y="50.405" size="1.27" layer="28" rot="MR180"/>
 </element>
 <element name="IC14" library="reroolib" package="SIP7" value="rk-2415s" x="44" y="46" smashed="yes">
-<attribute name="NAME" x="50.13" y="47.94" size="0.8" layer="25" align="center"/>
+<attribute name="NAME" x="50" y="48" size="0.8" layer="25" align="center"/>
 <attribute name="VALUE" x="47.81" y="42.19" size="1.27" layer="27"/>
 </element>
 <element name="C20" library="rcl" package="C0603" value="100n" x="26.25" y="41.5" smashed="yes" rot="MR90">
@@ -4097,11 +4097,11 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="33.93" y="37.71" size="1.27" layer="28" rot="MR270"/>
 </element>
 <element name="R29" library="rcl" package="R0603" value="470" x="33.375" y="22.5" smashed="yes" rot="MR270">
-<attribute name="NAME" x="33.375" y="24.75" size="0.5" layer="26" rot="MR270" align="center"/>
+<attribute name="NAME" x="33.5" y="24.75" size="0.5" layer="26" rot="MR270" align="center"/>
 <attribute name="VALUE" x="35.28" y="23.135" size="1.27" layer="28" rot="MR270"/>
 </element>
 <element name="C41" library="rcl" package="C0603" value="100n" x="34.625" y="22.5" smashed="yes" rot="MR90">
-<attribute name="NAME" x="34.625" y="24.75" size="0.5" layer="26" rot="MR90" align="center"/>
+<attribute name="NAME" x="34.75" y="24.75" size="0.5" layer="26" rot="MR90" align="center"/>
 <attribute name="VALUE" x="32.72" y="21.865" size="1.27" layer="28" rot="MR90"/>
 </element>
 <element name="C42" library="rcl" package="C0603" value="100n" x="31.25" y="18.5" smashed="yes" rot="MR90">
@@ -4114,7 +4114,7 @@ design rules under a new name.</description>
 </element>
 <element name="IC10" library="tca0372dw" package="TCA0372DM2" value="TCA0372DWDM2" x="25.5" y="15.25" smashed="yes" rot="MR270">
 <attribute name="VALUE" x="28.04" y="21.6" size="1.27" layer="28" rot="MR0"/>
-<attribute name="NAME" x="24.29" y="20.88" size="0.5" layer="26" rot="MR0" align="center"/>
+<attribute name="NAME" x="24.25" y="20.75" size="0.5" layer="26" rot="MR0" align="center"/>
 </element>
 <element name="R18" library="rcl" package="R0603" value="470" x="15" y="13.75" smashed="yes" rot="MR270">
 <attribute name="NAME" x="14" y="13.75" size="0.5" layer="26" rot="MR270" align="center"/>
@@ -4154,7 +4154,7 @@ design rules under a new name.</description>
 </element>
 <element name="IC11" library="tca0372dw" package="TCA0372DM2" value="TCA0372DWDM2" x="35.25" y="6" smashed="yes" rot="MR180">
 <attribute name="VALUE" x="28.9" y="8.54" size="1.27" layer="28" rot="MR270"/>
-<attribute name="NAME" x="40.87" y="4.54" size="0.5" layer="26" rot="MR270" align="center"/>
+<attribute name="NAME" x="41" y="4.5" size="0.5" layer="26" rot="MR270" align="center"/>
 </element>
 <element name="IC13" library="reroolib" package="SO16" value="AM26LS32ACD" x="17.5" y="38" smashed="yes" rot="MR270">
 <attribute name="NAME" x="17.5" y="43.5" size="0.5" layer="26" rot="MR0" align="center"/>
@@ -4173,7 +4173,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="39.595" y="35.365" size="1.27" layer="28" rot="MR90"/>
 </element>
 <element name="R1" library="reroolib" package="CER" value="18k" x="52.5" y="69.25" smashed="yes" rot="R180">
-<attribute name="NAME" x="59.6" y="63.56" size="0.8" layer="25" rot="R180" align="center"/>
+<attribute name="NAME" x="59.5" y="63.5" size="0.8" layer="25" rot="R180" align="center"/>
 <attribute name="VALUE" x="58.85" y="66.71" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="R9" library="rcl" package="R0805" value="560" x="55.25" y="54.75" smashed="yes" rot="MR90">
@@ -4181,7 +4181,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="52.71" y="54.115" size="1.27" layer="28" rot="MR90"/>
 </element>
 <element name="R12" library="reroolib" package="CER" value="18k" x="50" y="56.5" smashed="yes" rot="R270">
-<attribute name="NAME" x="55.56" y="62.9" size="0.8" layer="25" rot="R90" align="center"/>
+<attribute name="NAME" x="55.75" y="63" size="0.8" layer="25" rot="R90" align="center"/>
 <attribute name="VALUE" x="52.54" y="62.85" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="C45" library="rcl" package="C0805" value="4.7u" x="41.25" y="8" smashed="yes" rot="MR270">
@@ -4467,7 +4467,7 @@ design rules under a new name.</description>
 <attribute name="MPN" value="" x="13.25" y="70.5" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="MF" value="" x="13.25" y="70.5" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="13.25" y="70.5" size="1.778" layer="27" rot="R180" display="off"/>
-<attribute name="NAME" x="9.5331" y="66.7249" size="0.8" layer="25" ratio="10" rot="R180" align="center"/>
+<attribute name="NAME" x="9.5" y="66.75" size="0.8" layer="25" ratio="10" rot="R180" align="center"/>
 <attribute name="VALUE" x="17.0331" y="75.0989" size="0.8128" layer="27" ratio="10" rot="R180"/>
 </element>
 <element name="Q1" library="reroolib" package="MICRO3" value="IRLML6344" x="13.75" y="65.5" smashed="yes" rot="MR0">
@@ -4799,7 +4799,7 @@ design rules under a new name.</description>
 <contactref element="LED2" pad="A"/>
 <contactref element="R13" pad="1"/>
 <wire x1="65.5" y1="4.4" x2="63.875" y2="4.3975" width="0.2" layer="16"/>
-<wire x1="63.875" y1="4.3975" x2="63.7475" y2="4.525" width="0.2" layer="16"/>
+<wire x1="63.875" y1="4.3975" x2="63.75" y2="4.52" width="0.2" layer="16"/>
 </signal>
 <signal name="TIM1_1">
 <contactref element="IC2" pad="41"/>
@@ -6511,8 +6511,7 @@ design rules under a new name.</description>
 <wire x1="85.0005" y1="38.9995" x2="86.5" y2="38.9995" width="0.4" layer="16"/>
 <wire x1="86.5" y1="38.9995" x2="88.5" y2="38.9995" width="0.4" layer="16"/>
 <wire x1="88.5" y1="38.9995" x2="91.5" y2="39" width="0.4" layer="16"/>
-<wire x1="86.4975" y1="38.7025" x2="86.5" y2="38.755" width="0.4" layer="16"/>
-<wire x1="86.5" y1="38.755" x2="86.5" y2="38.9995" width="0.4" layer="16"/>
+<wire x1="86.5" y1="38.7" x2="86.5" y2="38.9995" width="0.4" layer="16"/>
 <wire x1="88.5" y1="38.6" x2="88.5" y2="38.9995" width="0.4" layer="16"/>
 <via x="85" y="39" extent="1-16" drill="0.3302"/>
 <contactref element="JP2" pad="2"/>
