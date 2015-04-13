@@ -20008,7 +20008,8 @@ diameter 3 mm, horizontal, grid 12.7 mm</description>
 <smd name="14" x="-1.8935" y="3.748" dx="1.651" dy="0.508" layer="1" rot="R90"/>
 <smd name="15" x="-3.1635" y="3.748" dx="1.651" dy="0.508" layer="1" rot="R90"/>
 <smd name="16" x="-4.4335" y="3.748" dx="1.651" dy="0.508" layer="1" rot="R90"/>
-<text x="-3.52" y="-0.775" size="0.8128" layer="25">TCA0372DM2</text>
+<text x="-6.35" y="-2.54" size="1.27" layer="27" rot="R90">&gt;VALUE</text>
+<text x="7.62" y="-2.54" size="1.27" layer="25" rot="R90">&gt;NAME</text>
 </package>
 </packages>
 <symbols>
