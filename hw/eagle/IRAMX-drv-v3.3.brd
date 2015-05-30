@@ -4284,11 +4284,11 @@ design rules under a new name.</description>
 <attribute name="NAME" x="32.25" y="14.5" size="0.5" layer="26" rot="MR270" align="center"/>
 <attribute name="VALUE" x="33.155" y="15.135" size="1.27" layer="28" rot="MR270"/>
 </element>
-<element name="L1" library="resistor" package="L2825P" value="" x="40.5" y="28" smashed="yes" rot="MR90">
+<element name="L1" library="resistor" package="L2825P" value="1000" x="40.5" y="28" smashed="yes" rot="MR90">
 <attribute name="NAME" x="38.75" y="28" size="0.5" layer="26" rot="MR90" align="center"/>
 <attribute name="VALUE" x="37.706" y="26.73" size="1.27" layer="28" rot="MR90"/>
 </element>
-<element name="L2" library="resistor" package="L2825P" value="" x="64.25" y="43.25" smashed="yes" rot="MR180">
+<element name="L2" library="resistor" package="L2825P" value="300" x="64.25" y="43.25" smashed="yes" rot="MR180">
 <attribute name="NAME" x="61.75" y="43.25" size="0.5" layer="26" rot="MR90" align="center"/>
 <attribute name="VALUE" x="62.98" y="46.044" size="1.27" layer="28" rot="MR180"/>
 </element>
@@ -4398,7 +4398,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="25.75" y="63.75" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="27.25" y="61.6" size="1.778" layer="28" rot="MR0"/>
 </element>
-<element name="D3" library="adafruit" package="SOD-123" value="" x="25.75" y="67.75" smashed="yes" rot="MR0">
+<element name="D3" library="adafruit" package="SOD-123" value="1N5819" x="25.75" y="67.75" smashed="yes" rot="MR0">
 <attribute name="NAME" x="25.75" y="69" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="26.85" y="66.466" size="0.4064" layer="28" rot="MR0"/>
 </element>
@@ -4426,7 +4426,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="13.5" y="24.5" size="0.5" layer="26" rot="MR90" align="center"/>
 <attribute name="VALUE" x="12.595" y="23.865" size="1.27" layer="28" rot="MR90"/>
 </element>
-<element name="Q4" library="crystal" package="CTS406" value="" x="40.25" y="41" smashed="yes" rot="MR270">
+<element name="Q4" library="crystal" package="CTS406" value="8M" x="40.25" y="41" smashed="yes" rot="MR270">
 <attribute name="OC_NEWARK" value="unknown" x="40.25" y="41" size="1.778" layer="28" rot="MR270" display="off"/>
 <attribute name="MPN" value="" x="40.25" y="41" size="1.778" layer="28" rot="MR270" display="off"/>
 <attribute name="MF" value="" x="40.25" y="41" size="1.778" layer="28" rot="MR270" display="off"/>
@@ -4434,7 +4434,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="42.25" y="41" size="0.5" layer="26" rot="MR90" align="center"/>
 <attribute name="VALUE" x="44.06" y="43.54" size="1.27" layer="28" rot="MR270"/>
 </element>
-<element name="Q2" library="crystal" package="CTS406" value="" x="76" y="6.25" smashed="yes" rot="MR90">
+<element name="Q2" library="crystal" package="CTS406" value="8M" x="76" y="6.25" smashed="yes" rot="MR90">
 <attribute name="OC_NEWARK" value="unknown" x="76" y="6.25" size="1.778" layer="28" rot="MR90" display="off"/>
 <attribute name="MPN" value="" x="76" y="6.25" size="1.778" layer="28" rot="MR90" display="off"/>
 <attribute name="MF" value="" x="76" y="6.25" size="1.778" layer="28" rot="MR90" display="off"/>
@@ -4474,7 +4474,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="13.75" y="64.25" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="15.25" y="62.1" size="1.778" layer="28" rot="MR0"/>
 </element>
-<element name="D4" library="adafruit" package="SOD-123" value="" x="11.75" y="68" smashed="yes" rot="MR0">
+<element name="D4" library="adafruit" package="SOD-123" value="1N5819" x="11.75" y="68" smashed="yes" rot="MR0">
 <attribute name="NAME" x="11.75" y="66.75" size="0.5" layer="26" rot="MR0" align="center"/>
 <attribute name="VALUE" x="12.85" y="66.716" size="0.4064" layer="28" rot="MR0"/>
 </element>
@@ -4577,7 +4577,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="22.75" y="65.75" size="0.8" layer="25" ratio="10" rot="R180" align="center"/>
 <attribute name="VALUE" x="22.8501" y="64" size="0.02" layer="27" rot="R180"/>
 </element>
-<element name="C26" library="rcl" package="C0603" value="10n" x="1.75" y="45.75" smashed="yes" rot="MR270">
+<element name="C26" library="rcl" package="C0603" value="100n" x="1.75" y="45.75" smashed="yes" rot="MR270">
 <attribute name="NAME" x="0.75" y="45.75" size="0.5" layer="26" rot="MR270" align="center"/>
 <attribute name="VALUE" x="3.655" y="46.385" size="1.27" layer="28" rot="MR270"/>
 </element>

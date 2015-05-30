@@ -29213,8 +29213,8 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="C59" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="C60" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="P+13" library="supply1" deviceset="+5V" device=""/>
-<part name="L1" library="resistor" deviceset="L-EU" device="L2825P"/>
-<part name="L2" library="resistor" deviceset="L-EU" device="L2825P"/>
+<part name="L1" library="resistor" deviceset="L-EU" device="L2825P" value="1000"/>
+<part name="L2" library="resistor" deviceset="L-EU" device="L2825P" value="300"/>
 <part name="JP9" library="pinhead" deviceset="PINHD-2X2" device=""/>
 <part name="C61" library="rcl" deviceset="C-EU" device="C0805" value="4.7u"/>
 <part name="C62" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
@@ -29251,7 +29251,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="U$8" library="adafruit" deviceset="FIDUCIAL" device=""/>
 <part name="U$9" library="adafruit" deviceset="FIDUCIAL" device=""/>
 <part name="Q3" library="reroolib" deviceset="IRLML6344" device=""/>
-<part name="D3" library="adafruit" deviceset="DIODE" device="SOD-123"/>
+<part name="D3" library="adafruit" deviceset="DIODE" device="SOD-123" value="1N5819"/>
 <part name="GND60" library="supply1" deviceset="GND" device=""/>
 <part name="P+16" library="supply1" deviceset="+24V" device=""/>
 <part name="R47" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
@@ -29260,8 +29260,8 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="R50" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
 <part name="C22" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="C47" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
-<part name="Q4" library="crystal" deviceset="CRYSTAL" device="CTS406"/>
-<part name="Q2" library="crystal" deviceset="CRYSTAL" device="CTS406"/>
+<part name="Q4" library="crystal" deviceset="CRYSTAL" device="CTS406" value="8M"/>
+<part name="Q2" library="crystal" deviceset="CRYSTAL" device="CTS406" value="8M"/>
 <part name="JP1" library="pinhead" deviceset="PINHD-1X4" device=""/>
 <part name="C33" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="GND61" library="supply1" deviceset="GND" device=""/>
@@ -29271,7 +29271,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="GND47" library="supply1" deviceset="GND" device=""/>
 <part name="J1" library="con-molex" deviceset="22-?-03" device="27-2031"/>
 <part name="Q1" library="reroolib" deviceset="IRLML6344" device=""/>
-<part name="D4" library="adafruit" deviceset="DIODE" device="SOD-123"/>
+<part name="D4" library="adafruit" deviceset="DIODE" device="SOD-123" value="1N5819"/>
 <part name="GND62" library="supply1" deviceset="GND" device=""/>
 <part name="R30" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R35" library="rcl" deviceset="R-EU_" device="R0603" value="33"/>
@@ -29321,7 +29321,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="P+18" library="supply1" deviceset="+24V" device=""/>
 <part name="P+17" library="supply1" deviceset="+24V" device=""/>
 <part name="P+19" library="supply1" deviceset="+12V" device=""/>
-<part name="C26" library="rcl" deviceset="C-EU" device="C0603" value="10n"/>
+<part name="C26" library="rcl" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="R52" library="rcl" deviceset="R-EU_" device="R0603" value="10k"/>
 <part name="LOGO1" library="SparkFun-Aesthetics" deviceset="OSHW-LOGO" device="L"/>
 <part name="GND68" library="supply1" deviceset="GND" device=""/>
