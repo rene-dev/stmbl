@@ -114,12 +114,7 @@ int addf_nrt(void (*nrt)(float period));
 #define MEM(var) static var
 
 #define PIN(name)                       \
-  *({                                   \
-    if(&name != name.source->source){           \
-      call(name.source->source->read_callback); \
-    };                                   \
-    &(name.source->source->value);              \
-  })
+  (name.source->source->value)
 
 #define INIT(func)                    \
  init = ({ void function(){func} function;});

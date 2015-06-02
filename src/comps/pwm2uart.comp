@@ -21,8 +21,8 @@ RT(
   const int res = 1200;
   float vlt = PIN(volt);
   float e = PIN(enable);
-  int min = CLAMP((1 - PIN(pwm_max)) / 2.0, 0.0, 1.0) * res;
-  int max = res - min;
+  int min = 0.0;
+  int max = res * CLAMP(PIN(pwm_max), 0.0, 0.95);
 
   if(vlt > 0.0 && e > 0.0){
     data.data[0] = CLAMP(PIN(u) / vlt * res, min, max);
@@ -34,6 +34,10 @@ RT(
     data.data[1] = 0;
     data.data[2] = 0;
   }
+
+  PIN(uout) = data.data[0];
+  PIN(vout) = data.data[1];
+  PIN(wout) = data.data[2];
 
   UART_DMA_Buffer[0] = 0x155;
   UART_DMA_Buffer[1] = data.byte[0];

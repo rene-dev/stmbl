@@ -153,6 +153,8 @@ int main(void)
 
 	#include "comps/pid.comp"
 
+	#include "comps/rev.comp"
+
 	#include "comps/cur.comp"
 
 	#include "comps/pwm2uart.comp"
@@ -201,6 +203,7 @@ int main(void)
 	HAL_PIN(cmd_type) = 0.0;
 	HAL_PIN(fb_rev) = 0.0;
 	HAL_PIN(cmd_rev) = 0.0;
+	HAL_PIN(out_rev) = 0.0;
 	HAL_PIN(fb_res) = 1.0;
 	HAL_PIN(cmd_res) = 2000.0;
 	HAL_PIN(sin_offset) = -17371.0;
@@ -219,9 +222,9 @@ int main(void)
 
 	link_pid();
 
-	set_e240();
+	//set_e240();
 	//set_bergerlahr();//pid2: ok
-	//set_mitsubishi();//pid2: ok
+	set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
 	//set_rexroth();//pid2: ok
@@ -232,8 +235,9 @@ int main(void)
 	//set_br();
 
 	//set_hal_pin("enc0.iquad_en1", 1.0);
-	set_hal_pin("enc0.quad_en1", 1.0);
-	set_hal_pin("enc0.iquad_en1", 1.0);
+	//set_hal_pin("enc0.quad_en1", 1.0);
+	//set_hal_pin("enc0.iquad_en1", 1.0);
+	set_hal_pin("encm0.enable", 1.0);
 
 	//link_hal_pins("pderiv1.out2", "net0.fb_d");
 

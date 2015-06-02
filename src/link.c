@@ -64,7 +64,7 @@ void link_pid(){
   link_hal_pins("net0.fb_d", "pid0.vel_fb");
 
   //link_hal_pins("conf0.fb_res", "pderiv1.in_res");
-  
+
   //fb res
   link_hal_pins("conf0.fb_type", "dmux0.select_fb");
   link_hal_pins("conf0.cmd_type", "dmux0.select_cmd");
@@ -115,10 +115,12 @@ void link_pid(){
   // cur
   link_hal_pins("conf0.r", "cur0.r");
   link_hal_pins("conf0.l", "cur0.l");
+  link_hal_pins("conf0.out_rev", "rev2.rev");
   link_hal_pins("conf0.max_cur", "cur0.cur_max");
   link_hal_pins("conf0.cur_lp", "cur0.lp");
   link_hal_pins("pid0.induction", "cur0.induction");
-  link_hal_pins("cauto0.magpos", "cur0.magpos");
+  link_hal_pins("cauto0.magpos", "rev2.in");
+  link_hal_pins("rev2.out", "cur0.magpos");
   set_hal_pin("cur0.pwm_max", 0.95);
   set_hal_pin("cur0.ind_p", -1.0);
   link_hal_pins("net0.vlt", "cur0.volt");
@@ -307,7 +309,7 @@ void set_bergerlahr(){ // TODO
 	set_hal_pin("conf0.acc_p", 0.01);
 	set_hal_pin("conf0.acc_pi", 70.0);
 	set_hal_pin("conf0.cur_lp", 0.5);
-	
+
 	// set_hal_pin("conf0.pos_p", 80.0);
 	// set_hal_pin("conf0.acc_p", 0.15);
 	// set_hal_pin("conf0.acc_pi", 50.0);
@@ -369,6 +371,7 @@ void set_mitsubishi(){ // TODO
 
 	set_hal_pin("conf0.fb_type", MITSU1);
 	set_hal_pin("conf0.fb_rev", 0.0);
+  set_hal_pin("conf0.out_rev", 1.0);
 	set_hal_pin("conf0.fb_res", 16384.0);
 	set_hal_pin("conf0.r", 1.5);
 	set_hal_pin("conf0.l", 0.0025);
