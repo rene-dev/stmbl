@@ -115,7 +115,7 @@ RT(
       error_++;
       PIN(error) = error_;
     }
-    
+
     GPIO_SetBits(GPIOB,GPIO_Pin_12);
     USART_SendData(USART3, 0x32/*(unsigned char)PIN(cmd)*/);
   }

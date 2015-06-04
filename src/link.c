@@ -4,23 +4,8 @@
 
 void link_pid(){
   // cmd
-  link_hal_pins("conf0.cmd_type", "mux0.select");
   link_hal_pins("conf0.cmd_rev", "rev0.rev");
 
-  set_hal_pin("mux0.in0", 0.0);
-  link_hal_pins("enc0.pos0", "mux0.in1");
-  link_hal_pins("enc0.pos1", "mux0.in2");
-  link_hal_pins("res0.pos", "mux0.in3");
-  set_hal_pin("mux0.in4", 0.0);
-  link_hal_pins("encm0.pos", "mux0.in5");
-  link_hal_pins("enc0.ipos1", "mux0.in6");
-  link_hal_pins("enc0.pos0", "mux0.in7");
-  link_hal_pins("enc0.pos1", "mux0.in8");
-  link_hal_pins("sim0.sin", "mux0.in9");
-  link_hal_pins("sim0.vel", "mux0.in10");
-  link_hal_pins("sim0.square", "mux0.in11");
-
-  link_hal_pins("mux0.out", "rev0.in");
   link_hal_pins("rev0.out", "net0.cmd");
   link_hal_pins("net0.cmd", "pderiv0.in");
   link_hal_pins("pderiv0.out", "net0.cmd_d");
@@ -35,23 +20,8 @@ void link_pid(){
 
 
   // fb
-  link_hal_pins("conf0.fb_type", "mux1.select");
   link_hal_pins("conf0.fb_rev", "rev1.rev");
 
-  set_hal_pin("mux1.in0", 0.0);
-  link_hal_pins("enc0.pos0", "mux1.in1");
-  link_hal_pins("enc0.pos1", "mux1.in2");
-  link_hal_pins("res0.pos", "mux1.in3");
-  set_hal_pin("mux1.in4", 0.0);
-  link_hal_pins("encm0.pos", "mux1.in5");
-  link_hal_pins("enc0.ipos1", "mux1.in6");
-  link_hal_pins("enc0.pos0", "mux1.in7");//step/dir
-  link_hal_pins("enc0.pos1", "mux1.in8");//step/dir
-  link_hal_pins("sim0.sin", "mux1.in9");
-  link_hal_pins("sim0.vel", "mux1.in10");
-  link_hal_pins("sim0.square", "mux1.in11");
-
-  link_hal_pins("mux1.out", "rev1.in");
   link_hal_pins("rev1.out", "cauto0.fb_in");
   link_hal_pins("cauto0.fb_out", "net0.fb");
   link_hal_pins("net0.fb", "pderiv1.in");
@@ -63,15 +33,8 @@ void link_pid(){
   link_hal_pins("net0.fb","pid0.pos_fb");
   link_hal_pins("net0.fb_d", "pid0.vel_fb");
 
-  //link_hal_pins("conf0.fb_res", "pderiv1.in_res");
-
-  //fb res
-  link_hal_pins("conf0.fb_type", "dmux0.select_fb");
-  link_hal_pins("conf0.cmd_type", "dmux0.select_cmd");
   link_hal_pins("conf0.fb_res", "pderiv1.res");
-  link_hal_pins("conf0.fb_res", "dmux0.in0");
-  link_hal_pins("conf0.cmd_res", "dmux0.in1");
-  link_hal_pins("dmux0.out2", "enc0.res1");
+
 
   // cauto
   link_hal_pins("conf0.pole_count", "cauto0.pole_count");
@@ -363,13 +326,15 @@ void set_sanyo(){ // TODO
 
 //Mitsubishi HA-FF38-UE-S1
 void set_mitsubishi(){ // TODO
+  link_hal_pins("encm0.pos", "rev1.in");
+
 	set_hal_pin("conf0.pole_count", 2.0);
 	set_hal_pin("conf0.max_vel", RPM(8000));
 	set_hal_pin("conf0.max_acc", RPM(8000) / 0.002);
 	set_hal_pin("conf0.max_force", 2.0);
 	set_hal_pin("conf0.max_cur", 6.0);
 
-	set_hal_pin("conf0.fb_type", MITSU1);
+//	set_hal_pin("conf0.fb_type", MITSU1);
 	set_hal_pin("conf0.fb_rev", 0.0);
   set_hal_pin("conf0.out_rev", 1.0);
 	set_hal_pin("conf0.fb_res", 16384.0);

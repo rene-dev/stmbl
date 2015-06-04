@@ -133,15 +133,15 @@ int main(void)
 
 	setup();
 
-	#include "comps/adc.comp"
-	#include "comps/enc.comp"
-	#include "comps/res.comp"
+	//#include "comps/adc.comp"
+	//#include "comps/enc.comp"
+	//#include "comps/res.comp"
 	#include "comps/encm.comp"
 	#include "comps/sim.comp"
 
-	#include "comps/mux.comp"
-	#include "comps/mux.comp"
-	#include "comps/dmux.comp"
+	//#include "comps/mux.comp"
+	//#include "comps/mux.comp"
+	//#include "comps/dmux.comp"
 
 	#include "comps/rev.comp"
 	#include "comps/rev.comp"
@@ -164,11 +164,11 @@ int main(void)
 
 	#include "comps/term.comp"
 	#include "comps/led.comp"
-	#include "comps/fan.comp"
-	#include "comps/brake.comp"
-	#include "comps/tune.comp"
-	#include "comps/dmux.comp"
-	#include "comps/dmux.comp"
+	//#include "comps/fan.comp"
+	//#include "comps/brake.comp"
+	//#include "comps/tune.comp"
+	//#include "comps/dmux.comp"
+	//#include "comps/dmux.comp"
 
 	//#include "comps/vel_observer.comp"
 

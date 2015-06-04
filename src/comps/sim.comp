@@ -16,7 +16,6 @@ RT(
   amp_ = PIN(amp) * 0.001 + amp_ * 0.999;
   freq_ = PIN(freq) * 0.001 + freq_ * 0.999;
   float sin_;
-  float cos_;
   float r = PIN(res);
   //float square_;
 

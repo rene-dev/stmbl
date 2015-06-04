@@ -70,9 +70,9 @@ RT(
 
 
   float ud_ = 0.0;
-  float uq_ = ind;
+  float uq_ = ind * ind_p_;
 
-  float ua_ = ud_ * c + uq_ * s; // inverse park
+  float ua_ = ud_ * c - uq_ * s; // inverse park
   float ub_ = ud_ * s + uq_ * c;
 
   float uu_ = ua_; // inverse clarke
@@ -86,9 +86,9 @@ RT(
   float pwm_max_ = PIN(pwm_max);
   float vmax = vlt * pwm_max_;
 
-  float _u = CLAMP(ff_ * r_ * iu_ + p_ * (iu_ - iu_old) + uu_ * ind_p_, -vmax / 2.0, vmax / 2.0);
-  float _v = CLAMP(ff_ * r_ * iv_ + p_ * (iv_ - iv_old) + uv_ * ind_p_, -vmax / 2.0, vmax / 2.0);
-  float _w = CLAMP(ff_ * r_ * iw_ + p_ * (iw_ - iw_old) + uw_ * ind_p_, -vmax / 2.0, vmax / 2.0);
+  float _u = CLAMP(ff_ * r_ * iu_ + p_ * (iu_ - iu_old) + uu_, -vmax / 2.0, vmax / 2.0);
+  float _v = CLAMP(ff_ * r_ * iv_ + p_ * (iv_ - iv_old) + uv_, -vmax / 2.0, vmax / 2.0);
+  float _w = CLAMP(ff_ * r_ * iw_ + p_ * (iw_ - iw_old) + uw_, -vmax / 2.0, vmax / 2.0);
 
   iu_old += (_u - iu_old * r_ - uu_) / l_ / freq_;
   iv_old += (_v - iv_old * r_ - uv_) / l_ / freq_;

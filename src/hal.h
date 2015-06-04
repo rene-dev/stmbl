@@ -124,24 +124,14 @@ int addf_nrt(void (*nrt)(float period));
    unsigned int __start_time__ = SysTick->VAL; \
    func \
    unsigned int __end_time__ = SysTick->VAL; \
-   if(__start_time__ > __end_time__){ \
-     PIN(calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
+   if(__start_time__ < __end_time__){ \
+     __start_time__ += SysTick->LOAD; \
    } \
+   PIN(calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
    } function;});
 
 #define NRT(func)                    \
  nrt = ({ void function(float period){func} function;});
-
-#define RC(pin, func)                    \
- pin.read_callback = ({ void function(){func} function;});
-
-#define TRG(func)                    \
-  static struct hal_pin trg;       \
-  init_hal_pin("trg", &trg, 0.0);  \
-  trg.read_callback = ({ void function(){func} function;});
-
-#define LINK_RC(src_pin, dst_pin)                    \
- src_pin.read_callback = dst_pin.read_callback;
 
 #define HT(ht_code) \
 { \

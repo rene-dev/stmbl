@@ -53,10 +53,10 @@ void BasicDrawPane::paintEvent(wxPaintEvent & evt)
                 path.AddLineToPoint(x, y);
                 x += xstep;
             }
-            path.CloseSubpath();
+            //path.CloseSubpath();
             gc->StrokePath(path);
         }
-        
+
         //center line
         wxGraphicsPath path = gc->CreatePath();
         gc->SetPen(*wxGREY_PEN);
@@ -64,7 +64,7 @@ void BasicDrawPane::paintEvent(wxPaintEvent & evt)
         path.AddLineToPoint(w, h/2);
         path.CloseSubpath();
         gc->StrokePath(path);
-        
+
         delete gc;
     }
 }

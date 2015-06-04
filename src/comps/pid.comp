@@ -66,7 +66,7 @@ HAL_PIN(vel_ff) = 1.0;
 HAL_PIN(acc_p) = 1.0;
 HAL_PIN(acc_lp) = 5000.0;
 HAL_PIN(acc_pi) = 20.0;
-HAL_PIN(acc_aw) = 1.0;
+//HAL_PIN(acc_aw) = 1.0;
 HAL_PIN(acc_ff) = 1.0;
 
 HAL_PIN(force_p) = 1.0;
@@ -175,7 +175,7 @@ float velp = MIN(MAX(PIN(vel_p), 0.0), 1.0);
 float vellp = LP_HZ(PIN(vel_lp));
 float accp = MIN(MAX(PIN(acc_p), 0.0), 1.0);
 float accpi = MAX(PIN(acc_pi), 0.0);
-float accaw = MAX(PIN(acc_aw), 0.0);
+//float accaw = MAX(PIN(acc_aw), 0.0);
 float acclp = LP_HZ(PIN(acc_lp));
 float forcep = MIN(MAX(PIN(force_p), 0.001), 1.0);
 float forcelp = LP_HZ(PIN(force_lp));
@@ -197,14 +197,14 @@ if(PIN(enable) > 0.0){
     posp = 0.0;
     velp = 0.0;
     accp = 0.0;
-    accaw = 0.0;
+//    accaw = 0.0;
     force_error_sum = 0.0;
   }
   if(PIN(force_en) == 0.0){
     posp = 0.0;
     velp = 0.0;
     accp = 0.0;
-    accaw = 0.0;
+//    accaw = 0.0;
     force_error_sum = 0.0;
     forcep = 0.0;
   }
@@ -212,7 +212,7 @@ if(PIN(enable) > 0.0){
     posp = 0.0;
     velp = 0.0;
     accp = 0.0;
-    accaw = 0.0;
+//    accaw = 0.0;
     force_error_sum = 0.0;
     forcep = 0.0;
   }
