@@ -156,6 +156,7 @@ void set_fb_sincos(){
   link_hal_pins("enc10.ipos", "rev1.in");
   link_hal_pins("conf0.fb_res", "enc10.res");
   set_hal_pin("enc10.ires", 1024.0);
+  set_hal_pin("pderiv1.res", 524288.0);
 }
 
 void set_fb_res(){
@@ -179,7 +180,7 @@ void set_rexroth(){
 
 	set_hal_pin("conf0.fb_type", SINCOS1);
 	set_hal_pin("conf0.fb_rev", 1.0);
-	set_hal_pin("conf0.fb_res", 524288.0);
+	set_hal_pin("conf0.fb_res", 512.0);
 	set_hal_pin("conf0.r", 7.5);//mess
 	set_hal_pin("conf0.l", 0.008);//mess
 	set_hal_pin("conf0.j", 0.000013);//data
@@ -391,7 +392,7 @@ void set_mitsubishi(){ // TODO
 
 //	set_hal_pin("conf0.fb_type", MITSU1);
 	set_hal_pin("conf0.fb_rev", 0.0);
-  set_hal_pin("conf0.out_rev", 1.0);
+  set_hal_pin("conf0.out_rev", 0.0);
 	set_hal_pin("conf0.fb_res", 16384.0);
 	set_hal_pin("conf0.r", 1.5);
 	set_hal_pin("conf0.l", 0.0025);

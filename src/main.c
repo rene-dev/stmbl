@@ -135,8 +135,8 @@ int main(void)
 
 	#include "comps/adc.comp"
 	//#include "comps/enc1.comp"
-	#include "comps/res.comp"
-	//#include "comps/encm.comp"
+	//#include "comps/res.comp"
+	#include "comps/encm.comp"
 	#include "comps/sim.comp"
 
 	//#include "comps/mux.comp"
@@ -227,7 +227,7 @@ int main(void)
 
 	//set_e240();
 	//set_bergerlahr();//pid2: ok
-	//set_mitsubishi();//pid2: ok
+	set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
 	//set_rexroth();//pid2: ok
@@ -235,7 +235,7 @@ int main(void)
 
 	//set_hal_pin("res0.reverse", 0.0);
 	//set_bosch1();//pid2: ok
-	set_bosch4();//pid2: ok
+	//set_bosch4();//pid2: ok
 	//set_sanyo();//pid2: ok
 	//set_br();
 

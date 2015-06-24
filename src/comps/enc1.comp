@@ -2,6 +2,7 @@ COMP(enc1);
 
 HAL_PIN(res) = 2048.0;
 HAL_PIN(ires) = 1024.0;
+HAL_PIN(count) = 0.0;
 HAL_PIN(pos) = 0.0;
 HAL_PIN(ipos) = 0.0;
 HAL_PIN(sin) = 0.0;
@@ -100,6 +101,7 @@ RT(
 
   p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res);
   PIN(pos) = p;
+  PIN(count) = TIM_GetCounter(ENC1_TIM);
   PIN(ipos) = mod(p + ((int)(ir * mod(atan2f(PIN(sin), PIN(cos)) * 4.0 + M_PI) / M_PI)) / ir * M_PI / (float)e_res);
 
   if(e_res != r){
