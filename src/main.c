@@ -134,8 +134,8 @@ int main(void)
 	setup();
 
 	#include "comps/adc.comp"
-	#include "comps/enc1.comp"
-	//#include "comps/res.comp"
+	//#include "comps/enc1.comp"
+	#include "comps/res.comp"
 	//#include "comps/encm.comp"
 	#include "comps/sim.comp"
 
@@ -171,8 +171,8 @@ int main(void)
 	//#include "comps/dmux.comp"
 
 	//#include "comps/vel_observer.comp"
-  #include "comps/minmax.comp"
-  #include "comps/minmax.comp"
+  //#include "comps/minmax.comp"
+  //#include "comps/minmax.comp"
 
 
 	set_comp_type("net");
@@ -209,10 +209,10 @@ int main(void)
 	HAL_PIN(out_rev) = 0.0;
 	HAL_PIN(fb_res) = 1.0;
 	HAL_PIN(cmd_res) = 2000.0;
-	HAL_PIN(sin_offset) = -17671.0;
+	HAL_PIN(sin_offset) = -17600.0;
 	HAL_PIN(cos_offset) = -17661.0;
-	HAL_PIN(sin_gain) = 0.0001;
-	HAL_PIN(cos_gain) = 0.0001;
+	HAL_PIN(sin_gain) = 0.0001515;
+	HAL_PIN(cos_gain) = 0.00015;
 
 	g_amp = map_hal_pin("net0.amp");
 	g_vlt = map_hal_pin("net0.vlt");
@@ -230,29 +230,25 @@ int main(void)
 	//set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
-	set_rexroth();//pid2: ok
-  set_hal_pin("enc10.ires", 1024.0);
-  set_hal_pin("pderiv1.res", 524288.0);
-  link_hal_pins("enc10.ipos", "rev1.in");
+	//set_rexroth();//pid2: ok
+  //link_hal_pins("enc10.ipos", "rev1.in");
 
 	//set_hal_pin("res0.reverse", 0.0);
 	//set_bosch1();//pid2: ok
-	//set_bosch4();//pid2: ok
+	set_bosch4();//pid2: ok
 	//set_sanyo();//pid2: ok
 	//set_br();
 
 	//set_hal_pin("enc0.iquad_en1", 1.0);
 	//set_hal_pin("enc0.quad_en1", 1.0);
 	//set_hal_pin("enc0.iquad_en1", 1.0);
-	set_hal_pin("encm0.enable", 1.0);
 
 	//link_hal_pins("pderiv1.out2", "net0.fb_d");
+  set_cmd_sin();
 
-	set_hal_pin("conf0.cmd_type", ENC0);
 
 	link_hal_pins("pid0.pos_error", "avg0.in");
 	set_hal_pin("avg0.ac", 0.0001);
-
 
 	link_hal_pins("cauto0.ready", "led0.g");
 	link_hal_pins("cauto0.start", "led0.r");

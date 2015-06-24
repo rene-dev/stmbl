@@ -27,3 +27,9 @@ void set_sanyo();
 void set_mitsubishi();
 void set_br();
 void set_e240();
+
+void set_cmd_enc();
+void set_cmd_const();
+void set_cmd_sin();
+void set_cmd_square();
+void set_cmd_vel();

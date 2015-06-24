@@ -9,14 +9,11 @@ HAL_PIN(sin1) = 0.0;
 HAL_PIN(cos1) = 0.0;
 HAL_PIN(sin2) = 0.0;
 HAL_PIN(cos2) = 0.0;*/
-HAL_PIN(sin3) = 0.0;
-HAL_PIN(cos3) = 0.0;
+HAL_PIN(sin) = 0.0;
+HAL_PIN(cos) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
-
-MEM(float s_mid) = 4096 / 2 * ADC_ANZ;//50% ADC
-MEM(float c_mid) = 4096 / 2 * ADC_ANZ;
 
 RT(
 	GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
@@ -25,29 +22,18 @@ RT(
 	float c = 0.0;
 	float a = 0.0;
 
-	if(PIN(enable) > 0.0){
-		s = PIN(sin3);
-		c = PIN(cos3);
+	s = PIN(sin);
+  c = PIN(cos);
+	a = s * s + c * c;
 
-		s_mid = s_mid * 0.99 + s * 0.01;
-		c_mid = c_mid * 0.99 + c * 0.01;
-
-		s = s - s_mid;
-		c = c - c_mid;
-
-		a = s * s + c * c;
-
-
-		if(a < 0.2){
-			PIN(error) = 1.0;
-		}
-		else{
-			PIN(error) = 0.0;
-			PIN(pos) = atan2f(s, c);
-		}
-
-		PIN(amp) = a;
+	if(a < 0.2){
+		PIN(error) = 1.0;
 	}
+	else{
+		PIN(error) = 0.0;
+		PIN(pos) = atan2f(s, c);
+	}
+	PIN(amp) = a;
 );
 
 
