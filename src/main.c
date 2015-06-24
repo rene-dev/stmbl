@@ -98,7 +98,7 @@ void EXTI9_5_IRQHandler(){
 			TIM1->CR1 |= TIM_CR1_DIR;
 	    else
 			TIM1->CR1 &= ~TIM_CR1_DIR;
-        EXTI_ClearITPendingBit(EXTI_Line8);
+      EXTI_ClearITPendingBit(EXTI_Line8);
     }
 }
 
@@ -133,10 +133,10 @@ int main(void)
 
 	setup();
 
-	//#include "comps/adc.comp"
-	//#include "comps/enc.comp"
+	#include "comps/adc.comp"
+	#include "comps/enc1.comp"
 	//#include "comps/res.comp"
-	#include "comps/encm.comp"
+	//#include "comps/encm.comp"
 	#include "comps/sim.comp"
 
 	//#include "comps/mux.comp"
@@ -171,6 +171,9 @@ int main(void)
 	//#include "comps/dmux.comp"
 
 	//#include "comps/vel_observer.comp"
+  #include "comps/minmax.comp"
+  #include "comps/minmax.comp"
+
 
 	set_comp_type("net");
 	HAL_PIN(enable) = 0.0;
@@ -206,7 +209,7 @@ int main(void)
 	HAL_PIN(out_rev) = 0.0;
 	HAL_PIN(fb_res) = 1.0;
 	HAL_PIN(cmd_res) = 2000.0;
-	HAL_PIN(sin_offset) = -17371.0;
+	HAL_PIN(sin_offset) = -17671.0;
 	HAL_PIN(cos_offset) = -17661.0;
 	HAL_PIN(sin_gain) = 0.0001;
 	HAL_PIN(cos_gain) = 0.0001;
@@ -224,10 +227,14 @@ int main(void)
 
 	//set_e240();
 	//set_bergerlahr();//pid2: ok
-	set_mitsubishi();//pid2: ok
+	//set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
-	//set_rexroth();//pid2: ok
+	set_rexroth();//pid2: ok
+  set_hal_pin("enc10.ires", 1024.0);
+  set_hal_pin("pderiv1.res", 524288.0);
+  link_hal_pins("enc10.ipos", "rev1.in");
+
 	//set_hal_pin("res0.reverse", 0.0);
 	//set_bosch1();//pid2: ok
 	//set_bosch4();//pid2: ok

@@ -116,8 +116,8 @@ void link_pid(){
   link_hal_pins("conf0.sin_offset", "adc0.sin_offset");
   link_hal_pins("conf0.cos_offset", "adc0.cos_offset");
 
-  link_hal_pins("adc0.sin", "enc0.sin");
-  link_hal_pins("adc0.cos", "enc0.cos");
+  link_hal_pins("adc0.sin", "enc10.sin");
+  link_hal_pins("adc0.cos", "enc10.cos");
 
   link_hal_pins("adc0.sin", "res0.sin");
   link_hal_pins("adc0.cos", "res0.cos");
@@ -127,7 +127,7 @@ void link_pid(){
 void set_rexroth(){
 	set_hal_pin("conf0.pole_count", 3.0);
 	set_hal_pin("conf0.max_vel", RPM(9000));
-	set_hal_pin("conf0.max_acc", RPM(9000) / 0.002);
+	set_hal_pin("conf0.max_acc", RPM(9000) / 0.05);
 	set_hal_pin("conf0.max_force", 1.8);
 	set_hal_pin("conf0.max_cur", 6.8);
 
@@ -143,7 +143,7 @@ void set_rexroth(){
 	set_hal_pin("conf0.acc_p", 0.15);
 	set_hal_pin("conf0.acc_pi", 50.0);
 	set_hal_pin("conf0.cur_lp", 0.4);
-	set_hal_pin("enc0.res1", 512.0);
+	set_hal_pin("enc10.res", 512.0);
 }
 
 void set_bosch4(){ // TODO
@@ -396,5 +396,5 @@ void set_e240(){ // TODO
 	set_hal_pin("conf0.acc_pi", 10.0);
 	set_hal_pin("conf0.cur_lp", 0.0);
 	set_hal_pin("cur0.magpos", 0.0);
-	set_hal_pin("enc0.quad_en0", 1.0);
+	//set_hal_pin("enc0.quad_en0", 1.0);
 }

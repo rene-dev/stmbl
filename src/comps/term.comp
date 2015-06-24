@@ -111,11 +111,14 @@ void cmd(char * s){
 	else if(!strcmp(s, "list")){
 		listhal();
 	}
+  else if(!strcmp(s, "?")){
+		listhal();
+	}
 	else if(!strcmp(s, "save")){
 		save();
 	}
 	else{
-		printf_("command: %s\n",s);
+		printf_("not found: %s\n",s);
 	}
 }
 

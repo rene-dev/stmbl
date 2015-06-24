@@ -21,7 +21,7 @@ RT(
   float s_o = PIN(sin_offset);
   float c_o = PIN(cos_offset);
   float s_g = PIN(sin_gain);
-  float c_g = PIN(sin_gain);
+  float c_g = PIN(cos_gain);
 
   float s = 0.0;
   float c = 0.0;
