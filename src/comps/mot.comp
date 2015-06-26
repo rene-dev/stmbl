@@ -1,0 +1,58 @@
+COMP(mot);
+
+//in
+HAL_PIN(torque) = 0.0;
+
+HAL_PIN(mr) = 0.1;
+HAL_PIN(md) = 0.01;
+HAL_PIN(ml) = 0.0;
+HAL_PIN(j) = 0.0;
+
+HAL_PIN(real_pos) = 0.0;
+HAL_PIN(kp) = 0.0;
+HAL_PIN(ki) = 0.0;
+
+//out
+HAL_PIN(acc) = 0.0;
+HAL_PIN(vel) = 0.0;
+HAL_PIN(pos) = 0.0;
+HAL_PIN(pos_error) = 0.0;
+HAL_PIN(jerk) = 0.0;
+
+
+
+MEM(float pos) = 0.0;
+MEM(float vel) = 0.0;
+MEM(float old_torque) = 0.0;
+
+
+RT(
+  float torque = PIN(torque);
+  float pos_error = minus(PIN(real_pos), pos);
+  torque += PIN(ml);
+  torque -= PIN(md) * vel;
+  if(ABS(vel) <= 0.001 && ABS(torque) <= PIN(mr)){
+    torque = 0;
+  }
+  else if(ABS(vel) <= 0.001){
+    torque -= PIN(mr) * SIGN(torque);
+  }
+  else{
+    torque -= PIN(mr) * SIGN(vel);
+  }
+
+  float j = MAX(PIN(j), 0.00001);
+  float acc = torque / j + PIN(ki) * pos_error;
+  vel += acc * period;
+  pos += (vel + PIN(kp) * pos_error) * period;
+
+  PIN(jerk) = (torque - old_torque) / period;
+  old_torque = torque;
+
+  PIN(pos) = pos;
+  PIN(vel) = vel;
+  PIN(acc) = acc;
+  PIN(pos_error) = pos_error;
+);
+
+ENDCOMP;
