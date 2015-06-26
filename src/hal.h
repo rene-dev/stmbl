@@ -104,17 +104,17 @@ int addf_nrt(void (*nrt)(float period));
   HAL_PIN(calc_time) = 0.0;
 
 #define HAL_PIN(name)               \
-  static struct hal_pin name;       \
-  init_hal_pin(#name, &name, 0.0);  \
-  (name.value)
+  static struct hal_pin name##_hal_pin;       \
+  init_hal_pin(#name, &name##_hal_pin, 0.0);  \
+  (name##_hal_pin.value)
 
 #define GLOBAL_HAL_PIN(name)               \
-  volatile struct hal_pin name;
+  volatile struct hal_pin name##_hal_pin;
 
 #define MEM(var) static var
 
 #define PIN(name)                       \
-  (name.source->source->value)
+  (name##_hal_pin.source->source->value)
 
 #define INIT(func)                    \
  init = ({ void function(){func} function;});
