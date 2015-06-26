@@ -31,7 +31,7 @@ RT(
   PIN(sin) = s;
   PIN(msin) = mod(s);
   PIN(square) = (sin_ > 0.0) ? (amp_) : (-amp_);
-  PIN(vel) = mod(((int)(freq_ * time * r)) / r);
+  PIN(vel) = mod(((int)(freq_ * time * r * 2.0 * M_PI)) / r);
 );
 
 ENDCOMP;
