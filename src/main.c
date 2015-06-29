@@ -214,10 +214,10 @@ int main(void)
 	HAL_PIN(sin_gain) = 0.0001515;
 	HAL_PIN(cos_gain) = 0.00015;
 
-	g_amp = map_hal_pin("net0.amp");
-	g_vlt = map_hal_pin("net0.vlt");
-	g_tmp = map_hal_pin("net0.tmp");
-	rt_time = map_hal_pin("net0.rt_calc_time");
+	g_amp_hal_pin = map_hal_pin("net0.amp");
+	g_vlt_hal_pin = map_hal_pin("net0.vlt");
+	g_tmp_hal_pin = map_hal_pin("net0.tmp");
+	rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
 
 	for(int i = 0; i < hal.init_func_count; i++){
 		hal.init[i]();
