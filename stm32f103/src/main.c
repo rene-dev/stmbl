@@ -85,9 +85,14 @@ void GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-
-  //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-  //GPIO_Init(GPIOB, &GPIO_InitStructure);
+  //shutdown
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_SetBits(GPIOB,GPIO_Pin_1);
+  GPIO_SetBits(GPIOB,GPIO_Pin_2);
+  GPIO_SetBits(GPIOB,GPIO_Pin_3);
+  //GPIO_ResetBits(GPIOC,GPIO_Pin_2);//greep led off
+  
 
   //Analog pin configuration
   //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
@@ -205,8 +210,12 @@ DMA_InitTypeDef DMA_InitStructure;
 
   /* Enable ADC1 and GPIOC clock */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
+  
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
@@ -251,7 +260,7 @@ DMA_InitTypeDef DMA_InitStructure;
   /* ADC1 regular channel14 configuration */
   //ADC_channels anpassen!
   ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_13Cycles5);// amp
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 2, ADC_SampleTime_13Cycles5);// vlt
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 2, ADC_SampleTime_13Cycles5);// vlt
   ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 3, ADC_SampleTime_13Cycles5);// iramx temp
  // ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 3, ADC_SampleTime_13Cycles5);
 
@@ -329,9 +338,9 @@ void USART2_IRQHandler(){
 		}
 		if(datapos == DATALENGTH*2){//all data received
 			datapos = -1;
-			TIM1->CCR1 = data.data[0];
+			TIM1->CCR3 = data.data[0];
 			TIM1->CCR2 = data.data[1];
-			TIM1->CCR3 = data.data[2];
+			TIM1->CCR1 = data.data[2];
 			timeout = 0;
 			send++;
 			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led

@@ -103,12 +103,12 @@ void EXTI9_5_IRQHandler(){
 }
 
 //DRV UART
-void USART2_IRQHandler(){
+void USART1_IRQHandler(){
 	static int32_t datapos = -1;
 	static data_t data;
-	USART_ClearITPendingBit(USART2, USART_IT_RXNE);
-	USART_ClearFlag(USART2, USART_FLAG_RXNE);
-	rxbuf = USART2->DR;
+	USART_ClearITPendingBit(USART1, USART_IT_RXNE);
+	USART_ClearFlag(USART1, USART_FLAG_RXNE);
+	rxbuf = USART1->DR;
 	//rxbuf = USART_ReceiveData(USART2);
 
 	if(rxbuf == 0x154){//start condition
