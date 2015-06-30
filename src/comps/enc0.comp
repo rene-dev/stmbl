@@ -102,7 +102,7 @@ RT(
   }
 
   //if(q0 > 0.0){
-    p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res0);
+    p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res);
     PIN(pos) = p;
   //}
   if(e_res != res){
