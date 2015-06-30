@@ -134,9 +134,9 @@ int main(void)
 	setup();
 
 	#include "comps/adc.comp"
-	//#include "comps/enc1.comp"
+	#include "comps/enc1.comp"
 	//#include "comps/res.comp"
-	#include "comps/encm.comp"
+	//#include "comps/encm.comp"
 	#include "comps/sim.comp"
 
 	//#include "comps/mux.comp"
@@ -155,7 +155,10 @@ int main(void)
 
 	#include "comps/rev.comp"
 
-	#include "comps/cur.comp"
+	#include "comps/curpid.comp"
+  #include "comps/pmsm.comp"
+  #include "comps/mot.comp"
+  #include "comps/idq.comp"
 
 	#include "comps/pwm2uart.comp"
 
@@ -197,7 +200,8 @@ int main(void)
 	HAL_PIN(pos_p) = 0.0;
 	HAL_PIN(acc_p) = 0.0;
 	HAL_PIN(acc_pi) = 0.0;
-	HAL_PIN(cur_lp) = 0.0;
+	HAL_PIN(cur_p) = 0.0;
+  HAL_PIN(cur_ff) = 1.0;
 	HAL_PIN(max_vel) = 0.0;
 	HAL_PIN(max_acc) = 0.0;
 	HAL_PIN(max_force) = 0.0;
@@ -214,10 +218,10 @@ int main(void)
 	HAL_PIN(sin_gain) = 0.0001515;
 	HAL_PIN(cos_gain) = 0.00015;
 
-	g_amp = map_hal_pin("net0.amp");
-	g_vlt = map_hal_pin("net0.vlt");
-	g_tmp = map_hal_pin("net0.tmp");
-	rt_time = map_hal_pin("net0.rt_calc_time");
+	g_amp_hal_pin = map_hal_pin("net0.amp");
+	g_vlt_hal_pin = map_hal_pin("net0.vlt");
+	g_tmp_hal_pin = map_hal_pin("net0.tmp");
+	rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
 
 	for(int i = 0; i < hal.init_func_count; i++){
 		hal.init[i]();
@@ -227,24 +231,53 @@ int main(void)
 
 	//set_e240();
 	//set_bergerlahr();//pid2: ok
-	set_mitsubishi();//pid2: ok
+	//set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
-	//set_rexroth();//pid2: ok
-  //link_hal_pins("enc10.ipos", "rev1.in");
-
-	//set_hal_pin("res0.reverse", 0.0);
+	set_rexroth();//pid2: ok
 	//set_bosch1();//pid2: ok
 	//set_bosch4();//pid2: ok
 	//set_sanyo();//pid2: ok
 	//set_br();
 
-	//set_hal_pin("enc0.iquad_en1", 1.0);
-	//set_hal_pin("enc0.quad_en1", 1.0);
-	//set_hal_pin("enc0.iquad_en1", 1.0);
-
-	//link_hal_pins("pderiv1.out2", "net0.fb_d");
   set_cmd_sin();
+
+  link_hal_pins("cauto0.i_d", "curpid0.id_cmd");
+  link_hal_pins("pid0.cur_cmd", "curpid0.iq_cmd");
+  link_hal_pins("net0.vlt", "curpid0.volt");
+  link_hal_pins("conf0.r", "curpid0.rd");
+  link_hal_pins("conf0.r", "curpid0.rq");
+  link_hal_pins("conf0.l", "curpid0.ld");
+  link_hal_pins("conf0.l", "curpid0.lq");
+  link_hal_pins("conf0.cur_ff", "curpid0.ff");
+  link_hal_pins("conf0.cur_p", "curpid0.kp");
+
+  link_hal_pins("curpid0.ud", "pmsm0.ud");
+  link_hal_pins("curpid0.uq", "pmsm0.uq");
+  link_hal_pins("net0.fb_d", "pmsm0.vel");
+  link_hal_pins("conf0.r", "pmsm0.r");
+  link_hal_pins("conf0.l", "pmsm0.ld");
+  link_hal_pins("conf0.l", "pmsm0.lq");
+  link_hal_pins("conf0.km", "pmsm0.km");
+  link_hal_pins("conf0.polecount", "pmsm0.polecount");
+  link_hal_pins("pmsm0.id", "curpid0.id_fb");
+  link_hal_pins("pmsm0.iq", "curpid0.id_fq");
+  link_hal_pins("pmsm0.torque", "mot0.torque");
+  link_hal_pins("conf0.j", "mot0.j");
+  link_hal_pins("net0.fb", "mot0.real_pos");
+  set_hal_pin("mot0.kp", 0.01);
+  link_hal_pins("curpid0.ud", "idq0.ud");
+  link_hal_pins("curpid0.uq", "idq0.uq");
+  link_hal_pins("cauto0.magpos", "idq0.pos");
+  link_hal_pins("conf0.pole_count", "idq0.polecount");
+  link_hal_pins("net0.vlt", "idq0.volt");
+  link_hal_pins("idq0.u", "pwm2uart0.u");
+  link_hal_pins("idq0.v", "pwm2uart0.v");
+  link_hal_pins("idq0.w", "pwm2uart0.w");
+  link_hal_pins("conf0.pole_count", "pmsm0.polecount");
+  set_hal_pin("cauto0.pole_count", 1.0);
+
+
 
 
 	link_hal_pins("pid0.pos_error", "avg0.in");
