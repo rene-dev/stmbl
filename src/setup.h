@@ -30,8 +30,8 @@
 #define ARES 4096.0// analog resolution, 12 bit
 #define RCUR 0.0181//shunt
 #define TPULLUP 10000//iramx temperature pullup
-#define VDIVUP 36000.0//HV div pullup R1,R12
-#define VDIVDOWN 280.0//HV div pulldown R2,R9
+#define VDIVUP 1000000.0//HV div pullup R1,R12
+#define VDIVDOWN 4990.0//HV div pulldown R2,R9
 #define R10 10000
 #define R11 180
 
