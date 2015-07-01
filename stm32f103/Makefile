@@ -52,8 +52,8 @@ SYSTEM_OBJ = $(CMSIS_DEVSUP)/system_$(SYSTEM_FILE).o
 BIN = main.bin
 
 OBJS = $(sort \
- $(patsubst %.c,%.o,$(wildcard Src/*.c)) \
- $(patsubst %.s,%.o,$(wildcard Src/*.s)) \
+ $(patsubst %.c,%.o,$(wildcard src/*.c)) \
+ $(patsubst %.s,%.o,$(wildcard src/*.s)) \
  $(STARTUP_OBJ) \
  $(SYSTEM_OBJ))
 
@@ -87,8 +87,8 @@ depend dep: .depend
 
 include .depend
 
-.depend: Src/*.c
-	$(CCDEP) $(CFLAGS) -MM $^ | sed -e 's@.*.o:@Src/&@' > .depend 
+.depend: src/*.c
+	$(CCDEP) $(CFLAGS) -MM $^ | sed -e 's@.*.o:@src/&@' > .depend 
 
 .c.o:
 	$(CC) $(CFLAGS) -c -o $@ $<
