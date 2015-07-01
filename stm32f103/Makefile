@@ -19,7 +19,7 @@ INCDIR := inc/
 
 LIBDIR := Libraries/
 
-LIBINC := -IInc
+LIBINC := -Iinc
 LIBINC += -ILibraries/STM32F10x_StdPeriph_Driver/inc
 LIBINC += -ILibraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
 LIBINC += -ILibraries/CMSIS/CM3/CoreSupport
