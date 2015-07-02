@@ -38,7 +38,7 @@ void setup(){
 void setup_usart(){
 	GPIO_InitTypeDef GPIO_InitStruct;
 	USART_InitTypeDef USART_InitStruct;
-	RCC_APB2PeriphClockCmd(UART_DRV_RCC, ENABLE);
+	UART_DRV_CLOCK_COMMAND(UART_DRV_RCC, ENABLE);
 	RCC_AHB1PeriphClockCmd(UART_DRV_RX_IO_RCC, ENABLE);
 	RCC_AHB1PeriphClockCmd(UART_DRV_TX_IO_RCC, ENABLE);
 
@@ -66,7 +66,7 @@ void setup_usart(){
 
     USART_ITConfig(UART_DRV, USART_IT_RXNE, ENABLE);
 
-    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannel = UART_DRV_IRQN;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
