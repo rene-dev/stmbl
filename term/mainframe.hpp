@@ -33,7 +33,7 @@ private:
     struct sp_port **ports;
     struct sp_port *port;
     wxChoice *choose_port;
-    std::vector<wxChoice *> channelchoice;
+    std::vector<wxComboBox *> channelchoice;
     std::vector<wxSlider *> channelpos;
     std::vector<wxSlider *> channelgain;
     bool connected;
