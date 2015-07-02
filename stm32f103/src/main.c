@@ -1,53 +1,53 @@
 #include "stm32f10x_conf.h"
 #include <math.h>
 
-/*
-struct f1tof4{
-  int16 ia;
-  int16 ib;
-  int16 ua;
-  int16 ub;
-  int16 udc;
-  int16 value;
-  struct {
-    bool enabled;
-    bool temp_limit;
-    bool current_limit;
-    bool watchdog; // toggle
-    int4 misc;
-  }flags;
-  int8 crc;
-};
 
-struct f4tof1{
-  int16 a; // u/i
-  int16 b; // u/i
-  int16 value;
-  int6 address; 
-  /* 
-    rw:
-      r
-      l
-      max_i
-      max_temp
-      max_pwm
-      phase_offset_uv
-      phase_offset_vw
-      svm_mode (centered, svm, bottom low)
-      u/i mode
-    
-    r:
-      temp0
-      temp1
-      temp2
-      temp3
-      hw version
-  */  
-  bool enable;
-  bool watchdog; // toggle in hal
-  int8 crc;
-};
-*/
+// struct f1tof4{
+//   int16 ia;
+//   int16 ib;
+//   int16 ua;
+//   int16 ub;
+//   int16 udc;
+//   int16 value;
+//   struct {
+//     bool enabled;
+//     bool temp_limit;
+//     bool current_limit;
+//     bool watchdog; // toggle
+//     int4 misc;
+//   }flags;
+//   int8 crc;
+// };
+//
+// struct f4tof1{
+//   int16 a; // u/i
+//   int16 b; // u/i
+//   int16 value;
+//   int6 address;
+//   /*
+//     rw:
+//       r
+//       l
+//       max_i
+//       max_temp
+//       max_pwm
+//       phase_offset_uv
+//       phase_offset_vw
+//       svm_mode (centered, svm, bottom low)
+//       u/i mode
+//
+//     r:
+//       temp0
+//       temp1
+//       temp2
+//       temp3
+//       hw version
+//   */
+//   bool enable;
+//   bool watchdog; // toggle in hal
+//   int8 crc;
+// };
+
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
@@ -133,10 +133,19 @@ void GPIO_Configuration(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-
-  //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-  //GPIO_Init(GPIOB, &GPIO_InitStructure);
-
+#ifdef TROLLER
+  //shutdown
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_SetBits(GPIOB,GPIO_Pin_1);
+  GPIO_SetBits(GPIOB,GPIO_Pin_2);
+  GPIO_SetBits(GPIOB,GPIO_Pin_3);
+  //GPIO_ResetBits(GPIOC,GPIO_Pin_2);//greep led off
+#else
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
+  
   //Analog pin configuration
   //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
   //GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
@@ -253,8 +262,19 @@ DMA_InitTypeDef DMA_InitStructure;
 
   /* Enable ADC1 and GPIOC clock */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
+  
+#ifdef TROLLER
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+#endif
 
+#ifdef TROLLER
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+#else
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
+#endif
+  
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
@@ -299,7 +319,11 @@ DMA_InitTypeDef DMA_InitStructure;
   /* ADC1 regular channel14 configuration */
   //ADC_channels anpassen!
   ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_13Cycles5);// amp
+#ifdef TROLLER
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 2, ADC_SampleTime_13Cycles5);// vlt
+#else
   ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 2, ADC_SampleTime_13Cycles5);// vlt
+#endif
   ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 3, ADC_SampleTime_13Cycles5);// iramx temp
  // ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 3, ADC_SampleTime_13Cycles5);
 
@@ -377,9 +401,15 @@ void USART2_IRQHandler(){
 		}
 		if(datapos == DATALENGTH*2){//all data received
 			datapos = -1;
+#ifdef TROLLER
+			TIM1->CCR3 = data.data[0];
+			TIM1->CCR2 = data.data[1];
+			TIM1->CCR1 = data.data[2];
+#else
 			TIM1->CCR1 = data.data[0];
 			TIM1->CCR2 = data.data[1];
 			TIM1->CCR3 = data.data[2];
+#endif
 			timeout = 0;
 			send++;
 			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
