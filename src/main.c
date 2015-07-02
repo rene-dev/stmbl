@@ -135,7 +135,8 @@ int main(void)
 
 	#include "comps/adc.comp"
   #include "comps/fault.comp"
-	#include "comps/enc1.comp"
+	#include "comps/enc0.comp"
+  #include "comps/enc1.comp"
 	//#include "comps/res.comp"
 	#include "comps/encm.comp"
 	#include "comps/sim.comp"
@@ -239,10 +240,10 @@ int main(void)
 
 	//set_e240();
 	//set_bergerlahr();//pid2: ok
-	//set_mitsubishi();//pid2: ok
+	set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
-	set_rexroth();//pid2: ok
+	//set_rexroth();//pid2: ok
   //link_hal_pins("enc10.ipos", "rev1.in");
 
 	//set_hal_pin("res0.reverse", 0.0);
@@ -256,7 +257,7 @@ int main(void)
 	//set_hal_pin("enc0.iquad_en1", 1.0);
 
 	//link_hal_pins("pderiv1.out2", "net0.fb_d");
-  //set_cmd_sin();
+  set_cmd_enc();
 
 
 
@@ -298,6 +299,11 @@ int main(void)
 
 	link_hal_pins("pid0.pos_error", "avg0.in");
 	set_hal_pin("avg0.ac", 0.0001);
+
+  set_hal_pin("cur0.induction", 0.0);
+  set_hal_pin("cauto0.cur", 3.0);
+
+
 
 	//link_hal_pins("cauto0.ready", "led0.g");
 	//link_hal_pins("cauto0.start", "led0.r");

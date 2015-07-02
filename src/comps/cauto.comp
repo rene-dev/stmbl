@@ -6,7 +6,7 @@ HAL_PIN(i_d) = 0.0;
 HAL_PIN(magpos) = 0.0;
 
 HAL_PIN(start) = 0.0;
-HAL_PIN(ready) = 1.0;
+HAL_PIN(ready) = 0.0;
 
 HAL_PIN(start_offset) = 0.0;
 HAL_PIN(offset) = 0.0;
@@ -40,6 +40,7 @@ RT(
       mpos = mod(minus(fbi, offset_) * PIN(pole_count));
       if(PIN(start) > 0.0){
         GOTO(1);
+        PIN(ready) = 0.0;
       }else{
       	offset_ = PIN(start_offset);
       }
@@ -54,7 +55,7 @@ RT(
       GOTO(2);
     }
     STATE(2){
-      PIN(ready) = 0.5;
+      PIN(ready) = 0.0;
       offset_ = fbi;
       id = 0.0;
       iq = 0.0;
@@ -67,6 +68,7 @@ RT(
       id = 0.0;
       mpos = mod(minus(fbi, offset_) * PIN(pole_count));
       if(PIN(start) == 0.0){
+        PIN(ready) = 0.0;
         GOTO(0);
       }
     }

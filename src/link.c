@@ -172,6 +172,7 @@ void set_fb_res(){
 
 void set_fb_mitsu(){
   link_hal_pins("encm0.pos", "rev1.in");
+  link_hal_pins("encm0.error", "net0.fb_error");
 }
 
 void set_rexroth(){

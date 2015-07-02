@@ -120,7 +120,7 @@ RT(
   if(temp > PIN(fan_temp)){ // cool down
     PIN(fan) = 1.0;
   }
-  else if(temp < PIN(fan_temp) * 0.9){ // normal
+  else if(temp < PIN(fan_temp) * 0.95){ // normal
     PIN(fan) = 0.0;
   }
 
@@ -138,7 +138,7 @@ RT(
 
   // pos error
   float max_pos_error = MAX(MIN(PIN(max_pos_error), M_PI), 0.0);
-  if(state != 2 && max_pos_error > 0.0 && ABS(PIN(pos_error)) >= max_pos_error){ // disable drive, set fault
+  if(state == 1 && max_pos_error > 0.0 && ABS(PIN(pos_error)) >= max_pos_error){ // disable drive, set fault
     PIN(cur) = 0.0;
     PIN(enable_out) = 0.0;
     PIN(enable_pid) = 0.0;
@@ -171,11 +171,12 @@ RT(
       PIN(enable_pid) = 0.0;
       state = 2;
     }
+  }
+  else if(state == 1){
     phased = 1;
   }
   else if(state == 2){ // phasing -> enabled
     if(PIN(phase_ready) > 0.0){
-      phased = 1;
       PIN(enable_pid) = 1.0;
       state = 1;
     }
