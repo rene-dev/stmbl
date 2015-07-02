@@ -155,6 +155,8 @@ void set_fb_sincos(){
 
   link_hal_pins("enc10.ipos", "rev1.in");
   link_hal_pins("conf0.fb_res", "enc10.res");
+  link_hal_pins("enc10.error", "net0.fb_error");
+
   set_hal_pin("enc10.ires", 1024.0);
   set_hal_pin("pderiv1.res", 524288.0);
 }
@@ -164,6 +166,7 @@ void set_fb_res(){
 
   link_hal_pins("adc0.sin", "res0.sin");
   link_hal_pins("adc0.cos", "res0.cos");
+  link_hal_pins("res0.error", "net0.fb_error");
   set_hal_pin("adc0.res_en", 1.0);
 }
 

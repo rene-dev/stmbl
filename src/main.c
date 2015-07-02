@@ -134,7 +134,8 @@ int main(void)
 	setup();
 
 	#include "comps/adc.comp"
-	//#include "comps/enc1.comp"
+  #include "comps/fault.comp"
+	#include "comps/enc1.comp"
 	//#include "comps/res.comp"
 	#include "comps/encm.comp"
 	#include "comps/sim.comp"
@@ -164,8 +165,8 @@ int main(void)
 
 	#include "comps/term.comp"
 	#include "comps/led.comp"
-	//#include "comps/fan.comp"
-	//#include "comps/brake.comp"
+	#include "comps/fan.comp"
+	#include "comps/brake.comp"
 	//#include "comps/tune.comp"
 	//#include "comps/dmux.comp"
 	//#include "comps/dmux.comp"
@@ -179,6 +180,7 @@ int main(void)
 	HAL_PIN(enable) = 0.0;
 	HAL_PIN(cmd) = 0.0;
 	HAL_PIN(fb) = 0.0;
+  HAL_PIN(fb_error) = 0.0;
 	HAL_PIN(cmd_d) = 0.0;
 	HAL_PIN(fb_d) = 0.0;
 	HAL_PIN(amp) = 0.0;
@@ -214,6 +216,16 @@ int main(void)
 	HAL_PIN(sin_gain) = 0.0001515;
 	HAL_PIN(cos_gain) = 0.00015;
 
+  HAL_PIN(max_volt) = 370.0;
+  HAL_PIN(max_temp) = 100.0;
+  HAL_PIN(max_pos_error) = M_PI / 2.0;
+  HAL_PIN(high_volt) = 350.0;
+  HAL_PIN(low_volt) = 12.0;
+  HAL_PIN(high_temp) = 80.0;
+  HAL_PIN(fan_temp) = 40.0;
+  HAL_PIN(autophase) = 1.0;
+
+
 	g_amp_hal_pin = map_hal_pin("net0.amp");
 	g_vlt_hal_pin = map_hal_pin("net0.vlt");
 	g_tmp_hal_pin = map_hal_pin("net0.tmp");
@@ -227,10 +239,10 @@ int main(void)
 
 	//set_e240();
 	//set_bergerlahr();//pid2: ok
-	set_mitsubishi();//pid2: ok
+	//set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
-	//set_rexroth();//pid2: ok
+	set_rexroth();//pid2: ok
   //link_hal_pins("enc10.ipos", "rev1.in");
 
 	//set_hal_pin("res0.reverse", 0.0);
@@ -244,22 +256,59 @@ int main(void)
 	//set_hal_pin("enc0.iquad_en1", 1.0);
 
 	//link_hal_pins("pderiv1.out2", "net0.fb_d");
-  set_cmd_sin();
+  //set_cmd_sin();
+
+
+
+  link_hal_pins("conf0.max_cur", "fault0.max_cur");
+  link_hal_pins("conf0.max_volt", "fault0.max_volt");
+  link_hal_pins("conf0.max_temp", "fault0.max_temp");
+  link_hal_pins("conf0.max_pos_error", "fault0.max_pos_error");
+  link_hal_pins("conf0.high_volt", "fault0.high_volt");
+  link_hal_pins("conf0.high_temp", "fault0.high_temp");
+  link_hal_pins("conf0.low_volt", "fault0.low_volt");
+  link_hal_pins("conf0.fan_temp", "fault0.fan_temp");
+  link_hal_pins("conf0.autophase", "fault0.phase_on_start");
+
+  set_hal_pin("fault0.reset", 0.0);
+
+  link_hal_pins("fault0.phase_start", "cauto0.start");
+  link_hal_pins("cauto0.ready", "fault0.phase_ready");
+
+  link_hal_pins("pid0.pos_error", "fault0.pos_error");
+  link_hal_pins("net0.vlt", "fault0.volt");
+  link_hal_pins("net0.tmp", "fault0.temp");
+  link_hal_pins("net0.amp", "fault0.amp");
+  link_hal_pins("net0.fb_error", "fault0.fb_error");
+
+  link_hal_pins("fault0.cur", "pid0.max_cur");
+  link_hal_pins("fault0.cur", "cur0.cur_max");
+
+  link_hal_pins("fault0.brake", "brake0.brake");
+  link_hal_pins("fault0.fan", "fan0.fan");
+
+  link_hal_pins("fault0.enable_out", "pwm2uart0.enable");
+  link_hal_pins("fault0.enable_pid", "pid0.enable");
+
+  link_hal_pins("net0.enable", "fault0.enable");
+
+  link_hal_pins("fault0.led_green", "led0.g");
+  link_hal_pins("fault0.led_red", "led0.r");
 
 
 	link_hal_pins("pid0.pos_error", "avg0.in");
 	set_hal_pin("avg0.ac", 0.0001);
 
-	link_hal_pins("cauto0.ready", "led0.g");
-	link_hal_pins("cauto0.start", "led0.r");
+	//link_hal_pins("cauto0.ready", "led0.g");
+	//link_hal_pins("cauto0.start", "led0.r");
 	//link_hal_pins("led0.g", "test0.test2");
 
-	link_hal_pins("cauto0.ready", "pid0.enable");
+	//link_hal_pins("cauto0.ready", "pid0.enable");
 	//link_hal_pins("net0.cmd", "auto0.offset");
 
-	set_hal_pin("cauto0.start", 1.0);
+	//set_hal_pin("cauto0.start", 1.0);
 
-	set_hal_pin("led0.y", 1.0);
+	//set_hal_pin("led0.y", 1.0);
 	TIM_Cmd(TIM8, ENABLE);//int
 
 	//Wait(2000);
