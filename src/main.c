@@ -281,6 +281,9 @@ int main(void)
   link_hal_pins("net0.tmp", "fault0.temp");
   link_hal_pins("net0.amp", "fault0.amp");
   link_hal_pins("net0.fb_error", "fault0.fb_error");
+  link_hal_pins("net0.cmd", "fault0.cmd");
+  link_hal_pins("rev1.out", "fault0.fb");
+  link_hal_pins("fault0.start_offset", "cauto0.start_offset");
 
   link_hal_pins("fault0.cur", "pid0.max_cur");
   link_hal_pins("fault0.cur", "cur0.cur_max");
@@ -299,9 +302,6 @@ int main(void)
 
 	link_hal_pins("pid0.pos_error", "avg0.in");
 	set_hal_pin("avg0.ac", 0.0001);
-
-  set_hal_pin("cur0.induction", 0.0);
-  set_hal_pin("cauto0.cur", 3.0);
 
 
 

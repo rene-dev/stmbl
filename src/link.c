@@ -38,7 +38,6 @@ void link_pid(){
 
   // cauto
   link_hal_pins("conf0.pole_count", "cauto0.pole_count");
-  link_hal_pins("cauto0.ready", "pid0.force_en");
   set_hal_pin("cauto0.time", 0.5);
 	set_hal_pin("cauto0.cur", 1.0);
 
@@ -408,6 +407,11 @@ void set_mitsubishi(){ // TODO
 	set_hal_pin("conf0.acc_pi", 50.0);
 	set_hal_pin("conf0.cur_lp", 0.5);
 	set_hal_pin("encm0.enable", 1.0);
+
+  set_hal_pin("cur0.induction", 0.0);
+  set_hal_pin("cauto0.cur", 3.0);
+  set_hal_pin("cauto0.mag_offset", 1.638);
+  set_hal_pin("conf0.autophase", 0.0);
   set_fb_mitsu();
 }
 

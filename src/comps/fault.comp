@@ -29,6 +29,7 @@ HAL_PIN(phase_on_start) = 0.0;
 // to cauto
 HAL_PIN(phase_start) = 0.0;
 HAL_PIN(phase_ready) = 0.0;
+HAL_PIN(start_offset) = 0.0;
 
 // temperature, voltage input, current input, pos error, feedback error
 HAL_PIN(temp) = 0.0;
@@ -36,6 +37,10 @@ HAL_PIN(volt) = 0.0;
 HAL_PIN(amp) = 0.0;
 HAL_PIN(pos_error) = 0.0;
 HAL_PIN(fb_error) = 0.0;
+
+// cmd + fb in
+HAL_PIN(cmd) = 0.0;
+HAL_PIN(fb) = 0.0;
 
 // current output
 HAL_PIN(cur) = 0.0;
@@ -53,7 +58,7 @@ HAL_PIN(fan) = 0.0;
 HAL_PIN(enable_out) = 0.0;
 HAL_PIN(enable_pid) = 0.0;
 
-// leds
+// leds  off = disabled, red = error, red + green = autophasing, green = enabled
 HAL_PIN(led_green) = 0.0;
 HAL_PIN(led_red) = 0.0;
 
@@ -71,6 +76,7 @@ RT(
   }
   else if(state == -10){ // reset on falling edge
     state = 0;
+    phased = 0;
   }
 
 
@@ -149,7 +155,7 @@ RT(
 
   // enable
   if(PIN(enable) <= 0.0 || state == -10){ // -> disable
-    phased = 0;
+    //phased = 0;
     PIN(phase_start) = 0.0;
     PIN(brake) = 0.0;
     PIN(brake_resistor) = 0.0;
@@ -165,6 +171,7 @@ RT(
     PIN(brake) = 1.0;
     PIN(enable_pid) = 1.0;
     state = 1;
+    PIN(start_offset) = minus(PIN(fb), PIN(cmd));
 
     if(phased == 0 && PIN(phase_on_start) > 0.0){ // start phasing
       PIN(phase_start) = 1.0;
