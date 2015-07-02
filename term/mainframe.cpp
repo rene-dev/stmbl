@@ -26,8 +26,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	wxPanel *top = new wxPanel(mainsplitter, wxID_ANY);
 	wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *leiste = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer *channelleiste = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer *leftright = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *channelleiste = new wxBoxSizer(wxHORIZONTAL);
 	choose_port = new wxChoice (top, wxID_ANY);
 
 	connectbutton = new wxButton(top, wxID_ANY, wxT("&Connect"));
@@ -50,8 +49,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	topsizer->Add(leiste);
 	drawpanel = new BasicDrawPane((wxFrame*)top,8);
 
-
-    leftright->Add(drawpanel, 1,wxEXPAND,0);
+    topsizer->Add(drawpanel, 1,wxEXPAND,0);
     wxArrayString waves;
     waves.push_back("0");
     waves.push_back("net0.cmd");
@@ -95,8 +93,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
         channelleiste->Add(channelsizer);
     }
 
-    leftright->Add(channelleiste);
-    topsizer->Add(leftright, 1,wxEXPAND,0);
+	topsizer->Add(channelleiste);
 
     top->SetSizer(topsizer);
 
