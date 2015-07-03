@@ -38,7 +38,6 @@ void link_pid(){
 
   // cauto
   link_hal_pins("conf0.pole_count", "cauto0.pole_count");
-  link_hal_pins("cauto0.ready", "pid0.force_en");
   set_hal_pin("cauto0.time", 0.5);
 	set_hal_pin("cauto0.cur", 1.0);
 
@@ -155,6 +154,8 @@ void set_fb_sincos(){
 
   link_hal_pins("enc10.ipos", "rev1.in");
   link_hal_pins("conf0.fb_res", "enc10.res");
+  link_hal_pins("enc10.error", "net0.fb_error");
+
   set_hal_pin("enc10.ires", 1024.0);
   set_hal_pin("pderiv1.res", 524288.0);
 }
@@ -164,11 +165,13 @@ void set_fb_res(){
 
   link_hal_pins("adc0.sin", "res0.sin");
   link_hal_pins("adc0.cos", "res0.cos");
+  link_hal_pins("res0.error", "net0.fb_error");
   set_hal_pin("adc0.res_en", 1.0);
 }
 
 void set_fb_mitsu(){
   link_hal_pins("encm0.pos", "rev1.in");
+  link_hal_pins("encm0.error", "net0.fb_error");
 }
 
 void set_rexroth(){
@@ -405,6 +408,11 @@ void set_mitsubishi(){ // TODO
 	set_hal_pin("conf0.acc_pi", 50.0);
 	set_hal_pin("conf0.cur_lp", 0.5);
 	set_hal_pin("encm0.enable", 1.0);
+
+  set_hal_pin("cur0.induction", 0.0);
+  set_hal_pin("cauto0.cur", 3.0);
+  set_hal_pin("cauto0.mag_offset", 1.638);
+  set_hal_pin("conf0.autophase", 0.0);
   set_fb_mitsu();
 }
 

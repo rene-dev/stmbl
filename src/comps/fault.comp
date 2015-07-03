@@ -1,0 +1,251 @@
+COMP(fault);
+// max current
+HAL_PIN(max_cur) = 0.0;
+
+// max voltage, temperature, pos error
+HAL_PIN(max_volt) = 0.0;
+HAL_PIN(max_temp) = 0.0;
+HAL_PIN(max_pos_error) = 0.0;
+
+// limit voltage, temperature
+HAL_PIN(high_volt) = 0.0;
+HAL_PIN(high_temp) = 0.0;
+
+// low voltage
+HAL_PIN(low_volt) = 0.0;
+
+// fan temperatur limit
+HAL_PIN(fan_temp) = 0.0;
+
+// global enable
+HAL_PIN(enable) = 0.0;
+
+// reset fault
+HAL_PIN(reset) = 0.0;
+
+// phase on startup
+HAL_PIN(phase_on_start) = 0.0;
+
+// to cauto
+HAL_PIN(phase_start) = 0.0;
+HAL_PIN(phase_ready) = 0.0;
+HAL_PIN(start_offset) = 0.0;
+
+// temperature, voltage input, current input, pos error, feedback error
+HAL_PIN(temp) = 0.0;
+HAL_PIN(volt) = 0.0;
+HAL_PIN(amp) = 0.0;
+HAL_PIN(pos_error) = 0.0;
+HAL_PIN(fb_error) = 0.0;
+
+// cmd + fb in
+HAL_PIN(cmd) = 0.0;
+HAL_PIN(fb) = 0.0;
+
+// current output
+HAL_PIN(cur) = 0.0;
+
+// brake resistor output
+HAL_PIN(brake_resistor) = 0.0;
+
+// brake output
+HAL_PIN(brake) = 0.0;
+
+// fan output
+HAL_PIN(fan) = 0.0;
+
+// enable out, pid
+HAL_PIN(enable_out) = 0.0;
+HAL_PIN(enable_pid) = 0.0;
+
+// leds  off = disabled, red = error, red + green = autophasing, green = enabled
+HAL_PIN(led_green) = 0.0;
+HAL_PIN(led_red) = 0.0;
+
+// state -10 = reset state, -4 = over current, -3 = pos_error, -2 = over temperature, -1 = over voltage, 0 = disabled, 1 = enabled, 2 = phasing
+HAL_PIN(state) = 0.0;
+
+MEM(int state) = 0;
+MEM(int phased) = 0;
+
+
+RT(
+  // reset fault
+  if(PIN(reset) > 0.0){
+    state = -10;
+  }
+  else if(state == -10){ // reset on falling edge
+    state = 0;
+    phased = 0;
+  }
+
+
+  // voltage
+  float volt = PIN(volt);
+  float max_volt = MAX(PIN(max_volt), 1.0);
+  float high_volt = MIN(PIN(high_volt), max_volt - 0.1);
+  float low_volt = MAX(MIN(PIN(low_volt), high_volt), 0.0);
+
+  if(volt >= max_volt){ // disable drive, set fault
+    PIN(brake) = 0.0;
+    PIN(brake_resistor) = 1.0;
+    PIN(cur) = 0.0;
+    PIN(enable_out) = 0.0;
+    PIN(enable_pid) = 0.0;
+    state = -1;
+  }
+  else if(volt >= high_volt){ // enable brake resistor
+    PIN(brake_resistor) = (volt - high_volt) / (max_volt - high_volt);
+  }
+  else{ // normal
+    PIN(brake_resistor) = 0.0;
+  }
+
+
+  // temperature
+  float temp = PIN(temp);
+  float max_temp = MAX(PIN(max_temp), 1.0);
+  float high_temp = MIN(PIN(high_temp), max_temp - 0.1);
+  float max_cur = PIN(max_cur);
+  if(temp >= max_temp){ // disable drive, set fault
+    PIN(enable_out) = 0.0;
+    PIN(enable_pid) = 0.0;
+    PIN(cur) = 0.0;
+    PIN(brake) = 0.0;
+    state = -2;
+  }
+  else if(temp >= high_temp){ // limit current
+    PIN(cur) = max_cur * (max_temp - temp) / (max_temp - high_temp);
+  }
+  else{ // normal
+    PIN(cur) = max_cur;
+  }
+
+
+  // fan
+  if(temp > PIN(fan_temp)){ // cool down
+    PIN(fan) = 1.0;
+  }
+  else if(temp < PIN(fan_temp) * 0.95){ // normal
+    PIN(fan) = 0.0;
+  }
+
+
+  // current
+  float amp = PIN(amp);
+  if(amp >= max_cur * 1.1){ // disable drive, set fault
+    PIN(brake) = 0.0;
+    PIN(cur) = 0.0;
+    PIN(enable_out) = 0.0;
+    PIN(enable_pid) = 0.0;
+    state = -4;
+  }
+
+
+  // pos error
+  float max_pos_error = MAX(MIN(PIN(max_pos_error), M_PI), 0.0);
+  if(state == 1 && max_pos_error > 0.0 && ABS(PIN(pos_error)) >= max_pos_error){ // disable drive, set fault
+    PIN(cur) = 0.0;
+    PIN(enable_out) = 0.0;
+    PIN(enable_pid) = 0.0;
+    PIN(brake) = 0.0;
+    state = -3;
+  }
+
+
+  // enable
+  if(PIN(enable) <= 0.0 || state == -10){ // -> disable
+    //phased = 0;
+    PIN(phase_start) = 0.0;
+    PIN(brake) = 0.0;
+    PIN(brake_resistor) = 0.0;
+    //PIN(fan) = 0.0;
+    PIN(enable_out) = 0.0;
+    PIN(cur) = 0.0;
+    if(state >= 0){ // no fault -> disabled
+      state = 0;
+    }
+  }
+  else if(state == 0){ // disabled -> enabled
+    PIN(enable_out) = 1.0;
+    PIN(brake) = 1.0;
+    PIN(enable_pid) = 1.0;
+    state = 1;
+    PIN(start_offset) = minus(PIN(fb), PIN(cmd));
+
+    if(phased == 0 && PIN(phase_on_start) > 0.0){ // start phasing
+      PIN(phase_start) = 1.0;
+      PIN(enable_pid) = 0.0;
+      state = 2;
+    }
+  }
+  else if(state == 1){
+    phased = 1;
+  }
+  else if(state == 2){ // phasing -> enabled
+    if(PIN(phase_ready) > 0.0){
+      PIN(enable_pid) = 1.0;
+      state = 1;
+    }
+  }
+
+
+  // under voltage
+  if(state > 0 && volt < low_volt){
+    state = 0;
+    PIN(phase_start) = 0.0;
+    PIN(brake) = 0.0;
+    PIN(brake_resistor) = 0.0;
+    //PIN(fan) = 0.0;
+    PIN(enable_out) = 0.0;
+    PIN(cur) = 0.0;
+  }
+
+
+  // fb error
+  if(state > 0 && PIN(fb_error) > 0.0){
+    state = 0;
+    phased = 0;
+    PIN(phase_start) = 0.0;
+    PIN(brake) = 0.0;
+    PIN(brake_resistor) = 0.0;
+    //PIN(fan) = 0.0;
+    PIN(enable_out) = 0.0;
+    PIN(cur) = 0.0;
+  }
+
+  switch(state){
+    case 0:
+    case -10:
+      PIN(led_green) = 0.0;
+      PIN(led_red) = 0.0;
+    break;
+
+    case -4:
+    case -3:
+    case -2:
+    case -1:
+      PIN(led_green) = 0.0;
+      PIN(led_red) = 1.0;
+    break;
+
+    case 1:
+      PIN(led_green) = 1.0;
+      PIN(led_red) = 0.0;
+    break;
+
+    case 2:
+      PIN(led_green) = 1.0;
+      PIN(led_red) = 1.0;
+    break;
+
+    default:
+      PIN(led_green) = 0.0;
+      PIN(led_red) = 0.0;
+  }
+
+  PIN(state) = state;
+);
+
+
+ENDCOMP;

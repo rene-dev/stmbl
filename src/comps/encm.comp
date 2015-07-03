@@ -111,6 +111,7 @@ RT(
       //tpos = menc_buf[2]+menc_buf[3]*256+menc_buf[4]*65536; //length = 9, res = 17 bit, cmd = 2
       tpos = ((menc_buf[2] & 0x80) >> 7) + menc_buf[3]*2 + menc_buf[4]*512;//length = 9, res = 17 bit, cmd = 50(0x32)
       PIN(pos) = (tpos * M_PI * 2.0 / 131072.0) - M_PI;
+      PIN(error) = 0.0;
     }else //if(PIN(enable) > 0.0){
     {
       error_++;

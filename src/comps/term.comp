@@ -90,7 +90,6 @@ void save(){
 	param_t param;
 	for(int i = 0; i < hal.hal_pin_count; i++){
 		char name[7];
-		int address = 0;
 		strncpy(name,hal.hal_pins[i]->name,5);
 		name[6] =  '\0';
 		if(!strcmp(name, "conf0")){

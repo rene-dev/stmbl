@@ -1,7 +1,16 @@
 #include "basicdrawpane.hpp"
 #include <wx/graphics.h>
 
-const wxPen BasicDrawPane::pen[] = {*wxBLACK_PEN, *wxRED_PEN, *wxBLUE_PEN, *wxGREEN_PEN, *wxCYAN_PEN, *wxYELLOW_PEN, *wxGREY_PEN, *wxWHITE_PEN};
+const wxPen BasicDrawPane::pen[] = {
+    *wxBLACK_PEN,
+    *wxRED_PEN,
+    *wxBLUE_PEN,
+    *wxGREEN_PEN,
+    wxPen(wxColour(255, 128, 0)),
+    wxPen(wxColour(128, 128, 64)),
+    wxPen(wxColour(128, 64, 128)),
+    wxPen(wxColour(64, 128, 128))
+};
 
 BasicDrawPane::BasicDrawPane(wxFrame* parent, int ch) : wxPanel(parent){
     time = wxGetUTCTimeMillis();

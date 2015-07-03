@@ -51,7 +51,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 
     topsizer->Add(drawpanel, 1,wxEXPAND,0);
     wxArrayString waves;
-    waves.push_back("-");
+    waves.push_back("0");
     waves.push_back("net0.cmd");
     waves.push_back("net0.fb");
     waves.push_back("pid0.pwm_cmd");
@@ -62,8 +62,9 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     channelstartID = currentID-1;//next ID
     for(int i = 0;i<drawpanel->channels;i++){
         wxBoxSizer *channelsizer = new wxBoxSizer(wxVERTICAL);
-        channelchoice.push_back(new wxChoice (top, ++currentID));
-        channelchoice.back()->Bind(wxEVT_CHOICE,&ServoFrame::OnChannelChange, this, currentID);
+        channelchoice.push_back(new wxComboBox (top, ++currentID, _T(""), wxDefaultPosition, wxDefaultSize, 0, NULL, wxTE_PROCESS_ENTER));
+        channelchoice.back()->Bind(wxEVT_COMBOBOX,&ServoFrame::OnChannelChange, this, currentID);
+        channelchoice.back()->Bind(wxEVT_TEXT_ENTER,&ServoFrame::OnChannelChange, this, currentID);
         channelchoice.back()->Set(waves);
         channelchoice.back()->SetSelection(0);
         cout << channelchoice.back()->GetId() << endl;
@@ -144,7 +145,7 @@ void ServoFrame::OnChannelChange(wxCommandEvent& event){
     wxString value;
     switch (param) {
         case 0://wave
-            value = event.GetSelection()==0?"0":event.GetString();
+            value = event.GetString();
             break;
         case 1://offset
         case 2://gain

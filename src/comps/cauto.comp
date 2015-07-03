@@ -6,10 +6,11 @@ HAL_PIN(i_d) = 0.0;
 HAL_PIN(magpos) = 0.0;
 
 HAL_PIN(start) = 0.0;
-HAL_PIN(ready) = 1.0;
+HAL_PIN(ready) = 0.0;
 
+HAL_PIN(mag_offset) = 0.0;
 HAL_PIN(start_offset) = 0.0;
-HAL_PIN(offset) = 0.0;
+HAL_PIN(moffset) = 0.0;
 
 HAL_PIN(fb_in) = 0.0;
 HAL_PIN(fb_out) = 0.0;
@@ -26,22 +27,22 @@ MEM(float fb) = 0.0;
 MEM(float mpos) = 0.0;
 MEM(float id) = 0.0;
 MEM(float iq) = 0.0;
-MEM(float offset_) = 0.0;
+MEM(float moffset) = 0.0;
 
 RT(
   fbi = PIN(fb_in);
-  fb = minus(fbi, offset_);
+  fb = minus(fbi, PIN(start_offset));
 
   HT(
     GOTO(0);
     STATE(0){
       iq = 0.0;
       id = 0.0;
-      mpos = mod(minus(fbi, offset_) * PIN(pole_count));
+      mpos = mod(minus(fbi, PIN(mag_offset)) * PIN(pole_count));
       if(PIN(start) > 0.0){
         GOTO(1);
+        PIN(ready) = 0.0;
       }else{
-      	offset_ = PIN(start_offset);
       }
     }
     STATE(1){
@@ -54,8 +55,8 @@ RT(
       GOTO(2);
     }
     STATE(2){
-      PIN(ready) = 0.5;
-      offset_ = fbi;
+      PIN(ready) = 0.0;
+      moffset = fbi;
       id = 0.0;
       iq = 0.0;
       SLEEP(PIN(time));
@@ -65,15 +66,16 @@ RT(
       PIN(ready) = 1.0;
       iq = 0.0;
       id = 0.0;
-      mpos = mod(minus(fbi, offset_) * PIN(pole_count));
+      mpos = mod(minus(fbi, moffset) * PIN(pole_count));
       if(PIN(start) == 0.0){
+        PIN(ready) = 0.0;
         GOTO(0);
       }
     }
   );
 
 
-  PIN(offset) = offset_;
+  PIN(moffset) = moffset;
   PIN(i_d) = id;
   PIN(i_q) = iq;
   PIN(magpos) = mpos;
