@@ -1,0 +1,66 @@
+COMP(enc_cmd);
+
+HAL_PIN(res) = 2048.0;
+HAL_PIN(pos) = 0.0;
+
+MEM(int e_res) = 0.0;
+
+
+INIT(
+  GPIO_InitTypeDef GPIO_InitStructure;
+  TIM_ICInitTypeDef TIM_ICInitStructure;
+  TIM_ICInitStructure.TIM_Channel = TIM_Channel_1 | TIM_Channel_2;
+  TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_BothEdge;
+  TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
+  TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
+  TIM_ICInitStructure.TIM_ICFilter = 0xF;
+  TIM_ICInit(ENC0_TIM, &TIM_ICInitStructure);
+
+  /***************** port 0, quadrature or step/dir *********************/
+  e_res = (int)PIN(res);
+  if(e_res < 1){
+	  e_res = 1;
+  }
+  // enable clocks
+  RCC_AHB1PeriphClockCmd(ENC0_A_IO_RCC, ENABLE);
+  RCC_AHB1PeriphClockCmd(ENC0_B_IO_RCC, ENABLE);
+  RCC_APB2PeriphClockCmd(ENC0_TIM_RCC, ENABLE);
+
+  // pin af -> tim
+  GPIO_PinAFConfig(ENC0_A_PORT, ENC0_A_PIN_SOURCE, ENC0_A_AF_SOURCE);//ch1
+  GPIO_PinAFConfig(ENC0_B_PORT, ENC0_B_PIN_SOURCE, ENC0_B_AF_SOURCE);//ch2
+
+  // enc res / turn
+  TIM_SetAutoreload(ENC0_TIM, e_res - 1);
+
+  // quad
+  TIM_Cmd(ENC0_TIM, DISABLE);
+  TIM1->CR1 |= TIM_CR1_DIR;
+  GPIO_InitStructure.GPIO_Pin = ENC0_A_PIN | ENC0_B_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(ENC0_A_PORT, &GPIO_InitStructure);
+  TIM_EncoderInterfaceConfig(ENC0_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+  TIM_Cmd(ENC0_TIM, ENABLE);
+);
+
+RT(
+  float p = 0.0;
+
+
+  int res = (int)PIN(res);
+  if(res < 1){
+	  res = 1;
+  }
+
+  p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res);
+  PIN(pos) = p;
+  if(e_res != res){
+    e_res = res;
+    TIM_SetAutoreload(ENC0_TIM, e_res - 1);
+  }
+);
+
+ENDCOMP;

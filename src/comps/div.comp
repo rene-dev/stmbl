@@ -6,7 +6,7 @@ HAL_PIN(out) = 0.0;
 HAL_PIN(div_error) = 0.0;
 
 
-RC(out,
+RT(
   if(PIN(in1) == 0.0){
     PIN(div_error) = 1.0;
   }

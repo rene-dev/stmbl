@@ -119,8 +119,8 @@ void link_pid(){
 }
 
 void set_cmd_enc(){
-  link_hal_pins("enc00.pos", "rev0.in");
-  link_hal_pins("conf0.cmd_res", "enc00.res");
+  link_hal_pins("enc_cmd0.pos", "rev0.in");
+  link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
 }
 
 void set_cmd_const(){
@@ -130,33 +130,33 @@ void set_cmd_const(){
 
 void set_cmd_sin(){
   link_hal_pins("sim0.msin", "rev0.in");
-  link_hal_pins("conf0.cmd_res", "enc00.res");
+  link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
 }
 
 void set_cmd_square(){
   link_hal_pins("sim0.square", "rev0.in");
-  link_hal_pins("conf0.cmd_res", "enc00.res");
+  link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
 }
 
 void set_cmd_vel(){
   link_hal_pins("sim0.vel", "rev0.in");
-  link_hal_pins("conf0.cmd_res", "enc00.res");
+  link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
 }
 
 void set_fb_enc(){
-  link_hal_pins("enc10.pos", "rev1.in");
-  link_hal_pins("conf0.fb_res", "enc10.res");
+  link_hal_pins("enc_fb0.pos", "rev1.in");
+  link_hal_pins("conf0.fb_res", "enc_fb0.res");
 }
 
 void set_fb_sincos(){
-  link_hal_pins("adc0.sin", "enc10.sin");
-  link_hal_pins("adc0.cos", "enc10.cos");
+  link_hal_pins("adc0.sin", "enc_fb0.sin");
+  link_hal_pins("adc0.cos", "enc_fb0.cos");
 
-  link_hal_pins("enc10.ipos", "rev1.in");
-  link_hal_pins("conf0.fb_res", "enc10.res");
-  link_hal_pins("enc10.error", "net0.fb_error");
+  link_hal_pins("enc_fb0.ipos", "rev1.in");
+  link_hal_pins("conf0.fb_res", "enc_fb0.res");
+  link_hal_pins("enc_fb0.error", "net0.fb_error");
 
-  set_hal_pin("enc10.ires", 1024.0);
+  set_hal_pin("enc_fb0.ires", 1024.0);
   set_hal_pin("pderiv1.res", 524288.0);
 }
 
@@ -194,7 +194,7 @@ void set_rexroth(){
 	set_hal_pin("conf0.acc_pi", 50.0);
 	set_hal_pin("conf0.cur_p", 0.05);
   set_hal_pin("conf0.cur_ff", 1.0);
-	set_hal_pin("enc10.res", 512.0);
+	set_hal_pin("enc_fb0.res", 512.0);
   set_fb_sincos();
 }
 

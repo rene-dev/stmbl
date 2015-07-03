@@ -3,7 +3,7 @@ COMP(mod);
 HAL_PIN(in) = 0.0;
 HAL_PIN(out) = 0.0;
 
-RC(out,
+RT(
   PIN(out) = mod(PIN(in));
 );
 

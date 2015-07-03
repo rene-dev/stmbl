@@ -239,7 +239,7 @@ RT(
     case -3:
     case -2:
     case -1:
-      PIN(led_green) = 0.0;
+      PIN(led_green) = BLINK(-state);
       PIN(led_red) = 1.0;
     break;
 

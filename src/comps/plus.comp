@@ -4,7 +4,7 @@ HAL_PIN(in0) = 0.0;
 HAL_PIN(in1) = 0.0;
 HAL_PIN(out) = 0.0;
 
-RC(out,
+RT(
   PIN(out) = PIN(in0) + PIN(in1);
 );
 
