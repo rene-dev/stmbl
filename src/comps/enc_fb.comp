@@ -1,8 +1,7 @@
-COMP(enc1);
+COMP(enc_fb);
 
 HAL_PIN(res) = 2048.0;
 HAL_PIN(ires) = 1024.0;
-HAL_PIN(count) = 0.0;
 HAL_PIN(pos) = 0.0;
 HAL_PIN(ipos) = 0.0;
 HAL_PIN(sin) = 0.0;
@@ -21,7 +20,6 @@ INIT(
   TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
   TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
   TIM_ICInitStructure.TIM_ICFilter = 0xF;
-  TIM_ICInit(ENC0_TIM, &TIM_ICInitStructure);
   TIM_ICInit(ENC1_TIM, &TIM_ICInitStructure);
 
   /***************** port 1, quadrature , sin/cos or resolver *********************/
@@ -46,16 +44,11 @@ INIT(
   GPIO_PinAFConfig(ENC1_A_PORT, ENC1_A_PIN_SOURCE, ENC1_A_AF_SOURCE);
   GPIO_PinAFConfig(ENC1_B_PORT, ENC1_B_PIN_SOURCE, ENC1_B_AF_SOURCE);
 
-  // tim mode: count on A and B on rising edge
-  TIM_EncoderInterfaceConfig(ENC1_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
-
   // enc res / turn
   TIM_SetAutoreload(ENC1_TIM, e_res - 1);
 
   // quad
   TIM_Cmd(ENC1_TIM, DISABLE);
-  //NVIC_DisableIRQ(EXTI9_5_IRQn); TODO
-  //TIM1->CR1 |= TIM_CR1_DIR; TODO
   GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
@@ -64,28 +57,6 @@ INIT(
   GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
   TIM_EncoderInterfaceConfig(ENC1_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
   TIM_Cmd(ENC1_TIM, ENABLE);
-
-  // step dir
-  // TIM_Cmd(ENC1_TIM, DISABLE);
-  // //clk
-  // GPIO_InitStructure.GPIO_Pin = ENC1_B_PIN;
-  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  // GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  // GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  // GPIO_Init(ENC1_B_PORT, &GPIO_InitStructure);
-  //
-  // //dir
-  // GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN;
-  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  // GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  // GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  // GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
-  // TIM_ETRClockMode1Config(ENC1_TIM,TIM_ExtTRGPSC_OFF, TIM_ExtTRGPolarity_NonInverted, 0x00);
-  // TIM_TIxExternalClockConfig(ENC1_TIM,TIM_TIxExternalCLK1Source_TI2, TIM_ICPolarity_Rising, 0x00);
-  // //NVIC_EnableIRQ(EXTI9_5_IRQn); TODO
-  // TIM_Cmd(ENC1_TIM, ENABLE);
 );
 
 RT(
@@ -108,8 +79,7 @@ RT(
 
   p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res);
   PIN(pos) = p;
-  PIN(count) = TIM_GetCounter(ENC1_TIM);
-  
+
   if(a < 0.2){
     PIN(error) = 1.0;
   }

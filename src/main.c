@@ -92,15 +92,15 @@ void USART3_IRQHandler(){
 }
 
 //on dir pin change reverse position timer
-void EXTI9_5_IRQHandler(){
-    if (EXTI_GetITStatus(EXTI_Line8) != RESET) {
-	    if(GPIO_ReadInputDataBit(ENC0_A_PORT, ENC0_A_PIN))
-			TIM1->CR1 |= TIM_CR1_DIR;
-	    else
-			TIM1->CR1 &= ~TIM_CR1_DIR;
-      EXTI_ClearITPendingBit(EXTI_Line8);
-    }
-}
+// void EXTI9_5_IRQHandler(){
+//     if (EXTI_GetITStatus(EXTI_Line8) != RESET) {
+// 	    if(GPIO_ReadInputDataBit(ENC0_A_PORT, ENC0_A_PIN))
+// 			TIM1->CR1 |= TIM_CR1_DIR;
+// 	    else
+// 			TIM1->CR1 &= ~TIM_CR1_DIR;
+//       EXTI_ClearITPendingBit(EXTI_Line8);
+//     }
+// }
 
 //DRV UART
 void UART_DRV_IRQ(){
@@ -135,8 +135,8 @@ int main(void)
 
 	#include "comps/adc.comp"
   #include "comps/fault.comp"
-	#include "comps/enc0.comp"
-  #include "comps/enc1.comp"
+	#include "comps/enc_cmd.comp"
+  #include "comps/enc_fb.comp"
 	//#include "comps/res.comp"
 	#include "comps/encm.comp"
 	#include "comps/sim.comp"
@@ -225,7 +225,7 @@ int main(void)
   HAL_PIN(high_temp) = 80.0;
   HAL_PIN(fan_temp) = 40.0;
   HAL_PIN(autophase) = 1.0;
-
+  HAL_PIN(max_sat) = 0.2;
 
 	g_amp_hal_pin = map_hal_pin("net0.amp");
 	g_vlt_hal_pin = map_hal_pin("net0.vlt");
@@ -240,10 +240,10 @@ int main(void)
 
 	//set_e240();
 	//set_bergerlahr();//pid2: ok
-	set_mitsubishi();//pid2: ok
+	//set_mitsubishi();//pid2: ok
 	//set_festo();
 	//set_manutec();
-	//set_rexroth();//pid2: ok
+	set_rexroth();//pid2: ok
   //link_hal_pins("enc10.ipos", "rev1.in");
 
 	//set_hal_pin("res0.reverse", 0.0);
@@ -270,6 +270,7 @@ int main(void)
   link_hal_pins("conf0.low_volt", "fault0.low_volt");
   link_hal_pins("conf0.fan_temp", "fault0.fan_temp");
   link_hal_pins("conf0.autophase", "fault0.phase_on_start");
+  link_hal_pins("conf0.max_sat", "fault0.max_sat");
 
   set_hal_pin("fault0.reset", 0.0);
 
@@ -277,6 +278,7 @@ int main(void)
   link_hal_pins("cauto0.ready", "fault0.phase_ready");
 
   link_hal_pins("pid0.pos_error", "fault0.pos_error");
+  link_hal_pins("pid0.saturated", "fault0.sat");
   link_hal_pins("net0.vlt", "fault0.volt");
   link_hal_pins("net0.tmp", "fault0.temp");
   link_hal_pins("net0.amp", "fault0.amp");

@@ -174,6 +174,17 @@ if(ht_time_count < (time)){ \
 } \
 jump_label_pointer = jump_label_pointer_old;
 
+#define BLINK(N) \
+({ \
+  int t = (systime / 300) % (2 * N + 2); \
+  if(t < 2){ \
+    t = 0; \
+  } \
+  else{ \
+    t = t % 2; \
+  } \
+  t;\
+})
 
 #define ENDCOMP \
   addf_init(init); \
