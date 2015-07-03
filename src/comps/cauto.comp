@@ -34,11 +34,12 @@ RT(
   fb = minus(fbi, PIN(start_offset));
 
   HT(
+    moffset = PIN(mag_offset);
     GOTO(0);
     STATE(0){
       iq = 0.0;
       id = 0.0;
-      mpos = mod(minus(fbi, PIN(mag_offset)) * PIN(pole_count));
+      mpos = mod(minus(fbi, moffset) * PIN(pole_count));
       if(PIN(start) > 0.0){
         GOTO(1);
         PIN(ready) = 0.0;
