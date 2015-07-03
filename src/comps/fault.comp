@@ -2,10 +2,12 @@ COMP(fault);
 // max current
 HAL_PIN(max_cur) = 0.0;
 
-// max voltage, temperature, pos error
+// max voltage, temperature, pos error, saturation time
 HAL_PIN(max_volt) = 0.0;
 HAL_PIN(max_temp) = 0.0;
 HAL_PIN(max_pos_error) = 0.0;
+HAL_PIN(max_sat) = 0.0;
+
 
 // limit voltage, temperature
 HAL_PIN(high_volt) = 0.0;
@@ -37,6 +39,7 @@ HAL_PIN(volt) = 0.0;
 HAL_PIN(amp) = 0.0;
 HAL_PIN(pos_error) = 0.0;
 HAL_PIN(fb_error) = 0.0;
+HAL_PIN(sat) = 0.0;
 
 // cmd + fb in
 HAL_PIN(cmd) = 0.0;
@@ -62,7 +65,7 @@ HAL_PIN(enable_pid) = 0.0;
 HAL_PIN(led_green) = 0.0;
 HAL_PIN(led_red) = 0.0;
 
-// state -10 = reset state, -4 = over current, -3 = pos_error, -2 = over temperature, -1 = over voltage, 0 = disabled, 1 = enabled, 2 = phasing
+// state -10 = reset state, -6 = fb error, -5 = sat error, -4 = over current, -3 = pos_error, -2 = over temperature, -1 = over voltage, 0 = disabled, 1 = enabled, 2 = phasing
 HAL_PIN(state) = 0.0;
 
 MEM(int state) = 0;
@@ -142,6 +145,15 @@ RT(
   }
 
 
+  // saturation
+  if(PIN(sat) >= PIN(max_sat)){ // disable drive, set fault
+    PIN(brake) = 0.0;
+    PIN(cur) = 0.0;
+    PIN(enable_out) = 0.0;
+    PIN(enable_pid) = 0.0;
+    state = -5;
+  }
+
   // pos error
   float max_pos_error = MAX(MIN(PIN(max_pos_error), M_PI), 0.0);
   if(state == 1 && max_pos_error > 0.0 && ABS(PIN(pos_error)) >= max_pos_error){ // disable drive, set fault
@@ -185,6 +197,7 @@ RT(
   else if(state == 2){ // phasing -> enabled
     if(PIN(phase_ready) > 0.0){
       PIN(enable_pid) = 1.0;
+      PIN(start_offset) = minus(PIN(fb), PIN(cmd));
       state = 1;
     }
   }
@@ -204,16 +217,15 @@ RT(
 
   // fb error
   if(state > 0 && PIN(fb_error) > 0.0){
-    state = 0;
-    phased = 0;
-    PIN(phase_start) = 0.0;
-    PIN(brake) = 0.0;
-    PIN(brake_resistor) = 0.0;
-    //PIN(fan) = 0.0;
-    PIN(enable_out) = 0.0;
+    state = -6;
     PIN(cur) = 0.0;
+    PIN(enable_out) = 0.0;
+    PIN(enable_pid) = 0.0;
+    PIN(brake) = 0.0;
   }
 
+
+  // leds
   switch(state){
     case 0:
     case -10:
@@ -221,6 +233,8 @@ RT(
       PIN(led_red) = 0.0;
     break;
 
+    case -6:
+    case -5:
     case -4:
     case -3:
     case -2:
