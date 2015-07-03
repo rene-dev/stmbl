@@ -25,7 +25,6 @@
 #include "setup.h"
 #include "eeprom.h"
 #include "link.h"
-//#include "math.h"
 #include <math.h>
 
 #include "stm32_ub_usb_cdc.h"
@@ -64,16 +63,9 @@ void DMA2_Stream0_IRQHandler(void){ //5kHz
     GPIO_ResetBits(GPIOB,GPIO_Pin_8);
 }
 
-//disabled in setup.c
-void TIM8_UP_TIM13_IRQHandler(void){ //20KHz
-	TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
-	//GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
-}
-
 //port0 uart, mitsubishi UART
 void USART3_IRQHandler(){
 	GPIO_ResetBits(GPIOB,GPIO_Pin_12);//reset tx enable
-	//GPIO_SetBits(GPIOB,GPIO_Pin_9);//testpin
 	uint16_t buf;
 	if(USART_GetITStatus(USART3, USART_IT_RXNE)){
 		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
@@ -88,19 +80,7 @@ void USART3_IRQHandler(){
 		USART_ClearFlag(USART3, USART_FLAG_TC);
 		buf = USART3->DR;
 	}
-	 //GPIO_ResetBits(GPIOB,GPIO_Pin_9);//testpin
 }
-
-//on dir pin change reverse position timer
-// void EXTI9_5_IRQHandler(){
-//     if (EXTI_GetITStatus(EXTI_Line8) != RESET) {
-// 	    if(GPIO_ReadInputDataBit(ENC0_A_PORT, ENC0_A_PIN))
-// 			TIM1->CR1 |= TIM_CR1_DIR;
-// 	    else
-// 			TIM1->CR1 &= ~TIM_CR1_DIR;
-//       EXTI_ClearITPendingBit(EXTI_Line8);
-//     }
-// }
 
 //DRV UART
 void UART_DRV_IRQ(){
@@ -109,11 +89,9 @@ void UART_DRV_IRQ(){
 	USART_ClearITPendingBit(UART_DRV, USART_IT_RXNE);
 	USART_ClearFlag(UART_DRV, USART_FLAG_RXNE);
 	rxbuf = UART_DRV->DR;
-	//rxbuf = USART_ReceiveData(USART2);
 
 	if(rxbuf == 0x154){//start condition
 		datapos = 0;
-		//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
 	}else if(datapos >= 0 && datapos < DATALENGTH*2){
 		data.byte[datapos++] = (uint8_t)rxbuf;//append data to buffer
 	}
@@ -141,17 +119,13 @@ int main(void)
 	#include "comps/encm.comp"
 	#include "comps/sim.comp"
 
-	//#include "comps/mux.comp"
-	//#include "comps/mux.comp"
-	//#include "comps/dmux.comp"
-
 	#include "comps/rev.comp"
 	#include "comps/rev.comp"
 
 	#include "comps/cauto.comp"
 
-	#include "comps/pderiv2.comp"
-	#include "comps/pderiv2.comp"
+	#include "comps/pderiv.comp"
+	#include "comps/pderiv.comp"
 
 	#include "comps/pid.comp"
 
@@ -163,18 +137,10 @@ int main(void)
 
 	#include "comps/absavg.comp"
 
-
 	#include "comps/term.comp"
 	#include "comps/led.comp"
 	#include "comps/fan.comp"
 	#include "comps/brake.comp"
-	//#include "comps/tune.comp"
-	//#include "comps/dmux.comp"
-	//#include "comps/dmux.comp"
-
-	//#include "comps/vel_observer.comp"
-  //#include "comps/minmax.comp"
-  //#include "comps/minmax.comp"
 
 
 	set_comp_type("net");
@@ -252,11 +218,6 @@ int main(void)
 	//set_sanyo();//pid2: ok
 	//set_br();
 
-	//set_hal_pin("enc0.iquad_en1", 1.0);
-	//set_hal_pin("enc0.quad_en1", 1.0);
-	//set_hal_pin("enc0.iquad_en1", 1.0);
-
-	//link_hal_pins("pderiv1.out2", "net0.fb_d");
   set_cmd_enc();
 
 
@@ -307,19 +268,9 @@ int main(void)
 
 
 
-	//link_hal_pins("cauto0.ready", "led0.g");
-	//link_hal_pins("cauto0.start", "led0.r");
-	//link_hal_pins("led0.g", "test0.test2");
 
-	//link_hal_pins("cauto0.ready", "pid0.enable");
-	//link_hal_pins("net0.cmd", "auto0.offset");
-
-	//set_hal_pin("cauto0.start", 1.0);
-
-	//set_hal_pin("led0.y", 1.0);
 	TIM_Cmd(TIM8, ENABLE);//int
 
-	//Wait(2000);
 	UB_USB_CDC_Init();
 
 	while(1)  // Do not exit
