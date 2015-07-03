@@ -198,6 +198,29 @@ void set_rexroth(){
   set_fb_sincos();
 }
 
+void set_baldor(){ // TODO
+   set_hal_pin("conf0.pole_count", 2.0);
+   set_hal_pin("conf0.max_vel", RPM(6000));
+   set_hal_pin("conf0.max_acc", RPM(6000) / 0.01);
+   set_hal_pin("conf0.max_force", 4.52);
+   set_hal_pin("conf0.max_cur", 30.0);
+
+   set_hal_pin("conf0.fb_type", RES1);
+   set_hal_pin("conf0.fb_rev", 1.0);
+   set_hal_pin("conf0.fb_res", 4096.0);
+   set_hal_pin("conf0.r", 0.64);//measured
+   set_hal_pin("conf0.l", 0.0016);//measured
+   set_hal_pin("conf0.j", 0.0005);//estimated
+   set_hal_pin("conf0.km", 0.36);//calculated
+
+   set_hal_pin("conf0.pos_p", 80.0);
+   set_hal_pin("conf0.acc_p", 0.15);
+   set_hal_pin("conf0.acc_pi", 50.0);
+   set_hal_pin("conf0.cur_lp", 0.4);
+  set_fb_res();
+}
+
+
 void set_bosch4(){ // TODO
 	set_hal_pin("conf0.pole_count", 4.0);
 	set_hal_pin("conf0.max_vel", RPM(1000));
