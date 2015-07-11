@@ -239,7 +239,30 @@ void set_bosch4(){ // TODO
 	set_hal_pin("conf0.acc_p", 0.15);
 	set_hal_pin("conf0.acc_pi", 50.0);
 	set_hal_pin("conf0.cur_lp", 0.4);
-  set_fb_res();
+	set_fb_res();
+}
+
+void set_baldor_klein(){ // TODO
+	set_hal_pin("brake0.brake", 1.0); 
+	set_hal_pin("conf0.pole_count", 2.0);//hauser 3
+	set_hal_pin("conf0.max_vel", RPM(1000));
+	set_hal_pin("conf0.max_acc", RPM(1000) / 0.01);
+	set_hal_pin("conf0.max_force", 5);
+	set_hal_pin("conf0.max_cur", 20);
+
+	set_hal_pin("conf0.fb_type", RES1);
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 4096.0);
+	set_hal_pin("conf0.r", 4.7);//typenschild
+	set_hal_pin("conf0.l", 0.002);//unknown
+	set_hal_pin("conf0.j", 0.000141);//typenschild
+	set_hal_pin("conf0.km", 0.2727);//typenschild
+
+	set_hal_pin("conf0.pos_p", 80.0);
+	set_hal_pin("conf0.acc_p", 0.15);
+	set_hal_pin("conf0.acc_pi", 50.0);
+	set_hal_pin("conf0.cur_lp", 0.4);
+	set_fb_res();
 }
 
 
