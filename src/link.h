@@ -34,3 +34,5 @@ void set_cmd_const();
 void set_cmd_sin();
 void set_cmd_square();
 void set_cmd_vel();
+void set_cmd_stp();
+void set_cmd_stpff();
