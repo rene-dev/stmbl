@@ -143,14 +143,42 @@ void set_cmd_vel(){
   link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
 }
 
+void set_cmd_stp(){
+  link_hal_pins("stp0.pos_out", "rev0.in");
+  link_hal_pins("net0.fb", "stp0.pos_in");
+  link_hal_pins("net0.fb_d", "stp0.vel_in");
+  //link_hal_pins("conf0.max_vel", "stp0.max_vel");
+  set_hal_pin("stp0.max_vel", RPM(200));
+  set_hal_pin("stp0.max_acc", RPM(1000) / 0.05);
+}
+
+void set_cmd_stpff(){
+  link_hal_pins("stp0.pos_out", "rev0.in");
+  link_hal_pins("stp0.vel_out", "net0.cmd_d");
+  link_hal_pins("stp0.acc_out", "pid0.acc_ext_cmd");
+  link_hal_pins("net0.fb", "stp0.pos_in");
+  link_hal_pins("net0.fb_d", "stp0.vel_in");
+  //link_hal_pins("conf0.max_vel", "stp0.max_vel");
+  set_hal_pin("stp0.max_vel", RPM(200));
+  set_hal_pin("stp0.max_acc", RPM(1000) / 0.05);
+}
+
+void set_cmd_lcnc(){
+  link_hal_pins("enc_cmd0.pos", "rev0.in");
+  link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
+  set_hal_pin("conf0.cmd_res", 8192.0);
+  set_hal_pin("conf0.cmd_rev", 1.0);
+  link_hal_pins("fault0.enable_out", "en0.en");
+}
+
 void set_fb_enc(){
   link_hal_pins("enc_fb0.pos", "rev1.in");
   link_hal_pins("conf0.fb_res", "enc_fb0.res");
 }
 
 void set_fb_sincos(){
-  link_hal_pins("adc0.sin", "enc_fb0.sin");
-  link_hal_pins("adc0.cos", "enc_fb0.cos");
+  link_hal_pins("adc0.sin3", "enc_fb0.sin");
+  link_hal_pins("adc0.cos3", "enc_fb0.cos");
 
   link_hal_pins("enc_fb0.ipos", "rev1.in");
   link_hal_pins("conf0.fb_res", "enc_fb0.res");
@@ -240,7 +268,30 @@ void set_bosch4(){ // TODO
 	set_hal_pin("conf0.acc_p", 0.15);
 	set_hal_pin("conf0.acc_pi", 50.0);
 	set_hal_pin("conf0.cur_lp", 0.4);
-  set_fb_res();
+	set_fb_res();
+}
+
+void set_baldor_klein(){ // TODO
+	set_hal_pin("brake0.brake", 1.0);
+	set_hal_pin("conf0.pole_count", 2.0);//hauser 3
+	set_hal_pin("conf0.max_vel", RPM(1000));
+	set_hal_pin("conf0.max_acc", RPM(1000) / 0.01);
+	set_hal_pin("conf0.max_force", 5);
+	set_hal_pin("conf0.max_cur", 20);
+
+	set_hal_pin("conf0.fb_type", RES1);
+	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_res", 4096.0);
+	set_hal_pin("conf0.r", 4.7);//typenschild
+	set_hal_pin("conf0.l", 0.002);//unknown
+	set_hal_pin("conf0.j", 0.000141);//typenschild
+	set_hal_pin("conf0.km", 0.2727);//typenschild
+
+	set_hal_pin("conf0.pos_p", 80.0);
+	set_hal_pin("conf0.acc_p", 0.15);
+	set_hal_pin("conf0.acc_pi", 50.0);
+	set_hal_pin("conf0.cur_lp", 0.4);
+	set_fb_res();
 }
 
 
@@ -374,13 +425,16 @@ void set_sankyo(){ // TODO
 	set_hal_pin("conf0.fb_res", 8192.0);
 	set_hal_pin("conf0.r", 14.0);
 	set_hal_pin("conf0.l", 0.01);
-	set_hal_pin("conf0.j", KGCM2(0.26));
-	set_hal_pin("conf0.km", 0.12);
+	set_hal_pin("conf0.j", KGCM2(0.1));
+	set_hal_pin("conf0.km", 0.1);
 
 	set_hal_pin("conf0.pos_p", 60.0);
-	set_hal_pin("conf0.acc_p", 0.01);
-	set_hal_pin("conf0.acc_pi", 70.0);
+	set_hal_pin("conf0.acc_p", 0.05);
+	set_hal_pin("conf0.acc_pi", 50.0);
 	set_hal_pin("conf0.cur_lp", 0.5);
+  set_hal_pin("conf0.max_sat", 0.5);
+  set_hal_pin("stp0.max_vel", 60.0);
+  set_hal_pin("stp0.max_acc", 4000.0);
   set_fb_enc();
 }
 

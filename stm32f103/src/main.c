@@ -94,25 +94,6 @@ void SysTick_Handler(void)
   systime++;
 }
 
-//set pll to 24MHz
-void PLL_Configurattion(void){
-	RCC_PLLConfig(RCC_PLLSource_HSI_Div2,RCC_PLLMul_6); // 24MHz
-	RCC_PLLCmd(ENABLE);
-
-	/* Wait till PLL is ready */
-	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET){
-	}
-
-	/* Select PLL as system clock source */
-	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-
-	/* Wait till PLL is used as system clock source */
-	while (RCC_GetSYSCLKSource() != 0x08){
-	}
-
-	SystemCoreClockUpdate();
-}
-
 void RCC_Configuration(void)
 {
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
@@ -343,9 +324,6 @@ DMA_InitTypeDef DMA_InitStructure;
   ADC_StartCalibration(ADC1);
   /* Check the end of ADC1 calibration */
   while(ADC_GetCalibrationStatus(ADC1));
-
-  /* Start ADC1 Software Conversion */
-  //ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
 
 void TIM1_UP_IRQHandler(){
@@ -387,9 +365,6 @@ void DMA1_Channel1_IRQHandler(){
 }
 
 void USART2_IRQHandler(){
-	//GPIO_SetBits(GPIOC,GPIO_Pin_0);
-	//USART_GetFlagStatus(USART2,USART_FLAG_FE);
-	//if(USART_GetITStatus(USART2, USART_IT_RXNE) == SET){
 		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
 		buf = USART_ReceiveData(USART2);
 		if(buf == 0x155){//start condition
@@ -414,30 +389,10 @@ void USART2_IRQHandler(){
 			send++;
 			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
 		}
-		//}
-		/*
-	if(USART_GetITStatus(USART2, USART_IT_FE) == SET){
-		USART_ClearITPendingBit(USART2, USART_IT_FE);
-		buf = USART_ReceiveData(USART2);
-	}
-	if(USART_GetITStatus(USART2, USART_IT_NE) == SET){
-		USART_ClearITPendingBit(USART2, USART_IT_NE);
-		buf = USART_ReceiveData(USART2);
-	}
-	if(USART_GetITStatus(USART2, USART_IT_ORE) == SET){
-		USART_ClearITPendingBit(USART2, USART_IT_ORE);
-		buf = USART_ReceiveData(USART2);
-	}
-	if(USART_GetITStatus(USART2, USART_IT_PE) == SET){
-		USART_ClearITPendingBit(USART2, USART_IT_PE);
-		buf = USART_ReceiveData(USART2);
-	}
-		*/
 }
 
 int main(void)
 {
-	//PLL_Configurattion();
 	RCC_Configuration();
 	GPIO_Configuration();
 
@@ -467,13 +422,6 @@ int main(void)
     			USART_SendData(USART2, databack.byte[j]);
 			}
 		}
-		//USART_GetFlagStatus(USART2, USART_FLAG_NE);
-		//USART_ReceiveData(USART2);
-		// 	GPIO_SetBits(GPIOC,GPIO_Pin_0);
-		// 	buf = USART_ReceiveData(USART2);
-		// }
         //GPIOA->BSRR = (GPIOA->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//toggle red led
-        //Wait(1);
-
 	}
 }

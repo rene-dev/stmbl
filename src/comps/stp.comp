@@ -1,0 +1,62 @@
+COMP(stp);
+
+HAL_PIN(target) = 0.0;
+HAL_PIN(pos) = 0.0;
+
+HAL_PIN(pos_in) = 0.0;
+HAL_PIN(pos_out) = 0.0;
+
+HAL_PIN(vel_in) = 0.0;
+HAL_PIN(vel_out) = 0.0;
+
+HAL_PIN(acc_out) = 0.0;
+
+HAL_PIN(max_vel) = 0.0;
+HAL_PIN(max_acc) = 0.0;
+
+HAL_PIN(dtg) = 0.0;
+
+MEM(float p0) = 0.0;
+MEM(float p) = 0.0;
+MEM(float v0) = 0.0;
+MEM(float pold) = 0.0;
+MEM(float vold) = 0.0;
+
+RT(
+  //float p = PIN(pos_in);
+  //float v0 = PIN(vel_in);
+
+  //p0 += minus(p, pold);
+  //pold = p;
+
+  float p1 = PIN(target);
+
+  float vmax = PIN(max_vel);
+  float amax = MAX(PIN(max_acc), 0.1);
+
+  float vel = SIGN(p1 - p0) * amax * sqrtf(2.0 * ABS(p1 - p0) / amax);
+
+  vel = LIMIT(vel, vmax);
+  vel = CLAMP(vel, v0 - amax * period, v0 + amax * period);
+
+  if(ABS(vel) > ABS(p1 - p0) / period){
+    vel = (p1 - p0) / period;
+  }
+
+  float acc = (vel - vold) / period;
+  vold = vel;
+
+  v0 = vel;
+  p0 += v0 * period;
+  p += p0 - pold;
+  pold = p0;
+
+  //p += vel * period;
+
+  PIN(pos_out) = mod(p);
+  PIN(vel_out) = vel;
+  PIN(acc_out) = acc;
+  PIN(dtg) = p1 - p0;
+);
+
+ENDCOMP;
