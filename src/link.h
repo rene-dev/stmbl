@@ -36,3 +36,4 @@ void set_cmd_square();
 void set_cmd_vel();
 void set_cmd_stp();
 void set_cmd_stpff();
+void set_cmd_lcnc();

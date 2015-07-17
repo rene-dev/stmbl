@@ -163,6 +163,14 @@ void set_cmd_stpff(){
   set_hal_pin("stp0.max_acc", RPM(1000) / 0.05);
 }
 
+void set_cmd_lcnc(){
+  link_hal_pins("enc_cmd0.pos", "rev0.in");
+  link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
+  set_hal_pin("conf0.cmd_res", 8192.0);
+  set_hal_pin("conf0.cmd_rev", 1.0);
+  link_hal_pins("fault0.enable_out", "en0.en");
+}
+
 void set_fb_enc(){
   link_hal_pins("enc_fb0.pos", "rev1.in");
   link_hal_pins("conf0.fb_res", "enc_fb0.res");
@@ -416,13 +424,16 @@ void set_sankyo(){ // TODO
 	set_hal_pin("conf0.fb_res", 8192.0);
 	set_hal_pin("conf0.r", 14.0);
 	set_hal_pin("conf0.l", 0.01);
-	set_hal_pin("conf0.j", KGCM2(0.26));
-	set_hal_pin("conf0.km", 0.12);
+	set_hal_pin("conf0.j", KGCM2(0.1));
+	set_hal_pin("conf0.km", 0.1);
 
 	set_hal_pin("conf0.pos_p", 60.0);
-	set_hal_pin("conf0.acc_p", 0.01);
-	set_hal_pin("conf0.acc_pi", 70.0);
+	set_hal_pin("conf0.acc_p", 0.05);
+	set_hal_pin("conf0.acc_pi", 50.0);
 	set_hal_pin("conf0.cur_lp", 0.5);
+  set_hal_pin("conf0.max_sat", 0.5);
+  set_hal_pin("stp0.max_vel", 60.0);
+  set_hal_pin("stp0.max_acc", 4000.0);
   set_fb_enc();
 }
 
