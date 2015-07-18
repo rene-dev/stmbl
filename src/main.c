@@ -115,9 +115,12 @@ int main(void)
   #include "comps/fault.comp"
 	#include "comps/enc_cmd.comp"
   #include "comps/enc_fb.comp"
+
+  #include "comps/en.comp"
 	//#include "comps/res.comp"
 	//#include "comps/encm.comp"
 	#include "comps/sim.comp"
+  #include "comps/stp.comp"
 
 	#include "comps/rev.comp"
 	#include "comps/rev.comp"
@@ -162,7 +165,7 @@ int main(void)
 	HAL_PIN(r) = 0.0;
 	HAL_PIN(l) = 0.0;
 	HAL_PIN(j) = 0.0;
-	HAL_PIN(km) = 0.0;
+	HAL_PIN(psi) = 0.0;
 	HAL_PIN(pole_count) = 0.0;
 	HAL_PIN(fb_pole_count) = 0.0;
 	HAL_PIN(fb_offset) = 0.0;
@@ -170,6 +173,7 @@ int main(void)
 	HAL_PIN(acc_p) = 0.0;
 	HAL_PIN(acc_pi) = 0.0;
 	HAL_PIN(cur_p) = 0.0;
+  HAL_PIN(cur_i) = 0.0;
   HAL_PIN(cur_ff) = 1.0;
 	HAL_PIN(max_vel) = 0.0;
 	HAL_PIN(max_acc) = 0.0;
@@ -215,14 +219,17 @@ int main(void)
 	//set_festo();
 	//set_manutec();
 	set_rexroth();//pid2: ok
+  //link_hal_pins("enc10.ipos", "rev1.in");
+  //set_sankyo();
+	//set_hal_pin("res0.reverse", 0.0);
 	//set_bosch1();//pid2: ok
 	//set_bosch4();//pid2: ok
 	//set_sanyo();//pid2: ok
 	//set_br();
 
-  //set_cmd_sin();
-  set_cmd_enc();
 
+  //set_cmd_stp();
+  //set_cmd_lcnc();
 
 
   link_hal_pins("conf0.max_cur", "fault0.max_cur");
@@ -274,6 +281,7 @@ int main(void)
   link_hal_pins("conf0.l", "curpid0.lq");
   link_hal_pins("conf0.cur_ff", "curpid0.ff");
   link_hal_pins("conf0.cur_p", "curpid0.kp");
+  link_hal_pins("conf0.cur_i", "curpid0.ki");
 
   link_hal_pins("curpid0.ud", "pmsm0.ud");
   link_hal_pins("curpid0.uq", "pmsm0.uq");
@@ -281,10 +289,10 @@ int main(void)
   link_hal_pins("conf0.r", "pmsm0.r");
   link_hal_pins("conf0.l", "pmsm0.ld");
   link_hal_pins("conf0.l", "pmsm0.lq");
-  link_hal_pins("conf0.km", "pmsm0.km");
+  link_hal_pins("conf0.psi", "pmsm0.psi");
   link_hal_pins("conf0.polecount", "pmsm0.polecount");
   link_hal_pins("pmsm0.id", "curpid0.id_fb");
-  link_hal_pins("pmsm0.iq", "curpid0.id_fq");
+  link_hal_pins("pmsm0.iq", "curpid0.iq_fb");
   link_hal_pins("pmsm0.torque", "mot0.torque");
   link_hal_pins("conf0.j", "mot0.j");
   link_hal_pins("net0.fb", "mot0.real_pos");
@@ -305,6 +313,10 @@ int main(void)
 
 	link_hal_pins("pid0.pos_error", "avg0.in");
 	set_hal_pin("avg0.ac", 0.0001);
+
+
+  set_cur_cmd();
+
 
 
 

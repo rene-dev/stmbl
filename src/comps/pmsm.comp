@@ -1,7 +1,7 @@
 COMP(pmsm);
 
 //in
-HAL_PIN(km) = 0.01;
+HAL_PIN(psi) = 0.01;
 HAL_PIN(r) = 1.0;
 HAL_PIN(ld) = 0.001;
 HAL_PIN(lq) = 0.001;
@@ -24,11 +24,12 @@ MEM(float iq) = 0.0;
 RT(
   float p = (int)MAX(PIN(polecount), 1.0);
   float vel_e = PIN(vel) * p;
+  vel_e /= 2.0 * M_PI;
   float ld = MAX(PIN(ld), 0.0001);
   float lq = MAX(PIN(lq), 0.0001);
   float ud = PIN(ud);
   float uq = PIN(uq);
-  float psi_m = MAX(PIN(km), 0.01);
+  float psi_m = MAX(PIN(psi), 0.01);
   float r = MAX(PIN(r), 0.01);
 
   float psi_d = ld * id + psi_m;

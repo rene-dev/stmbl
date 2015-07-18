@@ -37,3 +37,4 @@ void set_cmd_vel();
 void set_cmd_stp();
 void set_cmd_stpff();
 void set_cmd_lcnc();
+void set_cur_cmd();
