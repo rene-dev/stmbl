@@ -26,7 +26,7 @@ RT(
   c = PIN(cos);
 	a = s * s + c * c;
 
-	if(a < 0.2){
+	if(a < 0.3 * 0.3){
 		PIN(error) = 1.0;
 	}
 	else{

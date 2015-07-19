@@ -80,7 +80,7 @@ RT(
   p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res);
   PIN(pos) = p;
 
-  if(a < 0.2){
+  if(a < 0.3 * 0.3){
     PIN(error) = 1.0;
   }
   else{
