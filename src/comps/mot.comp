@@ -9,12 +9,13 @@ HAL_PIN(ml) = 0.0;
 HAL_PIN(j) = 0.0;
 
 HAL_PIN(real_pos) = 0.0;
-HAL_PIN(kp) = 0.0;
-HAL_PIN(ki) = 0.0;
+HAL_PIN(kp) = 10.0;
+HAL_PIN(ki) = 20.0;
 
 //out
 HAL_PIN(acc) = 0.0;
 HAL_PIN(vel) = 0.0;
+HAL_PIN(pos_d) = 0.0;
 HAL_PIN(pos) = 0.0;
 HAL_PIN(pos_error) = 0.0;
 HAL_PIN(jerk) = 0.0;
@@ -42,15 +43,18 @@ RT(
   }
 
   float j = MAX(PIN(j), 0.00001);
-  float acc = torque / j + PIN(ki) * pos_error;
+  float acc = torque / j + PIN(ki) * pos_error / period;
   vel += acc * period;
+  float old_pos = pos;
   pos += (vel + PIN(kp) * pos_error) * period;
+  pos = mod(pos);
 
   PIN(jerk) = (torque - old_torque) / period;
   old_torque = torque;
 
   PIN(pos) = pos;
   PIN(vel) = vel;
+  PIN(pos_d) = minus(pos, old_pos) / period;
   PIN(acc) = acc;
   PIN(pos_error) = pos_error;
 );

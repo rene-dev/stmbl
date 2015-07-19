@@ -234,13 +234,14 @@ void set_rexroth(){
 	set_hal_pin("conf0.fb_res", 512.0);
 	set_hal_pin("conf0.r", 7.5);//mess
 	set_hal_pin("conf0.l", 0.008);//mess
-	set_hal_pin("conf0.j", 0.000013);//data
+	set_hal_pin("conf0.j", 0.000013);//data, 0.000090
 	set_hal_pin("conf0.psi", 0.29);//data
 
 	set_hal_pin("conf0.pos_p", 85.0);
 	set_hal_pin("conf0.acc_p", 0.03);
 	set_hal_pin("conf0.acc_pi", 50.0);
-	set_hal_pin("conf0.cur_p", 0.05);
+  set_hal_pin("conf0.cur_p", 0.5);
+  set_hal_pin("conf0.cur_i", 0.001);
   set_hal_pin("conf0.cur_ff", 1.0);
 	set_hal_pin("enc_fb0.res", 512.0);
   set_fb_sincos();

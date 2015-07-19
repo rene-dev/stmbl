@@ -30,7 +30,7 @@ RT(
   float rd = MAX(PIN(rd), 0.1);
   float rq = MAX(PIN(rq), 0.1);
   float ld = MAX(PIN(ld), 0.001);
-  float lq = MAX(PIN(ld), 0.001);
+  float lq = MAX(PIN(lq), 0.001);
   float volt = MAX(PIN(volt), 0.1);
 
   float ff = PIN(ff);
