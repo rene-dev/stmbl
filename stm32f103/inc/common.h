@@ -1,15 +1,21 @@
 #pragma once
 
-#define DATALENGTH 3
 #define DATABAUD 2000000;
 
 #define TOFIXED(a) ((int16_t)(a*64))
 #define TOFLOAT(a) ((float)(a/64.0))
 
-typedef union{
-	int16_t data[DATALENGTH];
-	uint8_t byte[DATALENGTH*2];
-}data_t;
+typedef struct{
+	int16_t amp;
+	int16_t volt;
+	int16_t temp;
+} from_hv_t;
+
+
+typedef struct{
+	int16_t a;
+	int16_t b;
+} to_hv_t;
 
 // struct f1tof4{
 //   int16 ia;

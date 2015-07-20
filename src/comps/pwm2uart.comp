@@ -9,23 +9,18 @@ RT(
   float e = PIN(enable);
 
   if(e > 0.0){
-    data.data[0] = TOFIXED(PIN(a));
-    data.data[1] = TOFIXED(PIN(b));
-    data.data[2] = 0;
+    to_hv.a = TOFIXED(PIN(a));
+    to_hv.a = TOFIXED(PIN(b));
   }
   else{
-    data.data[0] = 0;
-    data.data[1] = 0;
-    data.data[2] = 0;
+    to_hv.a = 0;
+    to_hv.b = 0;
   }
 
   UART_DMA_Buffer[0] = 0x155;
-  UART_DMA_Buffer[1] = data.byte[0];
-  UART_DMA_Buffer[2] = data.byte[1];
-  UART_DMA_Buffer[3] = data.byte[2];
-  UART_DMA_Buffer[4] = data.byte[3];
-  UART_DMA_Buffer[5] = data.byte[4];
-  UART_DMA_Buffer[6] = data.byte[5];
+  for(int i = 0;i<sizeof(to_hv_t);i++){
+     UART_DMA_Buffer[i+1] = ((uint8_t*)&to_hv)[i];
+  }
 
   //start DMA transfer
   DMA_Cmd(UART_DRV_TX_DMA, DISABLE);

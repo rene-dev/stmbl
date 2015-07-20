@@ -23,52 +23,6 @@
 #define VOLT(a) (a / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
 #define TEMP(a) (log10f(a * AREF / ARES * TPULLUP / (AREF - a * AREF / ARES)) * (-53) + 290)
 
-// struct f1tof4{
-//   int16 ia;
-//   int16 ib;
-//   int16 ua;
-//   int16 ub;
-//   int16 udc;
-//   int16 value;
-//   struct {
-//     bool enabled;
-//     bool temp_limit;
-//     bool current_limit;
-//     bool watchdog; // toggle
-//     int4 misc;
-//   }flags;
-//   int8 crc;
-// };
-//
-// struct f4tof1{
-//   int16 a; // u/i
-//   int16 b; // u/i
-//   int16 value;
-//   int6 address;
-//   /*
-//     rw:
-//       r
-//       l
-//       max_i
-//       max_temp
-//       max_pwm
-//       phase_offset_uv
-//       phase_offset_vw
-//       svm_mode (centered, svm, bottom low)
-//       u/i mode
-//
-//     r:
-//       temp0
-//       temp1
-//       temp2
-//       temp3
-//       hw version
-//   */
-//   bool enable;
-//   bool watchdog; // toggle in hal
-//   int8 crc;
-// };
-
 #define SQRT3 1.732050808
 
 #ifndef M_PI
@@ -91,8 +45,8 @@ volatile float u,v,w;
 volatile int uartsend = 0;
 
 uint16_t buf = 0x0000;
-data_t data;
-data_t databack;
+to_hv_t to_hv;
+from_hv_t from_hv;
 int32_t datapos = -1;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -388,14 +342,14 @@ void USART2_IRQHandler(){
 			datapos = 0;
 			uartsend = 1;
 			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
-		}else if(datapos >= 0 && datapos < DATALENGTH*2){
-			data.byte[datapos++] = (uint8_t)buf;
+		}else if(datapos >= 0 && datapos < sizeof(to_hv_t)){
+			((uint8_t*)&to_hv)[datapos++] = (uint8_t)buf;
 		}
-		if(datapos == DATALENGTH*2){//all data received
+		if(datapos == sizeof(to_hv_t)){//all data received
 			datapos = -1;
 			
-			float ua = TOFLOAT(data.data[0]);
-			float ub = TOFLOAT(data.data[1]);
+			float ua = TOFLOAT(to_hv.a);
+			float ub = TOFLOAT(to_hv.b);
 			
 		    float u = ua; // inverse clarke
 		    float v = - ua / 2.0 + ub / 2.0 * SQRT3;
@@ -449,15 +403,15 @@ int main(void)
 			if(temp_raw < ARES && temp_raw > 0){
 				temp = TEMP(temp_raw);
 			}
-			databack.data[0] =  TOFIXED(amp);
-			databack.data[1] = TOFIXED(volt);
-			databack.data[2] = TOFIXED(temp);
+			from_hv.amp =  TOFIXED(amp);
+			from_hv.volt = TOFIXED(volt);
+			from_hv.temp = TOFIXED(temp);
 			uartsend = 0;
 			while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
 			USART_SendData(USART2, 0x154);
-			for(int j = 0;j<6;j++){
+			for(int j = 0;j<sizeof(from_hv_t);j++){
 				while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-    			USART_SendData(USART2, databack.byte[j]);
+    			USART_SendData(USART2, ((uint8_t*)&from_hv)[j]);
 			}
 		}
         //GPIOA->BSRR = (GPIOA->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//toggle red led

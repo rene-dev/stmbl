@@ -87,7 +87,7 @@ void setup_usart(){
     DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_DRV->DR);
     DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&UART_DMA_Buffer;
     DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-    DMA_InitStructure.DMA_BufferSize = DATALENGTH*2+1;//uint32_t + start
+    DMA_InitStructure.DMA_BufferSize = sizeof(to_hv_t)+1;
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;

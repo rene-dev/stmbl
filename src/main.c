@@ -85,21 +85,21 @@ void USART3_IRQHandler(){
 //DRV UART
 void UART_DRV_IRQ(){
 	static int32_t datapos = -1;
-	static data_t data;
+	static from_hv_t from_hv;
 	USART_ClearITPendingBit(UART_DRV, USART_IT_RXNE);
 	USART_ClearFlag(UART_DRV, USART_FLAG_RXNE);
 	rxbuf = UART_DRV->DR;
 
 	if(rxbuf == 0x154){//start condition
 		datapos = 0;
-	}else if(datapos >= 0 && datapos < DATALENGTH*2){
-		data.byte[datapos++] = (uint8_t)rxbuf;//append data to buffer
+	}else if(datapos >= 0 && datapos < sizeof(from_hv_t)){
+		((uint8_t*)&from_hv)[datapos++] = (uint8_t)rxbuf;//append data to buffer
 	}
-	if(datapos == DATALENGTH*2){//all data received
+	if(datapos == sizeof(from_hv_t)){//all data received
 		datapos = -1;
-		PIN(g_amp) = TOFLOAT(data.data[0]);
-		PIN(g_vlt) = TOFLOAT(data.data[1]);
-		PIN(g_tmp) = TOFLOAT(data.data[2]);
+		PIN(g_amp) = TOFLOAT(from_hv.amp);
+		PIN(g_vlt) = TOFLOAT(from_hv.volt);
+		PIN(g_tmp) = TOFLOAT(from_hv.temp);
 	}
 }
 
