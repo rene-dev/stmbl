@@ -13,6 +13,9 @@ HAL_PIN(u) = 0.0;
 HAL_PIN(v) = 0.0;
 HAL_PIN(w) = 0.0;
 
+HAL_PIN(a) = 0.0;
+HAL_PIN(b) = 0.0;
+
 HAL_PIN(svm) = 0.0;
 
 HAL_PIN(volt) = 0.0;
@@ -62,6 +65,9 @@ RT(
   PIN(u) = u;
   PIN(v) = v;
   PIN(w) = w;
+  
+  PIN(a) = ua;
+  PIN(b) = ub;
 );
 
 ENDCOMP;

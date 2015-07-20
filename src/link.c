@@ -75,29 +75,13 @@ void link_pid(){
 
 
   // cur
-  link_hal_pins("conf0.r", "cur0.r");
-  link_hal_pins("conf0.l", "cur0.l");
   link_hal_pins("conf0.out_rev", "rev2.rev");
-  link_hal_pins("conf0.max_cur", "cur0.cur_max");
-  link_hal_pins("conf0.cur_lp", "cur0.lp");
-  link_hal_pins("pid0.induction", "cur0.induction");
   link_hal_pins("cauto0.magpos", "rev2.in");
-  link_hal_pins("rev2.out", "cur0.magpos");
-  set_hal_pin("cur0.pwm_max", 0.95);
-  set_hal_pin("cur0.ind_p", -1.0);
-  link_hal_pins("net0.vlt", "cur0.volt");
-  link_hal_pins("cur0.u", "pwm2uart0.u");
-  link_hal_pins("cur0.v", "pwm2uart0.v");
-  link_hal_pins("cur0.w", "pwm2uart0.w");
-  link_hal_pins("pid0.cur_cmd", "cur0.iq");
   link_hal_pins("cauto0.i_q", "pid0.cur_ext_cmd");
-  link_hal_pins("cauto0.i_d", "cur0.id");
 
 
   // pwm2uart
-  link_hal_pins("net0.vlt", "pwm2uart0.volt");
   set_hal_pin("pwm2uart0.enable", 0.9);
-  set_hal_pin("pwm2uart0.pwm_max", 0.9);
 
 
   // term

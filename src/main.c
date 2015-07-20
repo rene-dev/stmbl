@@ -97,10 +97,9 @@ void UART_DRV_IRQ(){
 	}
 	if(datapos == DATALENGTH*2){//all data received
 		datapos = -1;
-		PIN(g_amp) = (data.data[0] * AREF / ARES - AREF / (R10 + R11) * R11) / (RCUR * R10) * (R10 + R11);
-		PIN(g_vlt) = data.data[1] / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN);
-		if(data.data[2] < ARES && data.data[2] > 0.0)
-			PIN(g_tmp) = log10f(data.data[2] * AREF / ARES * TPULLUP / (AREF - data.data[2] * AREF / ARES)) * (-53) + 290;
+		PIN(g_amp) = TOFLOAT(data.data[0]);
+		PIN(g_vlt) = TOFLOAT(data.data[1]);
+		PIN(g_tmp) = TOFLOAT(data.data[2]);
 	}
 }
 
@@ -302,9 +301,8 @@ int main(void)
   link_hal_pins("cauto0.magpos", "idq0.pos");
   link_hal_pins("conf0.pole_count", "idq0.polecount");
   link_hal_pins("net0.vlt", "idq0.volt");
-  link_hal_pins("idq0.u", "pwm2uart0.u");
-  link_hal_pins("idq0.v", "pwm2uart0.v");
-  link_hal_pins("idq0.w", "pwm2uart0.w");
+  link_hal_pins("idq0.a", "pwm2uart0.a");
+  link_hal_pins("idq0.b", "pwm2uart0.b");
   link_hal_pins("conf0.pole_count", "pmsm0.polecount");
   set_hal_pin("cauto0.pole_count", 1.0);
 
@@ -315,7 +313,7 @@ int main(void)
 	set_hal_pin("avg0.ac", 0.0001);
 
 
-  set_cur_cmd();
+  //set_cur_cmd();
 
 
 

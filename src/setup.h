@@ -13,6 +13,7 @@
 #include "stm32f4xx_conf.h"
 #include "misc.h"
 #include "defines_res.h"
+#include "../../stm32f103/inc/common.h"
 
 #include "stm32_ub_usb_cdc.h"
 
@@ -25,23 +26,6 @@
 #define  ADC_ANZ 8
 #define  PID_WAVES 4
 
-//iramx v31 hardware
-#define AREF 3.3// analog reference voltage
-#define ARES 4096.0// analog resolution, 12 bit
-#define RCUR 0.0181//shunt
-#define TPULLUP 10000//iramx temperature pullup
-
-#ifdef TROLLER
-#define VDIVUP 1000000.0
-#define VDIVDOWN 4990.0
-#else
-#define VDIVUP 36000.0//HV div pullup R1,R12
-#define VDIVDOWN 280.0//HV div pulldown R2,R9
-#endif
-
-#define R10 10000
-#define R11 180
-
 void setup();
 void setup_res();
 void setup_pwm();
@@ -50,16 +34,8 @@ void SysTick_Handler(void);
 
 volatile unsigned int systime;
 
-#define DATALENGTH 3
-#define DATABAUD 2000000;
-
 volatile uint32_t ADC_DMA_Buffer[ADC_ANZ*PID_WAVES];
 volatile uint16_t UART_DMA_Buffer[DATALENGTH*2+1];
-
-typedef union{
-	uint16_t data[DATALENGTH];
-	uint8_t byte[DATALENGTH*2];
-}data_t;
 
 data_t data;
 

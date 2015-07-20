@@ -1,6 +1,27 @@
 #include "stm32f10x_conf.h"
+#include "common.h"
 #include <math.h>
 
+//iramx v31 hardware
+#define AREF 3.3// analog reference voltage
+#define ARES 4096.0// analog resolution, 12 bit
+#define RCUR 0.0181//shunt
+#define TPULLUP 10000//iramx temperature pullup
+
+#ifdef TROLLER
+#define VDIVUP 1000000.0
+#define VDIVDOWN 4990.0
+#else
+#define VDIVUP 36000.0//HV div pullup R1,R12
+#define VDIVDOWN 280.0//HV div pulldown R2,R9
+#endif
+
+#define R10 10000
+#define R11 180
+
+#define AMP(a) ((a * AREF / ARES - AREF / (R10 + R11) * R11) / (RCUR * R10) * (R10 + R11))
+#define VOLT(a) (a / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
+#define TEMP(a) (log10f(a * AREF / ARES * TPULLUP / (AREF - a * AREF / ARES)) * (-53) + 290)
 
 // struct f1tof4{
 //   int16 ia;
@@ -48,25 +69,25 @@
 //   int8 crc;
 // };
 
+#define SQRT3 1.732050808
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #define M_TWOPI         (M_PI * 2.0)
 #endif
 
-#define DATALENGTH 3
-#define DATABAUD 2000000;
-
 volatile uint32_t timeout = 99999;
+volatile uint16_t volt_raw = 0;
+volatile uint16_t amp_raw = 0;
+volatile uint16_t temp_raw = 0;
 
-typedef union{
-	uint16_t data[DATALENGTH];
-	uint8_t byte[DATALENGTH*2];
-}data_t;
+float volt = 0;
+float amp = 0;
+float temp = 0;
+const int res = 1200;
 
 volatile unsigned int systime = 0;
 volatile float u,v,w;
-volatile int send = 0;
 volatile int uartsend = 0;
 
 uint16_t buf = 0x0000;
@@ -148,7 +169,7 @@ void tim1_init(){
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
 	/* Channel 1, 2 and 3 Configuration in PWM mode */
-	TIM_TimeBaseStructure.TIM_Period = 1200;
+	TIM_TimeBaseStructure.TIM_Period = res;
 	TIM_TimeBaseStructure.TIM_Prescaler = 1;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_CenterAligned3;
@@ -345,6 +366,8 @@ void TIM1_UP_IRQHandler(){
 void DMA1_Channel1_IRQHandler(){
 	DMA_ClearITPendingBit(DMA1_IT_TC1);
 
+	//TODO: hadrware limits
+
 	if(ADCConvertedValue[0] > 374){//current limit (371 zero)
 		//GPIO_ResetBits(GPIOB,GPIO_Pin_6);//disable driver
 		GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
@@ -352,16 +375,10 @@ void DMA1_Channel1_IRQHandler(){
 		//GPIO_SetBits(GPIOB,GPIO_Pin_6);//Enable driver
 		GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
 	}
-
-    //GPIO_SetBits(GPIOC,GPIO_Pin_0);
-    //while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-	if(send > 10){
-		databack.data[0] = ADCConvertedValue[0];
-		databack.data[1] = ADCConvertedValue[1];
-		databack.data[2] = ADCConvertedValue[2];
-		//uartsend = 1;
-		send = 0;
-	}
+	
+	amp_raw = ADCConvertedValue[0];
+	volt_raw = ADCConvertedValue[1];
+	temp_raw = ADCConvertedValue[2];
 }
 
 void USART2_IRQHandler(){
@@ -376,17 +393,30 @@ void USART2_IRQHandler(){
 		}
 		if(datapos == DATALENGTH*2){//all data received
 			datapos = -1;
+			
+			float ua = TOFLOAT(data.data[0]);
+			float ub = TOFLOAT(data.data[1]);
+			
+		    float u = ua; // inverse clarke
+		    float v = - ua / 2.0 + ub / 2.0 * SQRT3;
+		    float w = - ua / 2.0 - ub / 2.0 * SQRT3;
+			
+			//TODO: SVM
+			
+	        u += volt / 2.0;
+	        v += volt / 2.0;
+	        w += volt / 2.0;
+			
 #ifdef TROLLER
-			TIM1->CCR3 = data.data[0];
-			TIM1->CCR2 = data.data[1];
-			TIM1->CCR1 = data.data[2];
+			TIM1->CCR3 = u/volt*res;
+			TIM1->CCR2 = v/volt*res;
+			TIM1->CCR1 = w/volt*res;
 #else
-			TIM1->CCR1 = data.data[0];
-			TIM1->CCR2 = data.data[1];
-			TIM1->CCR3 = data.data[2];
+			TIM1->CCR1 = u/volt*res;
+			TIM1->CCR2 = v/volt*res;
+			TIM1->CCR3 = w/volt*res;
 #endif
 			timeout = 0;
-			send++;
 			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
 		}
 }
@@ -414,6 +444,14 @@ int main(void)
 
 	while(1){
 		if(uartsend == 1){
+			amp = AMP(amp_raw);
+			volt = VOLT(volt_raw);
+			if(temp_raw < ARES && temp_raw > 0){
+				temp = TEMP(temp_raw);
+			}
+			databack.data[0] =  TOFIXED(amp);
+			databack.data[1] = TOFIXED(volt);
+			databack.data[2] = TOFIXED(temp);
 			uartsend = 0;
 			while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
 			USART_SendData(USART2, 0x154);

@@ -1,43 +1,23 @@
 COMP(pwm2uart);
 
-HAL_PIN(u) = 0.0;
-HAL_PIN(v) = 0.0;
-HAL_PIN(w) = 0.0;
-
-HAL_PIN(uout) = 0.0;
-HAL_PIN(vout) = 0.0;
-HAL_PIN(wout) = 0.0;
+HAL_PIN(a) = 0.0;
+HAL_PIN(b) = 0.0;
 
 HAL_PIN(enable) = 0.0;
-HAL_PIN(volt) = 0.0;
-HAL_PIN(pwm_max) = 0.0;
-
-
-INIT(
-
-);
 
 RT(
-  const int res = 1200;
-  float vlt = PIN(volt);
   float e = PIN(enable);
-  int min = 0.0;
-  int max = res * CLAMP(PIN(pwm_max), 0.0, 0.95);
 
-  if(vlt > 0.0 && e > 0.0){
-    data.data[0] = CLAMP(PIN(u) / vlt * res, min, max);
-    data.data[1] = CLAMP(PIN(v) / vlt * res, min, max);
-    data.data[2] = CLAMP(PIN(w) / vlt * res, min, max);
+  if(e > 0.0){
+    data.data[0] = TOFIXED(PIN(a));
+    data.data[1] = TOFIXED(PIN(b));
+    data.data[2] = 0;
   }
   else{
     data.data[0] = 0;
     data.data[1] = 0;
     data.data[2] = 0;
   }
-
-  PIN(uout) = data.data[0];
-  PIN(vout) = data.data[1];
-  PIN(wout) = data.data[2];
 
   UART_DMA_Buffer[0] = 0x155;
   UART_DMA_Buffer[1] = data.byte[0];
