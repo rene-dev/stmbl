@@ -485,12 +485,13 @@ void set_mitsubishi(){ // TODO
 	set_hal_pin("conf0.r", 1.5);
 	set_hal_pin("conf0.l", 0.0025);
 	set_hal_pin("conf0.j", KGCM2(0.5));
-	set_hal_pin("conf0.psi", 0.22);
+	set_hal_pin("conf0.psi", 0.34);
 
 	set_hal_pin("conf0.pos_p", 50.0);
-	set_hal_pin("conf0.acc_p", 0.15);
+	set_hal_pin("conf0.acc_p", 0.1);
 	set_hal_pin("conf0.acc_pi", 50.0);
-	set_hal_pin("conf0.cur_lp", 0.5);
+	set_hal_pin("conf0.cur_p", 0.5);
+  set_hal_pin("conf0.cur_i", 0.001);
 	set_hal_pin("encm0.enable", 1.0);
 
   set_hal_pin("cur0.induction", 0.0);
