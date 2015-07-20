@@ -1,21 +1,28 @@
 #pragma once
 
-#define DATABAUD 2000000;
+#define STATIC_ASSERT(COND, MSG) extern char MSG[(COND)?1:-1]
+
+#define DATABAUD 2000000
 
 #define TOFIXED(a) ((int16_t)(a*64))
 #define TOFLOAT(a) ((float)(a/64.0))
 
 typedef struct{
-	int16_t amp;
-	int16_t volt;
-	int16_t temp;
+   int16_t amp;
+   int16_t volt;
+   int16_t temp;
 } from_hv_t;
 
 
 typedef struct{
-	int16_t a;
-	int16_t b;
+   int16_t a;
+   int16_t b;
 } to_hv_t;
+
+STATIC_ASSERT(sizeof(to_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, to_hv_struct_to_large);
+STATIC_ASSERT(sizeof(from_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, from_hv_struct_to_large);
+
+//#error foo bar
 
 // struct f1tof4{
 //   int16 ia;
