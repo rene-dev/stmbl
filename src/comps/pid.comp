@@ -219,14 +219,13 @@ if(PIN(enable) > 0.0){
 
   // pos -> vel
   velcmd = posp * poserr + PIN(vel_ff) * velextcmd;  // vel = p * pos_error + ff1
-  PIN(vel_cmd) = velcmd;
   velcmd = velcmd * poslp + (1.0 - poslp) * old_velcmd; // lowpass
   velsat = SAT2(velcmd, velmin_, velmax_);
   velcmd = CLAMP(velcmd, velmin_, velmax_); // min/max clamping
 
   // vel -> acc
   velerr = velcmd - velfb;
-  acccmd = velerr / t * velp + PIN(acc_ff) * accextcmd; // acc = vel_error / period + ff2
+  acccmd = velerr / t * velp + PIN(acc_ff) * accextcmd; // acc = p * vel_error / period + ff2
   acccmd = acccmd * vellp + (1.0 - vellp) * old_acccmd; // lowpass
   accsat = SAT2(acccmd, accmin_, accmax_);
   acccmd = CLAMP(acccmd, accmin_, accmax_); // min/max clamping
