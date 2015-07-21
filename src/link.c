@@ -454,17 +454,20 @@ void set_sanyo(){ // TODO
 	set_hal_pin("conf0.max_cur", 25.7);
 
 	set_hal_pin("conf0.fb_type", ENC1);
-	set_hal_pin("conf0.fb_rev", 1.0);
+	set_hal_pin("conf0.fb_rev", 0.0);
 	set_hal_pin("conf0.fb_res", 16384.0);
-	set_hal_pin("conf0.r", 0.8);
+	set_hal_pin("conf0.r", 0.4);
 	set_hal_pin("conf0.l", 0.01);
 	set_hal_pin("conf0.j", KGCM2(2.65));
-	set_hal_pin("conf0.psi", 0.553);
+	set_hal_pin("conf0.psi", 0.783);
 
 	set_hal_pin("conf0.pos_p", 60.0);
-	set_hal_pin("conf0.acc_p", 0.01);
+	set_hal_pin("conf0.acc_p", 0.4);
 	set_hal_pin("conf0.acc_pi", 70.0);
 	set_hal_pin("conf0.cur_lp", 0.5);
+	set_hal_pin("conf0.max_sat", 5.0);
+	set_hal_pin("cauto0.cur", 3.0);
+	set_hal_pin("cauto0.time", 1.0);
   set_fb_enc();
 }
 
