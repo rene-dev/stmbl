@@ -29,10 +29,13 @@ RT(
   for(int i = 0; i < PID_WAVES; i++){
     sc[i] = 0.0;
     for(int j = 0; j < ADC_ANZ; j++){
+		//ADC dual mode puts both channels in one word, right aligned.
+		//ugly hack. this works as long as the maximum sum of each channel fits in 16 bits. (up to 16 samples)
       sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
     }
   }
 
+  //seperate channels
   for(int i = 0; i < PID_WAVES; i++){
     si[i] = 0.0;
     co[i] = 0.0;

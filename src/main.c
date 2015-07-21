@@ -39,11 +39,13 @@ int __errno;
 volatile double systime_s = 0.0;
 void Wait(unsigned int ms);
 
-//menc
+//Mitsubishi absolute encoder position and buffer
 volatile int menc_pos = -1;
 volatile uint16_t menc_buf[10];
 
-void DMA2_Stream0_IRQHandler(void){ //5kHz
+//5 kHz interrupt for hal. at this point all ADCs have been sampled,
+//see setup_res() in setup.c if you are interested in the magic behind this.
+void DMA2_Stream0_IRQHandler(void){
     DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
     GPIO_SetBits(GPIOB,GPIO_Pin_8);
     int freq = 5000;
@@ -53,7 +55,7 @@ void DMA2_Stream0_IRQHandler(void){ //5kHz
 
 		unsigned int start = SysTick->VAL;
 
-    for(int i = 0; i < hal.rt_func_count; i++){
+    for(int i = 0; i < hal.rt_func_count; i++){//run all realtime hal functions
         hal.rt[i](period);
     }
 		unsigned int end = SysTick->VAL;
@@ -63,7 +65,7 @@ void DMA2_Stream0_IRQHandler(void){ //5kHz
     GPIO_ResetBits(GPIOB,GPIO_Pin_8);
 }
 
-//port0 uart, mitsubishi UART
+//feedback port UART RX not empty. used for Mitsubishi absolute encoders.
 void USART3_IRQHandler(){
 	GPIO_ResetBits(GPIOB,GPIO_Pin_12);//reset tx enable
 	uint16_t buf;
@@ -82,7 +84,7 @@ void USART3_IRQHandler(){
 	}
 }
 
-//DRV UART
+//UART RX not empty interrupt for f1. sets all the hal pins measured on the f1.
 void UART_DRV_IRQ(){
 	static int32_t datapos = -1;
 	static from_hv_t from_hv;
@@ -323,12 +325,12 @@ int main(void)
 
 	UB_USB_CDC_Init();
 
-	while(1)  // Do not exit
+	while(1)//run non realtime stuff
 	{
 		Wait(2);
 		period = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
 		lasttime = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
-		for(int i = 0; i < hal.nrt_func_count; i++){
+		for(int i = 0; i < hal.nrt_func_count; i++){//run all non realtime hal functions
 			hal.nrt[i](period);
 		}
 	}

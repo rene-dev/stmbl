@@ -35,6 +35,7 @@ void setup(){
     NVIC_SetPriority(SysTick_IRQn, 14);
 }
 
+//setup uart to f1. uses DMA to transfer to_hv struct.
 void setup_usart(){
 	GPIO_InitTypeDef GPIO_InitStruct;
 	USART_InitTypeDef USART_InitStruct;

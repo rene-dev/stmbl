@@ -301,6 +301,7 @@ void setup_adc(){
    while(ADC_GetCalibrationStatus(ADC1));
 }
 
+//TIM1 update interrupt, every PWM cycle
 void TIM1_UP_IRQHandler(){
    TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
    ADC_SoftwareStartConvCmd(ADC1, ENABLE);   //trigger ADC
@@ -317,6 +318,7 @@ void TIM1_UP_IRQHandler(){
    //GPIO_SetBits(GPIOB,GPIO_Pin_12);
 }
 
+//DMA transfer complete interrupt, every PWM cycle, when ADC conversion is complete
 void DMA1_Channel1_IRQHandler(){
    DMA_ClearITPendingBit(DMA1_IT_TC1);
 
@@ -335,6 +337,9 @@ void DMA1_Channel1_IRQHandler(){
    temp_raw = ADCConvertedValue[2];
 }
 
+//UART RX not empty interrupt
+//adds data to the struct, until struct is full. Then calculates uvw, and sets pwm
+//TODO: chekcsum
 void USART2_IRQHandler(){
    USART_ClearITPendingBit(USART2, USART_IT_RXNE);
    buf = USART_ReceiveData(USART2);
