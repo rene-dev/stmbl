@@ -91,7 +91,7 @@ HAL can be tested without any hardware connected to the STM32F4discovery.
 * Flash STM32F4discovery(STlink and USB OTG must be connected)
 * Launch Servoterm, Click refresh, and connecto to STM32 Virtual ComPort
 
-entering ? prints a list of hal pins.
+entering 'list' prints a list of hal pins.
 The current default config is for a 4 pole AC permanent magnet motor with resolver feedback, using an encoder for command. 
 
 > net0.fb <= res0.pos = 0.000000
