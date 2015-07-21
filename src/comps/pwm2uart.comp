@@ -10,7 +10,7 @@ RT(
 
   if(e > 0.0){
     to_hv.a = TOFIXED(PIN(a));
-    to_hv.a = TOFIXED(PIN(b));
+    to_hv.b = TOFIXED(PIN(b));
   }
   else{
     to_hv.a = 0;
