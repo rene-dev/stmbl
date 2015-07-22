@@ -20,6 +20,12 @@
 #define PWM_U TIM1->CCR3
 #define PWM_V TIM1->CCR2
 #define PWM_W TIM1->CCR1
+#define ACS_VPA 0.066 // ACS712 V/A
+#define ACS_UP 2000.0
+#define ACS_DOWN 3000.0
+#define ACS_OFFSET 2.5
+
+#define AMP(a) ((a * AREF / ARES * (ACS_DOWN + ACS_UP) / ACS_DOWN - ACS_OFFSET) / ACS_VPA)
 
 #else
 
@@ -30,9 +36,10 @@
 #define PWM_V TIM1->CCR2
 #define PWM_W TIM1->CCR3
 
+#define AMP(a) ((a * AREF / ARES - AREF / (R10 + R11) * R11) / (RCUR * R10) * (R10 + R11))
+
 #endif
 
-#define AMP(a) ((a * AREF / ARES - AREF / (R10 + R11) * R11) / (RCUR * R10) * (R10 + R11))
 #define VOLT(a) (a / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
 #define TEMP(a) (log10f(a * AREF / ARES * TPULLUP / (AREF - a * AREF / ARES)) * (-53) + 290)
 
@@ -103,6 +110,9 @@ void GPIO_Configuration(void)
    GPIO_SetBits(GPIOB,GPIO_Pin_1);
    GPIO_SetBits(GPIOB,GPIO_Pin_2);
    GPIO_SetBits(GPIOB,GPIO_Pin_3);
+   // GPIO_ResetBits(GPIOB,GPIO_Pin_1);
+   // GPIO_ResetBits(GPIOB,GPIO_Pin_2);
+   // GPIO_ResetBits(GPIOB,GPIO_Pin_3);
    //GPIO_ResetBits(GPIOC,GPIO_Pin_2);//greep led off
 #else
    //Enable output
@@ -388,9 +398,9 @@ int main(void)
 #ifdef TROLLER
          from_hv.amp =  TOFIXED(0);
          from_hv.temp = TOFIXED(0);
-         from_hv.a = ADCConvertedValue[1];
-         from_hv.b = ADCConvertedValue[2];
-         from_hv.c = ADCConvertedValue[3];
+         from_hv.a = TOFIXED(AMP(ADCConvertedValue[1]));
+         from_hv.b = TOFIXED(AMP(ADCConvertedValue[2]));
+         from_hv.c = TOFIXED(AMP(ADCConvertedValue[3]));
 #endif
          uartsend = 0;
          while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
