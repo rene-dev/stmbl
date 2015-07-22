@@ -1,5 +1,7 @@
 #pragma once
 
+//#define TROLLER
+
 #define STATIC_ASSERT(COND, MSG) extern char MSG[(COND)?1:-1]
 
 #define DATABAUD 2000000 //baudrate used for communication
@@ -13,6 +15,9 @@ typedef struct{
    int16_t amp;
    int16_t volt;
    int16_t temp;
+   uint16_t a;
+   uint16_t b;
+   uint16_t c;
 } from_hv_t;
 
 //data from f4 to f1
@@ -27,10 +32,8 @@ STATIC_ASSERT(sizeof(from_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, from_hv_struct_
 
 
 // struct f1tof4{
-//   int16 ia;
-//   int16 ib;
-//   int16 ua;
-//   int16 ub;
+//   int16 a;
+//   int16 b;
 //   int16 udc;
 //   int16 value;
 //   struct {
@@ -58,7 +61,8 @@ STATIC_ASSERT(sizeof(from_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, from_hv_struct_
 //       phase_offset_uv
 //       phase_offset_vw
 //       svm_mode (centered, svm, bottom low)
-//       u/i mode
+//       u/i cmd mode
+//       u/i fb mode
 //
 //     r:
 //       temp0

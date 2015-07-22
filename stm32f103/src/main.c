@@ -2,26 +2,41 @@
 #include "common.h"
 #include <math.h>
 
+#define ADC1_DR_Address    ((uint32_t)0x4001244C)
+
 //iramx v31 hardware
 #define AREF 3.3// analog reference voltage
 #define ARES 4096.0// analog resolution, 12 bit
 #define RCUR 0.0181//shunt
 #define TPULLUP 10000//iramx temperature pullup
-
-#ifdef TROLLER
-#define VDIVUP 1000000.0
-#define VDIVDOWN 4990.0
-#else
-#define VDIVUP 36000.0//HV div pullup R1,R12
-#define VDIVDOWN 280.0//HV div pulldown R2,R9
-#endif
-
 #define R10 10000
 #define R11 180
+
+#ifdef TROLLER
+
+#define ADC_channels 4
+#define VDIVUP 1000000.0
+#define VDIVDOWN 4990.0
+#define PWM_U TIM1->CCR3
+#define PWM_V TIM1->CCR2
+#define PWM_W TIM1->CCR1
+
+#else
+
+#define ADC_channels 3
+#define VDIVUP 36000.0//HV div pullup R1,R12
+#define VDIVDOWN 280.0//HV div pulldown R2,R9
+#define PWM_U TIM1->CCR1
+#define PWM_V TIM1->CCR2
+#define PWM_W TIM1->CCR3
+
+#endif
 
 #define AMP(a) ((a * AREF / ARES - AREF / (R10 + R11) * R11) / (RCUR * R10) * (R10 + R11))
 #define VOLT(a) (a / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
 #define TEMP(a) (log10f(a * AREF / ARES * TPULLUP / (AREF - a * AREF / ARES)) * (-53) + 290)
+
+__IO uint16_t ADCConvertedValue[ADC_channels];//DMA buffer for ADC
 
 #define SQRT3 1.732050808
 
@@ -38,7 +53,7 @@ volatile uint16_t temp_raw = 0;
 float volt = 0;
 float amp = 0;
 float temp = 0;
-const int res = 1200;
+const int res = 1200; //pwm resolution
 
 volatile unsigned int systime = 0;
 volatile float u,v,w;
@@ -54,9 +69,8 @@ TIM_OCInitTypeDef  TIM_OCInitStructure;
 NVIC_InitTypeDef NVIC_InitStructure;
 GPIO_InitTypeDef GPIO_InitStructure;
 USART_InitTypeDef USART_InitStruct;
-
-#define ADC_channels 3
-__IO uint16_t ADCConvertedValue[ADC_channels];
+ADC_InitTypeDef ADC_InitStructure;
+DMA_InitTypeDef DMA_InitStructure;
 
 void Wait(unsigned int ms){
    volatile unsigned int t = systime + ms;
@@ -76,21 +90,14 @@ void RCC_Configuration(void)
 
 void GPIO_Configuration(void)
 {
-
    //LED init
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
    GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-   //Enable output init
-   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-   GPIO_Init(GPIOB, &GPIO_InitStructure);
-
 #ifdef TROLLER
-   //shutdown
+   //shutdown pins
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
    GPIO_SetBits(GPIOB,GPIO_Pin_1);
@@ -98,14 +105,12 @@ void GPIO_Configuration(void)
    GPIO_SetBits(GPIOB,GPIO_Pin_3);
    //GPIO_ResetBits(GPIOC,GPIO_Pin_2);//greep led off
 #else
-   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+   //Enable output
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
 #endif
-
-   //Analog pin configuration
-   //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-   //GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-   //GPIO_Init(GPIOA,&GPIO_InitStructure);
 }
 
 void tim1_init(){
@@ -117,6 +122,7 @@ void tim1_init(){
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
    GPIO_Init(GPIOA, &GPIO_InitStructure);
    //TIM1 N
+	// not needed for troller
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -142,6 +148,7 @@ void tim1_init(){
 
    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	//not needed for troller
    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
    TIM_OCInitStructure.TIM_Pulse = 0;
    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
@@ -180,9 +187,7 @@ void usart_init(){
    USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
    USART_Init(USART2, &USART_InitStruct);
-   USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
-   //USART_ITConfig(USART2, USART_IT_PE, ENABLE);
-   //USART_ITConfig(USART2, USART_IT_ERR, ENABLE);
+   USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);//Enable USART RX not empty interrupt
 
    NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
@@ -196,47 +201,33 @@ void usart_init(){
 
 // Setup ADC
 void setup_adc(){
-   /* Private typedef -----------------------------------------------------------*/
-   /* Private define ------------------------------------------------------------*/
-#define ADC1_DR_Address    ((uint32_t)0x4001244C)
-
-   /* Private macro -------------------------------------------------------------*/
-   /* Private variables ---------------------------------------------------------*/
-   ADC_InitTypeDef ADC_InitStructure;
-   DMA_InitTypeDef DMA_InitStructure;
-
-#if defined (STM32F10X_LD_VL) || defined (STM32F10X_MD_VL) || defined (STM32F10X_HD_VL)
-   /* ADCCLK = PCLK2/2 */
-   RCC_ADCCLKConfig(RCC_PCLK2_Div2);
-#else
-   /* ADCCLK = PCLK2/4 */
    RCC_ADCCLKConfig(RCC_PCLK2_Div4);
-#endif
-   /* Enable peripheral clocks ------------------------------------------------*/
    /* Enable DMA1 clock */
    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-
    /* Enable ADC1 and GPIOC clock */
    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
 
-#ifdef TROLLER
-   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+
+#ifdef TROLLER
+	//PINA0 IN0 DC link
+	//PINA6 IN6 iu
+	//PINA7 IN7 iv
+	//PINB0 IN8 iw
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_6 | GPIO_Pin_7;
    GPIO_Init(GPIOA, &GPIO_InitStructure);
-#endif
-
-#ifdef TROLLER
-   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-#else
-   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
-#endif
-
-   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-   GPIO_Init(GPIOC, &GPIO_InitStructure);
-
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
+#else
+	//PINC5 IN15 DC link
+	//PINC4 IN14 AMP
+	//PINB0 IN8 temperature
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
+
 
    DMA_DeInit(DMA1_Channel1);
    DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
@@ -272,17 +263,17 @@ void setup_adc(){
    ADC_Init(ADC1, &ADC_InitStructure);
 
    ADC_TempSensorVrefintCmd(ENABLE);
-   /* ADC1 regular channel14 configuration */
-   //ADC_channels anpassen!
-   ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_13Cycles5);// amp
-#ifdef TROLLER
-   ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 2, ADC_SampleTime_13Cycles5);// vlt
-#else
-   ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 2, ADC_SampleTime_13Cycles5);// vlt
-#endif
-   ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 3, ADC_SampleTime_13Cycles5);// iramx temp
-   // ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 3, ADC_SampleTime_13Cycles5);
 
+#ifdef TROLLER
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_13Cycles5); //volt
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 2, ADC_SampleTime_13Cycles5); //iu
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 3, ADC_SampleTime_13Cycles5); //iv
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 4, ADC_SampleTime_13Cycles5); //iw
+#else
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 1, ADC_SampleTime_13Cycles5); //volt
+   ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 2, ADC_SampleTime_13Cycles5); //amp
+   ADC_RegularChannelConfig(ADC1, ADC_Channel_8 , 3, ADC_SampleTime_13Cycles5); //temp
+#endif
 
    /* Enable ADC1 DMA */
    ADC_DMACmd(ADC1, ENABLE);
@@ -322,18 +313,10 @@ void TIM1_UP_IRQHandler(){
 void DMA1_Channel1_IRQHandler(){
    DMA_ClearITPendingBit(DMA1_IT_TC1);
 
-   //TODO: hadrware limits
+   //TODO: hadrware limits for current, temperature and voltage
 
-   if(ADCConvertedValue[0] > 374){  //current limit (371 zero)
-      //GPIO_ResetBits(GPIOB,GPIO_Pin_6);//disable driver
-      GPIO_SetBits(GPIOC,GPIO_Pin_0);  //red led on
-   }else{
-      //GPIO_SetBits(GPIOB,GPIO_Pin_6);//Enable driver
-      GPIO_ResetBits(GPIOC,GPIO_Pin_0);   //red led off
-   }
-
-   amp_raw = ADCConvertedValue[0];
-   volt_raw = ADCConvertedValue[1];
+   volt_raw = ADCConvertedValue[0];
+   amp_raw = ADCConvertedValue[1];
    temp_raw = ADCConvertedValue[2];
 }
 
@@ -360,22 +343,17 @@ void USART2_IRQHandler(){
       float v = - ua / 2.0 + ub / 2.0 * SQRT3;
       float w = - ua / 2.0 - ub / 2.0 * SQRT3;
 
-      //TODO: SVM
+      //TODO: SVM, clamping
 
       u += volt / 2.0;
       v += volt / 2.0;
       w += volt / 2.0;
 
-#ifdef TROLLER
-      TIM1->CCR3 = u/volt*res;
-      TIM1->CCR2 = v/volt*res;
-      TIM1->CCR1 = w/volt*res;
-#else
-      TIM1->CCR1 = u/volt*res;
-      TIM1->CCR2 = v/volt*res;
-      TIM1->CCR3 = w/volt*res;
-#endif
-      timeout = 0;
+      PWM_U = u/volt*res;
+      PWM_V = v/volt*res;
+      PWM_W = w/volt*res;
+
+      timeout = 0; //reset timeout
       //GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
    }
 }
@@ -393,9 +371,9 @@ int main(void)
    tim1_init();
    usart_init();
 
-   TIM1->CCR1 = 0;
-   TIM1->CCR2 = 0;
-   TIM1->CCR3 = 0;
+   PWM_U = 0;
+   PWM_V = 0;
+   PWM_W = 0;
 
    while(1){
       if(uartsend == 1){
@@ -404,9 +382,16 @@ int main(void)
          if(temp_raw < ARES && temp_raw > 0){
             temp = TEMP(temp_raw);
          }
-         from_hv.amp =  TOFIXED(amp);
          from_hv.volt = TOFIXED(volt);
+         from_hv.amp =  TOFIXED(amp);
          from_hv.temp = TOFIXED(temp);
+#ifdef TROLLER
+         from_hv.amp =  TOFIXED(0);
+         from_hv.temp = TOFIXED(0);
+         from_hv.a = ADCConvertedValue[1];
+         from_hv.b = ADCConvertedValue[2];
+         from_hv.c = ADCConvertedValue[3];
+#endif
          uartsend = 0;
          while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
          USART_SendData(USART2, 0x154);

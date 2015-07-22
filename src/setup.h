@@ -12,8 +12,8 @@
 #include "stm32f4_discovery.h"
 #include "stm32f4xx_conf.h"
 #include "misc.h"
-#include "defines_res.h"
 #include "../../stm32f103/inc/common.h"
+#include "defines_res.h"
 
 #include "stm32_ub_usb_cdc.h"
 

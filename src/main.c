@@ -33,6 +33,9 @@ volatile uint16_t rxbuf;
 GLOBAL_HAL_PIN(g_amp);
 GLOBAL_HAL_PIN(g_vlt);
 GLOBAL_HAL_PIN(g_tmp);
+GLOBAL_HAL_PIN(g_a);
+GLOBAL_HAL_PIN(g_b);
+GLOBAL_HAL_PIN(g_c);
 GLOBAL_HAL_PIN(rt_time);
 
 int __errno;
@@ -102,6 +105,9 @@ void UART_DRV_IRQ(){
 		PIN(g_amp) = TOFLOAT(from_hv.amp);
 		PIN(g_vlt) = TOFLOAT(from_hv.volt);
 		PIN(g_tmp) = TOFLOAT(from_hv.temp);
+		PIN(g_a) = from_hv.a;
+		PIN(g_b) = from_hv.b;
+		PIN(g_c) = from_hv.c;
 	}
 }
 
@@ -160,6 +166,9 @@ int main(void)
 	HAL_PIN(amp) = 0.0;
 	HAL_PIN(vlt) = 0.0;
 	HAL_PIN(tmp) = 0.0;
+	HAL_PIN(a) = 0.0;
+	HAL_PIN(b) = 0.0;
+	HAL_PIN(c) = 0.0;
 	HAL_PIN(rt_calc_time) = 0.0;
 
 	set_comp_type("conf");
@@ -206,6 +215,9 @@ int main(void)
 	g_amp_hal_pin = map_hal_pin("net0.amp");
 	g_vlt_hal_pin = map_hal_pin("net0.vlt");
 	g_tmp_hal_pin = map_hal_pin("net0.tmp");
+	g_a_hal_pin = map_hal_pin("net0.a");
+	g_b_hal_pin = map_hal_pin("net0.b");
+	g_c_hal_pin = map_hal_pin("net0.c");
 	rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
 
 	for(int i = 0; i < hal.init_func_count; i++){
