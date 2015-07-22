@@ -214,6 +214,10 @@ void setup_adc(){
 	//PINA6 IN6 iu
 	//PINA7 IN7 iv
 	//PINB0 IN8 iw
+   
+	//PINA5 IN5 uu
+	//PINA4 IN4 uv
+	//PINA1 IN1 uw
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_6 | GPIO_Pin_7;
    GPIO_Init(GPIOA, &GPIO_InitStructure);
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
