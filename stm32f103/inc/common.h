@@ -1,6 +1,6 @@
 #pragma once
 
-#define TROLLER
+//#define TROLLER
 
 #define STATIC_ASSERT(COND, MSG) extern char MSG[(COND)?1:-1]
 
