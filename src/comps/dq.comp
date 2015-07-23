@@ -27,7 +27,7 @@ RT(
    float s3 = sqrtf(3.0);
 
    float a = u * 2.0 / 3.0 - v / 3.0 - w / 3.0;
-   float b = v * s3 / 3.0 - w * s3 / 3.0;
+   float b = v / s3 - w / s3;
    float c = u / 3.0 + v / 3.0 + w / 3.0;
 
    float d = a * co + b * si;

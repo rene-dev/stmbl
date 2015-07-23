@@ -118,182 +118,182 @@ MEM(float curcmd) = 0.0;
 
 
 RT(
-float posextcmd = PIN(pos_ext_cmd);
-float posfb = PIN(pos_fb);
-float poserr = minus(posextcmd, posfb);
+   float posextcmd = PIN(pos_ext_cmd);
+   float posfb = PIN(pos_fb);
+   float poserr = minus(posextcmd, posfb);
 
-float velextcmd = PIN(vel_ext_cmd);
-float velfb = PIN(vel_fb);
-//float velcmd;
-float velerr;
-float velsat;
+   float velextcmd = PIN(vel_ext_cmd);
+   float velfb = PIN(vel_fb);
+   //float velcmd;
+   float velerr;
+   float velsat;
 
-float accextcmd = PIN(acc_ext_cmd);
-//float acccmd;
-float accsat;
+   float accextcmd = PIN(acc_ext_cmd);
+   //float acccmd;
+   float accsat;
 
-float forceextcmd = PIN(force_ext_cmd);
-//float forcecmd;
-float forcesat;
+   float forceextcmd = PIN(force_ext_cmd);
+   //float forcecmd;
+   float forcesat;
 
-float curextcmd = PIN(cur_ext_cmd);
-//float curfb = PIN(cur_fb);
-//float curcmd;
-//float curerr = 0.0;
-float cursat;
+   float curextcmd = PIN(cur_ext_cmd);
+   //float curfb = PIN(cur_fb);
+   //float curcmd;
+   //float curerr = 0.0;
+   float cursat;
 
-float r = MAX(PIN(mot_r), 0.01) / 2.0;
-float j = MAX(PIN(mot_j), 0.000001);
-float m = MAX(PIN(mot_km), 0.01);
-float t = MAX(period, 0.00001);
+   float r = MAX(PIN(mot_r), 0.01) / 2.0;
+   float j = MAX(PIN(mot_j), 0.000001);
+   float m = MAX(PIN(mot_km), 0.01);
+   float t = MAX(period, 0.00001);
 
-float vlt = MAX(PIN(volt), 0.1);
+   float vlt = MAX(PIN(volt), 0.1);
 
-float velmax = PIN(max_vel);
-//float velmin = -velmax;
-float accmax = PIN(max_acc);
-float forcemax = PIN(max_force);
-float curmax = PIN(max_cur);
-float voltmax = MIN(PIN(max_volt), vlt);
-float pwmmax = PIN(max_pwm);
-voltmax *= pwmmax;
+   float velmax = PIN(max_vel);
+   //float velmin = -velmax;
+   float accmax = PIN(max_acc);
+   float forcemax = PIN(max_force);
+   float curmax = PIN(max_cur);
+   float voltmax = MIN(PIN(max_volt), vlt);
+   float pwmmax = PIN(max_pwm);
+   voltmax *= pwmmax;
 
-float ind = velfb * m;
+   float ind = velfb * m;
 
-float curmax_ = MIN(curmax, (voltmax - ind) / r);
-float curmin_ = MAX(-curmax, (-voltmax - ind) / r);
-float forcemax_ = MIN(forcemax, curmax_ * m);
-float forcemin_ = MAX(-forcemax, curmin_ * m);
-float accmax_ = MIN(accmax, forcemax_ / j);
-float accmin_ = MAX(-accmax, forcemin_ / j);
-float velmax_ = MIN(vlt / m, velmax);
-float velmin_ = -velmax_;
+   float curmax_ = MIN(curmax, (voltmax - ind) / r);
+   float curmin_ = MAX(-curmax, (-voltmax - ind) / r);
+   float forcemax_ = MIN(forcemax, curmax_ * m);
+   float forcemin_ = MAX(-forcemax, curmin_ * m);
+   float accmax_ = MIN(accmax, forcemax_ / j);
+   float accmin_ = MAX(-accmax, forcemin_ / j);
+   float velmax_ = MIN(vlt / m, velmax);
+   float velmin_ = -velmax_;
 
-float posp = MAX(PIN(pos_p), 0.0);
-float poslp = LP_HZ(PIN(pos_lp));
-float velp = MIN(MAX(PIN(vel_p), 0.0), 1.0);
-float vellp = LP_HZ(PIN(vel_lp));
-float accp = MIN(MAX(PIN(acc_p), 0.0), 1.0);
-float accpi = MAX(PIN(acc_pi), 0.0);
-//float accaw = MAX(PIN(acc_aw), 0.0);
-float acclp = LP_HZ(PIN(acc_lp));
-float forcep = MIN(MAX(PIN(force_p), 0.001), 1.0);
-float forcelp = LP_HZ(PIN(force_lp));
+   float posp = MAX(PIN(pos_p), 0.0);
+   float poslp = LP_HZ(PIN(pos_lp));
+   float velp = MIN(MAX(PIN(vel_p), 0.0), 1.0);
+   float vellp = LP_HZ(PIN(vel_lp));
+   float accp = MIN(MAX(PIN(acc_p), 0.0), 1.0);
+   float accpi = MAX(PIN(acc_pi), 0.0);
+   //float accaw = MAX(PIN(acc_aw), 0.0);
+   float acclp = LP_HZ(PIN(acc_lp));
+   float forcep = MIN(MAX(PIN(force_p), 0.001), 1.0);
+   float forcelp = LP_HZ(PIN(force_lp));
 
-float old_velcmd = velcmd;
-float old_acccmd = acccmd;
-float old_forcecmd = forcecmd;
-float old_curcmd = curcmd;
+   float old_velcmd = velcmd;
+   float old_acccmd = acccmd;
+   float old_forcecmd = forcecmd;
+   float old_curcmd = curcmd;
 
-if(PIN(enable) > 0.0){
-  if(PIN(pos_en) == 0.0){
-    posp = 0.0;
-  }
-  if(PIN(vel_en) == 0.0){
-    posp = 0.0;
-    velp = 0.0;
-  }
-  if(PIN(acc_en) == 0.0){
-    posp = 0.0;
-    velp = 0.0;
-    accp = 0.0;
-//    accaw = 0.0;
-    force_error_sum = 0.0;
-  }
-  if(PIN(force_en) == 0.0){
-    posp = 0.0;
-    velp = 0.0;
-    accp = 0.0;
-//    accaw = 0.0;
-    force_error_sum = 0.0;
-    forcep = 0.0;
-  }
-  if(PIN(cur_en) == 0.0){
-    posp = 0.0;
-    velp = 0.0;
-    accp = 0.0;
-//    accaw = 0.0;
-    force_error_sum = 0.0;
-    forcep = 0.0;
-  }
+   if(PIN(enable) > 0.0){
+      if(PIN(pos_en) == 0.0){
+         posp = 0.0;
+      }
+      if(PIN(vel_en) == 0.0){
+         posp = 0.0;
+         velp = 0.0;
+      }
+      if(PIN(acc_en) == 0.0){
+         posp = 0.0;
+         velp = 0.0;
+         accp = 0.0;
+         //    accaw = 0.0;
+         force_error_sum = 0.0;
+      }
+      if(PIN(force_en) == 0.0){
+         posp = 0.0;
+         velp = 0.0;
+         accp = 0.0;
+         //    accaw = 0.0;
+         force_error_sum = 0.0;
+         forcep = 0.0;
+      }
+      if(PIN(cur_en) == 0.0){
+         posp = 0.0;
+         velp = 0.0;
+         accp = 0.0;
+         //    accaw = 0.0;
+         force_error_sum = 0.0;
+         forcep = 0.0;
+      }
 
-  // pos -> vel
-  velcmd = posp * poserr + PIN(vel_ff) * velextcmd;  // vel = p * pos_error + ff1
-  velcmd = velcmd * poslp + (1.0 - poslp) * old_velcmd; // lowpass
-  velsat = SAT2(velcmd, velmin_, velmax_);
-  velcmd = CLAMP(velcmd, velmin_, velmax_); // min/max clamping
+      // pos -> vel
+      velcmd = posp * poserr + PIN(vel_ff) * velextcmd;  // vel = p * pos_error + ff1
+      velcmd = velcmd * poslp + (1.0 - poslp) * old_velcmd; // lowpass
+      velsat = SAT2(velcmd, velmin_, velmax_);
+      velcmd = CLAMP(velcmd, velmin_, velmax_); // min/max clamping
 
-  // vel -> acc
-  velerr = velcmd - velfb;
-  acccmd = velerr / t * velp + PIN(acc_ff) * accextcmd; // acc = p * vel_error / period + ff2
-  acccmd = acccmd * vellp + (1.0 - vellp) * old_acccmd; // lowpass
-  accsat = SAT2(acccmd, accmin_, accmax_);
-  acccmd = CLAMP(acccmd, accmin_, accmax_); // min/max clamping
+      // vel -> acc
+      velerr = velcmd - velfb;
+      acccmd = velerr / t * velp + PIN(acc_ff) * accextcmd; // acc = p * vel_error / period + ff2
+      acccmd = acccmd * vellp + (1.0 - vellp) * old_acccmd; // lowpass
+      accsat = SAT2(acccmd, accmin_, accmax_);
+      acccmd = CLAMP(acccmd, accmin_, accmax_); // min/max clamping
 
-  // acc -> force
-  forcecmd = acccmd * j * accp + PIN(force_ff) * forceextcmd; // force = acc * inertia + ext cmd
-  force_error_sum += velerr * t * accp * accpi; // integrate vel_error
-  force_error_sum = CLAMP(force_error_sum, forcemin_, forcemax_); // clamp integral
-  if(accpi == 0.0){
-    force_error_sum = 0.0;
-  }
-  forcecmd += force_error_sum;  // add integral
-  //forcecmd = forcecmd * acclp + (1.0 - acclp) * old_forcecmd; // lowpass
-  //float tmp_forcecmd = forcecmd;
-  forcecmd = forcecmd * acclp + (1.0 - acclp) * old_forcecmd; // lowpass
-  forcesat = SAT2(forcecmd, forcemin_, forcemax_);
-  forcecmd = CLAMP(forcecmd, forcemin_, forcemax_); // min/max clamping
-  //force_error_sum += accaw * (forcecmd - tmp_forcecmd); // anti windup
-  //old_forcecmd = forcecmd;
+      // acc -> force
+      forcecmd = acccmd * j * accp + PIN(force_ff) * forceextcmd; // force = acc * inertia + ext cmd
+      force_error_sum += velerr * t * accp * accpi; // integrate vel_error
+      force_error_sum = CLAMP(force_error_sum, forcemin_, forcemax_); // clamp integral
+      if(accpi == 0.0){
+         force_error_sum = 0.0;
+      }
+      forcecmd += force_error_sum;  // add integral
+      //forcecmd = forcecmd * acclp + (1.0 - acclp) * old_forcecmd; // lowpass
+      //float tmp_forcecmd = forcecmd;
+      forcecmd = forcecmd * acclp + (1.0 - acclp) * old_forcecmd; // lowpass
+      forcesat = SAT2(forcecmd, forcemin_, forcemax_);
+      forcecmd = CLAMP(forcecmd, forcemin_, forcemax_); // min/max clamping
+      //force_error_sum += accaw * (forcecmd - tmp_forcecmd); // anti windup
+      //old_forcecmd = forcecmd;
 
 
-  // force -> current
-  curcmd = forcecmd / m * forcep + PIN(cur_ff) * curextcmd;  // current = force / torque constant + ext cmd
-  curcmd = curcmd * forcelp + (1.0 - forcelp) * old_curcmd; // lowpass
-  cursat = SAT2(curcmd, curmin_, curmax_);
-  curcmd = CLAMP(curcmd, curmin_, curmax_); // min/max clamping
+      // force -> current
+      curcmd = forcecmd / m * forcep + PIN(cur_ff) * curextcmd;  // current = force / torque constant + ext cmd
+      curcmd = curcmd * forcelp + (1.0 - forcelp) * old_curcmd; // lowpass
+      cursat = SAT2(curcmd, curmin_, curmax_);
+      curcmd = CLAMP(curcmd, curmin_, curmax_); // min/max clamping
 
-  if(ABS(velsat) + ABS(accsat) + ABS(forcesat) + ABS(cursat) > 0.0){
-    sat += period;
-  }
-  else{
-    sat = 0.0;
-  }
-}
-else{
-  force_error_sum = 0.0;
-  velcmd = 0.0;
-  velerr = 0.0;
-  acccmd = 0.0;
-  forcecmd = 0.0;
-  curcmd = 0.0;
-  sat = 0.0;
-}
+      if(ABS(velsat) + ABS(accsat) + ABS(forcesat) + ABS(cursat) > 0.0){
+         sat += period;
+      }
+      else{
+         sat = 0.0;
+      }
+   }
+   else{
+      force_error_sum = 0.0;
+      velcmd = 0.0;
+      velerr = 0.0;
+      acccmd = 0.0;
+      forcecmd = 0.0;
+      curcmd = 0.0;
+      sat = 0.0;
+   }
 
-PIN(pos_error) = poserr;
-PIN(vel_cmd) = velcmd;
-PIN(vel_error) = velerr;
-PIN(acc_cmd) = acccmd;
-PIN(force_cmd) = forcecmd;
-PIN(cur_cmd) = curcmd;
-//PIN(cur_error) = curerr;
+   PIN(pos_error) = poserr;
+   PIN(vel_cmd) = velcmd;
+   PIN(vel_error) = velerr;
+   PIN(acc_cmd) = acccmd;
+   PIN(force_cmd) = forcecmd;
+   PIN(cur_cmd) = curcmd;
+   //PIN(cur_error) = curerr;
 
-PIN(vel_sat) = velsat;
-PIN(acc_sat) = accsat;
-PIN(force_sat) = forcesat;
-PIN(cur_sat) = cursat;
-PIN(saturated) = sat;
+   PIN(vel_sat) = velsat;
+   PIN(acc_sat) = accsat;
+   PIN(force_sat) = forcesat;
+   PIN(cur_sat) = cursat;
+   PIN(saturated) = sat;
 
-PIN(induction) = ind;
+   PIN(induction) = ind;
 
-PIN(vel_min) = velmin_;
-PIN(vel_max) = velmax_;
-PIN(acc_min) = accmin_;
-PIN(acc_max) = accmax_;
-PIN(force_min) = forcemin_;
-PIN(force_max) = forcemax_;
-PIN(cur_min) = curmin_;
-PIN(cur_max) = curmax_;
+   PIN(vel_min) = velmin_;
+   PIN(vel_max) = velmax_;
+   PIN(acc_min) = accmin_;
+   PIN(acc_max) = accmax_;
+   PIN(force_min) = forcemin_;
+   PIN(force_max) = forcemax_;
+   PIN(cur_min) = curmin_;
+   PIN(cur_max) = curmax_;
 );
 
 ENDCOMP;

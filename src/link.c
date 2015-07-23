@@ -61,7 +61,6 @@ void link_pid(){
   set_hal_pin("pid0.max_pwm", 0.95);
   set_hal_pin("pid0.pwm_limit", 0.95);
   set_hal_pin("pid0.pos_lp", 4000.0);
-	set_hal_pin("pid0.vel_p", 1.0);
 	set_hal_pin("pid0.vel_lp", 4000.0);
 	set_hal_pin("pid0.vel_fb_lp", 4000.0);
 	set_hal_pin("pid0.acc_lp", 4000.0);

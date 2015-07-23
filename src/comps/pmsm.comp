@@ -11,6 +11,9 @@ HAL_PIN(vel) = 0.0;
 HAL_PIN(ud) = 0.0;
 HAL_PIN(uq) = 0.0;
 
+HAL_PIN(indd) = 0.0;
+HAL_PIN(indq) = 0.0;
+
 //out
 HAL_PIN(id) = 0.0;
 HAL_PIN(iq) = 0.0;
@@ -22,28 +25,43 @@ MEM(float id) = 0.0;
 MEM(float iq) = 0.0;
 
 RT(
-  float p = (int)MAX(PIN(polecount), 1.0);
-  float vel_e = PIN(vel) * p;
-  vel_e /= 2.0 * M_PI;
-  float ld = MAX(PIN(ld), 0.0001);
-  float lq = MAX(PIN(lq), 0.0001);
-  float ud = PIN(ud);
-  float uq = PIN(uq);
-  float psi_m = MAX(PIN(psi), 0.01);
-  float r = MAX(PIN(r), 0.01);
+   float p = (int)MAX(PIN(polecount), 1.0);
+   float vel_e = PIN(vel) * p;
+   vel_e /= 2.0 * M_PI;
+   float ld = MAX(PIN(ld), 0.0001);
+   float lq = MAX(PIN(lq), 0.0001);
+   float ud = PIN(ud);
+   float uq = PIN(uq);
+   float psi_m = MAX(PIN(psi), 0.01);
+   float r = MAX(PIN(r), 0.01);
 
-  float psi_d = ld * id + psi_m;
-  float psi_q = lq * iq;
-  id += (ud - r * id - vel_e * psi_q) / ld * period;
-  iq += (uq - r * iq - vel_e * psi_d) / lq * period;
+   float psi_d = ld * id + psi_m;
+   float psi_q = lq * iq;
 
-  float t = 3.0 / 2.0 * p * (psi_m * iq + (ld - lq) * id * iq);
+   float indd = vel_e * psi_q;
+   float indq = vel_e * psi_d;
 
-  PIN(id) = id;
-  PIN(iq) = iq;
-  PIN(psi_d) = psi_d;
-  PIN(psi_q) = psi_q;
-  PIN(torque) = t;
+   id += (ud - r * id - indd) / ld * period / 4.0;
+   iq += (uq - r * iq - indq) / lq * period / 4.0;
+
+   id += (ud - r * id - indd) / ld * period / 4.0;
+   iq += (uq - r * iq - indq) / lq * period / 4.0;
+
+   id += (ud - r * id - indd) / ld * period / 4.0;
+   iq += (uq - r * iq - indq) / lq * period / 4.0;
+
+   id += (ud - r * id - indd) / ld * period / 4.0;
+   iq += (uq - r * iq - indq) / lq * period / 4.0;
+
+   float t = 3.0 / 2.0 * p * (psi_m * iq + (ld - lq) * id * iq);
+
+   PIN(id) = id;
+   PIN(iq) = iq;
+   PIN(indd) = indd;
+   PIN(indq) = indq;
+   PIN(psi_d) = psi_d;
+   PIN(psi_q) = psi_q;
+   PIN(torque) = t;
 );
 
 ENDCOMP;
