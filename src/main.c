@@ -30,12 +30,12 @@
 #include "stm32_ub_usb_cdc.h"
 
 volatile uint16_t rxbuf;
-GLOBAL_HAL_PIN(g_amp);
-GLOBAL_HAL_PIN(g_vlt);
-GLOBAL_HAL_PIN(g_tmp);
-GLOBAL_HAL_PIN(g_a);
-GLOBAL_HAL_PIN(g_b);
-GLOBAL_HAL_PIN(g_c);
+GLOBAL_HAL_PIN(g_dc_cur);
+GLOBAL_HAL_PIN(g_dc_volt);
+GLOBAL_HAL_PIN(g_hv_temp);
+GLOBAL_HAL_PIN(g_iu);
+GLOBAL_HAL_PIN(g_iv);
+GLOBAL_HAL_PIN(g_iw);
 GLOBAL_HAL_PIN(rt_time);
 
 int __errno;
@@ -102,12 +102,14 @@ void UART_DRV_IRQ(){
    }
    if(datapos == sizeof(from_hv_t)){//all data received
       datapos = -1;
-      PIN(g_amp) = TOFLOAT(from_hv.amp);
-      PIN(g_vlt) = TOFLOAT(from_hv.volt);
-      PIN(g_tmp) = TOFLOAT(from_hv.temp);
-      PIN(g_a) = TOFLOAT(from_hv.a);
-      PIN(g_b) = TOFLOAT(from_hv.b);
-      PIN(g_c) = TOFLOAT(from_hv.c);
+      PIN(g_dc_cur) = TOFLOAT(from_hv.dc_cur);
+      PIN(g_dc_volt) = TOFLOAT(from_hv.dc_volt);
+      PIN(g_hv_temp) = TOFLOAT(from_hv.hv_temp);
+#ifdef TROLLER
+      PIN(g_iu) = TOFLOAT(from_hv.a);
+      PIN(g_iv) = TOFLOAT(from_hv.b);
+      PIN(g_iw) = TOFLOAT(from_hv.c);
+#endif
    }
 }
 
@@ -164,12 +166,16 @@ int main(void)
    HAL_PIN(fb_error) = 0.0;
    HAL_PIN(cmd_d) = 0.0;
    HAL_PIN(fb_d) = 0.0;
-   HAL_PIN(amp) = 0.0;
-   HAL_PIN(vlt) = 0.0;
-   HAL_PIN(tmp) = 0.0;
-   HAL_PIN(a) = 0.0;
-   HAL_PIN(b) = 0.0;
-   HAL_PIN(c) = 0.0;
+   HAL_PIN(dc_cur) = 0.0;
+   HAL_PIN(ac_cur) = 0.0;
+   HAL_PIN(dc_volt) = 0.0;
+   HAL_PIN(hv_temp) = 0.0;
+   HAL_PIN(core_temp0) = 0.0;
+   HAL_PIN(core_temp1) = 0.0;
+   HAL_PIN(motor_temp) = 0.0;
+   HAL_PIN(iu) = 0.0;
+   HAL_PIN(iv) = 0.0;
+   HAL_PIN(iw) = 0.0;
    HAL_PIN(rt_calc_time) = 0.0;
 
    set_comp_type("conf");
@@ -177,8 +183,8 @@ int main(void)
    HAL_PIN(l) = 0.0;
    HAL_PIN(j) = 0.0;
    HAL_PIN(psi) = 0.0;
-   HAL_PIN(pole_count) = 0.0;
-   HAL_PIN(fb_pole_count) = 0.0;
+   HAL_PIN(polecount) = 0.0;
+   HAL_PIN(fb_polecount) = 0.0;
    HAL_PIN(fb_offset) = 0.0;
    HAL_PIN(pos_p) = 0.0;
    HAL_PIN(vel_p) = 1.0;
@@ -191,7 +197,8 @@ int main(void)
    HAL_PIN(max_vel) = 0.0;
    HAL_PIN(max_acc) = 0.0;
    HAL_PIN(max_force) = 0.0;
-   HAL_PIN(max_cur) = 0.0;
+   HAL_PIN(max_dc_cur) = 5.0;
+   HAL_PIN(max_ac_cur) = 0.0;
    HAL_PIN(fb_type) = 0.0;
    HAL_PIN(cmd_type) = 0.0;
    HAL_PIN(fb_rev) = 0.0;
@@ -204,23 +211,28 @@ int main(void)
    HAL_PIN(sin_gain) = 0.0001515;
    HAL_PIN(cos_gain) = 0.00015;
 
-   HAL_PIN(max_volt) = 370.0;
-   HAL_PIN(max_temp) = 100.0;
+   HAL_PIN(max_dc_volt) = 370.0;
+   HAL_PIN(max_hv_temp) = 100.0;
+   HAL_PIN(max_core_temp) = 55.0;
+   HAL_PIN(max_motor_temp) = 100.0;
    HAL_PIN(max_pos_error) = M_PI / 2.0;
-   HAL_PIN(high_volt) = 350.0;
-   HAL_PIN(low_volt) = 12.0;
-   HAL_PIN(high_temp) = 80.0;
-   HAL_PIN(fan_temp) = 40.0;
+   HAL_PIN(high_dc_volt) = 350.0;
+   HAL_PIN(low_dc_volt) = 12.0;
+   HAL_PIN(high_hv_temp) = 80.0;
+   HAL_PIN(high_motor_temp) = 80.0;
+   HAL_PIN(fan_hv_temp) = 60.0;
+   HAL_PIN(fan_core_temp) = 450.0;
+   HAL_PIN(fan_motor_temp) = 60.0;
    HAL_PIN(autophase) = 1.0;
    HAL_PIN(max_sat) = 0.2;
 
 
-   g_amp_hal_pin = map_hal_pin("net0.amp");
-   g_vlt_hal_pin = map_hal_pin("net0.vlt");
-   g_tmp_hal_pin = map_hal_pin("net0.tmp");
-   g_a_hal_pin = map_hal_pin("net0.a");
-   g_b_hal_pin = map_hal_pin("net0.b");
-   g_c_hal_pin = map_hal_pin("net0.c");
+   g_dc_cur_hal_pin = map_hal_pin("net0.dc_cur");
+   g_dc_volt_hal_pin = map_hal_pin("net0.dc_volt");
+   g_hv_temp_hal_pin = map_hal_pin("net0.hv_temp");
+   g_iu_hal_pin = map_hal_pin("net0.iu");
+   g_iv_hal_pin = map_hal_pin("net0.iv");
+   g_iw_hal_pin = map_hal_pin("net0.iw");
    rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
 
    for(int i = 0; i < hal.init_func_count; i++){
@@ -229,121 +241,22 @@ int main(void)
 
    link_pid();
 
-   //set_e240();
-   //set_bergerlahr();//pid2: ok
-   set_mitsubishi();//pid2: ok
+   //set_bergerlahr();
+   set_mitsubishi();
    //set_festo();
    //set_manutec();
-   //set_rexroth();//pid2: ok
-   //link_hal_pins("enc10.ipos", "rev1.in");
+   //set_rexroth();
    //set_sanyo();
-   //set_hal_pin("res0.reverse", 0.0);
-   //set_bosch1();//pid2: ok
-   //set_bosch4();//pid2: ok
-   //set_sanyo();//pid2: ok
+   //set_bosch1();
+   //set_bosch4();
+   //set_sanyo();
    //set_br();
 
 
+   //set_cmd_enc();
    //set_cmd_stp();
    //set_cmd_lcnc();
-
-   link_hal_pins("conf0.vel_p", "pid0.vel_p");
-
-   link_hal_pins("conf0.max_cur", "fault0.max_cur");
-   link_hal_pins("conf0.max_volt", "fault0.max_volt");
-   link_hal_pins("conf0.max_temp", "fault0.max_temp");
-   link_hal_pins("conf0.max_pos_error", "fault0.max_pos_error");
-   link_hal_pins("conf0.high_volt", "fault0.high_volt");
-   link_hal_pins("conf0.high_temp", "fault0.high_temp");
-   link_hal_pins("conf0.low_volt", "fault0.low_volt");
-   link_hal_pins("conf0.fan_temp", "fault0.fan_temp");
-   link_hal_pins("conf0.autophase", "fault0.phase_on_start");
-   link_hal_pins("conf0.max_sat", "fault0.max_sat");
-
-   set_hal_pin("fault0.reset", 0.0);
-
-   link_hal_pins("fault0.phase_start", "cauto0.start");
-   link_hal_pins("cauto0.ready", "fault0.phase_ready");
-
-   link_hal_pins("pid0.pos_error", "fault0.pos_error");
-   link_hal_pins("pid0.saturated", "fault0.sat");
-   link_hal_pins("net0.vlt", "fault0.volt");
-   link_hal_pins("net0.tmp", "fault0.temp");
-   link_hal_pins("net0.amp", "fault0.amp");
-   link_hal_pins("net0.fb_error", "fault0.fb_error");
-   link_hal_pins("net0.cmd", "fault0.cmd");
-   link_hal_pins("rev1.out", "fault0.fb");
-   link_hal_pins("fault0.start_offset", "cauto0.start_offset");
-
-   link_hal_pins("fault0.cur", "pid0.max_cur");
-   link_hal_pins("fault0.cur", "cur0.cur_max");
-
-   link_hal_pins("fault0.brake", "brake0.brake");
-   link_hal_pins("fault0.fan", "fan0.fan");
-
-   link_hal_pins("fault0.enable_out", "pwm2uart0.enable");
-   link_hal_pins("fault0.enable_pid", "pid0.enable");
-
-   link_hal_pins("net0.enable", "fault0.enable");
-
-   link_hal_pins("fault0.led_green", "led0.g");
-   link_hal_pins("fault0.led_red", "led0.r");
-
-   link_hal_pins("cauto0.i_d", "curpid0.id_cmd");
-   link_hal_pins("pid0.cur_cmd", "curpid0.iq_cmd");
-   link_hal_pins("net0.vlt", "curpid0.volt");
-   link_hal_pins("conf0.r", "curpid0.rd");
-   link_hal_pins("conf0.r", "curpid0.rq");
-   link_hal_pins("conf0.l", "curpid0.ld");
-   link_hal_pins("conf0.l", "curpid0.lq");
-   link_hal_pins("conf0.max_cur", "curpid0.max_cur");
-   link_hal_pins("conf0.cur_ff", "curpid0.ff");
-   link_hal_pins("conf0.cur_p", "curpid0.kp");
-   link_hal_pins("conf0.cur_i", "curpid0.ki");
-   link_hal_pins("conf0.cur_ind", "curpid0.kind");
-
-   link_hal_pins("curpid0.ud", "pmsm0.ud");
-   link_hal_pins("curpid0.uq", "pmsm0.uq");
-   link_hal_pins("net0.fb_d", "pmsm0.vel");
-   link_hal_pins("conf0.r", "pmsm0.r");
-   link_hal_pins("conf0.l", "pmsm0.ld");
-   link_hal_pins("conf0.l", "pmsm0.lq");
-   link_hal_pins("conf0.psi", "pmsm0.psi");
-   link_hal_pins("pmsm0.id", "curpid0.id_fb");
-   link_hal_pins("pmsm0.iq", "curpid0.iq_fb");
-   link_hal_pins("pmsm0.indd", "curpid0.indd_fb");
-   link_hal_pins("pmsm0.indq", "curpid0.indq_fb");
-
-   link_hal_pins("pmsm0.torque", "mot0.torque");
-   link_hal_pins("conf0.j", "mot0.j");
-   link_hal_pins("net0.fb", "mot0.real_pos");
-   set_hal_pin("mot0.kp", 0.01);
-   link_hal_pins("conf0.pole_count", "dq0.polecount");
-   link_hal_pins("cauto0.magpos", "dq0.pos");
-   link_hal_pins("net0.a", "dq0.u");
-   link_hal_pins("net0.b", "dq0.v");
-   link_hal_pins("net0.c", "dq0.w");
-   link_hal_pins("curpid0.ud", "idq0.ud");
-   link_hal_pins("curpid0.uq", "idq0.uq");
-   link_hal_pins("cauto0.magpos", "idq0.pos");
-   link_hal_pins("conf0.pole_count", "idq0.polecount");
-   link_hal_pins("net0.vlt", "idq0.volt");
-   link_hal_pins("idq0.a", "pwm2uart0.a");
-   link_hal_pins("idq0.b", "pwm2uart0.b");
-   link_hal_pins("conf0.pole_count", "pmsm0.polecount");
-   set_hal_pin("cauto0.pole_count", 1.0);
-
-
-
-
-   link_hal_pins("pid0.pos_error", "avg0.in");
-   set_hal_pin("avg0.ac", 0.0001);
-
-
    //set_cur_cmd();
-
-
-
 
 
    TIM_Cmd(TIM8, ENABLE);//int

@@ -1,73 +1,29 @@
 COMP(idq);
 
-HAL_PIN(ud) = 0.0;
-HAL_PIN(uq) = 0.0;
+HAL_PIN(d) = 0.0;
+HAL_PIN(q) = 0.0;
 
 HAL_PIN(pos) = 0.0;
 HAL_PIN(polecount) = 1.0;
 
-//HAL_PIN(ua) = 0.0;
-//HAL_PIN(ub) = 0.0;
-
-HAL_PIN(u) = 0.0;
-HAL_PIN(v) = 0.0;
-HAL_PIN(w) = 0.0;
-
 HAL_PIN(a) = 0.0;
 HAL_PIN(b) = 0.0;
 
-HAL_PIN(svm) = 0.0;
-
-HAL_PIN(volt) = 0.0;
-
 RT(
-  float ud = PIN(ud);
-  float uq = PIN(uq);
+  float d = PIN(d);
+  float q = PIN(q);
 
   float p = (int)MAX(PIN(polecount), 1.0);
   float pos = PIN(pos) * p;
 
-  float volt = MAX(PIN(volt), 0.1);
-
   float c = cosf(pos);
   float s = sinf(pos);
-  float s3 = sqrtf(3.0);
 
-  float ua = ud * c - uq * s; // inverse park
-  float ub = ud * s + uq * c;
+  float a = d * c - q * s; // inverse park
+  float b = d * s + q * c;
 
-  float u = ua; // inverse clarke
-  float v = - ua / 2.0 + ub / 2.0 * s3;
-  float w = - ua / 2.0 - ub / 2.0 * s3;
-
-
-
-  float tmp = 0.0;
-  switch((int)(PIN(svm))){
-    case 1: // flat bottom
-      tmp = MIN(MIN(u, v), w);
-
-      u -= tmp;
-      v -= tmp;
-      w -= tmp;
-    break;
-
-    case 2: // normal svm
-    break;
-
-    default: // centered
-      u += volt / 2.0;
-      v += volt / 2.0;
-      w += volt / 2.0;
-  }
-
-
-  PIN(u) = u;
-  PIN(v) = v;
-  PIN(w) = w;
-  
-  PIN(a) = ua;
-  PIN(b) = ub;
+  PIN(a) = a;
+  PIN(b) = b;
 );
 
 ENDCOMP;

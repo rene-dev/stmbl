@@ -3,7 +3,7 @@ COMP(cauto);
 HAL_PIN(i_q) = 0.0;
 HAL_PIN(i_d) = 0.0;
 
-HAL_PIN(magpos) = 0.0;
+HAL_PIN(pos) = 0.0;
 
 HAL_PIN(start) = 0.0;
 HAL_PIN(ready) = 0.0;
@@ -15,72 +15,69 @@ HAL_PIN(moffset) = 0.0;
 HAL_PIN(fb_in) = 0.0;
 HAL_PIN(fb_out) = 0.0;
 
-
-HAL_PIN(pole_count) = 3.0;
-
 HAL_PIN(cur) = 1.0;
 HAL_PIN(time) = 0.1;
 
 
 MEM(float fbi) = 0.0;
 MEM(float fb) = 0.0;
-MEM(float mpos) = 0.0;
+MEM(float pos) = 0.0;
 MEM(float id) = 0.0;
 MEM(float iq) = 0.0;
 MEM(float moffset) = 0.0;
 
 RT(
-  fbi = PIN(fb_in);
-  fb = minus(fbi, PIN(start_offset));
+   fbi = PIN(fb_in);
+   fb = minus(fbi, PIN(start_offset));
 
-  HT(
-    moffset = PIN(mag_offset);
-    GOTO(0);
-    STATE(0){
-      iq = 0.0;
-      id = 0.0;
-      mpos = mod(minus(fbi, moffset) * PIN(pole_count));
-      if(PIN(start) > 0.0){
-        GOTO(1);
-        PIN(ready) = 0.0;
-      }else{
+   HT(
+      moffset = PIN(mag_offset);
+      GOTO(0);
+      STATE(0){
+         iq = 0.0;
+         id = 0.0;
+         pos = minus(fbi, moffset);
+         if(PIN(start) > 0.0){
+            GOTO(1);
+            PIN(ready) = 0.0;
+         }else{
+         }
       }
-    }
-    STATE(1){
-      PIN(ready) = 0.0;
-      id = PIN(cur);
-      iq = 0.0;
-      mpos = 0.0;
-      fb = 0.0;
-      SLEEP(PIN(time));
-      GOTO(2);
-    }
-    STATE(2){
-      PIN(ready) = 0.0;
-      moffset = fbi;
-      id = 0.0;
-      iq = 0.0;
-      SLEEP(PIN(time));
-      GOTO(3);
-    }
-    STATE(3){
-      PIN(ready) = 1.0;
-      iq = 0.0;
-      id = 0.0;
-      mpos = mod(minus(fbi, moffset) * PIN(pole_count));
-      if(PIN(start) == 0.0){
-        PIN(ready) = 0.0;
-        GOTO(0);
+      STATE(1){
+         PIN(ready) = 0.0;
+         id = PIN(cur);
+         iq = 0.0;
+         pos = 0.0;
+         fb = 0.0;
+         SLEEP(PIN(time));
+         GOTO(2);
       }
-    }
-  );
+      STATE(2){
+         PIN(ready) = 0.0;
+         moffset = fbi;
+         id = 0.0;
+         iq = 0.0;
+         SLEEP(PIN(time));
+         GOTO(3);
+      }
+      STATE(3){
+         PIN(ready) = 1.0;
+         iq = 0.0;
+         id = 0.0;
+         pos = minus(fbi, moffset);
+         if(PIN(start) == 0.0){
+            PIN(ready) = 0.0;
+            GOTO(0);
+         }
+      }
+   );
 
 
-  PIN(moffset) = moffset;
-  PIN(i_d) = id;
-  PIN(i_q) = iq;
-  PIN(magpos) = mpos;
-  PIN(fb_out) = fb;
+   PIN(moffset) = moffset;
+   PIN(i_d) = id;
+   PIN(i_q) = iq;
+   PIN(pos) = pos;
+   PIN(fb_out) = fb;
 );
 
 

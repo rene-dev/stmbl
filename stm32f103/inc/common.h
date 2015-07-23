@@ -12,12 +12,14 @@
 
 //data from f1 to f4
 typedef struct{
-   int16_t amp;
-   int16_t volt;
-   int16_t temp;
+   int16_t dc_cur;
+   int16_t dc_volt;
+   int16_t hv_temp;
+#ifdef TROLLER
    int16_t a;
    int16_t b;
    int16_t c;
+#endif
 } from_hv_t;
 
 //data from f4 to f1

@@ -35,7 +35,6 @@ typedef char HPNAME[MAX_HPNAME];
 struct hal_pin{
   HPNAME name;
   volatile float value;
-  void (*read_callback)();
   struct hal_pin* source;
 };
 
@@ -87,8 +86,6 @@ struct hal_pin* find_hal_pin(HPNAME name);
 int link_hal_pins(HPNAME source, HPNAME sink);
 
 float read_float(char* buf);
-
-void call(void (*func)());
 
 int addf_init(void (*init)());
 int addf_rt(void (*rt)(float period));

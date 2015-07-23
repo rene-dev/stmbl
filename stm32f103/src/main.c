@@ -224,7 +224,7 @@ void setup_adc(){
 	//PINA6 IN6 iu
 	//PINA7 IN7 iv
 	//PINB0 IN8 iw
-   
+
 	//PINA5 IN5 uu
 	//PINA4 IN4 uv
 	//PINA1 IN1 uw
@@ -396,12 +396,12 @@ int main(void)
          if(temp_raw < ARES && temp_raw > 0){
             temp = TEMP(temp_raw);
          }
-         from_hv.volt = TOFIXED(volt);
-         from_hv.amp =  TOFIXED(amp);
-         from_hv.temp = TOFIXED(temp);
+         from_hv.dc_volt = TOFIXED(volt);
+         from_hv.dc_cur =  TOFIXED(amp);
+         from_hv.hv_temp = TOFIXED(temp);
 #ifdef TROLLER
-         from_hv.amp =  TOFIXED(0);
-         from_hv.temp = TOFIXED(0);
+         from_hv.dc_cur =  TOFIXED(0);
+         from_hv.hv_temp = TOFIXED(0);
          from_hv.a = TOFIXED(AMP(ADCConvertedValue[1]));
          from_hv.b = TOFIXED(AMP(ADCConvertedValue[2]));
          from_hv.c = TOFIXED(AMP(ADCConvertedValue[3]));

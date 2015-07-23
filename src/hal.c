@@ -48,7 +48,6 @@ void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
   strncat(pin->name, name, MAX_HPNAME);
   pin->value = value;
   pin->source = pin;
-  pin->read_callback = 0;
   register_hal_pin(pin);
 }
 
@@ -79,6 +78,7 @@ int set_hal_pin(HPNAME name, float value){
       return(1);
     }
   }
+  printf_("set not possible %s = %f\n", name, value);
   return(0);
 }
 
@@ -97,6 +97,7 @@ float get_hal_pin(HPNAME name){
       return(hal.hal_pins[i]->source->source->value);
     }
   }
+  printf_("get not possible %s\n", name);
   return(0.0);
 }
 
@@ -109,7 +110,6 @@ struct hal_pin map_hal_pin(HPNAME name){
 	struct hal_pin tmp;
 //	tmp.name = "";
 	tmp.value = 0.0;
-	tmp.read_callback = 0;
 	tmp.source = &tmp;
     return(tmp);
 }
@@ -139,6 +139,9 @@ int link_hal_pins(HPNAME source, HPNAME sink){
   s = find_hal_pin(sink);
 
   if(d != 0 && s != 0){
+   //   if(s->source != s){
+   //      printf_("relink %s:%i -> %s:%i to %s:%i -> %s:%i\n", s->source->name, s->source, sink, s, source, d, sink, s);
+   //   }
     s->value = s->source->source->value;
     s->source = d;
 	return(1);
@@ -191,13 +194,6 @@ int set_comp_type(HPNAME name){
   printf_("set comp type: too many comps types: %i\n", hal.comp_type_count);
   return(-1);
 }
-
-void call(void (*func)()){
-  if(func){
-    func();
-  }
-}
-
 
 int addf_init(void (*init)()){
   if(init != 0 && hal.init_func_count < MAX_COMP_FUNCS){

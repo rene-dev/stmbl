@@ -52,170 +52,170 @@ MEM(unsigned int write_pos) = 0;
 MEM(unsigned int send_counter) = 0;
 
 RT(
-  if(send_counter++ >= PIN(send_step) - 1){
-    w0[write_pos] = PIN(wave0);
-    w1[write_pos] = PIN(wave1);
-    w2[write_pos] = PIN(wave2);
-    w3[write_pos] = PIN(wave3);
-    w4[write_pos] = PIN(wave4);
-    w5[write_pos] = PIN(wave5);
-    w6[write_pos] = PIN(wave6);
-    w7[write_pos] = PIN(wave7);
+   if(send_counter++ >= PIN(send_step) - 1){
+      w0[write_pos] = PIN(wave0);
+      w1[write_pos] = PIN(wave1);
+      w2[write_pos] = PIN(wave2);
+      w3[write_pos] = PIN(wave3);
+      w4[write_pos] = PIN(wave4);
+      w5[write_pos] = PIN(wave5);
+      w6[write_pos] = PIN(wave6);
+      w7[write_pos] = PIN(wave7);
 
-    write_pos++;
-    write_pos %= TERM_BUF_SIZE;
-    send_counter = 0;
-  }
+      write_pos++;
+      write_pos %= TERM_BUF_SIZE;
+      send_counter = 0;
+   }
 );
 
 NRT(
 
-void bootloader(){
-	*((unsigned long *)0x2001C000) = 0xDEADBEEF;
-	NVIC_SystemReset();
-}
+   void bootloader(){
+      *((unsigned long *)0x2001C000) = 0xDEADBEEF;
+      NVIC_SystemReset();
+   }
 
-void listhal(){
-	for(int i = 0; i < hal.hal_pin_count; i++){
-		printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
-		Wait(1);
-	}
-}
+   void listhal(){
+      for(int i = 0; i < hal.hal_pin_count; i++){
+         printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
+         Wait(1);
+      }
+   }
 
-void save(){
-	typedef union{
-		float f;
-		uint16_t byte[2];
-	}param_t;
-	param_t param;
-	for(int i = 0; i < hal.hal_pin_count; i++){
-		char name[7];
-		strncpy(name,hal.hal_pins[i]->name,5);
-		name[6] =  '\0';
-		if(!strcmp(name, "conf0")){
-			param.f = hal.hal_pins[i]->source->source->value;
-			printf_("param:\n");
-			printf_("%i,%i\n",param.byte[0],param.byte[1]);
-			//address+=2;
-			//printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
-			Wait(1);
-		}
-	}
-}
+   void save(){
+      typedef union{
+         float f;
+         uint16_t byte[2];
+      }param_t;
+      param_t param;
+      for(int i = 0; i < hal.hal_pin_count; i++){
+         char name[7];
+         strncpy(name,hal.hal_pins[i]->name,5);
+         name[6] =  '\0';
+         if(!strcmp(name, "conf0")){
+            param.f = hal.hal_pins[i]->source->source->value;
+            printf_("param:\n");
+            printf_("%i,%i\n",param.byte[0],param.byte[1]);
+            //address+=2;
+            //printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
+            Wait(1);
+         }
+      }
+   }
 
-void cmd(char * s){
-	if(!strcmp(s, "bootloader")){
-		bootloader();
-	}
-	else if(!strcmp(s, "list")){
-		listhal();
-	}
-  else if(!strcmp(s, "?")){
-		listhal();
-	}
-	else if(!strcmp(s, "save")){
-		save();
-	}
-	else{
-		printf_("not found: %s\n",s);
-	}
-}
+   void cmd(char * s){
+      if(!strcmp(s, "bootloader")){
+         bootloader();
+      }
+      else if(!strcmp(s, "list")){
+         listhal();
+      }
+      else if(!strcmp(s, "?")){
+         listhal();
+      }
+      else if(!strcmp(s, "save")){
+         save();
+      }
+      else{
+         printf_("not found: %s\n",s);
+      }
+   }
 
-  int e = 0;
-  unsigned char buf[8 + 2];
+   int e = 0;
+   unsigned char buf[8 + 2];
 
-  buf[0] = 255;
-  buf[8 + 1] = 0;
+   buf[0] = 255;
+   buf[8 + 1] = 0;
 
-  float o0 = PIN(offset0);
-  float o1 = PIN(offset1);
-  float o2 = PIN(offset2);
-  float o3 = PIN(offset3);
-  float o4 = PIN(offset4);
-  float o5 = PIN(offset5);
-  float o6 = PIN(offset6);
-  float o7 = PIN(offset7);
-  float g0 = PIN(gain0);
-  float g1 = PIN(gain1);
-  float g2 = PIN(gain2);
-  float g3 = PIN(gain3);
-  float g4 = PIN(gain4);
-  float g5 = PIN(gain5);
-  float g6 = PIN(gain6);
-  float g7 = PIN(gain7);
+   float o0 = PIN(offset0);
+   float o1 = PIN(offset1);
+   float o2 = PIN(offset2);
+   float o3 = PIN(offset3);
+   float o4 = PIN(offset4);
+   float o5 = PIN(offset5);
+   float o6 = PIN(offset6);
+   float o7 = PIN(offset7);
+   float g0 = PIN(gain0);
+   float g1 = PIN(gain1);
+   float g2 = PIN(gain2);
+   float g3 = PIN(gain3);
+   float g4 = PIN(gain4);
+   float g5 = PIN(gain5);
+   float g6 = PIN(gain6);
+   float g7 = PIN(gain7);
 
-  unsigned int wp = write_pos;
-  unsigned int bc = 0;
+   unsigned int wp = write_pos;
+   unsigned int bc = 0;
 
-  while(read_pos != wp){
-    bc++;
-    e = (w0[read_pos] + o0) * g0 + 128;
-    buf[1] = CLAMP(e,1,254);
+   while(read_pos != wp){
+      bc++;
+      e = (w0[read_pos] + o0) * g0 + 128;
+      buf[1] = CLAMP(e,1,254);
 
-    e = (w1[read_pos] + o1) * g1 + 128;
-    buf[2] = CLAMP(e,1,254);
+      e = (w1[read_pos] + o1) * g1 + 128;
+      buf[2] = CLAMP(e,1,254);
 
-    e = (w2[read_pos] + o2) * g2 + 128;
-    buf[3] = CLAMP(e,1,254);
+      e = (w2[read_pos] + o2) * g2 + 128;
+      buf[3] = CLAMP(e,1,254);
 
-    e = (w3[read_pos] + o3) * g3 + 128;
-    buf[4] = CLAMP(e,1,254);
+      e = (w3[read_pos] + o3) * g3 + 128;
+      buf[4] = CLAMP(e,1,254);
 
-    e = (w4[read_pos] + o4) * g4 + 128;
-    buf[5] = CLAMP(e,1,254);
+      e = (w4[read_pos] + o4) * g4 + 128;
+      buf[5] = CLAMP(e,1,254);
 
-    e = (w5[read_pos] + o5) * g5 + 128;
-    buf[6] = CLAMP(e,1,254);
+      e = (w5[read_pos] + o5) * g5 + 128;
+      buf[6] = CLAMP(e,1,254);
 
-    e = (w6[read_pos] + o6) * g6 + 128;
-    buf[7] = CLAMP(e,1,254);
+      e = (w6[read_pos] + o6) * g6 + 128;
+      buf[7] = CLAMP(e,1,254);
 
-    e = (w7[read_pos] + o7) * g7 + 128;
-    buf[8] = CLAMP(e,1,254);
+      e = (w7[read_pos] + o7) * g7 + 128;
+      buf[8] = CLAMP(e,1,254);
 
-    read_pos++;
-    read_pos %= TERM_BUF_SIZE;
+      read_pos++;
+      read_pos %= TERM_BUF_SIZE;
 
-  buf[8 + 1] = 0;
+      buf[8 + 1] = 0;
 
-    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-      UB_USB_CDC_SendString((char*)buf, NONE);
-    }
-  }
+      if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
+         UB_USB_CDC_SendString((char*)buf, NONE);
+      }
+   }
 
-  PIN(buf_use) = bc;
+   PIN(buf_use) = bc;
 
-    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED && systime >= 1000){
+   if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED && systime >= 1000){
 
-		char source[APP_TX_BUF_SIZE];
-		char sink[APP_TX_BUF_SIZE];
+      char source[APP_TX_BUF_SIZE];
+      char sink[APP_TX_BUF_SIZE];
 
-		int i = -1;
-		char rx_buf[APP_TX_BUF_SIZE];
-		if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY){
-			i = sscanf_(rx_buf, "%N = %N",sink ,source);
-		}
+      int i = -1;
+      char rx_buf[APP_TX_BUF_SIZE];
+      if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY){
+         i = sscanf_(rx_buf, "%N = %N",sink ,source);
+      }
       if(i == 2){ // read hal pin
-        if(is_hal_pin(sink)){
-          printf_("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
-        }else{
-			  cmd(rx_buf);
-        }
+         if(is_hal_pin(sink)){
+            printf_("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
+         }else{
+            cmd(rx_buf);
+         }
       }
       else if(i == 5){// link hal pin
-        if(is_hal_pin(source) && is_hal_pin(sink)){
-          link_hal_pins(source, sink);
-          printf_("OK %s <= %s = %f\n", sink, source, get_hal_pin(sink));
-        }
-        else if(is_hal_pin(sink)){// set hal pin
-          set_hal_pin(sink, read_float(source));
-          printf_("OK %s = %f\n", sink, get_hal_pin(sink));
-        }
-        else{// hal pin not found
-          printf_("not found: %s\n", sink);
-        }
+         if(is_hal_pin(source) && is_hal_pin(sink)){
+            link_hal_pins(source, sink);
+            printf_("OK %s <= %s = %f\n", sink, source, get_hal_pin(sink));
+         }
+         else if(is_hal_pin(sink)){// set hal pin
+            set_hal_pin(sink, read_float(source));
+            printf_("OK %s = %f\n", sink, get_hal_pin(sink));
+         }
+         else{// hal pin not found
+            printf_("not found: %s\n", sink);
+         }
       }
-    }
+   }
 
 );
 
