@@ -385,28 +385,50 @@ void mpFX::Plot(wxDC & dc, mpWindow & w)
       wxCoord maxYpx  = m_drawOutsideMargins ? w.GetScrY() : w.GetScrY() - w.GetMarginBottom();
 
       wxCoord iy = 0;
-      if (m_pen.GetWidth() <= 1)
-      {
-         for (wxCoord i = startPx; i < endPx; ++i)
+
+      startPx = fmax(startPx, w.x2p(GetMinX()) + 1);
+      endPx = fmin(endPx, w.x2p(GetMaxX()));
+
+      if (!m_continuous){
+         if (m_pen.GetWidth() <= 1)
          {
-            iy = w.y2p( GetY(w.p2x(i)));
-            // Draw the point only if you can draw outside margins or if the point is inside margins
-            if (m_drawOutsideMargins || ((iy >= minYpx) && (iy <= maxYpx)))
-            dc.DrawPoint(i, iy );// (wxCoord) ((w.GetPosY() - GetY( (double)i / w.GetScaleX() + w.GetPosX()) ) * w.GetScaleY()));
+            for (wxCoord i = startPx; i < endPx; ++i)
+            {
+               iy = w.y2p( GetY(w.p2x(i)));
+               // Draw the point only if you can draw outside margins or if the point is inside margins
+               if (m_drawOutsideMargins || ((iy >= minYpx) && (iy <= maxYpx)))
+               dc.DrawPoint(i, iy );// (wxCoord) ((w.GetPosY() - GetY( (double)i / w.GetScaleX() + w.GetPosX()) ) * w.GetScaleY()));
+            }
+         }
+         else
+         {
+            for (wxCoord i = startPx; i < endPx; ++i)
+            {
+               iy = w.y2p( GetY(w.p2x(i)));
+               // Draw the point only if you can draw outside margins or if the point is inside margins
+               if (m_drawOutsideMargins || ((iy >= minYpx) && (iy <= maxYpx)))
+               dc.DrawLine( i, iy, i, iy);
+               //             wxCoord c = w.y2p( GetY(w.p2x(i)) ); //(wxCoord) ((w.GetPosY() - GetY( (double)i / w.GetScaleX() + w.GetPosX()) ) * w.GetScaleY());
+
+            }
          }
       }
-      else
-      {
-         for (wxCoord i = startPx; i < endPx; ++i)
+      else{
+         wxCoord iy2 = 0;
+         for (wxCoord i = startPx; i < endPx - 1; ++i)
          {
             iy = w.y2p( GetY(w.p2x(i)));
+            iy2 = w.y2p( GetY(w.p2x(i + 1)));
             // Draw the point only if you can draw outside margins or if the point is inside margins
-            if (m_drawOutsideMargins || ((iy >= minYpx) && (iy <= maxYpx)))
-            dc.DrawLine( i, iy, i, iy);
+            if (m_drawOutsideMargins || ((iy >= minYpx) && (iy <= maxYpx) && (iy2 >= minYpx) && (iy2 <= maxYpx))){
+               dc.DrawLine( i, iy, i + 1, iy2);
+            }
             //             wxCoord c = w.y2p( GetY(w.p2x(i)) ); //(wxCoord) ((w.GetPosY() - GetY( (double)i / w.GetScaleX() + w.GetPosX()) ) * w.GetScaleY());
 
          }
       }
+
+
 
       if (!m_name.IsEmpty() && m_showName)
       {
@@ -453,6 +475,9 @@ void mpFY::Plot(wxDC & dc, mpWindow & w)
       wxCoord endPx   = m_drawOutsideMargins ? w.GetScrX() : w.GetScrX() - w.GetMarginRight();
       wxCoord minYpx  = m_drawOutsideMargins ? 0 : w.GetMarginTop();
       wxCoord maxYpx  = m_drawOutsideMargins ? w.GetScrY() : w.GetScrY() - w.GetMarginBottom();
+
+      minYpx = fmax(minYpx, w.y2p(GetMinY()) + 1);
+      maxYpx = fmin(maxYpx, w.y2p(GetMaxY()));
 
       if (m_pen.GetWidth() <= 1)
       {

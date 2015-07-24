@@ -16,23 +16,26 @@
 #include <math.h>
 // #include <time.h>
 
-class mpScopeWave : public mpFXYVector{
+class mpScopeWave : public mpFX{
 private:
    enum{
       FLOATING,
       ROLLING
    } mode;
 
+   std::vector<double> m_ys;
+   double m_minY, m_maxY;
+
    float sampleFreq;
 
    float sampleTime;
 
-   int l;
+   int buffer_pos; // current write pos in data buffer
+   int start_pos; // current start pos in data buffer
 
-   int rolling_pos;
+   unsigned int min_index;
+   unsigned int max_index;
 
-   int min_index;
-   int max_index;
 
    void updateMinMaxY(){
       for(int i = 0; i < m_ys.size(); i++){
@@ -47,124 +50,137 @@ private:
       }
    }
 
-   void createTimeVector(){
-      m_xs.clear();
-
-      for(int i = 0; i < l; i++){
-         m_xs.push_back(-sampleTime + i * sampleTime / l);
-      }
-      m_minX = -sampleTime;
-      m_maxX = 0.0;
-
-      if(m_ys.size() > m_xs.size()){
-         min_index -= m_ys.size() - m_xs.size();
-         max_index -= m_ys.size() - m_xs.size();
-         m_ys.erase(m_ys.begin(), m_ys.begin() + (m_ys.size() - m_xs.size()));
-
-         if(min_index < 0 || max_index < 0){
-            updateMinMaxY();
-         }
-      }
-      else{
-         int j = m_xs.size() - m_ys.size();
-         for(int i = 0; i < j; i++){
-            m_ys.push_back((m_maxY + m_minY) / 2.0);
-         }
-      }
-   }
-
-protected:
-   bool GetNextXY(double & x, double & y){
-      return(false);
-   }
+   // void createTimeVector(){
+   //    m_xs.clear();
+   //
+   //    for(int i = 0; i < l; i++){
+   //       m_xs.push_back(-sampleTime + i * sampleTime / l);
+   //    }
+   //    m_minX = -sampleTime;
+   //    m_maxX = 0.0;
+   //
+   //    if(m_ys.size() > m_xs.size()){
+   //       min_index -= m_ys.size() - m_xs.size();
+   //       max_index -= m_ys.size() - m_xs.size();
+   //       m_ys.erase(m_ys.begin(), m_ys.begin() + (m_ys.size() - m_xs.size()));
+   //
+   //       if(min_index < 0 || max_index < 0){
+   //          updateMinMaxY();
+   //       }
+   //    }
+   //    else{
+   //       int j = m_xs.size() - m_ys.size();
+   //       for(int i = 0; i < j; i++){
+   //          m_ys.push_back((m_maxY + m_minY) / 2.0);
+   //       }
+   //    }
+   // }
 
 public:
-   mpScopeWave(wxString name = wxEmptyString, int flags = mpALIGN_NE) : mpFXYVector(name, flags){
+   mpScopeWave(wxString name = wxEmptyString, int flags = mpALIGN_NE) : mpFX(name, flags){
       sampleFreq = 1.0;
       sampleTime = 1.0;
-      l = 1;
       mode = FLOATING;
-      rolling_pos = 0;
-      m_xs.push_back(0.0);
+      buffer_pos = 0;
+      start_pos = 0;
       m_ys.push_back(0.0);
-      createTimeVector();
+      //createTimeVector();
+   }
+
+   double GetY(double  x){
+      if(x >= -sampleTime && x <= 0.0){
+         return(m_ys[(int)((x + sampleTime) * sampleFreq + start_pos) % m_ys.size()]);
+      }
+      else{
+         return(0.0);
+      }
+   }
+
+   double GetMinX(){
+      return(-sampleTime);
+   }
+
+   double GetMaxX(){
+      return(0.0);
    }
 
    void AddData(float y){
-      switch(mode){
-         case ROLLING:
-         m_ys[rolling_pos] = y;
-         if(rolling_pos == min_index || rolling_pos == max_index){
-            updateMinMaxY();
-         }
-         else{
-            if(y < m_minY){
-               m_minY = y;
-               min_index = rolling_pos;
-            }
-            if(y > m_maxY){
-               m_maxY = y;
-               max_index = rolling_pos;
-            }
-         }
+      buffer_pos++;
+      buffer_pos %= m_ys.size();
 
-         rolling_pos++;
-         rolling_pos %= l;
-         break;
+      if(mode == FLOATING){
+         start_pos = buffer_pos;
+      }
 
-         case FLOATING:
-         m_ys.push_back(y);
-         m_ys.erase(m_ys.begin());
+      m_ys[buffer_pos] = y;
 
-         min_index--;
-         max_index--;
-         if(min_index < 0 || max_index < 0){
-            updateMinMaxY();
+      if(buffer_pos == min_index || buffer_pos == max_index){
+         updateMinMaxY();
+      }
+      else{
+         if(y < m_minY){
+            m_minY = y;
+            min_index = buffer_pos;
          }
-         else{
-            if(y < m_minY){
-               m_minY = y;
-               min_index = m_ys.size() - 1;
-            }
-            if(y > m_maxY){
-               m_maxY = y;
-               max_index = m_ys.size() - 1;
-            }
+         if(y > m_maxY){
+            m_maxY = y;
+            max_index = buffer_pos;
          }
-         break;
       }
    }
 
    void setFloating(){
       mode = FLOATING;
-      rolling_pos = m_ys.size() - 1;
    }
    void setRolling(){
       mode = ROLLING;
    }
 
    void setSampleFreq(float f){
-      float rolling_time = 0.0;
-      if(sampleFreq > 0.0){
-         rolling_time = (l - rolling_pos) / sampleFreq;
-      }
       sampleFreq = fmax(f, 0.0);
-      int t = fmax(sampleTime * sampleFreq, 1.0);
-      if(l != t){
-         l = t;
-         rolling_pos = fmax(l - rolling_time * sampleFreq - 1, 0);
-         createTimeVector();
-         std::cout << "buffer size " << l << std::endl;
+      int l = fmax(sampleTime * sampleFreq, 1.0);
+      std::cout << "buffer size: " << m_ys.size() << " -> " << l << std::endl;
+      if(m_ys.size() > l){
+         min_index -= m_ys.size() - l;
+         max_index -= m_ys.size() - l;
+         m_ys.erase(m_ys.begin(), m_ys.begin() + (m_ys.size() - l));
+
+         buffer_pos = fmin(buffer_pos, m_ys.size());
+         start_pos = fmin(start_pos, m_ys.size());
+
+         if(min_index < 0 || max_index < 0){
+            updateMinMaxY();
+         }
+      }
+      else if(m_ys.size() < l){
+         int j = l - m_ys.size();
+         for(int i = 0; i < j; i++){
+            m_ys.push_back((m_maxY + m_minY) / 2.0);
+         }
       }
    }
+
    void setSampleTime(float t){
       sampleTime = fmax(t, 0.0);
-      int f = fmax(sampleTime * sampleFreq, 1.0);
-      if(l != f){
-         rolling_pos = fmax(f - (l - rolling_pos), 0);
-         l = f;
-         createTimeVector();
-         std::cout << "buffer size " << l << std::endl;
+      int l = fmax(sampleTime * sampleFreq, 1.0);
+      std::cout << "buffer size: " << m_ys.size() << " -> " << l << std::endl;
+      if(m_ys.size() > l){
+         min_index -= m_ys.size() - l;
+         max_index -= m_ys.size() - l;
+         m_ys.erase(m_ys.begin(), m_ys.begin() + (m_ys.size() - l));
+
+         buffer_pos = fmin(buffer_pos, m_ys.size());
+         start_pos = fmin(start_pos, m_ys.size());
+
+         if(min_index < 0 || max_index < 0){
+            updateMinMaxY();
+         }
+      }
+      else if(m_ys.size() < l){
+         int j = l - m_ys.size();
+         for(int i = 0; i < j; i++){
+            m_ys.push_back((m_maxY + m_minY) / 2.0);
+         }
       }
    }
 };
@@ -273,8 +289,8 @@ wxDefaultPosition, wxSize(500,500) )
 
    wave0 = new mpScopeWave(wxT("wave0"));
    wave0->SetPen( wxPen(*wxBLACK, 1, wxSOLID));
-   wave0->setSampleTime(1.0);
-   wave0->setFloating();
+   wave0->setSampleTime(10.0);
+   wave0->setRolling();
    wave0->SetContinuity(true);
 
    m_plot->AddLayer(wave0);
@@ -306,6 +322,7 @@ wxDefaultPosition, wxSize(500,500) )
    m_Timer = new wxTimer(this,TIMER_ID);
    m_Timer->Start( 20 );
    wave0->setSampleFreq(100/0.02);
+   wave0->setSampleFreq(100/0.02);
 }
 
 void MyFrame::OnQuit( wxCommandEvent &WXUNUSED(event) )
@@ -328,7 +345,7 @@ void MyFrame::OnTimer(wxTimerEvent& event)
    static float time = 0.0;
    for(int i = 0; i < 100; i++){
       wave0->AddData(sin(time));
-      time += m_Timer->GetInterval()/1000.0/100.0*10.0;
+      time += m_Timer->GetInterval()/1000.0/100.0*1.0;
    }
    m_plot->UpdateAll();
 }

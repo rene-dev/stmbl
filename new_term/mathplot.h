@@ -531,6 +531,18 @@ public:
    */
    virtual double GetY( double x ) = 0;
 
+   /** Get min argument.
+   Override this function in your implementation.
+   @return min argument
+   */
+   virtual double GetMinX() = 0;
+
+   /** Get max argument.
+   Override this function in your implementation.
+   @return max argument
+   */
+   virtual double GetMaxX() = 0;
+
    /** Layer plot handler.
    This implementation will plot the function in the visible area and
    put a label according to the aligment specified.
@@ -562,6 +574,18 @@ public:
    @return Function value
    */
    virtual double GetX( double y ) = 0;
+
+   /** Get min argument.
+   Override this function in your implementation.
+   @return min argument
+   */
+   virtual double GetMinY() = 0;
+
+   /** Get max argument.
+   Override this function in your implementation.
+   @return max argument
+   */
+   virtual double GetMaxY() = 0;
 
    /** Layer plot handler.
    This implementation will plot the function in the visible area and
