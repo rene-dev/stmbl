@@ -606,6 +606,30 @@ void set_br(){
    set_hal_pin("conf0.cur_lp", 0.0);
    set_fb_res();
 }
+
+void set_8MSA3M(){                      //B&R 8MSA3M
+  set_hal_pin("conf0.pole_count", 3.0);
+  set_hal_pin("conf0.max_vel", RPM(3000));
+  set_hal_pin("conf0.max_acc", RPM(3000) / 0.01);
+  set_hal_pin("conf0.max_force", 5.2);
+  set_hal_pin("conf0.max_cur", 4.3);
+
+  set_hal_pin("conf0.fb_type", RES1);
+  set_hal_pin("conf0.fb_rev", 1.0);
+  set_hal_pin("conf0.fb_res", 16384.0);
+  set_hal_pin("conf0.r", 17.25);           //Datasheet Rp-p: 34.5
+  set_hal_pin("conf0.l", 0.031);           //Datasheet Lp-p: 62
+  set_hal_pin("conf0.j", KGCM2(0.62));     //Datasheet
+  set_hal_pin("conf0.km", 0.6);
+  set_hal_pin("conf0.psi", 1.29);          //Datasheet: 1.29 Measure: 1.39
+
+  set_hal_pin("conf0.pos_p", 80.0);
+  set_hal_pin("conf0.acc_p", 0.1);
+  set_hal_pin("conf0.acc_pi", 60.0);
+  set_hal_pin("conf0.cur_lp", 0.0);
+  set_fb_res();
+}
+
 //linear 25 ohm
 //e250 15
 void set_e240(){ // TODO

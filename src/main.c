@@ -123,10 +123,10 @@ int main(void)
    #include "comps/adc.comp"
    #include "comps/fault.comp"
    #include "comps/enc_cmd.comp"
-   #include "comps/enc_fb.comp"
+   //#include "comps/enc_fb.comp"
 
    //#include "comps/en.comp"
-   //#include "comps/res.comp"
+   #include "comps/res.comp"
    #include "comps/encm.comp"
    #include "comps/sim.comp"
    #include "comps/stp.comp"
@@ -242,7 +242,7 @@ int main(void)
    link_pid();
 
    //set_bergerlahr();
-   set_mitsubishi();
+   //set_mitsubishi();
    //set_festo();
    //set_manutec();
    //set_rexroth();
@@ -251,7 +251,7 @@ int main(void)
    //set_bosch4();
    //set_sanyo();
    //set_br();
-
+   set_8MSA3M();
 
    //set_cmd_enc();
    //set_cmd_stp();

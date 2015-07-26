@@ -27,6 +27,7 @@ void set_sankyo();
 void set_sanyo();
 void set_mitsubishi();
 void set_br();
+void set_8MSA3M();
 void set_e240();
 
 void set_cmd_enc();
