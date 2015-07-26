@@ -188,7 +188,7 @@ RT(
 
 
    // current
-   float max_dc_cur = MIN(PIN(max_dc_cur), 0.1);
+   float max_dc_cur = MAX(PIN(max_dc_cur), 0.1);
    float dc_cur = PIN(dc_cur);
    float ac_cur = PIN(ac_cur);
 
