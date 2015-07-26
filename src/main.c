@@ -127,7 +127,7 @@ int main(void)
 
    //#include "comps/en.comp"
    #include "comps/res.comp"
-   #include "comps/encm.comp"
+   //#include "comps/encm.comp"
    #include "comps/sim.comp"
    #include "comps/stp.comp"
 

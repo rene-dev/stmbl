@@ -608,11 +608,11 @@ void set_br(){
 }
 
 void set_8MSA3M(){                      //B&R 8MSA3M
-  set_hal_pin("conf0.pole_count", 3.0);
+  set_hal_pin("conf0.polecount", 3.0);
   set_hal_pin("conf0.max_vel", RPM(3000));
   set_hal_pin("conf0.max_acc", RPM(3000) / 0.01);
   set_hal_pin("conf0.max_force", 5.2);
-  set_hal_pin("conf0.max_cur", 4.3);
+  set_hal_pin("conf0.max_ac_cur", 4.3);
 
   set_hal_pin("conf0.fb_type", RES1);
   set_hal_pin("conf0.fb_rev", 1.0);
@@ -626,7 +626,8 @@ void set_8MSA3M(){                      //B&R 8MSA3M
   set_hal_pin("conf0.pos_p", 80.0);
   set_hal_pin("conf0.acc_p", 0.1);
   set_hal_pin("conf0.acc_pi", 60.0);
-  set_hal_pin("conf0.cur_lp", 0.0);
+  set_hal_pin("conf0.cur_p", 0.5);
+  set_hal_pin("conf0.cur_i", 0.001);
   set_fb_res();
 }
 
