@@ -12,6 +12,7 @@
 #include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/print.h>
+#include <wx/defs.h>
 
 #include <math.h>
 // #include <time.h>
@@ -33,8 +34,8 @@ private:
    int buffer_pos; // current write pos in data buffer
    int start_pos; // current start pos in data buffer
 
-   unsigned int min_index;
-   unsigned int max_index;
+   int min_index;
+   int max_index;
 
 
    void updateMinMaxY(){
@@ -49,32 +50,6 @@ private:
          }
       }
    }
-
-   // void createTimeVector(){
-   //    m_xs.clear();
-   //
-   //    for(int i = 0; i < l; i++){
-   //       m_xs.push_back(-sampleTime + i * sampleTime / l);
-   //    }
-   //    m_minX = -sampleTime;
-   //    m_maxX = 0.0;
-   //
-   //    if(m_ys.size() > m_xs.size()){
-   //       min_index -= m_ys.size() - m_xs.size();
-   //       max_index -= m_ys.size() - m_xs.size();
-   //       m_ys.erase(m_ys.begin(), m_ys.begin() + (m_ys.size() - m_xs.size()));
-   //
-   //       if(min_index < 0 || max_index < 0){
-   //          updateMinMaxY();
-   //       }
-   //    }
-   //    else{
-   //       int j = m_xs.size() - m_ys.size();
-   //       for(int i = 0; i < j; i++){
-   //          m_ys.push_back((m_maxY + m_minY) / 2.0);
-   //       }
-   //    }
-   // }
 
 public:
    mpScopeWave(wxString name = wxEmptyString, int flags = mpALIGN_NE) : mpFX(name, flags){
@@ -131,6 +106,7 @@ public:
 
    void setFloating(){
       mode = FLOATING;
+
    }
    void setRolling(){
       mode = ROLLING;
@@ -139,7 +115,6 @@ public:
    void setSampleFreq(float f){
       sampleFreq = fmax(f, 0.0);
       int l = fmax(sampleTime * sampleFreq, 1.0);
-      std::cout << "buffer size: " << m_ys.size() << " -> " << l << std::endl;
       if(m_ys.size() > l){
          min_index -= m_ys.size() - l;
          max_index -= m_ys.size() - l;
@@ -163,7 +138,6 @@ public:
    void setSampleTime(float t){
       sampleTime = fmax(t, 0.0);
       int l = fmax(sampleTime * sampleFreq, 1.0);
-      std::cout << "buffer size: " << m_ys.size() << " -> " << l << std::endl;
       if(m_ys.size() > l){
          min_index -= m_ys.size() - l;
          max_index -= m_ys.size() - l;
@@ -200,16 +174,46 @@ public:
    void OnRefresh(wxCommandEvent& event);
    void OnConnect(wxCommandEvent& event);
    void OnDisconnect(wxCommandEvent& event);
+   void OnRB(wxCommandEvent& event);
+
+   void AddWave(wxString name);
 
    mpWindow        *m_plot;
    wxTextCtrl      *m_log;
    wxTextCtrl      *m_cli;
    wxTimer         *m_Timer;
+   wxRadioButton   *rb_floating;
+   wxRadioButton   *rb_rolling;
+   wxTextCtrl      *tc_sampleFreq;
+   wxTextCtrl      *tc_sampleTime;
+
+
+   wxBoxSizer *bs_mainVSizer;
+   wxBoxSizer *bs_topHSizer;
+   wxBoxSizer *bs_midHSizer;
+   wxBoxSizer *bs_midVSizer;
+
+   float sampleTime;
+   float sampleFreq;
 
 private:
    int axesPos[2];
    bool ticks;
-   mpScopeWave *wave0;
+
+   struct wave_t{
+      // wxRadioButton *rb_ac;
+      // wxRadioButton *rb_dc;
+      wxComboBox *cb_channel;
+      wxTextCtrl *tc_gain;
+      wxTextCtrl *tc_offset;
+      // wxBoxSizer *bs_vsizer;
+      // wxBoxSizer *bs_hlsizer;
+      wxBoxSizer *bs_sizer;
+
+      mpScopeWave *data;
+   };
+
+   std::vector<wave_t> waves;
 
    DECLARE_DYNAMIC_CLASS(MyFrame)
    DECLARE_EVENT_TABLE()
@@ -237,7 +241,8 @@ enum {
    ID_ALIGN_X_AXIS,
    ID_ALIGN_Y_AXIS,
    ID_TOGGLE_GRID,
-   TIMER_ID
+   TIMER_ID,
+   RB_ID
 };
 
 IMPLEMENT_DYNAMIC_CLASS( MyFrame, wxFrame )
@@ -246,70 +251,107 @@ BEGIN_EVENT_TABLE(MyFrame,wxFrame)
 EVT_MENU(ID_ABOUT, MyFrame::OnAbout)
 EVT_MENU(ID_QUIT,  MyFrame::OnQuit)
 EVT_MENU(mpID_FIT, MyFrame::OnFit)
+EVT_RADIOBUTTON(RB_ID, MyFrame::OnRB)
 // EVT_MENU(mpID_Refresh, MyFrame::OnRefresh)
 // EVT_MENU(mpID_Connect, MyFrame::OnConnect)
 // EVT_MENU(mpID_Disconnect, MyFrame::OnDisconnect)
 EVT_TIMER(TIMER_ID, MyFrame::OnTimer)
 END_EVENT_TABLE()
 
-MyFrame::MyFrame()
-: wxFrame( (wxFrame *)NULL, -1, wxT("wxWindows mathplot sample #3 - 'mpMovableObject' objects"),
-wxDefaultPosition, wxSize(500,500) )
-{
+void MyFrame::AddWave(wxString name){
+   struct wave_t wave;
+   // wave.rb_ac = new wxRadioButton(this, RB_ID, "ac", wxPoint(0,0), wxDefaultSize, wxRB_GROUP);
+   // wave.rb_dc = new wxRadioButton(this, RB_ID, "dc", wxPoint(0,0), wxDefaultSize);
+   wave.cb_channel = new wxComboBox (this, -1, "signal", wxDefaultPosition, wxDefaultSize, 0, NULL, wxTE_PROCESS_ENTER);
+   wave.tc_gain = new wxTextCtrl( this, -1, "gain", wxDefaultPosition, wxDefaultSize);
+   wave.tc_offset = new wxTextCtrl( this, -1, "offset", wxDefaultPosition, wxDefaultSize);
+   wave.data = new mpScopeWave(name);
+   wave.data->SetPen( wxPen(wxColour(128*cos(waves.size()) + 128, 128*cos(waves.size() + 1) + 128, 128*cos(waves.size() + 2) + 128), 1, wxPENSTYLE_SOLID));
+   wave.data->setSampleTime(sampleTime);
+   wave.data->SetContinuity(true);
+   wave.data->setSampleFreq(sampleFreq);
+   // wave.bs_vsizer = new wxBoxSizer(wxHORIZONTAL);
+   // wave.bs_hlsizer = new wxBoxSizer(wxVERTICAL);
+   wave.bs_sizer = new wxBoxSizer(wxVERTICAL);
+
+   // wave.bs_vsizer->Add(wave.bs_hlsizer, 0, wxEXPAND);
+   // wave.bs_vsizer->Add(wave.bs_hrsizer, 0, wxEXPAND);
+
+
+   m_plot->AddLayer(wave.data);
+   // wave.bs_hlsizer->Add(wave.rb_ac, 0, wxEXPAND);
+   // wave.bs_hlsizer->Add(wave.rb_dc, 0, wxEXPAND);
+   wave.bs_sizer->Add(wave.cb_channel, 0, wxEXPAND);
+   wave.bs_sizer->Add(wave.tc_gain, 0, wxEXPAND);
+   wave.bs_sizer->Add(wave.tc_offset, 0, wxEXPAND);
+   bs_midVSizer->Add(wave.bs_sizer, 0, wxEXPAND);
+   waves.push_back(wave);
+}
+
+MyFrame::MyFrame() : wxFrame( (wxFrame *)NULL, -1, "Servoterm", wxDefaultPosition, wxSize(500,500) ){
+   sampleTime = 10.0;
+   sampleFreq = 5000;
+
    wxMenu *file_menu = new wxMenu();
    wxMenu *view_menu = new wxMenu();
 
-   file_menu->Append( ID_ABOUT, wxT("&About..."));
-   file_menu->Append( ID_QUIT,  wxT("E&xit\tAlt-X"));
-   //  file_menu->Append( mpID_Refresh,  wxT("Refresh\tCtrl-R"));
-   //  file_menu->Append( mpID_Connect,  wxT("Connect\tCtrl-C"));
-   //  file_menu->Append( mpID_Disconnect,  wxT("Disconnect\tCtrl-D"));
+   file_menu->Append( ID_ABOUT, "&About...");
+   file_menu->Append( ID_QUIT,  "E&xit\tAlt-X");
+   //  file_menu->Append( mpID_Refresh,  "Refresh\tCtrl-R");
+   //  file_menu->Append( mpID_Connect,  "Connect\tCtrl-C");
+   //  file_menu->Append( mpID_Disconnect,  "Disconnect\tCtrl-D");
 
-   view_menu->Append( mpID_FIT,      wxT("&Fit bounding box"), wxT("Set plot view to show all items"));
-   view_menu->Append( mpID_ZOOM_IN,  wxT("Zoom in"),           wxT("Zoom in plot view."));
-   view_menu->Append( mpID_ZOOM_OUT, wxT("Zoom out"),          wxT("Zoom out plot view."));
+   view_menu->Append( mpID_FIT,      "&Fit bounding box", "Set plot view to show all items");
+   view_menu->Append( mpID_ZOOM_IN,  "Zoom in",           "Zoom in plot view.");
+   view_menu->Append( mpID_ZOOM_OUT, "Zoom out",          "Zoom out plot view.");
 
    wxMenuBar *menu_bar = new wxMenuBar();
-   menu_bar->Append(file_menu, wxT("&File"));
-   menu_bar->Append(view_menu, wxT("&View"));
+   menu_bar->Append(file_menu, "&File");
+   menu_bar->Append(view_menu, "&View");
 
    SetMenuBar( menu_bar );
    CreateStatusBar(1);
 
-   //mpLayer* l;
-
    m_plot = new mpWindow( this, -1, wxPoint(0,0), wxSize(100,100), wxSUNKEN_BORDER );
    m_plot->SetMargins(0,0,40,40);
-   mpScaleX* xaxis = new mpScaleX(wxT("t"), mpALIGN_BOTTOM, true);
-   mpScaleY* yaxis = new mpScaleY(wxT("y"), mpALIGN_LEFT, true);
+   mpScaleX* xaxis = new mpScaleX("t", mpALIGN_BOTTOM, true);
+   mpScaleY* yaxis = new mpScaleY("y", mpALIGN_LEFT, true);
    xaxis->SetDrawOutsideMargins(false);
    yaxis->SetDrawOutsideMargins(false);
    m_plot->AddLayer(xaxis);
    m_plot->AddLayer(yaxis);
 
-   wave0 = new mpScopeWave(wxT("wave0"));
-   wave0->SetPen( wxPen(*wxBLACK, 1, wxSOLID));
-   wave0->setSampleTime(10.0);
-   wave0->setRolling();
-   wave0->SetContinuity(true);
+   m_log = new wxTextCtrl( this, -1, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
+   m_cli = new wxTextCtrl( this, -1, "", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
 
-   m_plot->AddLayer(wave0);
+   rb_floating = new wxRadioButton(this, RB_ID, "floating", wxPoint(0,0), wxDefaultSize, wxRB_GROUP);
+   rb_rolling = new wxRadioButton(this, RB_ID, "rolling", wxPoint(0,0), wxDefaultSize);
+   tc_sampleFreq = new wxTextCtrl( this, -1, "sampleFreq", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+   tc_sampleTime = new wxTextCtrl( this, -1, "sampleTime", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
 
-   m_log = new wxTextCtrl( this, -1, wxT(""), wxPoint(0,0), wxSize(100,100), wxTE_MULTILINE );
-   m_cli = new wxTextCtrl( this, -1, wxT(""), wxPoint(0,0), wxSize(100,100), wxTE_PROCESS_ENTER);
-   //wxLog *old_log = wxLog::SetActiveTarget( new wxLogTextCtrl( m_log ) );
-   //delete old_log;
 
-   //wxStreamToTextRedirector redirect(m_log);
+   bs_mainVSizer = new wxBoxSizer(wxVERTICAL);
+   bs_topHSizer = new wxBoxSizer(wxHORIZONTAL);
+   bs_midHSizer = new wxBoxSizer(wxHORIZONTAL);
+   bs_midVSizer = new wxBoxSizer(wxVERTICAL);
 
-   wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
+   bs_mainVSizer->Add(bs_topHSizer, 0, wxEXPAND);
+      bs_topHSizer->Add(rb_floating, 0, wxEXPAND);
+      bs_topHSizer->Add(rb_rolling, 0, wxEXPAND);
+      bs_topHSizer->Add(tc_sampleFreq, 0, wxEXPAND);
+      bs_topHSizer->Add(tc_sampleTime, 0, wxEXPAND);
+   bs_mainVSizer->Add(bs_midHSizer, 2, wxEXPAND);
+      bs_midHSizer->Add(m_plot, 1, wxEXPAND);
+      bs_midHSizer->Add(bs_midVSizer, 0, wxEXPAND);
+   bs_mainVSizer->Add(m_log, 1, wxEXPAND);
+   bs_mainVSizer->Add(m_cli, 0, wxEXPAND);
 
-   topsizer->Add( m_plot, 1, wxEXPAND );
-   topsizer->Add( m_log, 0, wxEXPAND );
-   topsizer->Add( m_cli, 0, wxEXPAND );
+   AddWave("wave0");
+   AddWave("wave1");
+
 
    SetAutoLayout( TRUE );
-   SetSizer( topsizer );
+   SetSizer(bs_mainVSizer);
    axesPos[0] = 0;
    axesPos[1] = 0;
    ticks = true;
@@ -321,8 +363,6 @@ wxDefaultPosition, wxSize(500,500) )
 
    m_Timer = new wxTimer(this,TIMER_ID);
    m_Timer->Start( 20 );
-   wave0->setSampleFreq(100/0.02);
-   wave0->setSampleFreq(100/0.02);
 }
 
 void MyFrame::OnQuit( wxCommandEvent &WXUNUSED(event) )
@@ -337,14 +377,29 @@ void MyFrame::OnFit( wxCommandEvent &WXUNUSED(event) )
 
 void MyFrame::OnAbout( wxCommandEvent &WXUNUSED(event) )
 {
-   wxMessageBox( wxT("STMBL Term"));
+   wxMessageBox( "STMBL Term");
+}
+
+void MyFrame::OnRB(wxCommandEvent& event){
+   if(rb_rolling->GetValue()){
+      for(int i = 0; i < waves.size(); i++){
+         waves[i].data->setRolling();
+      }
+   }
+   else{
+      for(int i = 0; i < waves.size(); i++){
+         waves[i].data->setFloating();
+      }
+   }
 }
 
 void MyFrame::OnTimer(wxTimerEvent& event)
 {
    static float time = 0.0;
    for(int i = 0; i < 100; i++){
-      wave0->AddData(sin(time));
+      for(int j = 0; j < waves.size(); j++){
+         waves[j].data->AddData(sin(time + j));
+      }
       time += m_Timer->GetInterval()/1000.0/100.0*1.0;
    }
    m_plot->UpdateAll();

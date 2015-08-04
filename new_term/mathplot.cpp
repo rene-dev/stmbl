@@ -436,6 +436,7 @@ void mpFX::Plot(wxDC & dc, mpWindow & w)
 
          wxCoord tx, ty;
          dc.GetTextExtent(m_name, &tx, &ty);
+         dc.SetTextForeground(GetPen().GetColour());
 
          /*if ((m_flags & mpALIGNMASK) == mpALIGN_RIGHT)
          tx = (w.GetScrX()>>1) - tx - 8;
