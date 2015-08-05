@@ -16,8 +16,10 @@ enum{
 
 void link_pid();
 void set_rexroth();
-void set_bosch4();
 void set_bosch1();
+void set_bosch2();
+void set_bosch3();
+void set_bosch4();
 void set_baldor();
 void set_hauser();
 void set_kuka();
