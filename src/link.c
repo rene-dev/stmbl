@@ -343,20 +343,26 @@ void set_hauser(){ // TODO
    set_hal_pin("conf0.polecount", 3.0);
    set_hal_pin("conf0.max_vel", RPM(3000));
    set_hal_pin("conf0.max_acc", RPM(1000) / 0.01);
-   set_hal_pin("conf0.max_force", 3.4);
-   set_hal_pin("conf0.max_ac_cur", 30.0);
+   set_hal_pin("conf0.max_force", 10);
+   set_hal_pin("conf0.max_ac_cur", 60.0);
 
    set_hal_pin("conf0.fb_type", RES1);
    set_hal_pin("conf0.fb_res", 4096.0);
+	set_hal_pin("conf0.fb_rev", 0.0);
    set_hal_pin("conf0.r", 0.8);//measured
    set_hal_pin("conf0.l", 0.0041);//measured
    set_hal_pin("conf0.j", 0.0005);//estimated
    set_hal_pin("conf0.psi", 0.52);//calculated
 
    set_hal_pin("conf0.pos_p", 80.0);
-   set_hal_pin("conf0.acc_p", 0.15);
+   set_hal_pin("conf0.acc_p", 0.7);
    set_hal_pin("conf0.acc_pi", 50.0);
-   set_hal_pin("conf0.cur_lp", 0.4);
+   set_hal_pin("conf0.cur_p", 0.0);
+   set_hal_pin("conf0.cur_i", 0.0);
+   set_hal_pin("cauto0.cur", 3.0);
+   set_hal_pin("cauto0.time", 1.0);
+   //set_hal_pin("conf0.autophase", 0.0);
+   //set_hal_pin("conf0.fb_offset", 2.359);
    set_fb_res();
 }
 
