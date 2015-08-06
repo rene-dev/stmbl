@@ -1673,13 +1673,13 @@ design rules under a new name.</description>
 <elements>
 <element name="X1" library="reroolib" package="RJ45" value="" x="2.54" y="9.525" rot="R270"/>
 <element name="X2" library="reroolib" package="RJ45" value="" x="42.545" y="9.525" rot="R90"/>
-<element name="R1" library="resistor" package="R0603" value="" x="14.2875" y="12.7" rot="MR180"/>
-<element name="R2" library="resistor" package="R0603" value="" x="13.97" y="8.89" rot="MR90"/>
-<element name="C1" library="resistor" package="C0603" value="" x="20.955" y="13.335" rot="MR0"/>
-<element name="C2" library="resistor" package="C0603" value="" x="30.48" y="4.7625" rot="MR270"/>
+<element name="R1" library="resistor" package="R0603" value="330" x="14.2875" y="12.7" rot="MR180"/>
+<element name="R2" library="resistor" package="R0603" value="330" x="13.97" y="8.89" rot="MR90"/>
+<element name="C1" library="resistor" package="C0603" value="100n" x="20.955" y="13.335" rot="MR0"/>
+<element name="C2" library="resistor" package="C0603" value="100n" x="30.48" y="4.7625" rot="MR270"/>
 <element name="R3" library="resistor" package="R0603" value="" x="34.29" y="3.175" rot="MR90"/>
-<element name="R4" library="resistor" package="R0603" value="" x="26.67" y="4.7625" rot="MR270"/>
-<element name="R5" library="resistor" package="R0603" value="" x="28.575" y="4.7625" rot="MR270"/>
+<element name="R4" library="resistor" package="R0603" value="3k9" x="26.67" y="4.7625" rot="MR270"/>
+<element name="R5" library="resistor" package="R0603" value="3k9" x="28.575" y="4.7625" rot="MR270"/>
 <element name="U$1" library="reroolib" package="SO08" value="HCPL-053L-SMD" x="19.05" y="8.89" rot="MR90"/>
 <element name="IC2" library="74xx-eu" package="SO14" value="7414D" x="27.6225" y="10.795" rot="MR90"/>
 <element name="OK4" library="optocoupler" package="SMD4" value="LTV816S" x="18.415" y="3.4925" rot="MR270">

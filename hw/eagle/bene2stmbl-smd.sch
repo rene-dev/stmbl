@@ -6709,13 +6709,13 @@ Based on the following sources:
 <parts>
 <part name="X1" library="reroolib" deviceset="RJ45" device=""/>
 <part name="X2" library="reroolib" deviceset="RJ45" device=""/>
-<part name="R1" library="resistor" deviceset="R-EU_" device="R0603"/>
-<part name="R2" library="resistor" deviceset="R-EU_" device="R0603"/>
-<part name="C1" library="resistor" deviceset="C-EU" device="C0603"/>
-<part name="C2" library="resistor" deviceset="C-EU" device="C0603"/>
+<part name="R1" library="resistor" deviceset="R-EU_" device="R0603" value="330"/>
+<part name="R2" library="resistor" deviceset="R-EU_" device="R0603" value="330"/>
+<part name="C1" library="resistor" deviceset="C-EU" device="C0603" value="100n"/>
+<part name="C2" library="resistor" deviceset="C-EU" device="C0603" value="100n"/>
 <part name="R3" library="resistor" deviceset="R-EU_" device="R0603"/>
-<part name="R4" library="resistor" deviceset="R-EU_" device="R0603"/>
-<part name="R5" library="resistor" deviceset="R-EU_" device="R0603"/>
+<part name="R4" library="resistor" deviceset="R-EU_" device="R0603" value="3k9"/>
+<part name="R5" library="resistor" deviceset="R-EU_" device="R0603" value="3k9"/>
 <part name="U$1" library="reroolib" deviceset="HCPL-053L-SMD" device=""/>
 <part name="SUPPLY2" library="SparkFun-Aesthetics" deviceset="VCC" device=""/>
 <part name="GND1" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
