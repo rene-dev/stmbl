@@ -236,7 +236,7 @@ void set_cmd_stpff(){
 void set_cmd_lcnc(){
    link_hal_pins("enc_cmd0.pos", "rev0.in");
    link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
-   set_hal_pin("conf0.cmd_res", 8192.0);
+   set_hal_pin("conf0.cmd_res", 14400.0);
    set_hal_pin("conf0.cmd_rev", 1.0);
    link_hal_pins("fault0.enable_out", "en0.en");
 }
@@ -342,12 +342,15 @@ void set_baldor(){ // TODO
 void set_hauser(){ // TODO
    set_hal_pin("conf0.polecount", 3.0);
    set_hal_pin("conf0.max_vel", RPM(3000));
-   set_hal_pin("conf0.max_acc", RPM(1000) / 0.01);
-   set_hal_pin("conf0.max_force", 3.4);
-   set_hal_pin("conf0.max_ac_cur", 30.0);
+   set_hal_pin("conf0.max_acc", 10000.0);
+   set_hal_pin("conf0.max_force", 20.0);
+   set_hal_pin("conf0.max_ac_cur", 20.0);
 
+   set_hal_pin("conf0.fb_offset", 1.05);
+   set_hal_pin("conf0.autophase", 0.0);
    set_hal_pin("conf0.fb_type", RES1);
    set_hal_pin("conf0.fb_res", 4096.0);
+   set_hal_pin("conf0.fb_rev", 0.0);
    set_hal_pin("conf0.r", 0.8);//measured
    set_hal_pin("conf0.l", 0.0041);//measured
    set_hal_pin("conf0.j", 0.0005);//estimated
@@ -355,8 +358,13 @@ void set_hauser(){ // TODO
 
    set_hal_pin("conf0.pos_p", 80.0);
    set_hal_pin("conf0.acc_p", 0.15);
-   set_hal_pin("conf0.acc_pi", 50.0);
-   set_hal_pin("conf0.cur_lp", 0.4);
+   set_hal_pin("conf0.acc_pi", 100.0);
+   set_hal_pin("conf0.cur_p", 0.2);
+   set_hal_pin("conf0.cur_i", 0.001);
+
+   set_hal_pin("stp0.max_vel", 50.0);
+   set_hal_pin("stp0.max_acc", 100.0);
+
    set_fb_res();
 }
 
@@ -378,11 +386,12 @@ void set_bosch1(){ // TODO
    set_hal_pin("conf0.pos_p", 80.0);
    set_hal_pin("conf0.acc_p", 0.1);
    set_hal_pin("conf0.acc_pi", 50.0);
-   set_hal_pin("conf0.cur_p", 0.0);
-   set_hal_pin("conf0.cur_i", 0.0);
+   set_hal_pin("conf0.cur_p", 0.2);
+   set_hal_pin("conf0.cur_i", 0.001);
    set_hal_pin("conf0.autophase", 0.0);
    set_hal_pin("conf0.fb_offset", 2.359);
-
+   set_hal_pin("stp0.max_vel", 50.0);
+   set_hal_pin("stp0.max_acc", 500.0);
    set_fb_res();
 }
 
@@ -401,13 +410,15 @@ void set_bosch2(){ // TODO
    set_hal_pin("conf0.j", KGCM2(0.11));//typenschild
    set_hal_pin("conf0.psi", 0.27);//typenschild
 
-   set_hal_pin("conf0.pos_p", 80.0);
+   set_hal_pin("conf0.pos_p", 10.0); // 80
    set_hal_pin("conf0.acc_p", 0.1);
-   set_hal_pin("conf0.acc_pi", 20.0);
-   set_hal_pin("conf0.cur_p", 0.0);
-   set_hal_pin("conf0.cur_i", 0.0);
+   set_hal_pin("conf0.acc_pi", 10.0); // 20
+   set_hal_pin("conf0.cur_p", 0.2); // 0
+   set_hal_pin("conf0.cur_i", 0.001); // 0
    set_hal_pin("conf0.autophase", 0.0);
    set_hal_pin("conf0.fb_offset", 2.359);
+   set_hal_pin("stp0.max_vel", 150.0);
+   set_hal_pin("stp0.max_acc", 750.0);
 
    set_fb_res();
 }
@@ -427,13 +438,15 @@ void set_bosch3(){ // TODO
    set_hal_pin("conf0.j", KGCM2(0.11));//typenschild
    set_hal_pin("conf0.psi", 0.27);//typenschild
 
-   set_hal_pin("conf0.pos_p", 80.0);
+   set_hal_pin("conf0.pos_p", 20.0);
    set_hal_pin("conf0.acc_p", 0.1);
    set_hal_pin("conf0.acc_pi", 20.0);
    set_hal_pin("conf0.cur_p", 0.0);
    set_hal_pin("conf0.cur_i", 0.0);
    set_hal_pin("conf0.autophase", 0.0);
    set_hal_pin("conf0.fb_offset", 2.359);
+   set_hal_pin("stp0.max_vel", 150.0);
+   set_hal_pin("stp0.max_acc", 2000.0);
 
    set_fb_res();
 }
@@ -450,14 +463,14 @@ void set_bosch4(){ // TODO
    set_hal_pin("conf0.fb_res", 4096.0);
    set_hal_pin("conf0.r", 7.6);//typenschild
    set_hal_pin("conf0.l", 0.001);//unknown
-   set_hal_pin("conf0.j", 0.000141);//typenschild
+   set_hal_pin("conf0.j", 0.0004);//typenschild 0.000141
    set_hal_pin("conf0.psi", 0.29);//typenschild
 
-   set_hal_pin("conf0.pos_p", 80.0);
-   set_hal_pin("conf0.acc_p", 0.15);
-   set_hal_pin("conf0.acc_pi", 50.0);
-   set_hal_pin("conf0.cur_p", 0.0);
-   set_hal_pin("conf0.cur_i", 0.0);
+   set_hal_pin("conf0.pos_p", 30.0); // 20
+   set_hal_pin("conf0.acc_p", 0.1); // 0.15
+   set_hal_pin("conf0.acc_pi", 30.0); // 20
+   set_hal_pin("conf0.cur_p", 0.1);
+   set_hal_pin("conf0.cur_i", 0.001);
    set_hal_pin("conf0.autophase", 0.0);
    set_hal_pin("conf0.fb_offset", 2.359);
 
