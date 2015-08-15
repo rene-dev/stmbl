@@ -392,6 +392,11 @@ void set_bosch1(){ // TODO
    set_hal_pin("conf0.fb_offset", 2.359);
    set_hal_pin("stp0.max_vel", 50.0);
    set_hal_pin("stp0.max_acc", 500.0);
+
+   set_hal_pin("conf0.sin_offset", -17205.0);
+   set_hal_pin("conf0.cos_offset", -17475.0);
+   set_hal_pin("conf0.sin_gain", 0.00015);
+   set_hal_pin("conf0.cos_gain", 0.00015);
    set_fb_res();
 }
 
@@ -420,6 +425,10 @@ void set_bosch2(){ // TODO
    set_hal_pin("stp0.max_vel", 150.0);
    set_hal_pin("stp0.max_acc", 750.0);
 
+   set_hal_pin("conf0.sin_offset", -17315.0);
+   set_hal_pin("conf0.cos_offset", -17620.0);
+   set_hal_pin("conf0.sin_gain", 0.00016);
+   set_hal_pin("conf0.cos_gain", 0.00015);
    set_fb_res();
 }
 
@@ -448,6 +457,10 @@ void set_bosch3(){ // TODO
    set_hal_pin("stp0.max_vel", 150.0);
    set_hal_pin("stp0.max_acc", 2000.0);
 
+   set_hal_pin("conf0.sin_offset", -17295.0);
+   set_hal_pin("conf0.cos_offset", -17555.0);
+   set_hal_pin("conf0.sin_gain", 0.00015);
+   set_hal_pin("conf0.cos_gain", 0.00015);
    set_fb_res();
 }
 
@@ -473,6 +486,11 @@ void set_bosch4(){ // TODO
    set_hal_pin("conf0.cur_i", 0.001);
    set_hal_pin("conf0.autophase", 0.0);
    set_hal_pin("conf0.fb_offset", 2.359);
+
+   set_hal_pin("conf0.sin_offset", -17470.0);
+   set_hal_pin("conf0.cos_offset", -17570.0);
+   set_hal_pin("conf0.sin_gain", 0.00015);
+   set_hal_pin("conf0.cos_gain", 0.00015);
 
    set_fb_res();
 }

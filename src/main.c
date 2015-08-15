@@ -248,7 +248,7 @@ int main(void)
    //set_rexroth();
    //set_sanyo();
    //set_bosch1();
-   set_bosch4();
+   set_bosch1();
    // set_hauser();
    //set_sanyo();
    //set_br();
@@ -256,7 +256,7 @@ int main(void)
 
    //set_cmd_lcnc();
    //set_cmd_stp();
-   //set_cmd_lcnc();
+   set_cmd_lcnc();
    //set_cur_cmd();
 
 
