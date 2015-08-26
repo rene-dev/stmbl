@@ -13,7 +13,7 @@ HAL_PIN(ud) = 0.0;
 HAL_PIN(uq) = 0.0;
 
 HAL_PIN(volt) = 0.0;
-HAL_PIN(max_pwm) = 0.95;
+HAL_PIN(max_pwm) = 0.975;
 HAL_PIN(max_cur) = 0.0;
 
 HAL_PIN(rd) = 0.0;
@@ -37,7 +37,7 @@ RT(
    float rq = MAX(PIN(rq), 0.1);
    float ld = MAX(PIN(ld), 0.001);
    float lq = MAX(PIN(lq), 0.001);
-   float volt = MAX(PIN(volt) * PIN(max_pwm), 0.1);
+   float volt = MAX(PIN(volt) * PIN(max_pwm) * 1.15, 0.1);
 
    float ff = PIN(ff);
    float kpd = ld * PIN(kp) / period;

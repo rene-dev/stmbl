@@ -363,9 +363,34 @@ void USART2_IRQHandler(){
       v += volt / 2.0;
       w += volt / 2.0;
 
-      PWM_U = u/volt*res;
-      PWM_V = v/volt*res;
-      PWM_W = w/volt*res;
+      if(u < v){
+         if(u < w){
+            v -= u;
+            w -= u;
+            u = 0.0;
+         }
+         else{
+            u -= w;
+            v -= w;
+            w = 0.0;
+         }
+      }
+      else{
+         if(v < w){
+            u -= v;
+            w -= v;
+            v = 0.0;
+         }
+         else{
+            u -= w;
+            v -= w;
+            w = 0.0;
+         }
+      }
+
+      PWM_U = CLAMP(u/volt*res, 0, res * 0.95);
+      PWM_V = CLAMP(v/volt*res, 0, res * 0.95);
+      PWM_W = CLAMP(w/volt*res, 0, res * 0.95);
 
       timeout = 0; //reset timeout
       //GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
