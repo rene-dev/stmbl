@@ -125,7 +125,7 @@ int main(void)
    #include "comps/enc_cmd.comp"
    //#include "comps/enc_fb.comp"
 
-   //#include "comps/en.comp"
+   #include "comps/en.comp"
    #include "comps/res.comp"
    //#include "comps/encm.comp"
    #include "comps/sim.comp"
@@ -218,7 +218,7 @@ int main(void)
    HAL_PIN(max_pos_error) = M_PI / 2.0;
    HAL_PIN(high_dc_volt) = 350.0;
    HAL_PIN(low_dc_volt) = 12.0;
-   HAL_PIN(high_hv_temp) = 80.0;
+   HAL_PIN(high_hv_temp) = 20.0;
    HAL_PIN(high_motor_temp) = 80.0;
    HAL_PIN(fan_hv_temp) = 60.0;
    HAL_PIN(fan_core_temp) = 450.0;
@@ -249,13 +249,14 @@ int main(void)
    //set_sanyo();
    //set_bosch1();
    set_bosch1();
+   // set_hauser();
    //set_sanyo();
    //set_br();
 
 
-   //set_cmd_enc();
-   //set_cmd_stp();
    //set_cmd_lcnc();
+   //set_cmd_stp();
+   set_cmd_lcnc();
    //set_cur_cmd();
 
 
