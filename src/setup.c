@@ -152,6 +152,16 @@ void setup_res(){
     /* ADC clock enable */
     RCC_APB2PeriphClockCmd(SIN_ADC_RCC | COS_ADC_RCC, ENABLE);
 
+    //txen
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_12;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+    GPIO_SetBits(GPIOB,GPIO_Pin_12);
+
     //Analog pin configuration
     GPIO_InitStructure.GPIO_Pin = SIN_PIN;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;

@@ -260,7 +260,7 @@ int main(void)
    //set_cur_cmd();
 
 
-   TIM_Cmd(TIM8, ENABLE);//int
+   TIM_Cmd(TIM2, ENABLE);//int
 
    UB_USB_CDC_Init();
 
