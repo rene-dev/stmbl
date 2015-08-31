@@ -1,14 +1,15 @@
 COMP(en);
 
 HAL_PIN(en) = 0.0;
+HAL_PIN(txen) = 0.0;
 
 INIT(
 	 //PC12 TX
 	 //PB13 TXEN
-	 
+
 	 RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	 RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-	 
+
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -18,10 +19,16 @@ INIT(
     GPIO_Init(GPIOC, &GPIO_InitStructure);
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
-	 GPIO_SetBits(GPIOB, GPIO_Pin_13);
 );
 
 NRT(
+	if(PIN(txen) > 0){
+		GPIO_SetBits(GPIOB, GPIO_Pin_13);
+	}
+	else{
+		GPIO_ResetBits(GPIOB, GPIO_Pin_13);
+	}
+
 	if(PIN(en) > 0)
 		GPIO_SetBits(GPIOC, GPIO_Pin_12);
 	else
