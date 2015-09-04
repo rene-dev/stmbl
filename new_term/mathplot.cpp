@@ -1185,7 +1185,11 @@ EVT_MIDDLE_UP( mpWindow::OnShowPopupMenu)
 EVT_RIGHT_DOWN( mpWindow::OnMouseRightDown) // JLB
 EVT_RIGHT_UP ( mpWindow::OnShowPopupMenu)
 EVT_MOUSEWHEEL( mpWindow::OnMouseWheel )   // JLB
+
+#if wxCHECK_VERSION(3, 1, 0)
 EVT_MAGNIFY(mpWindow::OnMagnify)
+#endif
+
 EVT_MOTION( mpWindow::OnMouseMove )   // JLB
 EVT_LEFT_DOWN( mpWindow::OnMouseLeftDown)
 EVT_LEFT_UP( mpWindow::OnMouseLeftRelease)
@@ -1312,6 +1316,7 @@ void mpWindow::OnMouseWheel( wxMouseEvent &event )
    }
 }
 
+#if wxCHECK_VERSION(3, 1, 0)
 void mpWindow::OnMagnify( wxMouseEvent &event )
 {
    if (!m_enableMouseNavigation)
@@ -1326,6 +1331,7 @@ void mpWindow::OnMagnify( wxMouseEvent &event )
 
    UpdateAll();
 }
+#endif
 
 // If the user "drags" with the right buttom pressed, do "pan"
 // JLB
