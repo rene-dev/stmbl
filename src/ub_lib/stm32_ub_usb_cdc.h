@@ -51,6 +51,7 @@ typedef enum {
 void UB_USB_CDC_Init(void);
 USB_CDC_STATUS_t UB_USB_CDC_GetStatus(void);
 ErrorStatus UB_USB_CDC_SendString(char *ptr, USB_CDC_LASTBYTE_t end_cmd);
+ErrorStatus UB_USB_CDC_SendData(char *ptr, int size);
 USB_CDC_RXSTATUS_t UB_USB_CDC_ReceiveString(char *ptr);
 
 //--------------------------------------------------------------

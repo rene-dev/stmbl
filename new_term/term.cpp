@@ -13,6 +13,8 @@
 #include <wx/intl.h>
 #include <wx/print.h>
 #include <wx/defs.h>
+#include <libserialport.h>
+#include "packet.h"
 
 #include <math.h>
 // #include <time.h>
@@ -175,6 +177,7 @@ public:
    void OnConnect(wxCommandEvent& event);
    void OnDisconnect(wxCommandEvent& event);
    void OnRB(wxCommandEvent& event);
+   void OnInput(wxCommandEvent& event);
 
    void AddWave(wxString name);
 
@@ -215,6 +218,27 @@ private:
 
    std::vector<wave_t> waves;
 
+   struct sp_port **ports;
+   struct sp_port *port;
+
+   wxMenuBar *menu_bar;
+   wxMenu *file_menu;
+   wxMenu *view_menu;
+   wxMenu *connect_menu;
+
+   static const int bufsize = 20000;
+   unsigned char buf[bufsize+1];
+
+   void listports();
+   void Connect(wxCommandEvent& event);
+   void Disconnect(wxCommandEvent& event);
+   int send(wxString s);
+
+   enum {
+      CONNECTED,
+      DISCONNECTED
+   } state;
+
    DECLARE_DYNAMIC_CLASS(MyFrame)
    DECLARE_EVENT_TABLE()
 };
@@ -223,6 +247,9 @@ private:
 
 class MyApp: public wxApp
 {
+private:
+
+
 public:
    virtual bool OnInit();
 };
@@ -237,7 +264,9 @@ enum {
    ID_QUIT  = 108,
    ID_ABOUT,
    ID_PRINT,
-   ID_PRINT_PREVIEW,
+   ID_CONNECT,
+   ID_NOT_CONNECT,
+   ID_DISCONNECT,
    ID_ALIGN_X_AXIS,
    ID_ALIGN_Y_AXIS,
    ID_TOGGLE_GRID,
@@ -251,6 +280,8 @@ BEGIN_EVENT_TABLE(MyFrame,wxFrame)
 EVT_MENU(ID_ABOUT, MyFrame::OnAbout)
 EVT_MENU(ID_QUIT,  MyFrame::OnQuit)
 EVT_MENU(mpID_FIT, MyFrame::OnFit)
+EVT_MENU(ID_CONNECT, MyFrame::Connect)
+EVT_MENU(ID_DISCONNECT, MyFrame::Disconnect)
 EVT_RADIOBUTTON(RB_ID, MyFrame::OnRB)
 // EVT_MENU(mpID_Refresh, MyFrame::OnRefresh)
 // EVT_MENU(mpID_Connect, MyFrame::OnConnect)
@@ -290,10 +321,11 @@ void MyFrame::AddWave(wxString name){
 
 MyFrame::MyFrame() : wxFrame( (wxFrame *)NULL, -1, "Servoterm", wxDefaultPosition, wxSize(500,500) ){
    sampleTime = 10.0;
-   sampleFreq = 5000;
+   sampleFreq = 1000;
 
-   wxMenu *file_menu = new wxMenu();
-   wxMenu *view_menu = new wxMenu();
+   file_menu = new wxMenu();
+   view_menu = new wxMenu();
+   connect_menu = new wxMenu();
 
    file_menu->Append( ID_ABOUT, "&About...");
    file_menu->Append( ID_QUIT,  "E&xit\tAlt-X");
@@ -305,9 +337,11 @@ MyFrame::MyFrame() : wxFrame( (wxFrame *)NULL, -1, "Servoterm", wxDefaultPositio
    view_menu->Append( mpID_ZOOM_IN,  "Zoom in",           "Zoom in plot view.");
    view_menu->Append( mpID_ZOOM_OUT, "Zoom out",          "Zoom out plot view.");
 
-   wxMenuBar *menu_bar = new wxMenuBar();
+   menu_bar = new wxMenuBar();
    menu_bar->Append(file_menu, "&File");
    menu_bar->Append(view_menu, "&View");
+   menu_bar->Append(connect_menu, "&Connect");
+   state = DISCONNECTED;
 
    SetMenuBar( menu_bar );
    CreateStatusBar(1);
@@ -323,6 +357,7 @@ MyFrame::MyFrame() : wxFrame( (wxFrame *)NULL, -1, "Servoterm", wxDefaultPositio
 
    m_log = new wxTextCtrl( this, -1, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
    m_cli = new wxTextCtrl( this, -1, "", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+   m_cli->Bind(wxEVT_TEXT_ENTER, &MyFrame::OnInput, this, wxID_ANY);
 
    rb_floating = new wxRadioButton(this, RB_ID, "floating", wxPoint(0,0), wxDefaultSize, wxRB_GROUP);
    rb_rolling = new wxRadioButton(this, RB_ID, "rolling", wxPoint(0,0), wxDefaultSize);
@@ -336,18 +371,24 @@ MyFrame::MyFrame() : wxFrame( (wxFrame *)NULL, -1, "Servoterm", wxDefaultPositio
    bs_midVSizer = new wxBoxSizer(wxVERTICAL);
 
    bs_mainVSizer->Add(bs_topHSizer, 0, wxEXPAND);
-      bs_topHSizer->Add(rb_floating, 0, wxEXPAND);
-      bs_topHSizer->Add(rb_rolling, 0, wxEXPAND);
-      bs_topHSizer->Add(tc_sampleFreq, 0, wxEXPAND);
-      bs_topHSizer->Add(tc_sampleTime, 0, wxEXPAND);
+   bs_topHSizer->Add(rb_floating, 0, wxEXPAND);
+   bs_topHSizer->Add(rb_rolling, 0, wxEXPAND);
+   bs_topHSizer->Add(tc_sampleFreq, 0, wxEXPAND);
+   bs_topHSizer->Add(tc_sampleTime, 0, wxEXPAND);
    bs_mainVSizer->Add(bs_midHSizer, 2, wxEXPAND);
-      bs_midHSizer->Add(m_plot, 1, wxEXPAND);
-      bs_midHSizer->Add(bs_midVSizer, 0, wxEXPAND);
+   bs_midHSizer->Add(m_plot, 1, wxEXPAND);
+   bs_midHSizer->Add(bs_midVSizer, 0, wxEXPAND);
    bs_mainVSizer->Add(m_log, 1, wxEXPAND);
    bs_mainVSizer->Add(m_cli, 0, wxEXPAND);
 
    AddWave("wave0");
    AddWave("wave1");
+   AddWave("wave2");
+   AddWave("wave3");
+   AddWave("wave4");
+   AddWave("wave5");
+   AddWave("wave6");
+   AddWave("wave7");
 
 
    SetAutoLayout( TRUE );
@@ -362,7 +403,8 @@ MyFrame::MyFrame() : wxFrame( (wxFrame *)NULL, -1, "Servoterm", wxDefaultPositio
    m_plot->Fit();
 
    m_Timer = new wxTimer(this,TIMER_ID);
-   m_Timer->Start( 20 );
+   m_Timer->Start( 25 );
+
 }
 
 void MyFrame::OnQuit( wxCommandEvent &WXUNUSED(event) )
@@ -396,13 +438,178 @@ void MyFrame::OnRB(wxCommandEvent& event){
 void MyFrame::OnTimer(wxTimerEvent& event)
 {
    static float time = 0.0;
-   for(int i = 0; i < 100; i++){
-      for(int j = 0; j < waves.size(); j++){
-         waves[j].data->AddData(sin(time + j));
+   listports();
+   int ret;
+   static int addr = -4;
+
+   if(state == CONNECTED){
+      struct packet p;
+      union{
+         float wave[4 * 16];
+         unsigned char buf[4 * 4 * 16];
+         char text [256];
+      }data;
+      p.start = 255;
+      p.buf = data.buf;
+
+      ret = sp_nonblocking_read(port, buf, bufsize);
+
+      // if(ret > 0){
+      //    std::cout << std::endl << std::endl << "got " << ret << " bytes: ";
+      //    for(int i = 0; i < ret; i++){
+      //       std::cout << (int)buf[i] << ", ";
+      //    }
+      //    std::cout << std::endl;
+      // }
+      for (int i = 0; i < ret; i++){
+         if(buf[i] == p.start) {
+            //std::cout << "start: " << (int)p.start;
+            addr = -3;
+         }
+         else if(addr == -3){
+            p.type = buf[i];
+            //std::cout << " type: " << (int)p.type;
+            addr++;
+         }
+         else if(addr == -2){
+            p.size = buf[i];
+            //std::cout << " size: " << (int)p.size;
+            addr++;
+         }
+         else if(addr == -1){
+            p.key = buf[i];
+            //std::cout << " key: " << (int)p.key;
+            addr++;
+         }
+         else if(addr >= 0){
+            if(addr < p.size){
+               data.buf[addr++] = buf[i];
+               //std::cout << " buf[" << addr - 1 << "] = " << (int)buf[i];
+            }
+            if(addr == p.size){
+               //std::cout << "complete" << std::endl;
+               addr = -4;
+               unbuff_packet(&p);
+
+               if(p.type == 1){
+                  //std::cout << "log" << std::endl;
+                  for(int i = 0; i < p.size; i++){
+                     m_log->AppendText(wxString::FromAscii(data.buf[i]));
+                  }
+               }
+               else if(p.type == 2){
+                  if(p.size % 32 == 0){
+                     //std::cout << "got: " << data.wave[0] << std::endl;
+                     for(int i = 0; i < p.size / 32; i++){
+                        waves[0].data->AddData(data.wave[i * 8 + 0]);
+                        waves[1].data->AddData(data.wave[i * 8 + 1]);
+                        waves[2].data->AddData(data.wave[i * 8 + 2]);
+                        waves[3].data->AddData(data.wave[i * 8 + 3]);
+                        waves[4].data->AddData(data.wave[i * 8 + 4]);
+                        waves[5].data->AddData(data.wave[i * 8 + 5]);
+                        waves[6].data->AddData(data.wave[i * 8 + 6]);
+                        waves[7].data->AddData(data.wave[i * 8 + 7]);
+                     }
+                  }
+                  else{
+                     std::cout << "wrong packet size: " << (int)p.size << std::endl;
+                  }
+               }
+               else{
+                  std::cout << "unknown packet type: " << (int)p.type << std::endl;
+               }
+            }
+         }
+         else if(addr != -4){
+            std::cout << "addr fail: " << addr << std::endl;
+         }
       }
-      time += m_Timer->GetInterval()/1000.0/100.0*1.0;
    }
    m_plot->UpdateAll();
+}
+
+void MyFrame::listports(){
+   if(state == DISCONNECTED){
+      if (!ports) {
+         sp_free_port_list(ports);
+      }
+      if(sp_list_ports(&ports) == SP_OK){
+         wxString str;
+
+         wxwxMenuListNode* i = (wxwxMenuListNode*)connect_menu->GetMenuItems().GetLast();
+         while(i){
+            connect_menu->Remove((wxMenuItem*)i->GetData());
+            i = (wxwxMenuListNode*)connect_menu->GetMenuItems().GetLast();
+         }
+         //connect_menu->Clear();
+         for (int i = 0; ports[i]; i++) {
+            if(sp_get_port_description(ports[i]) == wxString("STMBL Virtual ComPort")){
+               connect_menu->Append(ID_CONNECT, sp_get_port_description(ports[i]) + wxString("\tCtrl-C"));
+               port = ports[i];
+            }
+            else{
+               connect_menu->Append(ID_NOT_CONNECT, sp_get_port_description(ports[i]));
+            }
+         }
+      }
+   }
+}
+
+void MyFrame::Connect(wxCommandEvent& event){
+   if(state == DISCONNECTED){
+      if(sp_open(port, SP_MODE_READ_WRITE) == SP_OK){//port da und lässt sich öffnen
+         sp_set_baudrate(port,38400);
+         sp_set_bits(port, 8);
+         sp_set_stopbits(port, 1);
+         sp_set_parity(port, SP_PARITY_NONE);
+         sp_set_xon_xoff(port, SP_XONXOFF_DISABLED);
+         sp_set_flowcontrol(port, SP_FLOWCONTROL_NONE);
+         state = CONNECTED;
+      }else{
+         wxMessageBox( wxT("Fehler beim Öffnen"), wxT("Error"), wxICON_EXCLAMATION);
+      }
+      wxwxMenuListNode* i = (wxwxMenuListNode*)connect_menu->GetMenuItems().GetLast();
+      while(i){
+         connect_menu->Remove((wxMenuItem*)i->GetData());
+         i = (wxwxMenuListNode*)connect_menu->GetMenuItems().GetLast();
+      }
+      connect_menu->Append(ID_DISCONNECT, "STMBL Virtual ComPort\tCtrl-D");
+      menu_bar->SetMenuLabel(2, "Disconnect");
+   }
+}
+void MyFrame::Disconnect(wxCommandEvent& event){
+   if(sp_close(port) == SP_OK){
+      state = DISCONNECTED;
+      menu_bar->SetMenuLabel(2, "Connect");
+   }
+}
+
+int MyFrame::send(wxString s){
+    if(state == CONNECTED){
+      //   if(h){//history
+      //       if((history.size()==0 || history.back() != s) && !s.empty()){
+      //           history.push_back(s);
+      //       }
+      //       histpos = history.size();
+      //   }
+        int ret1 = sp_nonblocking_write(port, s.c_str(), s.length());
+        int ret2 = sp_nonblocking_write(port, "\r", 1);
+        if(ret1 != s.length() || ret2!=1){
+            wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
+            //Disconnect(wxCommandEvent());
+            return 0;
+        }
+    }else{
+        wxMessageBox( wxT("Nicht verbunden"), wxT("Error"), wxICON_EXCLAMATION);
+        return 0;
+    }
+    return 1;
+}
+
+void MyFrame::OnInput(wxCommandEvent& event){
+    //string s =string(m_cli->GetValue().mb_str());
+    send(m_cli->GetValue());
+    m_cli->Clear();
 }
 
 //-----------------------------------------------------------------------------

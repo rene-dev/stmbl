@@ -1,40 +1,18 @@
 COMP(term);
 
 HAL_PIN(wave0) = 0.0;
-HAL_PIN(gain0) = 10.0;
-HAL_PIN(offset0) = 0.0;
-
 HAL_PIN(wave1) = 0.0;
-HAL_PIN(gain1) = 10.0;
-HAL_PIN(offset1) = 0.0;
-
 HAL_PIN(wave2) = 0.0;
-HAL_PIN(gain2) = 10.0;
-HAL_PIN(offset2) = 0.0;
-
 HAL_PIN(wave3) = 0.0;
-HAL_PIN(gain3) = 10.0;
-HAL_PIN(offset3) = 0.0;
-
 HAL_PIN(wave4) = 0.0;
-HAL_PIN(gain4) = 10.0;
-HAL_PIN(offset4) = 0.0;
-
 HAL_PIN(wave5) = 0.0;
-HAL_PIN(gain5) = 10.0;
-HAL_PIN(offset5) = 0.0;
-
 HAL_PIN(wave6) = 0.0;
-HAL_PIN(gain6) = 10.0;
-HAL_PIN(offset6) = 0.0;
-
 HAL_PIN(wave7) = 0.0;
-HAL_PIN(gain7) = 10.0;
-HAL_PIN(offset7) = 0.0;
 
 HAL_PIN(send_step) = 10.0;
 
 HAL_PIN(buf_use) = 0.0;
+HAL_PIN(packet_size) = 0.0;
 
 #define TERM_BUF_SIZE 24
 
@@ -121,68 +99,43 @@ NRT(
       }
    }
 
-   int e = 0;
-   unsigned char buf[8 + 2];
-
-   buf[0] = 255;
-   buf[8 + 1] = 0;
-
-   float o0 = PIN(offset0);
-   float o1 = PIN(offset1);
-   float o2 = PIN(offset2);
-   float o3 = PIN(offset3);
-   float o4 = PIN(offset4);
-   float o5 = PIN(offset5);
-   float o6 = PIN(offset6);
-   float o7 = PIN(offset7);
-   float g0 = PIN(gain0);
-   float g1 = PIN(gain1);
-   float g2 = PIN(gain2);
-   float g3 = PIN(gain3);
-   float g4 = PIN(gain4);
-   float g5 = PIN(gain5);
-   float g6 = PIN(gain6);
-   float g7 = PIN(gain7);
-
    unsigned int wp = write_pos;
    unsigned int bc = 0;
-
-   while(read_pos != wp){
+   struct packet p;
+   union{
+      float wave[8 * 7];
+      unsigned char buf[8 * 4 * 7];
+   }data;
+   int i = 0;
+   p.start = 255;
+   p.type = 2;
+   p.buf = data.buf;
+   while(read_pos != wp && i < 7){
       bc++;
-      e = (w0[read_pos] + o0) * g0 + 128;
-      buf[1] = CLAMP(e,1,254);
-
-      e = (w1[read_pos] + o1) * g1 + 128;
-      buf[2] = CLAMP(e,1,254);
-
-      e = (w2[read_pos] + o2) * g2 + 128;
-      buf[3] = CLAMP(e,1,254);
-
-      e = (w3[read_pos] + o3) * g3 + 128;
-      buf[4] = CLAMP(e,1,254);
-
-      e = (w4[read_pos] + o4) * g4 + 128;
-      buf[5] = CLAMP(e,1,254);
-
-      e = (w5[read_pos] + o5) * g5 + 128;
-      buf[6] = CLAMP(e,1,254);
-
-      e = (w6[read_pos] + o6) * g6 + 128;
-      buf[7] = CLAMP(e,1,254);
-
-      e = (w7[read_pos] + o7) * g7 + 128;
-      buf[8] = CLAMP(e,1,254);
+      data.wave[i * 8 + 0] = w0[read_pos];
+      data.wave[i * 8 + 1] = w1[read_pos];
+      data.wave[i * 8 + 2] = w2[read_pos];
+      data.wave[i * 8 + 3] = w3[read_pos];
+      data.wave[i * 8 + 4] = w4[read_pos];
+      data.wave[i * 8 + 5] = w5[read_pos];
+      data.wave[i * 8 + 6] = w6[read_pos];
+      data.wave[i * 8 + 7] = w7[read_pos];
+      i++;
 
       read_pos++;
       read_pos %= TERM_BUF_SIZE;
-
-      buf[8 + 1] = 0;
-
-      if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-         UB_USB_CDC_SendString((char*)buf, NONE);
-      }
    }
 
+   p.size = i * 32;
+   buff_packet(&p);
+
+   UB_VCP_DataTx(p.start);
+   UB_VCP_DataTx(p.type);
+   UB_VCP_DataTx(p.size);
+   UB_VCP_DataTx(p.key);
+   UB_USB_CDC_SendData((char*)p.buf, p.size);
+
+   PIN(packet_size) = i;
    PIN(buf_use) = bc;
 
    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED && systime >= 1000){

@@ -27,6 +27,8 @@
 #include "link.h"
 #include <math.h>
 
+#include "packet.h"
+
 #include "stm32_ub_usb_cdc.h"
 
 volatile uint16_t rxbuf;
@@ -257,6 +259,8 @@ int main(void)
    //set_cmd_stp();
    //set_cmd_lcnc();
    //set_cur_cmd();
+   link_hal_pins("sim0.sin", "term0.wave0");
+
 
 
    TIM_Cmd(TIM8, ENABLE);//int
@@ -265,7 +269,7 @@ int main(void)
 
    while(1)//run non realtime stuff
    {
-      Wait(2);
+      Wait(1);
       period = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0 - lasttime;
       lasttime = systime/1000.0 + (1.0 - SysTick->VAL/RCC_Clocks.HCLK_Frequency)/1000.0;
       for(int i = 0; i < hal.nrt_func_count; i++){//run all non realtime hal functions
