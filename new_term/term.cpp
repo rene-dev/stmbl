@@ -178,6 +178,7 @@ public:
    void OnDisconnect(wxCommandEvent& event);
    void OnRB(wxCommandEvent& event);
    void OnInput(wxCommandEvent& event);
+   void OnKeyDown(wxKeyEvent& event);
 
    void AddWave(wxString name);
 
@@ -225,6 +226,9 @@ private:
    wxMenu *file_menu;
    wxMenu *view_menu;
    wxMenu *connect_menu;
+
+   std::vector<wxString> history;
+   int histpos;
 
    static const int bufsize = 20000;
    unsigned char buf[bufsize+1];
@@ -358,6 +362,7 @@ MyFrame::MyFrame() : wxFrame( (wxFrame *)NULL, -1, "Servoterm", wxDefaultPositio
    m_log = new wxTextCtrl( this, -1, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
    m_cli = new wxTextCtrl( this, -1, "", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
    m_cli->Bind(wxEVT_TEXT_ENTER, &MyFrame::OnInput, this, wxID_ANY);
+   m_cli->Bind(wxEVT_KEY_DOWN, &MyFrame::OnKeyDown, this, wxID_ANY);
 
    rb_floating = new wxRadioButton(this, RB_ID, "floating", wxPoint(0,0), wxDefaultSize, wxRB_GROUP);
    rb_rolling = new wxRadioButton(this, RB_ID, "rolling", wxPoint(0,0), wxDefaultSize);
@@ -396,6 +401,7 @@ MyFrame::MyFrame() : wxFrame( (wxFrame *)NULL, -1, "Servoterm", wxDefaultPositio
    axesPos[0] = 0;
    axesPos[1] = 0;
    ticks = true;
+   histpos = 0;
 
 
    m_plot->EnableDoubleBuffer(true);
@@ -586,12 +592,12 @@ void MyFrame::Disconnect(wxCommandEvent& event){
 
 int MyFrame::send(wxString s){
     if(state == CONNECTED){
-      //   if(h){//history
-      //       if((history.size()==0 || history.back() != s) && !s.empty()){
-      //           history.push_back(s);
-      //       }
-      //       histpos = history.size();
-      //   }
+        if(true){//history
+            if((history.size()==0 || history.back() != s) && !s.empty()){
+                history.push_back(s);
+            }
+            histpos = history.size();
+        }
         int ret1 = sp_nonblocking_write(port, s.c_str(), s.length());
         int ret2 = sp_nonblocking_write(port, "\r", 1);
         if(ret1 != s.length() || ret2!=1){
@@ -610,6 +616,27 @@ void MyFrame::OnInput(wxCommandEvent& event){
     //string s =string(m_cli->GetValue().mb_str());
     send(m_cli->GetValue());
     m_cli->Clear();
+}
+
+void MyFrame::OnKeyDown(wxKeyEvent& event){
+	if(event.GetKeyCode() == 315){//up
+		if(histpos > 0 && history.size()>0){
+			m_cli->SetValue(history.at(--histpos));
+			m_cli->SetInsertionPointEnd();
+		}
+	}
+	else if(event.GetKeyCode() == 317){//down
+		if(histpos < history.size()-1 && history.size()>0){
+			m_cli->SetValue(history.at(++histpos));
+			m_cli->SetInsertionPointEnd();
+		}else if(histpos < history.size()){
+			histpos++;
+			m_cli->SetValue(wxT(""));
+		}
+    }else if (event.GetKeyCode() == 9){}//tab
+	else{
+		event.Skip();
+	}
 }
 
 //-----------------------------------------------------------------------------
