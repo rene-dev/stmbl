@@ -44,32 +44,31 @@ int main(){
 
 	dotfile << "digraph G {" << endl;
   dotfile << " rankdir = LR;" << endl;
-	dotfile << " ranksep = \"3 equally\";" << endl;
-	dotfile << " remincross = true;" << endl;
-	dotfile << " splines = true;" << endl;
-  dotfile << " overlap = false;" << endl;
-	dotfile << " concentrate = true;" << endl;
-  dotfile << " start = regular;" << endl;
-  dotfile << " forcelabels = true;" << endl;
+	dotfile << " ranksep = 2.0;" << endl;
+	//dotfile << " remincross = true;" << endl;
+//	dotfile << " splines = true;" << endl;
+dotfile << " splines = spline;" << endl;
+ dotfile << " overlap = false;" << endl;
+	//dotfile << " concentrate = true;" << endl;
+  //dotfile << " start = regular;" << endl;
+  //dotfile << " forcelabels = true;" << endl;
+  dotfile << " nodesep = 0.5;" << endl;
 
 	for(auto &comp:comps){
-	  dotfile << " subgraph cluster_" << comp.second.name << "{" << endl;
-	  dotfile << "  style = rounded;" << endl;
-	  dotfile << "  label = \"" << comp.second.name << "\";" << endl;
+	  dotfile << " " << comp.second.name << "[shape = \"none\", label = <<table border=\"2\" cellspacing=\"0\">\n  <tr><td border=\"1\" bgcolor=\"#FFD08E\"> " << comp.second.name << "</td></tr>\n";
 
 		for(auto &pin:comp.second.pins){
 			if(include_unlinked_pins || comp.second.name != pin.second.drv_comp_name || pin.second.name != pin.second.drv_pin_name){
-				dotfile << "  " << comp.second.name << "_" << pin.second.name << " [shape = box, style = filled, color = lightgrey, label = \"" << pin.second.name << " = " << pin.second.value << " \"];" << endl;
+				dotfile << "  <tr><td port=\"" << pin.second.name << "\" border = \"1\"> " << pin.second.name << " = " << pin.second.value << " </td></tr>\n";
 			}
 	  }
-
-		dotfile << " }" << endl;
+	  dotfile << " </table>>];" << endl;
 	}
 
 	for(auto &comp:comps){
 		for(auto &pin:comp.second.pins){
 			if(comp.second.name != pin.second.drv_comp_name || pin.second.name != pin.second.drv_pin_name){
-				dotfile << " " << pin.second.drv_comp_name << "_" << pin.second.drv_pin_name << " -> " << comp.second.name << "_" << pin.second.name << ";" << endl;
+				dotfile << " " << pin.second.drv_comp_name << ":" << pin.second.drv_pin_name << " -> " << comp.second.name << ":" << pin.second.name << " [spines = \"ortho\"];" << endl;
 			}
 		}
 	}
