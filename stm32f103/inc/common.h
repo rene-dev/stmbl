@@ -10,6 +10,8 @@
 #define TOFIXED(a) ((int16_t)(a*64))
 #define TOFLOAT(a) ((float)(a/64.0))
 
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
 //data from f1 to f4
 typedef struct{
    int16_t dc_cur;

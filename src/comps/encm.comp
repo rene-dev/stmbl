@@ -1,3 +1,9 @@
+#ifdef FB_TX
+#error at the moment you can only have one component using the tx channel of the feeback port(res or encm)
+#else
+#define FB_TX
+#endif
+
 COMP(encm);
 
 //HAL_PIN(enable) = 0.0;
