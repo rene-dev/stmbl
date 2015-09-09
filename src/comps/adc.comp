@@ -1,5 +1,17 @@
 COMP(adc);
 
+#define AREF 3.3// analog reference voltage
+#define ARES 4096.0// analog resolution, 12 bit
+
+#define R15 1000.0
+#define R22 3900.0
+#define R21 180.0
+#define R19 470.0
+#define V_REF 5.0
+#define INPUT_REF (V_REF * R21 / (R19 + R21))
+#define INPUT_GAIN (R22 / R15 * R21 / (R19 + R21))
+#define V_DIFF(ADC) ((ADC/ADC_ANZ/ARES*AREF-INPUT_REF)/INPUT_GAIN)
+
 HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
 HAL_PIN(sin3) = 0.0;
@@ -14,17 +26,14 @@ HAL_PIN(sin_offset) = 0.0;
 HAL_PIN(cos_offset) = 0.0;
 
 RT(
-  uint32_t si[PID_WAVES];
-  uint32_t co[PID_WAVES];
+  float si[PID_WAVES];
+  float co[PID_WAVES];
   uint32_t sc[PID_WAVES];
 
   float s_o = PIN(sin_offset);
   float c_o = PIN(cos_offset);
   float s_g = PIN(sin_gain);
   float c_g = PIN(cos_gain);
-
-  float s = 0.0;
-  float c = 0.0;
 
   for(int i = 0; i < PID_WAVES; i++){
     sc[i] = 0.0;
@@ -40,28 +49,21 @@ RT(
     si[i] = 0.0;
     co[i] = 0.0;
 
-    si[i] = sc[i] & 0x0000ffff;
-    co[i] = sc[i] >> 16;
+    si[i] = s_g * V_DIFF((sc[i] & 0x0000ffff)) + s_o;
+    co[i] = c_g * V_DIFF((sc[i] >> 16)) + c_o;
   }
 
-  s = s_g * (si[3] + s_o);
-  c = c_g * (co[3] + c_o);
-
-  PIN(sin3) = s;
-  PIN(cos3) = c;
+  PIN(sin3) = si[3];
+  PIN(cos3) = co[3];
 
   if(PIN(res_en) > 0.0){
-    s = s_g * (0.5 * si[3] - 0.25 * si[2] + 0.125 * si[1] - 0.125 * si[0] + 0.25 * s_o);
-    c = c_g * (0.5 * co[3] - 0.25 * co[2] + 0.125 * co[1] - 0.125 * co[0] + 0.25 * c_o);
+    PIN(sin) = 0.5 * si[3] - 0.25 * si[2] + 0.125 * si[1] - 0.125 * si[0] + 0.25;
+    PIN(cos) = 0.5 * co[3] - 0.25 * co[2] + 0.125 * co[1] - 0.125 * co[0] + 0.25;
   }
   else{
-    s = s_g * (0.5 * si[3] + 0.25 * si[2] + 0.125 * si[1] + 0.125 * si[0] + s_o);
-    c = c_g * (0.5 * co[3] + 0.25 * co[2] + 0.125 * co[1] + 0.125 * co[0] + c_o);
+    PIN(sin) = 0.5 * si[3] + 0.25 * si[2] + 0.125 * si[1] + 0.125 * si[0];
+    PIN(cos) = 0.5 * co[3] + 0.25 * co[2] + 0.125 * co[1] + 0.125 * co[0];
   }
-
-  PIN(sin) = s;
-  PIN(cos) = c;
-
 
 );
 
