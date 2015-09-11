@@ -77,6 +77,13 @@ HAL_PIN(min_acc) = 0.0;
 HAL_PIN(max_torque) = 0.0;
 HAL_PIN(min_torque) = 0.0;
 
+// user limits
+HAL_PIN(max_usr_vel) = 0.0;
+HAL_PIN(min_usr_vel) = 0.0;
+HAL_PIN(max_usr_acc) = 0.0;
+HAL_PIN(min_usr_acc) = 0.0;
+HAL_PIN(max_usr_torque) = 0.0;
+HAL_PIN(min_usr_torque) = 0.0;
 
 HAL_PIN(vel_sat) = 0.0;
 HAL_PIN(acc_sat) = 0.0;
