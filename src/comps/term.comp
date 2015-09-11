@@ -9,7 +9,7 @@ HAL_PIN(wave5) = 0.0;
 HAL_PIN(wave6) = 0.0;
 HAL_PIN(wave7) = 0.0;
 
-HAL_PIN(send_step) = 10.0;
+HAL_PIN(send_step) = 1.0;
 
 HAL_PIN(buf_use) = 0.0;
 HAL_PIN(packet_size) = 0.0;

@@ -172,7 +172,8 @@ public:
    void OnAbout( wxCommandEvent &event );
    void OnQuit( wxCommandEvent &event );
    void OnFit( wxCommandEvent &event );
-   void OnTimer(wxTimerEvent& event);
+   void OnPlotTimer(wxTimerEvent& event);
+   void OnUSBTimer(wxTimerEvent& event);
    void OnRefresh(wxCommandEvent& event);
    void OnConnect(wxCommandEvent& event);
    void OnDisconnect(wxCommandEvent& event);
@@ -185,7 +186,8 @@ public:
    mpWindow        *m_plot;
    wxTextCtrl      *m_log;
    wxTextCtrl      *m_cli;
-   wxTimer         *m_Timer;
+   wxTimer         *usb_Timer;
+   wxTimer         *plot_Timer;
    wxRadioButton   *rb_floating;
    wxRadioButton   *rb_rolling;
    wxTextCtrl      *tc_sampleFreq;
@@ -230,7 +232,7 @@ private:
    std::vector<wxString> history;
    int histpos;
 
-   static const int bufsize = 20000;
+   static const int bufsize = 1024;
    unsigned char buf[bufsize+1];
 
    void listports();
@@ -274,7 +276,8 @@ enum {
    ID_ALIGN_X_AXIS,
    ID_ALIGN_Y_AXIS,
    ID_TOGGLE_GRID,
-   TIMER_ID,
+   USB_TIMER_ID,
+   PLOT_TIMER_ID,
    RB_ID
 };
 
@@ -290,7 +293,8 @@ EVT_RADIOBUTTON(RB_ID, MyFrame::OnRB)
 // EVT_MENU(mpID_Refresh, MyFrame::OnRefresh)
 // EVT_MENU(mpID_Connect, MyFrame::OnConnect)
 // EVT_MENU(mpID_Disconnect, MyFrame::OnDisconnect)
-EVT_TIMER(TIMER_ID, MyFrame::OnTimer)
+EVT_TIMER(PLOT_TIMER_ID, MyFrame::OnPlotTimer)
+EVT_TIMER(USB_TIMER_ID, MyFrame::OnUSBTimer)
 END_EVENT_TABLE()
 
 void MyFrame::AddWave(wxString name){
@@ -325,7 +329,7 @@ void MyFrame::AddWave(wxString name){
 
 MyFrame::MyFrame() : wxFrame( (wxFrame *)NULL, -1, "Servoterm", wxDefaultPosition, wxSize(500,500) ){
    sampleTime = 10.0;
-   sampleFreq = 1000;
+   sampleFreq = 5000;
 
    file_menu = new wxMenu();
    view_menu = new wxMenu();
@@ -351,7 +355,7 @@ MyFrame::MyFrame() : wxFrame( (wxFrame *)NULL, -1, "Servoterm", wxDefaultPositio
    CreateStatusBar(1);
 
    m_plot = new mpWindow( this, -1, wxPoint(0,0), wxSize(100,100), wxSUNKEN_BORDER );
-   m_plot->SetMargins(0,0,40,40);
+   m_plot->SetMargins(0,0,60,40);
    mpScaleX* xaxis = new mpScaleX("t", mpALIGN_BOTTOM, true);
    mpScaleY* yaxis = new mpScaleY("y", mpALIGN_LEFT, true);
    xaxis->SetDrawOutsideMargins(false);
@@ -408,9 +412,11 @@ MyFrame::MyFrame() : wxFrame( (wxFrame *)NULL, -1, "Servoterm", wxDefaultPositio
    m_plot->LockAspect( false );
    m_plot->Fit();
 
-   m_Timer = new wxTimer(this,TIMER_ID);
-   m_Timer->Start( 25 );
+   plot_Timer = new wxTimer(this, PLOT_TIMER_ID);
+   plot_Timer->Start( 25 );
 
+   usb_Timer = new wxTimer(this, USB_TIMER_ID);
+   usb_Timer->Start( 20 );
 }
 
 void MyFrame::OnQuit( wxCommandEvent &WXUNUSED(event) )
@@ -441,10 +447,9 @@ void MyFrame::OnRB(wxCommandEvent& event){
    }
 }
 
-void MyFrame::OnTimer(wxTimerEvent& event)
+void MyFrame::OnUSBTimer(wxTimerEvent& event)
 {
    static float time = 0.0;
-   listports();
    int ret;
    static int addr = -4;
 
@@ -459,78 +464,85 @@ void MyFrame::OnTimer(wxTimerEvent& event)
       p.buf = data.buf;
 
       ret = sp_nonblocking_read(port, buf, bufsize);
-
-      // if(ret > 0){
-      //    std::cout << std::endl << std::endl << "got " << ret << " bytes: ";
-      //    for(int i = 0; i < ret; i++){
-      //       std::cout << (int)buf[i] << ", ";
-      //    }
-      //    std::cout << std::endl;
-      // }
-      for (int i = 0; i < ret; i++){
-         if(buf[i] == p.start) {
-            //std::cout << "start: " << (int)p.start;
-            addr = -3;
-         }
-         else if(addr == -3){
-            p.type = buf[i];
-            //std::cout << " type: " << (int)p.type;
-            addr++;
-         }
-         else if(addr == -2){
-            p.size = buf[i];
-            //std::cout << " size: " << (int)p.size;
-            addr++;
-         }
-         else if(addr == -1){
-            p.key = buf[i];
-            //std::cout << " key: " << (int)p.key;
-            addr++;
-         }
-         else if(addr >= 0){
-            if(addr < p.size){
-               data.buf[addr++] = buf[i];
-               //std::cout << " buf[" << addr - 1 << "] = " << (int)buf[i];
+      while(ret > 0){
+         // if(ret > 0){
+             //std::cout << "got " << ret << " bytes" << std::endl;
+         //    for(int i = 0; i < ret; i++){
+         //       std::cout << (int)buf[i] << ", ";
+         //    }
+         //    std::cout << std::endl;
+         // }
+         for (int i = 0; i < ret; i++){
+            if(buf[i] == p.start) {
+               //std::cout << "start: " << (int)p.start;
+               addr = -3;
             }
-            if(addr == p.size){
-               //std::cout << "complete" << std::endl;
-               addr = -4;
-               unbuff_packet(&p);
-
-               if(p.type == 1){
-                  //std::cout << "log" << std::endl;
-                  for(int i = 0; i < p.size; i++){
-                     m_log->AppendText(wxString::FromAscii(data.buf[i]));
-                  }
+            else if(addr == -3){
+               p.type = buf[i];
+               //std::cout << " type: " << (int)p.type;
+               addr++;
+            }
+            else if(addr == -2){
+               p.size = buf[i];
+               //std::cout << " size: " << (int)p.size;
+               addr++;
+            }
+            else if(addr == -1){
+               p.key = buf[i];
+               //std::cout << " key: " << (int)p.key;
+               addr++;
+            }
+            else if(addr >= 0){
+               if(addr < p.size){
+                  data.buf[addr++] = buf[i];
+                  //std::cout << " buf[" << addr - 1 << "] = " << (int)buf[i];
                }
-               else if(p.type == 2){
-                  if(p.size % 32 == 0){
-                     //std::cout << "got: " << data.wave[0] << std::endl;
-                     for(int i = 0; i < p.size / 32; i++){
-                        waves[0].data->AddData(data.wave[i * 8 + 0]);
-                        waves[1].data->AddData(data.wave[i * 8 + 1]);
-                        waves[2].data->AddData(data.wave[i * 8 + 2]);
-                        waves[3].data->AddData(data.wave[i * 8 + 3]);
-                        waves[4].data->AddData(data.wave[i * 8 + 4]);
-                        waves[5].data->AddData(data.wave[i * 8 + 5]);
-                        waves[6].data->AddData(data.wave[i * 8 + 6]);
-                        waves[7].data->AddData(data.wave[i * 8 + 7]);
+               if(addr == p.size){
+                  //std::cout << "complete" << std::endl;
+                  addr = -4;
+                  unbuff_packet(&p);
+
+                  if(p.type == 1){
+                     //std::cout << "log" << std::endl;
+                     for(int i = 0; i < p.size; i++){
+                        m_log->AppendText(wxString::FromAscii(data.buf[i]));
+                     }
+                  }
+                  else if(p.type == 2){
+                     if(p.size % 32 == 0){
+                        //std::cout << "got: " << data.wave[0] << std::endl;
+                        for(int i = 0; i < p.size / 32; i++){
+                           waves[0].data->AddData(data.wave[i * 8 + 0]);
+                           waves[1].data->AddData(data.wave[i * 8 + 1]);
+                           waves[2].data->AddData(data.wave[i * 8 + 2]);
+                           waves[3].data->AddData(data.wave[i * 8 + 3]);
+                           waves[4].data->AddData(data.wave[i * 8 + 4]);
+                           waves[5].data->AddData(data.wave[i * 8 + 5]);
+                           waves[6].data->AddData(data.wave[i * 8 + 6]);
+                           waves[7].data->AddData(data.wave[i * 8 + 7]);
+                        }
+                     }
+                     else{
+                        std::cout << "wrong packet size: " << (int)p.size << std::endl;
                      }
                   }
                   else{
-                     std::cout << "wrong packet size: " << (int)p.size << std::endl;
+                     std::cout << "unknown packet type: " << (int)p.type << std::endl;
                   }
                }
-               else{
-                  std::cout << "unknown packet type: " << (int)p.type << std::endl;
-               }
+            }
+            else if(addr != -4){
+               std::cout << "addr fail: " << addr << std::endl;
             }
          }
-         else if(addr != -4){
-            std::cout << "addr fail: " << addr << std::endl;
-         }
+         ret = sp_nonblocking_read(port, buf, bufsize);
       }
    }
+}
+
+void MyFrame::OnPlotTimer(wxTimerEvent& event)
+{
+   listports();
    m_plot->UpdateAll();
 }
 

@@ -3,7 +3,7 @@
 struct packet{
    unsigned char start; // 255
    unsigned char type; // 1 = text, 2 = waves
-   unsigned char size; // min(sizeof(data), 255)
+   unsigned char size; // min(sizeof(data), 254)
    unsigned char key;
    union{
       char* txt;
@@ -16,7 +16,7 @@ void buff_packet(struct packet* p){
    int nonkey_count = 0;
    for(int i = p->size - 1; i >= 0; i--){
       if(p->buf[i] == p->start){
-         p->buf[i] = nonkey_count + 1;
+         p->buf[i] = nonkey_count;
          nonkey_count = 0;
       }
       else{
@@ -31,6 +31,6 @@ void unbuff_packet(struct packet* p){
    for(int j = p->key; j < p->size;){
       temp = p->buf[j];
       p->buf[j] = p->start;
-      j += temp;
+      j += temp + 1;
    }
 }
