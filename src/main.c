@@ -32,6 +32,7 @@
 volatile uint16_t rxbuf;
 GLOBAL_HAL_PIN(g_dc_cur);
 GLOBAL_HAL_PIN(g_dc_volt);
+GLOBAL_HAL_PIN(g_ac_volt);
 GLOBAL_HAL_PIN(g_hv_temp);
 GLOBAL_HAL_PIN(g_iu);
 GLOBAL_HAL_PIN(g_iv);
@@ -104,6 +105,7 @@ void UART_DRV_IRQ(){
       datapos = -1;
       PIN(g_dc_cur) = TOFLOAT(from_hv.dc_cur);
       PIN(g_dc_volt) = TOFLOAT(from_hv.dc_volt);
+      PIN(g_ac_volt) = PIN(g_dc_volt) / 2.0 * 0.95 * 1.15;
       PIN(g_hv_temp) = TOFLOAT(from_hv.hv_temp);
 #ifdef TROLLER
       PIN(g_iu) = TOFLOAT(from_hv.a);
@@ -151,7 +153,7 @@ int main(void)
 
    #include "comps/pwm2uart.comp"
 
-   //#include "comps/absavg.comp"
+   #include "comps/var.comp"
 
    #include "comps/term.comp"
    #include "comps/led.comp"
@@ -169,6 +171,7 @@ int main(void)
    HAL_PIN(dc_cur) = 0.0;
    HAL_PIN(ac_cur) = 0.0;
    HAL_PIN(dc_volt) = 0.0;
+   HAL_PIN(ac_volt) = 0.0;
    HAL_PIN(hv_temp) = 0.0;
    HAL_PIN(core_temp0) = 0.0;
    HAL_PIN(core_temp1) = 0.0;
@@ -229,6 +232,7 @@ int main(void)
 
    g_dc_cur_hal_pin = map_hal_pin("net0.dc_cur");
    g_dc_volt_hal_pin = map_hal_pin("net0.dc_volt");
+   g_ac_volt_hal_pin = map_hal_pin("net0.ac_volt");
    g_hv_temp_hal_pin = map_hal_pin("net0.hv_temp");
    g_iu_hal_pin = map_hal_pin("net0.iu");
    g_iv_hal_pin = map_hal_pin("net0.iv");
@@ -243,13 +247,13 @@ int main(void)
 
    //set_bergerlahr();
    //set_mitsubishi();
-   //set_festo();
+   set_festo();
    //set_manutec();
    //set_rexroth();
    //set_sanyo();
    //set_bosch1();
    //set_bosch1();
-   set_hauser();
+   //set_hauser();
    //set_sanyo();
    //set_br();
 
