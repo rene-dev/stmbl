@@ -125,11 +125,11 @@ int main(void)
    #include "comps/adc.comp"
    #include "comps/fault.comp"
    #include "comps/enc_cmd.comp"
-   #include "comps/enc_fb.comp"
+   //#include "comps/enc_fb.comp"
 
-   //#include "comps/en.comp"
-   //#include "comps/res.comp"
-   #include "comps/encm.comp"
+   #include "comps/en.comp"
+   #include "comps/res.comp"
+   //#include "comps/encm.comp"
    #include "comps/sim.comp"
    #include "comps/stp.comp"
 
@@ -145,15 +145,15 @@ int main(void)
 
    #include "comps/rev.comp"
 
-   #include "comps/dq.comp"
+   //#include "comps/dq.comp"
    #include "comps/curpid.comp"
    #include "comps/pmsm.comp"
-   #include "comps/mot.comp"
+   //#include "comps/mot.comp"
    #include "comps/idq.comp"
 
    #include "comps/pwm2uart.comp"
 
-   #include "comps/absavg.comp"
+   //#include "comps/absavg.comp"
 
    #include "comps/term.comp"
    #include "comps/led.comp"
@@ -208,19 +208,19 @@ int main(void)
    HAL_PIN(out_rev) = 0.0;
    HAL_PIN(fb_res) = 1.0;
    HAL_PIN(cmd_res) = 2000.0;
-   HAL_PIN(sin_offset) = -17600.0;
-   HAL_PIN(cos_offset) = -17661.0;
-   HAL_PIN(sin_gain) = 0.0001515;
-   HAL_PIN(cos_gain) = 0.00015;
+   HAL_PIN(sin_offset) = 0.0;
+   HAL_PIN(cos_offset) = 0.0;
+   HAL_PIN(sin_gain) = 1.0;
+   HAL_PIN(cos_gain) = 1.0;
 
    HAL_PIN(max_dc_volt) = 370.0;
-   HAL_PIN(max_hv_temp) = 100.0;
+   HAL_PIN(max_hv_temp) = 90.0;
    HAL_PIN(max_core_temp) = 55.0;
    HAL_PIN(max_motor_temp) = 100.0;
    HAL_PIN(max_pos_error) = M_PI / 2.0;
    HAL_PIN(high_dc_volt) = 350.0;
    HAL_PIN(low_dc_volt) = 12.0;
-   HAL_PIN(high_hv_temp) = 80.0;
+   HAL_PIN(high_hv_temp) = 70.0;
    HAL_PIN(high_motor_temp) = 80.0;
    HAL_PIN(fan_hv_temp) = 60.0;
    HAL_PIN(fan_core_temp) = 450.0;
@@ -244,18 +244,19 @@ int main(void)
    link_pid();
 
    //set_bergerlahr();
-   set_mitsubishi();
+   //set_mitsubishi();
    //set_festo();
    //set_manutec();
    //set_rexroth();
    //set_sanyo();
    //set_bosch1();
-   //set_bosch4();
+   //set_bosch1();
+   set_hauser();
    //set_sanyo();
    //set_br();
 
 
-   //set_cmd_enc();
+   set_cmd_enc();
    //set_cmd_stp();
    //set_cmd_lcnc();
    //set_cur_cmd();
@@ -263,7 +264,7 @@ int main(void)
 
 
 
-   TIM_Cmd(TIM8, ENABLE);//int
+   TIM_Cmd(TIM2, ENABLE);//int
 
    UB_USB_CDC_Init();
 

@@ -87,11 +87,6 @@
 #define FAN_PORT GPIOC
 #define FAN_IO_RCC RCC_AHB1Periph_GPIOC
 
-// uart
-#define UART_CMD USART1
-#define UART_CMD_RCC RCC_APB2Periph_USART1
-
-
 #ifdef TROLLER
 
 #define UART_DRV USART1
@@ -151,20 +146,6 @@
 #define UART_DRV_TX_AF_SOURCE GPIO_AF_USART2
 
 #endif
-
-
-//// gpio
-#define UART_CMD_RX_PIN GPIO_Pin_7
-#define UART_CMD_RX_PORT GPIOB
-#define UART_CMD_RX_IO_RCC RCC_AHB1Periph_GPIOB
-#define UART_CMD_RX_PIN_SOURCE GPIO_PinSource7
-#define UART_CMD_RX_AF_SOURCE GPIO_AF_USART1
-
-#define UART_CMD_TX_PIN GPIO_Pin_6
-#define UART_CMD_TX_PORT GPIOB
-#define UART_CMD_TX_IO_RCC RCC_AHB1Periph_GPIOB
-#define UART_CMD_TX_PIN_SOURCE GPIO_PinSource6
-#define UART_CMD_TX_AF_SOURCE GPIO_AF_USART1
 
 // i2c
 #define I2C I2C1

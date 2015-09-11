@@ -23,7 +23,7 @@
 //sample times for F4: 3,15,28,56,84,112,144,480
 #define RES_SampleTime ADC_SampleTime_28Cycles
 
-#define  ADC_ANZ 8
+#define  ADC_ANZ 16
 #define  PID_WAVES 4
 
 void setup();

@@ -41,16 +41,16 @@ RT(
    float indd = vel_e * psi_q;
    float indq = vel_e * psi_d;
 
-   id += (ud - r * id - indd) / ld * period / 4.0;
+   id += (ud - r * id + indd) / ld * period / 4.0;
    iq += (uq - r * iq - indq) / lq * period / 4.0;
 
-   id += (ud - r * id - indd) / ld * period / 4.0;
+   id += (ud - r * id + indd) / ld * period / 4.0;
    iq += (uq - r * iq - indq) / lq * period / 4.0;
 
-   id += (ud - r * id - indd) / ld * period / 4.0;
+   id += (ud - r * id + indd) / ld * period / 4.0;
    iq += (uq - r * iq - indq) / lq * period / 4.0;
 
-   id += (ud - r * id - indd) / ld * period / 4.0;
+   id += (ud - r * id + indd) / ld * period / 4.0;
    iq += (uq - r * iq - indq) / lq * period / 4.0;
 
    float t = 3.0 / 2.0 * p * (psi_m * iq + (ld - lq) * id * iq);
