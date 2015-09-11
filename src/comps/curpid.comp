@@ -29,6 +29,9 @@ HAL_PIN(kind) = 0.0;
 HAL_PIN(id_error) = 0.0;
 HAL_PIN(iq_error) = 0.0;
 
+HAL_PIN(res) = 1200.0;
+HAL_PIN(volt_res) = 0.0;
+
 MEM(float id_error_sum) = 0.0;
 MEM(float iq_error_sum) = 0.0;
 
@@ -37,6 +40,7 @@ RT(
    float rq = MAX(PIN(rq), 0.1);
    float ld = MAX(PIN(ld), 0.001);
    float lq = MAX(PIN(lq), 0.001);
+   float volt_res = PIN(volt) / MAX(PIN(res), 1.0);
    float volt = MAX(PIN(volt) * PIN(max_pwm) * 1.15, 0.1);
 
    float ff = PIN(ff);
@@ -70,8 +74,12 @@ RT(
    float ud = CLAMP(ff * rd * idc + kpd * id_error + kpd * kid * id_error_sum + kind * indd, -volt / 2.0, volt / 2.0);
    float uq = CLAMP(ff * rq * iqc + kpq * iq_error + kpq * kiq * iq_error_sum + kind * indq, -volt / 2.0, volt / 2.0);
 
+   ud = ((int)(ud / volt_res)) * volt_res;
+   uq = ((int)(uq / volt_res)) * volt_res;
+
    PIN(ud) = ud;
    PIN(uq) = uq;
+   PIN(volt_res) = volt_res;
 
    PIN(id_error) = id_error;
    PIN(iq_error) = iq_error;
