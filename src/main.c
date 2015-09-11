@@ -209,10 +209,10 @@ int main(void)
    HAL_PIN(out_rev) = 0.0;
    HAL_PIN(fb_res) = 1.0;
    HAL_PIN(cmd_res) = 2000.0;
-   HAL_PIN(sin_offset) = -17600.0;
-   HAL_PIN(cos_offset) = -17661.0;
-   HAL_PIN(sin_gain) = 0.0001515;
-   HAL_PIN(cos_gain) = 0.00015;
+   HAL_PIN(sin_offset) = 0.0;
+   HAL_PIN(cos_offset) = 0.0;
+   HAL_PIN(sin_gain) = 1.0;
+   HAL_PIN(cos_gain) = 1.0;
 
    HAL_PIN(max_dc_volt) = 370.0;
    HAL_PIN(max_hv_temp) = 90.0;
@@ -264,7 +264,7 @@ int main(void)
    //set_cur_cmd();
 
 
-   TIM_Cmd(TIM8, ENABLE);//int
+   TIM_Cmd(TIM2, ENABLE);//int
 
    UB_USB_CDC_Init();
 

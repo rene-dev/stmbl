@@ -29114,7 +29114,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="R15" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R16" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R17" library="rcl" deviceset="R-EU_" device="R0603" value="3.9k"/>
-<part name="R19" library="rcl" deviceset="R-EU_" device="R0603" value="330"/>
+<part name="R19" library="rcl" deviceset="R-EU_" device="R0603" value="470"/>
 <part name="R21" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
 <part name="R22" library="rcl" deviceset="R-EU_" device="R0603" value="3.9k"/>
 <part name="C38" library="rcl" deviceset="C-EU" device="C0603" value="1n"/>
@@ -29130,7 +29130,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="R20" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R24" library="rcl" deviceset="R-EU_" device="R0603" value="1k"/>
 <part name="R25" library="rcl" deviceset="R-EU_" device="R0603" value="3.9k"/>
-<part name="R26" library="rcl" deviceset="R-EU_" device="R0603" value="330"/>
+<part name="R26" library="rcl" deviceset="R-EU_" device="R0603" value="470"/>
 <part name="R27" library="rcl" deviceset="R-EU_" device="R0603" value="180"/>
 <part name="R28" library="rcl" deviceset="R-EU_" device="R0603" value="3.9k"/>
 <part name="C40" library="rcl" deviceset="C-EU" device="C0603" value="1n"/>

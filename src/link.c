@@ -713,10 +713,10 @@ void set_mitsubishi(){ // TODO
    set_hal_pin("conf0.fb_rev", 0.0);
    set_hal_pin("conf0.out_rev", 0.0);
    set_hal_pin("conf0.fb_res", 16384.0);
-   set_hal_pin("conf0.r", 1.5);
+   set_hal_pin("conf0.r", 1.2); // 0.75, 1.2
    set_hal_pin("conf0.l", 0.0025);
    set_hal_pin("conf0.j", KGCM2(0.5));
-   set_hal_pin("conf0.psi", 0.34);
+   set_hal_pin("conf0.psi", 0.3); //0.3
 
    set_hal_pin("conf0.pos_p", 50.0);
    set_hal_pin("conf0.acc_p", 0.1);
