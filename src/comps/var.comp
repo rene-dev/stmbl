@@ -1,28 +1,45 @@
 COMP(var);
 
-HAL_PIN(in) = 0.0;
-HAL_PIN(var) = 0.0;
+//in
+HAL_PIN(x) = 0.0;
+HAL_PIN(l1) = 0.999;
+HAL_PIN(l2) = 0.999;
+HAL_PIN(en) = 0.0;
 
-MEM(float data[100]);
-MEM(int pos) = 0;
+
+//out
+HAL_PIN(var1) = 0.0;
+HAL_PIN(var2) = 0.0;
+HAL_PIN(u) = 0.0;
+
+MEM(unsigned int n) = 0.0;
+MEM(float sum1) = 0.0;
+MEM(float sum2) = 0.0;
+MEM(float var) = 0.0;
+MEM(float u) = 0.0;
 
 RT(
-  float i = PIN(in);
-  float avg = 0.0;
-  float o = 0.0;
+   if(PIN(en) <= 0.0){
+      sum1 = 0.0;
+      sum2 = 0.0;
+      n = 0;
+   }
+   float x = PIN(x);
+   sum1 += x * x;
+   n++;
+   sum2 += x;
 
-  data[pos++] = i;
-  pos = pos % 100;
+   PIN(var1) = sum1 - sum2 * sum2 / n;
 
-  for(int i = 0; i < 100; i++){
-    avg += data[i] / 100.0;
-  }
+   float l1 = PIN(l1);
+   float l2 = PIN(l2);
 
-  for(int i = 0; i < 100; i++){
-    o += ABS(data[i] - avg);
-  }
+   u = l1 * u + x * (1 - l1);
+   var += (x - u) * (x - u);
+   var *= l2;
 
-  PIN(var) = o;
+   PIN(u) = u;
+   PIN(var2) = var;
 );
 
 ENDCOMP;
