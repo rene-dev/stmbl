@@ -125,10 +125,10 @@ int main(void)
    #include "comps/adc.comp"
    #include "comps/fault.comp"
    #include "comps/enc_cmd.comp"
-   //#include "comps/enc_fb.comp"
+   #include "comps/enc_fb.comp"
 
    #include "comps/en.comp"
-   #include "comps/res.comp"
+   //#include "comps/res.comp"
    //#include "comps/encm.comp"
    #include "comps/sim.comp"
    #include "comps/stp.comp"
@@ -142,12 +142,14 @@ int main(void)
    #include "comps/pderiv.comp"
 
    #include "comps/pid.comp"
+   #include "comps/pmsm_t2c.comp"
 
    #include "comps/rev.comp"
 
    //#include "comps/dq.comp"
    #include "comps/curpid.comp"
    #include "comps/pmsm.comp"
+   #include "comps/pmsm_limits.comp"
    //#include "comps/mot.comp"
    #include "comps/idq.comp"
 
@@ -247,9 +249,9 @@ int main(void)
 
    //set_bergerlahr();
    //set_mitsubishi();
-   set_festo();
+   //set_festo();
    //set_manutec();
-   //set_rexroth();
+   set_rexroth();
    //set_sanyo();
    //set_bosch1();
    //set_bosch1();

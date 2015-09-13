@@ -27,7 +27,6 @@ MEM(float iq) = 0.0;
 RT(
    float p = (int)MAX(PIN(polecount), 1.0);
    float vel_e = PIN(vel) * p;
-   vel_e /= 2.0 * M_PI;
    float ld = MAX(PIN(ld), 0.0001);
    float lq = MAX(PIN(lq), 0.0001);
    float ud = PIN(ud);

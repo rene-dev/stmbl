@@ -71,19 +71,13 @@ HAL_PIN(j) = 0.0;
 
 // system limits
 HAL_PIN(max_vel) = 0.0;
-HAL_PIN(min_vel) = 0.0;
-HAL_PIN(max_acc) = 0.0;
-HAL_PIN(min_acc) = 0.0;
 HAL_PIN(max_torque) = 0.0;
 HAL_PIN(min_torque) = 0.0;
 
 // user limits
 HAL_PIN(max_usr_vel) = 0.0;
-HAL_PIN(min_usr_vel) = 0.0;
 HAL_PIN(max_usr_acc) = 0.0;
-HAL_PIN(min_usr_acc) = 0.0;
 HAL_PIN(max_usr_torque) = 0.0;
-HAL_PIN(min_usr_torque) = 0.0;
 
 HAL_PIN(vel_sat) = 0.0;
 HAL_PIN(acc_sat) = 0.0;
@@ -99,26 +93,28 @@ MEM(float acccmd) = 0.0;
 MEM(float torquecmd) = 0.0;
 
 RT(
-   float posextcmd = PIN(pos_ext_cmd);
-   float posfb = PIN(pos_fb);
-   float poserr = minus(posextcmd, posfb);
+   float j = MAX(PIN(j), 0.0000001);
+
+   float torqueextcmd = PIN(torque_ext_cmd);
+   float torquemin = MAX(PIN(min_torque), -PIN(max_usr_torque));
+   float torquemax = MIN(PIN(max_torque), -PIN(max_usr_torque));
+   float torquesat;
+
+   float accextcmd = PIN(acc_ext_cmd);
+   float accmin = MAX(torquemax / j, -PIN(max_usr_acc));
+   float accmax = MIN(torquemin / j, PIN(max_usr_acc));
+   float accsat;
 
    float velextcmd = PIN(vel_ext_cmd);
    float velfb = PIN(vel_fb);
-   float velmin = PIN(min_vel);
-   float velmax = PIN(max_vel);
+   float velmin = MAX(MAX(velfb + accmin * period, -PIN(max_vel)) , -PIN(max_usr_vel));
+   float velmax = MIN(MIN(velfb + accmax * period, PIN(max_vel)), PIN(max_usr_vel));
    float velerr;
    float velsat;
 
-   float accextcmd = PIN(acc_ext_cmd);
-   float accmin = PIN(min_acc);
-   float accmax = PIN(max_acc);
-   float accsat;
-
-   float torqueextcmd = PIN(torque_ext_cmd);
-   float torquemin = PIN(min_torque);
-   float torquemax = PIN(max_torque);
-   float torquesat;
+   float posextcmd = PIN(pos_ext_cmd);
+   float posfb = PIN(pos_fb);
+   float poserr = minus(posextcmd, posfb);
 
    float posp = MAX(PIN(pos_p), 0.0);
    float poslp = LP_HZ(PIN(pos_lp));
@@ -128,8 +124,6 @@ RT(
    float accpi = MAX(PIN(acc_pi), 0.0);
    //float accaw = MAX(PIN(acc_aw), 0.0);
    float acclp = LP_HZ(PIN(acc_lp));
-
-   float j = MAX(PIN(j), 0.0);
 
    float old_velcmd = velcmd;
    float old_acccmd = acccmd;
@@ -200,6 +194,9 @@ RT(
       velerr = 0.0;
       acccmd = 0.0;
       torquecmd = 0.0;
+      velsat = 0.0;
+      accsat = 0.0;
+      torquesat = 0.0;
       sat = 0.0;
    }
 

@@ -1,0 +1,21 @@
+COMP(t2c);
+
+// motor values
+HAL_PIN(psi) = 0.01;
+HAL_PIN(polecount) = 1.0;
+
+// torque cmd in
+HAL_PIN(torque) = 0.0;
+
+// cur cmd out
+HAL_PIN(cur) = 0.0;
+
+RT(
+   float p = MAX(PIN(polecount), 1.0);
+   float psi_m = MAX(PIN(psi), 0.01);
+   float torque = PIN(torque);
+
+   PIN(cur) = torque / 3.0 * 2.0 / p / psi_m;
+);
+
+ENDCOMP;

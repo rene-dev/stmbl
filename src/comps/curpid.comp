@@ -13,7 +13,7 @@ HAL_PIN(ud) = 0.0;
 HAL_PIN(uq) = 0.0;
 
 HAL_PIN(ac_volt) = 0.0;
-HAL_PIN(volt) = 0.0;
+HAL_PIN(dc_volt) = 0.0;
 HAL_PIN(max_cur) = 0.0;
 
 HAL_PIN(rd) = 0.0;
@@ -41,7 +41,7 @@ RT(
    float ld = MAX(PIN(ld), 0.001);
    float lq = MAX(PIN(lq), 0.001);
    float volt = MAX(PIN(ac_volt) , 0.1);
-   float volt_res = PIN(volt) / MAX(PIN(res), 1.0);
+   float volt_res = PIN(dc_volt) / MAX(PIN(res), 1.0);
 
    float ff = PIN(ff);
    float kpd = ld * PIN(kp) / period;

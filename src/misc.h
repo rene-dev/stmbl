@@ -34,14 +34,15 @@ extern "C" {
 #define STEP(from, to, step)  (((from) < (to)) ? (MIN((from) + (step), (to))) : (MAX((from) - (step), (to))))
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
-#define DEG(a) ((a)*M_PI/180.0)
-#define RAD(a) ((a)*180.0/M_PI)
+#define DEG(a) ((a) * M_PI / 180.0)
+#define RAD(a) ((a) * 180.0 / M_PI)
 #define SIGN(a) (((a) < 0.0) ? (-1.0) : (((a) > 0.0) ? (1.0) : (0.0)))
 
 //pid krams
-#define RPM(a) ((a)/60.0 * M_PI * 2.0)
-#define KGCM2(a) ((a)/1000.0)
-#define LP_HZ(a) ((a <= 0.0) ? (1.0) : (1.0 / (5000.0 / ((a) * M_PI * 2.0) + 1.0)))
+#define RPM(a) ((a) / 60.0 * M_PI * 2.0)
+#define KGCM2(a) ((a) / 10000.0)
+//#define VKRPM(a, b) ((a)) * 60.0 / (sqrtf(3.0) * 1000.0 * M_PI * 2.0 * (b)))) // Volt/krpm, polecount
+#define LP_HZ(a) (((a) <= 0.0) ? (1.0) : (1.0 / (5000.0 / ((a) * M_PI * 2.0) + 1.0)))
 
 float minus(float a, float b);
 float mod(float a);
