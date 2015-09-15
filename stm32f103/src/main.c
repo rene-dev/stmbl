@@ -120,6 +120,11 @@ void GPIO_Configuration(void)
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
+   //Fault in
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
 #endif
 }
 
@@ -313,7 +318,7 @@ void TIM1_UP_IRQHandler(){
    if(timeout > 30){
       GPIO_ResetBits(GPIOB,GPIO_Pin_6);   //disable driver
       GPIO_SetBits(GPIOC,GPIO_Pin_1);  //yellow led on
-      GPIO_ResetBits(GPIOC,GPIO_Pin_2);   //greep led off
+      //GPIO_ResetBits(GPIOC,GPIO_Pin_2);   //green led off
    }else{
       GPIO_SetBits(GPIOB,GPIO_Pin_6);  //Enable driver
       //GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
@@ -328,6 +333,13 @@ void DMA1_Channel1_IRQHandler(){
    DMA_ClearITPendingBit(DMA1_IT_TC1);
 
    //TODO: hadrware limits for current, temperature and voltage
+   
+   //fault test
+   if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)){
+      GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
+   }else{
+      GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
+   }
 
    volt_raw = ADCConvertedValue[0];
    amp_raw = ADCConvertedValue[1];
