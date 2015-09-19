@@ -318,8 +318,8 @@ void set_rexroth(){
    set_hal_pin("conf0.j", 0.000013);//data, 0.000090
    set_hal_pin("conf0.psi", 0.29 / 2.0 / M_PI);//data
 
-   set_hal_pin("conf0.pos_p", 85.0);
-   set_hal_pin("conf0.acc_p", 0.03);
+   set_hal_pin("conf0.pos_p", 100.0);
+   set_hal_pin("conf0.acc_p", 0.2);
    set_hal_pin("conf0.acc_pi", 50.0);
    set_hal_pin("conf0.cur_p", 0.5);
    set_hal_pin("conf0.cur_i", 0.001);
