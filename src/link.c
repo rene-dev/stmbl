@@ -95,7 +95,8 @@ void link_pid(){
    link_hal_pins("conf0.fb_offset", "cauto0.mag_offset");
 
    // pid
-   link_hal_pins("conf0.mot_j", "pid0.j");
+   link_hal_pins("conf0.j", "pid0.j");
+   link_hal_pins("conf0.p", "pid0.p");
    link_hal_pins("conf0.pos_p", "pid0.pos_p");
    link_hal_pins("conf0.vel_p", "pid0.vel_p");
    link_hal_pins("conf0.acc_p", "pid0.acc_p");

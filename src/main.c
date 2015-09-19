@@ -125,7 +125,8 @@ int main(void)
    #include "comps/adc.comp"
    #include "comps/fault.comp"
    #include "comps/enc_cmd.comp"
-   #include "comps/enc_fb.comp"
+   //#include "comps/enc_fb.comp"
+   #include "comps/enc_fb_org.comp"
 
    #include "comps/en.comp"
    //#include "comps/res.comp"
@@ -191,6 +192,7 @@ int main(void)
    HAL_PIN(polecount) = 0.0;
    HAL_PIN(fb_polecount) = 0.0;
    HAL_PIN(fb_offset) = 0.0;
+   HAL_PIN(p) = 0.9;
    HAL_PIN(pos_p) = 0.0;
    HAL_PIN(vel_p) = 1.0;
    HAL_PIN(acc_p) = 0.0;

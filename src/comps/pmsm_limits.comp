@@ -18,16 +18,13 @@ HAL_PIN(next_min_torque) = 0.0;
 
 // min max out @ current vel
 HAL_PIN(max_cur) = 0.0;
-HAL_PIN(max_acc) = 0.0;
 HAL_PIN(max_torque) = 0.0;
 HAL_PIN(min_cur) = 0.0;
-HAL_PIN(min_acc) = 0.0;
 HAL_PIN(min_torque) = 0.0;
 
 // abs max out
 HAL_PIN(abs_max_cur) = 0.0;
 HAL_PIN(abs_max_torque) = 0.0;
-HAL_PIN(abs_max_acc) = 0.0;
 HAL_PIN(abs_max_vel) = 0.0;
 
 // pmsm feedback

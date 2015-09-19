@@ -46,6 +46,8 @@ HAL_PIN(pos_en) = 1.0;
 HAL_PIN(vel_en) = 1.0;
 HAL_PIN(acc_en) = 1.0;
 
+HAL_PIN(p) = 0.9;
+
 HAL_PIN(pos_p) = 100.0;
 HAL_PIN(pos_lp) = 5000.0;
 
@@ -94,21 +96,22 @@ MEM(float torquecmd) = 0.0;
 
 RT(
    float j = MAX(PIN(j), 0.0000001);
+   float p = PIN(p);
 
    float torqueextcmd = PIN(torque_ext_cmd);
-   float torquemin = MAX(PIN(min_torque), -PIN(max_usr_torque));
-   float torquemax = MIN(PIN(max_torque), -PIN(max_usr_torque));
+   float torquemin = MAX(PIN(min_torque) * p, -PIN(max_usr_torque));
+   float torquemax = MIN(PIN(max_torque) * p, PIN(max_usr_torque));
    float torquesat;
 
    float accextcmd = PIN(acc_ext_cmd);
-   float accmin = MAX(torquemax / j, -PIN(max_usr_acc));
-   float accmax = MIN(torquemin / j, PIN(max_usr_acc));
+   float accmin = -PIN(max_usr_acc);//MAX(torquemin / j, -PIN(max_usr_acc));
+   float accmax = PIN(max_usr_acc);//MIN(torquemax / j, PIN(max_usr_acc));
    float accsat;
 
    float velextcmd = PIN(vel_ext_cmd);
    float velfb = PIN(vel_fb);
-   float velmin = MAX(MAX(velfb + accmin * period, -PIN(max_vel)) , -PIN(max_usr_vel));
-   float velmax = MIN(MIN(velfb + accmax * period, PIN(max_vel)), PIN(max_usr_vel));
+   float velmin = MAX(-PIN(max_vel) * p, -PIN(max_usr_vel));//MAX(MAX(velfb + accmin * period, -PIN(max_vel) * p) , -PIN(max_usr_vel));
+   float velmax = MIN(PIN(max_vel) * p, PIN(max_usr_vel));//MIN(MIN(velfb + accmax * period, PIN(max_vel) * p), PIN(max_usr_vel));
    float velerr;
    float velsat;
 
