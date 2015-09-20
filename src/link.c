@@ -597,11 +597,17 @@ void set_festo(){ // TODO
    set_hal_pin("conf0.j", KGCM2(0.26));//typenschild
    set_hal_pin("conf0.psi", 0.35 / 2.0 / M_PI);//typenschild
 
-   set_hal_pin("conf0.pos_p", 60.0);
-   set_hal_pin("conf0.acc_p", 0.02);
-   set_hal_pin("conf0.acc_pi", 70.0);
-   set_hal_pin("conf0.cur_lp", 0.0);
-
+   set_hal_pin("conf0.pos_p", 150.0);
+   set_hal_pin("conf0.acc_p", 0.05);
+   set_hal_pin("conf0.acc_pi", 100.0);
+   set_hal_pin("conf0.cur_p", 0.5);
+   set_hal_pin("conf0.cur_i", 0.001);
+   set_hal_pin("conf0.cur_ff", 1.0);
+   set_hal_pin("conf0.cur_ind", 0.9);
+   set_hal_pin("conf0.autophase", 0.0);
+   set_hal_pin("conf0.fb_offset", 1.324);
+   set_hal_pin("conf0.sin_offset", -1.0);
+   set_hal_pin("conf0.cos_offset", -1.0);
    //set_hal_pin("brake0.brake", 1.0);
    set_fb_res();
 }
