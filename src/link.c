@@ -23,17 +23,22 @@ void link_pid(){
    link_hal_pins("conf0.fb_rev", "rev1.rev");
 
    link_hal_pins("rev1.out", "cauto0.fb_in");
-   link_hal_pins("cauto0.fb_out", "net0.fb");
-   link_hal_pins("net0.fb", "pderiv1.in");
-   link_hal_pins("pderiv1.out", "net0.fb_d");
+   //link_hal_pins("cauto0.fb_out", "net0.fb");
+   //link_hal_pins("net0.fb", "pderiv1.in");
+   //link_hal_pins("pderiv1.out", "net0.fb_d");
+   link_hal_pins("cauto0.fb_out", "vel0.pos_in");
+   link_hal_pins("conf0.j", "vel0.j");
+   link_hal_pins("pmsm0.torque", "vel0.torque");
+   link_hal_pins("vel0.vel", "net0.fb_d");
+   link_hal_pins("vel0.pos_out", "net0.fb");
 
-   link_hal_pins("conf0.max_vel", "pderiv1.vel_max");
-   link_hal_pins("conf0.max_acc", "pderiv1.acc_max");
+   //link_hal_pins("conf0.max_vel", "pderiv1.vel_max");
+   //link_hal_pins("conf0.max_acc", "pderiv1.acc_max");
 
    link_hal_pins("net0.fb","pid0.pos_fb");
    link_hal_pins("net0.fb_d", "pid0.vel_fb");
 
-   link_hal_pins("conf0.fb_res", "pderiv1.res");
+   //link_hal_pins("conf0.fb_res", "pderiv1.res");
 
    // fault
    link_hal_pins("conf0.max_dc_cur", "fault0.max_dc_cur");
@@ -286,7 +291,7 @@ void set_fb_sincos(){
    link_hal_pins("enc_fb0.error", "net0.fb_error");
 
    set_hal_pin("enc_fb0.ires", 1024.0);
-   set_hal_pin("pderiv1.res", 524288.0);
+   //set_hal_pin("pderiv1.res", 524288.0);
 }
 
 void set_fb_res(){
@@ -606,9 +611,6 @@ void set_festo(){ // TODO
    set_hal_pin("conf0.cur_ind", 0.9);
    set_hal_pin("conf0.autophase", 0.0);
    set_hal_pin("conf0.fb_offset", 1.324);
-   set_hal_pin("conf0.sin_offset", -1.0);
-   set_hal_pin("conf0.cos_offset", -1.0);
-   //set_hal_pin("brake0.brake", 1.0);
    set_fb_res();
 }
 
@@ -767,7 +769,7 @@ void set_br(){
    set_fb_res();
 }
 //linear 25 ohm
-//e250 15
+//e240 15
 void set_e240(){ // TODO
    set_hal_pin("conf0.polecount", 1.0);
    set_hal_pin("conf0.max_vel", RPM(8000));
