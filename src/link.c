@@ -183,6 +183,8 @@ void link_pid(){
    link_hal_pins("conf0.out_rev", "rev2.rev");
    link_hal_pins("cauto0.pos", "rev2.in");
    link_hal_pins("cauto0.i_q", "pid0.cur_ext_cmd");
+   link_hal_pins("conf0.cmd_res", "sim0.res");
+
 
    // term
    link_hal_pins("net0.cmd", "term0.wave0");
@@ -215,17 +217,17 @@ void set_cmd_const(){
 
 void set_cmd_sin(){
    link_hal_pins("sim0.msin", "rev0.in");
-   link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
+   link_hal_pins("conf0.cmd_res", "sim0.res");
 }
 
 void set_cmd_square(){
    link_hal_pins("sim0.square", "rev0.in");
-   link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
+   link_hal_pins("conf0.cmd_res", "sim0.res");
 }
 
 void set_cmd_vel(){
    link_hal_pins("sim0.vel", "rev0.in");
-   link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
+   link_hal_pins("conf0.cmd_res", "sim0.res");
 }
 
 void set_cmd_stp(){
