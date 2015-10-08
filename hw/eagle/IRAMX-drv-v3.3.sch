@@ -13987,6 +13987,41 @@ Source: www.kingbright.com</description>
 <circle x="10" y="-7" radius="0.6" width="0" layer="21"/>
 <text x="-50.56" y="-2.1" size="1.27" layer="25">&gt;NAME</text>
 </package>
+<package name="SIP23-2-BOT">
+<pad name="7" x="-10" y="-5" drill="0.8" shape="long" rot="R270"/>
+<pad name="8" x="-12" y="0" drill="0.8" shape="long" rot="R270"/>
+<pad name="13" x="-22" y="-5" drill="0.8" shape="long" rot="R270"/>
+<pad name="15" x="-26" y="-5" drill="0.8" shape="long" rot="R270"/>
+<pad name="14" x="-24" y="0" drill="0.8" shape="long" rot="R270"/>
+<pad name="12" x="-20" y="0" drill="0.8" shape="long" rot="R270"/>
+<pad name="16" x="-28" y="0" drill="0.8" shape="long" rot="R270"/>
+<pad name="17" x="-30" y="-5" drill="0.8" shape="long" rot="R270"/>
+<pad name="18" x="-32" y="0" drill="0.8" shape="long" rot="R270"/>
+<pad name="19" x="-34" y="-5" drill="0.8" shape="long" rot="R270"/>
+<pad name="20" x="-36" y="0" drill="0.8" shape="long" rot="R270"/>
+<pad name="21" x="-38" y="-5" drill="0.8" shape="long" rot="R270"/>
+<pad name="1" x="2" y="-5" drill="0.8" shape="long" rot="R90"/>
+<pad name="2" x="0" y="0" drill="0.8" shape="long" rot="R90"/>
+<pad name="5" x="-6" y="0" drill="0.8" shape="long" rot="R90"/>
+<pad name="4" x="-4" y="-5" drill="0.8" shape="long" rot="R90"/>
+<pad name="10" x="-16" y="-5" drill="0.8" shape="long" rot="R90"/>
+<pad name="23" x="-42" y="-5" drill="0.8" shape="long" rot="R90"/>
+<pad name="22" x="-40" y="0" drill="0.8" shape="long" rot="R90"/>
+<circle x="2" y="-10" radius="0.6" width="0" layer="21"/>
+<text x="-50.5" y="-7" size="1.27" layer="25">&gt;NAME</text>
+<wire x1="11" y1="-33.5" x2="-51" y2="-33.5" width="0.127" layer="21"/>
+<wire x1="-51" y1="-33.5" x2="-51" y2="-20.5" width="0.127" layer="21"/>
+<wire x1="-51" y1="-17.5" x2="-51" y2="-7.5" width="0.127" layer="21"/>
+<wire x1="-51" y1="-7.5" x2="11" y2="-7.5" width="0.127" layer="21"/>
+<wire x1="11" y1="-7.5" x2="11" y2="-17.5" width="0.127" layer="21"/>
+<wire x1="11" y1="-20.5" x2="11" y2="-33.5" width="0.127" layer="21"/>
+<wire x1="11" y1="-17.5" x2="8" y2="-17.5" width="0.127" layer="21"/>
+<wire x1="8" y1="-20.5" x2="11" y2="-20.5" width="0.127" layer="21"/>
+<wire x1="8" y1="-20.5" x2="8" y2="-17.5" width="0.127" layer="21" curve="-180"/>
+<wire x1="-51" y1="-17.5" x2="-48" y2="-17.5" width="0.127" layer="21"/>
+<wire x1="-51" y1="-20.5" x2="-48" y2="-20.5" width="0.127" layer="21"/>
+<wire x1="-48" y1="-17.5" x2="-48" y2="-20.5" width="0.127" layer="21" curve="-180"/>
+</package>
 </packages>
 <symbols>
 <symbol name="IRAM-B">
@@ -14050,6 +14085,32 @@ Source: www.kingbright.com</description>
 </technologies>
 </device>
 <device name="TOP" package="SIP23_TOP">
+<connects>
+<connect gate="G$1" pin="EN" pad="21"/>
+<connect gate="G$1" pin="HIN1" pad="15"/>
+<connect gate="G$1" pin="HIN2" pad="16"/>
+<connect gate="G$1" pin="HIN3" pad="17"/>
+<connect gate="G$1" pin="ITRIP" pad="22"/>
+<connect gate="G$1" pin="LIN1" pad="18"/>
+<connect gate="G$1" pin="LIN2" pad="19"/>
+<connect gate="G$1" pin="LIN3" pad="20"/>
+<connect gate="G$1" pin="U" pad="8"/>
+<connect gate="G$1" pin="UB" pad="7"/>
+<connect gate="G$1" pin="V" pad="5"/>
+<connect gate="G$1" pin="V+" pad="10"/>
+<connect gate="G$1" pin="V-" pad="12"/>
+<connect gate="G$1" pin="VB" pad="4"/>
+<connect gate="G$1" pin="VCC" pad="14"/>
+<connect gate="G$1" pin="VSS" pad="23"/>
+<connect gate="G$1" pin="VTH" pad="13"/>
+<connect gate="G$1" pin="W" pad="2"/>
+<connect gate="G$1" pin="WB" pad="1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="" package="SIP23-2-BOT">
 <connects>
 <connect gate="G$1" pin="EN" pad="21"/>
 <connect gate="G$1" pin="HIN1" pad="15"/>
@@ -14928,13 +14989,13 @@ body 3.9 mm/JEDEC MS-012AC</description>
 <wire x1="-5.395" y1="3.9" x2="5.395" y2="3.9" width="0.1998" layer="39"/>
 <wire x1="5.395" y1="-3.9" x2="-5.395" y2="-3.9" width="0.1998" layer="39"/>
 <wire x1="-5.395" y1="-3.9" x2="-5.395" y2="3.9" width="0.1998" layer="39"/>
-<wire x1="4.94" y1="-1.9" x2="-4.94" y2="-1.9" width="0.2032" layer="51"/>
-<wire x1="-4.94" y1="-1.9" x2="-4.94" y2="-1.4" width="0.2032" layer="51"/>
-<wire x1="-4.94" y1="-1.4" x2="-4.94" y2="1.9" width="0.2032" layer="51"/>
-<wire x1="-4.94" y1="1.9" x2="4.94" y2="1.9" width="0.2032" layer="51"/>
-<wire x1="4.94" y1="-1.4" x2="-4.94" y2="-1.4" width="0.2032" layer="51"/>
-<wire x1="4.94" y1="1.9" x2="4.94" y2="-1.4" width="0.2032" layer="51"/>
-<wire x1="4.94" y1="-1.4" x2="4.94" y2="-1.9" width="0.2032" layer="51"/>
+<wire x1="4.94" y1="-1.9" x2="-4.94" y2="-1.9" width="0.2032" layer="21"/>
+<wire x1="-4.94" y1="-1.9" x2="-4.94" y2="-1.4" width="0.2032" layer="21"/>
+<wire x1="-4.94" y1="-1.4" x2="-4.94" y2="1.9" width="0.2032" layer="21"/>
+<wire x1="-4.94" y1="1.9" x2="4.94" y2="1.9" width="0.2032" layer="21"/>
+<wire x1="4.94" y1="-1.4" x2="-4.94" y2="-1.4" width="0.2032" layer="21"/>
+<wire x1="4.94" y1="1.9" x2="4.94" y2="-1.4" width="0.2032" layer="21"/>
+<wire x1="4.94" y1="-1.4" x2="4.94" y2="-1.9" width="0.2032" layer="21"/>
 <wire x1="5.395" y1="3.9" x2="5.395" y2="-3.9" width="0.1998" layer="39"/>
 <smd name="2" x="-3.175" y="-2.6" dx="0.6" dy="2.2" layer="1"/>
 <smd name="13" x="-0.635" y="2.6" dx="0.6" dy="2.2" layer="1"/>
