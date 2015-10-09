@@ -1,0 +1,281 @@
+#ifdef FB_TX
+#error at the moment you can only have one component using the tx channel of the feeback port(res or encm)
+#else
+#define FB_TX
+#endif
+
+#define NOP04 \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP"); \
+asm volatile("NOP");
+
+#define NUM_OF_SAMPLES  450
+#define TIM_FREQ 84.0
+#define TIM_DIV 5.0
+#define SIG_FREQ 2.5
+#define OVER (TIM_FREQ / TIM_DIV / SIG_FREQ)
+#define OFFSET (OVER / 2.0)
+#define SIG_POS_START 16
+
+
+
+
+COMP(encs);
+
+HAL_PIN(en) = 1.0;
+HAL_PIN(start) = 0.0;
+HAL_PIN(offset) = 120.0;
+HAL_PIN(d) = 0.0;
+
+
+MEM(volatile uint32_t buf[NUM_OF_SAMPLES + 1]);
+
+INIT(
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  //txen
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_25MHz;
+  GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_ResetBits(GPIOB,GPIO_Pin_12);
+
+  //USART TX
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL ;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_ResetBits(GPIOB,GPIO_Pin_10);
+
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
+  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+
+
+  // TIM8
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
+  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseStructure.TIM_Period = 4;//14MHz
+  TIM_TimeBaseStructure.TIM_Prescaler = 1;
+  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+  TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
+
+  // DMA2-Config
+  // DMA-Disable
+  DMA_Cmd(DMA2_Stream1, DISABLE);
+  DMA_DeInit(DMA2_Stream2);
+  DMA_InitStructure.DMA_Channel = DMA_Channel_7; // tim8 ch1
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->IDR;
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&buf;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+  DMA_InitStructure.DMA_BufferSize = NUM_OF_SAMPLES;
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Word;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(DMA2_Stream1, &DMA_InitStructure);
+
+  //DMA_Cmd(DMA2_Stream1, ENABLE);
+
+  TIM_DMACmd(TIM8, TIM_DMA_Update, ENABLE);
+  TIM_Cmd(TIM8, ENABLE);
+);
+
+MEM(float sample_time) = 0.0000001433;
+MEM(int en) = 1;
+
+RT(
+   unsigned int start_time = 0;
+   unsigned int end_time = 0;
+
+   GPIOB->BSRRL = GPIO_Pin_10;
+   GPIOB->BSRRL = GPIO_Pin_12;
+
+   //for(int i = 0; i < 20; i++);
+   NOP04;
+   NOP04;
+   NOP04;
+   NOP04;
+   NOP04;
+   GPIOB->BSRRH = GPIO_Pin_10;
+   //for(int i = 0; i < 9; i++);
+   NOP04;
+   NOP04;
+   GPIOB->BSRRL = GPIO_Pin_10;
+   NOP04;
+   //for(int i = 0; i < 4; i++);
+   GPIOB->BSRRH = GPIO_Pin_10;
+   //for(int i = 0; i < 33; i++);
+   NOP04;
+   NOP04;
+   NOP04;
+   NOP04;
+   NOP04;
+   NOP04;
+   GPIOB->BSRRL = GPIO_Pin_10;
+   //for(int i = 0; i < 4; i++);
+   NOP04;
+   GPIOB->BSRRH = GPIO_Pin_10;
+   //for(int i = 0; i < 33; i++);
+   NOP04;
+   NOP04;
+   NOP04;
+   NOP04;
+   NOP04;
+   NOP04;
+   GPIOB->BSRRL = GPIO_Pin_10;
+   //for(int i = 0; i < 18; i++);
+   NOP04;
+   NOP04;
+   NOP04;
+   NOP04;
+
+   GPIOB->BSRRH = GPIO_Pin_12;
+   GPIOB->BSRRH = GPIO_Pin_10;
+
+
+   //for(int i = 0; i < 25; i++);
+   // NOP04;
+   // NOP04;
+   // NOP04;
+   // NOP04;
+   //NOP04;
+   if(PIN(en) > 0.0){
+      GPIOB->BSRRH = GPIO_Pin_3;
+      DMA_Cmd(DMA2_Stream1, DISABLE);
+      DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
+      DMA_Cmd(DMA2_Stream1, ENABLE);
+      while (DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET);
+      GPIOB->BSRRL = GPIO_Pin_3;
+
+      int i = 0;
+      for(; i < NUM_OF_SAMPLES; i++){
+         if(!(buf[i] & GPIO_Pin_11)){
+            break;
+         }
+      }
+      for(; i < NUM_OF_SAMPLES; i++){
+         if(buf[i] & GPIO_Pin_11){
+            break;
+         }
+      }
+      int start = i + OFFSET;
+      int d = 0;
+      int p = 0;
+
+      p = CLAMP((int)((18 + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES - 1);
+      d += (buf[p] & GPIO_Pin_11) != 0;
+
+      for(int j = 0; j < 16; j++){
+         p = CLAMP((int)(((15 - j) + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES - 1);
+         d = d << 1;
+         d += (buf[p] & GPIO_Pin_11) != 0;
+      }
+
+      PIN(d) = d;
+      PIN(start) = start;
+   }
+
+);
+
+NRT(
+
+   // int start = MIN(PIN(start), 450 - 120);
+   // int o = PIN(offset);
+   // int p = 0;
+
+   if(PIN(en) <= 0.0 && en == 1.0){
+      en = 0;
+
+      for(int i = 0; i < NUM_OF_SAMPLES; i++){
+         buf[i] = (buf[i] & GPIO_Pin_11) != 0;
+      }
+
+      // for(int i = 0; i < NUM_OF_SAMPLES / (84.0 / 5.0 / 2.5) - o; i++){
+      //    p = (int)(i * (84.0 / 5.0 / 2.5) + 0.5) + o;
+      //    //buf[MIN(p, NUM_OF_SAMPLES)] += 5;
+      //    printf_("%i", buf[MIN(p, NUM_OF_SAMPLES)]);
+      // }
+
+      int start = PIN(start);
+      int p = 0;
+      for(int j = 0; j < 16; j++){
+         p = CLAMP((int)((j + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES - 1);
+         buf[p] += 5;
+      }
+      p = CLAMP((int)((18 + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES - 1);
+      buf[p] += 5;
+
+      for(int i = PIN(offset); i < PIN(offset) + 120; i++){
+         printf_("%i", buf[i]);
+      }
+
+      printf_("\n");
+   }
+   else if(PIN(en) > 0.0){
+      en = 1;
+   }
+);
+
+ENDCOMP;
