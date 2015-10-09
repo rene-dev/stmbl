@@ -193,15 +193,15 @@ void ServoFrame::OnTimer(wxTimerEvent& evt){
 		if(ret > 0){
 			buf[ret] = 0;
 			if(uhu->GetValue()){
-                /* UHU support broken
                 for (int i=0; i<ret; i++) {
                     if ((buf[i]>>7)) {
-                        drawpanel->plotvalue((buf[i]+128/2) / 64.0);
+                        values[0] = (float)(buf[i]-128-64)/64;
+                        drawpanel->plotvalue(values);
                     }else{
                         text->AppendText(wxString::FromAscii(buf[i] & 0x7f));
                     }
                 }
-                */
+                
             }else if(stmbl->GetValue()){
                 for (int i=0; i<ret; i++){
                     if(addr >= 0){
