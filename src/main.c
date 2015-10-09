@@ -122,17 +122,19 @@ int main(void)
 
    setup();
 
-   #include "comps/adc.comp"
+   //#include "comps/adc.comp"
+   #include "comps/encs.comp"
+
    #include "comps/fault.comp"
    #include "comps/enc_cmd.comp"
-   #include "comps/enc_fb.comp"
+   //#include "comps/enc_fb.comp"
    //#include "comps/enc_fb_org.comp"
 
    //#include "comps/en.comp"
    //#include "comps/res.comp"
    //#include "comps/encm.comp"
    #include "comps/sim.comp"
-   #include "comps/stp.comp"
+   //#include "comps/stp.comp"
 
    #include "comps/rev.comp"
    #include "comps/rev.comp"
@@ -148,12 +150,13 @@ int main(void)
 
    #include "comps/rev.comp"
 
-   //#include "comps/dq.comp"
+   #include "comps/dq.comp"
    #include "comps/curpid.comp"
    #include "comps/pmsm.comp"
    #include "comps/pmsm_limits.comp"
    //#include "comps/mot.comp"
    #include "comps/idq.comp"
+
 
    #include "comps/pwm2uart.comp"
 
@@ -253,8 +256,8 @@ int main(void)
    //set_bergerlahr();
    //set_mitsubishi();
    //set_festo();
-   //set_manutec();
-   set_rexroth();
+   set_sanyo_r2();
+   //set_rexroth();
    //set_sanyo();
    //set_bosch1();
    //set_bosch1();
@@ -267,7 +270,6 @@ int main(void)
    //set_cmd_stp();
    //set_cmd_lcnc();
    //set_cur_cmd();
-
 
    TIM_Cmd(TIM2, ENABLE);//int
 

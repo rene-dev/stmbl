@@ -73,6 +73,9 @@ HAL_PIN(en) = 1.0;
 HAL_PIN(start) = 0.0;
 HAL_PIN(offset) = 120.0;
 HAL_PIN(d) = 0.0;
+HAL_PIN(pos) = 0.0;
+HAL_PIN(error) = 0.0;
+
 
 
 MEM(volatile uint32_t buf[NUM_OF_SAMPLES + 1]);
@@ -104,8 +107,6 @@ INIT(
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-
-
   // TIM8
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -136,37 +137,25 @@ INIT(
   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
   DMA_Init(DMA2_Stream1, &DMA_InitStructure);
 
-  //DMA_Cmd(DMA2_Stream1, ENABLE);
-
   TIM_DMACmd(TIM8, TIM_DMA_Update, ENABLE);
   TIM_Cmd(TIM8, ENABLE);
 );
 
-MEM(float sample_time) = 0.0000001433;
-MEM(int en) = 1;
-
 RT(
-   unsigned int start_time = 0;
-   unsigned int end_time = 0;
-
    GPIOB->BSRRL = GPIO_Pin_10;
    GPIOB->BSRRL = GPIO_Pin_12;
 
-   //for(int i = 0; i < 20; i++);
    NOP04;
    NOP04;
    NOP04;
    NOP04;
    NOP04;
    GPIOB->BSRRH = GPIO_Pin_10;
-   //for(int i = 0; i < 9; i++);
    NOP04;
    NOP04;
    GPIOB->BSRRL = GPIO_Pin_10;
    NOP04;
-   //for(int i = 0; i < 4; i++);
    GPIOB->BSRRH = GPIO_Pin_10;
-   //for(int i = 0; i < 33; i++);
    NOP04;
    NOP04;
    NOP04;
@@ -174,10 +163,8 @@ RT(
    NOP04;
    NOP04;
    GPIOB->BSRRL = GPIO_Pin_10;
-   //for(int i = 0; i < 4; i++);
    NOP04;
    GPIOB->BSRRH = GPIO_Pin_10;
-   //for(int i = 0; i < 33; i++);
    NOP04;
    NOP04;
    NOP04;
@@ -185,22 +172,13 @@ RT(
    NOP04;
    NOP04;
    GPIOB->BSRRL = GPIO_Pin_10;
-   //for(int i = 0; i < 18; i++);
    NOP04;
    NOP04;
    NOP04;
    NOP04;
-
    GPIOB->BSRRH = GPIO_Pin_12;
    GPIOB->BSRRH = GPIO_Pin_10;
 
-
-   //for(int i = 0; i < 25; i++);
-   // NOP04;
-   // NOP04;
-   // NOP04;
-   // NOP04;
-   //NOP04;
    if(PIN(en) > 0.0){
       GPIOB->BSRRH = GPIO_Pin_3;
       DMA_Cmd(DMA2_Stream1, DISABLE);
@@ -235,47 +213,9 @@ RT(
 
       PIN(d) = d;
       PIN(start) = start;
+      PIN(pos) = (d * M_PI * 2.0 / 131072.0) - M_PI;
    }
 
-);
-
-NRT(
-
-   // int start = MIN(PIN(start), 450 - 120);
-   // int o = PIN(offset);
-   // int p = 0;
-
-   if(PIN(en) <= 0.0 && en == 1.0){
-      en = 0;
-
-      for(int i = 0; i < NUM_OF_SAMPLES; i++){
-         buf[i] = (buf[i] & GPIO_Pin_11) != 0;
-      }
-
-      // for(int i = 0; i < NUM_OF_SAMPLES / (84.0 / 5.0 / 2.5) - o; i++){
-      //    p = (int)(i * (84.0 / 5.0 / 2.5) + 0.5) + o;
-      //    //buf[MIN(p, NUM_OF_SAMPLES)] += 5;
-      //    printf_("%i", buf[MIN(p, NUM_OF_SAMPLES)]);
-      // }
-
-      int start = PIN(start);
-      int p = 0;
-      for(int j = 0; j < 16; j++){
-         p = CLAMP((int)((j + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES - 1);
-         buf[p] += 5;
-      }
-      p = CLAMP((int)((18 + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES - 1);
-      buf[p] += 5;
-
-      for(int i = PIN(offset); i < PIN(offset) + 120; i++){
-         printf_("%i", buf[i]);
-      }
-
-      printf_("\n");
-   }
-   else if(PIN(en) > 0.0){
-      en = 1;
-   }
 );
 
 ENDCOMP;

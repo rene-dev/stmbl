@@ -22,7 +22,7 @@ HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
 
 RT(
-	GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
+	//GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
 
 	float s = 0.0;
 	float c = 0.0;
