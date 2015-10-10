@@ -28,8 +28,6 @@
 
 void setup();
 void setup_res();
-void setup_pwm();
-void setup_usart();
 void SysTick_Handler(void);
 
 volatile unsigned int systime;

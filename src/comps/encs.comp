@@ -139,7 +139,7 @@ INIT(
 
   // DMA2-Config
   DMA_Cmd(DMA2_Stream1, DISABLE);
-  DMA_DeInit(DMA2_Stream2);
+  DMA_DeInit(DMA2_Stream1);
   DMA_InitStructure.DMA_Channel = DMA_Channel_7; //TIM8 ch1
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->IDR;
   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&buf;
