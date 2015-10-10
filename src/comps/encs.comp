@@ -4,6 +4,32 @@
 #define FB_TX
 #endif
 
+/*
+Sanyo denki absolute encoder, tested with PA035C
+
+10 0010001000000101 10 0001110110110000 10 0011011101001010 11
+
+10001000100000010110000111011011000010001101110100101011
+10....word A......10.....word B.....10......word C....11
+
+2.5mbit
+3 16 bit words
+
+word A:
+constant, alarm/model?
+
+word B:
+16 bit pos, LSB first
+
+word C:
+1. bit: MSB pos bit
+2..15: checksum/multiturn?
+*/
+
+//TODO: error,ready pin
+//TODO: hangs if disconnected
+//TODO: request without NOPs
+
 #define NOP04 \
 asm volatile("NOP"); \
 asm volatile("NOP"); \
@@ -60,12 +86,9 @@ asm volatile("NOP");
 #define TIM_FREQ 84.0
 #define TIM_DIV 5.0
 #define SIG_FREQ 2.5
-#define OVER (TIM_FREQ / TIM_DIV / SIG_FREQ)
-#define OFFSET (OVER / 2.0)
+#define OVER (TIM_FREQ / TIM_DIV / SIG_FREQ)//one bit
+#define OFFSET (OVER / 2.0)//half bit
 #define SIG_POS_START 16
-
-
-
 
 COMP(encs);
 
@@ -76,14 +99,12 @@ HAL_PIN(d) = 0.0;
 HAL_PIN(pos) = 0.0;
 HAL_PIN(error) = 0.0;
 
-
-
 MEM(volatile uint32_t buf[NUM_OF_SAMPLES + 1]);
 
 INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
 
-  //txen
+  //TX enable
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
@@ -93,7 +114,7 @@ INIT(
   GPIO_Init(GPIOB, &GPIO_InitStruct);
   GPIO_ResetBits(GPIOB,GPIO_Pin_12);
 
-  //USART TX
+  //TX
   GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
@@ -102,12 +123,13 @@ INIT(
   GPIO_Init(GPIOB, &GPIO_InitStruct);
   GPIO_ResetBits(GPIOB,GPIO_Pin_10);
 
+  //RX
   GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  // TIM8
+  //TIM8 triggers DMA to sample reply
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
@@ -117,10 +139,9 @@ INIT(
   TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
 
   // DMA2-Config
-  // DMA-Disable
   DMA_Cmd(DMA2_Stream1, DISABLE);
   DMA_DeInit(DMA2_Stream2);
-  DMA_InitStructure.DMA_Channel = DMA_Channel_7; // tim8 ch1
+  DMA_InitStructure.DMA_Channel = DMA_Channel_7; //TIM8 ch1
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->IDR;
   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&buf;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
@@ -142,9 +163,10 @@ INIT(
 );
 
 RT(
-   GPIOB->BSRRL = GPIO_Pin_10;
-   GPIOB->BSRRL = GPIO_Pin_12;
+   GPIOB->BSRRL = GPIO_Pin_10;//TX enable
 
+   //request position TODO: use DMA or timer
+   GPIOB->BSRRL = GPIO_Pin_12;
    NOP04;
    NOP04;
    NOP04;
@@ -177,28 +199,33 @@ RT(
    NOP04;
    NOP04;
    GPIOB->BSRRH = GPIO_Pin_12;
-   GPIOB->BSRRH = GPIO_Pin_10;
+   
+   GPIOB->BSRRH = GPIO_Pin_10;//TX disable
 
    if(PIN(en) > 0.0){
-      GPIOB->BSRRH = GPIO_Pin_3;
+      //GPIOB->BSRRH = GPIO_Pin_3;
+      //start DMA
       DMA_Cmd(DMA2_Stream1, DISABLE);
       DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
       DMA_Cmd(DMA2_Stream1, ENABLE);
+      //wait for DMA transfer complete
       while (DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET);
-      GPIOB->BSRRL = GPIO_Pin_3;
+      //GPIOB->BSRRL = GPIO_Pin_3;
 
       int i = 0;
+      //skip leading ones
       for(; i < NUM_OF_SAMPLES; i++){
          if(!(buf[i] & GPIO_Pin_11)){
             break;
          }
       }
+      //skip zeros
       for(; i < NUM_OF_SAMPLES; i++){
          if(buf[i] & GPIO_Pin_11){
             break;
          }
       }
-      int start = i + OFFSET;
+      int start = i + OFFSET;//position of first bit
       int d = 0;
       int p = 0;
 
