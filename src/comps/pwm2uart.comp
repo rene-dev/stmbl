@@ -5,6 +5,10 @@ HAL_PIN(b) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 
+MEM(volatile packet_to_hv_t packet_to_hv);
+MEM(volatile packet_from_hv_t packet_from_hv);
+
+
 INIT(
    //setup uart to f1. uses DMA to transfer to_hv struct.
    GPIO_InitTypeDef GPIO_InitStruct;
@@ -28,7 +32,7 @@ INIT(
    GPIO_Init(UART_DRV_RX_PORT, &GPIO_InitStruct);
 
    USART_InitStruct.USART_BaudRate = DATABAUD;
-   USART_InitStruct.USART_WordLength = USART_WordLength_9b;
+   USART_InitStruct.USART_WordLength = USART_WordLength_8b;
    USART_InitStruct.USART_StopBits = USART_StopBits_1;
    USART_InitStruct.USART_Parity = USART_Parity_No;
    USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
@@ -45,7 +49,7 @@ INIT(
 
    /* Enable the USART */
    USART_Cmd(UART_DRV, ENABLE);
-   
+
    // Clock Enable
    RCC_AHB1PeriphClockCmd(UART_DRV_TX_DMA_RCC, ENABLE);
 
@@ -56,13 +60,13 @@ INIT(
    // DMA2-Config
    DMA_InitStructure.DMA_Channel = UART_DRV_TX_DMA_CHAN;
    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_DRV->DR);
-   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&UART_DMA_Buffer;
+   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&packet_to_hv;
    DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-   DMA_InitStructure.DMA_BufferSize = sizeof(to_hv_t)+1;
+   DMA_InitStructure.DMA_BufferSize = sizeof(packet_to_hv_t);
    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
-   DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_HalfWord;
+   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+   DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
    DMA_InitStructure.DMA_Priority = DMA_Priority_High;
    DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
@@ -74,24 +78,52 @@ INIT(
    DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
 
    USART_DMACmd(UART_DRV, USART_DMAReq_Tx, ENABLE);
+
+   // Clock Enable
+  RCC_AHB1PeriphClockCmd(UART_DRV_TX_DMA_RCC, ENABLE);
+
+  // // DMA-Disable
+  // DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
+  // DMA_DeInit(UART_DRV_RX_DMA);
+  //
+  // // DMA2-Config
+  // DMA_InitStructure.DMA_Channel = UART_DRV_RX_DMA_CHAN;
+  // DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_DRV->DR);
+  // DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&packet_from_hv;
+  // DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+  // DMA_InitStructure.DMA_BufferSize = sizeof(packet_from_hv_t);
+  // DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  // DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  // DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  // DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
+  // DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  // DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+  // DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  // DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  // DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  // DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  // DMA_Init(UART_DRV_RX_DMA, &DMA_InitStructure);
+  //
+  // DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
+  //
+  // USART_DMACmd(UART_DRV, USART_DMAReq_Rx, ENABLE);
+
+  packet_to_hv.head.start = 255;
+  packet_to_hv.head.key = 0;
 )
 
 RT(
   float e = PIN(enable);
 
   if(e > 0.0){
-    to_hv.a = TOFIXED(PIN(a));
-    to_hv.b = TOFIXED(PIN(b));
+    packet_to_hv.data.a = TOFIXED(PIN(a));
+    packet_to_hv.data.b = TOFIXED(PIN(b));
   }
   else{
-    to_hv.a = 0;
-    to_hv.b = 0;
+    packet_to_hv.data.a = 0;
+    packet_to_hv.data.b = 0;
   }
-
-  UART_DMA_Buffer[0] = 0x155;
-  for(int i = 0;i<sizeof(to_hv_t);i++){
-     UART_DMA_Buffer[i+1] = ((uint8_t*)&to_hv)[i];
-  }
+  buff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
 
   //start DMA transfer
   DMA_Cmd(UART_DRV_TX_DMA, DISABLE);

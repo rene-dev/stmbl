@@ -33,9 +33,6 @@ void SysTick_Handler(void);
 volatile unsigned int systime;
 
 volatile uint32_t ADC_DMA_Buffer[ADC_ANZ * PID_WAVES];
-volatile uint16_t UART_DMA_Buffer[sizeof(to_hv_t)+1];
-
-to_hv_t to_hv;
 
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 TIM_OCInitTypeDef TIM_OCInitStructure;

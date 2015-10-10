@@ -1,4 +1,5 @@
 #pragma once
+#include <stdint.h>
 
 //#define TROLLER
 
@@ -14,6 +15,11 @@
 #define TOFLOATS(a) ((a) & 0x4000) ? ((float)(((a) & 0xBFFFF) / 64.0)) : ((float)(((a) & 0xBFFFF) / 4096.0))
 
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
+typedef struct{
+   uint8_t start; // 255
+   uint8_t key;
+} packet_header_t;
 
 //data from f1 to f4
 typedef struct{
@@ -32,6 +38,19 @@ typedef struct{
    int16_t a;
    int16_t b;
 } to_hv_t;
+
+typedef struct{
+   packet_header_t head;
+   to_hv_t data;
+} packet_to_hv_t;
+
+typedef struct{
+   packet_header_t head;
+   from_hv_t data;
+} packet_from_hv_t;
+
+void buff_packet(packet_header_t* p, uint8_t size);
+void unbuff_packet(packet_header_t* p, uint8_t size);
 
 //check if structs can be send at 5kHz using DATABAUD
 STATIC_ASSERT(sizeof(to_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, to_hv_struct_to_large);

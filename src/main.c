@@ -96,7 +96,7 @@ void UART_DRV_IRQ(){
    USART_ClearFlag(UART_DRV, USART_FLAG_RXNE);
    rxbuf = UART_DRV->DR;
 
-   if(rxbuf == 0x154){//start condition
+   if(rxbuf == 127){//start condition
       datapos = 0;
    }else if(datapos >= 0 && datapos < sizeof(from_hv_t)){
       ((uint8_t*)&from_hv)[datapos++] = (uint8_t)rxbuf;//append data to buffer

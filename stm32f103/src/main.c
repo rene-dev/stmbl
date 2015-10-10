@@ -24,6 +24,7 @@
 #define ACS_UP 2000.0
 #define ACS_DOWN 3000.0
 #define ACS_OFFSET 2.5
+#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 
 #define AMP(a) ((a * AREF / ARES * (ACS_DOWN + ACS_UP) / ACS_DOWN - ACS_OFFSET) / ACS_VPA)
 
@@ -67,8 +68,8 @@ volatile float u,v,w;
 volatile int uartsend = 0;
 
 uint16_t buf = 0x0000;
-to_hv_t to_hv;
 from_hv_t from_hv;
+packet_to_hv_t packet_to_hv;
 int32_t datapos = -1;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -195,7 +196,7 @@ void usart_init(){
    GPIO_Init(GPIOA, &GPIO_InitStructure);
 
    USART_InitStruct.USART_BaudRate = DATABAUD;
-   USART_InitStruct.USART_WordLength = USART_WordLength_9b;
+   USART_InitStruct.USART_WordLength = USART_WordLength_8b;
    USART_InitStruct.USART_StopBits = USART_StopBits_1;
    USART_InitStruct.USART_Parity = USART_Parity_No;
    USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
@@ -333,7 +334,7 @@ void DMA1_Channel1_IRQHandler(){
    DMA_ClearITPendingBit(DMA1_IT_TC1);
 
    //TODO: hadrware limits for current, temperature and voltage
-   
+
    //fault test
    if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)){
       GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
@@ -352,18 +353,20 @@ void DMA1_Channel1_IRQHandler(){
 void USART2_IRQHandler(){
    USART_ClearITPendingBit(USART2, USART_IT_RXNE);
    buf = USART_ReceiveData(USART2);
-   if(buf == 0x155){ //start condition
+   if(buf == 255){ //start condition
       datapos = 0;
+      ((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
       uartsend = 1;
       //GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//green
-   }else if(datapos >= 0 && datapos < sizeof(to_hv_t)){
-      ((uint8_t*)&to_hv)[datapos++] = (uint8_t)buf;
+   }else if(datapos >= 0 && datapos < sizeof(packet_to_hv_t)){
+      ((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
    }
-   if(datapos == sizeof(to_hv_t)){//all data received
+   if(datapos == sizeof(packet_to_hv_t)){//all data received
       datapos = -1;
+      unbuff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
 
-      float ua = TOFLOAT(to_hv.a);
-      float ub = TOFLOAT(to_hv.b);
+      float ua = TOFLOAT(packet_to_hv.data.a);
+      float ub = TOFLOAT(packet_to_hv.data.b);
 
       float u = ua; // inverse clarke
       float v = - ua / 2.0 + ub / 2.0 * SQRT3;
@@ -445,10 +448,14 @@ int main(void)
 #endif
          uartsend = 0;
          while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-         USART_SendData(USART2, 0x154);
+         USART_SendData(USART2, 127);
          for(int j = 0;j<sizeof(from_hv_t);j++){
             while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-            USART_SendData(USART2, ((uint8_t*)&from_hv)[j]);
+            uint8_t df = ((uint8_t*)&from_hv)[j];
+            if(df == 127){
+               df = 126;
+            }
+            USART_SendData(USART2, df);
          }
       }
       //GPIOA->BSRR = (GPIOA->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//toggle red led
