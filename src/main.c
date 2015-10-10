@@ -43,10 +43,6 @@ int __errno;
 volatile double systime_s = 0.0;
 void Wait(unsigned int ms);
 
-//Mitsubishi absolute encoder position and buffer
-volatile int menc_pos = -1;
-volatile uint16_t menc_buf[10];
-
 //5 kHz interrupt for hal. at this point all ADCs have been sampled,
 //see setup_res() in setup.c if you are interested in the magic behind this.
 void DMA2_Stream0_IRQHandler(void){
@@ -67,25 +63,6 @@ void DMA2_Stream0_IRQHandler(void){
       PIN(rt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
    }
    GPIO_ResetBits(GPIOB,GPIO_Pin_8);
-}
-
-//feedback port UART RX not empty. used for Mitsubishi absolute encoders.
-void USART3_IRQHandler(){
-   GPIO_ResetBits(GPIOB,GPIO_Pin_12);//reset tx enable
-   uint16_t buf;
-   if(USART_GetITStatus(USART3, USART_IT_RXNE)){
-      USART_ClearITPendingBit(USART3, USART_IT_RXNE);
-      USART_ClearFlag(USART3, USART_FLAG_RXNE);
-      buf = USART3->DR;
-      if(menc_pos >= 0 && menc_pos <= 8){
-         menc_buf[menc_pos++] = buf;//append data to buffer
-      }
-   }
-   if(USART_GetITStatus(USART3, USART_IT_TC)){
-      USART_ClearITPendingBit(USART3, USART_IT_TC);
-      USART_ClearFlag(USART3, USART_FLAG_TC);
-      buf = USART3->DR;
-   }
 }
 
 //UART RX not empty interrupt for f1. sets all the hal pins measured on the f1.

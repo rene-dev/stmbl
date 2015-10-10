@@ -6,33 +6,18 @@
 
 COMP(encm);
 
-//HAL_PIN(enable) = 0.0;
-
 HAL_PIN(pos) = 0.0;
 
 HAL_PIN(error) = 0;
-//HAL_PIN(cmd) = 50.0;
-
-/*
-HAL_PIN(b0) = 0;
-HAL_PIN(b1) = 0;
-HAL_PIN(b2) = 0;
-HAL_PIN(b3) = 0;
-HAL_PIN(b4) = 0;
-HAL_PIN(b5) = 0;
-HAL_PIN(b6) = 0;
-HAL_PIN(b7) = 0;
-HAL_PIN(b8) = 0;
-*/
 
 MEM(uint32_t error_) = 0.0;
+MEM(uint8_t menc_buf[10]);
 
-//UART3
 INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
   USART_InitTypeDef USART_InitStruct;
-
-  //txen
+  
+  //TX enable
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
@@ -43,7 +28,6 @@ INIT(
 
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-  //RCC_AHB1PeriphClockCmd(UART_CMD_TX_IO_RCC, ENABLE);
 
   //USART TX
   GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_USART3);
@@ -67,67 +51,56 @@ INIT(
   USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
   USART_Init(USART3, &USART_InitStruct);
 
-  USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
-  USART_ITConfig(USART3, USART_IT_TC, ENABLE);
-
-  NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-
   /* Enable the USART */
   USART_Cmd(USART3, ENABLE);
 
   // Clock Enable
-  //RCC_AHB1PeriphClockCmd(UART_CMD_TX_DMA_RCC, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
 
   // DMA-Disable
-  //DMA_Cmd(UART_CMD_TX_DMA, DISABLE);
-  //DMA_DeInit(UART_CMD_TX_DMA);
+  DMA_Cmd(DMA1_Stream1, DISABLE);
+  DMA_DeInit(DMA1_Stream1);
 
   // DMA2-Config
-  /*DMA_InitStructure.DMA_Channel = UART_CMD_TX_DMA_CHAN;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_CMD->DR);
-  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&UART_DMA_Buffer;
-  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-  DMA_InitStructure.DMA_BufferSize = DATALENGTH*2+1;//uint32_t + start
+  DMA_InitStructure.DMA_Channel = DMA_Channel_4;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&menc_buf;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+  DMA_InitStructure.DMA_BufferSize = 9;
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
-  DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_HalfWord;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
   DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;*/
-  //DMA_Init(UART_CMD_TX_DMA, &DMA_InitStructure);
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(DMA1_Stream1, &DMA_InitStructure);
 
-  //DMA_Cmd(UART_CMD_TX_DMA, ENABLE);
-
-  //USART_DMACmd(UART_CMD, USART_DMAReq_Tx, ENABLE);
+  USART_DMACmd(USART3, USART_DMAReq_Rx, ENABLE);
 );
 
 RT(
-  uint32_t tpos;
+   uint32_t tpos;
 
-  //if(PIN(enable) > 0.0){
-    if(menc_pos == 9 && menc_buf[0] == 0x32 && ((menc_buf[0] ^ menc_buf[1] ^ menc_buf[2] ^ menc_buf[3] ^ menc_buf[4] ^ menc_buf[5] ^ menc_buf[6] ^ menc_buf[7] ^ menc_buf[8]) == 0)){
-      //tpos = menc_buf[2]+menc_buf[3]*256+menc_buf[4]*65536; //length = 9, res = 17 bit, cmd = 2
-      tpos = ((menc_buf[2] & 0x80) >> 7) + menc_buf[3]*2 + menc_buf[4]*512;//length = 9, res = 17 bit, cmd = 50(0x32)
+   if(menc_buf[0] == 0x32 && ((menc_buf[0] ^ menc_buf[1] ^ menc_buf[2] ^ menc_buf[3] ^ menc_buf[4] ^ menc_buf[5] ^ menc_buf[6] ^ menc_buf[7] ^ menc_buf[8]) == 0)){
+      tpos = ((menc_buf[2] & 0x80) >> 7) + menc_buf[3]*2 + menc_buf[4]*512;
       PIN(pos) = (tpos * M_PI * 2.0 / 131072.0) - M_PI;
       PIN(error) = 0.0;
-    }else //if(PIN(enable) > 0.0){
-    {
+   }else{
       error_++;
       PIN(error) = error_;
-    }
+   }
 
-    GPIO_SetBits(GPIOB,GPIO_Pin_12);
-    USART_SendData(USART3, 0x32/*(unsigned char)PIN(cmd)*/);
-  //}
-  menc_pos = 0;
+   GPIO_SetBits(GPIOB,GPIO_Pin_12);//tx enable
+   USART_SendData(USART3, 0x32);
+   while (USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET);
+   GPIO_ResetBits(GPIOB,GPIO_Pin_12);//tx disable
+   DMA_Cmd(DMA1_Stream1, DISABLE);
+   DMA_ClearFlag(DMA1_Stream1, DMA_FLAG_TCIF1);
+   DMA_Cmd(DMA1_Stream1, ENABLE);
 );
 
 ENDCOMP;
