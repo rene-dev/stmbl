@@ -27,7 +27,6 @@ word C:
 */
 
 //TODO: error,ready pin
-//TODO: hangs if disconnected
 //TODO: request without NOPs
 
 #define NOP04 \
@@ -214,13 +213,13 @@ RT(
 
       int i = 0;
       //skip leading ones
-      for(; i < NUM_OF_SAMPLES; i++){
+      for(; i < NUM_OF_SAMPLES/5; i++){
          if(!(buf[i] & GPIO_Pin_11)){
             break;
          }
       }
       //skip zeros
-      for(; i < NUM_OF_SAMPLES; i++){
+      for(; i < NUM_OF_SAMPLES/5; i++){
          if(buf[i] & GPIO_Pin_11){
             break;
          }
