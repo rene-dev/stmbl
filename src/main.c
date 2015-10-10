@@ -91,26 +91,28 @@ void USART3_IRQHandler(){
 //UART RX not empty interrupt for f1. sets all the hal pins measured on the f1.
 void UART_DRV_IRQ(){
    static int32_t datapos = -1;
-   static from_hv_t from_hv;
+   static packet_from_hv_t packet_from_hv;
    USART_ClearITPendingBit(UART_DRV, USART_IT_RXNE);
    USART_ClearFlag(UART_DRV, USART_FLAG_RXNE);
    rxbuf = UART_DRV->DR;
 
-   if(rxbuf == 127){//start condition
+   if(rxbuf == 255){//start condition
       datapos = 0;
-   }else if(datapos >= 0 && datapos < sizeof(from_hv_t)){
-      ((uint8_t*)&from_hv)[datapos++] = (uint8_t)rxbuf;//append data to buffer
+      ((uint8_t*)&packet_from_hv)[datapos++] = (uint8_t)rxbuf;
+   }else if(datapos >= 0 && datapos < sizeof(packet_from_hv_t)){
+      ((uint8_t*)&packet_from_hv)[datapos++] = (uint8_t)rxbuf;//append data to buffer
    }
-   if(datapos == sizeof(from_hv_t)){//all data received
+   if(datapos == sizeof(packet_from_hv_t)){//all data received
+      unbuff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
       datapos = -1;
-      PIN(g_dc_cur) = TOFLOAT(from_hv.dc_cur);
-      PIN(g_dc_volt) = TOFLOAT(from_hv.dc_volt);
+      PIN(g_dc_cur) = TOFLOAT(packet_from_hv.data.dc_cur);
+      PIN(g_dc_volt) = TOFLOAT(packet_from_hv.data.dc_volt);
       PIN(g_ac_volt) = PIN(g_dc_volt) / 2.0 * 0.95 * 1.15;
-      PIN(g_hv_temp) = TOFLOAT(from_hv.hv_temp);
+      PIN(g_hv_temp) = TOFLOAT(packet_from_hv.data.hv_temp);
 #ifdef TROLLER
-      PIN(g_iu) = TOFLOAT(from_hv.a);
-      PIN(g_iv) = TOFLOAT(from_hv.b);
-      PIN(g_iw) = TOFLOAT(from_hv.c);
+      PIN(g_iu) = TOFLOAT(packet_from_hv.data.a);
+      PIN(g_iv) = TOFLOAT(packet_from_hv.data.b);
+      PIN(g_iw) = TOFLOAT(packet_from_hv.data.c);
 #endif
    }
 }

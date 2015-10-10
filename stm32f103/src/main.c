@@ -68,8 +68,8 @@ volatile float u,v,w;
 volatile int uartsend = 0;
 
 uint16_t buf = 0x0000;
-from_hv_t from_hv;
 packet_to_hv_t packet_to_hv;
+packet_from_hv_t packet_from_hv;
 int32_t datapos = -1;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -429,6 +429,9 @@ int main(void)
    PWM_V = 0;
    PWM_W = 0;
 
+   packet_from_hv.head.start = 255;
+   packet_from_hv.head.key = 0;
+
    while(1){
       if(uartsend == 1){
          amp = AMP(amp_raw);
@@ -436,26 +439,22 @@ int main(void)
          if(temp_raw < ARES && temp_raw > 0){
             temp = TEMP(temp_raw);
          }
-         from_hv.dc_volt = TOFIXED(volt);
-         from_hv.dc_cur =  TOFIXED(amp);
-         from_hv.hv_temp = TOFIXED(temp);
+         packet_from_hv.data.dc_volt = TOFIXED(volt);
+         packet_from_hv.data.dc_cur =  TOFIXED(amp);
+         packet_from_hv.data.hv_temp = TOFIXED(temp);
 #ifdef TROLLER
-         from_hv.dc_cur =  TOFIXED(0);
-         from_hv.hv_temp = TOFIXED(0);
-         from_hv.a = TOFIXED(AMP(ADCConvertedValue[1]));
-         from_hv.b = TOFIXED(AMP(ADCConvertedValue[2]));
-         from_hv.c = TOFIXED(AMP(ADCConvertedValue[3]));
+         packet_from_hv.data.dc_cur =  TOFIXED(0);
+         packet_from_hv.data.hv_temp = TOFIXED(0);
+         packet_from_hv.data.a = TOFIXED(AMP(ADCConvertedValue[1]));
+         packet_from_hv.data.b = TOFIXED(AMP(ADCConvertedValue[2]));
+         packet_from_hv.data.c = TOFIXED(AMP(ADCConvertedValue[3]));
 #endif
+         buff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
          uartsend = 0;
          while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-         USART_SendData(USART2, 127);
-         for(int j = 0;j<sizeof(from_hv_t);j++){
+         for(int j = 0;j<sizeof(packet_from_hv_t);j++){
             while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-            uint8_t df = ((uint8_t*)&from_hv)[j];
-            if(df == 127){
-               df = 126;
-            }
-            USART_SendData(USART2, df);
+            USART_SendData(USART2, ((uint8_t*)&packet_from_hv)[j]);
          }
       }
       //GPIOA->BSRR = (GPIOA->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//toggle red led
