@@ -29,14 +29,6 @@
 
 #include "stm32_ub_usb_cdc.h"
 
-volatile uint16_t rxbuf;
-GLOBAL_HAL_PIN(g_dc_cur);
-GLOBAL_HAL_PIN(g_dc_volt);
-GLOBAL_HAL_PIN(g_ac_volt);
-GLOBAL_HAL_PIN(g_hv_temp);
-GLOBAL_HAL_PIN(g_iu);
-GLOBAL_HAL_PIN(g_iv);
-GLOBAL_HAL_PIN(g_iw);
 GLOBAL_HAL_PIN(rt_time);
 
 int __errno;
@@ -85,35 +77,6 @@ void USART3_IRQHandler(){
       USART_ClearITPendingBit(USART3, USART_IT_TC);
       USART_ClearFlag(USART3, USART_FLAG_TC);
       buf = USART3->DR;
-   }
-}
-
-//UART RX not empty interrupt for f1. sets all the hal pins measured on the f1.
-void UART_DRV_IRQ(){
-   static int32_t datapos = -1;
-   static packet_from_hv_t packet_from_hv;
-   USART_ClearITPendingBit(UART_DRV, USART_IT_RXNE);
-   USART_ClearFlag(UART_DRV, USART_FLAG_RXNE);
-   rxbuf = UART_DRV->DR;
-
-   if(rxbuf == 255){//start condition
-      datapos = 0;
-      ((uint8_t*)&packet_from_hv)[datapos++] = (uint8_t)rxbuf;
-   }else if(datapos >= 0 && datapos < sizeof(packet_from_hv_t)){
-      ((uint8_t*)&packet_from_hv)[datapos++] = (uint8_t)rxbuf;//append data to buffer
-   }
-   if(datapos == sizeof(packet_from_hv_t)){//all data received
-      unbuff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
-      datapos = -1;
-      PIN(g_dc_cur) = TOFLOAT(packet_from_hv.data.dc_cur);
-      PIN(g_dc_volt) = TOFLOAT(packet_from_hv.data.dc_volt);
-      PIN(g_ac_volt) = PIN(g_dc_volt) / 2.0 * 0.95 * 1.15;
-      PIN(g_hv_temp) = TOFLOAT(packet_from_hv.data.hv_temp);
-#ifdef TROLLER
-      PIN(g_iu) = TOFLOAT(packet_from_hv.data.a);
-      PIN(g_iv) = TOFLOAT(packet_from_hv.data.b);
-      PIN(g_iw) = TOFLOAT(packet_from_hv.data.c);
-#endif
    }
 }
 
@@ -177,17 +140,9 @@ int main(void)
    HAL_PIN(fb_error) = 0.0;
    HAL_PIN(cmd_d) = 0.0;
    HAL_PIN(fb_d) = 0.0;
-   HAL_PIN(dc_cur) = 0.0;
-   HAL_PIN(ac_cur) = 0.0;
-   HAL_PIN(dc_volt) = 0.0;
-   HAL_PIN(ac_volt) = 0.0;
-   HAL_PIN(hv_temp) = 0.0;
    HAL_PIN(core_temp0) = 0.0;
    HAL_PIN(core_temp1) = 0.0;
    HAL_PIN(motor_temp) = 0.0;
-   HAL_PIN(iu) = 0.0;
-   HAL_PIN(iv) = 0.0;
-   HAL_PIN(iw) = 0.0;
    HAL_PIN(rt_calc_time) = 0.0;
 
    set_comp_type("conf");
@@ -239,14 +194,6 @@ int main(void)
    HAL_PIN(autophase) = 1.0;
    HAL_PIN(max_sat) = 0.2;
 
-
-   g_dc_cur_hal_pin = map_hal_pin("net0.dc_cur");
-   g_dc_volt_hal_pin = map_hal_pin("net0.dc_volt");
-   g_ac_volt_hal_pin = map_hal_pin("net0.ac_volt");
-   g_hv_temp_hal_pin = map_hal_pin("net0.hv_temp");
-   g_iu_hal_pin = map_hal_pin("net0.iu");
-   g_iv_hal_pin = map_hal_pin("net0.iv");
-   g_iw_hal_pin = map_hal_pin("net0.iw");
    rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
 
    for(int i = 0; i < hal.init_func_count; i++){

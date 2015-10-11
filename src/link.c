@@ -65,13 +65,13 @@ void link_pid(){
 
    link_hal_pins("pid0.pos_error", "fault0.pos_error");
    link_hal_pins("pid0.saturated", "fault0.sat");
-   link_hal_pins("net0.dc_volt", "fault0.dc_volt");
-   link_hal_pins("net0.hv_temp", "fault0.hv_temp");
+   link_hal_pins("pwm2uart0.dc_volt", "fault0.dc_volt");
+   link_hal_pins("pwm2uart0.hv_temp", "fault0.hv_temp");
    link_hal_pins("net0.core_temp0", "fault0.core_temp0");
    link_hal_pins("net0.core_temp1", "fault0.core_temp1");
    link_hal_pins("net0.motor_temp", "fault0.motor_temp");
-   link_hal_pins("net0.dc_cur", "fault0.dc_cur");
-   link_hal_pins("net0.ac_cur", "fault0.ac_cur");
+   link_hal_pins("pwm2uart0.dc_cur", "fault0.dc_cur");
+   //link_hal_pins("net0.ac_cur", "fault0.ac_cur");
    link_hal_pins("net0.fb_error", "fault0.fb_error");
    link_hal_pins("net0.cmd", "fault0.cmd");
    link_hal_pins("rev1.out", "fault0.fb");
@@ -127,8 +127,8 @@ void link_pid(){
    // curpid
    link_hal_pins("cauto0.i_d", "curpid0.id_cmd");
    link_hal_pins("t2c0.cur", "curpid0.iq_cmd");
-   link_hal_pins("net0.dc_volt", "curpid0.dc_volt");
-   link_hal_pins("net0.ac_volt", "curpid0.ac_volt");
+   link_hal_pins("pwm2uart0.dc_volt", "curpid0.dc_volt");
+   link_hal_pins("pwm2uart0.ac_volt", "curpid0.ac_volt");
    link_hal_pins("conf0.r", "curpid0.rd");
    link_hal_pins("conf0.r", "curpid0.rq");
    link_hal_pins("conf0.l", "curpid0.ld");
@@ -158,7 +158,7 @@ void link_pid(){
    link_hal_pins("conf0.l", "pmsm_limits0.lq");
    link_hal_pins("conf0.psi", "pmsm_limits0.psi");
    link_hal_pins("conf0.polecount", "pmsm_limits0.polecount");
-   link_hal_pins("net0.ac_volt", "pmsm_limits0.ac_volt");
+   link_hal_pins("pwm2uart0.ac_volt", "pmsm_limits0.ac_volt");
    link_hal_pins("pmsm0.indq", "pmsm_limits0.indq");
    link_hal_pins("pmsm0.iq", "pmsm_limits0.iq");
    link_hal_pins("pmsm_limits0.next_max_torque", "pid0.max_torque");
@@ -168,9 +168,9 @@ void link_pid(){
    // idq, dq
    link_hal_pins("conf0.polecount", "dq0.polecount");
    link_hal_pins("cauto0.pos", "dq0.pos");
-   link_hal_pins("net0.iu", "dq0.u");
-   link_hal_pins("net0.iv", "dq0.v");
-   link_hal_pins("net0.iw", "dq0.w");
+   link_hal_pins("pwm2uart0.iu", "dq0.u");
+   link_hal_pins("pwm2uart0.iv", "dq0.v");
+   link_hal_pins("pwm2uart0.iw", "dq0.w");
    link_hal_pins("curpid0.ud", "idq0.d");
    link_hal_pins("curpid0.uq", "idq0.q");
    link_hal_pins("cauto0.pos", "idq0.pos");

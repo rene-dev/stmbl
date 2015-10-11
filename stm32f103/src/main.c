@@ -436,9 +436,7 @@ int main(void)
       if(uartsend == 1){
          amp = AMP(amp_raw);
          volt = VOLT(volt_raw);
-         if(temp_raw < ARES && temp_raw > 0){
-            temp = TEMP(temp_raw);
-         }
+
          packet_from_hv.data.dc_volt = TOFIXED(volt);
          packet_from_hv.data.dc_cur =  TOFIXED(amp);
          packet_from_hv.data.hv_temp = TOFIXED(temp);
@@ -455,6 +453,10 @@ int main(void)
          for(int j = 0;j<sizeof(packet_from_hv_t);j++){
             while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
             USART_SendData(USART2, ((uint8_t*)&packet_from_hv)[j]);
+         }
+
+         if(temp_raw < ARES && temp_raw > 0){
+            temp = TEMP(temp_raw);
          }
       }
       //GPIOA->BSRR = (GPIOA->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//toggle red led
