@@ -42,13 +42,14 @@ https://www.youtube.com/watch?v=seEV_i7o1NI
 * Synchronous AC Servos
 * DC Servos
 * 2 Phase HF spindle motors
-* IRAMXv2 Hardware testet up to 320V
+* IRAMX Hardware testet up to 320V
 
 ####Supported Feedback systems
 * Resolvers
 * Incremental encoders
 * sin/cos encoder interpolation
 * Mitsubishi absolute encoders
+* Sanyo Denki absolute encoders
 
 ####TODO
 * AC Async
