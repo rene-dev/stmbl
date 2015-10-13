@@ -53,6 +53,17 @@ __IO uint16_t ADCConvertedValue[ADC_channels];//DMA buffer for ADC
 #define M_TWOPI         (M_PI * 2.0)
 #endif
 
+#define TEMP_RES 32
+#define SCALE (TEMP_RES / ARES)
+int16_t temp_buf[TEMP_RES];
+
+float tempb(float i){
+   unsigned int x = (int)(i * SCALE);
+   float a = TOFLOAT(temp_buf[x]);
+   float b = TOFLOAT(temp_buf[x + 1]);
+   return(a + (b - a) * (i * SCALE - x));
+}
+
 volatile uint32_t timeout = 99999;
 volatile uint16_t volt_raw = 0;
 volatile uint16_t amp_raw = 0;
@@ -432,6 +443,10 @@ int main(void)
    packet_from_hv.head.start = 255;
    packet_from_hv.head.key = 0;
 
+   for(int i = 0; i < TEMP_RES; i++){
+      temp_buf[i] = TOFIXED(TEMP(i / SCALE));
+   }
+
    while(1){
       if(uartsend == 1){
          amp = AMP(amp_raw);
@@ -449,14 +464,14 @@ int main(void)
 #endif
          buff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
          uartsend = 0;
-         while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+         //while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
          for(int j = 0;j<sizeof(packet_from_hv_t);j++){
             while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
             USART_SendData(USART2, ((uint8_t*)&packet_from_hv)[j]);
          }
 
          if(temp_raw < ARES && temp_raw > 0){
-            temp = TEMP(temp_raw);
+            temp = tempb(temp_raw);
          }
       }
       //GPIOA->BSRR = (GPIOA->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//toggle red led
