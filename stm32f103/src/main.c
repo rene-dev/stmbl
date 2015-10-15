@@ -480,22 +480,22 @@ int main(void)
          uartsend = 0;
          //while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
 
-         DMA_Cmd(DMA1_Channel7, DISABLE);
-         DMA_ClearFlag(DMA1_FLAG_TC7);
-         DMA_Cmd(DMA1_Channel7, ENABLE);
-
-
-         while(DMA_GetFlagStatus(DMA1_FLAG_TC7) == RESET){
-            GPIO_SetBits(GPIOC,GPIO_Pin_0);
-         }
-         GPIO_ResetBits(GPIOC,GPIO_Pin_0);
+         // DMA_Cmd(DMA1_Channel7, DISABLE);
+         // DMA_ClearFlag(DMA1_FLAG_TC7);
+         // DMA_Cmd(DMA1_Channel7, ENABLE);
+         //
+         //
+         // while(DMA_GetFlagStatus(DMA1_FLAG_TC7) == RESET){
+         //    GPIO_SetBits(GPIOC,GPIO_Pin_0);
+         // }
+         // GPIO_ResetBits(GPIOC,GPIO_Pin_0);
          //GPIO_SetBits(GPIOC,GPIO_Pin_2);
 
 
-         // for(int j = 0;j<sizeof(packet_from_hv_t);j++){
-         //    while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-         //    USART_SendData(USART2, ((uint8_t*)&packet_from_hv)[j]);
-         // }
+         for(int j = 0;j<sizeof(packet_from_hv_t);j++){
+            while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+            USART_SendData(USART2, ((uint8_t*)&packet_from_hv)[j]);
+         }
 
          if(temp_raw < ARES && temp_raw > 0){
             temp = tempb(temp_raw);
