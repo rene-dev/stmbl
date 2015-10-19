@@ -1,12 +1,12 @@
 COMP(sserial);
 
-HAL_PIN(packets) = 0.0;
+HAL_PIN(pos) = 0.0;
 HAL_PIN(data) = 0.0;
 
 
 MEM(volatile packet_to_hv_t packet_to_hv);
 MEM(volatile packet_from_hv_t packet_from_hv);
-MEM(volatile uint8_t rxbuf[10]);
+MEM(volatile uint8_t rxbuf[128]);
 //MEM(volatile uint16_t packets);
 
 //pb13 txen
@@ -68,11 +68,11 @@ INIT(
 
    //RX DMA
    // Clock Enable
-   //RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
 
    // DMA-Disable
-   //DMA_Cmd(DMA2_Stream5, DISABLE);
-   //DMA_DeInit(DMA2_Stream5);
+   DMA_Cmd(DMA2_Stream5, DISABLE);
+   DMA_DeInit(DMA2_Stream5);
 
    // DMA2-Config
    DMA_InitStructure.DMA_Channel = DMA_Channel_4;
@@ -84,17 +84,17 @@ INIT(
    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
    DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
-   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+   DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
    DMA_InitStructure.DMA_Priority = DMA_Priority_High;
    DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
    DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  // DMA_Init(UART_DRV_TX_DMA, &DMA_InitStructure);
+   DMA_Init(UART_DRV_TX_DMA, &DMA_InitStructure);
 
-//   DMA_Cmd(DMA2_Stream5, ENABLE);
+   DMA_Cmd(DMA2_Stream5, ENABLE);
 
-   //USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
+   USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
 
    // Clock Enable
   //RCC_AHB1PeriphClockCmd(UART_DRV_TX_DMA_RCC, ENABLE);
@@ -129,14 +129,17 @@ INIT(
 )
 
 RT(
-   if(USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == SET){
-      PIN(packets)++;
-      uint8_t buf = USART1->DR;
-      PIN(data) = buf;
-      while (USART_GetFlagStatus(UART5, USART_FLAG_TXE) == RESET){;
-            USART_SendData(UART5, buf);
-         }
-   }
+   PIN(pos) = DMA_GetCurrDataCounter(DMA2_Stream5);
+   //if(USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == SET){
+   //   PIN(packets)++;
+   //   uint8_t buf = USART1->DR;
+   //   PIN(data) = buf;
+   //   USART_SendData(UART5, buf);
+
+   //}
+   //while (USART_GetFlagStatus(UART5, USART_FLAG_TXE) == RESET){;
+         
+   //   }
       
 
   //start DMA TX transfer
