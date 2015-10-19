@@ -1,32 +1,42 @@
 COMP(sserial);
 
-HAL_PIN(a) = 0.0;
+HAL_PIN(packets) = 0.0;
+HAL_PIN(data) = 0.0;
 
 
 MEM(volatile packet_to_hv_t packet_to_hv);
 MEM(volatile packet_from_hv_t packet_from_hv);
 MEM(volatile uint8_t rxbuf[10]);
+//MEM(volatile uint16_t packets);
 
 //pb13 txen
-//pb12 usart 3 tx
+//pc12 usart5 tx
 //pa9 usart1 tx as rx
 
 INIT(
    GPIO_InitTypeDef GPIO_InitStruct;
    USART_InitTypeDef USART_InitStruct;
    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
-   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART3, ENABLE);
-   RCC_AHB1PeriphClockCmd(GPIOB, ENABLE);
-   RCC_AHB1PeriphClockCmd(GPIOA, ENABLE);
+   RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
 
    //USART TX
-   GPIO_PinAFConfig(GPIOB, GPIO_PinSource12, GPIO_AF_USART3);
+   GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_UART5);
    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_12;
    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
    GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
    GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
-   GPIO_Init(GPIOB, &GPIO_InitStruct);
+   GPIO_Init(GPIOC, &GPIO_InitStruct);
+   
+   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
    //USART RX
    GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_USART1);
@@ -43,7 +53,7 @@ INIT(
    USART_HalfDuplexCmd(USART1,ENABLE);
    
    USART_InitStruct.USART_Mode = USART_Mode_Tx;
-   USART_Init(USART3, &USART_InitStruct);
+   USART_Init(UART5, &USART_InitStruct);
 
    // USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
 
@@ -54,15 +64,15 @@ INIT(
    // NVIC_Init(&NVIC_InitStructure);
 
    USART_Cmd(USART1, ENABLE);
-   USART_Cmd(USART3, ENABLE);
+   USART_Cmd(UART5, ENABLE);
 
    //RX DMA
    // Clock Enable
-   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
+   //RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
 
    // DMA-Disable
-   DMA_Cmd(DMA2_Stream5, DISABLE);
-   DMA_DeInit(DMA2_Stream5);
+   //DMA_Cmd(DMA2_Stream5, DISABLE);
+   //DMA_DeInit(DMA2_Stream5);
 
    // DMA2-Config
    DMA_InitStructure.DMA_Channel = DMA_Channel_4;
@@ -80,18 +90,18 @@ INIT(
    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
    DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-   DMA_Init(UART_DRV_TX_DMA, &DMA_InitStructure);
+  // DMA_Init(UART_DRV_TX_DMA, &DMA_InitStructure);
 
-   DMA_Cmd(DMA2_Stream5, ENABLE);
+//   DMA_Cmd(DMA2_Stream5, ENABLE);
 
-   USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
+   //USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
 
    // Clock Enable
   //RCC_AHB1PeriphClockCmd(UART_DRV_TX_DMA_RCC, ENABLE);
 
   // DMA-Disable
-  DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
-  DMA_DeInit(UART_DRV_RX_DMA);
+  //DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
+  //DMA_DeInit(UART_DRV_RX_DMA);
 
   // DMA2-Config
   DMA_InitStructure.DMA_Channel = UART_DRV_RX_DMA_CHAN;
@@ -114,11 +124,20 @@ INIT(
   //DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
 
   //USART_DMACmd(UART_DRV, USART_DMAReq_Rx, ENABLE);
-
+   //packets = 0;
+  GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
 )
 
 RT(
-
+   if(USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == SET){
+      PIN(packets)++;
+      uint8_t buf = USART1->DR;
+      PIN(data) = buf;
+      while (USART_GetFlagStatus(UART5, USART_FLAG_TXE) == RESET){;
+            USART_SendData(UART5, buf);
+         }
+   }
+      
 
   //start DMA TX transfer
   //DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
