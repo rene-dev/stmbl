@@ -64,8 +64,8 @@ typedef struct{
    float param_min;
    float param_max;
    uint16_t data_add;
-   char unit_string[32];
-   char name_string[32];
+   char unit_string[4];
+   char name_string[4];
 } process_data_descriptor_t;
 
 typedef struct{
@@ -73,7 +73,7 @@ typedef struct{
    uint8_t index;
    uint8_t type;
    uint8_t unused;
-   char name_string[32];
+   char name_string[4];
 } mode_descriptor_t;
 
 typedef struct{
@@ -106,7 +106,7 @@ typedef union{
 uint8_t bytes[1024];
 }memory_t;
 
-MEM(volatile uint8_t rxbuf[128]);
+MEM(volatile uint8_t rxbuf[32000]);
 MEM(int rxpos);
 MEM(memory_t memory);
 MEM(discovery_rpc_t discovery_rpc);
@@ -202,7 +202,7 @@ INIT(
    memory.gtoc.md[1].index = 0x00;
    memory.gtoc.md[1].type = 0x01;
    memory.gtoc.md[1].unused = 0x00;
-   strncpy(memory.gtoc.md[1].name_string,"io_spin",8);
+   strncpy(memory.gtoc.md[1].name_string,"io_",4);
    
    memory.gtoc.pd[0].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
    memory.gtoc.pd[0].data_size = 0x10;
@@ -211,14 +211,14 @@ INIT(
    memory.gtoc.pd[0].param_min = 0.0;
    memory.gtoc.pd[0].param_max = 0.0;
    memory.gtoc.pd[0].data_add = 0x095c;
-   strncpy(memory.gtoc.pd[0].unit_string,"none",5);
-   strncpy(memory.gtoc.pd[0].name_string,"swrevision",11);
+   strncpy(memory.gtoc.pd[0].unit_string,"non",4);
+   strncpy(memory.gtoc.pd[0].name_string,"swr",4);
    memory.gtoc.eot = 0x0000;
    
    discovery_rpc.input = 5;
    discovery_rpc.output = 6;
-   discovery_rpc.ptocp = (uint32_t)&memory.ptocp-(uint32_t)&memory;//0xa53e
-   discovery_rpc.gtocp = (uint32_t)&memory.gtocp-(uint32_t)&memory;//0xa584
+   discovery_rpc.ptocp = (uint32_t)&memory.ptocp-(uint32_t)&memory;//0x02
+   discovery_rpc.gtocp = (uint32_t)&memory.gtocp-(uint32_t)&memory;//0x06
    
    datasize[0] = 1;
    datasize[1] = 2;
@@ -227,8 +227,8 @@ INIT(
    for(int i = 0;i<NO_MODES;i++){
       memory.gtocp[i] = (uint32_t)&memory.gtoc.md[i]-(uint32_t)&memory;
    }
-   for(int i = NO_MODES;i<NO_GPD;i++){
-      memory.gtocp[i] = (uint32_t)&memory.gtoc.pd[i]-(uint32_t)&memory;
+   for(int i = NO_MODES;i<NO_GPD+NO_MODES;i++){
+      memory.gtocp[i] = (uint32_t)&memory.gtoc.pd[i-NO_MODES]-(uint32_t)&memory;
    }
    memory.gtocp[NO_GPD+NO_MODES] = (uint32_t)&memory.gtoc.eot-(uint32_t)&memory;
 )
@@ -309,7 +309,7 @@ RT(
           }else if(lbp.byte == DiscoveryRPC){//discovery
               send((uint8_t*)&discovery_rpc,sizeof(discovery_rpc),1);
               size = 1;
-          }else if(lbp.byte == ProcessDataRPC){//process data
+          }else if(lbp.byte == ProcessDataRPC && available >= 8){//process data
              buf[0] = 0x00;
              buf[1] = 0x00;
              buf[2] = 0x00;
@@ -319,7 +319,7 @@ RT(
              send(buf,5,1);
              size = 7;//output size + crc
           }
-      }else if(lbp.ct == 1 && lbp.wr == 0){//read
+      }else if(lbp.ct == 1 && lbp.wr == 0 && available >= 4){//read
           if(lbp.as == 1){
               size = 3;
               address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
@@ -333,7 +333,7 @@ RT(
           buf[3] = 0x00;
           buf[4] = 0x00;
           buf[5] = 0x00;
-          send(&memory.bytes[address],1,1);
+          send(&memory.bytes[address],1,1);//TODO: support reading more than 1 byte
           if(lbp.ai == 1){
               address++;
           }
