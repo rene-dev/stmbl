@@ -59,7 +59,7 @@ RT(
          moffset = fbi;
          id = 0.0;
          iq = 0.0;
-         SLEEP(PIN(time));
+         SLEEP(PIN(time) / 10.0);
          GOTO(3);
       }
       STATE(3){
