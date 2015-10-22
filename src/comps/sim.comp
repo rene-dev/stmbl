@@ -28,13 +28,13 @@ RT(
 
   sin = amp * sinf(freq * time * 2.0 * M_PI);
 
-  float s = ((int)(sin * r)) / r;
+  float s = sin;
   float o = PIN(offset);
   vel += freq * 2.0 * M_PI * period;
   vel = mod(vel);
 
   PIN(sin) = s + o;
-  PIN(msin) = mod(s + o);
+  PIN(msin) = ((int)(mod(s + o) * r)) / r;
   PIN(square) = (sin > 0.0) ? (amp + o) : (-amp + o);
   PIN(vel) = vel;//mod(((int)(vel * r)) / r + o);
 );

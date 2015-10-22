@@ -6,12 +6,19 @@ void link_pid(){
    // cmd
    link_hal_pins("conf0.cmd_rev", "rev0.rev");
 
+   link_hal_pins("rev0.out", "pderiv0.in");
    link_hal_pins("rev0.out", "net0.cmd");
+
    link_hal_pins("net0.cmd", "pderiv0.in");
    link_hal_pins("pderiv0.out", "net0.cmd_d");
 
+   link_hal_pins("conf0.max_vel", "stp0.max_vel");
+   link_hal_pins("conf0.max_acc", "stp0.max_acc");
+
    link_hal_pins("conf0.max_vel", "pderiv0.vel_max");
    link_hal_pins("conf0.max_acc", "pderiv0.acc_max");
+   set_hal_pin("pderiv0.in_lp", 0.8);
+
 
    link_hal_pins("net0.cmd","pid0.pos_ext_cmd");
    link_hal_pins("net0.cmd_d", "pid0.vel_ext_cmd");
@@ -23,6 +30,8 @@ void link_pid(){
    link_hal_pins("conf0.fb_rev", "rev1.rev");
 
    link_hal_pins("rev1.out", "vel0.pos_in");
+   link_hal_pins("fault0.enable_pid", "vel0.en");
+
    //link_hal_pins("cauto0.fb_out", "net0.fb");
    //link_hal_pins("net0.fb", "pderiv1.in");
    //link_hal_pins("pderiv1.out", "net0.fb_d");
@@ -206,6 +215,7 @@ void link_pid(){
 }
 
 void set_cmd_enc(){
+   set_hal_pin("conf0.cmd_res", 40000.0);
    link_hal_pins("enc_cmd0.pos", "rev0.in");
    link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
    set_hal_pin("en0.txen", 0.0);
@@ -616,7 +626,7 @@ void set_festo(){ // TODO
    set_hal_pin("conf0.psi", 0.35 / 2.0 / M_PI);//typenschild
 
    set_hal_pin("conf0.pos_p", 150.0);
-   set_hal_pin("conf0.acc_p", 0.05);
+   set_hal_pin("conf0.acc_p", 0.2);
    set_hal_pin("conf0.acc_pi", 100.0);
    set_hal_pin("conf0.cur_p", 0.5);
    set_hal_pin("conf0.cur_i", 0.001);

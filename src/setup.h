@@ -30,7 +30,7 @@ void setup();
 void setup_res();
 void SysTick_Handler(void);
 
-volatile unsigned int systime;
+volatile unsigned long systime;
 
 volatile uint32_t ADC_DMA_Buffer[ADC_ANZ * PID_WAVES];
 

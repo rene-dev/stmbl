@@ -70,7 +70,6 @@ volatile uint16_t temp_raw = 0;
 float volt = 0;
 float amp = 0;
 float temp = 0;
-const int res = 1200; //pwm resolution
 
 volatile unsigned int systime = 0;
 volatile float u,v,w;
@@ -102,6 +101,24 @@ void SysTick_Handler(void)
 
 void RCC_Configuration(void)
 {
+   ErrorStatus HSEStartUpStatus;
+   RCC_DeInit();
+   RCC_HSEConfig(RCC_HSE_ON);
+   HSEStartUpStatus = RCC_WaitForHSEStartUp();
+
+   if(HSEStartUpStatus == SUCCESS){
+      FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
+      FLASH_SetLatency(FLASH_Latency_2);
+      RCC_HCLKConfig(RCC_SYSCLK_Div1);
+      RCC_PCLK2Config(RCC_HCLK_Div1);
+      RCC_PCLK1Config(RCC_HCLK_Div2);
+      RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);
+      RCC_PLLCmd(ENABLE);
+      while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
+      RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+      while(RCC_GetSYSCLKSource() != 0x08){}
+   }
+
    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
 }
 
@@ -154,8 +171,8 @@ void tim1_init(){
    GPIO_Init(GPIOB, &GPIO_InitStructure);
 
    /* Channel 1, 2 and 3 Configuration in PWM mode */
-   TIM_TimeBaseStructure.TIM_Period = res;
-   TIM_TimeBaseStructure.TIM_Prescaler = 1;
+   TIM_TimeBaseStructure.TIM_Period = PWM_RES;
+   TIM_TimeBaseStructure.TIM_Prescaler = 0;
    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_CenterAligned3;
    TIM_TimeBaseStructure.TIM_RepetitionCounter = 1;
@@ -343,12 +360,12 @@ void TIM1_UP_IRQHandler(){
    ADC_SoftwareStartConvCmd(ADC1, ENABLE);   //trigger ADC
    if(timeout > 30){
       GPIO_ResetBits(GPIOB,GPIO_Pin_6);   //disable driver
-      GPIO_SetBits(GPIOC,GPIO_Pin_1);  //yellow led on
+      //GPIO_SetBits(GPIOC,GPIO_Pin_1);  //yellow led on
       //GPIO_ResetBits(GPIOC,GPIO_Pin_2);   //green led off
    }else{
       GPIO_SetBits(GPIOB,GPIO_Pin_6);  //Enable driver
       //GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
-      GPIO_ResetBits(GPIOC,GPIO_Pin_1);   //yellow led off
+      //GPIO_ResetBits(GPIOC,GPIO_Pin_1);   //yellow led off
       timeout ++;
    }
    //GPIO_SetBits(GPIOB,GPIO_Pin_12);
@@ -362,9 +379,9 @@ void DMA1_Channel1_IRQHandler(){
 
    //fault test
    if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)){
-      GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
+      //GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
    }else{
-      GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
+      //GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
    }
 
    volt_raw = ADCConvertedValue[0];
@@ -428,9 +445,9 @@ void USART2_IRQHandler(){
          }
       }
 
-      PWM_U = CLAMP(u/volt*res, 0, res * 0.95);
-      PWM_V = CLAMP(v/volt*res, 0, res * 0.95);
-      PWM_W = CLAMP(w/volt*res, 0, res * 0.95);
+      PWM_U = CLAMP(u / volt * PWM_RES, 0, PWM_RES * 0.95);
+      PWM_V = CLAMP(v / volt * PWM_RES, 0, PWM_RES * 0.95);
+      PWM_W = CLAMP(w / volt * PWM_RES, 0, PWM_RES * 0.95);
 
       timeout = 0; //reset timeout
       //GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led

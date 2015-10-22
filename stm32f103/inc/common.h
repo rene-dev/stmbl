@@ -16,6 +16,8 @@
 
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 
+#define PWM_RES 2400
+
 typedef struct{
    uint8_t start; // 255
    uint8_t key;

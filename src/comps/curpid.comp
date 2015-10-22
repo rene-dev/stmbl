@@ -29,7 +29,7 @@ HAL_PIN(kind) = 0.0;
 HAL_PIN(id_error) = 0.0;
 HAL_PIN(iq_error) = 0.0;
 
-HAL_PIN(res) = 1200.0;
+HAL_PIN(res) = PWM_RES;
 HAL_PIN(volt_res) = 0.0;
 
 MEM(float id_error_sum) = 0.0;
