@@ -200,7 +200,7 @@ V3.3</text>
 <text x="61.5" y="23.25" size="1" layer="112" font="fixed" rot="R270" align="center-left">RST</text>
 <text x="20" y="0.75" size="1" layer="112" font="fixed">github.com/rene-dev/stmbl</text>
 <text x="22.75" y="62" size="0.8" layer="112" font="fixed" rot="SR0" align="bottom-center">12V 24V</text>
-<text x="10" y="50.25" size="0.8" layer="112" font="fixed" rot="SR0" align="bottom-center">12V 24V</text>
+<text x="10" y="50.25" size="0.8" layer="112" font="fixed" rot="SR0" align="bottom-center">12V 5V</text>
 </plain>
 <libraries>
 <library name="rcl">
