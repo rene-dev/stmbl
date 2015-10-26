@@ -4,7 +4,7 @@
 #ld gcollection
 #komische flags
 
-SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c printf.c scanf.c setup.c hal.c misc.c eeprom.c link.c
+SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c printf.c scanf.c setup.c hal.c misc.c eeprom.c link.c stm32f103/src/common.c
 #USB
 SRCS +=  ub_lib/stm32_ub_usb_cdc.c ub_lib/usb_cdc_lolevel/usb_core.c ub_lib/usb_cdc_lolevel/usb_dcd_int.c ub_lib/usb_cdc_lolevel/usbd_req.c ub_lib/usb_cdc_lolevel/usbd_cdc_core.c ub_lib/usb_cdc_lolevel/usbd_core.c ub_lib/usb_cdc_lolevel/usb_dcd.c ub_lib/usb_cdc_lolevel/usbd_cdc_vcp.c ub_lib/usb_cdc_lolevel/usbd_desc.c ub_lib/usb_cdc_lolevel/usbd_ioreq.c ub_lib/usb_cdc_lolevel/usb_bsp.c ub_lib/usb_cdc_lolevel/usbd_usr.c
 #SRCS = main.c system.c
@@ -26,7 +26,7 @@ CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 #CCDIR = /Users/rene/Downloads/gcc-arm-none-eabi-4_7-2013q3/bin
 
-CFLAGS  = -g -Wall -Tstm32_flash.ld -std=gnu99 -fno-builtin -CC -fdiagnostics-color=always
+CFLAGS  = -g -Wall -Tstm32_flash.ld -std=gnu99 -fno-builtin -CC
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork -nostartfiles
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -nostartfiles -fsingle-precision-constant
 CFLAGS += -ffunction-sections -fdata-sections
@@ -40,7 +40,7 @@ vpath %.a lib
 
 ROOT=$(shell pwd)
 
-CFLAGS += -Iinc -Ilib -Ilib/inc
+CFLAGS += -Iinc -Ilib -Ilib/inc -Istm32f103/inc
 CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals
 
 SRCS += lib/startup_stm32f4xx.s # add startup file to build

@@ -32,29 +32,21 @@ HAL_PIN(vel_error) = 0.0; // error out (rad/s)
 HAL_PIN(acc_ext_cmd) = 0.0; // cmd in (rad/s^2)
 HAL_PIN(acc_cmd) = 0.0; // cmd out (rad/s^2)
 
-HAL_PIN(force_ext_cmd) = 0.0; // cmd in (Nm)
-HAL_PIN(force_cmd) = 0.0; // cmd out (Nm)
+HAL_PIN(torque_ext_cmd) = 0.0; // cmd in (Nm)
+HAL_PIN(torque_cmd) = 0.0; // cmd out (Nm)
+HAL_PIN(torque_cor_cmd) = 0.0; // corrected cmd out (Nm)
 
-HAL_PIN(cur_ext_cmd) = 0.0; // cmd in (A)
-//HAL_PIN(cur_fb) = 0.0; // fb in (A)
-HAL_PIN(cur_cmd) = 0.0; // cmd out (A)
-//HAL_PIN(cur_error) = 0.0; // error out (A)
+HAL_PIN(friction) = 0.0; // (Nm)
+HAL_PIN(damping) = 0.0; // (Nm/rad/s)
+HAL_PIN(load) = 0.0; // (Nm)
+
 
 HAL_PIN(enable) = 0.0;
 HAL_PIN(pos_en) = 1.0;
 HAL_PIN(vel_en) = 1.0;
 HAL_PIN(acc_en) = 1.0;
-HAL_PIN(force_en) = 1.0;
-HAL_PIN(cur_en) = 1.0;
 
-HAL_PIN(mot_r) = 1.0;
-HAL_PIN(mot_j) = 0.000026; // inertia (kgm^2)
-HAL_PIN(mot_km) = 0.3724; // torque constant (Nm/A, V/rad/s)
-
-HAL_PIN(mot_fr) = 30.0; // friction (Nm)
-HAL_PIN(mot_fd) = 30.0; // damping (Nm/rad/s)
-HAL_PIN(mot_fl) = 30.0; // load (Nm)
-
+HAL_PIN(p) = 0.9;
 
 HAL_PIN(pos_p) = 100.0;
 HAL_PIN(pos_lp) = 5000.0;
@@ -69,121 +61,76 @@ HAL_PIN(acc_pi) = 20.0;
 //HAL_PIN(acc_aw) = 1.0;
 HAL_PIN(acc_ff) = 1.0;
 
-HAL_PIN(force_p) = 1.0;
-HAL_PIN(force_lp) = 5000.0;
-HAL_PIN(force_ff) = 1.0;
-
-HAL_PIN(cur_ff) = 1.0;
+HAL_PIN(torque_ff) = 1.0;
 
 
-HAL_PIN(volt) = 130.0;
-HAL_PIN(induction) = 0.0;
+HAL_PIN(friction_ff) = 0.9;
+HAL_PIN(damping_ff) = 0.9;
+HAL_PIN(load_ff) = 0.9;
 
-// max limits
-HAL_PIN(max_vel) = 1250.0;
-HAL_PIN(max_acc) = 300000.0;
-HAL_PIN(max_force) = 3.0;
-HAL_PIN(max_cur) = 6.0;
-HAL_PIN(max_volt) = 400.0;
-HAL_PIN(max_pwm) = 0.95;
+HAL_PIN(j) = 0.0;
+
 
 // system limits
-HAL_PIN(vel_min) = 0.0;
-HAL_PIN(vel_max) = 0.0;
-HAL_PIN(acc_min) = 0.0;
-HAL_PIN(acc_max) = 0.0;
-HAL_PIN(force_min) = 0.0;
-HAL_PIN(force_max) = 0.0;
-HAL_PIN(cur_min) = 0.0;
-HAL_PIN(cur_max) = 0.0;
-HAL_PIN(volt_min) = 0.0;
-HAL_PIN(volt_max) = 0.0;
-HAL_PIN(pwm_min) = 0.0;
-HAL_PIN(pwm_max) = 0.0;
+HAL_PIN(max_vel) = 0.0;
+HAL_PIN(max_torque) = 0.0;
+HAL_PIN(min_torque) = 0.0;
 
+// user limits
+HAL_PIN(max_usr_vel) = 0.0;
+HAL_PIN(max_usr_acc) = 0.0;
+HAL_PIN(max_usr_torque) = 0.0;
 
 HAL_PIN(vel_sat) = 0.0;
 HAL_PIN(acc_sat) = 0.0;
-HAL_PIN(force_sat) = 0.0;
-HAL_PIN(cur_sat) = 0.0;
+HAL_PIN(torque_sat) = 0.0;
 HAL_PIN(saturated) = 0.0;
 
+
 MEM(float sat) = 0.0;
-MEM(float force_error_sum) = 0.0;
+MEM(float torque_error_sum) = 0.0;
 
 MEM(float velcmd) = 0.0;
 MEM(float acccmd) = 0.0;
-MEM(float forcecmd) = 0.0;
-MEM(float curcmd) = 0.0;
-
+MEM(float torquecmd) = 0.0;
 
 RT(
+   float j = MAX(PIN(j), 0.0000001);
+   float p = PIN(p);
+
+   float torqueextcmd = PIN(torque_ext_cmd);
+   float torquemin = MAX(PIN(min_torque) * p, -PIN(max_usr_torque));
+   float torquemax = MIN(PIN(max_torque) * p, PIN(max_usr_torque));
+   float torquesat;
+
+   float accextcmd = PIN(acc_ext_cmd);
+   float accmin = -PIN(max_usr_acc);//MAX(torquemin / j, -PIN(max_usr_acc));
+   float accmax = PIN(max_usr_acc);//MIN(torquemax / j, PIN(max_usr_acc));
+   float accsat;
+
+   float velextcmd = PIN(vel_ext_cmd);
+   float velfb = PIN(vel_fb);
+   float velmin = MAX(-PIN(max_vel) * p, -PIN(max_usr_vel));//MAX(MAX(velfb + accmin * period, -PIN(max_vel) * p) , -PIN(max_usr_vel));
+   float velmax = MIN(PIN(max_vel) * p, PIN(max_usr_vel));//MIN(MIN(velfb + accmax * period, PIN(max_vel) * p), PIN(max_usr_vel));
+   float velerr;
+   float velsat;
+
    float posextcmd = PIN(pos_ext_cmd);
    float posfb = PIN(pos_fb);
    float poserr = minus(posextcmd, posfb);
 
-   float velextcmd = PIN(vel_ext_cmd);
-   float velfb = PIN(vel_fb);
-   //float velcmd;
-   float velerr;
-   float velsat;
-
-   float accextcmd = PIN(acc_ext_cmd);
-   //float acccmd;
-   float accsat;
-
-   float forceextcmd = PIN(force_ext_cmd);
-   //float forcecmd;
-   float forcesat;
-
-   float curextcmd = PIN(cur_ext_cmd);
-   //float curfb = PIN(cur_fb);
-   //float curcmd;
-   //float curerr = 0.0;
-   float cursat;
-
-   float r = MAX(PIN(mot_r), 0.01) / 2.0;
-   float j = MAX(PIN(mot_j), 0.000001);
-   float m = MAX(PIN(mot_km), 0.01);
-   float t = MAX(period, 0.00001);
-
-   float vlt = MAX(PIN(volt), 0.1);
-
-   float velmax = PIN(max_vel);
-   //float velmin = -velmax;
-   float accmax = PIN(max_acc);
-   float forcemax = PIN(max_force);
-   float curmax = PIN(max_cur);
-   float voltmax = MIN(PIN(max_volt), vlt);
-   float pwmmax = PIN(max_pwm);
-   voltmax *= pwmmax;
-
-   float ind = velfb * m;
-
-   float curmax_ = MIN(curmax, (voltmax - ind) / r);
-   float curmin_ = MAX(-curmax, (-voltmax - ind) / r);
-   float forcemax_ = MIN(forcemax, curmax_ * m);
-   float forcemin_ = MAX(-forcemax, curmin_ * m);
-   float accmax_ = MIN(accmax, forcemax_ / j);
-   float accmin_ = MAX(-accmax, forcemin_ / j);
-   float velmax_ = MIN(vlt / m, velmax);
-   float velmin_ = -velmax_;
-
    float posp = MAX(PIN(pos_p), 0.0);
    float poslp = LP_HZ(PIN(pos_lp));
-   float velp = MIN(MAX(PIN(vel_p), 0.0), 1.0);
+   float velp = MAX(PIN(vel_p), 0.0);
    float vellp = LP_HZ(PIN(vel_lp));
-   float accp = MIN(MAX(PIN(acc_p), 0.0), 1.0);
+   float accp = MAX(PIN(acc_p), 0.0);
    float accpi = MAX(PIN(acc_pi), 0.0);
    //float accaw = MAX(PIN(acc_aw), 0.0);
    float acclp = LP_HZ(PIN(acc_lp));
-   float forcep = MIN(MAX(PIN(force_p), 0.001), 1.0);
-   float forcelp = LP_HZ(PIN(force_lp));
 
    float old_velcmd = velcmd;
    float old_acccmd = acccmd;
-   float old_forcecmd = forcecmd;
-   float old_curcmd = curcmd;
+   float old_torquecmd = torquecmd;
 
    if(PIN(enable) > 0.0){
       if(PIN(pos_en) == 0.0){
@@ -198,62 +145,46 @@ RT(
          velp = 0.0;
          accp = 0.0;
          //    accaw = 0.0;
-         force_error_sum = 0.0;
-      }
-      if(PIN(force_en) == 0.0){
-         posp = 0.0;
-         velp = 0.0;
-         accp = 0.0;
-         //    accaw = 0.0;
-         force_error_sum = 0.0;
-         forcep = 0.0;
-      }
-      if(PIN(cur_en) == 0.0){
-         posp = 0.0;
-         velp = 0.0;
-         accp = 0.0;
-         //    accaw = 0.0;
-         force_error_sum = 0.0;
-         forcep = 0.0;
+         torque_error_sum = 0.0;
       }
 
       // pos -> vel
       velcmd = posp * poserr + PIN(vel_ff) * velextcmd;  // vel = p * pos_error + ff1
       velcmd = velcmd * poslp + (1.0 - poslp) * old_velcmd; // lowpass
-      velsat = SAT2(velcmd, velmin_, velmax_);
-      velcmd = CLAMP(velcmd, velmin_, velmax_); // min/max clamping
+      velsat = SAT2(velcmd, velmin, velmax);
+      velcmd = CLAMP(velcmd, velmin, velmax); // min/max clamping
 
       // vel -> acc
       velerr = velcmd - velfb;
-      acccmd = velerr / t * velp + PIN(acc_ff) * accextcmd; // acc = p * vel_error / period + ff2
+      acccmd = velerr / period * velp + PIN(acc_ff) * accextcmd; // acc = p * vel_error / period + ff2
       acccmd = acccmd * vellp + (1.0 - vellp) * old_acccmd; // lowpass
-      accsat = SAT2(acccmd, accmin_, accmax_);
-      acccmd = CLAMP(acccmd, accmin_, accmax_); // min/max clamping
+      accsat = SAT2(acccmd, accmin, accmax);
+      acccmd = CLAMP(acccmd, accmin, accmax); // min/max clamping
 
-      // acc -> force
-      forcecmd = acccmd * j * accp + PIN(force_ff) * forceextcmd; // force = acc * inertia + ext cmd
-      force_error_sum += velerr * t * accp * accpi; // integrate vel_error
-      force_error_sum = CLAMP(force_error_sum, forcemin_, forcemax_); // clamp integral
+      // acc -> torque
+      torquecmd = acccmd * j * accp + PIN(torque_ff) * torqueextcmd; // torque = acc * inertia + ext cmd
+      torque_error_sum += velerr * period * accp * accpi; // integrate vel_error
+      //torque_error_sum = CLAMP(torque_error_sum, torquemin, torquemax); // clamp integral
+      torque_error_sum = CLAMP(torque_error_sum, torquemin - torquecmd, torquemax - torquecmd); // clamp integral
       if(accpi == 0.0){
-         force_error_sum = 0.0;
+         torque_error_sum = 0.0;
       }
-      forcecmd += force_error_sum;  // add integral
-      //forcecmd = forcecmd * acclp + (1.0 - acclp) * old_forcecmd; // lowpass
-      //float tmp_forcecmd = forcecmd;
-      forcecmd = forcecmd * acclp + (1.0 - acclp) * old_forcecmd; // lowpass
-      forcesat = SAT2(forcecmd, forcemin_, forcemax_);
-      forcecmd = CLAMP(forcecmd, forcemin_, forcemax_); // min/max clamping
-      //force_error_sum += accaw * (forcecmd - tmp_forcecmd); // anti windup
-      //old_forcecmd = forcecmd;
+      torquecmd += torque_error_sum;  // add integral
+      torquecmd = torquecmd * acclp + (1.0 - acclp) * old_torquecmd; // lowpass
+      PIN(torque_cmd) = CLAMP(torquecmd, torquemin, torquemax);
+      if(velfb != 0.0){ // friction ff
+         torquecmd += SIGN(velfb) * PIN(friction) * PIN(friction_ff);
+      }
+      else{
+         torquecmd += SIGN(torquecmd) * PIN(friction) * PIN(friction_ff);
+      }
+      torquecmd += velfb * PIN(damping) * PIN(damping_ff); // damping ff
+      torquecmd -= PIN(load) * PIN(load_ff); // load ff
+      torquesat = SAT2(torquecmd, torquemin, torquemax);
+      torquecmd = CLAMP(torquecmd, torquemin, torquemax); // min/max clamping
 
-
-      // force -> current
-      curcmd = forcecmd / m * forcep + PIN(cur_ff) * curextcmd;  // current = force / torque constant + ext cmd
-      curcmd = curcmd * forcelp + (1.0 - forcelp) * old_curcmd; // lowpass
-      cursat = SAT2(curcmd, curmin_, curmax_);
-      curcmd = CLAMP(curcmd, curmin_, curmax_); // min/max clamping
-
-      if(ABS(velsat) + ABS(accsat) + ABS(forcesat) + ABS(cursat) > 0.0){
+      // sat
+      if(ABS(velsat) + ABS(accsat) + ABS(torquesat) > 0.0){
          sat += period;
       }
       else{
@@ -261,12 +192,14 @@ RT(
       }
    }
    else{
-      force_error_sum = 0.0;
+      torque_error_sum = 0.0;
       velcmd = 0.0;
       velerr = 0.0;
       acccmd = 0.0;
-      forcecmd = 0.0;
-      curcmd = 0.0;
+      torquecmd = 0.0;
+      velsat = 0.0;
+      accsat = 0.0;
+      torquesat = 0.0;
       sat = 0.0;
    }
 
@@ -274,26 +207,12 @@ RT(
    PIN(vel_cmd) = velcmd;
    PIN(vel_error) = velerr;
    PIN(acc_cmd) = acccmd;
-   PIN(force_cmd) = forcecmd;
-   PIN(cur_cmd) = curcmd;
-   //PIN(cur_error) = curerr;
+   PIN(torque_cor_cmd) = torquecmd;
 
    PIN(vel_sat) = velsat;
    PIN(acc_sat) = accsat;
-   PIN(force_sat) = forcesat;
-   PIN(cur_sat) = cursat;
+   PIN(torque_sat) = torquesat;
    PIN(saturated) = sat;
-
-   PIN(induction) = ind;
-
-   PIN(vel_min) = velmin_;
-   PIN(vel_max) = velmax_;
-   PIN(acc_min) = accmin_;
-   PIN(acc_max) = accmax_;
-   PIN(force_min) = forcemin_;
-   PIN(force_max) = forcemax_;
-   PIN(cur_min) = curmin_;
-   PIN(cur_max) = curmax_;
 );
 
 ENDCOMP;

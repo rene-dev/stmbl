@@ -1,0 +1,383 @@
+COMP(sserial);
+
+#define UnitNumberRPC 0xbc
+#define DiscoveryRPC 0xbb
+#define ProcessDataRPC 0xbd
+
+//local commands
+#define LBPCookieCMD 0xdf
+#define LBPCookie 0x5a
+
+#define LBPStatusCMD 0xc1
+
+#define LBPCardName "7I76"
+#define LBPCardName0Cmd 0xd0
+#define LBPCardName1Cmd 0xd1
+#define LBPCardName2Cmd 0xd2
+#define LBPCardName3Cmd 0xd3
+
+typedef union{
+    struct {
+        uint8_t ds:2;//DataSize: Specifies data size, 00b = 1 bytes, 01b = 2 bytes, 10 b= 4 bytes, 11b = 8 bytes.
+        uint8_t as:1;//AddressSize: 0 to specify current address, 1 to specify 2 byte address.
+        uint8_t ai:1;//AutoInc: 0 leaves address unchanged, 1 specifies that address is post incremented by data size in bytes.
+        uint8_t rid:1;//RPCIncludesData: 0 specifies that data is from stream, 1, that data is from RPC (RPC only, ignored for non RPC commands)
+        uint8_t wr:1;//Write: 1 to specify write, 0 to specify read
+        uint8_t ct:2;//CommandType: Must be 01b to specify data read/write command
+        //01:rw 11: local command 10:rpc
+    };
+    struct {
+        uint8_t rpc:6;
+        uint8_t dummy:2;
+        //01:rw 11: local command 10:rpc
+    };
+    uint8_t byte;
+} lbp_t;
+
+//process data
+#define RECORD_TYPE_PROCESS_DATA_RECORD 0xA0
+#define DATA_TYPE_PAD 0x00
+#define DATA_TYPE_BITS 0x01
+#define DATA_TYPE_UNSIGNED 0x02
+#define DATA_TYPE_SIGNED 0x03
+#define DATA_TYPE_NONVOL_UNSIGNED 0x04
+#define DATA_TYPE_NONVOL_SIGNED 0x05
+#define DATA_TYPE_NONVOL_STREAM 0x06
+#define DATA_TYPE_NONVOL_BOOLEAN 0x07
+
+#define DATA_DIRECTION_INPUT 0x00
+#define DATA_DIRECTION_BI_DIRECTIONAL 0x40
+#define DATA_DIRECTION_OUTPUT 0x80
+
+//modes
+#define MODE_DATA_RECORD 0xB0
+
+#define NO_MODES 2//gtoc modes
+#define NO_GPD 1//gtoc process data
+#define NO_PD 2//process data
+
+typedef struct{
+   uint8_t record_type;//0xa0
+   uint8_t data_size;
+   uint8_t data_type;
+   uint8_t data_direction;
+   float param_min;
+   float param_max;
+   uint16_t data_add;
+   char unit_string[4];
+   char name_string[4];
+} process_data_descriptor_t;
+
+typedef struct{
+   uint8_t record_type;//0xb0
+   uint8_t index;
+   uint8_t type;
+   uint8_t unused;
+   char name_string[4];
+} mode_descriptor_t;
+
+typedef struct{
+   uint8_t input;
+   uint8_t output;
+   uint16_t ptocp;//pointer to process data table
+   uint16_t gtocp;//pointer to mode data table
+} discovery_rpc_t;
+
+typedef struct{
+   mode_descriptor_t md[NO_MODES];
+   process_data_descriptor_t pd[NO_GPD];
+   uint16_t eot;//end of table
+} gtoc_t;
+
+typedef struct{
+   process_data_descriptor_t pd[NO_PD];
+   uint16_t eot;//end of table
+} ptoc_t;
+
+typedef union{
+ struct{
+   uint8_t start;
+   uint16_t ptocp[NO_PD+1];
+   uint16_t gtocp[NO_GPD+NO_MODES+1];
+   ptoc_t ptoc;
+   gtoc_t gtoc;
+   uint8_t end;
+};
+uint8_t bytes[1024];
+}memory_t;
+
+MEM(volatile uint8_t rxbuf[128]);
+MEM(int rxpos);
+MEM(memory_t memory);
+MEM(discovery_rpc_t discovery_rpc);
+MEM(uint8_t datasize[4]);
+
+//pb13 txen
+//pc12 usart5 tx
+//pa9 usart1 tx as rx
+
+INIT(
+   GPIO_InitTypeDef GPIO_InitStruct;
+   USART_InitTypeDef USART_InitStruct;
+   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+   RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
+   //USART TX
+   GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_UART5);
+   GPIO_InitStruct.GPIO_Pin = GPIO_Pin_12;
+   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
+   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
+   GPIO_Init(GPIOC, &GPIO_InitStruct);
+   
+   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+   //USART RX
+   GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_USART1);
+   GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
+   GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+   USART_InitStruct.USART_BaudRate = 2500000;
+   USART_InitStruct.USART_WordLength = USART_WordLength_8b;
+   USART_InitStruct.USART_StopBits = USART_StopBits_1;
+   USART_InitStruct.USART_Parity = USART_Parity_No;
+   USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+   USART_InitStruct.USART_Mode = USART_Mode_Rx;
+   USART_Init(USART1, &USART_InitStruct);
+   USART_HalfDuplexCmd(USART1,ENABLE);
+   
+   USART_InitStruct.USART_Mode = USART_Mode_Tx;
+   USART_Init(UART5, &USART_InitStruct);
+
+   USART_Cmd(USART1, ENABLE);
+   USART_Cmd(UART5, ENABLE);
+
+   //RX DMA
+   // Clock Enable
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
+
+   DMA_Cmd(DMA2_Stream5, DISABLE);
+   DMA_DeInit(DMA2_Stream5);
+
+   // DMA2-Config
+   DMA_InitStructure.DMA_Channel = DMA_Channel_4;
+   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART1->DR);
+   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&rxbuf;
+   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+   DMA_InitStructure.DMA_BufferSize = sizeof(rxbuf);
+   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+   DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
+   DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+   DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+   DMA_Init(DMA2_Stream5, &DMA_InitStructure);
+
+   DMA_Cmd(DMA2_Stream5, ENABLE);
+
+   USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
+   GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
+   rxpos = 0;
+   
+   memory.gtoc.md[0].record_type = MODE_DATA_RECORD;
+   memory.gtoc.md[0].index = 0x00;
+   memory.gtoc.md[0].type = 0x00;
+   memory.gtoc.md[0].unused = 0x00;
+   strncpy(memory.gtoc.md[0].name_string,"foo",4);
+   
+   memory.gtoc.md[1].record_type = MODE_DATA_RECORD;
+   memory.gtoc.md[1].index = 0x00;
+   memory.gtoc.md[1].type = 0x01;
+   memory.gtoc.md[1].unused = 0x00;
+   strncpy(memory.gtoc.md[1].name_string,"io_",4);
+   
+   memory.gtoc.pd[0].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
+   memory.gtoc.pd[0].data_size = 0x10;
+   memory.gtoc.pd[0].data_type = 0x02;
+   memory.gtoc.pd[0].data_direction = 0x80;
+   memory.gtoc.pd[0].param_min = 0.0;
+   memory.gtoc.pd[0].param_max = 0.0;
+   memory.gtoc.pd[0].data_add = 0x095c;
+   strncpy(memory.gtoc.pd[0].unit_string,"non",4);
+   strncpy(memory.gtoc.pd[0].name_string,"swr",4);
+   memory.gtoc.eot = 0x0000;
+   
+   memory.ptoc.pd[0].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
+   memory.ptoc.pd[0].data_size = 0x10;
+   memory.ptoc.pd[0].data_type = 0x02;
+   memory.ptoc.pd[0].data_direction = 0x80;
+   memory.ptoc.pd[0].param_min = 0.0;
+   memory.ptoc.pd[0].param_max = 0.0;
+   memory.ptoc.pd[0].data_add = 0x095c;
+   strncpy(memory.ptoc.pd[0].unit_string,"pd1",4);
+   strncpy(memory.ptoc.pd[0].name_string,"pd1",4);
+   memory.ptoc.eot = 0x0000;
+   
+   memory.ptoc.pd[1].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
+   memory.ptoc.pd[1].data_size = 0x10;
+   memory.ptoc.pd[1].data_type = 0x02;
+   memory.ptoc.pd[1].data_direction = 0x00;
+   memory.ptoc.pd[1].param_min = 0.0;
+   memory.ptoc.pd[1].param_max = 0.0;
+   memory.ptoc.pd[1].data_add = 0x095c;
+   strncpy(memory.ptoc.pd[1].unit_string,"pd2",4);
+   strncpy(memory.ptoc.pd[1].name_string,"pd2",4);
+   memory.ptoc.eot = 0x0000;
+   
+   discovery_rpc.input = 5;
+   discovery_rpc.output = 6;
+   discovery_rpc.ptocp = (uint32_t)&memory.ptocp-(uint32_t)&memory;//0x02
+   discovery_rpc.gtocp = (uint32_t)&memory.gtocp-(uint32_t)&memory;//0x10
+   
+   datasize[0] = 1;
+   datasize[1] = 2;
+   datasize[2] = 4;
+   datasize[3] = 8;
+   for(int i = 0;i<NO_MODES;i++){
+      memory.gtocp[i] = (uint32_t)&memory.gtoc.md[i]-(uint32_t)&memory;
+   }
+   for(int i = NO_MODES;i<NO_GPD+NO_MODES;i++){
+      memory.gtocp[i] = (uint32_t)&memory.gtoc.pd[i-NO_MODES]-(uint32_t)&memory;
+   }
+   memory.gtocp[NO_GPD+NO_MODES] = 0x0000;//(uint32_t)&memory.gtoc.eot-(uint32_t)&memory;
+   
+   for(int i = 0;i<NO_PD;i++){
+      memory.ptocp[i] = (uint32_t)&memory.ptoc.pd[i]-(uint32_t)&memory;
+   }
+   memory.ptocp[NO_PD] = 0x0000;
+)
+
+uint8_t crc8( uint8_t *addr, uint8_t len)
+{
+   uint8_t crc=0;
+   for (uint8_t i=0; i<len;i++)
+   {
+      uint8_t inbyte = addr[i];
+      for (uint8_t j=0;j<8;j++)
+      {
+         uint8_t mix = (crc ^ inbyte) & 0x01;
+         crc >>= 1;
+         if (mix)
+            crc ^= 0x8C;
+         inbyte >>= 1;
+      }
+   }
+   return crc;
+}
+
+//TODO: use dma for this
+void send( uint8_t *data, uint8_t len, uint8_t docrc){
+   uint8_t crc;
+   if(docrc){
+      crc = crc8(data,len);
+   }
+    for(int i = 0;i<len;i++){
+       while (USART_GetFlagStatus(UART5, USART_FLAG_TXE) == RESET);
+       USART_SendData(UART5, data[i]);
+    }
+    if(docrc){
+       while (USART_GetFlagStatus(UART5, USART_FLAG_TXE) == RESET);
+       USART_SendData(UART5, crc);
+    }
+}
+
+RT(
+   uint8_t buf[100];
+   uint16_t address = 0;
+   lbp_t lbp;
+   
+   char name[] = LBPCardName;
+   int bufferpos;
+   int available;
+   for(int j = 0;j<2;j++){
+   bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
+   //available = bufferpos-rxpos;
+   available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf) + 1;
+   
+   if(available >= 1){//TODO: somtimes more data is needed, needs check
+      lbp.byte = rxbuf[rxpos];
+      if(lbp.ct == 3 && lbp.wr == 0 && available >= 2){//local read, 2b
+         switch(lbp.byte){
+            case LBPCookieCMD:
+            buf[0] = LBPCookie;
+            break;
+            case LBPStatusCMD://TODO: return status
+            buf[0] = 0x00;
+            break;
+            case LBPCardName0Cmd ... LBPCardName3Cmd:
+            buf[0] = name[lbp.byte-LBPCardName0Cmd];
+            break;
+            default://TODO: handle unknown command condition
+            buf[0] = 0x00;
+         }
+         send(buf,1,1);
+         rxpos += 2;
+      }else if(lbp.ct == 3 && lbp.wr == 1 && available >= 1){//local write, 3b
+         if(rxbuf[rxpos] == 0xff){
+            // reset parser
+            rxpos += 1;
+         }else if(available >= 2){
+            buf[0] = 0x00;
+            send(buf,1,0);
+            rxpos += 3;  
+         }
+      }else if(lbp.ct == 2){//RPC
+          if(lbp.byte == UnitNumberRPC && available >= 2){//unit number, 2b
+              buf[0] = 0x76;
+              buf[1] = 0x01;
+              buf[2] = 0x00;
+              buf[3] = 0x10;
+              send(buf,4,1);
+              rxpos += 2;
+          }else if(lbp.byte == DiscoveryRPC && available >= 2){//discovery, 2b
+              send((uint8_t*)&discovery_rpc,sizeof(discovery_rpc),1);
+              rxpos += 2;
+          }else if(lbp.byte == ProcessDataRPC && available >= 8 && available >= 8){//process data, 8b
+             buf[0] = 0x00;
+             buf[1] = 0x00;
+             buf[2] = 0x00;
+             buf[3] = 0x00;
+             buf[4] = 0x00;
+             buf[5] = 0x00;
+             send(buf,5,1);
+             rxpos += 8;
+          }
+      }else if(lbp.ct == 1 && lbp.wr == 0 && available >= 2){//read
+          if(lbp.as == 1){// 4b
+             if(available >= 4){
+                address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
+                rxpos += 4;
+                send(&memory.bytes[address], datasize[lbp.ds], 1);//TODO: support reading more than 1 byte
+                if(lbp.ai == 1){
+                    address++;
+                }
+             }
+          }else{// 2b
+              rxpos += 2;
+              send(&memory.bytes[address], datasize[lbp.ds], 1);//TODO: support reading more than 1 byte
+              if(lbp.ai == 1){
+                  address++;
+              }
+          }
+      }else{
+         //TODO: handle unkown packet
+      }
+   }
+   rxpos = rxpos % sizeof(rxbuf);
+}
+);
+
+ENDCOMP;

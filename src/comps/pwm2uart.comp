@@ -4,28 +4,168 @@ HAL_PIN(a) = 0.0;
 HAL_PIN(b) = 0.0;
 
 HAL_PIN(enable) = 0.0;
+HAL_PIN(error) = 0.0;
+
+HAL_PIN(dc_cur) = 0.0;
+HAL_PIN(dc_volt) = 0.0;
+HAL_PIN(ac_volt) = 0.0;
+HAL_PIN(hv_temp) = 0.0;
+
+#ifdef TROLLER
+HAL_PIN(iu) = 0.0;
+HAL_PIN(iv) = 0.0;
+HAL_PIN(iw) = 0.0;
+#endif
+
+MEM(volatile packet_to_hv_t packet_to_hv);
+MEM(volatile packet_from_hv_t packet_from_hv);
+
+
+INIT(
+   //setup uart to f1. uses DMA to transfer to_hv struct.
+   GPIO_InitTypeDef GPIO_InitStruct;
+   USART_InitTypeDef USART_InitStruct;
+   UART_DRV_CLOCK_COMMAND(UART_DRV_RCC, ENABLE);
+   RCC_AHB1PeriphClockCmd(UART_DRV_RX_IO_RCC, ENABLE);
+   RCC_AHB1PeriphClockCmd(UART_DRV_TX_IO_RCC, ENABLE);
+
+   //USART TX
+   GPIO_PinAFConfig(UART_DRV_TX_PORT, UART_DRV_TX_PIN_SOURCE, UART_DRV_TX_AF_SOURCE);
+   GPIO_InitStruct.GPIO_Pin = UART_DRV_TX_PIN;
+   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
+   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
+   GPIO_Init(UART_DRV_TX_PORT, &GPIO_InitStruct);
+
+   //USART RX
+   GPIO_PinAFConfig(UART_DRV_RX_PORT, UART_DRV_RX_PIN_SOURCE, UART_DRV_RX_AF_SOURCE);
+   GPIO_InitStruct.GPIO_Pin = UART_DRV_RX_PIN;
+   GPIO_Init(UART_DRV_RX_PORT, &GPIO_InitStruct);
+
+   USART_InitStruct.USART_BaudRate = DATABAUD;
+   USART_InitStruct.USART_WordLength = USART_WordLength_8b;
+   USART_InitStruct.USART_StopBits = USART_StopBits_1;
+   USART_InitStruct.USART_Parity = USART_Parity_No;
+   USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+   USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+   USART_Init(UART_DRV, &USART_InitStruct);
+
+   // USART_ITConfig(UART_DRV, USART_IT_RXNE, ENABLE);
+   //
+   // NVIC_InitStructure.NVIC_IRQChannel = UART_DRV_IRQN;
+   // NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+   // NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+   // NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+   // NVIC_Init(&NVIC_InitStructure);
+
+   /* Enable the USART */
+   USART_Cmd(UART_DRV, ENABLE);
+
+   // Clock Enable
+   RCC_AHB1PeriphClockCmd(UART_DRV_TX_DMA_RCC, ENABLE);
+
+   // DMA-Disable
+   DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
+   DMA_DeInit(UART_DRV_TX_DMA);
+
+   // DMA2-Config
+   DMA_InitStructure.DMA_Channel = UART_DRV_TX_DMA_CHAN;
+   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_DRV->DR);
+   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&packet_to_hv;
+   DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+   DMA_InitStructure.DMA_BufferSize = sizeof(packet_to_hv_t);
+   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+   DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
+   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+   DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+   DMA_Init(UART_DRV_TX_DMA, &DMA_InitStructure);
+
+   //DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
+
+   USART_DMACmd(UART_DRV, USART_DMAReq_Tx, ENABLE);
+
+   // Clock Enable
+  RCC_AHB1PeriphClockCmd(UART_DRV_TX_DMA_RCC, ENABLE);
+
+  // DMA-Disable
+  DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
+  DMA_DeInit(UART_DRV_RX_DMA);
+
+  // DMA2-Config
+  DMA_InitStructure.DMA_Channel = UART_DRV_RX_DMA_CHAN;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_DRV->DR);
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&packet_from_hv;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+  DMA_InitStructure.DMA_BufferSize = sizeof(packet_from_hv_t);
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(UART_DRV_RX_DMA, &DMA_InitStructure);
+
+  //DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
+
+  USART_DMACmd(UART_DRV, USART_DMAReq_Rx, ENABLE);
+
+  packet_to_hv.head.start = 255;
+  packet_to_hv.head.key = 0;
+  packet_from_hv.head.start = 0;
+  packet_from_hv.head.key = 0;
+)
 
 RT(
-  float e = PIN(enable);
+   float e = PIN(enable);
+
+   if(packet_from_hv.head.start == 255){
+      unbuff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
+      packet_from_hv.head.start = 0;
+      PIN(dc_cur) = TOFLOAT(packet_from_hv.data.dc_cur);
+      PIN(dc_volt) = TOFLOAT(packet_from_hv.data.dc_volt);
+      PIN(ac_volt) = PIN(dc_volt) / 2.0 * 0.95 * 1.15;
+      PIN(hv_temp) = TOFLOAT(packet_from_hv.data.hv_temp);
+      #ifdef TROLLER
+      PIN(iu) = TOFLOAT(packet_from_hv.data.a);
+      PIN(iv) = TOFLOAT(packet_from_hv.data.b);
+      PIN(iw) = TOFLOAT(packet_from_hv.data.c);
+      #endif
+      PIN(error) = 0.0;
+   }
+   else{
+      PIN(error) = 1.0;
+   }
 
   if(e > 0.0){
-    to_hv.a = TOFIXED(PIN(a));
-    to_hv.b = TOFIXED(PIN(b));
+    packet_to_hv.data.a = TOFIXED(PIN(a));
+    packet_to_hv.data.b = TOFIXED(PIN(b));
   }
   else{
-    to_hv.a = 0;
-    to_hv.b = 0;
+    packet_to_hv.data.a = 0;
+    packet_to_hv.data.b = 0;
   }
+  buff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
 
-  UART_DMA_Buffer[0] = 0x155;
-  for(int i = 0;i<sizeof(to_hv_t);i++){
-     UART_DMA_Buffer[i+1] = ((uint8_t*)&to_hv)[i];
-  }
-
-  //start DMA transfer
+  //start DMA TX transfer
   DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
   DMA_ClearFlag(UART_DRV_TX_DMA, UART_DRV_TX_DMA_TCIF);
   DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
+
+  //start DMA RX transfer
+  DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
+  DMA_ClearFlag(UART_DRV_RX_DMA, UART_DRV_RX_DMA_TCIF);
+  DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
 );
 
 ENDCOMP;

@@ -23,21 +23,16 @@
 //sample times for F4: 3,15,28,56,84,112,144,480
 #define RES_SampleTime ADC_SampleTime_28Cycles
 
-#define  ADC_ANZ 8
+#define  ADC_ANZ 16
 #define  PID_WAVES 4
 
 void setup();
 void setup_res();
-void setup_pwm();
-void setup_usart();
 void SysTick_Handler(void);
 
-volatile unsigned int systime;
+volatile unsigned long systime;
 
-volatile uint32_t ADC_DMA_Buffer[ADC_ANZ*PID_WAVES];
-volatile uint16_t UART_DMA_Buffer[sizeof(to_hv_t)+1];
-
-to_hv_t to_hv;
+volatile uint32_t ADC_DMA_Buffer[ADC_ANZ * PID_WAVES];
 
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 TIM_OCInitTypeDef TIM_OCInitStructure;

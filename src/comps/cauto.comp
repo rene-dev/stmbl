@@ -10,6 +10,7 @@ HAL_PIN(ready) = 0.0;
 
 HAL_PIN(mag_offset) = 0.0;
 HAL_PIN(start_offset) = 0.0;
+HAL_PIN(mo) = 0.0;
 HAL_PIN(moffset) = 0.0;
 
 HAL_PIN(fb_in) = 0.0;
@@ -29,6 +30,7 @@ MEM(float moffset) = 0.0;
 RT(
    fbi = PIN(fb_in);
    fb = minus(fbi, PIN(start_offset));
+   float mo = PIN(mo);
 
    HT(
       moffset = PIN(mag_offset);
@@ -36,7 +38,7 @@ RT(
       STATE(0){
          iq = 0.0;
          id = 0.0;
-         pos = minus(fbi, moffset);
+         pos = minus(fbi, moffset + mo);
          if(PIN(start) > 0.0){
             GOTO(1);
             PIN(ready) = 0.0;
@@ -57,14 +59,14 @@ RT(
          moffset = fbi;
          id = 0.0;
          iq = 0.0;
-         SLEEP(PIN(time));
+         SLEEP(PIN(time) / 10.0);
          GOTO(3);
       }
       STATE(3){
          PIN(ready) = 1.0;
          iq = 0.0;
          id = 0.0;
-         pos = minus(fbi, moffset);
+         pos = minus(fbi, moffset + mo);
          if(PIN(start) == 0.0){
             PIN(ready) = 0.0;
             GOTO(0);

@@ -2,8 +2,6 @@
 #include "common.h"
 #include <math.h>
 
-#define ADC1_DR_Address    ((uint32_t)0x4001244C)
-
 //iramx v31 hardware
 #define AREF 3.3// analog reference voltage
 #define ARES 4096.0// analog resolution, 12 bit
@@ -24,6 +22,7 @@
 #define ACS_UP 2000.0
 #define ACS_DOWN 3000.0
 #define ACS_OFFSET 2.5
+#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 
 #define AMP(a) ((a * AREF / ARES * (ACS_DOWN + ACS_UP) / ACS_DOWN - ACS_OFFSET) / ACS_VPA)
 
@@ -52,6 +51,17 @@ __IO uint16_t ADCConvertedValue[ADC_channels];//DMA buffer for ADC
 #define M_TWOPI         (M_PI * 2.0)
 #endif
 
+#define TEMP_RES 32
+#define SCALE (TEMP_RES / ARES)
+int16_t temp_buf[TEMP_RES];
+
+float tempb(float i){
+   unsigned int x = (int)(i * SCALE);
+   float a = TOFLOAT(temp_buf[x]);
+   float b = TOFLOAT(temp_buf[x + 1]);
+   return(a + (b - a) * (i * SCALE - x));
+}
+
 volatile uint32_t timeout = 99999;
 volatile uint16_t volt_raw = 0;
 volatile uint16_t amp_raw = 0;
@@ -60,15 +70,14 @@ volatile uint16_t temp_raw = 0;
 float volt = 0;
 float amp = 0;
 float temp = 0;
-const int res = 1200; //pwm resolution
 
 volatile unsigned int systime = 0;
 volatile float u,v,w;
 volatile int uartsend = 0;
 
 uint16_t buf = 0x0000;
-to_hv_t to_hv;
-from_hv_t from_hv;
+packet_to_hv_t packet_to_hv;
+packet_from_hv_t packet_from_hv;
 int32_t datapos = -1;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -92,6 +101,24 @@ void SysTick_Handler(void)
 
 void RCC_Configuration(void)
 {
+   ErrorStatus HSEStartUpStatus;
+   RCC_DeInit();
+   RCC_HSEConfig(RCC_HSE_ON);
+   HSEStartUpStatus = RCC_WaitForHSEStartUp();
+
+   if(HSEStartUpStatus == SUCCESS){
+      FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
+      FLASH_SetLatency(FLASH_Latency_2);
+      RCC_HCLKConfig(RCC_SYSCLK_Div1);
+      RCC_PCLK2Config(RCC_HCLK_Div1);
+      RCC_PCLK1Config(RCC_HCLK_Div2);
+      RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);
+      RCC_PLLCmd(ENABLE);
+      while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
+      RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+      while(RCC_GetSYSCLKSource() != 0x08){}
+   }
+
    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
 }
 
@@ -120,6 +147,11 @@ void GPIO_Configuration(void)
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
+   //Fault in
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
 #endif
 }
 
@@ -139,8 +171,8 @@ void tim1_init(){
    GPIO_Init(GPIOB, &GPIO_InitStructure);
 
    /* Channel 1, 2 and 3 Configuration in PWM mode */
-   TIM_TimeBaseStructure.TIM_Period = res;
-   TIM_TimeBaseStructure.TIM_Prescaler = 1;
+   TIM_TimeBaseStructure.TIM_Period = PWM_RES;
+   TIM_TimeBaseStructure.TIM_Prescaler = 0;
    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_CenterAligned3;
    TIM_TimeBaseStructure.TIM_RepetitionCounter = 1;
@@ -177,6 +209,21 @@ void tim1_init(){
 
 void usart_init(){
    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+
+   DMA_DeInit(DMA1_Channel7);
+   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART2->DR;
+   DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&packet_from_hv;
+   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
+   DMA_InitStructure.DMA_BufferSize = sizeof(packet_from_hv_t);
+   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+   DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+   DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+   DMA_Init(DMA1_Channel7, &DMA_InitStructure);
 
    //USART TX
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
@@ -190,13 +237,16 @@ void usart_init(){
    GPIO_Init(GPIOA, &GPIO_InitStructure);
 
    USART_InitStruct.USART_BaudRate = DATABAUD;
-   USART_InitStruct.USART_WordLength = USART_WordLength_9b;
+   USART_InitStruct.USART_WordLength = USART_WordLength_8b;
    USART_InitStruct.USART_StopBits = USART_StopBits_1;
    USART_InitStruct.USART_Parity = USART_Parity_No;
    USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
    USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
    USART_Init(USART2, &USART_InitStruct);
+   USART_DMACmd(USART2, USART_DMAReq_Tx, ENABLE);
+   USART_Cmd(USART2, ENABLE);
+
    USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);//Enable USART RX not empty interrupt
 
    NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
@@ -206,7 +256,6 @@ void usart_init(){
    NVIC_Init(&NVIC_InitStructure);
 
    /* Enable the USART2 */
-   USART_Cmd(USART2, ENABLE);
 }
 
 // Setup ADC
@@ -242,9 +291,8 @@ void setup_adc(){
    GPIO_Init(GPIOB, &GPIO_InitStructure);
 #endif
 
-
    DMA_DeInit(DMA1_Channel1);
-   DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
+   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR;
    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADCConvertedValue;
    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
    DMA_InitStructure.DMA_BufferSize = ADC_channels;
@@ -312,12 +360,12 @@ void TIM1_UP_IRQHandler(){
    ADC_SoftwareStartConvCmd(ADC1, ENABLE);   //trigger ADC
    if(timeout > 30){
       GPIO_ResetBits(GPIOB,GPIO_Pin_6);   //disable driver
-      GPIO_SetBits(GPIOC,GPIO_Pin_1);  //yellow led on
-      GPIO_ResetBits(GPIOC,GPIO_Pin_2);   //greep led off
+      //GPIO_SetBits(GPIOC,GPIO_Pin_1);  //yellow led on
+      //GPIO_ResetBits(GPIOC,GPIO_Pin_2);   //green led off
    }else{
       GPIO_SetBits(GPIOB,GPIO_Pin_6);  //Enable driver
       //GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
-      GPIO_ResetBits(GPIOC,GPIO_Pin_1);   //yellow led off
+      //GPIO_ResetBits(GPIOC,GPIO_Pin_1);   //yellow led off
       timeout ++;
    }
    //GPIO_SetBits(GPIOB,GPIO_Pin_12);
@@ -328,6 +376,13 @@ void DMA1_Channel1_IRQHandler(){
    DMA_ClearITPendingBit(DMA1_IT_TC1);
 
    //TODO: hadrware limits for current, temperature and voltage
+
+   //fault test
+   if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)){
+      //GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
+   }else{
+      //GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
+   }
 
    volt_raw = ADCConvertedValue[0];
    amp_raw = ADCConvertedValue[1];
@@ -340,18 +395,20 @@ void DMA1_Channel1_IRQHandler(){
 void USART2_IRQHandler(){
    USART_ClearITPendingBit(USART2, USART_IT_RXNE);
    buf = USART_ReceiveData(USART2);
-   if(buf == 0x155){ //start condition
+   if(buf == 255){ //start condition
       datapos = 0;
+      ((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
       uartsend = 1;
       //GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//green
-   }else if(datapos >= 0 && datapos < sizeof(to_hv_t)){
-      ((uint8_t*)&to_hv)[datapos++] = (uint8_t)buf;
+   }else if(datapos >= 0 && datapos < sizeof(packet_to_hv_t)){
+      ((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
    }
-   if(datapos == sizeof(to_hv_t)){//all data received
+   if(datapos == sizeof(packet_to_hv_t)){//all data received
       datapos = -1;
+      unbuff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
 
-      float ua = TOFLOAT(to_hv.a);
-      float ub = TOFLOAT(to_hv.b);
+      float ua = TOFLOAT(packet_to_hv.data.a);
+      float ub = TOFLOAT(packet_to_hv.data.b);
 
       float u = ua; // inverse clarke
       float v = - ua / 2.0 + ub / 2.0 * SQRT3;
@@ -363,9 +420,34 @@ void USART2_IRQHandler(){
       v += volt / 2.0;
       w += volt / 2.0;
 
-      PWM_U = u/volt*res;
-      PWM_V = v/volt*res;
-      PWM_W = w/volt*res;
+      if(u < v){
+         if(u < w){
+            v -= u;
+            w -= u;
+            u = 0.0;
+         }
+         else{
+            u -= w;
+            v -= w;
+            w = 0.0;
+         }
+      }
+      else{
+         if(v < w){
+            u -= v;
+            w -= v;
+            v = 0.0;
+         }
+         else{
+            u -= w;
+            v -= w;
+            w = 0.0;
+         }
+      }
+
+      PWM_U = CLAMP(u / volt * PWM_RES, 0, PWM_RES * 0.95);
+      PWM_V = CLAMP(v / volt * PWM_RES, 0, PWM_RES * 0.95);
+      PWM_W = CLAMP(w / volt * PWM_RES, 0, PWM_RES * 0.95);
 
       timeout = 0; //reset timeout
       //GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
@@ -389,29 +471,51 @@ int main(void)
    PWM_V = 0;
    PWM_W = 0;
 
+   packet_from_hv.head.start = 255;
+   packet_from_hv.head.key = 0;
+
+   for(int i = 0; i < TEMP_RES; i++){
+      temp_buf[i] = TOFIXED(TEMP(i / SCALE));
+   }
+
    while(1){
       if(uartsend == 1){
          amp = AMP(amp_raw);
          volt = VOLT(volt_raw);
-         if(temp_raw < ARES && temp_raw > 0){
-            temp = TEMP(temp_raw);
-         }
-         from_hv.dc_volt = TOFIXED(volt);
-         from_hv.dc_cur =  TOFIXED(amp);
-         from_hv.hv_temp = TOFIXED(temp);
+
+         packet_from_hv.data.dc_volt = TOFIXED(volt);
+         packet_from_hv.data.dc_cur =  TOFIXED(amp);
+         packet_from_hv.data.hv_temp = TOFIXED(temp);
 #ifdef TROLLER
-         from_hv.dc_cur =  TOFIXED(0);
-         from_hv.hv_temp = TOFIXED(0);
-         from_hv.a = TOFIXED(AMP(ADCConvertedValue[1]));
-         from_hv.b = TOFIXED(AMP(ADCConvertedValue[2]));
-         from_hv.c = TOFIXED(AMP(ADCConvertedValue[3]));
+         packet_from_hv.data.dc_cur =  TOFIXED(0);
+         packet_from_hv.data.hv_temp = TOFIXED(0);
+         packet_from_hv.data.a = TOFIXED(AMP(ADCConvertedValue[1]));
+         packet_from_hv.data.b = TOFIXED(AMP(ADCConvertedValue[2]));
+         packet_from_hv.data.c = TOFIXED(AMP(ADCConvertedValue[3]));
 #endif
+         buff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
          uartsend = 0;
-         while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-         USART_SendData(USART2, 0x154);
-         for(int j = 0;j<sizeof(from_hv_t);j++){
+         //while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+
+         // DMA_Cmd(DMA1_Channel7, DISABLE);
+         // DMA_ClearFlag(DMA1_FLAG_TC7);
+         // DMA_Cmd(DMA1_Channel7, ENABLE);
+         //
+         //
+         // while(DMA_GetFlagStatus(DMA1_FLAG_TC7) == RESET){
+         //    GPIO_SetBits(GPIOC,GPIO_Pin_0);
+         // }
+         // GPIO_ResetBits(GPIOC,GPIO_Pin_0);
+         //GPIO_SetBits(GPIOC,GPIO_Pin_2);
+
+
+         for(int j = 0;j<sizeof(packet_from_hv_t);j++){
             while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-            USART_SendData(USART2, ((uint8_t*)&from_hv)[j]);
+            USART_SendData(USART2, ((uint8_t*)&packet_from_hv)[j]);
+         }
+
+         if(temp_raw < ARES && temp_raw > 0){
+            temp = tempb(temp_raw);
          }
       }
       //GPIOA->BSRR = (GPIOA->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//toggle red led

@@ -1,3 +1,9 @@
+#ifdef FB_TX
+#error at the moment you can only have one component using the tx channel of the feeback port(res or encm)
+#else
+#define FB_TX
+#endif
+
 COMP(res);
 
 HAL_PIN(pos) = 0.0;
@@ -16,7 +22,7 @@ HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
 
 RT(
-	GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
+	//GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
 
 	float s = 0.0;
 	float c = 0.0;

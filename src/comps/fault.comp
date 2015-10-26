@@ -245,7 +245,7 @@ RT(
    else if(state == 0){ // disabled -> enabled
       PIN(enable_out) = 1.0;
       PIN(brake) = 1.0;
-      PIN(enable_pid) = 1.0;
+      PIN(enable_pid) = 0.0;
       state = 1;
       PIN(start_offset) = minus(PIN(fb), PIN(cmd));
 
@@ -257,6 +257,7 @@ RT(
    }
    else if(state == 1){
       phased = 1;
+      PIN(enable_pid) = 1.0;
    }
    else if(state == 2){ // phasing -> enabled
       if(PIN(phase_ready) > 0.0){
