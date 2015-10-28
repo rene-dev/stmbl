@@ -32,6 +32,8 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	connectbutton = new wxButton(top, wxID_ANY, wxT("&Connect"));
 	clear = new wxButton(top, wxID_ANY, wxT("Clear"));
 	refresh = new wxButton(top, wxID_ANY, wxT("&Refresh"));
+  reset = new wxButton(top, wxID_ANY, wxT("Reset Fault"));
+  reset->Disable();
 	uhu = new wxRadioButton(top,wxID_ANY, "UHU");
 	stmbl = new wxRadioButton(top, wxID_ANY,"STMBL");
 	stmbl->SetValue(true);
@@ -39,11 +41,13 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	refresh->Bind(wxEVT_BUTTON, &ServoFrame::OnRefresh, this, wxID_ANY);
 	connectbutton->Bind(wxEVT_BUTTON, &ServoFrame::OnConnect, this, wxID_ANY);
 	clear->Bind(wxEVT_BUTTON, &ServoFrame::OnClear, this, wxID_ANY);
+  reset->Bind(wxEVT_BUTTON, &ServoFrame::OnReset, this, wxID_ANY);
 	listports();
 	leiste->Add(choose_port, 0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(connectbutton,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(refresh,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(clear,0,wxALIGN_LEFT|wxALL,3);
+  leiste->Add(reset,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(uhu,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(stmbl,0,wxALIGN_LEFT|wxALL,3);
 	topsizer->Add(leiste);
@@ -135,7 +139,7 @@ void ServoFrame::OnKeyDown(wxKeyEvent& event){
 }
 
 void ServoFrame::OnColorChange(wxMouseEvent& event){
-    
+
 }
 
 void ServoFrame::OnChannelChange(wxCommandEvent& event){
@@ -201,7 +205,7 @@ void ServoFrame::OnTimer(wxTimerEvent& evt){
                         text->AppendText(wxString::FromAscii(buf[i] & 0x7f));
                     }
                 }
-                
+
             }else if(stmbl->GetValue()){
                 for (int i=0; i<ret; i++){
                     if(addr >= 0){
@@ -223,6 +227,28 @@ void ServoFrame::OnTimer(wxTimerEvent& evt){
 
 void ServoFrame::OnRefresh(wxCommandEvent& WXUNUSED(event)){
 	listports();
+}
+
+void ServoFrame::OnReset(wxCommandEvent& WXUNUSED(event)){
+  string s1 = "fault0.reset = 1";
+  string s2 = "fault0.reset = 0";
+  if(connected){
+      int ret1 = sp_nonblocking_write(port, s1.c_str(), s1.length());
+      int ret2 = sp_nonblocking_write(port, "\r", 1);
+      int ret3 = sp_nonblocking_write(port, s2.c_str(), s2.length());
+      int ret4 = sp_nonblocking_write(port, "\r", 1);
+
+
+      if(ret1 != s1.length() || ret2!=1 || ret3 != s2.length() || ret4!=1){
+          wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
+          disconnect();
+          return;
+      }
+  }else{
+      wxMessageBox( wxT("Nicht verbunden"), wxT("Error"), wxICON_EXCLAMATION);
+      return;
+  }
+  return;
 }
 
 void ServoFrame::listports(){
@@ -271,6 +297,7 @@ void ServoFrame::connect(){
 		connected = true;
 		connectbutton->SetLabel(wxT("&Disonnect"));
 		refresh->Disable();
+    reset->Enable();
 		choose_port->Disable();
         uhu->Disable();
         stmbl->Disable();
@@ -287,6 +314,7 @@ void ServoFrame::disconnect(){
 		connected = false;
 		connectbutton->SetLabel(wxT("&Connect"));
 		refresh->Enable();
+    reset->Disable();
 		choose_port->Enable();
         uhu->Enable();
         stmbl->Enable();

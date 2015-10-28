@@ -101,6 +101,7 @@ void link_pid(){
    link_hal_pins("fault0.led_green", "led0.g");
    link_hal_pins("fault0.led_red", "led0.r");
 
+   link_hal_pins("fault0.state", "term0.fault"); //sent fault to terminal
 
    //
 
@@ -844,7 +845,7 @@ void set_8MSA3M(){                      //B&R 8MSA3M
 }
 
 void set_gas(){
-   set_hal_pin("conf0.polecount", 3.0);
+   set_hal_pin("conf0.polecount", 2.0);
    set_hal_pin("conf0.max_vel", RPM(9000));
    set_hal_pin("conf0.max_acc", RPM(9000) / 0.05);
    set_hal_pin("conf0.max_force", 98); //Datasheet
@@ -852,19 +853,18 @@ void set_gas(){
 
    set_hal_pin("conf0.fb_type", SINCOS1);
    set_hal_pin("conf0.fb_rev", 1.0);
-   set_hal_pin("conf0.fb_res", 2048.0);
+   set_hal_pin("conf0.fb_res", 1.0);
    set_hal_pin("conf0.r", 7); //mess
    set_hal_pin("conf0.l", 0.002);//Datasheet
    set_hal_pin("conf0.j", 0.000020);//ToDo
    set_hal_pin("conf0.psi", 0.29 / 2.0 / M_PI);//ToDo
 
-   set_hal_pin("conf0.pos_p", 100.0);//ToDo
-   set_hal_pin("conf0.acc_p", 0.2);//ToDo
+   set_hal_pin("conf0.pos_p", 30.0);//ToDo
+   set_hal_pin("conf0.acc_p", 0.1);//ToDo
    set_hal_pin("conf0.acc_pi", 50.0);//ToDo
-   set_hal_pin("conf0.cur_p", 0.5);//ToDo
+   set_hal_pin("conf0.cur_p", 0.4);//ToDo
    set_hal_pin("conf0.cur_i", 0.001);//ToDo
    set_hal_pin("conf0.cur_ff", 1.0);//ToDo
-   set_hal_pin("enc_fb0.res", 512.0);//ToDo
    set_fb_sincos();
 }
 

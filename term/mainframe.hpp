@@ -26,6 +26,7 @@ private:
     wxButton *connectbutton;
     wxButton *refresh;
     wxButton *clear;
+    wxButton *reset;
     wxRadioButton *uhu;
     wxRadioButton *stmbl;
     wxTimer * timer;
@@ -39,6 +40,7 @@ private:
     bool connected;
     void OnConnect(wxCommandEvent& WXUNUSED(event));
     void OnRefresh(wxCommandEvent& WXUNUSED(event));
+    void OnReset(wxCommandEvent& WXUNUSED(event));
     void OnClear(wxCommandEvent& WXUNUSED(event));
     void OnInput(wxCommandEvent& event);
     void OnColorChange(wxMouseEvent& event);
