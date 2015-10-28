@@ -13,6 +13,8 @@ This software is released under the GPLv3.
 
 stmbl
 =====
+**přečtěte si seznam chyb ve wiki**
+
 **PCBs are now available, let me know if you are interested.**
 
 **IRC: #stmbl on irc.hackint.eu**
