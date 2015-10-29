@@ -1,5 +1,12 @@
 COMP(sserial);
 
+//dump:
+//sigrok-cli --driver fx2lafw --config samplerate=24m --time 1s --channels 3=rx,2=tx -t rx=f -o sserial.sr
+//decode:
+//sigrok-cli -i sserial.sr -P uart:baudrate=2500000:tx=tx:rx=rx:format=hex -A uart=tx-data:rx-data
+//decode more:
+//sigrok-cli -i sserial.sr -P uart:baudrate=2500000:tx=tx:rx=rx,sserial
+
 #define UnitNumberRPC 0xbc
 #define DiscoveryRPC 0xbb
 #define ProcessDataRPC 0xbd
@@ -328,6 +335,9 @@ RT(
       }else if(lbp.ct == 3 && lbp.wr == 1 && available >= 1){//local write, 3b
          if(rxbuf[rxpos] == 0xff){
             // reset parser
+            rxpos += 1;
+         }else if(rxbuf[rxpos] == 0xFC){
+            // todo
             rxpos += 1;
          }else if(available >= 2){
             buf[0] = 0x00;
