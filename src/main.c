@@ -38,8 +38,19 @@ void Wait(unsigned int ms);
 //20kHz
 void TIM2_IRQHandler(void){
    TIM_ClearITPendingBit(TIM2,TIM_IT_Update);
+   GPIO_SetBits(GPIOB,GPIO_Pin_9);
+   for(int i = 0; i < hal.frt_func_count; i++){//run all fast realtime hal functions
+      hal.frt[i](1.0/20000.0);
+   }
+   GPIO_ResetBits(GPIOB,GPIO_Pin_9);
+}
+
+//5 kHz interrupt for hal. at this point all ADCs have been sampled,
+//see setup_res() in setup.c if you are interested in the magic behind this.
+void DMA2_Stream0_IRQHandler(void){
+   DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
    GPIO_SetBits(GPIOB,GPIO_Pin_8);
-   int freq = 20000;
+   int freq = 5000;
    float period = 1.0 / freq;
    //GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
    systime_s += period;
@@ -56,12 +67,6 @@ void TIM2_IRQHandler(void){
    GPIO_ResetBits(GPIOB,GPIO_Pin_8);
 }
 
-//5 kHz interrupt for hal. at this point all ADCs have been sampled,
-//see setup_res() in setup.c if you are interested in the magic behind this.
-void DMA2_Stream0_IRQHandler(void){
-   DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
-}
-
 int main(void)
 {
    float period = 0.0;
@@ -70,43 +75,43 @@ int main(void)
    setup();
 
    #include "comps/sserial.comp"
-   // //#include "comps/adc.comp"
-   // #include "comps/encs.comp"
-   //
-   // #include "comps/fault.comp"
-   // #include "comps/enc_cmd.comp"
-   // //#include "comps/enc_fb.comp"
-   // //#include "comps/enc_fb_org.comp"
-   //
-   // //#include "comps/en.comp"
-   // //#include "comps/res.comp"
-   // //#include "comps/encm.comp"
-   // #include "comps/sim.comp"
-   // //#include "comps/stp.comp"
-   //
-   // #include "comps/rev.comp"
-   // #include "comps/rev.comp"
-   //
-   // #include "comps/cauto.comp"
-   //
-   // #include "comps/pderiv.comp"
-   // //#include "comps/pderiv.comp"
-   // #include "comps/vel.comp"
-   //
-   // #include "comps/pid.comp"
-   // #include "comps/pmsm_t2c.comp"
-   //
-   // #include "comps/rev.comp"
-   //
-   // #include "comps/dq.comp"
-   // #include "comps/curpid.comp"
-   // #include "comps/pmsm.comp"
-   // #include "comps/pmsm_limits.comp"
-   // //#include "comps/mot.comp"
-   // #include "comps/idq.comp"
-   //
-   //
-   // #include "comps/pwm2uart.comp"
+   //#include "comps/adc.comp"
+   #include "comps/encs.comp"
+
+   #include "comps/fault.comp"
+   #include "comps/enc_cmd.comp"
+   //#include "comps/enc_fb.comp"
+   //#include "comps/enc_fb_org.comp"
+
+   //#include "comps/en.comp"
+   //#include "comps/res.comp"
+   //#include "comps/encm.comp"
+   #include "comps/sim.comp"
+   //#include "comps/stp.comp"
+
+   #include "comps/rev.comp"
+   #include "comps/rev.comp"
+
+   #include "comps/cauto.comp"
+
+   #include "comps/pderiv.comp"
+   //#include "comps/pderiv.comp"
+   #include "comps/vel.comp"
+
+   #include "comps/pid.comp"
+   #include "comps/pmsm_t2c.comp"
+
+   #include "comps/rev.comp"
+
+   #include "comps/dq.comp"
+   #include "comps/curpid.comp"
+   #include "comps/pmsm.comp"
+   #include "comps/pmsm_limits.comp"
+   //#include "comps/mot.comp"
+   #include "comps/idq.comp"
+
+
+   #include "comps/pwm2uart.comp"
 
    //#include "comps/var.comp"
 
