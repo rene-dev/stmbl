@@ -29,11 +29,15 @@ COMP(sserial);
 
 #define LBPStatusCMD 0xc1
 
-#define LBPCardName "7I76"
+#define LBPCardName "STMB"
 #define LBPCardName0Cmd 0xd0
 #define LBPCardName1Cmd 0xd1
 #define LBPCardName2Cmd 0xd2
 #define LBPCardName3Cmd 0xd3
+
+#define CT_RW     1 // 01b
+#define CT_RPC    2 // 10b
+#define CT_LOCAL  3 // 11b
 
 typedef union{
     struct {
@@ -43,7 +47,7 @@ typedef union{
         uint8_t rid:1;//RPCIncludesData: 0 specifies that data is from stream, 1, that data is from RPC (RPC only, ignored for non RPC commands)
         uint8_t wr:1;//Write: 1 to specify write, 0 to specify read
         uint8_t ct:2;//CommandType: Must be 01b to specify data read/write command
-        //01:rw 11: local command 10:rpc
+        // 01:rw   11:local command   10:rpc
     };
     struct {
         uint8_t rpc:6;
@@ -352,25 +356,30 @@ FRT(
    bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
    available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
    
-   if(available >= 1){//TODO: somtimes more data is needed, needs check
+   if (available >= 1) { //TODO: somtimes more data is needed, needs check
+      
       lbp.byte = rxbuf[rxpos];
-      if(lbp.ct == 3 && lbp.wr == 0 && available >= 2){//local read, 2b
-         switch(lbp.byte){
+
+      if (lbp.ct == CT_LOCAL && lbp.wr == 0 && available >= 2) { //local read, 2b
+         switch(lbp.byte) {
             case LBPCookieCMD:
-            txbuf[0] = LBPCookie;
-            break;
-            case LBPStatusCMD://TODO: return status
-            txbuf[0] = 0x00;
-            break;
+              buf[0] = LBPCookie;
+              break;
+            
+            case LBPStatusCMD: //TODO: return status
+              buf[0] = 0x00;
+              break;
+            
             case LBPCardName0Cmd ... LBPCardName3Cmd:
-            txbuf[0] = name[lbp.byte-LBPCardName0Cmd];
-            break;
-            default://TODO: handle unknown command condition
-            txbuf[0] = 0x00;
+              buf[0] = name[lbp.byte-LBPCardName0Cmd];
+              break;
+
+            default: //TODO: handle unknown command condition
+              buf[0] = 0x00;
          }
          send(1,1);
          rxpos += 2;
-      }else if(lbp.ct == 3 && lbp.wr == 1 && available >= 2){//local write, 3b
+      }else if(lbp.ct == CT_LOCAL && lbp.wr == 1 && available >= 2){//local write, 3b
          if(rxbuf[rxpos] == 0xff){
             // reset parser
             rxpos += 1;
@@ -382,7 +391,7 @@ FRT(
             send(1,0);
             rxpos += 3;  
          }
-      }else if(lbp.ct == 2){//RPC
+      }else if(lbp.ct == CT_RPC){//RPC
           if(lbp.byte == UnitNumberRPC && available >= 2){//unit number, 2b
               txbuf[0] = 0x76;
               txbuf[1] = 0x01;
@@ -406,9 +415,9 @@ FRT(
              send(5,1);
              rxpos += 8;
           }
-      }else if(lbp.ct == 1 && lbp.wr == 0 && available >= 2){//read
-          if(lbp.as == 1){// 4b
-             if(available >= 4){
+      } else if (lbp.ct == CT_RW && lbp.wr == 0 && available >= 2) { //read
+          if (lbp.as == 1) { // 4b
+             if (available >= 4) {
                 address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
                 rxpos += 4;
                 for(int i = 0;i < datasize[lbp.ds];i++){//TODO: maybe faster to change DMA pointer?
@@ -419,7 +428,7 @@ FRT(
                     address++;
                 }
              }
-          }else{// 2b
+          } else { // 2b
               rxpos += 2;
               for(int i = 0;i < datasize[lbp.ds];i++){
                  txbuf[i] = memory.bytes[address+i];
@@ -429,7 +438,7 @@ FRT(
                   address++;
               }
           }
-      }else{
+      } else {
          //TODO: handle unkown packet
       }
    }
