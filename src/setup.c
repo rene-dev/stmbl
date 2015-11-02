@@ -48,7 +48,7 @@ void setup_res(){
     TIM_TimeBaseStructure.TIM_Prescaler = 9;
     TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
+    TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
     TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);//trigger ADC
 
     //resolver ref signal generation
@@ -157,6 +157,12 @@ void setup_res(){
     DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
     DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
     DMA_Init(DMA2_Stream0, &DMA_InitStructure);
+
+    NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 
     NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream0_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
