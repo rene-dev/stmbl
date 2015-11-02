@@ -120,6 +120,7 @@ uint8_t bytes[1024];
 }memory_t;
 
 MEM(volatile uint8_t rxbuf[128]);
+MEM(volatile uint8_t txbuf[20]);
 MEM(int rxpos);
 MEM(memory_t memory);
 MEM(discovery_rpc_t discovery_rpc);
@@ -202,6 +203,36 @@ INIT(
    DMA_Cmd(DMA2_Stream5, ENABLE);
 
    USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
+   
+   //TX DMA
+   // Clock Enable
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
+
+   DMA_Cmd(DMA1_Stream7, DISABLE);
+   DMA_DeInit(DMA1_Stream7);
+
+   // DMA2-Config
+   DMA_InitStructure.DMA_Channel = DMA_Channel_4;
+   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART5->DR);
+   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&txbuf;
+   DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+   DMA_InitStructure.DMA_BufferSize = sizeof(txbuf);
+   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+   DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
+   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+   DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+   DMA_Init(DMA1_Stream7, &DMA_InitStructure);
+
+   //DMA_Cmd(DMA1_Stream7, ENABLE);
+
+   USART_DMACmd(UART5, USART_DMAReq_Tx, ENABLE);
+   
    GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
    rxpos = 0;
    
@@ -291,24 +322,20 @@ uint8_t crc8( uint8_t *addr, uint8_t len)
    return crc;
 }
 
-//TODO: use dma for this
-void send( uint8_t *data, uint8_t len, uint8_t docrc){
-   uint8_t crc;
+void send(uint8_t len, uint8_t docrc){
    if(docrc){
-      crc = crc8(data,len);
+      txbuf[len] = crc8((uint8_t *)txbuf,len);
+      DMA_SetCurrDataCounter(DMA1_Stream7,len+1);
+   }else{
+      DMA_SetCurrDataCounter(DMA1_Stream7,len);
    }
-    for(int i = 0;i<len;i++){
-       while (USART_GetFlagStatus(UART5, USART_FLAG_TXE) == RESET);
-       USART_SendData(UART5, data[i]);
-    }
-    if(docrc){
-       while (USART_GetFlagStatus(UART5, USART_FLAG_TXE) == RESET);
-       USART_SendData(UART5, crc);
-    }
+   DMA_Cmd(DMA1_Stream7, DISABLE);
+   DMA_ClearFlag(DMA1_Stream7, DMA_FLAG_TCIF7);
+   DMA_Cmd(DMA1_Stream7, ENABLE);
 }
 
 RT(
-   uint8_t buf[100];
+   //uint8_t buf[100];
    uint16_t address = 0;
    lbp_t lbp;
    
@@ -317,58 +344,60 @@ RT(
    int available;
    for(int j = 0;j<2;j++){
    bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
-   //available = bufferpos-rxpos;
-   available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf) + 1;
+   available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
    
    if(available >= 1){//TODO: somtimes more data is needed, needs check
       lbp.byte = rxbuf[rxpos];
       if(lbp.ct == 3 && lbp.wr == 0 && available >= 2){//local read, 2b
          switch(lbp.byte){
             case LBPCookieCMD:
-            buf[0] = LBPCookie;
+            txbuf[0] = LBPCookie;
             break;
             case LBPStatusCMD://TODO: return status
-            buf[0] = 0x00;
+            txbuf[0] = 0x00;
             break;
             case LBPCardName0Cmd ... LBPCardName3Cmd:
-            buf[0] = name[lbp.byte-LBPCardName0Cmd];
+            txbuf[0] = name[lbp.byte-LBPCardName0Cmd];
             break;
             default://TODO: handle unknown command condition
-            buf[0] = 0x00;
+            txbuf[0] = 0x00;
          }
-         send(buf,1,1);
+         send(1,1);
          rxpos += 2;
-      }else if(lbp.ct == 3 && lbp.wr == 1 && available >= 1){//local write, 3b
+      }else if(lbp.ct == 3 && lbp.wr == 1 && available >= 2){//local write, 3b
          if(rxbuf[rxpos] == 0xff){
             // reset parser
             rxpos += 1;
          }else if(rxbuf[rxpos] == 0xFC){
             // todo
             rxpos += 1;
-         }else if(available >= 2){
-            buf[0] = 0x00;
-            send(buf,1,0);
+         }else if(available >= 3){
+            txbuf[0] = 0x00;
+            send(1,0);
             rxpos += 3;  
          }
       }else if(lbp.ct == 2){//RPC
           if(lbp.byte == UnitNumberRPC && available >= 2){//unit number, 2b
-              buf[0] = 0x76;
-              buf[1] = 0x01;
-              buf[2] = 0x00;
-              buf[3] = 0x10;
-              send(buf,4,1);
+              txbuf[0] = 0x76;
+              txbuf[1] = 0x01;
+              txbuf[2] = 0x00;
+              txbuf[3] = 0x10;
+              send(4,1);
               rxpos += 2;
           }else if(lbp.byte == DiscoveryRPC && available >= 2){//discovery, 2b
-              send((uint8_t*)&discovery_rpc,sizeof(discovery_rpc),1);
+             for(int i = 0;i < sizeof(discovery_rpc);i++){
+                txbuf[i] = ((uint8_t*)&discovery_rpc)[i];
+             }
+              send(sizeof(discovery_rpc),1);
               rxpos += 2;
           }else if(lbp.byte == ProcessDataRPC && available >= 8 && available >= 8){//process data, 8b
-             buf[0] = 0x00;
-             buf[1] = 0x00;
-             buf[2] = 0x00;
-             buf[3] = 0x00;
-             buf[4] = 0x00;
-             buf[5] = 0x00;
-             send(buf,5,1);
+             txbuf[0] = 0x00;
+             txbuf[1] = 0x00;
+             txbuf[2] = 0x00;
+             txbuf[3] = 0x00;
+             txbuf[4] = 0x00;
+             txbuf[5] = 0x00;
+             send(5,1);
              rxpos += 8;
           }
       }else if(lbp.ct == 1 && lbp.wr == 0 && available >= 2){//read
@@ -376,14 +405,20 @@ RT(
              if(available >= 4){
                 address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
                 rxpos += 4;
-                send(&memory.bytes[address], datasize[lbp.ds], 1);//TODO: support reading more than 1 byte
+                for(int i = 0;i < datasize[lbp.ds];i++){//TODO: maybe faster to change DMA pointer?
+                   txbuf[i] = memory.bytes[address+i];
+                }
+                send(datasize[lbp.ds],1);
                 if(lbp.ai == 1){
                     address++;
                 }
              }
           }else{// 2b
               rxpos += 2;
-              send(&memory.bytes[address], datasize[lbp.ds], 1);//TODO: support reading more than 1 byte
+              for(int i = 0;i < datasize[lbp.ds];i++){
+                 txbuf[i] = memory.bytes[address+i];
+              }
+              send(datasize[lbp.ds],1);
               if(lbp.ai == 1){
                   address++;
               }
