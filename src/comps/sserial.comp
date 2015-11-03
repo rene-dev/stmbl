@@ -79,6 +79,11 @@ typedef union{
 #define NO_GPD 1//gtoc process data
 #define NO_PD 2//process data
 
+#define MAX_PD_VAL_BYTES 64 // this should be >= the sum of the data sizes of all pd vars
+
+#define MEMPTR(p) ((uint32_t)&p-(uint32_t)&memory)
+
+
 typedef struct{
    uint8_t record_type;//0xa0
    uint8_t data_size;
@@ -117,17 +122,20 @@ typedef struct{
    uint16_t eot;//end of table
 } ptoc_t;
 
-typedef union{
- struct{
+
+typedef union {
+ struct {
    uint8_t start;
+   // the tocs are terminated by 0x0000 entries, hence the +1
    uint16_t ptocp[NO_PD+1];
    uint16_t gtocp[NO_GPD+NO_MODES+1];
    ptoc_t ptoc;
    gtoc_t gtoc;
+   uint8_t pd_values[MAX_PD_VAL_BYTES];
    uint8_t end;
-};
-uint8_t bytes[1024];
-}memory_t;
+ };
+ uint8_t bytes[1024];
+} memory_t;
 
 MEM(volatile uint8_t rxbuf[128]);
 MEM(volatile uint8_t txbuf[20]);
@@ -139,6 +147,37 @@ MEM(uint8_t datasize[4]);
 //pb13 txen
 //pc12 usart5 tx
 //pa9 usart1 tx as rx
+
+void add_pd(uint8_t *pd_num, uint16_t *param_addr, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, uint32_t param_min, uint32_t param_max, char *unit_string, char *name_string) {
+  uint8_t i = *pd_num;
+
+  memory.ptoc.pd[i].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
+  memory.ptoc.pd[i].data_size = data_size_in_bits;
+  memory.ptoc.pd[i].data_type = data_type;
+  memory.ptoc.pd[i].data_direction = data_dir;
+  memory.ptoc.pd[i].param_min = param_min;
+  memory.ptoc.pd[i].param_max = param_max;
+  memory.ptoc.pd[i].data_add = *param_addr;
+  strcpy(memory.ptoc.pd[i].unit_string, unit_string);
+  strcpy(memory.ptoc.pd[i].name_string, name_string);
+
+  memory.ptocp[i] = MEMPTR(memory.ptoc.pd[i]);
+
+  *pd_num += 1;
+
+  // increment the param address based on the size of the data in bits
+  uint8_t num_bytes = data_size_in_bits / 8 + (data_size_in_bits % 8 > 0 ? 1 : 0);
+
+  if (data_dir != 0x00) {
+    discovery_rpc.input += num_bytes;
+  }
+
+  if (data_dir != 0x80) {
+    discovery_rpc.output += num_bytes;
+  }
+
+  *param_addr += num_bytes;
+}
 
 INIT(
    GPIO_InitTypeDef GPIO_InitStruct;
@@ -244,8 +283,25 @@ INIT(
    USART_DMACmd(UART5, USART_DMAReq_Tx, ENABLE);
    
    GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
-   rxpos = 0;
    
+   rxpos = 0;
+
+   uint16_t param_addr = MEMPTR(memory.pd_values);
+   uint8_t pd_num = 0;
+
+   // we increment these in add_pd
+   discovery_rpc.input = 1; // 1 because the fault byte will always be present.
+   discovery_rpc.output = 0;
+
+   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "rps", "cmd_vel");
+   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0, "rps", "fb_vel");
+
+   memory.ptoc.eot = 0x0000;
+   memory.gtoc.eot = 0x0000;
+
+   memory.ptocp[NO_PD] = 0x0000;
+   memory.gtocp[NO_GPD+NO_MODES] = 0x0000; 
+
    memory.gtoc.md[0].record_type = MODE_DATA_RECORD;
    memory.gtoc.md[0].index = 0x00;
    memory.gtoc.md[0].type = 0x00;
@@ -267,51 +323,26 @@ INIT(
    memory.gtoc.pd[0].data_add = 0x095c;
    strncpy(memory.gtoc.pd[0].unit_string,"non",4);
    strncpy(memory.gtoc.pd[0].name_string,"swr",4);
-   memory.gtoc.eot = 0x0000;
    
-   memory.ptoc.pd[0].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
-   memory.ptoc.pd[0].data_size = 0x10;
-   memory.ptoc.pd[0].data_type = 0x02;
-   memory.ptoc.pd[0].data_direction = 0x80;
-   memory.ptoc.pd[0].param_min = 0.0;
-   memory.ptoc.pd[0].param_max = 0.0;
-   memory.ptoc.pd[0].data_add = 0x095c;
-   strncpy(memory.ptoc.pd[0].unit_string,"pd1",4);
-   strncpy(memory.ptoc.pd[0].name_string,"pd1",4);
-   memory.ptoc.eot = 0x0000;
+
+//   discovery_rpc.ptocp = (uint32_t)&memory.ptocp-(uint32_t)&memory;//0x02
+//   discovery_rpc.gtocp = (uint32_t)&memory.gtocp-(uint32_t)&memory;//0x10
    
-   memory.ptoc.pd[1].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
-   memory.ptoc.pd[1].data_size = 0x10;
-   memory.ptoc.pd[1].data_type = 0x02;
-   memory.ptoc.pd[1].data_direction = 0x00;
-   memory.ptoc.pd[1].param_min = 0.0;
-   memory.ptoc.pd[1].param_max = 0.0;
-   memory.ptoc.pd[1].data_add = 0x095c;
-   strncpy(memory.ptoc.pd[1].unit_string,"pd2",4);
-   strncpy(memory.ptoc.pd[1].name_string,"pd2",4);
-   memory.ptoc.eot = 0x0000;
-   
-   discovery_rpc.input = 5;
-   discovery_rpc.output = 6;
-   discovery_rpc.ptocp = (uint32_t)&memory.ptocp-(uint32_t)&memory;//0x02
-   discovery_rpc.gtocp = (uint32_t)&memory.gtocp-(uint32_t)&memory;//0x10
+   discovery_rpc.ptocp = MEMPTR(memory.ptocp);
+   discovery_rpc.gtocp = MEMPTR(memory.gtocp);
    
    datasize[0] = 1;
    datasize[1] = 2;
    datasize[2] = 4;
    datasize[3] = 8;
    for(int i = 0;i<NO_MODES;i++){
-      memory.gtocp[i] = (uint32_t)&memory.gtoc.md[i]-(uint32_t)&memory;
+      //memory.gtocp[i] = (uint32_t)&memory.gtoc.md[i]-(uint32_t)&memory;
+      memory.gtocp[i] = MEMPTR(memory.gtoc.md[i]);
    }
    for(int i = NO_MODES;i<NO_GPD+NO_MODES;i++){
-      memory.gtocp[i] = (uint32_t)&memory.gtoc.pd[i-NO_MODES]-(uint32_t)&memory;
+      //memory.gtocp[i] = (uint32_t)&memory.gtoc.pd[i-NO_MODES]-(uint32_t)&memory;
+      memory.gtocp[i] = MEMPTR(memory.gtoc.pd[i-NO_MODES]);
    }
-   memory.gtocp[NO_GPD+NO_MODES] = 0x0000;//(uint32_t)&memory.gtoc.eot-(uint32_t)&memory;
-   
-   for(int i = 0;i<NO_PD;i++){
-      memory.ptocp[i] = (uint32_t)&memory.ptoc.pd[i]-(uint32_t)&memory;
-   }
-   memory.ptocp[NO_PD] = 0x0000;
 )
 
 uint8_t crc8( uint8_t *addr, uint8_t len)
