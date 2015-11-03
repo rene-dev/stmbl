@@ -1,0 +1,413 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L DB25 J1
+U 1 1 56392616
+P 2100 3800
+F 0 "J1" H 2150 5150 70  0000 C CNN
+F 1 "DB25" H 2050 2450 70  0000 C CNN
+F 2 "Connect:DB25FD" H 2100 3800 60  0001 C CNN
+F 3 "" H 2100 3800 60  0000 C CNN
+	1    2100 3800
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2550 3500 2750 3500
+Wire Wire Line
+	2750 3500 2750 4100
+Wire Wire Line
+	2750 4100 2550 4100
+Wire Wire Line
+	2550 3900 2750 3900
+Connection ~ 2750 3900
+Wire Wire Line
+	2550 3700 2750 3700
+Connection ~ 2750 3700
+$Comp
+L GND #PWR01
+U 1 1 5639273F
+P 2900 3900
+F 0 "#PWR01" H 2900 3900 30  0001 C CNN
+F 1 "GND" H 2900 3830 30  0001 C CNN
+F 2 "" H 2900 3900 60  0000 C CNN
+F 3 "" H 2900 3900 60  0000 C CNN
+	1    2900 3900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2750 3850 2900 3850
+Wire Wire Line
+	2900 3850 2900 3900
+Connection ~ 2750 3850
+Wire Wire Line
+	2550 4300 2750 4300
+Wire Wire Line
+	2750 4300 2750 4900
+Wire Wire Line
+	2750 4900 2550 4900
+Wire Wire Line
+	2550 4700 2750 4700
+Connection ~ 2750 4700
+Wire Wire Line
+	2550 4500 2750 4500
+Connection ~ 2750 4500
+$Comp
+L +5V #PWR02
+U 1 1 563927FF
+P 2900 4500
+F 0 "#PWR02" H 2900 4590 20  0001 C CNN
+F 1 "+5V" H 2900 4590 30  0000 C CNN
+F 2 "" H 2900 4500 60  0000 C CNN
+F 3 "" H 2900 4500 60  0000 C CNN
+	1    2900 4500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2750 4550 2900 4550
+Wire Wire Line
+	2900 4550 2900 4500
+Connection ~ 2750 4550
+Text GLabel 3000 2600 2    60   Input ~ 0
+IO0
+Text GLabel 3000 2700 2    60   Input ~ 0
+IO1
+Text GLabel 3000 2800 2    60   Input ~ 0
+IO2
+Text GLabel 3000 2900 2    60   Input ~ 0
+IO3
+Text GLabel 3000 3000 2    60   Input ~ 0
+IO4
+Text GLabel 3000 3100 2    60   Input ~ 0
+IO5
+Text GLabel 3000 3200 2    60   Input ~ 0
+IO6
+Text GLabel 3000 3300 2    60   Input ~ 0
+IO7
+Text GLabel 3000 3400 2    60   Input ~ 0
+IO8
+Text GLabel 3000 3600 2    60   Input ~ 0
+IO9
+Text GLabel 3000 3800 2    60   Input ~ 0
+IO10
+Text GLabel 3000 4000 2    60   Input ~ 0
+IO11
+Text GLabel 3000 4200 2    60   Input ~ 0
+IO12
+Text GLabel 3000 4400 2    60   Input ~ 0
+IO13
+Text GLabel 3000 4600 2    60   Input ~ 0
+IO14
+Text GLabel 3000 4800 2    60   Input ~ 0
+IO15
+Text GLabel 3000 5000 2    60   Input ~ 0
+IO16
+Wire Wire Line
+	2550 2600 3000 2600
+Wire Wire Line
+	2550 2700 3000 2700
+Wire Wire Line
+	3000 2800 2550 2800
+Wire Wire Line
+	2550 2900 3000 2900
+Wire Wire Line
+	3000 3000 2550 3000
+Wire Wire Line
+	2550 3100 3000 3100
+Wire Wire Line
+	3000 3200 2550 3200
+Wire Wire Line
+	2550 3300 3000 3300
+Wire Wire Line
+	3000 3400 2550 3400
+Wire Wire Line
+	3000 3600 2550 3600
+Wire Wire Line
+	3000 3800 2550 3800
+Wire Wire Line
+	3000 4000 2550 4000
+Wire Wire Line
+	3000 4200 2550 4200
+Wire Wire Line
+	3000 4400 2550 4400
+Wire Wire Line
+	3000 4600 2550 4600
+Wire Wire Line
+	3000 4800 2550 4800
+Wire Wire Line
+	3000 5000 2550 5000
+$Comp
+L ADuM1200WU U3
+U 1 1 56392C5A
+P 7150 4900
+F 0 "U3" H 6850 5250 40  0000 L CNN
+F 1 "ADuM1200WU" H 7100 5250 40  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 7150 4900 35  0000 C CIN
+F 3 "" H 7150 4900 60  0000 C CNN
+	1    7150 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L ADuM1200WU U2
+U 1 1 56392CD7
+P 7150 4200
+F 0 "U2" H 6850 4550 40  0000 L CNN
+F 1 "ADuM1200WU" H 7100 4550 40  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 7150 4200 35  0000 C CIN
+F 3 "" H 7150 4200 60  0000 C CNN
+	1    7150 4200
+	1    0    0    -1  
+$EndComp
+Text GLabel 6600 4850 0    60   Input ~ 0
+IO16
+Text GLabel 6600 4950 0    60   Input ~ 0
+IO15
+Text GLabel 6550 4150 0    60   Input ~ 0
+IO14
+Text GLabel 6550 4250 0    60   Input ~ 0
+IO13
+$Comp
+L ADuM1200WU U1
+U 1 1 56392E5E
+P 7150 3500
+F 0 "U1" H 6850 3850 40  0000 L CNN
+F 1 "ADuM1200WU" H 7100 3850 40  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 7150 3500 35  0000 C CIN
+F 3 "" H 7150 3500 60  0000 C CNN
+	1    7150 3500
+	1    0    0    -1  
+$EndComp
+Text GLabel 6550 3450 0    60   Input ~ 0
+IO12
+Text GLabel 6550 3550 0    60   Input ~ 0
+IO11
+$Comp
+L GND #PWR03
+U 1 1 56392EC6
+P 6700 5200
+F 0 "#PWR03" H 6700 5200 30  0001 C CNN
+F 1 "GND" H 6700 5130 30  0001 C CNN
+F 2 "" H 6700 5200 60  0000 C CNN
+F 3 "" H 6700 5200 60  0000 C CNN
+	1    6700 5200
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR04
+U 1 1 56392EE1
+P 6700 4500
+F 0 "#PWR04" H 6700 4500 30  0001 C CNN
+F 1 "GND" H 6700 4430 30  0001 C CNN
+F 2 "" H 6700 4500 60  0000 C CNN
+F 3 "" H 6700 4500 60  0000 C CNN
+	1    6700 4500
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR05
+U 1 1 56392EFC
+P 6700 3800
+F 0 "#PWR05" H 6700 3800 30  0001 C CNN
+F 1 "GND" H 6700 3730 30  0001 C CNN
+F 2 "" H 6700 3800 60  0000 C CNN
+F 3 "" H 6700 3800 60  0000 C CNN
+	1    6700 3800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6700 3800 6700 3700
+Wire Wire Line
+	6700 4500 6700 4400
+Wire Wire Line
+	6700 5200 6700 5100
+$Comp
+L +5V #PWR06
+U 1 1 56392F97
+P 6700 4650
+F 0 "#PWR06" H 6700 4740 20  0001 C CNN
+F 1 "+5V" H 6700 4740 30  0000 C CNN
+F 2 "" H 6700 4650 60  0000 C CNN
+F 3 "" H 6700 4650 60  0000 C CNN
+	1    6700 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR07
+U 1 1 56392FB2
+P 6700 3950
+F 0 "#PWR07" H 6700 4040 20  0001 C CNN
+F 1 "+5V" H 6700 4040 30  0000 C CNN
+F 2 "" H 6700 3950 60  0000 C CNN
+F 3 "" H 6700 3950 60  0000 C CNN
+	1    6700 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR08
+U 1 1 56392FCD
+P 6700 3250
+F 0 "#PWR08" H 6700 3340 20  0001 C CNN
+F 1 "+5V" H 6700 3340 30  0000 C CNN
+F 2 "" H 6700 3250 60  0000 C CNN
+F 3 "" H 6700 3250 60  0000 C CNN
+	1    6700 3250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6700 3300 6700 3250
+Wire Wire Line
+	6700 4000 6700 3950
+Wire Wire Line
+	6700 4700 6700 4650
+Wire Wire Line
+	6550 3450 6700 3450
+Wire Wire Line
+	6550 3550 6700 3550
+Wire Wire Line
+	6550 4150 6700 4150
+Wire Wire Line
+	6550 4250 6700 4250
+Wire Wire Line
+	6600 4850 6700 4850
+Wire Wire Line
+	6600 4950 6700 4950
+$Comp
+L ADuM1200WU U?
+U 1 1 56393622
+P 5250 4900
+F 0 "U?" H 4950 5250 40  0000 L CNN
+F 1 "ADuM1200WU" H 5200 5250 40  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 5250 4900 35  0000 C CIN
+F 3 "" H 5250 4900 60  0000 C CNN
+	1    5250 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L ADuM1200WU U?
+U 1 1 56393628
+P 5250 4200
+F 0 "U?" H 4950 4550 40  0000 L CNN
+F 1 "ADuM1200WU" H 5200 4550 40  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 5250 4200 35  0000 C CIN
+F 3 "" H 5250 4200 60  0000 C CNN
+	1    5250 4200
+	1    0    0    -1  
+$EndComp
+Text GLabel 5850 4850 2    60   Input ~ 0
+IO9
+Text GLabel 5850 4950 2    60   Input ~ 0
+IO10
+Text GLabel 5800 4150 2    60   Input ~ 0
+IO8
+Text GLabel 5800 4250 2    60   Input ~ 0
+IO7
+$Comp
+L GND #PWR?
+U 1 1 5639363A
+P 4800 5200
+F 0 "#PWR?" H 4800 5200 30  0001 C CNN
+F 1 "GND" H 4800 5130 30  0001 C CNN
+F 2 "" H 4800 5200 60  0000 C CNN
+F 3 "" H 4800 5200 60  0000 C CNN
+	1    4800 5200
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 56393640
+P 4800 4500
+F 0 "#PWR?" H 4800 4500 30  0001 C CNN
+F 1 "GND" H 4800 4430 30  0001 C CNN
+F 2 "" H 4800 4500 60  0000 C CNN
+F 3 "" H 4800 4500 60  0000 C CNN
+	1    4800 4500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4800 4500 4800 4400
+Wire Wire Line
+	4800 5200 4800 5100
+$Comp
+L +5V #PWR?
+U 1 1 5639364F
+P 4800 4650
+F 0 "#PWR?" H 4800 4740 20  0001 C CNN
+F 1 "+5V" H 4800 4740 30  0000 C CNN
+F 2 "" H 4800 4650 60  0000 C CNN
+F 3 "" H 4800 4650 60  0000 C CNN
+	1    4800 4650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4800 4000 4800 3950
+Wire Wire Line
+	4800 4700 4800 4650
+Wire Wire Line
+	4650 4150 4800 4150
+Wire Wire Line
+	4650 4250 4800 4250
+Wire Wire Line
+	4700 4850 4800 4850
+Wire Wire Line
+	4700 4950 4800 4950
+$Comp
+L +5V #PWR?
+U 1 1 563939DA
+P 4800 3950
+F 0 "#PWR?" H 4800 4040 20  0001 C CNN
+F 1 "+5V" H 4800 4040 30  0000 C CNN
+F 2 "" H 4800 3950 60  0000 C CNN
+F 3 "" H 4800 3950 60  0000 C CNN
+	1    4800 3950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5700 4150 5800 4150
+Wire Wire Line
+	5700 4250 5800 4250
+Wire Wire Line
+	5700 4850 5850 4850
+Wire Wire Line
+	5700 4950 5850 4950
+$EndSCHEMATC
