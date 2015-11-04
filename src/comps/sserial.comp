@@ -334,7 +334,7 @@ void send(uint8_t len, uint8_t docrc){
    DMA_Cmd(DMA1_Stream7, ENABLE);
 }
 
-RT(
+FRT(
    //uint8_t buf[100];
    uint16_t address = 0;
    lbp_t lbp;

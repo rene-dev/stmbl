@@ -35,6 +35,16 @@ int __errno;
 volatile double systime_s = 0.0;
 void Wait(unsigned int ms);
 
+//20kHz
+void TIM2_IRQHandler(void){
+   TIM_ClearITPendingBit(TIM2,TIM_IT_Update);
+   GPIO_SetBits(GPIOB,GPIO_Pin_9);
+   for(int i = 0; i < hal.frt_func_count; i++){//run all fast realtime hal functions
+      hal.frt[i](1.0/20000.0);
+   }
+   GPIO_ResetBits(GPIOB,GPIO_Pin_9);
+}
+
 //5 kHz interrupt for hal. at this point all ADCs have been sampled,
 //see setup_res() in setup.c if you are interested in the magic behind this.
 void DMA2_Stream0_IRQHandler(void){
@@ -64,6 +74,7 @@ int main(void)
 
    setup();
 
+   #include "comps/sserial.comp"
    //#include "comps/adc.comp"
    #include "comps/encs.comp"
 

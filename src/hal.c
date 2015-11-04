@@ -39,6 +39,7 @@ void init_hal(){
   hal.init_func_count = 0;
   hal.rt_func_count = 0;
   hal.nrt_func_count = 0;
+  hal.frt_func_count = 0;
 }
 
 void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
@@ -207,6 +208,14 @@ int addf_rt(void (*rt)(float period)){
   if(rt != 0 && hal.rt_func_count < MAX_COMP_FUNCS){
     hal.rt[hal.rt_func_count++] = rt;
     return(hal.rt_func_count);
+  }
+  return(-1);
+}
+
+int addf_frt(void (*frt)(float period)){
+  if(frt != 0 && hal.frt_func_count < MAX_COMP_FUNCS){
+    hal.frt[hal.frt_func_count++] = frt;
+    return(hal.frt_func_count);
   }
   return(-1);
 }
