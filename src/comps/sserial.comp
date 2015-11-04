@@ -126,18 +126,20 @@ typedef struct{
    uint16_t eot;//end of table
 } ptoc_t;
 
-typedef union{
- struct{
+
+typedef union {
+ struct {
    uint8_t start;
+   // the tocs are terminated by 0x0000 entries, hence the +1
    uint16_t ptocp[NO_PD+1];
    uint16_t gtocp[NO_GPD+NO_MODES+1];
    ptoc_t ptoc;
    gtoc_t gtoc;
    uint8_t pd_values[MAX_PD_VAL_BYTES];
    uint8_t end;
-};
-uint8_t bytes[1024];
-}memory_t;
+ };
+ uint8_t bytes[1024];
+} memory_t;
 
 MEM(volatile uint8_t rxbuf[128]);
 MEM(volatile uint8_t txbuf[20]);
@@ -329,6 +331,7 @@ INIT(
    USART_DMACmd(UART5, USART_DMAReq_Tx, ENABLE);
    
    GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
+   
    rxpos = 0;
 
    uint16_t param_addr = MEMPTR(memory.pd_values);
@@ -449,15 +452,15 @@ FRT(
              }
               send(sizeof(discovery_rpc),1);
               rxpos += 2;
-          }else if(lbp.byte == ProcessDataRPC && available >= 8 && available >= 8){//process data, 8b
-             txbuf[0] = 0x00;
+          }else if(lbp.byte == ProcessDataRPC && available >= discovery_rpc.output + 2){//process data, requires cmd+output+crc
+             txbuf[0] = 0x00;//TODO: transfer real pd
              txbuf[1] = 0x00;
              txbuf[2] = 0x00;
              txbuf[3] = 0x00;
              txbuf[4] = 0x00;
              txbuf[5] = 0x00;
-             send(5,1);
-             rxpos += 8;
+             send(discovery_rpc.input,1);
+             rxpos += discovery_rpc.output + 2;
           }
       } else if (lbp.ct == CT_RW && lbp.wr == 0 && available >= 2) { //read
           if (lbp.as == 1) { // 4b
