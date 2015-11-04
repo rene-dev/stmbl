@@ -293,8 +293,8 @@ INIT(
    discovery_rpc.input = 1; // 1 because the fault byte will always be present.
    discovery_rpc.output = 0;
 
-   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "rps", "cmd_vel");
-   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0, "rps", "fb_vel");
+   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "rps", "cmd");//strings must be exactly 3 chars long!
+   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0, "rps", "fbx");
 
    memory.ptoc.eot = 0x0000;
    memory.gtoc.eot = 0x0000;
@@ -436,15 +436,15 @@ FRT(
              }
               send(sizeof(discovery_rpc),1);
               rxpos += 2;
-          }else if(lbp.byte == ProcessDataRPC && available >= 8 && available >= 8){//process data, 8b
-             txbuf[0] = 0x00;
+          }else if(lbp.byte == ProcessDataRPC && available >= discovery_rpc.output + 2){//process data, requires cmd+output+crc
+             txbuf[0] = 0x00;//TODO: transfer real pd
              txbuf[1] = 0x00;
              txbuf[2] = 0x00;
              txbuf[3] = 0x00;
              txbuf[4] = 0x00;
              txbuf[5] = 0x00;
-             send(5,1);
-             rxpos += 8;
+             send(discovery_rpc.input,1);
+             rxpos += discovery_rpc.output + 2;
           }
       } else if (lbp.ct == CT_RW && lbp.wr == 0 && available >= 2) { //read
           if (lbp.as == 1) { // 4b
