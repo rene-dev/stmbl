@@ -4,6 +4,12 @@
 #define CMD_TX
 #endif
 
+#ifdef CMD_RX
+#error you can only have one command compound
+#else
+#define CMD_RX
+#endif
+
 COMP(sserial);
 
 //dump:
