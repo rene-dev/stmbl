@@ -363,19 +363,19 @@ FRT(
       if (lbp.ct == CT_LOCAL && lbp.wr == 0 && available >= 2) { //local read, 2b
          switch(lbp.byte) {
             case LBPCookieCMD:
-              buf[0] = LBPCookie;
+              txbuf[0] = LBPCookie;
               break;
             
             case LBPStatusCMD: //TODO: return status
-              buf[0] = 0x00;
+              txbuf[0] = 0x00;
               break;
             
             case LBPCardName0Cmd ... LBPCardName3Cmd:
-              buf[0] = name[lbp.byte-LBPCardName0Cmd];
+              txbuf[0] = name[lbp.byte-LBPCardName0Cmd];
               break;
 
             default: //TODO: handle unknown command condition
-              buf[0] = 0x00;
+              txbuf[0] = 0x00;
          }
          send(1,1);
          rxpos += 2;
