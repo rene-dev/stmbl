@@ -65,6 +65,14 @@ char* strncat(char *dest, const char *src, int n){
     return rdest;
 }
 
+size_t strlen(const char *str) {
+	const char *s;
+
+	for (s = str; *s; ++s);
+		
+	return (s - str);
+}
+
 char* strcpy(char *strDest, const char *strSrc) {
     if(strDest==NULL || strSrc==NULL) {
     	return NULL;

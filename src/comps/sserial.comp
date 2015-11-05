@@ -73,15 +73,25 @@ typedef union{
 #define DATA_DIRECTION_OUTPUT 0x80
 
 //modes
-#define MODE_DATA_RECORD 0xB0
+#define RECORD_TYPE_MODE_DATA_RECORD 0xB0
+
+#define MAX_PD_STRLEN 32 // this is the max space for both the unit and name strings in the PD descriptors
+#define MAX_PD_VAL_BYTES 64 // this should be >= the sum of the data sizes of all pd vars
 
 #define NO_MODES 2//gtoc modes
 #define NO_GPD 1//gtoc process data
 #define NO_PD 2//process data
 
-#define MAX_PD_VAL_BYTES 64 // this should be >= the sum of the data sizes of all pd vars
-
 #define MEMPTR(p) ((uint32_t)&p-(uint32_t)&memory)
+
+#define MEMU8(ptr) (memory.bytes[ptr])
+#define MEMU16(ptr) (memory.bytes[ptr] | memory.bytes[ptr+1]<<8)
+#define MEMU32(ptr) (memory.bytes[ptr] | memory.bytes[ptr+1]<<8 | memory.bytes[ptr+2]<<16 | memory.bytes[ptr+3]<<24)
+
+
+// pins
+HAL_PIN(dump_ptoc) = 0.0;
+HAL_PIN(dump_gtoc) = 0.0;
 
 
 typedef struct{
@@ -92,8 +102,7 @@ typedef struct{
    float param_min;
    float param_max;
    uint16_t data_add;
-   char unit_string[4];
-   char name_string[4];
+   char names[MAX_PD_STRLEN];
 } process_data_descriptor_t;
 
 typedef struct{
@@ -112,8 +121,8 @@ typedef struct{
 } discovery_rpc_t;
 
 typedef struct{
-   mode_descriptor_t md[NO_MODES];
    process_data_descriptor_t pd[NO_GPD];
+   mode_descriptor_t md[NO_MODES];
    uint16_t eot;//end of table
 } gtoc_t;
 
@@ -142,13 +151,10 @@ MEM(volatile uint8_t txbuf[20]);
 MEM(int rxpos);
 MEM(memory_t memory);
 MEM(discovery_rpc_t discovery_rpc);
-MEM(uint8_t datasize[4]);
 
-//pb13 txen
-//pc12 usart5 tx
-//pa9 usart1 tx as rx
+void add_pd(uint8_t *pd_num, uint16_t *param_addr, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, 
+      uint32_t param_min, uint32_t param_max, char *unit_string, char *name_string) {
 
-void add_pd(uint8_t *pd_num, uint16_t *param_addr, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, uint32_t param_min, uint32_t param_max, char *unit_string, char *name_string) {
   uint8_t i = *pd_num;
 
   memory.ptoc.pd[i].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
@@ -158,8 +164,8 @@ void add_pd(uint8_t *pd_num, uint16_t *param_addr, uint8_t data_size_in_bits, ui
   memory.ptoc.pd[i].param_min = param_min;
   memory.ptoc.pd[i].param_max = param_max;
   memory.ptoc.pd[i].data_add = *param_addr;
-  strcpy(memory.ptoc.pd[i].unit_string, unit_string);
-  strcpy(memory.ptoc.pd[i].name_string, name_string);
+  strncpy(memory.ptoc.pd[i].names, unit_string, strlen(unit_string));
+  strncpy(memory.ptoc.pd[i].names + strlen(unit_string) + 1, name_string, strlen(name_string));
 
   memory.ptocp[i] = MEMPTR(memory.ptoc.pd[i]);
 
@@ -178,6 +184,52 @@ void add_pd(uint8_t *pd_num, uint16_t *param_addr, uint8_t data_size_in_bits, ui
 
   *param_addr += num_bytes;
 }
+
+
+// gtoc_idx is the index of the gpd or mode within the gtoc.  We can add gpds and modes in any order, and the gtoc will read them back
+// in that order.   It's passed by value because the functions don't modify it.  It's passed in as the sum of the current gpd_num and mode_num.
+void add_gpd(uint8_t *pd_num, uint8_t gtoc_idx, uint16_t *param_addr, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, 
+      uint32_t param_min, uint32_t param_max, char *unit_string, char *name_string) {
+
+  uint8_t i = *pd_num;
+
+  memory.gtoc.pd[i].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
+  memory.gtoc.pd[i].data_size = data_size_in_bits;
+  memory.gtoc.pd[i].data_type = data_type;
+  memory.gtoc.pd[i].data_direction = data_dir;
+  memory.gtoc.pd[i].param_min = param_min;
+  memory.gtoc.pd[i].param_max = param_max;
+  memory.gtoc.pd[i].data_add = *param_addr;
+  strncpy(memory.gtoc.pd[i].names, unit_string, strlen(unit_string));
+  strncpy(memory.gtoc.pd[i].names + strlen(unit_string) + 1, name_string, strlen(name_string));
+
+  memory.gtocp[gtoc_idx] = MEMPTR(memory.gtoc.pd[i]);
+
+  *pd_num += 1;
+
+  // increment the param address based on the size of the data in bits
+  uint8_t num_bytes = data_size_in_bits / 8 + (data_size_in_bits % 8 > 0 ? 1 : 0);
+
+  *param_addr += num_bytes;
+}
+
+void add_mode(uint8_t *mode_num, uint8_t gtoc_idx, uint8_t index, uint8_t type, char *name_string) {
+  uint8_t i = *mode_num;
+
+  memory.gtoc.md[i].record_type = RECORD_TYPE_MODE_DATA_RECORD;
+  memory.gtoc.md[i].index = index;
+  memory.gtoc.md[i].type = type;
+  memory.gtoc.md[i].unused = 0x00;
+  strncpy(memory.gtoc.md[i].name_string, name_string, strlen(name_string));
+
+  memory.gtocp[gtoc_idx] = MEMPTR(memory.gtoc.md[i]);
+
+  *mode_num += 1;
+}
+
+//pb13 txen
+//pc12 usart5 tx
+//pa9 usart1 tx as rx
 
 INIT(
    GPIO_InitTypeDef GPIO_InitStruct;
@@ -283,67 +335,35 @@ INIT(
    USART_DMACmd(UART5, USART_DMAReq_Tx, ENABLE);
    
    GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
-   
+
    rxpos = 0;
 
    uint16_t param_addr = MEMPTR(memory.pd_values);
    uint8_t pd_num = 0;
+   uint8_t gpd_num = 0;
+   uint8_t mode_num = 0;
 
    // we increment these in add_pd
    discovery_rpc.input = 1; // 1 because the fault byte will always be present.
    discovery_rpc.output = 0;
 
-   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "rps", "cmd");//strings must be exactly 3 chars long!
-   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0, "rps", "fbx");
+   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "rps", "cmd_vel");
+   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0, "rps", "fb_vel");
+
+   add_gpd(&gpd_num, gpd_num + mode_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "non", "swr");
+
+   add_mode(&mode_num, gpd_num + mode_num, 0, 0, "foo");
+   add_mode(&mode_num, gpd_num + mode_num, 1, 1, "io_");
 
    memory.ptoc.eot = 0x0000;
    memory.gtoc.eot = 0x0000;
 
-   memory.ptocp[NO_PD] = 0x0000;
-   memory.gtocp[NO_GPD+NO_MODES] = 0x0000; 
+   memory.ptocp[pd_num] = 0x0000;
+   memory.gtocp[gpd_num + mode_num] = 0x0000; 
 
-   memory.gtoc.md[0].record_type = MODE_DATA_RECORD;
-   memory.gtoc.md[0].index = 0x00;
-   memory.gtoc.md[0].type = 0x00;
-   memory.gtoc.md[0].unused = 0x00;
-   strncpy(memory.gtoc.md[0].name_string,"foo",4);
-   
-   memory.gtoc.md[1].record_type = MODE_DATA_RECORD;
-   memory.gtoc.md[1].index = 0x00;
-   memory.gtoc.md[1].type = 0x01;
-   memory.gtoc.md[1].unused = 0x00;
-   strncpy(memory.gtoc.md[1].name_string,"io_",4);
-   
-   memory.gtoc.pd[0].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
-   memory.gtoc.pd[0].data_size = 0x10;
-   memory.gtoc.pd[0].data_type = 0x02;
-   memory.gtoc.pd[0].data_direction = 0x80;
-   memory.gtoc.pd[0].param_min = 0.0;
-   memory.gtoc.pd[0].param_max = 0.0;
-   memory.gtoc.pd[0].data_add = 0x095c;
-   strncpy(memory.gtoc.pd[0].unit_string,"non",4);
-   strncpy(memory.gtoc.pd[0].name_string,"swr",4);
-   
-
-//   discovery_rpc.ptocp = (uint32_t)&memory.ptocp-(uint32_t)&memory;//0x02
-//   discovery_rpc.gtocp = (uint32_t)&memory.gtocp-(uint32_t)&memory;//0x10
-   
    discovery_rpc.ptocp = MEMPTR(memory.ptocp);
    discovery_rpc.gtocp = MEMPTR(memory.gtocp);
-   
-   datasize[0] = 1;
-   datasize[1] = 2;
-   datasize[2] = 4;
-   datasize[3] = 8;
-   for(int i = 0;i<NO_MODES;i++){
-      //memory.gtocp[i] = (uint32_t)&memory.gtoc.md[i]-(uint32_t)&memory;
-      memory.gtocp[i] = MEMPTR(memory.gtoc.md[i]);
-   }
-   for(int i = NO_MODES;i<NO_GPD+NO_MODES;i++){
-      //memory.gtocp[i] = (uint32_t)&memory.gtoc.pd[i-NO_MODES]-(uint32_t)&memory;
-      memory.gtocp[i] = MEMPTR(memory.gtoc.pd[i-NO_MODES]);
-   }
-)
+);
 
 uint8_t crc8( uint8_t *addr, uint8_t len)
 {
@@ -374,6 +394,7 @@ void send(uint8_t len, uint8_t docrc){
    DMA_ClearFlag(DMA1_Stream7, DMA_FLAG_TCIF7);
    DMA_Cmd(DMA1_Stream7, ENABLE);
 }
+
 
 FRT(
    //uint8_t buf[100];
@@ -450,21 +471,22 @@ FRT(
           if (lbp.as == 1) { // 4b
              if (available >= 4) {
                 address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
+
                 rxpos += 4;
-                for(int i = 0;i < datasize[lbp.ds];i++){//TODO: maybe faster to change DMA pointer?
+                for(int i = 0;i < (1<<lbp.ds);i++){//TODO: maybe faster to change DMA pointer?
                    txbuf[i] = memory.bytes[address+i];
                 }
-                send(datasize[lbp.ds],1);
+                send((1<<lbp.ds),1);
                 if(lbp.ai == 1){
-                    address++;
+                    address++; // I don't think this is going to work with datasizes > 1 byte
                 }
              }
           } else { // 2b
               rxpos += 2;
-              for(int i = 0;i < datasize[lbp.ds];i++){
+              for(int i = 0;i < (1<<lbp.ds);i++){
                  txbuf[i] = memory.bytes[address+i];
               }
-              send(datasize[lbp.ds],1);
+              send((1<<lbp.ds),1);
               if(lbp.ai == 1){
                   address++;
               }
@@ -475,6 +497,66 @@ FRT(
    }
    rxpos = rxpos % sizeof(rxbuf);
 }
+);
+
+
+void print_md(uint16_t md_ptr) {
+  printf_(" md ptr: %h\n", md_ptr);
+  printf_("  index:    0x%02x\n", md_ptr++);
+  printf_("  type:     0x%02x\n", md_ptr++);
+  md_ptr++; // skip 'unused' byte
+  char *namestr = (char *)(memory.bytes + md_ptr);
+  printf_("  namestr:  %s\n", namestr);
+  md_ptr += strlen(namestr);
+}
+
+void print_pd(uint16_t pd_ptr) {
+  if (MEMU8(pd_ptr) == RECORD_TYPE_MODE_DATA_RECORD) {
+    print_md(pd_ptr);
+    return;
+  }
+
+  printf_(" pd ptr: %h\n", pd_ptr);
+
+  printf_("  rectype:  %h\n", MEMU8(pd_ptr++));
+  printf_("  datasize: %h\n", MEMU8(pd_ptr++));
+  printf_("  datatype: %h\n", MEMU8(pd_ptr++));
+  printf_("  datadir:  %h\n", MEMU8(pd_ptr++));
+  printf_("  parmmin:  %h\n", MEMU32(pd_ptr)); pd_ptr += 4;
+  printf_("  parmmax:  %h\n", MEMU32(pd_ptr)); pd_ptr += 4;
+  printf_("  dataaddr: %h\n", MEMU16(pd_ptr)); pd_ptr += 2;
+  char *unitstr = (char *)(memory.bytes + pd_ptr);
+  printf_("  unitstr:  %s\n", unitstr);
+  pd_ptr += strlen(unitstr) + 1;
+  char *namestr = (char *)(memory.bytes + pd_ptr);
+  printf_("  namestr:  %s\n", namestr);
+  pd_ptr += strlen(namestr) + 1;
+}
+
+NRT(
+
+  if(PIN(dump_ptoc) != 0.0) {
+    PIN(dump_ptoc) = 0.0;
+
+    printf_("ptoc (%h):\n", discovery_rpc.ptocp);
+    uint16_t ptocp = discovery_rpc.ptocp;
+    while(MEMU16(ptocp) != 0x0000) {
+      print_pd(MEMU16(ptocp));
+      ptocp += 2;
+    }
+  }
+
+  if(PIN(dump_gtoc) != 0.0) {
+    PIN(dump_gtoc) = 0.0;
+
+    printf_("gtoc (%h):\n", discovery_rpc.gtocp);
+    uint16_t gtocp = discovery_rpc.gtocp;
+    while(MEMU16(gtocp) != 0x0000) {
+      print_pd(MEMU16(gtocp));
+      gtocp += 2;
+    }
+  }
+
 );
 
 ENDCOMP;
