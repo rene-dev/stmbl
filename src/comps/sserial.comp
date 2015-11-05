@@ -87,7 +87,7 @@ typedef union{
 #define MEMU8(ptr) (memory.bytes[ptr])
 #define MEMU16(ptr) (memory.bytes[ptr] | memory.bytes[ptr+1]<<8)
 #define MEMU32(ptr) (memory.bytes[ptr] | memory.bytes[ptr+1]<<8 | memory.bytes[ptr+2]<<16 | memory.bytes[ptr+3]<<24)
-
+#define MEMFLOAT(ptr) ((float)({uint32_t tmp = MEMU32(ptr);*((float*)&tmp);}))
 
 // pins
 HAL_PIN(dump_ptoc) = 0.0;
@@ -540,8 +540,8 @@ void print_pd(uint16_t pd_ptr) {
   printf_("  datasize: %h\n", MEMU8(pd_ptr++));
   printf_("  datatype: %h\n", MEMU8(pd_ptr++));
   printf_("  datadir:  %h\n", MEMU8(pd_ptr++));
-  printf_("  parmmin:  %h\n", MEMU32(pd_ptr)); pd_ptr += 4;
-  printf_("  parmmax:  %h\n", MEMU32(pd_ptr)); pd_ptr += 4;
+  printf_("  parmmin:  %f\n", MEMFLOAT(pd_ptr)); pd_ptr += 4;
+  printf_("  parmmax:  %f\n", MEMFLOAT(pd_ptr)); pd_ptr += 4;
   printf_("  dataaddr: %h\n", MEMU16(pd_ptr)); pd_ptr += 2;
   char *unitstr = (char *)(memory.bytes + pd_ptr);
   printf_("  unitstr:  %s\n", unitstr);
