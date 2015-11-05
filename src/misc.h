@@ -46,6 +46,7 @@ extern "C" {
 
 float minus(float a, float b);
 float mod(float a);
+void* memcpy(void* dest, const void* src, size_t count);
 int strcmp(const char* s1, const char* s2);
 void strncpy(char* dst, char* src, int n);
 char* strncat(char *dest, const char *src, int n);

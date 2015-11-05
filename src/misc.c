@@ -42,6 +42,16 @@ inline float mod(float a){
 	return(a);
 }
 
+void* memcpy(void* dest, const void* src, size_t count){
+   char* dst8 = (char*)dest;
+   char* src8 = (char*)src;
+   
+   while (count--) {
+      *dst8++ = *src8++;
+   }
+   return dest;
+}
+
 int strcmp(const char* s1, const char* s2){
   while(*s1 && (*s1 == *s2)){
   	s1++;

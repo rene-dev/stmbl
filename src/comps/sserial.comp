@@ -29,7 +29,7 @@ COMP(sserial);
 
 #define LBPStatusCMD 0xc1
 
-#define LBPCardName "STMB"
+#define LBPCardName "stbl"
 #define LBPCardName0Cmd 0xd0
 #define LBPCardName1Cmd 0xd1
 #define LBPCardName2Cmd 0xd2
@@ -92,6 +92,7 @@ typedef union{
 // pins
 HAL_PIN(dump_ptoc) = 0.0;
 HAL_PIN(dump_gtoc) = 0.0;
+HAL_PIN(error) = 0.0;
 
 
 typedef struct{
@@ -114,10 +115,10 @@ typedef struct{
 } mode_descriptor_t;
 
 typedef struct{
-   uint8_t input;
-   uint8_t output;
-   uint16_t ptocp;//pointer to process data table
-   uint16_t gtocp;//pointer to mode data table
+   uint8_t input;//process data input bytes 
+   uint8_t output;//process data output bytes 
+   uint16_t ptocp;//pointer to process data table start
+   uint16_t gtocp;//pointer to mode data table start
 } discovery_rpc_t;
 
 typedef struct{
@@ -135,7 +136,7 @@ typedef struct{
 typedef union {
  struct {
    uint8_t start;
-   // the tocs are terminated by 0x0000 entries, hence the +1
+   // the tocs are terminated by 0x0000 entries, hence the +1 and start offset
    uint16_t ptocp[NO_PD+1];
    uint16_t gtocp[NO_GPD+NO_MODES+1];
    ptoc_t ptoc;
@@ -148,8 +149,10 @@ typedef union {
 
 MEM(volatile uint8_t rxbuf[128]);
 MEM(volatile uint8_t txbuf[20]);
+MEM(uint16_t address);//current address pointer
 MEM(int rxpos);
 MEM(memory_t memory);
+MEM(uint32_t timeout);
 MEM(discovery_rpc_t discovery_rpc);
 
 void add_pd(uint8_t *pd_num, uint16_t *param_addr, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, 
@@ -363,6 +366,7 @@ INIT(
 
    discovery_rpc.ptocp = MEMPTR(memory.ptocp);
    discovery_rpc.gtocp = MEMPTR(memory.gtocp);
+   timeout = 1000;
 );
 
 uint8_t crc8( uint8_t *addr, uint8_t len)
@@ -397,67 +401,72 @@ void send(uint8_t len, uint8_t docrc){
 
 
 FRT(
-   //uint8_t buf[100];
-   uint16_t address = 0;
    lbp_t lbp;
    
    char name[] = LBPCardName;
    int bufferpos;
    int available;
    for(int j = 0;j<2;j++){
+   //next received packet will be written to bufferpos
    bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
+   //how many packets we have the the rx buffer for processing
    available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
    
-   if (available >= 1) { //TODO: somtimes more data is needed, needs check
-      
+   if (available >= 1) {
+      timeout = 0;
       lbp.byte = rxbuf[rxpos];
 
-      if (lbp.ct == CT_LOCAL && lbp.wr == 0 && available >= 2) { //local read, 2b
-         switch(lbp.byte) {
-            case LBPCookieCMD:
-              txbuf[0] = LBPCookie;
-              break;
+      if (lbp.ct == CT_LOCAL && lbp.wr == 0) { //local read, cmd+crc = 2b
+         if(available >= 2){
+            switch(lbp.byte) {
+               case LBPCookieCMD:
+                 txbuf[0] = LBPCookie;
+                 break;
             
-            case LBPStatusCMD: //TODO: return status
-              txbuf[0] = 0x00;
-              break;
+               case LBPStatusCMD: //TODO: return status
+                 txbuf[0] = 0x00;
+                 break;
             
-            case LBPCardName0Cmd ... LBPCardName3Cmd:
-              txbuf[0] = name[lbp.byte-LBPCardName0Cmd];
-              break;
+               case LBPCardName0Cmd ... LBPCardName3Cmd:
+                 txbuf[0] = name[lbp.byte-LBPCardName0Cmd];
+                 break;
 
-            default: //TODO: handle unknown command condition
-              txbuf[0] = 0x00;
+               default: //TODO: handle unknown command condition
+                 txbuf[0] = 0x00;
+            }
+            send(1,1);
+            rxpos += 2;
+         }else{
+            continue;
          }
-         send(1,1);
-         rxpos += 2;
-      }else if(lbp.ct == CT_LOCAL && lbp.wr == 1 && available >= 2){//local write, 3b
-         if(rxbuf[rxpos] == 0xff){
+      }else if(lbp.ct == CT_LOCAL && lbp.wr == 1){//local write, cmd+data+crc = 3b
+         //0xFF and 0xFC are not followed by crc
+         if(rxbuf[rxpos] == 0xFF){
             // reset parser
             rxpos += 1;
          }else if(rxbuf[rxpos] == 0xFC){
             // todo
             rxpos += 1;
-         }else if(available >= 3){
+         }else if(available >= 3){//writes do not expect crc in reply
             txbuf[0] = 0x00;
             send(1,0);
             rxpos += 3;  
+         }else{
+            continue;
          }
       }else if(lbp.ct == CT_RPC){//RPC
-          if(lbp.byte == UnitNumberRPC && available >= 2){//unit number, 2b
+          if(lbp.byte == UnitNumberRPC && available >= 2){//unit number, cmd+crc = 2b
               txbuf[0] = 0x76;
               txbuf[1] = 0x01;
               txbuf[2] = 0x00;
               txbuf[3] = 0x10;
               send(4,1);
               rxpos += 2;
-          }else if(lbp.byte == DiscoveryRPC && available >= 2){//discovery, 2b
-             for(int i = 0;i < sizeof(discovery_rpc);i++){
-                txbuf[i] = ((uint8_t*)&discovery_rpc)[i];
-             }
+          }else if(lbp.byte == DiscoveryRPC && available >= 2){//discovery, cmd+crc = 2b
+             memcpy((void*)txbuf,((uint8_t*)&discovery_rpc),sizeof(discovery_rpc));
               send(sizeof(discovery_rpc),1);
               rxpos += 2;
-          }else if(lbp.byte == ProcessDataRPC && available >= discovery_rpc.output + 2){//process data, requires cmd+output+crc
+          }else if(lbp.byte == ProcessDataRPC && available >= discovery_rpc.output + 2){//process data, requires cmd+output bytes+crc
              txbuf[0] = 0x00;//TODO: transfer real pd
              txbuf[1] = 0x00;
              txbuf[2] = 0x00;
@@ -466,34 +475,34 @@ FRT(
              txbuf[5] = 0x00;
              send(discovery_rpc.input,1);
              rxpos += discovery_rpc.output + 2;
+          }else{
+             continue;
           }
-      } else if (lbp.ct == CT_RW && lbp.wr == 0 && available >= 2) { //read
-          if (lbp.as == 1) { // 4b
-             if (available >= 4) {
-                address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
-
-                rxpos += 4;
-                for(int i = 0;i < (1<<lbp.ds);i++){//TODO: maybe faster to change DMA pointer?
-                   txbuf[i] = memory.bytes[address+i];
-                }
-                send((1<<lbp.ds),1);
-                if(lbp.ai == 1){
-                    address++; // I don't think this is going to work with datasizes > 1 byte
-                }
-             }
-          } else { // 2b
-              rxpos += 2;
-              for(int i = 0;i < (1<<lbp.ds);i++){
-                 txbuf[i] = memory.bytes[address+i];
-              }
-              send((1<<lbp.ds),1);
-              if(lbp.ai == 1){
-                  address++;
-              }
-          }
+      }else if (lbp.ct == CT_RW && lbp.wr == 0){ //read
+         if(available >= 2){
+            if (lbp.as == 1){ //address included in command = cmd+addr+addr+crc
+               if (available >= 4) {
+               address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
+               rxpos += 4;
+               }else{
+                  continue;
+               }
+            }else{ //address not included in command = cmd+crc
+               rxpos += 2;
+            }
+            memcpy((void*)txbuf,&memory.bytes[address],(1<<lbp.ds));
+            send((1<<lbp.ds),1);
+            if(lbp.ai == 1){//auto increment address by datasize
+               address += (1<<lbp.ds);
+            }
+         }else{
+            continue;
+         }
       } else {
          //TODO: handle unkown packet
+         PIN(error)++;
       }
+   }else{// no bytes available
    }
    rxpos = rxpos % sizeof(rxbuf);
 }
