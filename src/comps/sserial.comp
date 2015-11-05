@@ -158,7 +158,7 @@ MEM(uint32_t timeout);
 MEM(discovery_rpc_t discovery_rpc);
 
 void add_pd(uint8_t *pd_num, uint16_t *param_addr, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, 
-      uint32_t param_min, uint32_t param_max, char *unit_string, char *name_string) {
+      float param_min, float param_max, char *unit_string, char *name_string) {
 
   uint8_t i = *pd_num;
 
@@ -194,7 +194,7 @@ void add_pd(uint8_t *pd_num, uint16_t *param_addr, uint8_t data_size_in_bits, ui
 // gtoc_idx is the index of the gpd or mode within the gtoc.  We can add gpds and modes in any order, and the gtoc will read them back
 // in that order.   It's passed by value because the functions don't modify it.  It's passed in as the sum of the current gpd_num and mode_num.
 void add_gpd(uint8_t *pd_num, uint8_t gtoc_idx, uint16_t *param_addr, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, 
-      uint32_t param_min, uint32_t param_max, char *unit_string, char *name_string) {
+      float param_min, float param_max, char *unit_string, char *name_string) {
 
   uint8_t i = *pd_num;
 
