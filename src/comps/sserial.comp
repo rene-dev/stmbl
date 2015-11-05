@@ -343,7 +343,7 @@ INIT(
    discovery_rpc.input = 1; // 1 because the fault byte will always be present.
    discovery_rpc.output = 0;
 
-   add_pd(&pd_num, &param_addr, 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "rps", "cmd_vel");
+   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "rps", "cmd_vel");
    add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0, "rps", "fb_vel");
 
    add_gpd(&gpd_num, gpd_num + mode_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "non", "swr");
@@ -491,6 +491,69 @@ FRT(
    }
    rxpos = rxpos % sizeof(rxbuf);
 }
+);
+
+
+HAL_PIN(dump_ptoc) = 0.0;
+HAL_PIN(dump_gtoc) = 0.0;
+
+void print_md(uint16_t md_ptr) {
+  printf_(" md ptr: %h\n", md_ptr);
+  printf_("  index:    0x%02x\n", md_ptr++);
+  printf_("  type:     0x%02x\n", md_ptr++);
+  md_ptr++; // skip 'unused' byte
+  char *namestr = (char *)(memory.bytes + md_ptr);
+  printf_("  namestr:  %s\n", namestr);
+  md_ptr += strlen(namestr);
+}
+
+void print_pd(uint16_t pd_ptr) {
+  if (MEMU8(pd_ptr) == RECORD_TYPE_MODE_DATA_RECORD) {
+    print_md(pd_ptr);
+    return;
+  }
+
+  printf_(" pd ptr: %h\n", pd_ptr);
+
+  printf_("  rectype:  %h\n", MEMU8(pd_ptr++));
+  printf_("  datasize: %h\n", MEMU8(pd_ptr++));
+  printf_("  datatype: %h\n", MEMU8(pd_ptr++));
+  printf_("  datadir:  %h\n", MEMU8(pd_ptr++));
+  printf_("  parmmin:  %h\n", MEMU32(pd_ptr)); pd_ptr += 4;
+  printf_("  parmmax:  %h\n", MEMU32(pd_ptr)); pd_ptr += 4;
+  printf_("  dataaddr: %h\n", MEMU16(pd_ptr)); pd_ptr += 2;
+  char *unitstr = (char *)(memory.bytes + pd_ptr);
+  printf_("  unitstr:  %s\n", unitstr);
+  pd_ptr += strlen(unitstr) + 1;
+  char *namestr = (char *)(memory.bytes + pd_ptr);
+  printf_("  namestr:  %s\n", namestr);
+  pd_ptr += strlen(namestr) + 1;
+}
+
+NRT(
+
+  if(PIN(dump_ptoc) != 0.0) {
+    PIN(dump_ptoc) = 0.0;
+
+    printf_("ptoc (%h):\n", discovery_rpc.ptocp);
+    uint16_t ptocp = discovery_rpc.ptocp;
+    while(MEMU16(ptocp) != 0x0000) {
+      print_pd(MEMU16(ptocp));
+      ptocp += 2;
+    }
+  }
+
+  if(PIN(dump_gtoc) != 0.0) {
+    PIN(dump_gtoc) = 0.0;
+
+    printf_("gtoc (%h):\n", discovery_rpc.gtocp);
+    uint16_t gtocp = discovery_rpc.gtocp;
+    while(MEMU16(gtocp) != 0x0000) {
+      print_pd(MEMU16(gtocp));
+      gtocp += 2;
+    }
+  }
+
 );
 
 ENDCOMP;
