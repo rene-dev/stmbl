@@ -101,6 +101,7 @@ void link_pid(){
    link_hal_pins("fault0.led_green", "led0.g");
    link_hal_pins("fault0.led_red", "led0.r");
 
+   link_hal_pins("fault0.state", "term0.fault"); //sent fault to terminal
 
    //
 
@@ -818,6 +819,55 @@ void set_br(){
    set_hal_pin("conf0.cur_lp", 0.0);
    set_fb_res();
 }
+
+void set_8MSA3M(){                      //B&R 8MSA3M
+  set_hal_pin("conf0.polecount", 3.0);
+  set_hal_pin("conf0.max_vel", RPM(3000));
+  set_hal_pin("conf0.max_acc", RPM(3000) / 0.01);
+  set_hal_pin("conf0.max_force", 5.2);
+  set_hal_pin("conf0.max_ac_cur", 4.3);
+
+  set_hal_pin("conf0.fb_type", RES1);
+  set_hal_pin("conf0.fb_rev", 1.0);
+  set_hal_pin("conf0.fb_res", 16384.0);
+  set_hal_pin("conf0.r", 17.25);           //Datasheet Rp-p: 34.5
+  set_hal_pin("conf0.l", 0.031);           //Datasheet Lp-p: 62
+  set_hal_pin("conf0.j", KGCM2(0.62));     //Datasheet
+  set_hal_pin("conf0.km", 0.6);
+  set_hal_pin("conf0.psi", 1.29);          //Datasheet: 1.29 Measure: 1.39
+
+  set_hal_pin("conf0.pos_p", 80.0);
+  set_hal_pin("conf0.acc_p", 0.1);
+  set_hal_pin("conf0.acc_pi", 60.0);
+  set_hal_pin("conf0.cur_p", 0.5);
+  set_hal_pin("conf0.cur_i", 0.001);
+  set_fb_res();
+}
+
+void set_gas(){
+   set_hal_pin("conf0.polecount", 2.0);
+   set_hal_pin("conf0.max_vel", RPM(9000));
+   set_hal_pin("conf0.max_acc", RPM(9000) / 0.05);
+   set_hal_pin("conf0.max_force", 98); //Datasheet
+   set_hal_pin("conf0.max_ac_cur", 6.9); //Datasheet
+
+   set_hal_pin("conf0.fb_type", SINCOS1);
+   set_hal_pin("conf0.fb_rev", 1.0);
+   set_hal_pin("conf0.fb_res", 1.0);
+   set_hal_pin("conf0.r", 7); //mess
+   set_hal_pin("conf0.l", 0.002);//Datasheet
+   set_hal_pin("conf0.j", 0.000020);//ToDo
+   set_hal_pin("conf0.psi", 0.29 / 2.0 / M_PI);//ToDo
+
+   set_hal_pin("conf0.pos_p", 30.0);//ToDo
+   set_hal_pin("conf0.acc_p", 0.1);//ToDo
+   set_hal_pin("conf0.acc_pi", 50.0);//ToDo
+   set_hal_pin("conf0.cur_p", 0.4);//ToDo
+   set_hal_pin("conf0.cur_i", 0.001);//ToDo
+   set_hal_pin("conf0.cur_ff", 1.0);//ToDo
+   set_fb_sincos();
+}
+
 //linear 25 ohm
 //e240 15
 void set_e240(){ // TODO

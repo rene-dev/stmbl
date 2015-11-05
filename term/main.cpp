@@ -43,7 +43,7 @@ bool Servoterm::OnInit()
     writeID = wxNewId();
     readID = wxNewId();
     dqID = wxNewId();
-    
+
     menuBar->Append(fileMenu, "&File");
     fileMenu->Append(wxID_OPEN);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnOpen, this, wxID_OPEN);
@@ -53,11 +53,11 @@ bool Servoterm::OnInit()
     Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnWrite, this, writeID);
     fileMenu->Append(readID, "&Read");
     Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnRead, this, readID);
-    
+
     menuBar->Append(viewMenu, "&View");
     viewMenu->Append(dqID, "&DQsim");
     Bind(wxEVT_COMMAND_MENU_SELECTED, &Servoterm::OnDq, this, dqID);
-    
+
     wxMenu *helpMenu = new wxMenu;
     menuBar->Append(helpMenu, "&Help" );
     helpMenu->Append(wxID_ABOUT);
@@ -67,7 +67,7 @@ bool Servoterm::OnInit()
 
     //frame->CreateStatusBar();
     //frame->SetStatusText("Statuskram und so");
- 
+
     servoframe->Show(TRUE);
     return TRUE;
 }
@@ -93,7 +93,7 @@ void Servoterm::OnWrite(wxCommandEvent& WXUNUSED(event)){
 }
 
 void Servoterm::OnSave(wxCommandEvent& WXUNUSED(event)){
-    
+
 }
 
 void Servoterm::OnOpen(wxCommandEvent& WXUNUSED(event)){

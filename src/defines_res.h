@@ -87,6 +87,20 @@
 #define FAN_PORT GPIOC
 #define FAN_IO_RCC RCC_AHB1Periph_GPIOC
 
+//states
+
+// state -10 = reset state, -6 = fb error, -5 = sat error, -4 = over current, -3 = pos_error, -2 = over temperature, -1 = over voltage, 0 = disabled, 1 = enabled, 2 = phasing
+#define STATE_RESET -10
+#define STATE_FB_ERROR -6
+#define STATE_SAT_ERROR -5
+#define STATE_OVR_CURR -4
+#define STATE_POS_ERROR -3
+#define STATE_OVR_TEMP -2
+#define STATE_OVR_VOLT -1
+#define STATE_DISABLED 0
+#define STATE_ENABLED 1
+#define STATE_PHASING 2
+
 #ifdef TROLLER
 
 #define UART_DRV USART1
