@@ -92,7 +92,9 @@ typedef union{
 // pins
 HAL_PIN(dump_ptoc) = 0.0;
 HAL_PIN(dump_gtoc) = 0.0;
-HAL_PIN(error) = 0.0;
+HAL_PIN(error) = 0.0;//counts unknown commands
+HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, needs link to pd
+HAL_PIN(timeout) = 40.0;// 20khz / 1khz * 2 reads
 
 
 typedef struct{
@@ -388,6 +390,7 @@ uint8_t crc8( uint8_t *addr, uint8_t len)
 }
 
 void send(uint8_t len, uint8_t docrc){
+   timeout = 0;
    if(docrc){
       txbuf[len] = crc8((uint8_t *)txbuf,len);
       DMA_SetCurrDataCounter(DMA1_Stream7,len+1);
@@ -413,7 +416,6 @@ FRT(
    available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
    
    if (available >= 1) {
-      timeout = 0;
       lbp.byte = rxbuf[rxpos];
 
       if (lbp.ct == CT_LOCAL && lbp.wr == 0) { //local read, cmd+crc = 2b
@@ -502,7 +504,14 @@ FRT(
          //TODO: handle unkown packet
          PIN(error)++;
       }
-   }else{// no bytes available
+   }
+
+   timeout++;
+   if(timeout > PIN(timeout)){//TODO: clamping
+      PIN(connected) = 0;
+      rxpos = bufferpos;
+   }else{
+      PIN(connected) = 1;
    }
    rxpos = rxpos % sizeof(rxbuf);
 }
