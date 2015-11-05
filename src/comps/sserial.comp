@@ -121,8 +121,8 @@ typedef struct{
 } discovery_rpc_t;
 
 typedef struct{
-   mode_descriptor_t md[NO_MODES];
    process_data_descriptor_t pd[NO_GPD];
+   mode_descriptor_t md[NO_MODES];
    uint16_t eot;//end of table
 } gtoc_t;
 
@@ -151,7 +151,6 @@ MEM(volatile uint8_t txbuf[20]);
 MEM(int rxpos);
 MEM(memory_t memory);
 MEM(discovery_rpc_t discovery_rpc);
-MEM(uint8_t datasize[4]);
 
 void add_pd(uint8_t *pd_num, uint16_t *param_addr, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, 
       uint32_t param_min, uint32_t param_max, char *unit_string, char *name_string) {
@@ -337,11 +336,6 @@ INIT(
    
    GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
 
-   datasize[0] = 1;
-   datasize[1] = 2;
-   datasize[2] = 4;
-   datasize[3] = 8;
-   
    rxpos = 0;
 
    uint16_t param_addr = MEMPTR(memory.pd_values);
@@ -479,20 +473,20 @@ FRT(
                 address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
 
                 rxpos += 4;
-                for(int i = 0;i < datasize[lbp.ds];i++){//TODO: maybe faster to change DMA pointer?
+                for(int i = 0;i < (1<<lbp.ds);i++){//TODO: maybe faster to change DMA pointer?
                    txbuf[i] = memory.bytes[address+i];
                 }
-                send(datasize[lbp.ds],1);
+                send((1<<lbp.ds),1);
                 if(lbp.ai == 1){
                     address++; // I don't think this is going to work with datasizes > 1 byte
                 }
              }
           } else { // 2b
               rxpos += 2;
-              for(int i = 0;i < datasize[lbp.ds];i++){
+              for(int i = 0;i < (1<<lbp.ds);i++){
                  txbuf[i] = memory.bytes[address+i];
               }
-              send(datasize[lbp.ds],1);
+              send((1<<lbp.ds),1);
               if(lbp.ai == 1){
                   address++;
               }
