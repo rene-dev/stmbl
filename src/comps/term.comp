@@ -36,6 +36,8 @@ HAL_PIN(send_step) = 10.0;
 
 HAL_PIN(buf_use) = 0.0;
 
+HAL_PIN(fault) = 0.0;
+
 #define TERM_BUF_SIZE 24
 
 MEM(float w0[TERM_BUF_SIZE]);
@@ -50,6 +52,8 @@ MEM(float w7[TERM_BUF_SIZE]);
 MEM(unsigned int read_pos) = 0;
 MEM(unsigned int write_pos) = 0;
 MEM(unsigned int send_counter) = 0;
+
+MEM(unsigned int last_fault_sent) = 0; //save last error message
 
 RT(
    if(send_counter++ >= PIN(send_step) - 1){
@@ -121,6 +125,60 @@ NRT(
       }
    }
 
+   void fault_sender(){
+
+     int flt = (int)PIN(fault);
+
+     if(flt != last_fault_sent){
+       last_fault_sent = flt;
+       switch(flt){
+         case STATE_DISABLED:
+           printf_("INFO: Disabled \n");
+         break;
+
+         case STATE_RESET:
+           printf_("INFO: Reset \n");
+         break;
+
+         case STATE_FB_ERROR:
+           printf_("ERROR: Feedback \n");
+         break;
+
+         case STATE_SAT_ERROR:
+           printf_("ERROR: Saturation \n");
+         break;
+
+         case STATE_OVR_CURR:
+           printf_("ERROR: Overcurrent \n");
+         break;
+
+         case STATE_POS_ERROR:
+           printf_("ERROR: Position \n");
+         break;
+
+         case STATE_OVR_TEMP:
+           printf_("ERROR: Overtemperture \n");
+         break;
+
+         case STATE_OVR_VOLT:
+           printf_("ERROR: Overvoltage \n");
+         break;
+
+         case STATE_ENABLED:
+           printf_("INFO: Enabled \n");
+         break;
+
+         case STATE_PHASING:
+           printf_("INFO: Phasing \n");
+         break;
+
+         default:
+         break;
+       }
+     }
+   }
+
+
    int e = 0;
    unsigned char buf[8 + 2];
 
@@ -143,6 +201,7 @@ NRT(
    float g5 = PIN(gain5);
    float g6 = PIN(gain6);
    float g7 = PIN(gain7);
+
 
    unsigned int wp = write_pos;
    unsigned int bc = 0;
@@ -185,10 +244,14 @@ NRT(
 
    PIN(buf_use) = bc;
 
+
+
    if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED && systime >= 1000){
 
       char source[APP_TX_BUF_SIZE];
       char sink[APP_TX_BUF_SIZE];
+
+      fault_sender();
 
       int i = -1;
       char rx_buf[APP_TX_BUF_SIZE];

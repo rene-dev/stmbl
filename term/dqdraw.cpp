@@ -4,12 +4,12 @@ dqDraw::dqDraw(wxFrame* parent) : wxPanel(parent){
     Bind(wxEVT_PAINT, &dqDraw::paintEvent, this);
     Bind(wxEVT_MOTION, &dqDraw::mouseEvent, this);
     Bind(wxEVT_MOUSEWHEEL , &dqDraw::scrollEvent, this);
-    
+
     scale = 5;
     iscale = 1;
     In = 10;
     Un = 20;
-    
+
 //    Rs = 15;//7.6;
 //    Psi = 0.37;//0.5411;
 //    P = 3;
@@ -35,7 +35,7 @@ void dqDraw::Update()
 {
     Uabs = sqrt(Ud*Ud + Uq*Uq);
     Iabs = sqrt(Id*Id + Iq*Iq);
-    
+
     // Permanentmagnet-, Reluktanz- und Gesamtmoment
     //
     M_perm = 1.5f * P *  Psi * Iq;
@@ -51,12 +51,12 @@ void dqDraw::SetCurrent(double d, double q)
     double OmegaPsi = Omega * Psi;
     double Xd   = Omega * Ld;
     double Xq   = Omega * Lq;
-    
+
     Id = d;
     Iq = q;
     Ud =           -Iq * Xq + Id * Rs;
     Uq = OmegaPsi + Id * Xd + Iq * Rs;
-    
+
     Update();
 }
 
@@ -65,12 +65,12 @@ void dqDraw::SetVoltage(double d, double q)
     double OmegaPsi = Omega * Psi;
     double Xd   = Omega * Ld;
     double Xq   = Omega * Lq;
-    
+
     Ud = d;
     Uq = q;
     Id = (Rs * d + Xq * (q - OmegaPsi)) / (Rs * Rs + Xd * Xq);
     Iq = (Rs * (q - OmegaPsi) - Xd * d) / (Rs * Rs + Xd * Xq);
-    
+
     Update();
 }
 
@@ -100,13 +100,13 @@ void dqDraw::paintEvent(wxPaintEvent & evt)
 void dqDraw::render(wxDC&  dc)
 {
     dc.GetSize(&w, &h);
-    
+
     dc.SetPen(*wxGREY_PEN);
     dc.DrawLine( 0, h/2, w, h/2 );
     dc.DrawLine( w/2, 0, w/2, h );
-    
+
     // ursprung oben links
-    
+
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
     dc.SetPen(*wxRED_PEN);
     dc.DrawLine( w/2, h/2, Ud*scale+w/2, h/2-Uq*scale);
