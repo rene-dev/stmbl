@@ -1,3 +1,5 @@
+// 11/2015  Rene Hopf<renehopf@mac.com> and Ian McMahon<facetious.ian@gmail.com>
+
 #ifdef CMD_TX
 #error at the moment you can only have one component using the tx channel of the command port
 #else
@@ -336,7 +338,8 @@ INIT(
   uint16_t *ptocp = ptoc; uint16_t *gtocp = gtoc;
 
   ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-  ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
+  ADD_PROCESS_VAR(("cmd_vel", "rps", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
+  ADD_PROCESS_VAR(("flags", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
   ADD_PROCESS_VAR(("fb_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));
 
   ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
