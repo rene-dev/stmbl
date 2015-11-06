@@ -135,6 +135,7 @@ typedef union {
 
 MEM(volatile uint8_t rxbuf[128]);
 MEM(volatile uint8_t txbuf[20]);
+MEM(volatile uint8_t debug_out[12]);
 MEM(uint16_t address);//current address pointer
 MEM(int rxpos);
 MEM(memory_t memory);
@@ -572,6 +573,13 @@ FRT(
 
 
 NRT(
+   if(PIN(dump_out) != 0.0) {
+     PIN(dump_out) = 0.0;
+     for(int i = 0;i<memory.discovery.output;i++){
+        printf_("%h ", debug_out[i]);
+     }
+     printf_("\n");
+   }
 
   if(PIN(dump_pd_vals) != 0.0) {
     PIN(dump_pd_vals) = 0.0;
