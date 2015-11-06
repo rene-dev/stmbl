@@ -71,18 +71,6 @@ typedef struct{
 } discovery_rpc_t;
 
 
-typedef struct{
-	mode_descriptor_t md[NO_MODES];
-	process_data_descriptor_t pd[NO_GPD];
-   uint16_t eot;//end of table
-} gtoc_t;
-
-typedef struct{
-	process_data_descriptor_t pd[NO_PD];
-   uint16_t eot;//end of table
-} ptoc_t;
-
-
 typedef union {
 	struct {
 		discovery_rpc_t discovery;
@@ -123,13 +111,11 @@ mode_descriptor_t create_mdr(uint8_t index, uint8_t type) {
 	return md;
 }
 
-/*
 #define BITSLEFT(ptr) (8-ptr)
 
 void process_data_rpc(uint8_t *input, uint8_t *output) {
-	uint8_t pd_cnt = NO_PD;
 
-	printf("in pdrpc; ptoc contains %d entries\n", pd_cnt);
+	uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
 
 	*(input++) = 0xA5; // fault byte, just for easy recognition
 
@@ -139,17 +125,17 @@ void process_data_rpc(uint8_t *input, uint8_t *output) {
 
 	uint8_t output_bit_ptr = 0;
 
-	for(uint8_t i = 0; i < pd_cnt; i++) {
-		process_data_descriptor_t pd = memory.ptoc.pd[i];
+	while(*ptocp != 0x0000) {
+		process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
 
 		if (IS_INPUT(pd)) {
 		//	printf("pd %d data size is %d\n", i, memory.ptoc.pd[i].data_size);
-			*(input++) = MEMU8(pd.data_add);
+			*(input++) = MEMU8(pd->data_addr);
 		}
 		if (IS_OUTPUT(pd)) {
-			printf("pd %d data size is %d\n", i, pd.data_size);
-			uint16_t data_addr = pd.data_add;
-			uint8_t data_size = pd.data_size;
+			printf("pd data size is %d\n", pd->data_size);
+			uint16_t data_addr = pd->data_addr;
+			uint8_t data_size = pd->data_size;
 
 			uint8_t val_bits_remaining = 8;
 			uint8_t val = 0x00;
@@ -164,13 +150,11 @@ void process_data_rpc(uint8_t *input, uint8_t *output) {
 				printf("decoding partial byte, need to read %d bits from current output byte 0x%02x at bit position %d\n", bits_to_unpack, *output, output_bit_ptr);
 
 				// create a bitmask the width of the bits to read, shifted to the position in the output byte that we're pointing to
-				uint8_t mask = ((1<<bits_to_unpack) - 1) << (BITSLEFT(output_bit_ptr) - bits_to_unpack);
+				uint8_t mask = ((1<<bits_to_unpack) - 1) << (output_bit_ptr);
 				printf("mask is 0x%02x\n", mask);
 
 				// val is what we get when we mask off output and then shift it to the proper place.  
-				val = (val << bits_to_unpack) | (*output & mask) >> (BITSLEFT(output_bit_ptr) - bits_to_unpack); 
-				// this works sorta like a shift register.  We shift the existing bits in val up by the number of bits we just read,
-				// and or the new bits to the bottom of the byte.
+				val = val | ((*output & mask) >> (output_bit_ptr)) << (8-val_bits_remaining); 
 
 				printf("val is 0x%02x\n", val);
 
@@ -191,7 +175,6 @@ void process_data_rpc(uint8_t *input, uint8_t *output) {
 	}
 }
 
-*/
 
 void dump_memory_range(uint16_t start, uint16_t end) {
 	start -= (start % 16);
@@ -240,7 +223,6 @@ uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits,
 
 	memcpy(heap_ptr, &pdr, sizeof(process_data_descriptor_t));
 	// note that we don't store the names in the struct anymore.  The fixed-length struct is copied into memory, and then the nmaes go in directly behind it, so they'll read out properly
-	dump_memory_range(0, 0x40);
 
 	uint16_t pd_ptr = MEMPTR(*heap_ptr); // save off the ptr to return, before we modify the heap ptr
 
@@ -249,10 +231,8 @@ uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits,
 	// copy the strings in after the pd
 	strcpy((char *)heap_ptr, unit_string);
 	heap_ptr += strlen(unit_string)+1;
-	dump_memory_range(0, 0x40);
 	strcpy((char *)heap_ptr, name_string);
 	heap_ptr += strlen(name_string)+1;
-	dump_memory_range(0, 0x40);
 
 	return pd_ptr;
 }
@@ -299,9 +279,10 @@ int main(void) {
 	printf("sizeof pdr: %ld\n", sizeof(process_data_descriptor_t));
 
 
-	ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-	ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
-	ADD_PROCESS_VAR(("fb_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));
+	ADD_PROCESS_VAR(("output_pins", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
+	ADD_PROCESS_VAR(("cmd_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
+	ADD_PROCESS_VAR(("flags", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
+	ADD_PROCESS_VAR(("fb_vel", "rps", 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));
 
 	ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
 
@@ -333,48 +314,16 @@ int main(void) {
 
 	dump_memory_range(0, 0x100);
 
+
 	write_memory_to_file();
-
-/*
-	uint16_t param_addr = MEMPTR(memory.pd_values);
-	uint8_t pd_num = 0, gpd_num = 0, mode_num = 0;
-
-	// we increment these in add_pd
-	discovery_rpc.input = 8; // 8 bits because the fault byte will always be present.
-	discovery_rpc.output = 0;
-
-	add_pd(&pd_num, &param_addr, 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 0, "none", "input_pins");
-	add_pd(&pd_num, &param_addr, 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "rps", "cmd_vel");
-	add_pd(&pd_num, &param_addr, 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0, "rps", "fb_vel");
-
-	add_gpd(&gpd_num, gpd_num + mode_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "non", "swr");
-
-	add_mode(&mode_num, gpd_num + mode_num, 0, 0, "foo");
-	add_mode(&mode_num, gpd_num + mode_num, 1, 1, "io_");
-
-	memory.ptoc.eot = 0x0000;
-	memory.gtoc.eot = 0x0000;
-
-	memory.ptocp[pd_num] = 0x0000;
-	memory.gtocp[gpd_num + mode_num] = 0x0000; 
-
-
-	discovery_rpc.ptocp = MEMPTR(memory.ptocp);
-	discovery_rpc.gtocp = MEMPTR(memory.gtocp);
-
-	printf("memory created\n\n");
-*/
-
-
 
 
 /*
 	printf("discovery_rpc:\n");
-	printf("input bytes: %d.  output bytes: %d\n", discovery_rpc.input>>3, discovery_rpc.output>>3);
-	printf("gtocp: 0x%04x  ptocp: 0x%04x\n", discovery_rpc.gtocp, discovery_rpc.ptocp);
+	printf("input bytes: %d.  output bytes: %d\n", memory.discovery.input>>3, memory.discovery.output>>3);
+	printf("gtocp: 0x%04x  ptocp: 0x%04x\n", memory.discovery.gtocp, memory.discovery.ptocp);
 
-	printf("\nptoc: (at 0x%04x)\n", discovery_rpc.ptocp);
-	uint16_t ptocp = discovery_rpc.ptocp;
+	printf("\nptoc: (at 0x%04x)\n", memory.discovery.ptocp);
 
 
 	uint16_t pd_ptr;
@@ -400,8 +349,8 @@ int main(void) {
 		ptocp += 2;
 	} 
 
-	printf("\ngtoc: (at 0x%04x)\n", discovery_rpc.gtocp);
-	uint16_t gtocp = discovery_rpc.gtocp;
+	printf("\ngtoc: (at 0x%04x)\n", memory.discovery.gtocp);
+	uint16_t gtocp = memory.discovery.gtocp;
 
 	while(MEMU16(gtocp) != 0x0000) {
 		pd_ptr = MEMU16(gtocp);
@@ -436,25 +385,29 @@ int main(void) {
 
 		gtocp += 2;
 	}
-
+*/
 	// now I'm going to create a couple pointers to values in the pdval space, these will represent our pins
 	// I can change those vals, and then do a mock pd_rpc to set all the outputs and send all the inputs
 
 
-	uint8_t output_buf[discovery_rpc.output>>3];
-	uint8_t input_buf[discovery_rpc.input>>3];
+	uint8_t output_buf[memory.discovery.output];
+	uint8_t input_buf[memory.discovery.input];
 
-	output_buf[0] = 0xF2;
-	output_buf[1] = 0x31;
-	output_buf[2] = 0x45;
-	printf("incoming output bytes: "); for (uint8_t i = 0; i < discovery_rpc.output>>3; i++) { printf("0x%02x ", output_buf[i]); } printf("\n");
+	output_buf[0] = 0xCA;
+	output_buf[1] = 0x47;
+	printf("incoming output bytes: "); for (uint8_t i = 0; i < memory.discovery.output; i++) { printf("0x%02x ", output_buf[i]); } printf("\n");
 	process_data_rpc(input_buf, output_buf);
-	printf("outgoing input bytes: "); for (uint8_t i = 0; i < discovery_rpc.input>>3; i++) { printf("0x%02x ", input_buf[i]); } printf("\n");
+	printf("outgoing input bytes: "); for (uint8_t i = 0; i < memory.discovery.input; i++) { printf("0x%02x ", input_buf[i]); } printf("\n");
 
 
-	printf("value in the pd[2] data pointer: 0x%04x\n", MEMU16(memory.ptoc.pd[2].data_add));
-*/
+	//printf("value in the pd[2] data pointer: 0x%04x\n", MEMU16(memory.ptoc.pd[2].data_add));
 
+	ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
+	while(*ptocp != 0x0000) {
+		process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
+
+		printf("pd's data address: 0x%04x  value: 0x%04x\n", pd->data_addr, MEMU16(pd->data_addr));
+	}
 
 /*
 	printf("setting fb and bidir\n");
