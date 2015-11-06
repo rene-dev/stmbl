@@ -80,7 +80,7 @@ typedef union{
 
 #define NO_MODES 2//gtoc modes
 #define NO_GPD 1//gtoc process data
-#define NO_PD 2//process data
+#define NO_PD 3//process data
 
 #define MEMPTR(p) ((uint32_t)&p-(uint32_t)&memory)
 
@@ -88,6 +88,9 @@ typedef union{
 #define MEMU16(ptr) (memory.bytes[ptr] | memory.bytes[ptr+1]<<8)
 #define MEMU32(ptr) (memory.bytes[ptr] | memory.bytes[ptr+1]<<8 | memory.bytes[ptr+2]<<16 | memory.bytes[ptr+3]<<24)
 #define MEMFLOAT(ptr) ((float)({uint32_t tmp = MEMU32(ptr);*((float*)&tmp);}))
+
+#define IS_INPUT(pdr) (pdr.data_direction != 0x80)
+#define IS_OUTPUT(pdr) (pdr.data_direction != 0x00)
 
 // pins
 HAL_PIN(dump_ptoc) = 0.0;
@@ -117,10 +120,10 @@ typedef struct{
 } mode_descriptor_t;
 
 typedef struct{
-   uint8_t input;//process data input bytes 
-   uint8_t output;//process data output bytes 
-   uint16_t ptocp;//pointer to process data table start
-   uint16_t gtocp;//pointer to mode data table start
+   uint8_t input;  //process data input bytes 
+   uint8_t output; //process data output bytes 
+   uint16_t ptocp; //pointer to process data table start
+   uint16_t gtocp; //pointer to mode data table start
 } discovery_rpc_t;
 
 typedef struct{
@@ -179,12 +182,12 @@ void add_pd(uint8_t *pd_num, uint16_t *param_addr, uint8_t data_size_in_bits, ui
   // increment the param address based on the size of the data in bits
   uint8_t num_bytes = data_size_in_bits / 8 + (data_size_in_bits % 8 > 0 ? 1 : 0);
 
-  if (data_dir != 0x00) {
-    discovery_rpc.input += num_bytes;
+  if (IS_INPUT(memory.ptoc.pd[i])) {
+    discovery_rpc.input += data_size_in_bits;
   }
 
-  if (data_dir != 0x80) {
-    discovery_rpc.output += num_bytes;
+  if (IS_OUTPUT(memory.ptoc.pd[i])) {
+    discovery_rpc.output += data_size_in_bits;
   }
 
   *param_addr += num_bytes;
@@ -237,6 +240,7 @@ void add_mode(uint8_t *mode_num, uint8_t gtoc_idx, uint8_t index, uint8_t type, 
 //pa9 usart1 tx as rx
 
 INIT(
+  {
    GPIO_InitTypeDef GPIO_InitStruct;
    USART_InitTypeDef USART_InitStruct;
    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
@@ -340,35 +344,47 @@ INIT(
    USART_DMACmd(UART5, USART_DMAReq_Tx, ENABLE);
    
    GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
+  }
 
-   rxpos = 0;
+  rxpos = 0;
 
-   uint16_t param_addr = MEMPTR(memory.pd_values);
-   uint8_t pd_num = 0;
-   uint8_t gpd_num = 0;
-   uint8_t mode_num = 0;
+  uint16_t param_addr = MEMPTR(memory.pd_values);
+  uint8_t pd_num = 0;
+  uint8_t gpd_num = 0;
+  uint8_t mode_num = 0;
+
+  // goofy hack alert!  during init, these fields are in BITS.  After the TOCs are created, they're shifted down to bytes
+  // this is to keep track of the number of bytes even as we add non-byte-aligned pds.
+  // NOTE THAT THIS LIMITS US TO SEVEN BYTES IN / EIGHT BYTES OUT.  sserial system limit is 12 bytes in/12 bytes out.
 
    // we increment these in add_pd
-   discovery_rpc.input = 1; // 1 because the fault byte will always be present.
-   discovery_rpc.output = 0;
+  discovery_rpc.input = 8; // 8 bits because the fault byte will always be present.
+  discovery_rpc.output = 0;
 
-   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "rps", "cmd_vel");
-   add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0, "rps", "fb_vel");
+  add_pd(&pd_num, &param_addr, 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 0, "bool", "flags");
+  add_pd(&pd_num, &param_addr, 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "rps", "cmd_vel");
+  add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0, "rps", "fb_vel");
 
-   add_gpd(&gpd_num, gpd_num + mode_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "non", "swr");
+/*
+  add_gpd(&gpd_num, gpd_num + mode_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "non", "swr");
 
-   add_mode(&mode_num, gpd_num + mode_num, 0, 0, "foo");
-   add_mode(&mode_num, gpd_num + mode_num, 1, 1, "io_");
+  add_mode(&mode_num, gpd_num + mode_num, 0, 0, "foo");
+  add_mode(&mode_num, gpd_num + mode_num, 1, 1, "io_");
+*/
 
-   memory.ptoc.eot = 0x0000;
-   memory.gtoc.eot = 0x0000;
+  // todo: check input/output bits % 8 and add padding if necessary.
 
-   memory.ptocp[pd_num] = 0x0000;
-   memory.gtocp[gpd_num + mode_num] = 0x0000; 
+  memory.ptoc.eot = 0x0000;
+  memory.gtoc.eot = 0x0000;
 
-   discovery_rpc.ptocp = MEMPTR(memory.ptocp);
-   discovery_rpc.gtocp = MEMPTR(memory.gtocp);
-   timeout = 1000;
+  memory.ptocp[pd_num] = 0x0000;
+  memory.gtocp[gpd_num + mode_num] = 0x0000; 
+
+  discovery_rpc.input >>= 3;    // shift these down, divide by 8 to turn them from bits count to bytes count
+  discovery_rpc.output >>= 3; 
+  discovery_rpc.ptocp = MEMPTR(memory.ptocp);
+  discovery_rpc.gtocp = MEMPTR(memory.gtocp);
+  timeout = 1000;
 );
 
 uint8_t crc8( uint8_t *addr, uint8_t len)
@@ -555,6 +571,8 @@ NRT(
 
   if(PIN(dump_ptoc) != 0.0) {
     PIN(dump_ptoc) = 0.0;
+
+    printf_("discovery sez %i inputs %i outputs ptocp: %h gtocp: %h\n", discovery_rpc.input, discovery_rpc.output, discovery_rpc.ptocp, discovery_rpc.gtocp);
 
     printf_("ptoc (%h):\n", discovery_rpc.ptocp);
     uint16_t ptocp = discovery_rpc.ptocp;
