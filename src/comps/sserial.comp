@@ -97,6 +97,8 @@ HAL_PIN(error) = 0.0;//counts unknown commands
 HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, needs link to pd
 HAL_PIN(timeout) = 40.0;// 20khz / 1khz * 2 reads
 
+HAL_PIN(cmd_vel) = 0.0;
+
 
 typedef struct{
    uint8_t record_type;//0xa0
@@ -135,7 +137,6 @@ typedef union {
 
 MEM(volatile uint8_t rxbuf[128]);
 MEM(volatile uint8_t txbuf[20]);
-MEM(volatile uint8_t debug_out[12]);
 MEM(uint16_t address);//current address pointer
 MEM(int rxpos);
 MEM(memory_t memory);
@@ -338,7 +339,7 @@ INIT(
   uint16_t *ptocp = ptoc; uint16_t *gtocp = gtoc;
 
   ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-  ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
+  ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, -100, 100));
   ADD_PROCESS_VAR(("fb_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));
 
   ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
@@ -460,6 +461,11 @@ void process_data_rpc(volatile uint8_t *input, volatile uint8_t *output) {
   }
 }
 
+RT (
+  // update all hal pins with values from their associated pds
+
+);
+
 
 FRT(
    lbp_t lbp;
@@ -573,14 +579,6 @@ FRT(
 
 
 NRT(
-   if(PIN(dump_out) != 0.0) {
-     PIN(dump_out) = 0.0;
-     for(int i = 0;i<memory.discovery.output;i++){
-        printf_("%h ", debug_out[i]);
-     }
-     printf_("\n");
-   }
-
   if(PIN(dump_pd_vals) != 0.0) {
     PIN(dump_pd_vals) = 0.0;
 

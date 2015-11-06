@@ -280,6 +280,7 @@ int main(void) {
 
 
 	ADD_PROCESS_VAR(("output_pins", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
+	printf("cmd_vel pd ptr 0x%04x\n", *ptocp);
 	ADD_PROCESS_VAR(("cmd_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
 	ADD_PROCESS_VAR(("flags", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
 	ADD_PROCESS_VAR(("fb_vel", "rps", 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));
