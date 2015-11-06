@@ -90,10 +90,10 @@ MEM(int phased) = 0;
 RT(
    // reset fault
    if(PIN(reset) > 0.0){
-      state = -10;
+      state = STATE_RESET;
    }
-   else if(state == -10){ // reset on falling edge
-      state = 0;
+   else if(state == STATE_RESET){ // reset on falling edge
+      state = STATE_DISABLED;
       phased = 0;
    }
 
@@ -110,7 +110,7 @@ RT(
       PIN(cur) = 0.0;
       PIN(enable_out) = 0.0;
       PIN(enable_pid) = 0.0;
-      state = -1;
+      state = STATE_OVR_VOLT;
    }
    else if(dc_volt >= high_dc_volt){ // enable brake resistor
       PIN(brake_resistor) = (dc_volt - high_dc_volt) / (max_dc_volt - high_dc_volt);
@@ -138,7 +138,7 @@ RT(
       PIN(enable_pid) = 0.0;
       PIN(cur) = 0.0;
       PIN(brake) = 0.0;
-      state = -2;
+      state = STATE_OVR_TEMP;
    }
    else if(hv_temp >= high_hv_temp || motor_temp >= high_motor_temp){ // limit current
       PIN(cur) = max_ac_cur * MIN((max_hv_temp - hv_temp) / (max_hv_temp - high_hv_temp), (max_motor_temp - motor_temp) / (max_motor_temp - high_motor_temp));
@@ -197,7 +197,7 @@ RT(
       PIN(cur) = 0.0;
       PIN(enable_out) = 0.0;
       PIN(enable_pid) = 0.0;
-      state = -4;
+      state = STATE_OVR_CURR;
    }
 
    if(ac_cur >= max_ac_cur * 1){ // disable drive, set fault
@@ -205,7 +205,7 @@ RT(
       PIN(cur) = 0.0;
       PIN(enable_out) = 0.0;
       PIN(enable_pid) = 0.0;
-      state = -4;
+      state = STATE_OVR_CURR;
    }
 
 
@@ -215,7 +215,7 @@ RT(
       PIN(cur) = 0.0;
       PIN(enable_out) = 0.0;
       PIN(enable_pid) = 0.0;
-      state = -5;
+      state = STATE_SAT_ERROR;
    }
 
    // pos error
@@ -225,12 +225,12 @@ RT(
       PIN(enable_out) = 0.0;
       PIN(enable_pid) = 0.0;
       PIN(brake) = 0.0;
-      state = -3;
+      state = STATE_POS_ERROR;
    }
 
 
    // enable
-   if(PIN(enable) <= 0.0 || state == -10){ // -> disable
+   if(PIN(enable) <= 0.0 || state == STATE_RESET){ // -> disable
       //phased = 0;
       PIN(phase_start) = 0.0;
       PIN(brake) = 0.0;
@@ -239,38 +239,38 @@ RT(
       PIN(enable_out) = 0.0;
       PIN(cur) = 0.0;
       if(state >= 0 && PIN(fb_ready) > 0.0){ // no fault -> disabled
-         state = 0;
+         state = STATE_DISABLED;
       }
    }
-   else if(state == 0){ // disabled -> enabled
+   else if(state == STATE_DISABLED){ // disabled -> enabled
       PIN(enable_out) = 1.0;
       PIN(brake) = 1.0;
       PIN(enable_pid) = 0.0;
-      state = 1;
+      state = STATE_ENABLED;
       PIN(start_offset) = minus(PIN(fb), PIN(cmd));
 
       if(phased == 0 && PIN(phase_on_start) > 0.0){ // start phasing
          PIN(phase_start) = 1.0;
          PIN(enable_pid) = 0.0;
-         state = 2;
+         state = STATE_PHASING;
       }
    }
-   else if(state == 1){
+   else if(state == STATE_ENABLED){
       phased = 1;
       PIN(enable_pid) = 1.0;
    }
-   else if(state == 2){ // phasing -> enabled
+   else if(state == STATE_PHASING){ // phasing -> enabled
       if(PIN(phase_ready) > 0.0){
          PIN(enable_pid) = 1.0;
          PIN(start_offset) = minus(PIN(fb), PIN(cmd));
-         state = 1;
+         state = STATE_ENABLED;
       }
    }
 
 
    // under voltage
    if(state > 0 && dc_volt < low_dc_volt){
-      state = 0;
+      state = STATE_DISABLED;
       PIN(phase_start) = 0.0;
       PIN(brake) = 0.0;
       PIN(brake_resistor) = 0.0;
@@ -282,7 +282,7 @@ RT(
 
    // fb error
    if(state > 0 && PIN(fb_error) > 0.0){
-      state = -6;
+      state = STATE_FB_ERROR;
       PIN(cur) = 0.0;
       PIN(enable_out) = 0.0;
       PIN(enable_pid) = 0.0;
@@ -292,28 +292,28 @@ RT(
 
    // leds
    switch(state){
-      case 0:
-      case -10:
+      case STATE_DISABLED:
+      case STATE_RESET:
       PIN(led_green) = 0.0;
       PIN(led_red) = 0.0;
       break;
 
-      case -6:
-      case -5:
-      case -4:
-      case -3:
-      case -2:
-      case -1:
+      case STATE_FB_ERROR:
+      case STATE_SAT_ERROR:
+      case STATE_OVR_CURR:
+      case STATE_POS_ERROR:
+      case STATE_OVR_TEMP:
+      case STATE_OVR_VOLT:
       PIN(led_green) = BLINK(-state);
       PIN(led_red) = 1.0;
       break;
 
-      case 1:
+      case STATE_ENABLED:
       PIN(led_green) = 1.0;
       PIN(led_red) = 0.0;
       break;
 
-      case 2:
+      case STATE_PHASING:
       PIN(led_green) = 1.0;
       PIN(led_red) = 1.0;
       break;
