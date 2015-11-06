@@ -1,3 +1,9 @@
+#ifdef CMD_RX
+#error you can only have one command compound
+#else
+#define CMD_RX
+#endif
+
 COMP(enc_cmd);
 
 HAL_PIN(res) = 2048.0;

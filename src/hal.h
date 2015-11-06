@@ -53,6 +53,9 @@ struct hal_struct{
 
   void (*nrt[MAX_COMP_FUNCS])(float period);
   int nrt_func_count;
+  
+  void (*frt[MAX_COMP_FUNCS])(float period);
+  int frt_func_count;
 
   struct hal_pin* hal_pins[MAX_HAL_PINS];
   int hal_pin_count;
@@ -90,6 +93,7 @@ float read_float(char* buf);
 int addf_init(void (*init)());
 int addf_rt(void (*rt)(float period));
 int addf_nrt(void (*nrt)(float period));
+int addf_frt(void (*frt)(float period));
 
 
 #define COMP(type)                  \
@@ -98,6 +102,7 @@ int addf_nrt(void (*nrt)(float period));
   void (*init)() = 0;               \
   void (*rt)(float period) = 0;\
   void (*nrt)(float period) = 0; \
+  void (*frt)(float period) = 0; \
   HAL_PIN(calc_time) = 0.0;
 
 #define HAL_PIN(name)               \
@@ -118,6 +123,17 @@ int addf_nrt(void (*nrt)(float period));
 
 #define RT(func)                    \
  rt = ({ void function(float period){ \
+   unsigned int __start_time__ = SysTick->VAL; \
+   func \
+   unsigned int __end_time__ = SysTick->VAL; \
+   if(__start_time__ < __end_time__){ \
+     __start_time__ += SysTick->LOAD; \
+   } \
+   PIN(calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
+   } function;});
+
+#define FRT(func)                    \
+ frt = ({ void function(float period){ \
    unsigned int __start_time__ = SysTick->VAL; \
    func \
    unsigned int __end_time__ = SysTick->VAL; \
@@ -187,4 +203,5 @@ jump_label_pointer = jump_label_pointer_old;
   addf_init(init); \
   addf_rt(rt); \
   addf_nrt(nrt); \
+  addf_frt(frt); \
 }
