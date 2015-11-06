@@ -1,3 +1,5 @@
+// 11/2015  Rene Hopf<renehopf@mac.com> and Ian McMahon<facetious.ian@gmail.com>
+
 #ifdef CMD_TX
 #error at the moment you can only have one component using the tx channel of the command port
 #else
@@ -90,12 +92,12 @@ typedef union{
 #define IS_OUTPUT(pdr) (pdr->data_direction != 0x00)
 
 // pins
-HAL_PIN(dump_ptoc) = 0.0;
-HAL_PIN(dump_gtoc) = 0.0;
-HAL_PIN(dump_out) = 0.0;
+HAL_PIN(dump_pd_vals) = 0.0;
 HAL_PIN(error) = 0.0;//counts unknown commands
 HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, needs link to pd
 HAL_PIN(timeout) = 40.0;// 20khz / 1khz * 2 reads
+
+HAL_PIN(cmd_vel) = 0.0;
 
 
 typedef struct{
@@ -135,12 +137,12 @@ typedef union {
 
 MEM(volatile uint8_t rxbuf[128]);
 MEM(volatile uint8_t txbuf[20]);
-MEM(volatile uint8_t debug_out[12]);
 MEM(uint16_t address);//current address pointer
 MEM(int rxpos);
 MEM(memory_t memory);
 MEM(uint8_t *heap_ptr);
 MEM(uint32_t timeout);
+MEM(process_data_descriptor_t *cmd_vel_pd);
 
 
 //pb13 txen
@@ -318,7 +320,7 @@ uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
 #define DATA_DIR(pd_ptr) INDIRECT_PD(pd_ptr)->data_direction
 #define DATA_SIZE(pd_ptr) INDIRECT_PD(pd_ptr)->data_size
 
-#define ADD_PROCESS_VAR(args) *ptocp = add_pd args; input_bits += IS_INPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; output_bits += IS_OUTPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; ptocp++
+#define ADD_PROCESS_VAR(args) *ptocp = add_pd args; input_bits += IS_INPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; output_bits += IS_OUTPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; last_pd = INDIRECT_PD(ptocp++)
 #define ADD_GLOBAL_VAR(args) *gtocp++ = add_pd args
 #define ADD_MODE(args) *gtocp++ = add_mode args
 
@@ -336,9 +338,10 @@ INIT(
   uint16_t gtoc[32]; 
 
   uint16_t *ptocp = ptoc; uint16_t *gtocp = gtoc;
+  process_data_descriptor_t *last_pd;
 
   ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-  ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
+  ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, -100, 100)); cmd_vel_pd = last_pd;
   ADD_PROCESS_VAR(("fb_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));
 
   ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
@@ -402,6 +405,68 @@ void send(uint8_t len, uint8_t docrc){
    DMA_ClearFlag(DMA1_Stream7, DMA_FLAG_TCIF7);
    DMA_Cmd(DMA1_Stream7, ENABLE);
 }
+
+#define BITSLEFT(ptr) (8-ptr)
+
+void process_data_rpc(volatile uint8_t *input, volatile uint8_t *output) {
+
+  uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
+
+  *(input++) = 0xA5; // fault byte, just for easy recognition
+
+  // data needs to be packed and unpacked based on its type and size
+  // input is a pointer to the data that gets sent back to the host
+  // need a bit pointer to keep track of partials
+
+  uint8_t output_bit_ptr = 0;
+
+  while(*ptocp != 0x0000) {
+    process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
+
+    if (IS_INPUT(pd)) {
+    //  printf("pd %d data size is %d\n", i, memory.ptoc.pd[i].data_size);
+      *(input++) = MEMU8(pd->data_addr);
+    }
+    if (IS_OUTPUT(pd)) {
+      uint16_t data_addr = pd->data_addr;
+      uint8_t data_size = pd->data_size;
+
+      uint8_t val_bits_remaining = 8;
+      uint8_t val = 0x00;
+
+      while(data_size > 0) {
+        // the number of bits to unpack this iteration is the number of bits remaining in the pd, or the number of bits remaining in the output byte, 
+        // whichever is smaller.  Then, it can be even smaller if we have less room in the current val.
+
+        uint8_t bits_to_unpack = data_size < BITSLEFT(output_bit_ptr) ? data_size : BITSLEFT(output_bit_ptr);
+        if (val_bits_remaining < bits_to_unpack) { bits_to_unpack = val_bits_remaining; }
+
+        // create a bitmask the width of the bits to read, shifted to the position in the output byte that we're pointing to
+        uint8_t mask = ((1<<bits_to_unpack) - 1) << (output_bit_ptr);
+
+        // val is what we get when we mask off output and then shift it to the proper place.  
+        val = val | ((*output & mask) >> (output_bit_ptr)) << (8-val_bits_remaining); 
+
+        val_bits_remaining -= bits_to_unpack;
+        data_size -= bits_to_unpack;
+        output_bit_ptr += bits_to_unpack;
+      
+        if((output_bit_ptr %= 8) == 0) output++;
+
+        if(val_bits_remaining == 0 || data_size == 0) {
+          MEMU8(data_addr++) = val;
+          val_bits_remaining = 8;
+          val = 0x00;
+        }
+      }
+    }
+  }
+}
+
+RT (
+  // update all hal pins with values from their associated pds
+  PIN(cmd_vel) = MEMU16(cmd_vel_pd->data_addr);
+);
 
 
 FRT(
@@ -470,15 +535,10 @@ FRT(
               send(sizeof(memory.discovery),1);
               rxpos += 2;
           }else if(lbp.byte == ProcessDataRPC && available >= memory.discovery.output + 2){//process data, requires cmd+output bytes+crc
-             memcpy((void*)debug_out,(void*)&rxbuf[rxpos+1],memory.discovery.output);
-             txbuf[0] = 0x00;//TODO: transfer real pd
-             txbuf[1] = 0x00;
-             txbuf[2] = 0x00;
-             txbuf[3] = 0x00;
-             txbuf[4] = 0x00;
-             txbuf[5] = 0x00;
-             send(memory.discovery.input,1);
-             rxpos += memory.discovery.output + 2;
+            process_data_rpc(txbuf, &(rxbuf[rxpos+1]));
+
+            send(memory.discovery.input,1);
+            rxpos += memory.discovery.output + 2;
           }else{
              continue;
           }
@@ -520,72 +580,16 @@ FRT(
 );
 
 
-void print_md(uint16_t md_ptr) {
-  printf_(" md ptr: %h\n", md_ptr);
-  printf_("  index:    0x%02x\n", md_ptr++);
-  printf_("  type:     0x%02x\n", md_ptr++);
-  md_ptr++; // skip 'unused' byte
-  char *namestr = (char *)(memory.bytes + md_ptr);
-  printf_("  namestr:  %s\n", namestr);
-  md_ptr += strlen(namestr);
-}
-
-void print_pd(uint16_t pd_ptr) {
-  if (MEMU8(pd_ptr) == RECORD_TYPE_MODE_DATA_RECORD) {
-    print_md(pd_ptr);
-    return;
-  }
-
-  printf_(" pd ptr: %h\n", pd_ptr);
-
-  printf_("  rectype:  %h\n", MEMU8(pd_ptr++));
-  printf_("  datasize: %h\n", MEMU8(pd_ptr++));
-  printf_("  datatype: %h\n", MEMU8(pd_ptr++));
-  printf_("  datadir:  %h\n", MEMU8(pd_ptr++));
-  printf_("  parmmin:  %f\n", MEMFLOAT(pd_ptr)); pd_ptr += 4;
-  printf_("  parmmax:  %f\n", MEMFLOAT(pd_ptr)); pd_ptr += 4;
-  printf_("  dataaddr: %h\n", MEMU16(pd_ptr)); pd_ptr += 2;
-  char *unitstr = (char *)(memory.bytes + pd_ptr);
-  printf_("  unitstr:  %s\n", unitstr);
-  pd_ptr += strlen(unitstr) + 1;
-  char *namestr = (char *)(memory.bytes + pd_ptr);
-  printf_("  namestr:  %s\n", namestr);
-  pd_ptr += strlen(namestr) + 1;
-}
-
 NRT(
-   if(PIN(dump_out) != 0.0) {
-     PIN(dump_out) = 0.0;
-     for(int i = 0;i<memory.discovery.output;i++){
-        printf_("%h ", debug_out[i]);
-     }
-     printf_("\n");
-   }
+  if(PIN(dump_pd_vals) != 0.0) {
+    PIN(dump_pd_vals) = 0.0;
 
-  if(PIN(dump_ptoc) != 0.0) {
-    PIN(dump_ptoc) = 0.0;
-
-    printf_("discovery sez %i inputs %i outputs ptocp: %h gtocp: %h\n", memory.discovery.input, memory.discovery.output, memory.discovery.ptocp, memory.discovery.gtocp);
-
-    printf_("ptoc (%h):\n", memory.discovery.ptocp);
-    uint16_t ptocp = memory.discovery.ptocp;
-    while(MEMU16(ptocp) != 0x0000) {
-      print_pd(MEMU16(ptocp));
-      ptocp += 2;
+    uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
+    while(*ptocp != 0x0000) {
+      process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
+      printf_("pd has data at %h with value %h\n", pd->data_addr, MEMU16(pd->data_addr));
     }
   }
-
-  if(PIN(dump_gtoc) != 0.0) {
-    PIN(dump_gtoc) = 0.0;
-
-    printf_("gtoc (%h):\n", memory.discovery.gtocp);
-    uint16_t gtocp = memory.discovery.gtocp;
-    while(MEMU16(gtocp) != 0x0000) {
-      print_pd(MEMU16(gtocp));
-      gtocp += 2;
-    }
-  }
-
 );
 
 ENDCOMP;
