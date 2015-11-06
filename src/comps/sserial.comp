@@ -92,8 +92,6 @@ typedef union{
 #define IS_OUTPUT(pdr) (pdr->data_direction != 0x00)
 
 // pins
-HAL_PIN(dump_ptoc) = 0.0;
-HAL_PIN(dump_gtoc) = 0.0;
 HAL_PIN(dump_pd_vals) = 0.0;
 HAL_PIN(error) = 0.0;//counts unknown commands
 HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, needs link to pd
@@ -574,72 +572,15 @@ FRT(
 );
 
 
-void print_md(uint16_t md_ptr) {
-  printf_(" md ptr: %h\n", md_ptr);
-  printf_("  index:    0x%02x\n", md_ptr++);
-  printf_("  type:     0x%02x\n", md_ptr++);
-  md_ptr++; // skip 'unused' byte
-  char *namestr = (char *)(memory.bytes + md_ptr);
-  printf_("  namestr:  %s\n", namestr);
-  md_ptr += strlen(namestr);
-}
-
-void print_pd(uint16_t pd_ptr) {
-  if (MEMU8(pd_ptr) == RECORD_TYPE_MODE_DATA_RECORD) {
-    print_md(pd_ptr);
-    return;
-  }
-
-  printf_(" pd ptr: %h\n", pd_ptr);
-
-  printf_("  rectype:  %h\n", MEMU8(pd_ptr++));
-  printf_("  datasize: %h\n", MEMU8(pd_ptr++));
-  printf_("  datatype: %h\n", MEMU8(pd_ptr++));
-  printf_("  datadir:  %h\n", MEMU8(pd_ptr++));
-  printf_("  parmmin:  %f\n", MEMFLOAT(pd_ptr)); pd_ptr += 4;
-  printf_("  parmmax:  %f\n", MEMFLOAT(pd_ptr)); pd_ptr += 4;
-  printf_("  dataaddr: %h\n", MEMU16(pd_ptr)); pd_ptr += 2;
-  char *unitstr = (char *)(memory.bytes + pd_ptr);
-  printf_("  unitstr:  %s\n", unitstr);
-  pd_ptr += strlen(unitstr) + 1;
-  char *namestr = (char *)(memory.bytes + pd_ptr);
-  printf_("  namestr:  %s\n", namestr);
-  pd_ptr += strlen(namestr) + 1;
-}
-
 NRT(
-
-  if(PIN(dump_ptoc) != 0.0) {
-    PIN(dump_ptoc) = 0.0;
-
-    printf_("discovery sez %i inputs %i outputs ptocp: %h gtocp: %h\n", memory.discovery.input, memory.discovery.output, memory.discovery.ptocp, memory.discovery.gtocp);
-
-    printf_("ptoc (%h):\n", memory.discovery.ptocp);
-    uint16_t ptocp = memory.discovery.ptocp;
-    while(MEMU16(ptocp) != 0x0000) {
-      print_pd(MEMU16(ptocp));
-      ptocp += 2;
-    }
-  }
-
-  if(PIN(dump_gtoc) != 0.0) {
-    PIN(dump_gtoc) = 0.0;
-
-    printf_("gtoc (%h):\n", memory.discovery.gtocp);
-    uint16_t gtocp = memory.discovery.gtocp;
-    while(MEMU16(gtocp) != 0x0000) {
-      print_pd(MEMU16(gtocp));
-      gtocp += 2;
-    }
-  }
 
   if(PIN(dump_pd_vals) != 0.0) {
     PIN(dump_pd_vals) = 0.0;
 
-    uint16_t ptocp = memory.discovery.ptocp;
-    while(MEMU16(ptocp) != 0x0000) {
-      process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + MEMU16(ptocp));
-      printf_("pd %s has data at 0x%04x with value 0x%04x\n", &(pd->names), pd->data_addr, MEMU16(pd->data_addr));
+    uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
+    while(*ptocp != 0x0000) {
+      process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
+      printf_("pd has data at %h with value %h\n", pd->data_addr, MEMU16(pd->data_addr));
     }
   }
 );
