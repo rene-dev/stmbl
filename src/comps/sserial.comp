@@ -142,6 +142,7 @@ MEM(int rxpos);
 MEM(memory_t memory);
 MEM(uint8_t *heap_ptr);
 MEM(uint32_t timeout);
+MEM(process_data_descriptor_t *cmd_vel_pd);
 
 
 //pb13 txen
@@ -319,7 +320,7 @@ uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
 #define DATA_DIR(pd_ptr) INDIRECT_PD(pd_ptr)->data_direction
 #define DATA_SIZE(pd_ptr) INDIRECT_PD(pd_ptr)->data_size
 
-#define ADD_PROCESS_VAR(args) *ptocp = add_pd args; input_bits += IS_INPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; output_bits += IS_OUTPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; ptocp++
+#define ADD_PROCESS_VAR(args) *ptocp = add_pd args; input_bits += IS_INPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; output_bits += IS_OUTPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; last_pd = INDIRECT_PD(ptocp++)
 #define ADD_GLOBAL_VAR(args) *gtocp++ = add_pd args
 #define ADD_MODE(args) *gtocp++ = add_mode args
 
@@ -337,9 +338,10 @@ INIT(
   uint16_t gtoc[32]; 
 
   uint16_t *ptocp = ptoc; uint16_t *gtocp = gtoc;
+  process_data_descriptor_t *last_pd;
 
   ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-  ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, -100, 100));
+  ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, -100, 100)); cmd_vel_pd = last_pd;
   ADD_PROCESS_VAR(("fb_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));
 
   ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
@@ -463,7 +465,7 @@ void process_data_rpc(volatile uint8_t *input, volatile uint8_t *output) {
 
 RT (
   // update all hal pins with values from their associated pds
-
+  PIN(cmd_vel) = MEMU16(cmd_vel_pd->data_addr);
 );
 
 

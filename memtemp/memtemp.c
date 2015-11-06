@@ -258,7 +258,7 @@ uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
 #define DATA_DIR(pd_ptr) INDIRECT_PD(pd_ptr)->data_direction
 #define DATA_SIZE(pd_ptr) INDIRECT_PD(pd_ptr)->data_size
 
-#define ADD_PROCESS_VAR(args) *ptocp = add_pd args; input_bits += IS_INPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; output_bits += IS_OUTPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; ptocp++
+#define ADD_PROCESS_VAR(args) *ptocp = add_pd args; input_bits += IS_INPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; output_bits += IS_OUTPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; last_pd = INDIRECT_PD(ptocp++)
 #define ADD_GLOBAL_VAR(args) *gtocp++ = add_pd args
 #define ADD_MODE(args) *gtocp++ = add_mode args
 
@@ -275,15 +275,18 @@ int main(void) {
 	uint16_t gtoc[32]; 
 
 	uint16_t *ptocp = ptoc; uint16_t *gtocp = gtoc;
+	process_data_descriptor_t *last_pd;
+	process_data_descriptor_t *cmd_vel_pd;
 
 	printf("sizeof pdr: %ld\n", sizeof(process_data_descriptor_t));
 
 
 	ADD_PROCESS_VAR(("output_pins", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-	printf("cmd_vel pd ptr 0x%04x\n", *ptocp);
-	ADD_PROCESS_VAR(("cmd_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
+	ADD_PROCESS_VAR(("cmd_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0)); cmd_vel_pd = last_pd;
 	ADD_PROCESS_VAR(("flags", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
 	ADD_PROCESS_VAR(("fb_vel", "rps", 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));
+
+	printf("cmd_vel_pd->data_addr: 0x%04x\n", cmd_vel_pd->data_addr);
 
 	ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
 
