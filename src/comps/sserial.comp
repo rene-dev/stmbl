@@ -92,6 +92,7 @@ typedef union{
 // pins
 HAL_PIN(dump_ptoc) = 0.0;
 HAL_PIN(dump_gtoc) = 0.0;
+HAL_PIN(dump_out) = 0.0;
 HAL_PIN(error) = 0.0;//counts unknown commands
 HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, needs link to pd
 HAL_PIN(timeout) = 40.0;// 20khz / 1khz * 2 reads
@@ -134,6 +135,7 @@ typedef union {
 
 MEM(volatile uint8_t rxbuf[128]);
 MEM(volatile uint8_t txbuf[20]);
+MEM(volatile uint8_t debug_out[12]);
 MEM(uint16_t address);//current address pointer
 MEM(int rxpos);
 MEM(memory_t memory);
@@ -468,6 +470,7 @@ FRT(
               send(sizeof(memory.discovery),1);
               rxpos += 2;
           }else if(lbp.byte == ProcessDataRPC && available >= memory.discovery.output + 2){//process data, requires cmd+output bytes+crc
+             memcpy((void*)debug_out,(void*)&rxbuf[rxpos+1],memory.discovery.output);
              txbuf[0] = 0x00;//TODO: transfer real pd
              txbuf[1] = 0x00;
              txbuf[2] = 0x00;
@@ -551,6 +554,13 @@ void print_pd(uint16_t pd_ptr) {
 }
 
 NRT(
+   if(PIN(dump_out) != 0.0) {
+     PIN(dump_out) = 0.0;
+     for(int i = 0;i<memory.discovery.output;i++){
+        printf_("%h ", debug_out[i]);
+     }
+     printf_("\n");
+   }
 
   if(PIN(dump_ptoc) != 0.0) {
     PIN(dump_ptoc) = 0.0;
