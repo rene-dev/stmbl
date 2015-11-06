@@ -57,8 +57,12 @@ typedef union{
     uint8_t byte;
 } lbp_t;
 
-//process data
+#define MEM_SIZE 1024
+
 #define RECORD_TYPE_PROCESS_DATA_RECORD 0xA0
+#define RECORD_TYPE_MODE_DATA_RECORD 0xB0
+
+//process data
 #define DATA_TYPE_PAD 0x00
 #define DATA_TYPE_BITS 0x01
 #define DATA_TYPE_UNSIGNED 0x02
@@ -72,15 +76,6 @@ typedef union{
 #define DATA_DIRECTION_BI_DIRECTIONAL 0x40
 #define DATA_DIRECTION_OUTPUT 0x80
 
-//modes
-#define RECORD_TYPE_MODE_DATA_RECORD 0xB0
-
-#define MAX_PD_STRLEN 32 // this is the max space for both the unit and name strings in the PD descriptors
-#define MAX_PD_VAL_BYTES 64 // this should be >= the sum of the data sizes of all pd vars
-
-#define NO_MODES 2//gtoc modes
-#define NO_GPD 1//gtoc process data
-#define NO_PD 3//process data
 
 #define MEMPTR(p) ((uint32_t)&p-(uint32_t)&memory)
 
@@ -89,8 +84,10 @@ typedef union{
 #define MEMU32(ptr) (memory.bytes[ptr] | memory.bytes[ptr+1]<<8 | memory.bytes[ptr+2]<<16 | memory.bytes[ptr+3]<<24)
 #define MEMFLOAT(ptr) ((float)({uint32_t tmp = MEMU32(ptr);*((float*)&tmp);}))
 
-#define IS_INPUT(pdr) (pdr.data_direction != 0x80)
-#define IS_OUTPUT(pdr) (pdr.data_direction != 0x00)
+#define NUM_BYTES(bits) (bits / 8 + (bits % 8 > 0 ? 1 : 0))
+
+#define IS_INPUT(pdr) (pdr->data_direction != 0x80)
+#define IS_OUTPUT(pdr) (pdr->data_direction != 0x00)
 
 // pins
 HAL_PIN(dump_ptoc) = 0.0;
@@ -107,8 +104,8 @@ typedef struct{
    uint8_t data_direction;
    float param_min;
    float param_max;
-   uint16_t data_add;
-   char names[MAX_PD_STRLEN];
+   uint16_t data_addr;
+   char names;
 } process_data_descriptor_t;
 
 typedef struct{
@@ -116,7 +113,7 @@ typedef struct{
    uint8_t index;
    uint8_t type;
    uint8_t unused;
-   char name_string[4];
+   char names;
 } mode_descriptor_t;
 
 typedef struct{
@@ -126,30 +123,13 @@ typedef struct{
    uint16_t gtocp; //pointer to mode data table start
 } discovery_rpc_t;
 
-typedef struct{
-   process_data_descriptor_t pd[NO_GPD];
-   mode_descriptor_t md[NO_MODES];
-   uint16_t eot;//end of table
-} gtoc_t;
-
-typedef struct{
-   process_data_descriptor_t pd[NO_PD];
-   uint16_t eot;//end of table
-} ptoc_t;
-
-
 typedef union {
- struct {
-   uint8_t start;
-   // the tocs are terminated by 0x0000 entries, hence the +1 and start offset
-   uint16_t ptocp[NO_PD+1];
-   uint16_t gtocp[NO_GPD+NO_MODES+1];
-   ptoc_t ptoc;
-   gtoc_t gtoc;
-   uint8_t pd_values[MAX_PD_VAL_BYTES];
-   uint8_t end;
- };
- uint8_t bytes[1024];
+  struct {
+    discovery_rpc_t discovery;
+    uint8_t heap[MEM_SIZE - sizeof(discovery_rpc_t)];
+  };
+
+  uint8_t bytes[MEM_SIZE];
 } memory_t;
 
 MEM(volatile uint8_t rxbuf[128]);
@@ -157,238 +137,241 @@ MEM(volatile uint8_t txbuf[20]);
 MEM(uint16_t address);//current address pointer
 MEM(int rxpos);
 MEM(memory_t memory);
+MEM(uint8_t *heap_ptr);
 MEM(uint32_t timeout);
-MEM(discovery_rpc_t discovery_rpc);
 
-void add_pd(uint8_t *pd_num, uint16_t *param_addr, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, 
-      float param_min, float param_max, char *unit_string, char *name_string) {
-
-  uint8_t i = *pd_num;
-
-  memory.ptoc.pd[i].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
-  memory.ptoc.pd[i].data_size = data_size_in_bits;
-  memory.ptoc.pd[i].data_type = data_type;
-  memory.ptoc.pd[i].data_direction = data_dir;
-  memory.ptoc.pd[i].param_min = param_min;
-  memory.ptoc.pd[i].param_max = param_max;
-  memory.ptoc.pd[i].data_add = *param_addr;
-  strncpy(memory.ptoc.pd[i].names, unit_string, strlen(unit_string));
-  strncpy(memory.ptoc.pd[i].names + strlen(unit_string) + 1, name_string, strlen(name_string));
-
-  memory.ptocp[i] = MEMPTR(memory.ptoc.pd[i]);
-
-  *pd_num += 1;
-
-  // increment the param address based on the size of the data in bits
-  uint8_t num_bytes = data_size_in_bits / 8 + (data_size_in_bits % 8 > 0 ? 1 : 0);
-
-  if (IS_INPUT(memory.ptoc.pd[i])) {
-    discovery_rpc.input += data_size_in_bits;
-  }
-
-  if (IS_OUTPUT(memory.ptoc.pd[i])) {
-    discovery_rpc.output += data_size_in_bits;
-  }
-
-  *param_addr += num_bytes;
-}
-
-
-// gtoc_idx is the index of the gpd or mode within the gtoc.  We can add gpds and modes in any order, and the gtoc will read them back
-// in that order.   It's passed by value because the functions don't modify it.  It's passed in as the sum of the current gpd_num and mode_num.
-void add_gpd(uint8_t *pd_num, uint8_t gtoc_idx, uint16_t *param_addr, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, 
-      float param_min, float param_max, char *unit_string, char *name_string) {
-
-  uint8_t i = *pd_num;
-
-  memory.gtoc.pd[i].record_type = RECORD_TYPE_PROCESS_DATA_RECORD;
-  memory.gtoc.pd[i].data_size = data_size_in_bits;
-  memory.gtoc.pd[i].data_type = data_type;
-  memory.gtoc.pd[i].data_direction = data_dir;
-  memory.gtoc.pd[i].param_min = param_min;
-  memory.gtoc.pd[i].param_max = param_max;
-  memory.gtoc.pd[i].data_add = *param_addr;
-  strncpy(memory.gtoc.pd[i].names, unit_string, strlen(unit_string));
-  strncpy(memory.gtoc.pd[i].names + strlen(unit_string) + 1, name_string, strlen(name_string));
-
-  memory.gtocp[gtoc_idx] = MEMPTR(memory.gtoc.pd[i]);
-
-  *pd_num += 1;
-
-  // increment the param address based on the size of the data in bits
-  uint8_t num_bytes = data_size_in_bits / 8 + (data_size_in_bits % 8 > 0 ? 1 : 0);
-
-  *param_addr += num_bytes;
-}
-
-void add_mode(uint8_t *mode_num, uint8_t gtoc_idx, uint8_t index, uint8_t type, char *name_string) {
-  uint8_t i = *mode_num;
-
-  memory.gtoc.md[i].record_type = RECORD_TYPE_MODE_DATA_RECORD;
-  memory.gtoc.md[i].index = index;
-  memory.gtoc.md[i].type = type;
-  memory.gtoc.md[i].unused = 0x00;
-  strncpy(memory.gtoc.md[i].name_string, name_string, strlen(name_string));
-
-  memory.gtocp[gtoc_idx] = MEMPTR(memory.gtoc.md[i]);
-
-  *mode_num += 1;
-}
 
 //pb13 txen
 //pc12 usart5 tx
 //pa9 usart1 tx as rx
+void init_hardware() {
+  GPIO_InitTypeDef GPIO_InitStruct;
+  USART_InitTypeDef USART_InitStruct;
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+
+  //USART TX
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_UART5);
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_12;
+  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
+  GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  //USART RX
+  GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_USART1);
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
+  GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  USART_InitStruct.USART_BaudRate = 2500000;
+  USART_InitStruct.USART_WordLength = USART_WordLength_8b;
+  USART_InitStruct.USART_StopBits = USART_StopBits_1;
+  USART_InitStruct.USART_Parity = USART_Parity_No;
+  USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStruct.USART_Mode = USART_Mode_Rx;
+  USART_Init(USART1, &USART_InitStruct);
+  USART_HalfDuplexCmd(USART1,ENABLE);
+
+  USART_InitStruct.USART_Mode = USART_Mode_Tx;
+  USART_Init(UART5, &USART_InitStruct);
+
+  USART_Cmd(USART1, ENABLE);
+  USART_Cmd(UART5, ENABLE);
+
+  //RX DMA
+  // Clock Enable
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
+
+  DMA_Cmd(DMA2_Stream5, DISABLE);
+  DMA_DeInit(DMA2_Stream5);
+
+  // DMA2-Config
+  DMA_InitStructure.DMA_Channel = DMA_Channel_4;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART1->DR);
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&rxbuf;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+  DMA_InitStructure.DMA_BufferSize = sizeof(rxbuf);
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(DMA2_Stream5, &DMA_InitStructure);
+
+  DMA_Cmd(DMA2_Stream5, ENABLE);
+
+  USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
+
+  //TX DMA
+  // Clock Enable
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
+
+  DMA_Cmd(DMA1_Stream7, DISABLE);
+  DMA_DeInit(DMA1_Stream7);
+
+  // DMA2-Config
+  DMA_InitStructure.DMA_Channel = DMA_Channel_4;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART5->DR);
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&txbuf;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+  DMA_InitStructure.DMA_BufferSize = sizeof(txbuf);
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(DMA1_Stream7, &DMA_InitStructure);
+
+  //DMA_Cmd(DMA1_Stream7, ENABLE);
+
+  USART_DMACmd(UART5, USART_DMAReq_Tx, ENABLE);
+   
+  GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
+}
+
+process_data_descriptor_t create_pdr(uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, float param_min, float param_max) {
+  process_data_descriptor_t pd;
+
+  pd.record_type    = RECORD_TYPE_PROCESS_DATA_RECORD;
+  pd.data_size    = data_size_in_bits;
+  pd.data_type    = data_type;
+  pd.data_direction   = data_dir;
+  pd.param_min    = param_min;
+  pd.param_max    = param_max;
+
+  return pd;
+}
+
+mode_descriptor_t create_mdr(uint8_t index, uint8_t type) {
+  mode_descriptor_t md;
+
+  md.record_type = RECORD_TYPE_MODE_DATA_RECORD;
+  md.index = index;
+  md.type = type;
+  md.unused = 0x00;
+
+  return md;
+}
+
+uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, float param_min, float param_max) {
+  process_data_descriptor_t pdr = create_pdr(data_size_in_bits, data_type, data_dir, param_min, param_max);
+
+  pdr.data_addr = MEMPTR(*heap_ptr);
+  heap_ptr += NUM_BYTES(data_size_in_bits);
+
+  memcpy(heap_ptr, &pdr, sizeof(process_data_descriptor_t));
+  // note that we don't store the names in the struct anymore.  The fixed-length struct is copied into memory, and then the nmaes go in directly behind it, so they'll read out properly
+
+  uint16_t pd_ptr = MEMPTR(*heap_ptr); // save off the ptr to return, before we modify the heap ptr
+
+  heap_ptr = (uint8_t *)&(((process_data_descriptor_t *)heap_ptr)->names);
+
+  // copy the strings in after the pd
+  strcpy((char *)heap_ptr, unit_string);
+  heap_ptr += strlen(unit_string)+1;
+
+  strcpy((char *)heap_ptr, name_string);
+  heap_ptr += strlen(name_string)+1;
+
+  return pd_ptr;
+}
+
+uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
+  mode_descriptor_t mdr = create_mdr(index, type);
+
+  memcpy(heap_ptr, &mdr, sizeof(mode_descriptor_t));
+
+  uint16_t md_ptr = MEMPTR(*heap_ptr);
+
+  heap_ptr = (uint8_t *)&(((mode_descriptor_t *)heap_ptr)->names);
+
+  strcpy((char *)heap_ptr, name_string);
+  heap_ptr += strlen(name_string)+1;
+
+  return md_ptr;
+}
+
+#define INDIRECT_PD(pd_ptr) ((process_data_descriptor_t *)(memory.bytes + *pd_ptr))
+#define DATA_DIR(pd_ptr) INDIRECT_PD(pd_ptr)->data_direction
+#define DATA_SIZE(pd_ptr) INDIRECT_PD(pd_ptr)->data_size
+
+#define ADD_PROCESS_VAR(args) *ptocp = add_pd args; input_bits += IS_INPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; output_bits += IS_OUTPUT(INDIRECT_PD(ptocp)) ? DATA_SIZE(ptocp) : 0; ptocp++
+#define ADD_GLOBAL_VAR(args) *gtocp++ = add_pd args
+#define ADD_MODE(args) *gtocp++ = add_mode args
 
 INIT(
-  {
-   GPIO_InitTypeDef GPIO_InitStruct;
-   USART_InitTypeDef USART_InitStruct;
-   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
-   RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
-   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-
-   //USART TX
-   GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_UART5);
-   GPIO_InitStruct.GPIO_Pin = GPIO_Pin_12;
-   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
-   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
-   GPIO_Init(GPIOC, &GPIO_InitStruct);
-   
-   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13;
-   GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-   //USART RX
-   GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_USART1);
-   GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
-   GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-   USART_InitStruct.USART_BaudRate = 2500000;
-   USART_InitStruct.USART_WordLength = USART_WordLength_8b;
-   USART_InitStruct.USART_StopBits = USART_StopBits_1;
-   USART_InitStruct.USART_Parity = USART_Parity_No;
-   USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-   USART_InitStruct.USART_Mode = USART_Mode_Rx;
-   USART_Init(USART1, &USART_InitStruct);
-   USART_HalfDuplexCmd(USART1,ENABLE);
-   
-   USART_InitStruct.USART_Mode = USART_Mode_Tx;
-   USART_Init(UART5, &USART_InitStruct);
-
-   USART_Cmd(USART1, ENABLE);
-   USART_Cmd(UART5, ENABLE);
-
-   //RX DMA
-   // Clock Enable
-   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
-
-   DMA_Cmd(DMA2_Stream5, DISABLE);
-   DMA_DeInit(DMA2_Stream5);
-
-   // DMA2-Config
-   DMA_InitStructure.DMA_Channel = DMA_Channel_4;
-   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART1->DR);
-   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&rxbuf;
-   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-   DMA_InitStructure.DMA_BufferSize = sizeof(rxbuf);
-   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-   DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
-   DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
-   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-   DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
-   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-   DMA_Init(DMA2_Stream5, &DMA_InitStructure);
-
-   DMA_Cmd(DMA2_Stream5, ENABLE);
-
-   USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
-   
-   //TX DMA
-   // Clock Enable
-   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
-
-   DMA_Cmd(DMA1_Stream7, DISABLE);
-   DMA_DeInit(DMA1_Stream7);
-
-   // DMA2-Config
-   DMA_InitStructure.DMA_Channel = DMA_Channel_4;
-   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART5->DR);
-   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&txbuf;
-   DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-   DMA_InitStructure.DMA_BufferSize = sizeof(txbuf);
-   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-   DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
-   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
-   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-   DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
-   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-   DMA_Init(DMA1_Stream7, &DMA_InitStructure);
-
-   //DMA_Cmd(DMA1_Stream7, ENABLE);
-
-   USART_DMACmd(UART5, USART_DMAReq_Tx, ENABLE);
-   
-   GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
-  }
-
+  init_hardware();
   rxpos = 0;
 
-  uint16_t param_addr = MEMPTR(memory.pd_values);
-  uint8_t pd_num = 0;
-  uint8_t gpd_num = 0;
-  uint8_t mode_num = 0;
+  heap_ptr = memory.heap;
 
-  // goofy hack alert!  during init, these fields are in BITS.  After the TOCs are created, they're shifted down to bytes
-  // this is to keep track of the number of bytes even as we add non-byte-aligned pds.
-  // NOTE THAT THIS LIMITS US TO SEVEN BYTES IN / EIGHT BYTES OUT.  sserial system limit is 12 bytes in/12 bytes out.
+  uint16_t input_bits = 8; // this starts at 8 bits = 1 byte for the fault byte
+  uint16_t output_bits = 0;
 
-   // we increment these in add_pd
-  discovery_rpc.input = 8; // 8 bits because the fault byte will always be present.
-  discovery_rpc.output = 0;
+  // these are temp toc arrays that the macros will write pointers into.  the tocs get copied to main memory after everything else is written in
+  uint16_t ptoc[32];
+  uint16_t gtoc[32]; 
 
-  add_pd(&pd_num, &param_addr, 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 0, "bool", "flags");
-  add_pd(&pd_num, &param_addr, 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "rps", "cmd_vel");
-  add_pd(&pd_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0, "rps", "fb_vel");
+  uint16_t *ptocp = ptoc; uint16_t *gtocp = gtoc;
 
-/*
-  add_gpd(&gpd_num, gpd_num + mode_num, &param_addr, 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0, "non", "swr");
+  ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
+  ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
+  ADD_PROCESS_VAR(("fb_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));
 
-  add_mode(&mode_num, gpd_num + mode_num, 0, 0, "foo");
-  add_mode(&mode_num, gpd_num + mode_num, 1, 1, "io_");
-*/
+  ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
 
-  // todo: check input/output bits % 8 and add padding if necessary.
+  ADD_MODE(("foo", 0, 0));
+  ADD_MODE(("io_", 1, 1));
 
-  memory.ptoc.eot = 0x0000;
-  memory.gtoc.eot = 0x0000;
+  // todo: automatically create padding pds based on the mod remainder of input/output bits
 
-  memory.ptocp[pd_num] = 0x0000;
-  memory.gtocp[gpd_num + mode_num] = 0x0000; 
+  // now that all the toc entries have been added, write out the tocs to memory and set up the toc pointers
 
-  discovery_rpc.input >>= 3;    // shift these down, divide by 8 to turn them from bits count to bytes count
-  discovery_rpc.output >>= 3; 
-  discovery_rpc.ptocp = MEMPTR(memory.ptocp);
-  discovery_rpc.gtocp = MEMPTR(memory.gtocp);
+  memory.discovery.input = input_bits >> 3;
+  memory.discovery.output = output_bits >> 3;
+
+  memory.discovery.ptocp = MEMPTR(*heap_ptr);
+
+  for(uint8_t i = 0; i < ptocp - ptoc; i++) {
+    *heap_ptr++ = ptoc[i] & 0x00FF; 
+    *heap_ptr++ = (ptoc[i] & 0xFF00) >> 8;
+  }
+  *heap_ptr++ = 0x00; *heap_ptr++ = 0x00; // this is the ptoc end marker
+
+  memory.discovery.gtocp = MEMPTR(*heap_ptr);
+
+  for(uint8_t i = 0; i < gtocp - gtoc; i++) {
+    *heap_ptr++ = gtoc[i] & 0x00FF; 
+    *heap_ptr++ = (gtoc[i] & 0xFF00) >> 8;
+  }
+  *heap_ptr++ = 0x00; *heap_ptr++ = 0x00; // this is the gtoc end marker
+
+
   timeout = 1000;
 );
 
-uint8_t crc8( uint8_t *addr, uint8_t len)
-{
+uint8_t crc8( uint8_t *addr, uint8_t len) {
    uint8_t crc=0;
    for (uint8_t i=0; i<len;i++)
    {
@@ -481,18 +464,18 @@ FRT(
               send(4,1);
               rxpos += 2;
           }else if(lbp.byte == DiscoveryRPC && available >= 2){//discovery, cmd+crc = 2b
-             memcpy((void*)txbuf,((uint8_t*)&discovery_rpc),sizeof(discovery_rpc));
-              send(sizeof(discovery_rpc),1);
+             memcpy((void*)txbuf,((uint8_t*)&memory.discovery),sizeof(memory.discovery));
+              send(sizeof(memory.discovery),1);
               rxpos += 2;
-          }else if(lbp.byte == ProcessDataRPC && available >= discovery_rpc.output + 2){//process data, requires cmd+output bytes+crc
+          }else if(lbp.byte == ProcessDataRPC && available >= memory.discovery.output + 2){//process data, requires cmd+output bytes+crc
              txbuf[0] = 0x00;//TODO: transfer real pd
              txbuf[1] = 0x00;
              txbuf[2] = 0x00;
              txbuf[3] = 0x00;
              txbuf[4] = 0x00;
              txbuf[5] = 0x00;
-             send(discovery_rpc.input,1);
-             rxpos += discovery_rpc.output + 2;
+             send(memory.discovery.input,1);
+             rxpos += memory.discovery.output + 2;
           }else{
              continue;
           }
@@ -572,10 +555,10 @@ NRT(
   if(PIN(dump_ptoc) != 0.0) {
     PIN(dump_ptoc) = 0.0;
 
-    printf_("discovery sez %i inputs %i outputs ptocp: %h gtocp: %h\n", discovery_rpc.input, discovery_rpc.output, discovery_rpc.ptocp, discovery_rpc.gtocp);
+    printf_("discovery sez %i inputs %i outputs ptocp: %h gtocp: %h\n", memory.discovery.input, memory.discovery.output, memory.discovery.ptocp, memory.discovery.gtocp);
 
-    printf_("ptoc (%h):\n", discovery_rpc.ptocp);
-    uint16_t ptocp = discovery_rpc.ptocp;
+    printf_("ptoc (%h):\n", memory.discovery.ptocp);
+    uint16_t ptocp = memory.discovery.ptocp;
     while(MEMU16(ptocp) != 0x0000) {
       print_pd(MEMU16(ptocp));
       ptocp += 2;
@@ -585,8 +568,8 @@ NRT(
   if(PIN(dump_gtoc) != 0.0) {
     PIN(dump_gtoc) = 0.0;
 
-    printf_("gtoc (%h):\n", discovery_rpc.gtocp);
-    uint16_t gtocp = discovery_rpc.gtocp;
+    printf_("gtoc (%h):\n", memory.discovery.gtocp);
+    uint16_t gtocp = memory.discovery.gtocp;
     while(MEMU16(gtocp) != 0x0000) {
       print_pd(MEMU16(gtocp));
       gtocp += 2;
