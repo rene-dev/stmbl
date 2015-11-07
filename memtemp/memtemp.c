@@ -117,7 +117,7 @@ void process_data_rpc(uint8_t *input, uint8_t *output) {
 
 	uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
 
-	*(input++) = 0xA5; // fault byte, just for easy recognition
+	*(input++) = 0x00; // fault byte, just for easy recognition
 
 	// data needs to be packed and unpacked based on its type and size
 	// input is a pointer to the data that gets sent back to the host
@@ -313,12 +313,10 @@ int main(void) {
 	printf("sizeof pdr: %ld\n", sizeof(process_data_descriptor_t));
 
 
-	ADD_PROCESS_VAR(("output_pins", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-	ADD_PROCESS_VAR(("cmd_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0.0, 100.0)); 		cmd_vel_pd = last_pd;
-	ADD_PROCESS_VAR(("flags", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-	ADD_PROCESS_VAR(("input_pins", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 1.1, 2.2)); 	input_pins_pd = last_pd;
-	ADD_PROCESS_VAR(("fb_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0.0, 100.0));			fb_vel_pd = last_pd;
-	ADD_PROCESS_VAR(("iflags", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 1.1, 2.2));			iflags_pd = last_pd;
+	ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
+	ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0.0, 100.0)); 		cmd_vel_pd = last_pd;
+	ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 1.1, 2.2)); 	input_pins_pd = last_pd;
+	ADD_PROCESS_VAR(("fb_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0.0, 100.0));			fb_vel_pd = last_pd;
 
 
 	printf("cmd_vel_pd->data_addr: 0x%04x\n", cmd_vel_pd->data_addr);
@@ -358,10 +356,9 @@ int main(void) {
 
 	write_memory_to_file();
 
-	MEMU8(input_pins_pd->data_addr) = 0x05;
-	MEMU8(fb_vel_pd->data_addr) = 0x23;
-	MEMU8(fb_vel_pd->data_addr + 1) = 0x01;
-	MEMU8(iflags_pd->data_addr) = 0x02;
+	MEMU8(input_pins_pd->data_addr) = 0x00;
+	MEMU8(fb_vel_pd->data_addr) = 0xFF;
+	MEMU8(fb_vel_pd->data_addr + 1) = 0x07;
 
 	uint8_t output_buf[memory.discovery.output];
 	uint8_t input_buf[memory.discovery.input];
