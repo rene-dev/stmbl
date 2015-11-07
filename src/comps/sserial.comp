@@ -378,11 +378,11 @@ INIT(
   process_data_descriptor_t *last_pd;
 
   //ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
-  ADD_PROCESS_VAR(("pos_cmd", "mm", 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 000, 10000));     metadata(&(pd_table.pos_cmd), last_pd);
+  ADD_PROCESS_VAR(("pos_cmd", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -100, 100));     metadata(&(pd_table.pos_cmd), last_pd);
   //ADD_PROCESS_VAR(("scale", "rev/mm", 32, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10000, 10000));     metadata(&(pd_table.scale), last_pd);
   
-  //ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
-  ADD_PROCESS_VAR(("pos_fb", "mm", 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0000, 10000));     metadata(&(pd_table.pos_fb), last_pd);
+  ADD_PROCESS_VAR(("pos_fb", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -100, 100));     metadata(&(pd_table.pos_fb), last_pd);
+  //ADD_PROCESS_VAR(("input_pins", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
 
   ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
 
@@ -557,9 +557,11 @@ RT (
 
   // todo: how to handle bidirectional pins properly?
 
-  uint16_t val = (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
-  MEMU8(pd_table.pos_fb.ptr->data_addr) = val & 0xff;
+  uint32_t val = (uint32_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
+  MEMU8(pd_table.pos_fb.ptr->data_addr)   = (val & 0xff);
   MEMU8(pd_table.pos_fb.ptr->data_addr+1) = (val & 0xff00) >> 8;
+  MEMU8(pd_table.pos_fb.ptr->data_addr+2) = (val & 0xff0000) >> 16;
+  MEMU8(pd_table.pos_fb.ptr->data_addr+3) = (val & 0xff000000) >> 24;
   
 
 /*
@@ -688,18 +690,9 @@ NRT(
     }
     PIN(dump_pd_vals) = 0.0;
 
-    printf_("cmd_vel max: %f min %f\n", pd_table.pos_cmd.ptr->param_max, pd_table.pos_cmd.ptr->param_min);
-    printf_("cmd_vel max - min: %f\n", pd_table.pos_cmd.ptr->param_max - pd_table.pos_cmd.ptr->param_min);
 
-    printf_("fb_vel max: %f min %f\n", pd_table.pos_fb.ptr->param_max, pd_table.pos_fb.ptr->param_min);
-    printf_("fb_vel max - min: %f\n", pd_table.pos_fb.ptr->param_max - pd_table.pos_fb.ptr->param_min);
-
-    //However, I'm running into other subtle float-related bugs that will crash the cpu
-
-    printf_("scaled: %h\n", (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb)));
-
-//#define SCALE_IN(pd, val)   ((val - pd.ptr->param_min)/(pd.maxminusmin) * pd.bitmax)
-
+    printf_("pos_fb scaled: %h\n", (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb)));
+    printf_("pos_cmd raw %h scaled: %f\n", MEMU16(pd_table.pos_cmd.ptr->data_addr), scale_out(pd_table.pos_cmd, pd_table.pos_cmd.ptr->data_addr));
 
 
     uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
