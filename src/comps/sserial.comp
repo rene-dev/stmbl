@@ -59,7 +59,7 @@ typedef union{
     uint8_t byte;
 } lbp_t;
 
-#define MEM_SIZE 1024
+#define MEM_SIZE 2048
 
 #define RECORD_TYPE_PROCESS_DATA_RECORD 0xA0
 #define RECORD_TYPE_MODE_DATA_RECORD 0xB0
@@ -86,7 +86,7 @@ typedef union{
 #define MEMU32(ptr) (memory.bytes[ptr] | memory.bytes[ptr+1]<<8 | memory.bytes[ptr+2]<<16 | memory.bytes[ptr+3]<<24)
 #define MEMFLOAT(ptr) ((float)({uint32_t tmp = MEMU32(ptr);*((float*)&tmp);}))
 
-#define NUM_BYTES(bits) (bits / 8 + (bits % 8 > 0 ? 1 : 0))
+#define NUM_BYTES(bits) (((int)(bits / 32) + (bits % 32 > 0 ? 1 : 0))*4)
 
 #define IS_INPUT(pdr) (pdr->data_direction != 0x80)
 #define IS_OUTPUT(pdr) (pdr->data_direction != 0x00)
@@ -140,6 +140,7 @@ typedef struct{
 typedef union {
   struct {
     discovery_rpc_t discovery;
+    uint16_t foo;
     uint8_t heap[MEM_SIZE - sizeof(discovery_rpc_t)];
   };
 
@@ -323,6 +324,9 @@ uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits,
   strcpy((char *)heap_ptr, name_string);
   heap_ptr += strlen(name_string)+1;
 
+  if((uint32_t)heap_ptr % 4){
+     heap_ptr += 4 - (uint32_t)heap_ptr % 4;
+  }
   return pd_ptr;
 }
 
@@ -677,29 +681,11 @@ NRT(
     }
     PIN(dump_pd_vals) = 0.0;
 
-    // NOTE: problems with floats
-    // I need to subtract the param min from the param max for scaling
-
-    // when I subtract the vals from cmd_vel's pd, it doesn't crash, but I get the wrong answer.
-
     printf_("cmd_vel max: %f min %f\n", pd_table.cmd_vel.ptr->param_max, pd_table.cmd_vel.ptr->param_min);
-    printf_("cmd_vel max - min: %f\n", pd_table.cmd_vel.ptr->param_max - pd_table.cmd_vel.ptr->param_max);
+    printf_("cmd_vel max - min: %f\n", pd_table.cmd_vel.ptr->param_max - pd_table.cmd_vel.ptr->param_min);
 
-    // however, this will crash the cpu.  Uncomment it and see for yourself:
-
-    //printf_("fb_vel max - min: %f\n", pd_table.fb_vel.ptr->param_max - pd_table.fb_vel.ptr->param_max);
-
-
-    // if I assign them to local vars first, the subtraction works.  
-    float max1 = pd_table.cmd_vel.ptr->param_max;
-    float min1 = pd_table.cmd_vel.ptr->param_min;
-    printf_("cmd_vel max: %f min %f\n", pd_table.cmd_vel.ptr->param_max, pd_table.cmd_vel.ptr->param_min);
-    printf_("cmd_vel max - min: %f\n", max1 - min1);
-
-    float max2 = pd_table.fb_vel.ptr->param_max;
-    float min2 = pd_table.fb_vel.ptr->param_min;
     printf_("fb_vel max: %f min %f\n", pd_table.fb_vel.ptr->param_max, pd_table.fb_vel.ptr->param_min);
-    printf_("fb_vel max - min: %f\n", max2 - min2);
+    printf_("fb_vel max - min: %f\n", pd_table.fb_vel.ptr->param_max - pd_table.fb_vel.ptr->param_min);
 
     //However, I'm running into other subtle float-related bugs that will crash the cpu
 
