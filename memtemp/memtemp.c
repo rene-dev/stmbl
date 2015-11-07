@@ -124,16 +124,39 @@ void process_data_rpc(uint8_t *input, uint8_t *output) {
 	// need a bit pointer to keep track of partials
 
 	uint8_t output_bit_ptr = 0;
+	uint8_t input_bit_ptr = 0;
 
 	while(*ptocp != 0x0000) {
 		process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
 
 		if (IS_INPUT(pd)) {
-		//	printf("pd %d data size is %d\n", i, memory.ptoc.pd[i].data_size);
-			*(input++) = MEMU8(pd->data_addr);
+			printf("input pd data size is %d\n", pd->data_size);
+			uint16_t data_addr = pd->data_addr;
+			uint8_t data_size = pd->data_size;
+			uint8_t data_bit_ptr = 0;
+
+			//*(input++) = MEMU8(pd->data_addr);
+			while(data_size > 0) {
+				uint8_t bits_to_pack = data_size < BITSLEFT(input_bit_ptr) ? data_size : BITSLEFT(input_bit_ptr);
+				if (BITSLEFT(data_bit_ptr) < bits_to_pack) { bits_to_pack = BITSLEFT(data_bit_ptr); }
+
+				printf("encoding partial byte, need to read %d bits from the data_val 0x%02x at bit position %d\n", bits_to_pack, MEMU8(data_addr), data_bit_ptr);
+
+				uint8_t mask = ((1<<bits_to_pack) - 1) << (data_bit_ptr);
+				printf("mask is 0x%02x\n", mask);
+
+				*input |= ((MEMU8(data_addr) & mask) >> data_bit_ptr) << input_bit_ptr;
+
+				printf("*input is 0x%02x\n", *input);
+				input_bit_ptr += bits_to_pack;
+				data_bit_ptr += bits_to_pack;
+				data_size -= bits_to_pack;
+				if((input_bit_ptr %= 8) == 0) input++;
+				if((data_bit_ptr %= 8) == 0) data_addr++;
+			}
 		}
 		if (IS_OUTPUT(pd)) {
-			printf("pd data size is %d\n", pd->data_size);
+			printf("output pd data size is %d\n", pd->data_size);
 			uint16_t data_addr = pd->data_addr;
 			uint8_t data_size = pd->data_size;
 
@@ -276,15 +299,23 @@ int main(void) {
 
 	uint16_t *ptocp = ptoc; uint16_t *gtocp = gtoc;
 	process_data_descriptor_t *last_pd;
+
 	process_data_descriptor_t *cmd_vel_pd;
+
+	process_data_descriptor_t *fb_vel_pd;
+	process_data_descriptor_t *input_pins_pd;
+	process_data_descriptor_t *iflags_pd;
 
 	printf("sizeof pdr: %ld\n", sizeof(process_data_descriptor_t));
 
 
 	ADD_PROCESS_VAR(("output_pins", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-	ADD_PROCESS_VAR(("cmd_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0)); cmd_vel_pd = last_pd;
+	ADD_PROCESS_VAR(("cmd_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0)); 		cmd_vel_pd = last_pd;
 	ADD_PROCESS_VAR(("flags", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-	ADD_PROCESS_VAR(("fb_vel", "rps", 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));
+	ADD_PROCESS_VAR(("input_pins", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 1.1, 2.2)); 	input_pins_pd = last_pd;
+	ADD_PROCESS_VAR(("fb_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));			fb_vel_pd = last_pd;
+	ADD_PROCESS_VAR(("iflags", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 1.1, 2.2));			iflags_pd = last_pd;
+
 
 	printf("cmd_vel_pd->data_addr: 0x%04x\n", cmd_vel_pd->data_addr);
 
@@ -321,78 +352,10 @@ int main(void) {
 
 	write_memory_to_file();
 
-
-/*
-	printf("discovery_rpc:\n");
-	printf("input bytes: %d.  output bytes: %d\n", memory.discovery.input>>3, memory.discovery.output>>3);
-	printf("gtocp: 0x%04x  ptocp: 0x%04x\n", memory.discovery.gtocp, memory.discovery.ptocp);
-
-	printf("\nptoc: (at 0x%04x)\n", memory.discovery.ptocp);
-
-
-	uint16_t pd_ptr;
-
-	while(MEMU16(ptocp) != 0x0000) {
-		pd_ptr = MEMU16(ptocp);
-		printf("pd ptr: 0x%04x\n", pd_ptr);
-
-		printf("\trectype:  0x%02x\n", MEMU8(pd_ptr++));
-		printf("\tdatasize: 0x%02x\n", MEMU8(pd_ptr++));
-		printf("\tdatatype: 0x%02x\n", MEMU8(pd_ptr++));
-		printf("\tdatadir:  0x%02x\n", MEMU8(pd_ptr++));
-		printf("\tparmmin:  0x%08x\n", MEMU32(pd_ptr)); pd_ptr += 4;
-		printf("\tparmmax:  0x%08x\n", MEMU32(pd_ptr)); pd_ptr += 4;
-		printf("\tdataaddr: 0x%04x\n", MEMU16(pd_ptr)); pd_ptr += 2;
-		char *unitstr = (char *)(memory.bytes + pd_ptr);
-		printf("\tunitstr:  %s\n", unitstr);
-		pd_ptr += strlen(unitstr) + 1;
-		char *namestr = (char *)(memory.bytes + pd_ptr);
-		printf("\tnamestr:  %s\n", namestr);
-		pd_ptr += strlen(namestr) + 1;
-
-		ptocp += 2;
-	} 
-
-	printf("\ngtoc: (at 0x%04x)\n", memory.discovery.gtocp);
-	uint16_t gtocp = memory.discovery.gtocp;
-
-	while(MEMU16(gtocp) != 0x0000) {
-		pd_ptr = MEMU16(gtocp);
-		printf("pd ptr: 0x%04x\n", pd_ptr);
-
-		uint8_t rectype = MEMU8(pd_ptr++);
-		printf("\trectype:  0x%02x\n", rectype);
-		switch(rectype) {
-			case RECORD_TYPE_PROCESS_DATA_RECORD:
-				printf("\tdatasize: 0x%02x\n", MEMU8(pd_ptr++));
-				printf("\tdatatype: 0x%02x\n", MEMU8(pd_ptr++));
-				printf("\tdatadir:  0x%02x\n", MEMU8(pd_ptr++));
-				printf("\tparmmin:  0x%08x\n", MEMU32(pd_ptr)); pd_ptr += 4;
-				printf("\tparmmax:  0x%08x\n", MEMU32(pd_ptr)); pd_ptr += 4;
-				printf("\tdataaddr: 0x%04x\n", MEMU16(pd_ptr)); pd_ptr += 2;
-				char *unitstr = (char *)(memory.bytes + pd_ptr);
-				printf("\tunitstr:  %s\n", unitstr);
-				pd_ptr += strlen(unitstr) + 1;
-				char *namestr = (char *)(memory.bytes + pd_ptr);
-				printf("\tnamestr:  %s\n", namestr);
-				pd_ptr += strlen(namestr) + 1;
-				break;
-			case RECORD_TYPE_MODE_DATA_RECORD:
-				printf("\tindex:    0x%02x\n", pd_ptr++);
-				printf("\ttype:     0x%02x\n", pd_ptr++);
-				pd_ptr++; // skip 'unused' byte
-				namestr = (char *)(memory.bytes + pd_ptr);
-				printf("\tnamestr:  %s\n", namestr);
-				pd_ptr += strlen(namestr);
-				break;
-		}
-
-		gtocp += 2;
-	}
-*/
-	// now I'm going to create a couple pointers to values in the pdval space, these will represent our pins
-	// I can change those vals, and then do a mock pd_rpc to set all the outputs and send all the inputs
-
+	MEMU8(input_pins_pd->data_addr) = 0x05;
+	MEMU8(fb_vel_pd->data_addr) = 0x23;
+	MEMU8(fb_vel_pd->data_addr + 1) = 0x01;
+	MEMU8(iflags_pd->data_addr) = 0x02;
 
 	uint8_t output_buf[memory.discovery.output];
 	uint8_t input_buf[memory.discovery.input];
