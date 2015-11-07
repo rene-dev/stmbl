@@ -98,6 +98,17 @@ HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, ne
 HAL_PIN(timeout) = 40.0;// 20khz / 1khz * 2 reads
 
 HAL_PIN(cmd_vel) = 0.0;
+HAL_PIN(fb_vel) = 0.0;
+
+HAL_PIN(in0) = 0.0;
+HAL_PIN(in1) = 0.0;
+HAL_PIN(in2) = 0.0;
+HAL_PIN(in3) = 0.0;
+
+HAL_PIN(out0) = 0.0;
+HAL_PIN(out1) = 0.0;
+HAL_PIN(out2) = 0.0;
+HAL_PIN(out3) = 0.0;
 
 
 typedef struct{
@@ -135,6 +146,20 @@ typedef union {
   uint8_t bytes[MEM_SIZE];
 } memory_t;
 
+typedef struct {
+  process_data_descriptor_t *ptr;
+  float range;
+  uint32_t bitmax;
+} pd_metadata_t;
+
+typedef struct {
+  pd_metadata_t cmd_vel;
+  pd_metadata_t fb_vel;
+  pd_metadata_t input_pins;
+  pd_metadata_t output_pins;
+} pd_table_t;
+
+
 MEM(volatile uint8_t rxbuf[128]);
 MEM(volatile uint8_t txbuf[20]);
 MEM(uint16_t address);//current address pointer
@@ -142,7 +167,7 @@ MEM(int rxpos);
 MEM(memory_t memory);
 MEM(uint8_t *heap_ptr);
 MEM(uint32_t timeout);
-MEM(process_data_descriptor_t *cmd_vel_pd);
+MEM(pd_table_t pd_table);
 
 
 //pb13 txen
@@ -324,6 +349,14 @@ uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
 #define ADD_GLOBAL_VAR(args) *gtocp++ = add_pd args
 #define ADD_MODE(args) *gtocp++ = add_mode args
 
+void metadata(pd_metadata_t *pdm, process_data_descriptor_t *ptr) {
+  pdm->ptr = ptr;
+  float min = ptr->param_min;
+  float max = ptr->param_max;
+  pdm->range = max - min;
+  pdm->bitmax = (1<<ptr->data_size)-1;
+}
+
 INIT(
   init_hardware();
   rxpos = 0;
@@ -340,9 +373,10 @@ INIT(
   uint16_t *ptocp = ptoc; uint16_t *gtocp = gtoc;
   process_data_descriptor_t *last_pd;
 
-  ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-  ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, -100, 100)); cmd_vel_pd = last_pd;
-  ADD_PROCESS_VAR(("fb_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));
+  ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
+  ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 100));     metadata(&(pd_table.cmd_vel), last_pd);
+  ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
+  ADD_PROCESS_VAR(("fb_vel", "rps", 12, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 100));       metadata(&(pd_table.fb_vel), last_pd);
 
   ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
 
@@ -408,24 +442,44 @@ void send(uint8_t len, uint8_t docrc){
 
 #define BITSLEFT(ptr) (8-ptr)
 
-void process_data_rpc(volatile uint8_t *input, volatile uint8_t *output) {
+void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *output) {
 
   uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
 
-  *(input++) = 0xA5; // fault byte, just for easy recognition
+  *(input++) = fault;
 
   // data needs to be packed and unpacked based on its type and size
   // input is a pointer to the data that gets sent back to the host
   // need a bit pointer to keep track of partials
 
   uint8_t output_bit_ptr = 0;
+  uint8_t input_bit_ptr = 0;
+
+  // TODO:  this probably doesn't work with signed numbers yet.  Probably as simple as carrying the top bit across to the left if there's any padding
+  // writing to memory, but it needs to be thought out and tested.
 
   while(*ptocp != 0x0000) {
     process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
 
     if (IS_INPUT(pd)) {
-    //  printf("pd %d data size is %d\n", i, memory.ptoc.pd[i].data_size);
-      *(input++) = MEMU8(pd->data_addr);
+      uint16_t data_addr = pd->data_addr;
+      uint8_t data_size = pd->data_size;
+      uint8_t data_bit_ptr = 0;
+
+      while(data_size > 0) {
+        uint8_t bits_to_pack = data_size < BITSLEFT(input_bit_ptr) ? data_size : BITSLEFT(input_bit_ptr);
+        if (BITSLEFT(data_bit_ptr) < bits_to_pack) { bits_to_pack = BITSLEFT(data_bit_ptr); }
+
+        uint8_t mask = ((1<<bits_to_pack) - 1) << (data_bit_ptr);
+
+        *input |= ((MEMU8(data_addr) & mask) >> data_bit_ptr) << input_bit_ptr;
+
+        input_bit_ptr += bits_to_pack;
+        data_bit_ptr += bits_to_pack;
+        data_size -= bits_to_pack;
+        if((input_bit_ptr %= 8) == 0) input++;
+        if((data_bit_ptr %= 8) == 0) data_addr++;
+      }
     }
     if (IS_OUTPUT(pd)) {
       uint16_t data_addr = pd->data_addr;
@@ -463,9 +517,45 @@ void process_data_rpc(volatile uint8_t *input, volatile uint8_t *output) {
   }
 }
 
+float scale_out(pd_metadata_t pd, uint32_t val) {
+  float min = pd.ptr->param_min;
+  float range = pd.range;
+  return (float)val / (float)pd.bitmax * range + min;
+}  
+
+uint32_t scale_in(pd_metadata_t pd, float val) { 
+  float min = pd.ptr->param_min; 
+  float range = pd.range; 
+  return (val - min)/range * pd.bitmax;
+}
+
+
+#define BOOLPIN(pin) (uint8_t)(PIN(pin) != 0.0)
+
 RT (
+  // rudimentary scaling... works with unsigneds, not sure about signeds yet.
+
   // update all hal pins with values from their associated pds
-  PIN(cmd_vel) = MEMU16(cmd_vel_pd->data_addr);
+
+  PIN(cmd_vel) = scale_out(pd_table.cmd_vel, MEMU16(pd_table.cmd_vel.ptr->data_addr));
+
+  uint8_t outpins = MEMU8(pd_table.output_pins.ptr->data_addr);
+  PIN(out0) = outpins & 1 ? 1.0 : 0.0;
+  PIN(out1) = outpins & 1 ? 1.0 : 0.0;
+  PIN(out2) = outpins & 1 ? 1.0 : 0.0;
+  PIN(out3) = outpins & 1 ? 1.0 : 0.0;
+
+  // todo: how to handle bidirectional pins properly?
+
+  uint16_t val = (uint16_t)scale_in(pd_table.fb_vel, PIN(fb_vel));
+  MEMU8(pd_table.fb_vel.ptr->data_addr) = val & 0xff;
+  MEMU8(pd_table.fb_vel.ptr->data_addr+1) = (val & 0xff00) >> 8;
+
+/*
+
+  MEMU8(inpins_pd->data_addr) = BOOLPIN(in0)<<0 | BOOLPIN(in1)<<1 | BOOLPIN(in2)<<2 | BOOLPIN(in3)<<3;
+  */
+
 );
 
 
@@ -535,7 +625,7 @@ FRT(
               send(sizeof(memory.discovery),1);
               rxpos += 2;
           }else if(lbp.byte == ProcessDataRPC && available >= memory.discovery.output + 2){//process data, requires cmd+output bytes+crc
-            process_data_rpc(txbuf, &(rxbuf[rxpos+1]));
+            process_data_rpc(0x00, txbuf, &(rxbuf[rxpos+1])); // todo: send a proper fault byte?
 
             send(memory.discovery.input,1);
             rxpos += memory.discovery.output + 2;
@@ -582,7 +672,42 @@ FRT(
 
 NRT(
   if(PIN(dump_pd_vals) != 0.0) {
+    if(PIN(error) != 0) {
+      printf_("Error count: %i\n", PIN(error));
+    }
     PIN(dump_pd_vals) = 0.0;
+
+    // NOTE: problems with floats
+    // I need to subtract the param min from the param max for scaling
+
+    // when I subtract the vals from cmd_vel's pd, it doesn't crash, but I get the wrong answer.
+
+    printf_("cmd_vel max: %f min %f\n", pd_table.cmd_vel.ptr->param_max, pd_table.cmd_vel.ptr->param_min);
+    printf_("cmd_vel max - min: %f\n", pd_table.cmd_vel.ptr->param_max - pd_table.cmd_vel.ptr->param_max);
+
+    // however, this will crash the cpu.  Uncomment it and see for yourself:
+
+    //printf_("fb_vel max - min: %f\n", pd_table.fb_vel.ptr->param_max - pd_table.fb_vel.ptr->param_max);
+
+
+    // if I assign them to local vars first, the subtraction works.  
+    float max1 = pd_table.cmd_vel.ptr->param_max;
+    float min1 = pd_table.cmd_vel.ptr->param_min;
+    printf_("cmd_vel max: %f min %f\n", pd_table.cmd_vel.ptr->param_max, pd_table.cmd_vel.ptr->param_min);
+    printf_("cmd_vel max - min: %f\n", max1 - min1);
+
+    float max2 = pd_table.fb_vel.ptr->param_max;
+    float min2 = pd_table.fb_vel.ptr->param_min;
+    printf_("fb_vel max: %f min %f\n", pd_table.fb_vel.ptr->param_max, pd_table.fb_vel.ptr->param_min);
+    printf_("fb_vel max - min: %f\n", max2 - min2);
+
+    //However, I'm running into other subtle float-related bugs that will crash the cpu
+
+    printf_("scaled: %h\n", (uint16_t)scale_in(pd_table.fb_vel, PIN(fb_vel)));
+
+//#define SCALE_IN(pd, val)   ((val - pd.ptr->param_min)/(pd.maxminusmin) * pd.bitmax)
+
+
 
     uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
     while(*ptocp != 0x0000) {
