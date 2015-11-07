@@ -285,6 +285,10 @@ uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
 #define ADD_GLOBAL_VAR(args) *gtocp++ = add_pd args
 #define ADD_MODE(args) *gtocp++ = add_mode args
 
+#define SCALE_OUT(pd, val)  (((float)val / (float)((1<<pd->data_size)-1) * (pd->param_max - pd->param_min)) + pd->param_min)
+
+#define SCALE_IN(pd, val)   ((val - pd->param_min)/(pd->param_max - pd->param_min) * ((1<<pd->data_size)-1))
+//#define SCALE_IN(pd, val)   (val * (pd->param_max - pd->param_min) / ((1<<pd->data_size)-1) + pd->param_min)
 
 int main(void) {
 
@@ -310,10 +314,10 @@ int main(void) {
 
 
 	ADD_PROCESS_VAR(("output_pins", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
-	ADD_PROCESS_VAR(("cmd_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0)); 		cmd_vel_pd = last_pd;
+	ADD_PROCESS_VAR(("cmd_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0.0, 100.0)); 		cmd_vel_pd = last_pd;
 	ADD_PROCESS_VAR(("flags", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 1.1, 2.2));
 	ADD_PROCESS_VAR(("input_pins", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 1.1, 2.2)); 	input_pins_pd = last_pd;
-	ADD_PROCESS_VAR(("fb_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 0));			fb_vel_pd = last_pd;
+	ADD_PROCESS_VAR(("fb_vel", "rps", 10, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0.0, 100.0));			fb_vel_pd = last_pd;
 	ADD_PROCESS_VAR(("iflags", "none", 3, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 1.1, 2.2));			iflags_pd = last_pd;
 
 
@@ -323,6 +327,8 @@ int main(void) {
 
 	ADD_MODE(("foo", 0, 0));
 	ADD_MODE(("io_", 1, 1));
+
+	printf("Scale in test: %x\n", (uint16_t)SCALE_IN(fb_vel_pd, 50.0));
 
 	// todo: automatically create padding pds based on the mod remainder of input/output bits
 
