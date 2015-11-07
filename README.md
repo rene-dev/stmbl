@@ -87,6 +87,7 @@ Add gcc and stlink to your $PATH
 
     cd term/
     mkdir build/
+    cd build/
     cmake ../
     make
 
