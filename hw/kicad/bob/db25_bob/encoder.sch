@@ -28,7 +28,6 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:db25_bob-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -187,15 +186,15 @@ Text GLabel 7700 1250 0    60   Input ~ 0
 ENC0AO
 Text GLabel 7700 1350 0    60   Input ~ 0
 ENC0BO
-Text GLabel 7700 2050 0    60   Input ~ 0
-ENC0ZO
 Text GLabel 7700 2150 0    60   Input ~ 0
+ENC0ZO
+Text GLabel 7700 2950 0    60   Input ~ 0
 ENC1AO
 Text GLabel 7700 2850 0    60   Input ~ 0
 ENC1BO
-Text GLabel 7700 2950 0    60   Input ~ 0
+Text GLabel 7700 2050 0    60   Input ~ 0
 ENC1ZO
-Text GLabel 9600 1250 0    60   Input ~ 0
+Text GLabel 9600 2150 0    60   Input ~ 0
 ENC2AO
 Text GLabel 9600 1350 0    60   Input ~ 0
 ENC2BO
@@ -203,15 +202,15 @@ Text GLabel 8700 1250 2    60   Input ~ 0
 ENC0A
 Text GLabel 8700 1350 2    60   Input ~ 0
 ENC0B
-Text GLabel 8700 2050 2    60   Input ~ 0
-ENC0Z
 Text GLabel 8700 2150 2    60   Input ~ 0
+ENC0Z
+Text GLabel 8700 2950 2    60   Input ~ 0
 ENC1A
 Text GLabel 8700 2850 2    60   Input ~ 0
 ENC1B
-Text GLabel 8700 2950 2    60   Input ~ 0
+Text GLabel 8700 2050 2    60   Input ~ 0
 ENC1Z
-Text GLabel 10600 1250 2    60   Input ~ 0
+Text GLabel 10600 2150 2    60   Input ~ 0
 ENC2A
 Text GLabel 10600 1350 2    60   Input ~ 0
 ENC2B
@@ -768,21 +767,21 @@ F 3 "" H 6750 5400 60  0000 C CNN
 	1    6750 5400
 	1    0    0    -1  
 $EndComp
-Text GLabel 6300 5250 0    60   Input ~ 0
-ENC0A
-Text GLabel 6300 5450 0    60   Input ~ 0
-ENC0B
 Text GLabel 7150 5550 2    60   Input ~ 0
-ENC0Z
+ENC0A
 Text GLabel 7150 5350 2    60   Input ~ 0
-ENC1A
-Text GLabel 8050 5450 0    60   Input ~ 0
-ENC1B
-Text GLabel 8050 5250 0    60   Input ~ 0
-ENC1Z
-Text GLabel 8850 5550 2    60   Input ~ 0
-ENC2A
+ENC0B
+Text GLabel 6300 5250 0    60   Input ~ 0
+ENC0Z
 Text GLabel 8850 5350 2    60   Input ~ 0
+ENC1A
+Text GLabel 8850 5550 2    60   Input ~ 0
+ENC1B
+Text GLabel 6300 5450 0    60   Input ~ 0
+ENC1Z
+Text GLabel 10550 5350 2    60   Input ~ 0
+ENC2A
+Text GLabel 8050 5250 0    60   Input ~ 0
 ENC2B
 $Comp
 L ADuM1200CR U13
@@ -795,13 +794,13 @@ F 3 "" H 10100 2100 60  0000 C CNN
 	1    10100 2100
 	-1   0    0    -1  
 $EndComp
-Text GLabel 9600 2050 0    60   Input ~ 0
+Text GLabel 9600 1250 0    60   Input ~ 0
 ENC2ZO
-Text GLabel 9600 2150 0    60   Input ~ 0
+Text GLabel 9600 2850 0    60   Input ~ 0
 ENC3AO
-Text GLabel 10600 2050 2    60   Input ~ 0
+Text GLabel 10600 1250 2    60   Input ~ 0
 ENC2Z
-Text GLabel 10600 2150 2    60   Input ~ 0
+Text GLabel 10600 2850 2    60   Input ~ 0
 ENC3A
 $Comp
 L GND #PWR090
@@ -874,11 +873,11 @@ F 3 "" H 10100 2900 60  0000 C CNN
 	1    10100 2900
 	-1   0    0    -1  
 $EndComp
-Text GLabel 9600 2850 0    60   Input ~ 0
+Text GLabel 9600 2050 0    60   Input ~ 0
 ENC3BO
 Text GLabel 9600 2950 0    60   Input ~ 0
 ENC3ZO
-Text GLabel 10600 2850 2    60   Input ~ 0
+Text GLabel 10600 2050 2    60   Input ~ 0
 ENC3B
 Text GLabel 10600 2950 2    60   Input ~ 0
 ENC3Z
@@ -942,13 +941,13 @@ Wire Wire Line
 	10550 2850 10600 2850
 Wire Wire Line
 	10550 2950 10600 2950
-Text GLabel 9750 5450 0    60   Input ~ 0
+Text GLabel 8050 5450 0    60   Input ~ 0
 ENC2Z
-Text GLabel 9750 5250 0    60   Input ~ 0
+Text GLabel 9750 5450 0    60   Input ~ 0
 ENC3A
 Text GLabel 10550 5550 2    60   Input ~ 0
 ENC3B
-Text GLabel 10550 5350 2    60   Input ~ 0
+Text GLabel 9750 5250 0    60   Input ~ 0
 ENC3Z
 $Comp
 L +5VA #PWR098
@@ -1028,53 +1027,53 @@ Wire Wire Line
 	8800 5050 8900 5050
 Wire Wire Line
 	10500 5050 10600 5050
-Text GLabel 6300 5150 0    60   Input ~ 0
-ENC0A+
-Text GLabel 6300 5050 0    60   Input ~ 0
-ENC0A-
 Text GLabel 7150 5650 2    60   Input ~ 0
-ENC0Z+
+ENC0A+
 Text GLabel 7150 5750 2    60   Input ~ 0
+ENC0A-
+Text GLabel 6300 5150 0    60   Input ~ 0
+ENC0Z+
+Text GLabel 6300 5050 0    60   Input ~ 0
 ENC0Z-
-Text GLabel 7150 5250 2    60   Input ~ 0
-ENC1A+
-Text GLabel 7150 5150 2    60   Input ~ 0
-ENC1A-
-Text GLabel 6300 5550 0    60   Input ~ 0
-ENC0B+
-Text GLabel 6300 5650 0    60   Input ~ 0
-ENC0B-
-Text GLabel 8050 5550 0    60   Input ~ 0
-ENC1B+
-Text GLabel 8050 5650 0    60   Input ~ 0
-ENC1B-
 Text GLabel 8850 5250 2    60   Input ~ 0
-ENC2B+
+ENC1A+
 Text GLabel 8850 5150 2    60   Input ~ 0
-ENC2B-
+ENC1A-
+Text GLabel 7150 5250 2    60   Input ~ 0
+ENC0B+
+Text GLabel 7150 5150 2    60   Input ~ 0
+ENC0B-
 Text GLabel 8850 5650 2    60   Input ~ 0
-ENC2A+
+ENC1B+
 Text GLabel 8850 5750 2    60   Input ~ 0
-ENC2A-
+ENC1B-
 Text GLabel 8050 5150 0    60   Input ~ 0
-ENC1Z+
+ENC2B+
 Text GLabel 8050 5050 0    60   Input ~ 0
-ENC1Z-
-Text GLabel 9750 5550 0    60   Input ~ 0
-ENC2Z+
-Text GLabel 9750 5650 0    60   Input ~ 0
-ENC2Z-
+ENC2B-
 Text GLabel 10550 5250 2    60   Input ~ 0
-ENC3Z+
+ENC2A+
 Text GLabel 10550 5150 2    60   Input ~ 0
+ENC2A-
+Text GLabel 6300 5550 0    60   Input ~ 0
+ENC1Z+
+Text GLabel 6300 5650 0    60   Input ~ 0
+ENC1Z-
+Text GLabel 8050 5550 0    60   Input ~ 0
+ENC2Z+
+Text GLabel 8050 5650 0    60   Input ~ 0
+ENC2Z-
+Text GLabel 9750 5150 0    60   Input ~ 0
+ENC3Z+
+Text GLabel 9750 5050 0    60   Input ~ 0
 ENC3Z-
 Text GLabel 10550 5650 2    60   Input ~ 0
 ENC3B+
 Text GLabel 10550 5750 2    60   Input ~ 0
 ENC3B-
-Text GLabel 9750 5150 0    60   Input ~ 0
+Text GLabel 9750 5550 0    60   Input ~ 0
 ENC3A+
-Text GLabel 9750 5050 0    60   Input ~ 0
+Text GLabel 9750 5650 0    60   Input ~ 0
 ENC3A-
 Text GLabel 6700 4400 3    60   Input ~ 0
 ENC0A-
