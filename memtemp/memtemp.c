@@ -367,6 +367,10 @@ int main(void) {
 	ADD_MODE(("io_", 1, 1));
 
 
+	printf("input bits %d output bits %d\n", input_bits, output_bits);
+	if (input_bits % 8)  ADD_PROCESS_VAR(("", "", 8 -  (input_bits%8), DATA_TYPE_PAD, DATA_DIRECTION_INPUT,  0, 0));
+	if (output_bits % 8) ADD_PROCESS_VAR(("", "", 8 - (output_bits%8), DATA_TYPE_PAD, DATA_DIRECTION_OUTPUT, 0, 0));
+
 	// todo: automatically create padding pds based on the mod remainder of input/output bits
 
 	// now that all the toc entries have been added, write out the tocs to memory and set up the toc pointers
