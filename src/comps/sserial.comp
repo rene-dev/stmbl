@@ -86,10 +86,13 @@ typedef union{
 #define MEMU32(ptr) (memory.bytes[ptr] | memory.bytes[ptr+1]<<8 | memory.bytes[ptr+2]<<16 | memory.bytes[ptr+3]<<24)
 #define MEMFLOAT(ptr) ((float)({uint32_t tmp = MEMU32(ptr);*((float*)&tmp);}))
 
-#define NUM_BYTES(bits) (((int)(bits / 32) + (bits % 32 > 0 ? 1 : 0))*4)
+#define NUM_BYTES(bits) (bits / 8 + (bits % 8 > 0 ? 1 : 0))
 
 #define IS_INPUT(pdr) (pdr->data_direction != 0x80)
 #define IS_OUTPUT(pdr) (pdr->data_direction != 0x00)
+
+#define SIGNED(pdr) (pdr->data_type == DATA_TYPE_SIGNED || pdr->data_type == DATA_TYPE_NONVOL_SIGNED)
+#define UNSIGNED(pdr) (pdr->data_type == DATA_TYPE_UNSIGNED || pdr->data_type == DATA_TYPE_NONVOL_UNSIGNED)
 
 // pins
 HAL_PIN(dump_pd_vals) = 0.0;
@@ -98,7 +101,9 @@ HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, ne
 HAL_PIN(timeout) = 40.0;// 20khz / 1khz * 2 reads
 
 HAL_PIN(pos_cmd) = 0.0;
+HAL_PIN(vel_cmd) = 0.0;
 HAL_PIN(pos_fb) = 0.0;
+HAL_PIN(vel_fb) = 0.0;
 
 HAL_PIN(in0) = 0.0;
 HAL_PIN(in1) = 0.0;
@@ -155,8 +160,10 @@ typedef struct {
 
 typedef struct {
   pd_metadata_t pos_cmd;
+  pd_metadata_t vel_cmd;
   pd_metadata_t scale;
   pd_metadata_t pos_fb;
+  pd_metadata_t vel_fb;
   pd_metadata_t input_pins;
   pd_metadata_t output_pins;
 } pd_table_t;
@@ -310,6 +317,10 @@ uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits,
 
   pdr.data_addr = MEMPTR(*heap_ptr);
   heap_ptr += NUM_BYTES(data_size_in_bits);
+  // this aligns the heap pointer to 32bit.  Not doing this causes the floats in the pd to be misaligned, which crashes the arm.
+  if((uint32_t)heap_ptr % 4){
+     heap_ptr += 4 - (uint32_t)heap_ptr % 4;
+  }
 
   memcpy(heap_ptr, &pdr, sizeof(process_data_descriptor_t));
   // note that we don't store the names in the struct anymore.  The fixed-length struct is copied into memory, and then the nmaes go in directly behind it, so they'll read out properly
@@ -324,9 +335,15 @@ uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits,
 
   strcpy((char *)heap_ptr, name_string);
   heap_ptr += strlen(name_string)+1;
+
+  // moved this up to before the pd record
+  /*
+  // this aligns the heap pointer to 32bit.  Not doing this causes the floats in the pd to be misaligned, which crashes the arm.
   if((uint32_t)heap_ptr % 4){
      heap_ptr += 4 - (uint32_t)heap_ptr % 4;
   }
+  */
+
   return pd_ptr;
 }
 
@@ -355,9 +372,7 @@ uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
 
 void metadata(pd_metadata_t *pdm, process_data_descriptor_t *ptr) {
   pdm->ptr = ptr;
-  float min = ptr->param_min;
-  float max = ptr->param_max;
-  pdm->range = max - min;
+  pdm->range = ptr->data_type == DATA_TYPE_SIGNED ? MAX(ptr->param_min, ptr->param_max)*2 : ptr->param_max;
   pdm->bitmax = (1<<ptr->data_size)-1;
 }
 
@@ -377,19 +392,22 @@ INIT(
   uint16_t *ptocp = ptoc; uint16_t *gtocp = gtoc;
   process_data_descriptor_t *last_pd;
 
-  ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
-  ADD_PROCESS_VAR(("pos_cmd", "mm", 32, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10000, 10000));     metadata(&(pd_table.pos_cmd), last_pd);
-  ADD_PROCESS_VAR(("scale", "rev/mm", 32, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10000, 10000));     metadata(&(pd_table.scale), last_pd);
+  ADD_PROCESS_VAR(("output_pins", "none", 2, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
+  ADD_PROCESS_VAR(("pos_cmd", "mm", 10, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10, 10));        metadata(&(pd_table.pos_cmd), last_pd);
+  //ADD_PROCESS_VAR(("scale", "rev/mm", 32, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10000, 10000));     metadata(&(pd_table.scale), last_pd);
   
-  ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
-  ADD_PROCESS_VAR(("pos_fb", "mm", 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 0, 255));     metadata(&(pd_table.pos_fb), last_pd);
+  ADD_PROCESS_VAR(("input_pins", "none", 2, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
+  ADD_PROCESS_VAR(("pos_fb", "mm", 12, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -10, 10));          metadata(&(pd_table.pos_fb), last_pd);
+  //ADD_PROCESS_VAR(("input_pins", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
 
   ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
 
   ADD_MODE(("foo", 0, 0));
   ADD_MODE(("io_", 1, 1));
 
-  // todo: automatically create padding pds based on the mod remainder of input/output bits
+  // automatically create padding pds based on the mod remainder of input/output bits
+  if (input_bits % 8)  ADD_PROCESS_VAR(("", "", 8 -  input_bits, DATA_TYPE_PAD, DATA_DIRECTION_INPUT,  0, 0));
+  if (output_bits % 8) ADD_PROCESS_VAR(("", "", 8 - output_bits, DATA_TYPE_PAD, DATA_DIRECTION_OUTPUT, 0, 0));
 
   // now that all the toc entries have been added, write out the tocs to memory and set up the toc pointers
 
@@ -449,14 +467,10 @@ void send(uint8_t len, uint8_t docrc){
 #define BITSLEFT(ptr) (8-ptr)
 
 void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *output) {
-
   uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
 
-  for(int i = 0 ; i < memory.discovery.input ; i++){
-     input[i] = 0x00;
-  }
-
   *(input++) = fault;
+  *input = 0x00;
 
   // data needs to be packed and unpacked based on its type and size
   // input is a pointer to the data that gets sent back to the host
@@ -464,9 +478,6 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
 
   uint8_t output_bit_ptr = 0;
   uint8_t input_bit_ptr = 0;
-
-  // TODO:  this probably doesn't work with signed numbers yet.  Probably as simple as carrying the top bit across to the left if there's any padding
-  // writing to memory, but it needs to be thought out and tested.
 
   while(*ptocp != 0x0000) {
     process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
@@ -486,7 +497,7 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
         input_bit_ptr += bits_to_pack;
         data_bit_ptr += bits_to_pack;
         data_size -= bits_to_pack;
-        if((input_bit_ptr %= 8) == 0) input++;
+        if((input_bit_ptr %= 8) == 0) *(++input) = 0x00; // make sure we clear the input buffer whenever we increment bytes
         if((data_bit_ptr %= 8) == 0) data_addr++;
       }
     }
@@ -522,42 +533,44 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
           val = 0x00;
         }
       }
+      // now we've finished unpacking it and storing it in memory, but we have to fix up the high bits if it wasn't a byte-aligned datasize.
+      // for instance, if we receive 0xFFF in a 12 bit field, that is a negative number, but we stored it as 0x0FFF in memory.
+      // strategy is to set the most significant n bits of the MSB to the most significant bit of the output value, iff the pd is defined as signed.
+      if (SIGNED(pd) && pd->data_size % 8 != 0) {
+        //printf_("in output fixup.  data_addr %h  data_size %i num_bytes %i\n", pd->data_addr, pd->data_size, NUM_BYTES(pd->data_size));
+        uint8_t msb_addr = pd->data_addr + NUM_BYTES(pd->data_size) - 1;
+        //printf_("in output fixup.  MSB (at %h): %h\n", msb_addr, MEMU8(msb_addr));
+        
+        // these two masks use data_size%8, this is the number of bits in the most significant byte, and since we tested for %8!=0 above, we know it's a partial byte
+        if(MEMU8(msb_addr) & 1<<(pd->data_size%8 - 1)) { // this test uses a mask that is 1 in the most significant bit position, we only need to fixup the val if it's 1 (ie negative)
+          // this mask is all the unused high bits set
+          uint8_t mask = 0xFF ^ ((1<<pd->data_size%8) - 1);
+          //printf_("applying mask: %h\n", mask);
+          MEMU8(msb_addr) |= mask;
+        }
+
+        //printf_("fixed up val: %h\n", MEMU8(msb_addr));
+      }
     }
   }
 }
 
-float scale_out(pd_metadata_t pd, uint32_t uval) {
-   //TODO: unsigned data
-  int32_t val;
-  val = *((int32_t*)&uval);
-  float min = pd.ptr->param_min;
-  float max = pd.ptr->param_max;
-  float range = pd.range;
-  uval = val + pd.bitmax/2;
-  return uval * range / (float)pd.bitmax + min - (max+min)/2.0;
-}  
 
-uint32_t scale_in(pd_metadata_t pd, float val) {
-  //TODO: unsigned data
-  float min = pd.ptr->param_min;
-  float max = pd.ptr->param_max;
-  
-  val = CLAMP(val,min,max);
-  float scale = MAX(-min,max);
-  int32_t foo = val * pd.bitmax / 2 / scale;
-  return *((uint32_t*)&foo);
+float scale_out(pd_metadata_t pd, int32_t val) {
+  return val * pd.range / (float)pd.bitmax;
+} 
 
+int32_t scale_in(pd_metadata_t pd, float val) {
+  return CLAMP(val, pd.ptr->param_min, pd.ptr->param_max) * pd.bitmax / pd.range;
 }
 
 
 #define BOOLPIN(pin) (uint8_t)(PIN(pin) != 0.0)
 
 RT (
-  // rudimentary scaling... works with unsigneds, not sure about signeds yet.
-
   // update all hal pins with values from their associated pds
 
-  PIN(pos_cmd) = scale_out(pd_table.pos_cmd, MEMU32(pd_table.pos_cmd.ptr->data_addr));
+  PIN(pos_cmd) = scale_out(pd_table.pos_cmd, (int16_t)(MEMU16(pd_table.pos_cmd.ptr->data_addr)));
 
   uint8_t outpins = MEMU8(pd_table.output_pins.ptr->data_addr);
   PIN(out0) = outpins & 1 ? 1.0 : 0.0;
@@ -567,14 +580,9 @@ RT (
 
   // todo: how to handle bidirectional pins properly?
 
-  //uint32_t val = (uint32_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
-  //*((uint32_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = val;
-  *((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)PIN(pos_fb);
+  *((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
 
-/*
-
-  MEMU8(inpins_pd->data_addr) = BOOLPIN(in0)<<0 | BOOLPIN(in1)<<1 | BOOLPIN(in2)<<2 | BOOLPIN(in3)<<3;
-  */
+  MEMU8(pd_table.input_pins.ptr->data_addr) = BOOLPIN(in0)<<0 | BOOLPIN(in1)<<1 | BOOLPIN(in2)<<2 | BOOLPIN(in3)<<3;
 
 );
 
@@ -697,19 +705,7 @@ NRT(
     }
     PIN(dump_pd_vals) = 0.0;
 
-    printf_("cmd_vel max: %f min %f\n", pd_table.pos_cmd.ptr->param_max, pd_table.pos_cmd.ptr->param_min);
-    printf_("cmd_vel max - min: %f\n", pd_table.pos_cmd.ptr->param_max - pd_table.pos_cmd.ptr->param_min);
-
-    printf_("fb_vel max: %f min %f\n", pd_table.pos_fb.ptr->param_max, pd_table.pos_fb.ptr->param_min);
-    printf_("fb_vel max - min: %f\n", pd_table.pos_fb.ptr->param_max - pd_table.pos_fb.ptr->param_min);
-
-    //However, I'm running into other subtle float-related bugs that will crash the cpu
-
-    printf_("scaled: %h\n", (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb)));
-
-//#define SCALE_IN(pd, val)   ((val - pd.ptr->param_min)/(pd.maxminusmin) * pd.bitmax)
-
-
+    printf_("pos_cmd: %f\n", PIN(pos_cmd));
 
     uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
     while(*ptocp != 0x0000) {
