@@ -86,7 +86,7 @@ typedef union{
 #define MEMU32(ptr) (memory.bytes[ptr] | memory.bytes[ptr+1]<<8 | memory.bytes[ptr+2]<<16 | memory.bytes[ptr+3]<<24)
 #define MEMFLOAT(ptr) ((float)({uint32_t tmp = MEMU32(ptr);*((float*)&tmp);}))
 
-#define NUM_BYTES(bits) (((int)(bits / 32) + (bits % 32 > 0 ? 1 : 0))*4)
+#define NUM_BYTES(bits) (bits / 8 + (bits % 8 > 0 ? 1 : 0))
 
 #define IS_INPUT(pdr) (pdr->data_direction != 0x80)
 #define IS_OUTPUT(pdr) (pdr->data_direction != 0x00)
@@ -317,6 +317,10 @@ uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits,
 
   pdr.data_addr = MEMPTR(*heap_ptr);
   heap_ptr += NUM_BYTES(data_size_in_bits);
+  // this aligns the heap pointer to 32bit.  Not doing this causes the floats in the pd to be misaligned, which crashes the arm.
+  if((uint32_t)heap_ptr % 4){
+     heap_ptr += 4 - (uint32_t)heap_ptr % 4;
+  }
 
   memcpy(heap_ptr, &pdr, sizeof(process_data_descriptor_t));
   // note that we don't store the names in the struct anymore.  The fixed-length struct is copied into memory, and then the nmaes go in directly behind it, so they'll read out properly
@@ -331,9 +335,15 @@ uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits,
 
   strcpy((char *)heap_ptr, name_string);
   heap_ptr += strlen(name_string)+1;
+
+  // moved this up to before the pd record
+  /*
+  // this aligns the heap pointer to 32bit.  Not doing this causes the floats in the pd to be misaligned, which crashes the arm.
   if((uint32_t)heap_ptr % 4){
      heap_ptr += 4 - (uint32_t)heap_ptr % 4;
   }
+  */
+
   return pd_ptr;
 }
 
@@ -382,13 +392,12 @@ INIT(
   uint16_t *ptocp = ptoc; uint16_t *gtocp = gtoc;
   process_data_descriptor_t *last_pd;
 
-  //ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
-  ADD_PROCESS_VAR(("pos_cmd", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10, 10));        metadata(&(pd_table.pos_cmd), last_pd);
-  ADD_PROCESS_VAR(("vel_cmd", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10, 10));       metadata(&(pd_table.vel_cmd), last_pd);
+  ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
+  ADD_PROCESS_VAR(("pos_cmd", "mm", 12, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10, 10));        metadata(&(pd_table.pos_cmd), last_pd);
   //ADD_PROCESS_VAR(("scale", "rev/mm", 32, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10000, 10000));     metadata(&(pd_table.scale), last_pd);
   
-  ADD_PROCESS_VAR(("pos_fb", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -10, 10));          metadata(&(pd_table.pos_fb), last_pd);
-  ADD_PROCESS_VAR(("vel_fb", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -10, 10));         metadata(&(pd_table.vel_fb), last_pd);
+  ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
+  ADD_PROCESS_VAR(("pos_fb", "mm", 12, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -10, 10));          metadata(&(pd_table.pos_fb), last_pd);
   //ADD_PROCESS_VAR(("input_pins", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
 
   ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
@@ -456,7 +465,6 @@ void send(uint8_t len, uint8_t docrc){
 #define BITSLEFT(ptr) (8-ptr)
 
 void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *output) {
-
   uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
 
   for(int i = 0 ; i < memory.discovery.input ; i++){
@@ -530,6 +538,24 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
           val = 0x00;
         }
       }
+      // now we've finished unpacking it and storing it in memory, but we have to fix up the high bits if it wasn't a byte-aligned datasize.
+      // for instance, if we receive 0xFFF in a 12 bit field, that is a negative number, but we stored it as 0x0FFF in memory.
+      // strategy is to set the most significant n bits of the MSB to the most significant bit of the output value, iff the pd is defined as signed.
+      if (SIGNED(pd) && pd->data_size % 8 != 0) {
+        //printf_("in output fixup.  data_addr %h  data_size %i num_bytes %i\n", pd->data_addr, pd->data_size, NUM_BYTES(pd->data_size));
+        uint8_t msb_addr = pd->data_addr + NUM_BYTES(pd->data_size) - 1;
+        //printf_("in output fixup.  MSB (at %h): %h\n", msb_addr, MEMU8(msb_addr));
+        
+        // these two masks use data_size%8, this is the number of bits in the most significant byte, and since we tested for %8!=0 above, we know it's a partial byte
+        if(MEMU8(msb_addr) & 1<<(pd->data_size%8 - 1)) { // this test uses a mask that is 1 in the most significant bit position, we only need to fixup the val if it's 1 (ie negative)
+          // this mask is all the unused high bits set
+          uint8_t mask = 0xFF ^ ((1<<pd->data_size%8) - 1);
+          //printf_("applying mask: %h\n", mask);
+          MEMU8(msb_addr) |= mask;
+        }
+
+        //printf_("fixed up val: %h\n", MEMU8(msb_addr));
+      }
     }
   }
 }
@@ -552,7 +578,6 @@ RT (
   // update all hal pins with values from their associated pds
 
   PIN(pos_cmd) = scale_out(pd_table.pos_cmd, (int16_t)(MEMU16(pd_table.pos_cmd.ptr->data_addr)));
-  PIN(vel_cmd) = scale_out(pd_table.vel_cmd, (MEMU16(pd_table.vel_cmd.ptr->data_addr)));
 
   uint8_t outpins = MEMU8(pd_table.output_pins.ptr->data_addr);
   PIN(out0) = outpins & 1 ? 1.0 : 0.0;
@@ -565,12 +590,8 @@ RT (
   //uint32_t val = (uint32_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
   //*((uint32_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = val;
   *((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
-  *((uint16_t *)&(memory.bytes[pd_table.vel_fb.ptr->data_addr])) = (uint16_t)scale_in(pd_table.vel_fb, PIN(vel_fb));
 
-/*
-
-  MEMU8(inpins_pd->data_addr) = BOOLPIN(in0)<<0 | BOOLPIN(in1)<<1 | BOOLPIN(in2)<<2 | BOOLPIN(in3)<<3;
-  */
+  MEMU8(pd_table.input_pins.ptr->data_addr) = BOOLPIN(in0)<<0 | BOOLPIN(in1)<<1 | BOOLPIN(in2)<<2 | BOOLPIN(in3)<<3;
 
 );
 
@@ -693,10 +714,7 @@ NRT(
     }
     PIN(dump_pd_vals) = 0.0;
 
-
     printf_("pos_cmd: %f\n", PIN(pos_cmd));
-    printf_("vel_cmd: %f\n", PIN(vel_cmd));
-
 
     uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
     while(*ptocp != 0x0000) {
