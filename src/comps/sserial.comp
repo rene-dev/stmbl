@@ -467,10 +467,6 @@ void send(uint8_t len, uint8_t docrc){
 void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *output) {
   uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
 
-  for(int i = 0 ; i < memory.discovery.input ; i++){
-     input[i] = 0x00;
-  }
-
   *(input++) = fault;
   *input = 0x00;
 
