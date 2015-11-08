@@ -654,7 +654,7 @@ FRT(
               send(sizeof(memory.discovery),1);
               rxpos += 2;
           }else if(lbp.byte == ProcessDataRPC && available >= memory.discovery.output + 2){//process data, requires cmd+output bytes+crc
-            if(crc8(&(rxbuf[rxpos]),memory.discovery.output + 1) == rxbuf[rxpos + memory.discovery.output + 1]){
+            if(crc8((uint8_t *)&(rxbuf[rxpos]),memory.discovery.output + 1) == rxbuf[rxpos + memory.discovery.output + 1]){
                process_data_rpc(0x00, txbuf, &(rxbuf[rxpos+1])); // todo: send a proper fault byte?
                send(memory.discovery.input,1);
             }else{
