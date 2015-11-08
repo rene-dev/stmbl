@@ -97,8 +97,9 @@ typedef union{
 // pins
 HAL_PIN(dump_pd_vals) = 0.0;
 HAL_PIN(error) = 0.0;//counts unknown commands
+HAL_PIN(crc_error) = 0.0;//counts crc errors
 HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, needs link to pd
-HAL_PIN(timeout) = 40.0;// 20khz / 1khz * 2 reads
+HAL_PIN(timeout) = 100.0;// 20khz / 1khz * 2 reads = 40
 
 HAL_PIN(pos_cmd) = 0.0;
 HAL_PIN(vel_cmd) = 0.0;
@@ -653,9 +654,12 @@ FRT(
               send(sizeof(memory.discovery),1);
               rxpos += 2;
           }else if(lbp.byte == ProcessDataRPC && available >= memory.discovery.output + 2){//process data, requires cmd+output bytes+crc
-            process_data_rpc(0x00, txbuf, &(rxbuf[rxpos+1])); // todo: send a proper fault byte?
-
-            send(memory.discovery.input,1);
+            if(crc8(&(rxbuf[rxpos]),memory.discovery.output + 1) == rxbuf[rxpos + memory.discovery.output + 1]){
+               process_data_rpc(0x00, txbuf, &(rxbuf[rxpos+1])); // todo: send a proper fault byte?
+               send(memory.discovery.input,1);
+            }else{
+               PIN(crc_error)++;
+            }
             rxpos += memory.discovery.output + 2;
           }else{
              continue;
