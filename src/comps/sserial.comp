@@ -91,6 +91,9 @@ typedef union{
 #define IS_INPUT(pdr) (pdr->data_direction != 0x80)
 #define IS_OUTPUT(pdr) (pdr->data_direction != 0x00)
 
+#define SIGNED(pdr) (pdr->data_type == DATA_TYPE_SIGNED || pdr->data_type == DATA_TYPE_NONVOL_SIGNED)
+#define UNSIGNED(pdr) (pdr->data_type == DATA_TYPE_UNSIGNED || pdr->data_type == DATA_TYPE_NONVOL_UNSIGNED)
+
 // pins
 HAL_PIN(dump_pd_vals) = 0.0;
 HAL_PIN(error) = 0.0;//counts unknown commands
@@ -531,7 +534,6 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
   }
 }
 
-#define UNSIGNED(pd) (pd.ptr->data_type == DATA_TYPE_UNSIGNED || pd.ptr->data_type == DATA_TYPE_NONVOL_UNSIGNED)
 
 float scale_out(pd_metadata_t pd, int32_t val) {
   return val * pd.range / (float)pd.bitmax;

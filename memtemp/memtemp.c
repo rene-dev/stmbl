@@ -45,6 +45,9 @@
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
+#define SIGNED(pd) (pd->data_type == DATA_TYPE_SIGNED || pd->data_type == DATA_TYPE_NONVOL_SIGNED)
+#define UNSIGNED(pd) (pd->data_type == DATA_TYPE_UNSIGNED || pd->data_type == DATA_TYPE_NONVOL_UNSIGNED)
+
 
 typedef struct{
    uint8_t record_type;//0xa0
@@ -141,7 +144,7 @@ void process_data_rpc(uint8_t *input, uint8_t *output) {
 		process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
 
 		if (IS_INPUT(pd)) {
-			printf("input pd data size is %d\n", pd->data_size);
+			//printf("input pd data size is %d\n", pd->data_size);
 			uint16_t data_addr = pd->data_addr;
 			uint8_t data_size = pd->data_size;
 			uint8_t data_bit_ptr = 0;
@@ -151,14 +154,14 @@ void process_data_rpc(uint8_t *input, uint8_t *output) {
 				uint8_t bits_to_pack = data_size < BITSLEFT(input_bit_ptr) ? data_size : BITSLEFT(input_bit_ptr);
 				if (BITSLEFT(data_bit_ptr) < bits_to_pack) { bits_to_pack = BITSLEFT(data_bit_ptr); }
 
-				printf("encoding partial byte, need to read %d bits from the data_val 0x%02x at bit position %d\n", bits_to_pack, MEMU8(data_addr), data_bit_ptr);
+				//printf("encoding partial byte, need to read %d bits from the data_val 0x%02x at bit position %d\n", bits_to_pack, MEMU8(data_addr), data_bit_ptr);
 
 				uint8_t mask = ((1<<bits_to_pack) - 1) << (data_bit_ptr);
-				printf("mask is 0x%02x\n", mask);
+				//printf("mask is 0x%02x\n", mask);
 
 				*input |= ((MEMU8(data_addr) & mask) >> data_bit_ptr) << input_bit_ptr;
 
-				printf("*input is 0x%02x\n", *input);
+				//printf("*input is 0x%02x\n", *input);
 				input_bit_ptr += bits_to_pack;
 				data_bit_ptr += bits_to_pack;
 				data_size -= bits_to_pack;
@@ -204,6 +207,20 @@ void process_data_rpc(uint8_t *input, uint8_t *output) {
 					val_bits_remaining = 8;
 					val = 0x00;
 				}
+			}
+			// now we've finished unpacking it and storing it in memory, but we have to fix up the high bits if it wasn't a byte-aligned datasize.
+			// for instance, if we receive 0xFFF in a 12 bit field, that is a negative number, but we stored it as 0x0FFF in memory.
+			// strategy is to set the most significant n bits of the MSB to the most significant bit of the output value, iff the pd is defined as signed.
+			if (SIGNED(pd) && pd->data_size % 8 != 0) {
+				uint8_t msb_addr = pd->data_addr + NUM_BYTES(pd->data_size) - 1;
+				//printf("in output fixup.  MSB: 0x%02x\n", MEMU8(msb_addr));
+				if(MEMU8(msb_addr) & 1<<(pd->data_size%8 - 1)) {
+					uint8_t mask = 0xFF ^ ((1<<pd->data_size%8) - 1);
+					//printf("applying mask: 0x%02x\n", mask);
+					MEMU8(msb_addr) |= mask;
+				}
+
+				//printf("fixed up val: 0x%02x\n", MEMU8(msb_addr));
 			}
 		}
 	}
@@ -306,7 +323,6 @@ void metadata(pd_metadata_t *pdm, process_data_descriptor_t *ptr) {
 //#define SCALE_IN(pd, val)   (val * (pd->param_max - pd->param_min) / ((1<<pd->data_size)-1) + pd->param_min)
 
 
-#define UNSIGNED(pd) (pd.ptr->data_type == DATA_TYPE_UNSIGNED || pd.ptr->data_type == DATA_TYPE_NONVOL_UNSIGNED)
 
 float scale_out(pd_metadata_t pd, int32_t val) {
   return val * pd.range / (float)pd.bitmax;
@@ -337,8 +353,10 @@ int main(void) {
 	printf("sizeof pdr: %ld\n", sizeof(process_data_descriptor_t));
 
 
-	ADD_PROCESS_VAR(("cmd_vel", "rps", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -1.0, 1.0)); 		metadata(&cmd_vel, last_pd);
-	ADD_PROCESS_VAR(("fb_vel", "rps", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -1.0, 1.0));			metadata(&fb_vel,  last_pd);
+  	ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       
+	ADD_PROCESS_VAR(("cmd_vel", "rps", 12, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -1.0, 1.0)); 		metadata(&cmd_vel, last_pd);
+  	ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         
+	ADD_PROCESS_VAR(("fb_vel", "rps", 12, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -1.0, 1.0));			metadata(&fb_vel,  last_pd);
 
 
 	printf("cmd_vel->data_addr: 0x%04x\n", cmd_vel.ptr->data_addr);
@@ -378,13 +396,13 @@ int main(void) {
 	write_memory_to_file();
 
 
-	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0x7fff));
-	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0x3fff));
-	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0x1fff));
-	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0x0000));
-	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0xe001));
-	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0xc001));
-	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0x8001));
+	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0x7ff));
+	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0x3ff));
+	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0x1ff));
+	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0x000));
+	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0xe01));
+	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0xc01));
+	printf("Scale out test: %f\n", scale_out(cmd_vel, (int16_t)0x801));
 
 	printf("Scale in test: 0x%04x (%d)\n", (int16_t)scale_in(fb_vel, 1), (int16_t)scale_in(fb_vel, 1));
 	printf("Scale in test: 0x%04x (%d)\n", (int16_t)scale_in(fb_vel, 0.5), (int16_t)scale_in(fb_vel, 0.5));
@@ -401,11 +419,12 @@ int main(void) {
 	uint8_t output_buf[memory.discovery.output];
 	uint8_t input_buf[memory.discovery.input];
 
-	output_buf[0] = 0x01;
+	output_buf[0] = 0x1a;
 	output_buf[1] = 0xe0;
 	printf("incoming output bytes: "); for (uint8_t i = 0; i < memory.discovery.output; i++) { printf("0x%02x ", output_buf[i]); } printf("\n");
 	process_data_rpc(input_buf, output_buf);
 	printf("outgoing input bytes: "); for (uint8_t i = 0; i < memory.discovery.input; i++) { printf("0x%02x ", input_buf[i]); } printf("\n");
+
 
 	float cmd_vel_val = scale_out(cmd_vel, (int16_t)MEMU16(cmd_vel.ptr->data_addr));
 	printf("cmd_vel's value is 0x%04x (%f)\n", MEMU16(cmd_vel.ptr->data_addr), cmd_vel_val);
@@ -415,6 +434,8 @@ int main(void) {
 	printf("fb_vel's value is 0x%04x (%f)\n", MEMU16(fb_vel.ptr->data_addr), scale_out(fb_vel, (int16_t)MEMU16(fb_vel.ptr->data_addr)));
 
 
+	output_buf[0] = 0xfa;
+	output_buf[1] = 0x7f;
 	printf("incoming output bytes: "); for (uint8_t i = 0; i < memory.discovery.output; i++) { printf("0x%02x ", output_buf[i]); } printf("\n");
 	process_data_rpc(input_buf, output_buf);
 	printf("outgoing input bytes: "); for (uint8_t i = 0; i < memory.discovery.input; i++) { printf("0x%02x ", input_buf[i]); } printf("\n");
