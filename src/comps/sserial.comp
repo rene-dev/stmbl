@@ -359,7 +359,7 @@ uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
 
 void metadata(pd_metadata_t *pdm, process_data_descriptor_t *ptr) {
   pdm->ptr = ptr;
-  pdm->range = ptr->data_type == DATA_TYPE_SIGNED ? ptr->param_max*2 : ptr->param_max;
+  pdm->range = ptr->data_type == DATA_TYPE_SIGNED ? MAX(ptr->param_min, ptr->param_max)*2 : ptr->param_max;
   pdm->bitmax = (1<<ptr->data_size)-1;
 }
 
@@ -380,12 +380,12 @@ INIT(
   process_data_descriptor_t *last_pd;
 
   //ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
-  ADD_PROCESS_VAR(("pos_cmd", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -1, 5));        metadata(&(pd_table.pos_cmd), last_pd);
-  ADD_PROCESS_VAR(("vel_cmd", "mm", 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 1, 5));       metadata(&(pd_table.vel_cmd), last_pd);
+  ADD_PROCESS_VAR(("pos_cmd", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10, 10));        metadata(&(pd_table.pos_cmd), last_pd);
+  ADD_PROCESS_VAR(("vel_cmd", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10, 10));       metadata(&(pd_table.vel_cmd), last_pd);
   //ADD_PROCESS_VAR(("scale", "rev/mm", 32, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10000, 10000));     metadata(&(pd_table.scale), last_pd);
   
-  ADD_PROCESS_VAR(("pos_fb", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -50, 100));          metadata(&(pd_table.pos_fb), last_pd);
-  ADD_PROCESS_VAR(("vel_fb", "mm", 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 10, 100));         metadata(&(pd_table.vel_fb), last_pd);
+  ADD_PROCESS_VAR(("pos_fb", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -10, 10));          metadata(&(pd_table.pos_fb), last_pd);
+  ADD_PROCESS_VAR(("vel_fb", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -10, 10));         metadata(&(pd_table.vel_fb), last_pd);
   //ADD_PROCESS_VAR(("input_pins", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
 
   ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
@@ -537,15 +537,8 @@ float scale_out(pd_metadata_t pd, int32_t val) {
   return val * pd.range / (float)pd.bitmax;
 } 
 
-uint32_t scale_in(pd_metadata_t pd, float val) {
-  //TODO: unsigned data
-  float min = pd.ptr->param_min;
-  float max = pd.ptr->param_max;
-  
-  val = CLAMP(val,min,max);
-  float scale = MAX(-min,max);
-  int32_t foo = val * pd.bitmax / 2 / scale;
-  return *((uint32_t*)&foo);
+int32_t scale_in(pd_metadata_t pd, float val) {
+  return CLAMP(val, pd.ptr->param_min, pd.ptr->param_max) * pd.bitmax / pd.range;
 }
 
 
@@ -569,7 +562,8 @@ RT (
 
   //uint32_t val = (uint32_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
   //*((uint32_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = val;
-  *((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)PIN(pos_fb);
+  *((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
+  *((uint16_t *)&(memory.bytes[pd_table.vel_fb.ptr->data_addr])) = (uint16_t)scale_in(pd_table.vel_fb, PIN(vel_fb));
 
 /*
 
