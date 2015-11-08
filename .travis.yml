@@ -1,8 +1,12 @@
 language: c
 
+install:
+  - wget http://sigrok.org/download/source/libserialport/libserialport-0.1.0.tar.gz
+  - tar -xzvf libserialport-0.1.0.tar.gz
+  - cd libserialport-0.1.0 && ./configure --prefix=/usr && make && sudo make install
+
 before_install:
   - sudo add-apt-repository -y ppa:terry.guo/gcc-arm-embedded
-  - sudo add-apt-repository -y ppa:jorik-kippendief/sigrok
   - sudo add-apt-repository -y ppa:kalakris/cmake
   - sudo apt-get -qq update
   - sudo apt-get install -qq gcc-arm-none-eabi python-yaml cmake dosfstools mtools pkg-config libusb-dev libserialport libwxgtk3.0-0
