@@ -477,9 +477,6 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
   uint8_t output_bit_ptr = 0;
   uint8_t input_bit_ptr = 0;
 
-  // TODO:  this probably doesn't work with signed numbers yet.  Probably as simple as carrying the top bit across to the left if there's any padding
-  // writing to memory, but it needs to be thought out and tested.
-
   while(*ptocp != 0x0000) {
     process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
     
@@ -569,8 +566,6 @@ int32_t scale_in(pd_metadata_t pd, float val) {
 #define BOOLPIN(pin) (uint8_t)(PIN(pin) != 0.0)
 
 RT (
-  // rudimentary scaling... works with unsigneds, not sure about signeds yet.
-
   // update all hal pins with values from their associated pds
 
   PIN(pos_cmd) = scale_out(pd_table.pos_cmd, (int16_t)(MEMU16(pd_table.pos_cmd.ptr->data_addr)));
@@ -583,8 +578,6 @@ RT (
 
   // todo: how to handle bidirectional pins properly?
 
-  //uint32_t val = (uint32_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
-  //*((uint32_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = val;
   *((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
 
   MEMU8(pd_table.input_pins.ptr->data_addr) = BOOLPIN(in0)<<0 | BOOLPIN(in1)<<1 | BOOLPIN(in2)<<2 | BOOLPIN(in3)<<3;
