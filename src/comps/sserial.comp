@@ -98,7 +98,9 @@ HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, ne
 HAL_PIN(timeout) = 40.0;// 20khz / 1khz * 2 reads
 
 HAL_PIN(pos_cmd) = 0.0;
+HAL_PIN(vel_cmd) = 0.0;
 HAL_PIN(pos_fb) = 0.0;
+HAL_PIN(vel_fb) = 0.0;
 
 HAL_PIN(in0) = 0.0;
 HAL_PIN(in1) = 0.0;
@@ -155,8 +157,10 @@ typedef struct {
 
 typedef struct {
   pd_metadata_t pos_cmd;
+  pd_metadata_t vel_cmd;
   pd_metadata_t scale;
   pd_metadata_t pos_fb;
+  pd_metadata_t vel_fb;
   pd_metadata_t input_pins;
   pd_metadata_t output_pins;
 } pd_table_t;
@@ -355,9 +359,7 @@ uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
 
 void metadata(pd_metadata_t *pdm, process_data_descriptor_t *ptr) {
   pdm->ptr = ptr;
-  float min = ptr->param_min;
-  float max = ptr->param_max;
-  pdm->range = max - min;
+  pdm->range = ptr->data_type == DATA_TYPE_SIGNED ? ptr->param_max*2 : ptr->param_max;
   pdm->bitmax = (1<<ptr->data_size)-1;
 }
 
@@ -378,10 +380,12 @@ INIT(
   process_data_descriptor_t *last_pd;
 
   //ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
-  ADD_PROCESS_VAR(("pos_cmd", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -100, 100));     metadata(&(pd_table.pos_cmd), last_pd);
+  ADD_PROCESS_VAR(("pos_cmd", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -1, 5));        metadata(&(pd_table.pos_cmd), last_pd);
+  ADD_PROCESS_VAR(("vel_cmd", "mm", 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 1, 5));       metadata(&(pd_table.vel_cmd), last_pd);
   //ADD_PROCESS_VAR(("scale", "rev/mm", 32, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10000, 10000));     metadata(&(pd_table.scale), last_pd);
   
-  ADD_PROCESS_VAR(("pos_fb", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -100, 100));     metadata(&(pd_table.pos_fb), last_pd);
+  ADD_PROCESS_VAR(("pos_fb", "mm", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -50, 100));          metadata(&(pd_table.pos_fb), last_pd);
+  ADD_PROCESS_VAR(("vel_fb", "mm", 16, DATA_TYPE_UNSIGNED, DATA_DIRECTION_INPUT, 10, 100));         metadata(&(pd_table.vel_fb), last_pd);
   //ADD_PROCESS_VAR(("input_pins", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
 
   ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
@@ -452,6 +456,10 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
 
   uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
 
+  for(int i = 0 ; i < memory.discovery.input ; i++){
+     input[i] = 0x00;
+  }
+
   *(input++) = fault;
   *input = 0x00;
 
@@ -467,12 +475,11 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
 
   while(*ptocp != 0x0000) {
     process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
-
+    
     if (IS_INPUT(pd)) {
       uint16_t data_addr = pd->data_addr;
       uint8_t data_size = pd->data_size;
       uint8_t data_bit_ptr = 0;
-
       while(data_size > 0) {
         uint8_t bits_to_pack = data_size < BITSLEFT(input_bit_ptr) ? data_size : BITSLEFT(input_bit_ptr);
         if (BITSLEFT(data_bit_ptr) < bits_to_pack) { bits_to_pack = BITSLEFT(data_bit_ptr); }
@@ -524,19 +531,21 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
   }
 }
 
-float scale_out(pd_metadata_t pd, uint32_t uval) {
-   //TODO: unsigned data
-  int32_t val;
-  val = *((int32_t*)&uval);
+#define UNSIGNED(pd) (pd.ptr->data_type == DATA_TYPE_UNSIGNED || pd.ptr->data_type == DATA_TYPE_NONVOL_UNSIGNED)
+
+float scale_out(pd_metadata_t pd, int32_t val) {
+  return val * pd.range / (float)pd.bitmax;
+} 
+
+uint32_t scale_in(pd_metadata_t pd, float val) {
+  //TODO: unsigned data
   float min = pd.ptr->param_min;
   float max = pd.ptr->param_max;
-  float range = pd.range;
-  uval = val + pd.bitmax/2;
-  return uval * range / (float)pd.bitmax + min - (max+min)/2.0;
-}  
-
-uint32_t scale_in(pd_metadata_t pd, float val) { 
-  return (val - pd.ptr->param_min)/pd.range * pd.bitmax;
+  
+  val = CLAMP(val,min,max);
+  float scale = MAX(-min,max);
+  int32_t foo = val * pd.bitmax / 2 / scale;
+  return *((uint32_t*)&foo);
 }
 
 
@@ -547,7 +556,8 @@ RT (
 
   // update all hal pins with values from their associated pds
 
-  PIN(pos_cmd) = scale_out(pd_table.pos_cmd, MEMU32(pd_table.pos_cmd.ptr->data_addr));
+  PIN(pos_cmd) = scale_out(pd_table.pos_cmd, (int16_t)(MEMU16(pd_table.pos_cmd.ptr->data_addr)));
+  PIN(vel_cmd) = scale_out(pd_table.vel_cmd, (MEMU16(pd_table.vel_cmd.ptr->data_addr)));
 
   uint8_t outpins = MEMU8(pd_table.output_pins.ptr->data_addr);
   PIN(out0) = outpins & 1 ? 1.0 : 0.0;
@@ -557,12 +567,9 @@ RT (
 
   // todo: how to handle bidirectional pins properly?
 
-  uint32_t val = (uint32_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
-  MEMU8(pd_table.pos_fb.ptr->data_addr)   = (val & 0xff);
-  MEMU8(pd_table.pos_fb.ptr->data_addr+1) = (val & 0xff00) >> 8;
-  MEMU8(pd_table.pos_fb.ptr->data_addr+2) = (val & 0xff0000) >> 16;
-  MEMU8(pd_table.pos_fb.ptr->data_addr+3) = (val & 0xff000000) >> 24;
-  
+  //uint32_t val = (uint32_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
+  //*((uint32_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = val;
+  *((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)PIN(pos_fb);
 
 /*
 
@@ -691,8 +698,8 @@ NRT(
     PIN(dump_pd_vals) = 0.0;
 
 
-    printf_("pos_fb scaled: %h\n", (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb)));
-    printf_("pos_cmd raw %h scaled: %f\n", MEMU16(pd_table.pos_cmd.ptr->data_addr), scale_out(pd_table.pos_cmd, pd_table.pos_cmd.ptr->data_addr));
+    printf_("pos_cmd: %f\n", PIN(pos_cmd));
+    printf_("vel_cmd: %f\n", PIN(vel_cmd));
 
 
     uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
