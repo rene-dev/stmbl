@@ -406,8 +406,8 @@ INIT(
   ADD_MODE(("io_", 1, 1));
 
   // automatically create padding pds based on the mod remainder of input/output bits
-  if (input_bits % 8)  ADD_PROCESS_VAR(("", "", 8 -  input_bits, DATA_TYPE_PAD, DATA_DIRECTION_INPUT,  0, 0));
-  if (output_bits % 8) ADD_PROCESS_VAR(("", "", 8 - output_bits, DATA_TYPE_PAD, DATA_DIRECTION_OUTPUT, 0, 0));
+  if (input_bits % 8)  ADD_PROCESS_VAR(("", "", 8 -  (input_bits%8), DATA_TYPE_PAD, DATA_DIRECTION_INPUT,  0, 0));
+  if (output_bits % 8) ADD_PROCESS_VAR(("", "", 8 - (output_bits%8), DATA_TYPE_PAD, DATA_DIRECTION_OUTPUT, 0, 0));
 
   // now that all the toc entries have been added, write out the tocs to memory and set up the toc pointers
 
