@@ -467,7 +467,7 @@ void send(uint8_t len, uint8_t docrc){
 
 void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *output) {
   uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
-
+  uint32_t local_rxpos = rxpos;
   *(input++) = fault;
   *input = 0x00;
 
@@ -518,13 +518,18 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
         uint8_t mask = ((1<<bits_to_unpack) - 1) << (output_bit_ptr);
 
         // val is what we get when we mask off output and then shift it to the proper place.  
-        val = val | ((*output & mask) >> (output_bit_ptr)) << (8-val_bits_remaining); 
+        val = val | ((rxbuf[(local_rxpos+1)%sizeof(rxbuf)] & mask) >> (output_bit_ptr)) << (8-val_bits_remaining); 
 
         val_bits_remaining -= bits_to_unpack;
         data_size -= bits_to_unpack;
         output_bit_ptr += bits_to_unpack;
-      
-        if((output_bit_ptr %= 8) == 0) output++;
+        // rxpos is a ringbuf and wraps around
+        // note: this replaces the output argument
+        if((output_bit_ptr %= 8) == 0){
+           local_rxpos++;
+           local_rxpos = local_rxpos % sizeof(rxbuf);
+        }
+        
 
         if(val_bits_remaining == 0 || data_size == 0) {
           MEMU8(data_addr++) = val;
