@@ -95,10 +95,10 @@ int main(void)
 
    #include "comps/cauto.comp"
 
-   #include "comps/pderiv.comp"
+   //#include "comps/pderiv.comp"
    //#include "comps/pderiv.comp"
    #include "comps/vel.comp"
-
+   #include "comps/vel.comp"
    #include "comps/pid.comp"
    #include "comps/pmsm_t2c.comp"
 

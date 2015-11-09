@@ -6,18 +6,24 @@ void link_pid(){
    // cmd
    link_hal_pins("conf0.cmd_rev", "rev0.rev");
 
-   link_hal_pins("rev0.out", "pderiv0.in");
-   link_hal_pins("rev0.out", "net0.cmd");
+//   link_hal_pins("rev0.out", "pderiv0.in");
+//   link_hal_pins("rev0.out", "net0.cmd");
+   link_hal_pins("vel0.pos_out", "net0.cmd");
+   
 
-   link_hal_pins("net0.cmd", "pderiv0.in");
-   link_hal_pins("pderiv0.out", "net0.cmd_d");
+//   link_hal_pins("net0.cmd", "pderiv0.in");
+//   link_hal_pins("pderiv0.out", "net0.cmd_d");
 
    link_hal_pins("conf0.max_vel", "stp0.max_vel");
    link_hal_pins("conf0.max_acc", "stp0.max_acc");
 
-   link_hal_pins("conf0.max_vel", "pderiv0.vel_max");
-   link_hal_pins("conf0.max_acc", "pderiv0.acc_max");
-   set_hal_pin("pderiv0.in_lp", 0.8);
+//   link_hal_pins("conf0.max_vel", "pderiv0.vel_max");
+//   link_hal_pins("conf0.max_acc", "pderiv0.acc_max");
+//   set_hal_pin("pderiv0.in_lp", 0.8);
+   link_hal_pins("rev0.out", "vel0.pos_in");
+   link_hal_pins("fault0.enable_pid", "vel0.en");
+   link_hal_pins("vel0.vel", "net0.cmd_d");
+   set_hal_pin("vel0.w", 500.0);
 
 
    link_hal_pins("net0.cmd","pid0.pos_ext_cmd");
@@ -29,17 +35,17 @@ void link_pid(){
    // fb
    link_hal_pins("conf0.fb_rev", "rev1.rev");
 
-   link_hal_pins("rev1.out", "vel0.pos_in");
-   link_hal_pins("fault0.enable_pid", "vel0.en");
+   link_hal_pins("rev1.out", "vel1.pos_in");
+   link_hal_pins("fault0.enable_pid", "vel1.en");
 
    //link_hal_pins("cauto0.fb_out", "net0.fb");
    //link_hal_pins("net0.fb", "pderiv1.in");
    //link_hal_pins("pderiv1.out", "net0.fb_d");
-   link_hal_pins("vel0.pos_out", "cauto0.fb_in");
+   link_hal_pins("vel1.pos_out", "cauto0.fb_in");
 
-   link_hal_pins("conf0.j", "vel0.j");
-   link_hal_pins("pmsm0.torque", "vel0.torque");
-   link_hal_pins("vel0.vel", "net0.fb_d");
+   link_hal_pins("conf0.j", "vel1.j");
+   link_hal_pins("pmsm0.torque", "vel1.torque");
+   link_hal_pins("vel1.vel", "net0.fb_d");
    link_hal_pins("cauto0.fb_out", "net0.fb");
 
    //link_hal_pins("conf0.max_vel", "pderiv1.vel_max");
@@ -375,7 +381,7 @@ void set_baldor(){ // TODO
    set_hal_pin("conf0.cur_ff", 1.0);
    set_hal_pin("conf0.cur_i", 0.0);
    set_hal_pin("conf0.cur_ind", 0.9);
-   set_hal_pin("vel0.w", 1000.0);
+   set_hal_pin("vel1.w", 1000.0);
    set_fb_res();
 }
 
