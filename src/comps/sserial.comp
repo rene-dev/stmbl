@@ -102,7 +102,6 @@ HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, ne
 HAL_PIN(timeout) = 100.0;// 20khz / 1khz * 2 reads = 40
 
 HAL_PIN(pos_cmd) = 0.0;
-HAL_PIN(vel_cmd) = 0.0;
 HAL_PIN(pos_fb) = 0.0;
 HAL_PIN(vel_fb) = 0.0;
 
@@ -161,7 +160,6 @@ typedef struct {
 
 typedef struct {
   pd_metadata_t pos_cmd;
-  pd_metadata_t vel_cmd;
   pd_metadata_t scale;
   pd_metadata_t pos_fb;
   pd_metadata_t vel_fb;
@@ -394,11 +392,10 @@ INIT(
   process_data_descriptor_t *last_pd;
 
   ADD_PROCESS_VAR(("output_pins", "none", 2, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
-  ADD_PROCESS_VAR(("pos_cmd", "mm", 10, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10, 10));        metadata(&(pd_table.pos_cmd), last_pd);
-  //ADD_PROCESS_VAR(("scale", "rev/mm", 32, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -10000, 10000));     metadata(&(pd_table.scale), last_pd);
+  ADD_PROCESS_VAR(("pos_cmd", "rad", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -3.2, 3.2));        metadata(&(pd_table.pos_cmd), last_pd);
   
-  ADD_PROCESS_VAR(("input_pins", "none", 2, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
-  ADD_PROCESS_VAR(("pos_fb", "mm", 12, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -10, 10));          metadata(&(pd_table.pos_fb), last_pd);
+  ADD_PROCESS_VAR(("input_pins", "none", 2, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, -100, 100));         metadata(&(pd_table.input_pins), last_pd);
+  ADD_PROCESS_VAR(("pos_fb", "rad", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -3.2, 3.2));          metadata(&(pd_table.pos_fb), last_pd);
   //ADD_PROCESS_VAR(("input_pins", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
 
   ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
