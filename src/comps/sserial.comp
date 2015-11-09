@@ -435,21 +435,19 @@ INIT(
   timeout = 1000;
 );
 
-uint8_t crc8( uint8_t *addr, uint8_t len) {
-   uint8_t crc=0;
-   for (uint8_t i=0; i<len;i++)
-   {
-      uint8_t inbyte = addr[i];
-      for (uint8_t j=0;j<8;j++)
-      {
-         uint8_t mix = (crc ^ inbyte) & 0x01;
-         crc >>= 1;
-         if (mix)
-            crc ^= 0x8C;
-         inbyte >>= 1;
-      }
+uint8_t crc_reuest(uint8_t len) {
+   uint8_t crc = crc_init();
+   for(int i = rxpos; i < rxpos+len; i++){
+      crc = crc_update(crc, (void*)&(rxbuf[i%sizeof(rxbuf)]), 1);  
    }
-   return crc;
+   crc_finalize(crc);
+   return crc == rxbuf[(rxpos+len)%sizeof(rxbuf)];
+}
+
+uint8_t crc8( uint8_t *addr, uint8_t len) {
+   uint8_t crc = crc_init();
+   crc = crc_update(crc, addr, len);
+   return crc_finalize(crc);
 }
 
 void send(uint8_t len, uint8_t docrc){
@@ -654,13 +652,15 @@ FRT(
               send(sizeof(memory.discovery),1);
               rxpos += 2;
           }else if(lbp.byte == ProcessDataRPC && available >= memory.discovery.output + 2){//process data, requires cmd+output bytes+crc
-            if(crc8((uint8_t *)&(rxbuf[rxpos]),memory.discovery.output + 1) == rxbuf[rxpos + memory.discovery.output + 1]){
-               process_data_rpc(0x00, txbuf, &(rxbuf[rxpos+1])); // todo: send a proper fault byte?
-               send(memory.discovery.input,1);
-            }else{
-               PIN(crc_error)++;
-            }
-            rxpos += memory.discovery.output + 2;
+             //TODO: maybe packing and unpacking can be moved to RT
+             process_data_rpc(0x00, txbuf, &(rxbuf[rxpos+1])); // todo: send a proper fault byte?
+             send(memory.discovery.input,1);
+             //we cannot send the reply based on crc, as this causes timeouts
+             //instead we should check for errors in RT
+             if(!crc_reuest(memory.discovery.output + 1)){
+                PIN(crc_error)++;
+             }
+             rxpos += memory.discovery.output + 2;
           }else{
              continue;
           }

@@ -25,6 +25,7 @@
 #include "setup.h"
 #include "eeprom.h"
 #include "link.h"
+#include "crc.h"
 #include <math.h>
 
 #include "stm32_ub_usb_cdc.h"
