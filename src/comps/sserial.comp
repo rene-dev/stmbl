@@ -628,9 +628,11 @@ FRT(
          //0xFF and 0xFC are not followed by crc
          if(rxbuf[rxpos] == 0xFF){
             // reset parser
+            timeout = 0;
             rxpos += 1;
          }else if(rxbuf[rxpos] == 0xFC){
             // todo
+            timeout = 0;
             rxpos += 1;
          }else if(available >= 3){//writes do not expect crc in reply
             txbuf[0] = 0x00;
