@@ -60,8 +60,8 @@ burn: main.elf
 	st-flash --reset write $(PROJ_NAME).bin 0x8000000
 
 btburn: main.elf
-	printf "bootloader\r" > /dev/cu.usbmodem1411 || true
-	printf "bootloader\r" > /dev/cu.usbmodem1421 || true
+	#change this to your device
+	printf "bootloader\r" > /dev/cu.usbmodem* || true
 	sleep 1
 	dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D main.bin
 
