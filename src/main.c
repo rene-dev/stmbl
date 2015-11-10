@@ -77,7 +77,7 @@ int main(void)
 
    #include "comps/sserial.comp"
    //#include "comps/adc.comp"
-   #include "comps/encs.comp"
+
 
    #include "comps/fault.comp"
    //#include "comps/enc_cmd.comp"
@@ -99,6 +99,7 @@ int main(void)
    //#include "comps/pderiv.comp"
    #include "comps/vel.comp"
    #include "comps/vel.comp"
+   #include "comps/encs.comp"
    #include "comps/pid.comp"
    #include "comps/pmsm_t2c.comp"
 
