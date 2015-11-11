@@ -28,25 +28,34 @@ RT(
    c = PIN(cos);
 	a = s * s + c * c;
 
+	float p = MAX(1.0, PIN(poles));
+
 	if(a < 0.3 * 0.3){
 		PIN(error) = 1.0;
 	}
 	else{
 		PIN(error) = 0.0;
-      if(PIN(poles) == 1.0f){
+      if(p == 1.0f){
          PIN(pos) = atan2f(s, c);
       }else{
          int q = PIN(quad);// current quadrant
-      
+
          if(lastq == 2 && q == 3)
             abspos++;
          if(lastq == 3 && q == 2)
             abspos--;
-      
+
+			if(abspos >= p){
+				abspos = 0;
+			}
+			if(abspos <= -1){
+				abspos = p - 1;
+			}
+
          lastq = q;
          //TODO: clamp abspos
          float absa = atan2f(s, c) + abspos * M_PI * 2.0f;
-         PIN(pos) = mod(absa/PIN(poles));
+         PIN(pos) = mod(absa/p);
       }
 	}
 	PIN(amp) = a;

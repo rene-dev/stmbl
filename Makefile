@@ -61,7 +61,7 @@ burn: main.elf
 
 btburn: main.elf
 	#change this to your device
-	printf "bootloader\r" > /dev/cu.usbmodem* || true
+	printf "bootloader\r" > `ls /dev/cu.usbmodem*` || true
 	sleep 1
 	dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D main.bin
 
