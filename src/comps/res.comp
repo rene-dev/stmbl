@@ -8,28 +8,24 @@ COMP(res);
 
 HAL_PIN(pos) = 0.0;
 HAL_PIN(amp) = 0.0;
+HAL_PIN(quad) = 0.0;
+HAL_PIN(poles) = 1.0;
 
-/*HAL_PIN(sin0) = 0.0;
-HAL_PIN(cos0) = 0.0;
-HAL_PIN(sin1) = 0.0;
-HAL_PIN(cos1) = 0.0;
-HAL_PIN(sin2) = 0.0;
-HAL_PIN(cos2) = 0.0;*/
 HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
+MEM(int lastq) = 0;// last quadrant
+MEM(int abspos) = 0;// multiturn position
 
 RT(
-	//GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
-
 	float s = 0.0;
 	float c = 0.0;
 	float a = 0.0;
 
 	s = PIN(sin);
-  c = PIN(cos);
+   c = PIN(cos);
 	a = s * s + c * c;
 
 	if(a < 0.3 * 0.3){
@@ -37,7 +33,21 @@ RT(
 	}
 	else{
 		PIN(error) = 0.0;
-		PIN(pos) = atan2f(s, c);
+      if(PIN(poles) == 1.0f){
+         PIN(pos) = atan2f(s, c);
+      }else{
+         int q = PIN(quad);// current quadrant
+      
+         if(lastq == 2 && q == 3)
+            abspos++;
+         if(lastq == 3 && q == 2)
+            abspos--;
+      
+         lastq = q;
+         //TODO: clamp abspos
+         float absa = atan2f(s, c) + abspos * M_PI * 2.0f;
+         PIN(pos) = mod(absa/PIN(poles));
+      }
 	}
 	PIN(amp) = a;
 );

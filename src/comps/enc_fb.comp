@@ -6,6 +6,7 @@ HAL_PIN(pos) = 0.0;
 HAL_PIN(ipos) = 0.0;
 HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
+HAL_PIN(quad) = 0.0;
 HAL_PIN(error) = 0.0;
 HAL_PIN(amp) = 0.0;
 

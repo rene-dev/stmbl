@@ -305,6 +305,7 @@ void set_fb_enc(){
 void set_fb_sincos(){
    link_hal_pins("adc0.sin3", "enc_fb0.sin");
    link_hal_pins("adc0.cos3", "enc_fb0.cos");
+   link_hal_pins("adc0.quad", "enc_fb0.quad");
 
    link_hal_pins("enc_fb0.ipos", "rev1.in");
    link_hal_pins("conf0.fb_res", "enc_fb0.res");
@@ -319,6 +320,7 @@ void set_fb_res(){
 
    link_hal_pins("adc0.sin", "res0.sin");
    link_hal_pins("adc0.cos", "res0.cos");
+   link_hal_pins("adc0.quad", "res0.quad");
    link_hal_pins("res0.error", "net0.fb_error");
    set_hal_pin("adc0.res_en", 1.0);
 }
@@ -641,6 +643,35 @@ void set_festo(){ // TODO
    set_hal_pin("conf0.cur_ind", 0.9);
    set_hal_pin("conf0.autophase", 0.0);
    set_hal_pin("conf0.fb_offset", 1.324);
+   set_fb_res();
+}
+
+//siemens 1fk6042-6af71-1sa0
+void set_siemens(){
+   set_hal_pin("conf0.polecount", 3.0);
+   set_hal_pin("conf0.max_vel", RPM(8500));//data
+   set_hal_pin("conf0.max_acc", RPM(8500) / 0.01);//data
+   set_hal_pin("conf0.max_force", 10.6);//data
+   set_hal_pin("conf0.max_ac_cur", 9.5);//data
+
+   set_hal_pin("conf0.fb_type", RES1);
+   set_hal_pin("conf0.fb_rev", 0.0);
+   set_hal_pin("conf0.fb_res", 4096.0);
+   set_hal_pin("conf0.r", 3.65);//data
+   set_hal_pin("conf0.l", 0.0135);//data
+   set_hal_pin("conf0.j", KGCM2(0.33));//data
+   set_hal_pin("conf0.psi", 0.38 / 2.0 / M_PI);//data
+
+   set_hal_pin("conf0.pos_p", 150.0);
+   set_hal_pin("conf0.acc_p", 0.2);
+   set_hal_pin("conf0.acc_pi", 100.0);
+   set_hal_pin("conf0.cur_p", 0.5);
+   set_hal_pin("conf0.cur_i", 0.001);
+   set_hal_pin("conf0.cur_ff", 1.0);
+   set_hal_pin("conf0.cur_ind", 0.9);
+   set_hal_pin("conf0.autophase", 0.0);
+   set_hal_pin("conf0.fb_offset", 3.1);
+   set_hal_pin("res0.poles", 3.0f);
    set_fb_res();
 }
 

@@ -25,6 +25,7 @@ void set_hauser();
 void set_hauser_stefan();
 void set_kuka();
 void set_festo();
+void set_siemens();
 void set_manutec();
 void set_bergerlahr();
 void set_sankyo();
