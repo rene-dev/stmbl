@@ -179,12 +179,12 @@ int ServoFrame::send(string& s,bool h){
         int ret1 = sp_nonblocking_write(port, s.c_str(), s.length());
         int ret2 = sp_nonblocking_write(port, "\r", 1);
         if(ret1 != s.length() || ret2!=1){
-            wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
+            wxMessageBox( wxT("Error while sending"), wxT("Error"), wxICON_EXCLAMATION);
             disconnect();
             return 0;
         }
     }else{
-        wxMessageBox( wxT("Nicht verbunden"), wxT("Error"), wxICON_EXCLAMATION);
+        wxMessageBox( wxT("Not connected"), wxT("Error"), wxICON_EXCLAMATION);
         return 0;
     }
     return 1;
@@ -240,12 +240,12 @@ void ServoFrame::OnReset(wxCommandEvent& WXUNUSED(event)){
 
 
       if(ret1 != s1.length() || ret2!=1 || ret3 != s2.length() || ret4!=1){
-          wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
+          wxMessageBox( wxT("Error while sending"), wxT("Error"), wxICON_EXCLAMATION);
           disconnect();
           return;
       }
   }else{
-      wxMessageBox( wxT("Nicht verbunden"), wxT("Error"), wxICON_EXCLAMATION);
+      wxMessageBox( wxT("Not connected"), wxT("Error"), wxICON_EXCLAMATION);
       return;
   }
   return;
@@ -283,7 +283,7 @@ void ServoFrame::connect(){
 	if(choose_port->IsEmpty())
         return;
     port = ports[choose_port->GetSelection()];
-	if(sp_open(port, SP_MODE_READ_WRITE) == SP_OK){//port da und lässt sich öffnen
+	if(sp_open(port, SP_MODE_READ_WRITE) == SP_OK){//port available and can be opened
 		wxString str;
 		str = sp_get_port_description(port);
 		config->Write("port", str);
@@ -304,7 +304,7 @@ void ServoFrame::connect(){
 		textinput->SetFocus();
         timer->Start(50);
 	}else{
-		wxMessageBox( wxT("Fehler beim Öffnen"), wxT("Error"), wxICON_EXCLAMATION);
+		wxMessageBox( wxT("Cannot open port"), wxT("Error"), wxICON_EXCLAMATION);
 		listports();
 	}
 }
