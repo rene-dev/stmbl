@@ -9,7 +9,7 @@ void link_pid(){
 //   link_hal_pins("rev0.out", "pderiv0.in");
 //   link_hal_pins("rev0.out", "net0.cmd");
    link_hal_pins("vel0.pos_out", "net0.cmd");
-   
+
 
 //   link_hal_pins("net0.cmd", "pderiv0.in");
 //   link_hal_pins("pderiv0.out", "net0.cmd_d");
@@ -659,11 +659,11 @@ void set_siemens(){
    set_hal_pin("conf0.fb_res", 4096.0);
    set_hal_pin("conf0.r", 3.65);//data
    set_hal_pin("conf0.l", 0.0135);//data
-   set_hal_pin("conf0.j", KGCM2(0.33));//data
-   set_hal_pin("conf0.psi", 0.38 / 2.0 / M_PI);//data
+   set_hal_pin("conf0.j", KGCM2(3.3));//data
+   set_hal_pin("conf0.psi", 0.2);//data
 
    set_hal_pin("conf0.pos_p", 150.0);
-   set_hal_pin("conf0.acc_p", 0.2);
+   set_hal_pin("conf0.acc_p", 0.5);
    set_hal_pin("conf0.acc_pi", 100.0);
    set_hal_pin("conf0.cur_p", 0.5);
    set_hal_pin("conf0.cur_i", 0.001);
@@ -671,7 +671,7 @@ void set_siemens(){
    set_hal_pin("conf0.cur_ind", 0.9);
    set_hal_pin("conf0.autophase", 0.0);
    set_hal_pin("conf0.fb_offset", 3.1);
-   set_hal_pin("res0.poles", 3.0f);
+   set_hal_pin("res0.poles", 3.0);
    set_fb_res();
 }
 
