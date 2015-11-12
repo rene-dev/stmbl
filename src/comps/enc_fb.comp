@@ -7,8 +7,13 @@ HAL_PIN(ipos) = 0.0;
 HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
 HAL_PIN(quad) = 0.0;
+HAL_PIN(oquad) = 0.0;
+HAL_PIN(oquadoff) = 0.0;
+HAL_PIN(qdiff) = 0.0;
 HAL_PIN(error) = 0.0;
 HAL_PIN(amp) = 0.0;
+HAL_PIN(s) = 0.0;
+HAL_PIN(c) = 0.0;
 
 
 MEM(int e_res) = 0.0;
@@ -61,8 +66,9 @@ INIT(
 );
 
 RT(
+  uint32_t tim = TIM_GetCounter(ENC1_TIM);
+  uint32_t scgpio = GPIOC->IDR;
   float p = 0.0;
-
   int r = (int)PIN(res);
   if(r < 1){
 	  r = 1;
@@ -78,8 +84,30 @@ RT(
   float a = sqrtf(s * s + c * c);
 
   PIN(amp) = a;
+  int q;
+  //(TIM_GetCounter(ENC1_TIM)+(int)PIN(oquadoff))%4+1;
   
-  p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res);
+  if(!(scgpio & GPIO_Pin_6)){
+     if(scgpio & GPIO_Pin_7)
+       q = 1;
+     else
+       q = 2;
+  }else{
+     if(scgpio & GPIO_Pin_7)
+       q = 4;
+     else
+       q = 3;
+  }
+  
+  int qdiff = PIN(quad)-q;
+  PIN(qdiff) = qdiff;
+  
+  PIN(s) = (GPIOC->IDR & GPIO_Pin_6)?0:1;
+  PIN(c) = (GPIOC->IDR & GPIO_Pin_7)?1:0;
+  
+  PIN(oquad) = q;
+  
+  p = mod(tim * 2.0f * M_PI / (float)e_res);
   PIN(pos) = p;
 
   if(a < 0.15){
