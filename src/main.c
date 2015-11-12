@@ -113,7 +113,7 @@ int main(void)
    #include "comps/idq.comp"
 
 
-   #include "comps/pwm2uart.comp"
+   #include "comps/hv.comp"
 
    //#include "comps/var.comp"
 

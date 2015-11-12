@@ -1,4 +1,4 @@
-COMP(pwm2uart);
+COMP(hv);
 
 HAL_PIN(a) = 0.0;
 HAL_PIN(b) = 0.0;
@@ -10,6 +10,9 @@ HAL_PIN(dc_cur) = 0.0;
 HAL_PIN(dc_volt) = 0.0;
 HAL_PIN(ac_volt) = 0.0;
 HAL_PIN(hv_temp) = 0.0;
+
+HAL_PIN(rev) = 0.0;
+
 
 #ifdef TROLLER
 HAL_PIN(iu) = 0.0;
@@ -147,9 +150,16 @@ RT(
       PIN(error) = 1.0;
    }
 
+   float a = PIN(a);
+   float b = PIN(b);
+   
+   if(PIN(rev) > 0.0){
+      b *= -1.0;
+   }
+   
   if(e > 0.0){
-    packet_to_hv.data.a = TOFIXED(PIN(a));
-    packet_to_hv.data.b = TOFIXED(PIN(b));
+    packet_to_hv.data.a = TOFIXED(a);
+    packet_to_hv.data.b = TOFIXED(b);
   }
   else{
     packet_to_hv.data.a = 0;
