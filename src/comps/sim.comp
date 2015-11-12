@@ -18,7 +18,7 @@ RT(
   amp = PIN(amp) * 0.001 + amp * 0.999;
   freq = PIN(freq) * 0.001 + freq * 0.999;
   float sin;
-  float r = PIN(res);
+  float r = MAX(PIN(res), 1);
 
   time += period;
 

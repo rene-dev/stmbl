@@ -947,23 +947,25 @@ void set_kollmorgen(){ // b 404 s
    set_hal_pin("conf0.max_ac_cur", 55.9);
 
    set_hal_pin("conf0.fb_type", RES1);
-   set_hal_pin("conf0.fb_rev", 0.0);
+   set_hal_pin("conf0.fb_rev", 1.0);
    set_hal_pin("conf0.fb_res", 4096.0);
    set_hal_pin("conf0.r", 0.34/2.0);
    set_hal_pin("conf0.l", 0.0084/2.0);
    set_hal_pin("conf0.j", 0.000656);
    set_hal_pin("conf0.psi", 0.1);
 
-   set_hal_pin("conf0.pos_p", 150.0);
-   set_hal_pin("conf0.acc_p", 0.05);
+   set_hal_pin("conf0.pos_p", 200.0);
+   set_hal_pin("conf0.acc_p", 0.4);
    set_hal_pin("conf0.acc_pi", 100.0);
    set_hal_pin("conf0.cur_p", 0.5);
    set_hal_pin("conf0.cur_i", 0.001);
    set_hal_pin("conf0.cur_ff", 1.0);
    set_hal_pin("conf0.cur_ind", 0.9);
-   set_hal_pin("conf0.autophase", 1.0);
-   set_hal_pin("conf0.fb_offset", 1.324);
-   set_hal_pin("cauto0.cur", 5);
-   set_hal_pin("cauto0.time", 2);
+   set_hal_pin("conf0.autophase", 0.0);
+   set_hal_pin("conf0.fb_offset", 0.3);
+   set_hal_pin("conf0.max_dc_cur", 20);
+   set_hal_pin("conf0.max_sat", 0.5);
+   set_hal_pin("pid0.p", 1.0);
+   
    set_fb_res();
 }
