@@ -827,14 +827,15 @@ void set_mitsubishi(){ // TODO
    set_hal_pin("conf0.j", KGCM2(0.5));
    set_hal_pin("conf0.psi", 0.3 / 2.0 / M_PI); //0.3
 
-   set_hal_pin("conf0.pos_p", 50.0);
-   set_hal_pin("conf0.acc_p", 0.1);
-   set_hal_pin("conf0.acc_pi", 50.0);
+   set_hal_pin("conf0.pos_p", 150.0);
+   set_hal_pin("conf0.acc_p", 1.0);
+   set_hal_pin("conf0.acc_pi", 100.0);
    set_hal_pin("conf0.cur_p", 0.5);
    set_hal_pin("conf0.cur_i", 0.001);
 
-   set_hal_pin("cauto0.cur", 3.0);
-   set_hal_pin("cauto0.mag_offset", 1.638);
+   set_hal_pin("conf0.p", 1.0);
+
+   set_hal_pin("conf0.fb_offset", 1.638);
    set_hal_pin("conf0.autophase", 0.0);
    set_fb_mitsu();
 }
@@ -965,7 +966,7 @@ void set_kollmorgen(){ // b 404 s
    set_hal_pin("conf0.fb_offset", 0.3);
    set_hal_pin("conf0.max_dc_cur", 20);
    set_hal_pin("conf0.max_sat", 0.5);
-   set_hal_pin("pid0.p", 1.0);
+   set_hal_pin("conf0.p", 1.0);
    
    set_fb_res();
 }
