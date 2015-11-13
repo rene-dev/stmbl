@@ -168,6 +168,7 @@ void link_pid(){
    link_hal_pins("pmsm0.indd", "curpid0.indd_fb");
    link_hal_pins("pmsm0.indq", "curpid0.indq_fb");
    link_hal_pins("conf0.polecount", "pmsm0.polecount");
+   link_hal_pins("pmsm0.iq", "hv0.iq");
 
    // pmsm_limits
    link_hal_pins("conf0.r", "pmsm_limits0.r");

@@ -10,6 +10,9 @@ HAL_PIN(dc_cur) = 0.0;
 HAL_PIN(dc_volt) = 0.0;
 HAL_PIN(ac_volt) = 0.0;
 HAL_PIN(hv_temp) = 0.0;
+HAL_PIN(power) = 0.0;
+HAL_PIN(dc_cur_sim) = 0.0;
+HAL_PIN(iq) = 0.0;
 
 HAL_PIN(rev) = 0.0;
 
@@ -135,7 +138,7 @@ RT(
    if(packet_from_hv.head.start == 255){
       unbuff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
       packet_from_hv.head.start = 0;
-      PIN(dc_cur) = TOFLOAT(packet_from_hv.data.dc_cur);
+      PIN(dc_cur) = TOFLOAT(packet_from_hv.data.dc_cur)*0.5 + PIN(dc_cur)*0.5;
       PIN(dc_volt) = TOFLOAT(packet_from_hv.data.dc_volt);
       PIN(ac_volt) = PIN(dc_volt) / 2.0 * 0.95 * 1.15;
       PIN(hv_temp) = TOFLOAT(packet_from_hv.data.hv_temp);
@@ -176,6 +179,9 @@ RT(
   DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
   DMA_ClearFlag(UART_DRV_RX_DMA, UART_DRV_RX_DMA_TCIF);
   DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
+  
+  PIN(power) = PIN(dc_cur) * PIN(dc_volt);
+  PIN(dc_cur_sim) = PIN(iq) / PIN(ac_volt) * sqrtf(a*a + b*b);
 );
 
 ENDCOMP;
