@@ -66,8 +66,9 @@ INIT(
 );
 
 RT(
-  uint32_t tim = TIM_GetCounter(ENC1_TIM);
+  int32_t tim = TIM_GetCounter(ENC1_TIM);//TODO: interrupt here?
   uint32_t scgpio = GPIOC->IDR;
+
   float p = 0.0;
   int r = (int)PIN(res);
   if(r < 1){
@@ -85,25 +86,49 @@ RT(
 
   PIN(amp) = a;
   int q;
-  //(TIM_GetCounter(ENC1_TIM)+(int)PIN(oquadoff))%4+1;
   
   if(!(scgpio & GPIO_Pin_6)){
-     if(scgpio & GPIO_Pin_7)
-       q = 1;
-     else
-       q = 2;
+    if(scgpio & GPIO_Pin_7){
+      q = 1;
+    }
+    else{
+      q = 2;
+    }
   }else{
-     if(scgpio & GPIO_Pin_7)
-       q = 4;
-     else
-       q = 3;
+    if(scgpio & GPIO_Pin_7){
+      q = 4;
+    }
+    else{
+      q = 3;
+    }
   }
   
   int qdiff = PIN(quad)-q;
+  
+  switch(qdiff){
+     case 1:
+     case -3:
+     tim++;
+     break;
+     case -1:
+     case 3:
+     tim--;
+     break;
+     default:
+     break;
+  }
+  
+  if(tim >= e_res){
+     tim = 0;
+  }
+  else if(tim < 0){
+     tim = e_res - 1;
+  }
+  
   PIN(qdiff) = qdiff;
   
-  PIN(s) = (GPIOC->IDR & GPIO_Pin_6)?0:1;
-  PIN(c) = (GPIOC->IDR & GPIO_Pin_7)?1:0;
+  PIN(s) = (scgpio & GPIO_Pin_6)?0:1;
+  PIN(c) = (scgpio & GPIO_Pin_7)?1:0;
   
   PIN(oquad) = q;
   
