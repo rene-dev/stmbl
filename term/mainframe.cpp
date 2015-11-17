@@ -252,7 +252,7 @@ void ServoFrame::OnReset(wxCommandEvent& WXUNUSED(event)){
 }
 
 void ServoFrame::listports(){
-	if (!ports) {
+	if (ports) {
 		sp_free_port_list(ports);
 	}
 	if(sp_list_ports(&ports) == SP_OK){
