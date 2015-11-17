@@ -21,7 +21,7 @@ class ServoFrame : public wxFrame
 {
 public:
     ServoFrame(const wxString& title);
-    int send(std::string& s,bool h = false);
+    int send(const std::string& s,bool h = false);
 private:
     wxButton *connectbutton;
     wxButton *refresh;

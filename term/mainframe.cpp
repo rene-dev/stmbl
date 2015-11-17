@@ -71,7 +71,6 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
         channelchoice.back()->Bind(wxEVT_TEXT_ENTER,&ServoFrame::OnChannelChange, this, currentID);
         channelchoice.back()->Set(waves);
         channelchoice.back()->SetSelection(0);
-        cout << channelchoice.back()->GetId() << endl;
 
         channelpos.push_back(new wxSlider(top, ++currentID, 0, -100, 100));
         channelpos.back()->Bind(wxEVT_SLIDER,&ServoFrame::OnChannelChange, this, currentID);
@@ -158,7 +157,6 @@ void ServoFrame::OnChannelChange(wxCommandEvent& event){
         default:
             break;
     }
-    //cout << "change " << channel << " " << param << " " << value << endl;
 
     string df = params[param];
     df += to_string(channel);
@@ -167,8 +165,7 @@ void ServoFrame::OnChannelChange(wxCommandEvent& event){
     send(df);
 }
 
-int ServoFrame::send(string& s,bool h){
-    cout << s << endl;
+int ServoFrame::send(const string& s,bool h){
     if(connected){
         if(h){//history
             if((history.size()==0 || history.back() != s) && !s.empty()){
@@ -230,25 +227,8 @@ void ServoFrame::OnRefresh(wxCommandEvent& WXUNUSED(event)){
 }
 
 void ServoFrame::OnReset(wxCommandEvent& WXUNUSED(event)){
-  string s1 = "fault0.reset = 1";
-  string s2 = "fault0.reset = 0";
-  if(connected){
-      int ret1 = sp_nonblocking_write(port, s1.c_str(), s1.length());
-      int ret2 = sp_nonblocking_write(port, "\r", 1);
-      int ret3 = sp_nonblocking_write(port, s2.c_str(), s2.length());
-      int ret4 = sp_nonblocking_write(port, "\r", 1);
-
-
-      if(ret1 != s1.length() || ret2!=1 || ret3 != s2.length() || ret4!=1){
-          wxMessageBox( wxT("Error while sending"), wxT("Error"), wxICON_EXCLAMATION);
-          disconnect();
-          return;
-      }
-  }else{
-      wxMessageBox( wxT("Not connected"), wxT("Error"), wxICON_EXCLAMATION);
-      return;
-  }
-  return;
+    send("fault0.reset = 1");
+    send("fault0.reset = 0");
 }
 
 void ServoFrame::listports(){
