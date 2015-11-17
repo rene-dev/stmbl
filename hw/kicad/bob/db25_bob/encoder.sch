@@ -28,6 +28,7 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:db25_bob-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -1399,44 +1400,44 @@ Wire Wire Line
 	8550 3600 8550 3500
 Wire Wire Line
 	7500 3600 7500 3500
-Text GLabel 2700 3150 2    60   Input ~ 0
+Text GLabel 2750 5250 2    60   Input ~ 0
 ENC0AO
-Text GLabel 2700 3050 2    60   Input ~ 0
+Text GLabel 2750 5450 2    60   Input ~ 0
 ENC0BO
-Text GLabel 2700 3350 2    60   Input ~ 0
+Text GLabel 2750 5050 2    60   Input ~ 0
 ENC0ZO
-Text GLabel 2700 3250 2    60   Input ~ 0
+Text GLabel 2750 4650 2    60   Input ~ 0
 ENC1AO
-Text GLabel 2700 3550 2    60   Input ~ 0
+Text GLabel 2750 4450 2    60   Input ~ 0
 ENC1BO
-Text GLabel 2700 3450 2    60   Input ~ 0
+Text GLabel 2750 4850 2    60   Input ~ 0
 ENC1ZO
-Text GLabel 2700 3750 2    60   Input ~ 0
+Text GLabel 2750 3850 2    60   Input ~ 0
 ENC2AO
-Text GLabel 2700 3650 2    60   Input ~ 0
+Text GLabel 2750 4250 2    60   Input ~ 0
 ENC2BO
-Text GLabel 2700 4050 2    60   Input ~ 0
+Text GLabel 2750 4050 2    60   Input ~ 0
 ENC2ZO
-Text GLabel 2700 3850 2    60   Input ~ 0
+Text GLabel 2750 3550 2    60   Input ~ 0
 ENC3AO
-Text GLabel 2700 4450 2    60   Input ~ 0
+Text GLabel 2750 3750 2    60   Input ~ 0
 ENC3BO
-Text GLabel 2700 4250 2    60   Input ~ 0
+Text GLabel 2750 3650 2    60   Input ~ 0
 ENC3ZO
 Wire Wire Line
-	2550 4050 2700 4050
+	2550 4050 2750 4050
 Wire Wire Line
-	2550 4250 2700 4250
+	2550 4250 2750 4250
 Wire Wire Line
-	2550 4450 2700 4450
+	2550 4450 2750 4450
 Wire Wire Line
-	2550 3850 2700 3850
+	2550 3850 2750 3850
 Wire Wire Line
-	2550 3750 2700 3750
+	2550 3750 2750 3750
 Wire Wire Line
-	2550 3650 2700 3650
+	2550 3650 2750 3650
 Wire Wire Line
-	2550 3550 2700 3550
+	2550 3550 2750 3550
 Wire Wire Line
 	2550 3450 2700 3450
 Wire Wire Line
@@ -1554,4 +1555,14 @@ Wire Wire Line
 	6250 6200 6350 6200
 Wire Wire Line
 	6250 6050 6350 6050
+Wire Wire Line
+	2550 5450 2750 5450
+Wire Wire Line
+	2550 5250 2750 5250
+Wire Wire Line
+	2550 5050 2750 5050
+Wire Wire Line
+	2550 4850 2750 4850
+Wire Wire Line
+	2550 4650 2750 4650
 $EndSCHEMATC

@@ -28,6 +28,7 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:db25_bob-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -75,39 +76,39 @@ F 3 "" H 1750 4400 60  0000 C CNN
 	1    1750 4400
 	1    0    0    -1  
 $EndComp
-Text GLabel 1850 2500 2    60   Input ~ 0
-IO0
-Text GLabel 1850 2600 2    60   Input ~ 0
-IO1
-Text GLabel 1850 2700 2    60   Input ~ 0
-IO2
-Text GLabel 1850 2800 2    60   Input ~ 0
-IO3
-Text GLabel 1850 2900 2    60   Input ~ 0
-IO4
-Text GLabel 1850 3000 2    60   Input ~ 0
-IO5
-Text GLabel 1850 3100 2    60   Input ~ 0
-IO6
 Text GLabel 1850 3200 2    60   Input ~ 0
-IO7
+IO0
 Text GLabel 1850 3300 2    60   Input ~ 0
-IO8
+IO1
 Text GLabel 1850 3500 2    60   Input ~ 0
-IO9
+IO2
 Text GLabel 1850 3700 2    60   Input ~ 0
-IO10
+IO3
 Text GLabel 1850 3900 2    60   Input ~ 0
-IO11
+IO4
 Text GLabel 1850 4100 2    60   Input ~ 0
-IO12
+IO5
 Text GLabel 1850 4300 2    60   Input ~ 0
-IO13
+IO6
 Text GLabel 1850 4500 2    60   Input ~ 0
-IO14
+IO7
 Text GLabel 1850 4700 2    60   Input ~ 0
-IO15
+IO8
 Text GLabel 1850 4900 2    60   Input ~ 0
+IO9
+Text GLabel 1850 2600 2    60   Input ~ 0
+IO10
+Text GLabel 1850 2700 2    60   Input ~ 0
+IO11
+Text GLabel 1850 2800 2    60   Input ~ 0
+IO12
+Text GLabel 1850 2900 2    60   Input ~ 0
+IO13
+Text GLabel 1850 3000 2    60   Input ~ 0
+IO14
+Text GLabel 1850 3100 2    60   Input ~ 0
+IO15
+Text GLabel 1850 2500 2    60   Input ~ 0
 IO16
 $Comp
 L ADuM1201WT U8
@@ -274,13 +275,13 @@ F 3 "" H 3500 2250 60  0000 C CNN
 	1    3500 2250
 	1    0    0    -1  
 $EndComp
-Text GLabel 2500 1050 0    60   Input ~ 0
-IO0
 Text GLabel 2500 1150 0    60   Input ~ 0
+IO0
+Text GLabel 2500 1050 0    60   Input ~ 0
 IO1
-Text GLabel 2500 1750 0    60   Input ~ 0
-IO2
 Text GLabel 2500 1850 0    60   Input ~ 0
+IO2
+Text GLabel 2500 1750 0    60   Input ~ 0
 IO3
 Text GLabel 2500 2450 0    60   Input ~ 0
 IO5
@@ -953,17 +954,17 @@ F 3 "" H 1400 7400 60  0000 C CNN
 $EndComp
 Text GLabel 1400 6350 1    60   Input ~ 0
 IO16
-Text GLabel 3650 3400 2    60   Input ~ 0
-IN0P
-Text GLabel 3650 4100 2    60   Input ~ 0
-IN1P
-Text GLabel 3650 4800 2    60   Input ~ 0
-IN2P
 Text GLabel 3650 3500 2    60   Input ~ 0
-OUT0
+IN0P
 Text GLabel 3650 4200 2    60   Input ~ 0
-OUT1
+IN1P
 Text GLabel 3650 4900 2    60   Input ~ 0
+IN2P
+Text GLabel 3650 3400 2    60   Input ~ 0
+OUT0
+Text GLabel 3650 4100 2    60   Input ~ 0
+OUT1
+Text GLabel 3650 4800 2    60   Input ~ 0
 OUT2
 $Comp
 L DIL8 P2
