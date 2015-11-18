@@ -1,3 +1,7 @@
+![Build Status](https://travis-ci.org/rene-dev/stmbl.svg)
+
+Build Log: https://travis-ci.org/rene-dev/stmbl
+
 DISCLAIMER
 ===
 THE AUTHORS OF THIS SOFTWARE ACCEPT ABSOLUTELY NO LIABILITY FOR
@@ -13,6 +17,8 @@ This software is released under the GPLv3.
 
 stmbl
 =====
+**přečtěte si seznam chyb ve wiki**
+
 **PCBs are now available, let me know if you are interested.**
 
 **IRC: #stmbl on irc.hackint.eu**
@@ -50,6 +56,7 @@ https://www.youtube.com/watch?v=seEV_i7o1NI
 * sin/cos encoder interpolation
 * Mitsubishi absolute encoders
 * Sanyo Denki absolute encoders
+* Sick HIPERFACE®
 
 ####TODO
 * AC Async
@@ -85,6 +92,7 @@ Add gcc and stlink to your $PATH
 
     cd term/
     mkdir build/
+    cd build/
     cmake ../
     make
 
