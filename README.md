@@ -1,3 +1,7 @@
+![Build Status](https://travis-ci.org/rene-dev/stmbl.svg)
+
+Build Log: https://travis-ci.org/rene-dev/stmbl
+
 DISCLAIMER
 ===
 THE AUTHORS OF THIS SOFTWARE ACCEPT ABSOLUTELY NO LIABILITY FOR
