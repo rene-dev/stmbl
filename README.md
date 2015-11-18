@@ -52,6 +52,7 @@ https://www.youtube.com/watch?v=seEV_i7o1NI
 * sin/cos encoder interpolation
 * Mitsubishi absolute encoders
 * Sanyo Denki absolute encoders
+* Sick HIPERFACE®
 
 ####TODO
 * AC Async
