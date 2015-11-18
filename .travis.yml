@@ -23,8 +23,13 @@ script:
   - "cd build/"
   - "cmake ../"
   - "make"
+
+branches:
+  only:
+    - master
+    - motsim
   
 notifications:
   irc:
     channels:
-      - "irc.hackint.org:9999#stmbl"
+      - "irc.hackint.org#stmbl"
