@@ -1,9 +1,9 @@
 language: cpp
 
 install:
-  - wget http://sigrok.org/download/source/libserialport/libserialport-0.1.0.tar.gz
-  - tar -xzvf libserialport-0.1.0.tar.gz
-  - cd libserialport-0.1.0 && ./configure --prefix=/usr && make && sudo make install
+  - git clone git://sigrok.org/libserialport
+  - cd libserialport
+  - ./autogen.sh && ./configure --prefix=/usr && make && sudo make install
   - cd ..
 
 before_install:
