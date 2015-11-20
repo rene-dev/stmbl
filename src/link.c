@@ -334,6 +334,10 @@ void set_fb_sanyo(){
    link_hal_pins("encs0.pos", "rev1.in");
 }
 
+void set_fb_yas(){
+   link_hal_pins("yaskawa0.pos", "rev1.in");
+}
+
 void set_rexroth(){
    set_hal_pin("conf0.polecount", 3.0);
    set_hal_pin("conf0.max_vel", RPM(9000));
@@ -644,6 +648,35 @@ void set_festo(){ // TODO
    set_hal_pin("conf0.autophase", 0.0);
    set_hal_pin("conf0.fb_offset", 1.324);
    set_fb_res();
+}
+
+// sgmph-01
+void set_yaskawa(){ // TODO
+   set_hal_pin("conf0.polecount", 3.0);
+   set_hal_pin("conf0.max_vel", RPM(5000));
+   set_hal_pin("conf0.max_acc", RPM(5000) / 0.01);
+   set_hal_pin("conf0.max_force", 0.955);
+   set_hal_pin("conf0.max_ac_cur", 2.8);
+
+   set_hal_pin("conf0.fb_type", RES1);
+   set_hal_pin("conf0.fb_rev", 0.0);
+   set_hal_pin("conf0.fb_res", 65536.0);
+   set_hal_pin("conf0.r", 5.5);//gemessen
+   set_hal_pin("conf0.l", 0.0133);//unbekannt
+   set_hal_pin("conf0.j", KGCM2(0.0491));//datenbaltt
+   set_hal_pin("conf0.psi", 0.41 / 2.0 / M_PI);//unbekannt
+
+   set_hal_pin("conf0.pos_p", 200.0);
+   set_hal_pin("conf0.acc_p", 0.4);
+   set_hal_pin("conf0.acc_pi", 100.0);
+   set_hal_pin("conf0.cur_p", 0.5);
+   set_hal_pin("conf0.cur_i", 0.001);
+   set_hal_pin("conf0.cur_ff", 1.0);
+   set_hal_pin("conf0.cur_ind", 0.9);
+   set_hal_pin("conf0.autophase", 0.0);
+   set_hal_pin("conf0.fb_offset", 0.0);
+   set_hal_pin("conf0.p", 1.0);
+   set_fb_yas();
 }
 
 //siemens 1fk6042-6af71-1sa0

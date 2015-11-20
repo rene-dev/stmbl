@@ -31,6 +31,7 @@ void set_bergerlahr();
 void set_sankyo();
 void set_sanyo();
 void set_sanyo_r2();
+void set_yaskawa();
 void set_mitsubishi();
 void set_br();
 void set_8MSA3M();
