@@ -21,6 +21,7 @@ HAL_PIN(start) = 0.0;
 HAL_PIN(offset) = 20.0;
 HAL_PIN(d) = 0.0;
 HAL_PIN(pos) = 0.0;
+HAL_PIN(spos) = 60;
 HAL_PIN(error) = 0.0;
 HAL_PIN(cc);
 HAL_PIN(dump) = 0;
@@ -30,6 +31,7 @@ MEM(volatile uint32_t buf2[128]);
 MEM(int pos) = 0;
 MEM(char data[800]);
 MEM(DMA_InitTypeDef DMA_InitStructurerx);
+MEM(float last_dump) = 0;
 
 INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -138,7 +140,7 @@ INIT(
         buf2[pos++] = tim_b;
      }
   }
-
+  buf2[pos++] = tim_a;
 );
 
 RT(
@@ -168,6 +170,7 @@ RT(
    DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
    DMA_Cmd(DMA2_Stream1, ENABLE);
    while (DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET);
+   
    GPIOB->BSRRH = GPIO_Pin_12;//TX disable
 
    //DMA2-Config
@@ -206,11 +209,71 @@ RT(
       // p = CLAMP((int)((18 + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES - 1);
       // d += (buf[p] & GPIO_Pin_11) != 0;
       int i = 0;
-      for(int j = 0; j < 200; j++){
-         data[j] = (buf[j] & GPIO_Pin_11)?'0':'1';
-         i++;
+      uint32_t current;
+      uint32_t last = (buf[0] & GPIO_Pin_11);
+      uint32_t first_edge = 0;
+      for(int j = 1; j < 20; j++){
+         current = (buf[j] & GPIO_Pin_11);
+         if(current != last){
+            first_edge = j;
+            break;
+         }
+         last = current;
       }
-      data[100] = 0;
+      
+      last = (buf[first_edge] & GPIO_Pin_11);
+      for(int j = first_edge+3; j < 20; j+=3){
+         current = (buf[j] & GPIO_Pin_11);
+         if(current == last && last != 0){
+            first_edge = j;
+            break;
+         }
+         last = current;
+      }
+      
+      uint32_t df = 0;
+      uint32_t ones = 0;
+      uint32_t j = 7;
+      for(int i = j;i<100;i++){
+         if(buf[i*6+first_edge+1]&GPIO_Pin_11){
+            df += 2;
+         }
+         if(buf[i*6+first_edge+4]&GPIO_Pin_11){
+            df += 1;
+         }
+         switch(df){
+            case 0:
+               data[i-j] = '!';
+               break;
+            case 1:
+               data[i-j] = '0';
+               ones = 0;
+               break;
+            case 2:
+               ones++;
+               data[i-j] = '1';
+               if(ones >= 5){
+                  ones = 0;
+                  i++;
+                  j++;
+               }
+               break;
+            case 3:
+               data[i-j] = '?';
+               break;
+            default:
+               data[i-j] = 'X';
+               break;
+         }
+         df = 0;
+         // data[i] = (buf[i*3+first_edge+1] & GPIO_Pin_11)?'1':'_';
+      }
+      data[100-j] = 0;
+      uint32_t p = 0;
+      for(int i = 0;i<16;i++){
+         p += (data[i+(uint32_t)PIN(spos)]=='1') << i;
+      }
+      PIN(pos) = (float)p/65536.0;
       // PIN(d) = d;
       // PIN(start) = start;
       // PIN(pos) = (d * M_PI * 2.0 / 131072.0) - M_PI;
@@ -219,9 +282,9 @@ RT(
 );
 
 NRT(
-   if(PIN(dump) > 0.0){
-      PIN(dump) = 0.0;
-      printf_("%s",data);
+   if(PIN(dump) != last_dump){
+      last_dump = PIN(dump);
+      printf_("%s\n",data + (uint32_t)PIN(spos));
    }
 );
 
