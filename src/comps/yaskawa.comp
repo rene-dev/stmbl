@@ -247,17 +247,20 @@ RT(
          bit = 0;
       }
       data[100-j] = 0; // terminate string
+      int pos_length = 16;
+      int pos_offset = 60;
+      
       uint32_t pos = 0;
       //extract position data
-      for(int i = 0; i < 16; i++){
-         pos += (data[i + 60]=='1') << i;
+      for(int i = 0; i < pos_length; i++){
+         pos += (data[i + pos_offset]=='1') << i;
       }
       
       if(error){
          PIN(error) = 1.0;
       }else{
          PIN(error) = 0.0;
-         PIN(pos) = (float)pos / 65536.0 * M_PI * 2.0 - M_PI;
+         PIN(pos) = (float)pos / (float)(1<<pos_length) * M_PI * 2.0 - M_PI;
       }
 );
 
