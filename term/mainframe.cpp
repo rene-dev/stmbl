@@ -106,6 +106,13 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	textinput = new wxTextCtrl((wxFrame*)bottom,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
 	textinput->Bind(wxEVT_TEXT_ENTER, &ServoFrame::OnInput, this, wxID_ANY);
 	textinput->Bind(wxEVT_KEY_DOWN, &ServoFrame::OnKeyDown, this, wxID_ANY);
+
+    //use monospace font
+    wxFont font = textinput->GetFont();
+    font = wxFont(font.GetPointSize(), wxTELETYPE, font.GetStyle(), font.GetWeight(), font.GetUnderlined());
+    textinput->SetFont(font);
+    text->SetFont(font);
+    
 	wxBoxSizer *bottomsizer = new wxBoxSizer(wxVERTICAL);
 	bottomsizer->Add(text, 1,wxEXPAND|wxALL,3);
 	bottomsizer->Add(textinput, 0,wxEXPAND|wxALL,3);
@@ -218,7 +225,9 @@ void ServoFrame::OnTimer(wxTimerEvent& evt){
                     }
                 }
             }
-		}
+        }else if(ret < 0){//disconnect on failure
+            disconnect();
+        }
 	}
 }
 
