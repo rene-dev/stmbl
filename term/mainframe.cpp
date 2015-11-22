@@ -29,6 +29,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	choose_port = new wxChoice (top, wxID_ANY);
 
 	connectbutton = new wxButton(top, wxID_ANY, wxT("&Connect"));
+    connectbutton->Disable();
 	clear = new wxButton(top, wxID_ANY, wxT("Clear"));
 	refresh = new wxButton(top, wxID_ANY, wxT("&Refresh"));
   reset = new wxButton(top, wxID_ANY, wxT("Reset Fault"));
@@ -247,15 +248,20 @@ void ServoFrame::listports(){
 	if(sp_list_ports(&ports) == SP_OK){
 		wxString str;
 		choose_port->Clear();
-		for (int i = 0; ports[i]; i++) {
-            description = sp_get_port_description(ports[i]);
-			choose_port->Append(description);
-			if(description.find("STMBL") != std::string::npos){
-				choose_port->SetSelection(i);
-            }else{
-                choose_port->SetSelection(0);
+        if(ports){
+            for (int i = 0; ports[i]; i++) {
+                description = sp_get_port_description(ports[i]);
+                choose_port->Append(description);
+                if(description.find("STMBL") != std::string::npos){
+                    choose_port->SetSelection(i);
+                }else{
+                    choose_port->SetSelection(0);
+                }
             }
-		}
+            connectbutton->Enable();
+        }else{
+            connectbutton->Disable();
+        }
 	}
 }
 
