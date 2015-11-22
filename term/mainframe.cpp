@@ -251,7 +251,9 @@ void ServoFrame::listports(){
 			choose_port->Append(sp_get_port_description(ports[i]));
 			if(config->Read("port", &str) && sp_get_port_description(ports[i]) == str){
 				choose_port->SetSelection(i);
-			}
+            }else{
+                choose_port->SetSelection(0);
+            }
 		}
 	}
 }
