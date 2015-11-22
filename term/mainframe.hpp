@@ -30,7 +30,6 @@ private:
     wxRadioButton *uhu;
     wxRadioButton *stmbl;
     wxTimer * timer;
-    wxConfig *config;
     struct sp_port **ports;
     struct sp_port *port;
     wxChoice *choose_port;

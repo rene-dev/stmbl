@@ -10,7 +10,6 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     addr = -1;
 	connected = false;
 	histpos = 0;
-	config = new wxConfig("Servoterm");
 	wxBoxSizer *mainsizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
 	wxImage::AddHandler(new wxGIFHandler);
@@ -241,6 +240,7 @@ void ServoFrame::OnReset(wxCommandEvent& WXUNUSED(event)){
 }
 
 void ServoFrame::listports(){
+    string description;
 	if (ports) {
 		sp_free_port_list(ports);
 	}
@@ -248,8 +248,9 @@ void ServoFrame::listports(){
 		wxString str;
 		choose_port->Clear();
 		for (int i = 0; ports[i]; i++) {
-			choose_port->Append(sp_get_port_description(ports[i]));
-			if(config->Read("port", &str) && sp_get_port_description(ports[i]) == str){
+            description = sp_get_port_description(ports[i]);
+			choose_port->Append(description);
+			if(description.find("STMBL") != std::string::npos){
 				choose_port->SetSelection(i);
             }else{
                 choose_port->SetSelection(0);
@@ -277,8 +278,6 @@ void ServoFrame::connect(){
 	if(sp_open(port, SP_MODE_READ_WRITE) == SP_OK){//port available and can be opened
 		wxString str;
 		str = sp_get_port_description(port);
-		config->Write("port", str);
-		config->Flush();
 		sp_set_baudrate(port,38400);
 		sp_set_bits(port, 8);
 		sp_set_stopbits(port, 1);
