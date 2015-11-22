@@ -309,6 +309,7 @@ void ServoFrame::disconnect(){
         stmbl->Enable();
         timer->Stop();
 	}
+    listports();
 }
 
 void ServoFrame::OnInput(wxCommandEvent& event){
