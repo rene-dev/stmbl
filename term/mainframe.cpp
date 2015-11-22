@@ -248,14 +248,13 @@ void ServoFrame::listports(){
 	if(sp_list_ports(&ports) == SP_OK){
 		wxString str;
 		choose_port->Clear();
+        choose_port->SetSelection(0);
         if(ports){
             for (int i = 0; ports[i]; i++) {
                 description = sp_get_port_description(ports[i]);
                 choose_port->Append(description);
                 if(description.find("STMBL") != std::string::npos){
                     choose_port->SetSelection(i);
-                }else{
-                    choose_port->SetSelection(0);
                 }
             }
             connectbutton->Enable();
