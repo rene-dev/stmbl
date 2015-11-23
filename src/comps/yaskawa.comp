@@ -44,6 +44,7 @@ INIT(
   GPIO_Init(GPIOB, &GPIO_InitStruct);
   GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_TIM2);
 
+  //TIM2 is used to toggle tx pin
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
@@ -93,11 +94,13 @@ INIT(
   
   //manchaster
   //0 -> 01
-  //1 -> 10             SYNC                framing                         framing
-  //const char foo[] = "0101010101010101010 01111110 111110 111110 111110 1 01111110";
+  //1 -> 10
+  //SYNC                framing                         framing
+  //0101010101010101010 01111110 111110 111110 111110 1 01111110;
   //010101... are to sync receiver
   //01111110 is hdlc start and end flag for framing
   //0 is appended after 5 ones => transmitted data is 0xffff
+  //reply has the same format
   const char request[] = "0101010101010101010 01111110 111110 111110 111110 1 01111110";
   char request_m[sizeof(request)*2];
   uint32_t tim_a = TIM2->CCER;
@@ -218,7 +221,7 @@ RT(
             bit += 1;
          }
          switch(bit){
-            case 0:
+            case 0://00 -> manchaster alignment error
                data[i-j] = '!';
                error++;
                break;
@@ -235,7 +238,7 @@ RT(
                   j++;
                }
                break;
-            case 3:
+            case 3://11 -> manchaster alignment error
                data[i-j] = '?';
                error++;
                break;
