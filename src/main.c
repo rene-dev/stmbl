@@ -70,6 +70,11 @@ void DMA2_Stream0_IRQHandler(void){
 
 int main(void)
 {
+   // Relocate interrupt vectors
+   //
+   extern void *g_pfnVectors;
+   SCB->VTOR = (uint32_t)&g_pfnVectors;
+   
    float period = 0.0;
    float lasttime = 0.0;
 

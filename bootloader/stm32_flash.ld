@@ -42,10 +42,10 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-  BOOT   (rx)     : ORIGIN = 0x08000000, LENGTH = 32K
+  FLASH   (rx)    : ORIGIN = 0x08000000, LENGTH = 32K
   PARAM0 (rx)     : ORIGIN = 0x08008000, LENGTH = 16K
   PARAM1 (rx)     : ORIGIN = 0x0800C000, LENGTH = 16K
-  FLASH  (rx)     : ORIGIN = 0x08010000, LENGTH = 960K
+  APP  (rx)       : ORIGIN = 0x08010000, LENGTH = 960K
   RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 192K
   MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
 }
