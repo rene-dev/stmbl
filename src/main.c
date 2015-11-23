@@ -189,6 +189,11 @@ int main(void)
    for(int i = 0; i < hal.init_func_count; i++){
       hal.init[i]();
    }
+   
+   //enable frt interrupt only if frt functions are present
+   if(hal.frt_func_count > 0){
+      TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+   }
 
    link_pid();
 

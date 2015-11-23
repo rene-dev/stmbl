@@ -48,7 +48,7 @@ void setup_res(){
     TIM_TimeBaseStructure.TIM_Prescaler = 9;
     TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-    TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+
     TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);//trigger ADC
 
     RCC_AHB1PeriphClockCmd(SIN_IO_RCC, ENABLE);

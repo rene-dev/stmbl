@@ -1,5 +1,5 @@
 #ifdef CMD_RX
-#error you can only have one command compound
+#error you can only have one command component
 #else
 #define CMD_RX
 #endif
