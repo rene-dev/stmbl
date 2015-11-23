@@ -13,6 +13,8 @@ COMP(yaskawa);
 HAL_PIN(pos) = 0.0;
 HAL_PIN(error) = 0.0;
 HAL_PIN(dump) = 0;
+HAL_PIN(len) = 16;
+HAL_PIN(off) = 60;
 
 MEM(volatile uint32_t rxbuf[NUM_OF_SAMPLES + 1]);
 MEM(volatile uint32_t txbuf[128]);
@@ -158,9 +160,9 @@ RT(
    GPIOB->BSRRL = GPIO_Pin_12;//TX enable
    DMA_Cmd(DMA2_Stream1, DISABLE);
    DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
-   DMA_Cmd(DMA2_Stream1, ENABLE);
+   DMA_Cmd(DMA2_Stream1, ENABLE);//transmit request
    
-   while (!(DMA2->LISR & DMA_FLAG_TCIF1));
+   while (!(DMA2->LISR & DMA_FLAG_TCIF1));//wait for request
    
    GPIOB->BSRRH = GPIO_Pin_12;//TX disable
 
@@ -209,11 +211,16 @@ RT(
          error++;
       }
       
-      uint32_t bit = 0; // 2 manchaster bits = 1 bit
-      uint32_t ones = 0; // hldc unstuffing
-      uint32_t j = 7; // unstuffing offset, ignore hldc start
+      first_edge %= 6;
+      
+      uint32_t bit = 0;// 2 manchaster bits = 1 bit
+      uint32_t ones = 0;// received ones, needed for framing and unstuffing
+      uint32_t j = 0;// unstuffing and start offset
+      int pos_length = PIN(len);// position length
+      int pos_offset = PIN(off);// position offset
       //decode manchaster and unstuff
-      for(int i = j;i<100;i++){
+      for(int i = j; i < 100; i++){
+         bit = 0;
          if(rxbuf[i*6+first_edge+1]&GPIO_Pin_11){
             bit += 2;
          }
@@ -225,17 +232,22 @@ RT(
                data[i-j] = '!';
                error++;
                break;
-            case 1:
-               data[i-j] = '0';
+            case 1://01 -> manchaster encoded 0
+               if(ones == 5){// 0 after 5 ones => stuffed data
+                  j++;
+               }else{
+                  data[i-j] = '0';
+               }
                ones = 0;
                break;
-            case 2:
-               ones++;
-               data[i-j] = '1';
-               if(ones >= 5){
-                  ones = 0;
+            case 2://10 -> manchaster encoded 1
+               if(ones == 5){// 1 after 5 ones => start of packet
                   i++;
-                  j++;
+                  j = i+1;
+                  ones = 0;
+               }else{
+                  ones++;
+                  data[i-j] = '1';
                }
                break;
             case 3://11 -> manchaster alignment error
@@ -247,12 +259,12 @@ RT(
                error++;
                break;
          }
-         bit = 0;
+         // if(i-j == pos_length + pos_offset){//skip data after position
+         //    break;
+         // }
       }
-      data[100-j] = 0; // terminate string
-      int pos_length = 16;
-      int pos_offset = 60;
-      
+      data[100] = 0; // terminate string
+            
       uint32_t pos = 0;
       //extract position data
       for(int i = 0; i < pos_length; i++){
@@ -270,7 +282,7 @@ RT(
 NRT(
    if(PIN(dump) != last_dump){
       last_dump = PIN(dump);
-      printf_("%s\n",data + 60);
+      printf_("%s\n",data);
    }
 );
 
