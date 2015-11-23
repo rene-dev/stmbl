@@ -36,3 +36,5 @@ notifications:
   irc:
     channels:
       - "irc.hackint.org#stmbl"
+    on_success: never
+    on_failure: always
