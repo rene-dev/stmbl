@@ -218,8 +218,9 @@ RT(
       uint32_t j = 0;// unstuffing and start offset
       int pos_length = PIN(len);// position length
       int pos_offset = PIN(off);// position offset
+      int decode_length = pos_length + pos_offset + 1;
       //decode manchaster and unstuff
-      for(int i = j; i < 100; i++){
+      for(int i = j; i < (decode_length+j); i++){
          bit = 0;
          if(rxbuf[i*6+first_edge+1]&GPIO_Pin_11){
             bit += 2;
@@ -228,10 +229,6 @@ RT(
             bit += 1;
          }
          switch(bit){
-            case 0://00 -> manchaster alignment error
-               data[i-j] = '!';
-               error++;
-               break;
             case 1://01 -> manchaster encoded 0
                if(ones == 5){// 0 after 5 ones => stuffed data
                   j++;
@@ -242,26 +239,20 @@ RT(
                break;
             case 2://10 -> manchaster encoded 1
                if(ones == 5){// 1 after 5 ones => start of packet
-                  i++;
-                  j = i+1;
+                  j = ++i;
                   ones = 0;
                }else{
                   ones++;
                   data[i-j] = '1';
                }
                break;
+            case 0://00 -> manchaster alignment error
             case 3://11 -> manchaster alignment error
-               data[i-j] = '?';
-               error++;
-               break;
             default://obsolete
                data[i-j] = 'X';
                error++;
                break;
          }
-         // if(i-j == pos_length + pos_offset){//skip data after position
-         //    break;
-         // }
       }
       data[100] = 0; // terminate string
             
