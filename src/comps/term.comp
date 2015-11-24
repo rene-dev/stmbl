@@ -83,7 +83,7 @@ NRT(
    void reset(){
       NVIC_SystemReset();
    }
-   
+
    void about(){
       printf_(
           "%s v%i.%i.%i %s\n",
@@ -93,15 +93,63 @@ NRT(
           version_info.patch,
           version_info.git_version
       );
+      printf_("Branch %s\n",version_info.git_branch);
       printf_("Compiled %s %s ",version_info.build_date, version_info.build_time);
       printf_("by %s on %s\n",version_info.build_user, version_info.build_host);
       printf_("GCC        %s\n",__VERSION__);
       printf_("newlib     %s\n",_NEWLIB_VERSION);
       printf_("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
       printf_("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
-      printf_("HAL errors %i\n", hal_errors);
+      printf_("link errors %i\n", hal.link_errors);
+      printf_("pin errors %i\n", hal.pin_errors);
+      printf_("comp errors %i\n", hal.comp_errors);
+      printf_("set errors %i\n", hal.set_errors);
+      printf_("get errors %i\n", hal.get_errors);
+      printf_("rt errors %i\n", hal.rt_errors);
+      printf_("frt errors %i\n", hal.frt_errors);
+      printf_("nrt errors %i\n", hal.nrt_errors);
+      printf_("foo0.bar:  %f\n", get_hal_pin("foo0.bar"));
+      switch(hal.rt_state){
+         case RT_STOP:
+            printf_("rt state:  STOP\n");
+            break;
+         case RT_SLEEP:
+            printf_("rt state:  SLEEP\n");
+            break;
+         case RT_CALC:
+            printf_("rt state:  CALC\n");
+            break;
+      }
+      switch(hal.frt_state){
+         case FRT_STOP:
+            printf_("frt state:  STOP\n");
+            break;
+         case FRT_SLEEP:
+            printf_("frt state:  SLEEP\n");
+            break;
+         case FRT_CALC:
+            printf_("frt state:  CALC\n");
+            break;
+      }
+      switch(hal.hal_state){
+         case HAL_OK:
+            printf_("HAL state:  HAL_OK\n");
+            break;
+         case RT_TOO_LONG:
+            printf_("HAL state:  RT_TOO_LONG\n");
+            break;
+         case FRT_TOO_LONG:
+            printf_("HAL state:  FRT_TOO_LONG\n");
+            break;
+         case MISC_ERROR:
+            printf_("HAL state:  MISC_ERROR\n");
+            break;
+         case MEM_ERROR:
+            printf_("HAL state:  MEM_ERROR\n");
+            break;
+      }
    }
-   
+
    void sysinfo(){
       extern char _etext;    // end address of the .text section
       extern char _sidata;   // start address of the initialization values of the .data section

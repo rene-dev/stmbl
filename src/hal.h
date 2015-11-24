@@ -29,9 +29,6 @@
 #define MAX_COMP_TYPES 64
 #define MAX_COMP_FUNCS 128
 
-uint32_t hal_errors;
-
-
 typedef char HPNAME[MAX_HPNAME];
 
 struct hal_pin{
@@ -55,18 +52,56 @@ struct hal_struct{
 
   void (*nrt[MAX_COMP_FUNCS])(float period);
   int nrt_func_count;
-  
+
   void (*frt[MAX_COMP_FUNCS])(float period);
   int frt_func_count;
 
   struct hal_pin* hal_pins[MAX_HAL_PINS];
   int hal_pin_count;
 
-  int rt_lock;
-  int nrt_lock;
+  volatile enum{
+    RT_CALC,
+    RT_SLEEP,
+    RT_STOP
+  } rt_state;
+
+  volatile enum{
+    FRT_CALC,
+    FRT_SLEEP,
+    FRT_STOP
+  } frt_state;
+
+  volatile enum {
+    FRT_TOO_LONG,
+    RT_TOO_LONG,
+    MISC_ERROR,
+    MEM_ERROR,
+    HAL_OK
+  } hal_state;
+
+  volatile int active_rt_func;
+  volatile int active_frt_func;
+  volatile int active_nrt_func;
+
+  uint32_t link_errors;
+  uint32_t pin_errors;
+  uint32_t set_errors;
+  uint32_t get_errors;
+  uint32_t comp_errors;
+  uint32_t rt_errors;
+  uint32_t frt_errors;
+  uint32_t nrt_errors;
 } hal;
 
 void init_hal();
+
+int start_rt();
+
+int start_frt();
+
+void stop_rt();
+
+void stop_frt();
 
 void init_hal_pin(HPNAME name, struct hal_pin* pin, float value);
 

@@ -33,14 +33,59 @@ void init_hal(){
     hal.comp_types_counter[i] = 0;
   }
   hal.hal_pin_count = 0;
-  hal.rt_lock = 0;
-  hal.nrt_lock = 0;
 
   hal.init_func_count = 0;
   hal.rt_func_count = 0;
   hal.nrt_func_count = 0;
   hal.frt_func_count = 0;
-  hal_errors = 0;
+
+  hal.link_errors = 0;
+  hal.pin_errors = 0;
+  hal.set_errors = 0;
+  hal.get_errors = 0;
+  hal.comp_errors = 0;
+  hal.rt_errors = 0;
+  hal.frt_errors = 0;
+  hal.nrt_errors = 0;
+
+  hal.rt_state = RT_STOP;
+  hal.frt_state = FRT_STOP;
+  hal.hal_state = HAL_OK;
+  hal.active_rt_func = -1;
+  hal.active_frt_func = -1;
+  hal.active_nrt_func = -1;
+}
+
+int start_rt(){
+   if(hal.rt_state == RT_STOP && hal.hal_state == HAL_OK){
+      hal.active_rt_func = -1;
+      hal.rt_state = RT_SLEEP;
+      return(1);
+   }
+   return(0);
+}
+
+int start_frt(){
+   if(hal.frt_state == FRT_STOP && hal.hal_state == HAL_OK){
+      hal.active_frt_func = -1;
+      hal.frt_state = FRT_SLEEP;
+      return(1);
+   }
+   return(0);
+}
+
+void stop_rt(){
+   hal.active_rt_func = -1;
+   hal.rt_state = RT_STOP;
+   hal.active_rt_func = -1;
+   hal.rt_state = RT_STOP;
+}
+
+void stop_frt(){
+   hal.active_frt_func = -1;
+   hal.frt_state = FRT_STOP;
+   hal.active_frt_func = -1;
+   hal.frt_state = FRT_STOP;
 }
 
 void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
@@ -55,15 +100,13 @@ void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
 
 int register_hal_pin(struct hal_pin* pin){
   if(hal.hal_pin_count >= MAX_HAL_PINS){
-    printf_("reg hal pin: too many pins: %i\n", hal.hal_pin_count);
-    hal_errors++;
+    hal.pin_errors++;
     return(0);
   }
 
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, pin->name)){
-      printf_("reg hal pin: name fault: %s\n", pin->name);
-      hal_errors++;
+      hal.pin_errors++;
       return(0);
     }
   }
@@ -82,8 +125,7 @@ int set_hal_pin(HPNAME name, float value){
       return(1);
     }
   }
-  printf_("set not possible %s = %f\n", name, value);
-  hal_errors++;
+  hal.set_errors++;
   return(0);
 }
 
@@ -102,8 +144,7 @@ float get_hal_pin(HPNAME name){
       return(hal.hal_pins[i]->source->source->value);
     }
   }
-  printf_("get not possible %s\n", name);
-  hal_errors++;
+  hal.get_errors++;
   return(0.0);
 }
 
@@ -113,11 +154,7 @@ struct hal_pin map_hal_pin(HPNAME name){
 		  return(*hal.hal_pins[i]);
       }
     }
-	struct hal_pin tmp;
-//	tmp.name = "";
-	tmp.value = 0.0;
-	tmp.source = &tmp;
-    return(tmp);
+    return(*hal.hal_pins[0]);
 }
 
 void write_hal_pin(struct hal_pin* pin, float value){
@@ -152,9 +189,8 @@ int link_hal_pins(HPNAME source, HPNAME sink){
     s->source = d;
 	return(1);
   }
-  
-  printf_("link not possible %s:%i -> %s:%i\n", source, d, sink, s);
-  hal_errors++;
+
+  hal.link_errors++;
   return(0);
 }
 
@@ -199,8 +235,7 @@ int set_comp_type(HPNAME name){
     hal.comp_type = hal.comp_type_count++;
     return(0);
   }
-  printf_("set comp type: too many comps types: %i\n", hal.comp_type_count);
-  hal_errors++;
+  hal.comp_errors++;
   return(-1);
 }
 
@@ -217,7 +252,9 @@ int addf_rt(void (*rt)(float period)){
     hal.rt[hal.rt_func_count++] = rt;
     return(hal.rt_func_count);
   }
-  hal_errors++;
+  if(rt != 0){
+     hal.rt_errors++;
+  }
   return(-1);
 }
 
@@ -226,7 +263,9 @@ int addf_frt(void (*frt)(float period)){
     hal.frt[hal.frt_func_count++] = frt;
     return(hal.frt_func_count);
   }
-  hal_errors++;
+  if(frt != 0){
+     hal.frt_errors++;
+  }
   return(-1);
 }
 
@@ -235,6 +274,8 @@ int addf_nrt(void (*nrt)(float period)){
     hal.nrt[hal.nrt_func_count++] = nrt;
     return(hal.nrt_func_count);
   }
-  hal_errors++;
+  if(nrt != 0){
+     hal.nrt_errors++;
+  }
   return(-1);
 }

@@ -28,8 +28,9 @@ from elf import ELFObject
 
 
 class VersionInfo:
-    format = "<II32s16s32s16s16s"
+    format = "<II32s32s16s32s16s16s"
     git_cmd = "git describe --always --dirty"
+    git_br_cmd = "git rev-parse --abbrev-ref HEAD"
 
     def __init__(self, elf):
         ss = elf.getSections()
@@ -41,11 +42,17 @@ class VersionInfo:
             self.git_cmd.split(" ")
         ).strip()
 
+        dprint("Running \"%s\"..." % self.git_br_cmd)
+        git_branch = subprocess.check_output(
+            self.git_br_cmd.split(" ")
+        ).strip()
+
         dprint("  %s" % git_version)
 
         self.image_crc    = 0x00000000  # must be calculated later
-        self.image_size   = ss[-1].lma + ss[-1].sh_size - ss[0].lma      
+        self.image_size   = ss[-1].lma + ss[-1].sh_size - ss[0].lma
         self.git_version  = git_version
+        self.git_branch  = git_branch
         self.build_user   = getpass.getuser()
         self.build_host   = platform.node()
         self.build_date   = now.strftime("%Y-%m-%d")
@@ -54,8 +61,9 @@ class VersionInfo:
     def pack(self):
         return struct.pack( self.format,
             self.image_crc, self.image_size,
-            self.git_version, 
-            self.build_user, self.build_host, 
+            self.git_version,
+            self.git_branch,
+            self.build_user, self.build_host,
             self.build_date, self.build_time
         )
 
@@ -144,18 +152,18 @@ def patch_elf():
     section = elf.getSection(args.section)
     if section == None:
         raise Exception("Section not found")
-    
+
     info = VersionInfo(elf)
 
     patch_section(elf, elf_data, section, info.pack())
 
     info.image_crc = CRC32().forge(
-        0x00000000, elf_to_bin(elf, elf_data), 
+        0x00000000, elf_to_bin(elf, elf_data),
         section.lma - elf.getSections()[0].lma
     )
-    
+
     patch_section(elf, elf_data, section, info.pack())
-    
+
     dprint("  image_crc  = 0x%08x" % info.image_crc)
     dprint("  image_size = %d"     % info.image_size)
 

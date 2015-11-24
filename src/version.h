@@ -9,6 +9,7 @@ struct version_info {
     uint32_t    image_size;
 
     char        git_version[32];
+    char        git_branch[32];
     char        build_user[16];
     char        build_host[32];
     char        build_date[16];
