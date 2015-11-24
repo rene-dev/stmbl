@@ -37,6 +37,7 @@ HAL_PIN(send_step) = 10.0;
 HAL_PIN(buf_use) = 0.0;
 
 HAL_PIN(fault) = 0.0;
+HAL_PIN(con) = 0.0;
 
 #define TERM_BUF_SIZE 24
 
@@ -295,7 +296,10 @@ NRT(
       buf[8 + 1] = 0;
 
       if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
+         PIN(con) = 1.0;
          UB_USB_CDC_SendString((char*)buf, NONE);
+      }else{
+         PIN(con) = 0.0;
       }
    }
 
