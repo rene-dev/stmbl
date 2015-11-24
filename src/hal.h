@@ -29,6 +29,8 @@
 #define MAX_COMP_TYPES 64
 #define MAX_COMP_FUNCS 128
 
+uint32_t hal_errors;
+
 
 typedef char HPNAME[MAX_HPNAME];
 

@@ -92,12 +92,13 @@ NRT(
           version_info.patch,
           version_info.git_version
       );
-      printf_("Compiled  %s %s\n",version_info.build_date, version_info.build_time);
+      printf_("Compiled %s %s ",version_info.build_date, version_info.build_time);
       printf_("by %s on %s\n",version_info.build_user, version_info.build_host);
-      printf_("GCC %s\n",__VERSION__);
-      printf_("newlib    %s\n",_NEWLIB_VERSION);
-      printf_("CMSIS     %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
-      printf_("StdPeriph %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
+      printf_("GCC        %s\n",__VERSION__);
+      printf_("newlib     %s\n",_NEWLIB_VERSION);
+      printf_("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
+      printf_("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
+      printf_("HAL errors %i\n", hal_errors);
    }
    
    void sysinfo(){
