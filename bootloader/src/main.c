@@ -21,6 +21,9 @@
 #include "stm32f4xx_conf.h"
 
 #define APP_START 0x08010000
+#define APP_END   0x08100000
+#define VERSION_INFO_OFFSET 0x188
+static volatile const struct version_info *app_info = (void*)(APP_START + VERSION_INFO_OFFSET);
 
 int main(void){
    GPIO_InitTypeDef GPIO_InitDef;

@@ -60,6 +60,13 @@ SECTIONS
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
   } >FLASH
+     
+  .version_info :
+  {
+    . = ALIGN(4);
+    KEEP(*(.version_info)) 
+    . = ALIGN(4);
+  } >FLASH
 
   /* The program code and other data goes into FLASH */
   .text :

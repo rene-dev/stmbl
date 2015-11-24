@@ -79,6 +79,56 @@ NRT(
       NVIC_SystemReset();
    }
 
+   void reset(){
+      NVIC_SystemReset();
+   }
+   
+   void about(){
+      printf_(
+          "%s v%i.%i.%i %s\n",
+          version_info.product_name,
+          version_info.major,
+          version_info.minor,
+          version_info.patch,
+          version_info.git_version
+      );
+      printf_("Compiled  %s %s\n",version_info.build_date, version_info.build_time);
+      printf_("by %s on %s\n",version_info.build_user, version_info.build_host);
+      printf_("GCC %s\n",__VERSION__);
+      printf_("newlib    %s\n",_NEWLIB_VERSION);
+      printf_("CMSIS     %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
+      printf_("StdPeriph %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
+   }
+   
+   void sysinfo(){
+      extern char _etext;    // end address of the .text section
+      extern char _sidata;   // start address of the initialization values of the .data section
+      extern char _sdata;    // start address of the .data section
+      extern char _edata;    // end address of the .data section
+      extern char _sbss;     // start address of the .bss section
+      extern char _ebss;     // end address of the .bss section
+      extern char _snoinit;  // start address of the .noinit section
+      extern char _enoinit;  // end address of the .noinit section
+      extern char _end;      // end address of the .bss section
+      extern char _estack;   // initial value of the stack pointer
+
+      extern char *__brkval;
+
+      printf("RCC->CSR = 0x%i\n", (unsigned int)RCC->CSR);
+      printf("_etext   = %p\n", &_etext  );
+      printf("_sidata  = %p\n", &_sidata );
+      printf("_sdata   = %p\n", &_sdata  );
+      printf("_edata   = %p\n", &_edata  );
+      printf("_sbss    = %p\n", &_sbss   );
+      printf("_ebss    = %p\n", &_ebss   );
+      printf("_snoinit = %p\n", &_snoinit);
+      printf("_enoinit = %p\n", &_enoinit);
+      printf("_end     = %p\n", &_end    );
+      printf("_estack  = %p\n", &_estack );
+
+      printf("heap avail       = %10d\n", (char*)__get_MSP() - __brkval);
+   }
+
    void listhal(){
       for(int i = 0; i < hal.hal_pin_count; i++){
          printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
@@ -110,6 +160,12 @@ NRT(
    void cmd(char * s){
       if(!strcmp(s, "bootloader")){
          bootloader();
+      }
+      else if(!strcmp(s, "about")){
+         about();
+      }
+      else if(!strcmp(s, "reset")){
+         reset();
       }
       else if(!strcmp(s, "list")){
          listhal();

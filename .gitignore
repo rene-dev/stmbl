@@ -18,6 +18,7 @@ term/win32/bin
 .depend
 *.list
 *.out
+*.pyc
 
 sim/sim
 sim/plot
