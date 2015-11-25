@@ -150,8 +150,6 @@ struct hal_pin* find_hal_pin(HPNAME name);
 
 int link_hal_pins(HPNAME source, HPNAME sink);
 
-float read_float(char* buf);
-
 void add_comp(struct hal_comp* comp);
 
 

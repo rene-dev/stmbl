@@ -276,34 +276,6 @@ int link_hal_pins(HPNAME source, HPNAME sink){
   return(0);
 }
 
-float read_float(char* buf){
-  int buffer_pos = 0;
-  float f = 0;
-  float tf = 10;
-  float invert = 1;
-
-  if(buf[buffer_pos] && buf[buffer_pos] == '-'){
-    invert = -1;
-    buffer_pos++;
-  }
-  else if(buf[buffer_pos] && buf[buffer_pos] == '+'){
-    buffer_pos++;
-  }
-  while(buf[buffer_pos] && isDecDigit(buf[buffer_pos])){
-    f *= 10;
-    f += buf[buffer_pos++] - '0';
-  }
-  if(buf[buffer_pos] && buf[buffer_pos] == '.'){
-    buffer_pos++;
-    while(buf[buffer_pos] && isDecDigit(buf[buffer_pos])){
-      f += (buf[buffer_pos++] - '0') / tf;
-      tf *= 10;
-    }
-  }
-  f *= invert;
-  return(f);
-}
-
 int set_comp_type(HPNAME name){
   for(int i = 0; i < hal.comp_type_count; i++){
     if(!strcmp(hal.comp_types[i], name)){

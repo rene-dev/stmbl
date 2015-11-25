@@ -440,7 +440,7 @@ NRT(
             printf_("OK %s <= %s = %f\n", sink, source, get_hal_pin(sink));
          }
          else if(is_hal_pin(sink)){// set hal pin
-            set_hal_pin(sink, read_float(source));
+            set_hal_pin(sink, strtof(source,NULL));
             printf_("OK %s = %f\n", sink, get_hal_pin(sink));
          }
          else{// hal pin not found
