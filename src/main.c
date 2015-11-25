@@ -27,12 +27,14 @@
 #include "link.h"
 #include "crc.h"
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "stm32_ub_usb_cdc.h"
 
 GLOBAL_HAL_PIN(rt_time);
 
-int __errno;
+//int __errno;
 volatile double systime_s = 0.0;
 void Wait(unsigned int ms);
 

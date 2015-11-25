@@ -109,26 +109,37 @@ NRT(
       extern char _edata;    // end address of the .data section
       extern char _sbss;     // start address of the .bss section
       extern char _ebss;     // end address of the .bss section
-      extern char _snoinit;  // start address of the .noinit section
-      extern char _enoinit;  // end address of the .noinit section
+      //extern char _snoinit;  // start address of the .noinit section
+      //extern char _enoinit;  // end address of the .noinit section
       extern char _end;      // end address of the .bss section
       extern char _estack;   // initial value of the stack pointer
 
       extern char *__brkval;
 
-      printf("RCC->CSR = 0x%i\n", (unsigned int)RCC->CSR);
+      printf("RCC->CSR = 0x%08x\n", (unsigned int)RCC->CSR);
       printf("_etext   = %p\n", &_etext  );
       printf("_sidata  = %p\n", &_sidata );
       printf("_sdata   = %p\n", &_sdata  );
       printf("_edata   = %p\n", &_edata  );
       printf("_sbss    = %p\n", &_sbss   );
       printf("_ebss    = %p\n", &_ebss   );
-      printf("_snoinit = %p\n", &_snoinit);
-      printf("_enoinit = %p\n", &_enoinit);
+      //printf("_snoinit = %p\n", &_snoinit);
+      //printf("_enoinit = %p\n", &_enoinit);
       printf("_end     = %p\n", &_end    );
       printf("_estack  = %p\n", &_estack );
 
       printf("heap avail       = %10d\n", (char*)__get_MSP() - __brkval);
+      //malloc_stats();
+
+      RCC_ClocksTypeDef  RCC_ClocksStatus;
+      RCC_GetClocksFreq(&RCC_ClocksStatus);
+
+      printf("SYSCLK_Frequency = %10ld\n", RCC_ClocksStatus.SYSCLK_Frequency );
+      printf("HCLK_Frequency   = %10ld\n", RCC_ClocksStatus.HCLK_Frequency   );
+      printf("PCLK1_Frequency  = %10ld\n", RCC_ClocksStatus.PCLK1_Frequency  );
+      printf("PCLK2_Frequency  = %10ld\n", RCC_ClocksStatus.PCLK2_Frequency  );
+      extern void *g_pfnVectors;
+      printf("vtor %lu\n",(uint32_t)&g_pfnVectors);
    }
 
    void listhal(){
