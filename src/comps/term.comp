@@ -219,8 +219,8 @@ NRT(
       printf_("_edata   = %p\n", &_edata  );
       printf_("_sbss    = %p\n", &_sbss   );
       printf_("_ebss    = %p\n", &_ebss   );
-      printf_("_snoinit = %p\n", &_snoinit);
-      printf_("_enoinit = %p\n", &_enoinit);
+      // printf_("_snoinit = %p\n", &_snoinit);
+      // printf_("_enoinit = %p\n", &_enoinit);
       printf_("_end     = %p\n", &_end    );
       printf_("_estack  = %p\n", &_estack );
 
@@ -272,7 +272,7 @@ NRT(
          about();
       }
       else if(!strcmp(s, "sysinfo")){
-         //sysinfo();
+         sysinfo();
       }
       else if(!strcmp(s, "reset")){
          reset();

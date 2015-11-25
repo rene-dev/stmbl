@@ -36,7 +36,7 @@ GLOBAL_HAL_PIN(rt_time);
 GLOBAL_HAL_PIN(frt_time);
 GLOBAL_HAL_PIN(nrt_time);
 
-//int __errno;
+int __errno;
 volatile double systime_s = 0.0;
 void Wait(unsigned int ms);
 
