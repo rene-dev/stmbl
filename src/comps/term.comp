@@ -83,7 +83,66 @@ NRT(
    void reset(){
       NVIC_SystemReset();
    }
-   
+
+   void hal_info(){
+      printf_("#pins %i\n", hal.hal_pin_count);
+      printf_("#comps %i\n", hal.comp_count);
+      printf_("#rt %i\n", hal.rt_func_count);
+      printf_("#frt %i\n", hal.frt_func_count);
+      printf_("#nrt %i\n", hal.nrt_func_count);
+      printf_("#init %i\n", hal.init_func_count);
+      printf_("#rt_init %i\n", hal.rt_init_func_count);
+      printf_("#rt_deinit %i\n", hal.rt_deinit_func_count);
+      printf_("link errors %i\n", hal.link_errors);
+      printf_("pin errors %i\n", hal.pin_errors);
+      printf_("comp errors %i\n", hal.comp_errors);
+      printf_("set errors %i\n", hal.set_errors);
+      printf_("get errors %i\n", hal.get_errors);
+      printf_("rt errors %i\n", hal.rt_errors);
+      printf_("frt errors %i\n", hal.frt_errors);
+      printf_("nrt errors %i\n", hal.nrt_errors);
+      printf_("foo0.bar:  %f\n", get_hal_pin("foo0.bar"));
+      switch(hal.rt_state){
+         case RT_STOP:
+            printf_("rt state:  STOP\n");
+            break;
+         case RT_SLEEP:
+            printf_("rt state:  SLEEP\n");
+            break;
+         case RT_CALC:
+            printf_("rt state:  CALC\n");
+            break;
+      }
+      switch(hal.frt_state){
+         case FRT_STOP:
+            printf_("frt state:  STOP\n");
+            break;
+         case FRT_SLEEP:
+            printf_("frt state:  SLEEP\n");
+            break;
+         case FRT_CALC:
+            printf_("frt state:  CALC\n");
+            break;
+      }
+      switch(hal.hal_state){
+         case HAL_OK:
+            printf_("HAL state:  HAL_OK\n");
+            break;
+         case RT_TOO_LONG:
+            printf_("HAL state:  RT_TOO_LONG\n");
+            break;
+         case FRT_TOO_LONG:
+            printf_("HAL state:  FRT_TOO_LONG\n");
+            break;
+         case MISC_ERROR:
+            printf_("HAL state:  MISC_ERROR\n");
+            break;
+         case MEM_ERROR:
+            printf_("HAL state:  MEM_ERROR\n");
+            break;
+      }
+   }
+
    void about(){
       printf_(
           "%s v%i.%i.%i %s\n",
@@ -93,15 +152,27 @@ NRT(
           version_info.patch,
           version_info.git_version
       );
+      printf_("Branch %s\n",version_info.git_branch);
       printf_("Compiled %s %s ",version_info.build_date, version_info.build_time);
       printf_("by %s on %s\n",version_info.build_user, version_info.build_host);
       printf_("GCC        %s\n",__VERSION__);
       printf_("newlib     %s\n",_NEWLIB_VERSION);
       printf_("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
       printf_("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
-      printf_("HAL errors %i\n", hal_errors);
    }
-   
+
+   void start(){
+      printf_("starting hal ... ");
+      start_hal();
+      printf_("done\n");
+   }
+
+   void stop(){
+      printf_("stopping hal ... ");
+      stop_hal();
+      printf_("done\n");
+   }
+
    void sysinfo(){
       extern char _etext;    // end address of the .text section
       extern char _sidata;   // start address of the initialization values of the .data section
@@ -140,6 +211,20 @@ NRT(
       printf("PCLK2_Frequency  = %10ld\n", RCC_ClocksStatus.PCLK2_Frequency  );
       extern void *g_pfnVectors;
       printf("vtor %lu\n",(uint32_t)&g_pfnVectors);
+      //*****************************************************************
+      printf_("RCC->CSR = 0x%i\n", (unsigned int)RCC->CSR);
+      printf_("_etext   = %p\n", &_etext  );
+      printf_("_sidata  = %p\n", &_sidata );
+      printf_("_sdata   = %p\n", &_sdata  );
+      printf_("_edata   = %p\n", &_edata  );
+      printf_("_sbss    = %p\n", &_sbss   );
+      printf_("_ebss    = %p\n", &_ebss   );
+      printf_("_snoinit = %p\n", &_snoinit);
+      printf_("_enoinit = %p\n", &_enoinit);
+      printf_("_end     = %p\n", &_end    );
+      printf_("_estack  = %p\n", &_estack );
+
+      printf_("heap avail       = %p\n", (uint32_t)((char*)__get_MSP() - __brkval));
    }
 
    void listhal(){
@@ -174,8 +259,20 @@ NRT(
       if(!strcmp(s, "bootloader")){
          bootloader();
       }
+      else if(!strcmp(s, "start")){
+         start();
+      }
+      else if(!strcmp(s, "stop")){
+         stop();
+      }
+      else if(!strcmp(s, "hal")){
+         hal_info();
+      }
       else if(!strcmp(s, "about")){
          about();
+      }
+      else if(!strcmp(s, "sysinfo")){
+         //sysinfo();
       }
       else if(!strcmp(s, "reset")){
          reset();
