@@ -84,22 +84,15 @@ NRT(
       NVIC_SystemReset();
    }
 
-   void about(){
-      printf_(
-          "%s v%i.%i.%i %s\n",
-          version_info.product_name,
-          version_info.major,
-          version_info.minor,
-          version_info.patch,
-          version_info.git_version
-      );
-      printf_("Branch %s\n",version_info.git_branch);
-      printf_("Compiled %s %s ",version_info.build_date, version_info.build_time);
-      printf_("by %s on %s\n",version_info.build_user, version_info.build_host);
-      printf_("GCC        %s\n",__VERSION__);
-      printf_("newlib     %s\n",_NEWLIB_VERSION);
-      printf_("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
-      printf_("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
+   void hal_info(){
+      printf_("#pins %i\n", hal.hal_pin_count);
+      printf_("#comps %i\n", hal.comp_count);
+      printf_("#rt %i\n", hal.rt_func_count);
+      printf_("#frt %i\n", hal.frt_func_count);
+      printf_("#nrt %i\n", hal.nrt_func_count);
+      printf_("#init %i\n", hal.init_func_count);
+      printf_("#rt_init %i\n", hal.rt_init_func_count);
+      printf_("#rt_deinit %i\n", hal.rt_deinit_func_count);
       printf_("link errors %i\n", hal.link_errors);
       printf_("pin errors %i\n", hal.pin_errors);
       printf_("comp errors %i\n", hal.comp_errors);
@@ -150,6 +143,36 @@ NRT(
       }
    }
 
+   void about(){
+      printf_(
+          "%s v%i.%i.%i %s\n",
+          version_info.product_name,
+          version_info.major,
+          version_info.minor,
+          version_info.patch,
+          version_info.git_version
+      );
+      printf_("Branch %s\n",version_info.git_branch);
+      printf_("Compiled %s %s ",version_info.build_date, version_info.build_time);
+      printf_("by %s on %s\n",version_info.build_user, version_info.build_host);
+      printf_("GCC        %s\n",__VERSION__);
+      printf_("newlib     %s\n",_NEWLIB_VERSION);
+      printf_("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
+      printf_("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
+   }
+
+   void start(){
+      printf_("starting hal ... ");
+      start_hal();
+      printf_("done\n");
+   }
+
+   void stop(){
+      printf_("stopping hal ... ");
+      stop_hal();
+      printf_("done\n");
+   }
+
    void sysinfo(){
       extern char _etext;    // end address of the .text section
       extern char _sidata;   // start address of the initialization values of the .data section
@@ -164,19 +187,19 @@ NRT(
 
       extern char *__brkval;
 
-      printf("RCC->CSR = 0x%i\n", (unsigned int)RCC->CSR);
-      printf("_etext   = %p\n", &_etext  );
-      printf("_sidata  = %p\n", &_sidata );
-      printf("_sdata   = %p\n", &_sdata  );
-      printf("_edata   = %p\n", &_edata  );
-      printf("_sbss    = %p\n", &_sbss   );
-      printf("_ebss    = %p\n", &_ebss   );
-      printf("_snoinit = %p\n", &_snoinit);
-      printf("_enoinit = %p\n", &_enoinit);
-      printf("_end     = %p\n", &_end    );
-      printf("_estack  = %p\n", &_estack );
+      printf_("RCC->CSR = 0x%i\n", (unsigned int)RCC->CSR);
+      printf_("_etext   = %p\n", &_etext  );
+      printf_("_sidata  = %p\n", &_sidata );
+      printf_("_sdata   = %p\n", &_sdata  );
+      printf_("_edata   = %p\n", &_edata  );
+      printf_("_sbss    = %p\n", &_sbss   );
+      printf_("_ebss    = %p\n", &_ebss   );
+      printf_("_snoinit = %p\n", &_snoinit);
+      printf_("_enoinit = %p\n", &_enoinit);
+      printf_("_end     = %p\n", &_end    );
+      printf_("_estack  = %p\n", &_estack );
 
-      printf("heap avail       = %10d\n", (char*)__get_MSP() - __brkval);
+      printf_("heap avail       = %p\n", (uint32_t)((char*)__get_MSP() - __brkval));
    }
 
    void listhal(){
@@ -211,8 +234,20 @@ NRT(
       if(!strcmp(s, "bootloader")){
          bootloader();
       }
+      else if(!strcmp(s, "start")){
+         start();
+      }
+      else if(!strcmp(s, "stop")){
+         stop();
+      }
+      else if(!strcmp(s, "hal")){
+         hal_info();
+      }
       else if(!strcmp(s, "about")){
          about();
+      }
+      else if(!strcmp(s, "sysinfo")){
+         //sysinfo();
       }
       else if(!strcmp(s, "reset")){
          reset();

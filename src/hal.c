@@ -33,6 +33,7 @@ void init_hal(){
     hal.comp_types_counter[i] = 0;
   }
   hal.hal_pin_count = 0;
+  hal.comp_count = 0;
 
   hal.init_func_count = 0;
   hal.rt_func_count = 0;
@@ -63,6 +64,87 @@ int start_rt(){
       return(1);
    }
    return(0);
+}
+
+void start_hal(){
+   float min = INFINITY;
+   int min_index = -1;
+   float rt_prio = 0.0;
+   float frt_prio = 0.0;
+
+   char added[MAX_COMPS];
+
+   for(int i = 0; i < MAX_COMPS; i++){
+      added[i] = 0;
+   }
+   // add rt func
+   hal.rt_func_count = 0;
+   for(int i = 0; i < hal.comp_count; i++){
+      min = INFINITY;
+      min_index = -1;
+      for(int j = 0; j < hal.comp_count; j++){
+         rt_prio = hal.hal_pins[hal.hal_comps[j]->hal_pin_start_index + 2]->source->source->value;
+         if(rt_prio <= min && added[j] == 0 && rt_prio >= 0.0 && hal.hal_comps[j]->rt != 0){
+            min = rt_prio;
+            min_index = j;
+         }
+      }
+      if(min_index >= 0){
+         added[min_index] = 1;
+         hal.rt[hal.rt_func_count++] = hal.hal_comps[min_index]->rt;
+      }
+   }
+
+   for(int i = 0; i < hal.comp_count; i++){
+      added[i] = 0;
+   }
+   // add frt func
+   hal.frt_func_count = 0;
+   for(int i = 0; i < hal.comp_count; i++){
+      min = INFINITY;
+      min_index = -1;
+      for(int j = 0; j < hal.comp_count; j++){
+         frt_prio = hal.hal_pins[hal.hal_comps[j]->hal_pin_start_index + 3]->source->source->value;
+         if(frt_prio <= min && added[j] == 0 && frt_prio >= 0.0 && hal.hal_comps[j]->frt != 0){
+            min = frt_prio;
+            min_index = j;
+         }
+      }
+      if(min_index >= 0){
+         added[min_index] = 1;
+         hal.frt[hal.frt_func_count++] = hal.hal_comps[min_index]->frt;
+      }
+   }
+   // add (de)init func
+   hal.rt_init_func_count = 0;
+   hal.rt_deinit_func_count = 0;
+   for(int i = 0; i < hal.comp_count; i++){
+      rt_prio = hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value;
+      frt_prio = hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 3]->source->source->value;
+
+      if(rt_prio >= 0.0 || frt_prio >= 0.0){
+         if(hal.hal_comps[i]->rt_init != 0){
+            hal.rt_init[hal.rt_init_func_count++] = hal.hal_comps[i]->rt_init;
+         }
+         if(hal.hal_comps[i]->rt_deinit != 0){
+            hal.rt_deinit[hal.rt_deinit_func_count++] = hal.hal_comps[i]->rt_deinit;
+         }
+      }
+   }
+   for(int i = 0; i < hal.rt_init_func_count; i++){
+      hal.rt_init[i]();
+   }
+
+   start_frt();
+   start_rt();
+}
+
+void stop_hal(){
+   stop_frt();
+   stop_rt();
+   for(; hal.rt_deinit_func_count > 0; hal.rt_deinit_func_count--){
+      hal.rt_deinit[hal.rt_deinit_func_count - 1]();
+   }
 }
 
 int start_frt(){
@@ -239,43 +321,17 @@ int set_comp_type(HPNAME name){
   return(-1);
 }
 
-int addf_init(void (*init)()){
-  if(init != 0 && hal.init_func_count < MAX_COMP_FUNCS){
-    hal.init[hal.init_func_count++] = init;
-    return(hal.init_func_count);
-  }
-  return(-1);
-}
-
-int addf_rt(void (*rt)(float period)){
-  if(rt != 0 && hal.rt_func_count < MAX_COMP_FUNCS){
-    hal.rt[hal.rt_func_count++] = rt;
-    return(hal.rt_func_count);
-  }
-  if(rt != 0){
-     hal.rt_errors++;
-  }
-  return(-1);
-}
-
-int addf_frt(void (*frt)(float period)){
-  if(frt != 0 && hal.frt_func_count < MAX_COMP_FUNCS){
-    hal.frt[hal.frt_func_count++] = frt;
-    return(hal.frt_func_count);
-  }
-  if(frt != 0){
-     hal.frt_errors++;
-  }
-  return(-1);
-}
-
-int addf_nrt(void (*nrt)(float period)){
-  if(nrt != 0 && hal.nrt_func_count < MAX_COMP_FUNCS){
-    hal.nrt[hal.nrt_func_count++] = nrt;
-    return(hal.nrt_func_count);
-  }
-  if(nrt != 0){
-     hal.nrt_errors++;
-  }
-  return(-1);
+void add_comp(struct hal_comp* comp){
+   if(comp != 0 && hal.comp_count < MAX_COMPS){
+      hal.hal_comps[hal.comp_count++] = comp;
+      if(comp->nrt_init != 0){
+         comp->nrt_init();
+      }
+      if(comp->nrt != 0 && hal.nrt_func_count < MAX_COMPS){
+         hal.nrt[hal.nrt_func_count++] = comp->nrt;
+      }
+   }
+   else{
+      hal.comp_errors++;
+   }
 }

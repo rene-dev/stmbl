@@ -153,48 +153,77 @@ int main(void)
    HAL_PIN(bar) = 0.0;
 
    #include "comps/sserial.comp"
+   set_hal_pin("sserial0.rt_prio", -1.0);
+   set_hal_pin("sserial0.frt_prio", -1.0);
    #include "comps/adc.comp"
+   set_hal_pin("adc0.rt_prio", 0.0);
 
 
    #include "comps/fault.comp"
+   set_hal_pin("fault0.rt_prio", 0.0);
    //#include "comps/enc_cmd.comp"
    #include "comps/enc_fb.comp"
-   //#include "comps/enc_fb_org.comp"
+   set_hal_pin("enc_fb0.rt_prio", -1.0);
 
    //#include "comps/en.comp"
    #include "comps/res.comp"
+   set_hal_pin("res0.rt_prio", 0.0);
+
    //#include "comps/encm.comp"
    #include "comps/sim.comp"
+   set_hal_pin("sim0.rt_prio", 1.0);
+
    #include "comps/stp.comp"
+   set_hal_pin("stp0.rt_prio", 2.0);
+
 
    #include "comps/rev.comp"
+   set_hal_pin("rev0.rt_prio", 3.0);
    #include "comps/rev.comp"
+   set_hal_pin("rev1.rt_prio", 3.0);
+
+
+
+
+
+   #include "comps/vel.comp"
+   set_hal_pin("vel0.rt_prio", 4.0);
+   #include "comps/vel.comp"
+   set_hal_pin("vel1.rt_prio", 4.0);
 
    #include "comps/cauto.comp"
+   set_hal_pin("cauto0.rt_prio", 5.0);
 
-   //#include "comps/pderiv.comp"
-   //#include "comps/pderiv.comp"
-   #include "comps/vel.comp"
-   #include "comps/vel.comp"
    //#include "comps/encs.comp"
    #include "comps/pid.comp"
+   set_hal_pin("pid0.rt_prio", 6.0);
+
    #include "comps/pmsm_t2c.comp"
+   set_hal_pin("t2c0.rt_prio", 7.0);
+
 
    //#include "comps/rev.comp"
 
    //#include "comps/dq.comp"
    #include "comps/curpid.comp"
+   set_hal_pin("curpid0.rt_prio", 8.0);
    #include "comps/pmsm.comp"
+   set_hal_pin("pmsm0.rt_prio", 9.0);
    #include "comps/pmsm_limits.comp"
+   set_hal_pin("pmsm_limits0.rt_prio", 10.0);
+
    //#include "comps/mot.comp"
    #include "comps/idq.comp"
-
+   set_hal_pin("idq0.rt_prio", 11.0);
 
    #include "comps/hv.comp"
+   set_hal_pin("hv0.rt_prio", 12.0);
+
 
    //#include "comps/var.comp"
 
    #include "comps/term.comp"
+   set_hal_pin("term0.rt_prio", 13.0);
    #include "comps/led.comp"
    #include "comps/fan.comp"
    #include "comps/brake.comp"
@@ -297,8 +326,7 @@ int main(void)
    UB_USB_CDC_Init();
 
    if(hal.pin_errors + hal.comp_errors + hal.rt_errors + hal.frt_errors + hal.nrt_errors == 0){
-      start_rt();
-      start_frt();
+      start_hal();
    }
    else{
       hal.hal_state = MEM_ERROR;

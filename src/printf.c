@@ -73,6 +73,7 @@ int vfprintf_(char *buffer, const char* str,  va_list arp){
 									// 2 = last char = '\'
 
 	int i = 0; // number to print
+	uint32_t ui = 0; // number to print
 	float f = 0; // float to print
 	char tmp[20]; // tmp string for numbers
 	int tmp_pos = 0; // pos in tmp
@@ -129,6 +130,21 @@ int vfprintf_(char *buffer, const char* str,  va_list arp){
 
 						}
 						while(i > 0);
+
+						while(tmp_pos--){
+							buffer[buffer_pos++] = tmp[tmp_pos];
+						}
+					break;
+
+					case 'p': // "%p"
+						tmp_pos = 0;
+						ui = va_arg(arp, uint32_t);
+
+						do{
+							tmp[tmp_pos++] = ui % 10 + '0';
+							ui /= 10;
+						}
+						while(ui > 0);
 
 						while(tmp_pos--){
 							buffer[buffer_pos++] = tmp[tmp_pos];

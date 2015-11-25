@@ -27,7 +27,7 @@
 #define MAX_HAL_PINS 512
 #define MAX_HPNAME 32
 #define MAX_COMP_TYPES 64
-#define MAX_COMP_FUNCS 128
+#define MAX_COMPS 64
 
 typedef char HPNAME[MAX_HPNAME];
 
@@ -37,6 +37,18 @@ struct hal_pin{
   struct hal_pin* source;
 };
 
+struct hal_comp{
+   HPNAME name;
+   void (*rt_init)();
+   void (*rt_deinit)();
+   void (*nrt_init)();
+   void (*rt)(float period);
+   void (*frt)(float period);
+   void (*nrt)(float period);
+   int hal_pin_start_index;
+   int hal_pin_count;
+};
+
 struct hal_struct{
   HPNAME comp_types[MAX_COMP_TYPES];
   int comp_types_counter[MAX_COMP_TYPES];
@@ -44,16 +56,25 @@ struct hal_struct{
   int comp_type;
   HPNAME tmp;
 
-  void (*init[MAX_COMP_FUNCS])();
+  struct hal_comp* hal_comps[MAX_COMPS];
+  int comp_count;
+
+  void (*rt_init[MAX_COMPS])();
+  int rt_init_func_count;
+
+  void (*rt_deinit[MAX_COMPS])();
+  int rt_deinit_func_count;
+
+  void (*init[MAX_COMPS])();
   int init_func_count;
 
-  void (*rt[MAX_COMP_FUNCS])(float period);
+  void (*rt[MAX_COMPS])(float period);
   int rt_func_count;
 
-  void (*nrt[MAX_COMP_FUNCS])(float period);
+  void (*nrt[MAX_COMPS])(float period);
   int nrt_func_count;
 
-  void (*frt[MAX_COMP_FUNCS])(float period);
+  void (*frt[MAX_COMPS])(float period);
   int frt_func_count;
 
   struct hal_pin* hal_pins[MAX_HAL_PINS];
@@ -95,6 +116,10 @@ struct hal_struct{
 
 void init_hal();
 
+void start_hal();
+
+void stop_hal();
+
 int start_rt();
 
 int start_frt();
@@ -127,20 +152,26 @@ int link_hal_pins(HPNAME source, HPNAME sink);
 
 float read_float(char* buf);
 
-int addf_init(void (*init)());
-int addf_rt(void (*rt)(float period));
-int addf_nrt(void (*nrt)(float period));
-int addf_frt(void (*frt)(float period));
+void add_comp(struct hal_comp* comp);
 
 
 #define COMP(type)                  \
 {                                   \
-  set_comp_type(#type);             \
-  void (*init)() = 0;               \
-  void (*rt)(float period) = 0;\
-  void (*nrt)(float period) = 0; \
-  void (*frt)(float period) = 0; \
-  HAL_PIN(calc_time) = 0.0;
+  static struct hal_comp self; \
+  strncpy(self.name, #type, MAX_HPNAME); \
+  self.nrt_init = 0; \
+  self.rt_init = 0; \
+  self.rt_deinit = 0; \
+  self.rt = 0; \
+  self.frt = 0; \
+  self.nrt = 0; \
+  self.hal_pin_start_index = hal.hal_pin_count; \
+  self.hal_pin_count = 0; \
+  set_comp_type(self.name);             \
+  HAL_PIN(rt_calc_time) = 0.0; \
+  HAL_PIN(frt_calc_time) = 0.0; \
+  HAL_PIN(rt_prio) = -1.0; \
+  HAL_PIN(frt_prio) = -1.0;
 
 #define HAL_PIN(name)               \
   static struct hal_pin name##_hal_pin;       \
@@ -156,32 +187,38 @@ int addf_frt(void (*frt)(float period));
   (name##_hal_pin.source->source->value)
 
 #define INIT(func)                    \
- init = ({ void function(){func} function;});
+ self.nrt_init = ({ void function(){func} function;});
+
+#define RT_INIT(func)                    \
+ self.rt_init = ({ void function(){func} function;});
+
+#define RT_DEINIT(func)                    \
+ self.rt_deinit = ({ void function(){func} function;});
 
 #define RT(func)                    \
- rt = ({ void function(float period){ \
+ self.rt = ({ void function(float period){ \
    unsigned int __start_time__ = SysTick->VAL; \
    func \
    unsigned int __end_time__ = SysTick->VAL; \
    if(__start_time__ < __end_time__){ \
      __start_time__ += SysTick->LOAD; \
    } \
-   PIN(calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
+   PIN(rt_calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
    } function;});
 
 #define FRT(func)                    \
- frt = ({ void function(float period){ \
+ self.frt = ({ void function(float period){ \
    unsigned int __start_time__ = SysTick->VAL; \
    func \
    unsigned int __end_time__ = SysTick->VAL; \
    if(__start_time__ < __end_time__){ \
      __start_time__ += SysTick->LOAD; \
    } \
-   PIN(calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
+   PIN(frt_calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
    } function;});
 
 #define NRT(func)                    \
- nrt = ({ void function(float period){func} function;});
+ self.nrt = ({ void function(float period){func} function;});
 
 #define HT(ht_code) \
 { \
@@ -237,8 +274,6 @@ jump_label_pointer = jump_label_pointer_old;
 })
 
 #define ENDCOMP \
-  addf_init(init); \
-  addf_rt(rt); \
-  addf_nrt(nrt); \
-  addf_frt(frt); \
+  self.hal_pin_count = hal.hal_pin_count - self.hal_pin_start_index; \
+  add_comp(&self); \
 }
