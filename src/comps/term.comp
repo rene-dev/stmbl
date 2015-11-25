@@ -212,7 +212,7 @@ NRT(
       extern void *g_pfnVectors;
       printf("vtor %lu\n",(uint32_t)&g_pfnVectors);
       //*****************************************************************
-      printf_("RCC->CSR = 0x%i\n", (unsigned int)RCC->CSR);
+      printf_("RCC->CSR = %x\n", (unsigned int)RCC->CSR);
       printf_("_etext   = %p\n", &_etext  );
       printf_("_sidata  = %p\n", &_sidata );
       printf_("_sdata   = %p\n", &_sdata  );
@@ -224,7 +224,7 @@ NRT(
       printf_("_end     = %p\n", &_end    );
       printf_("_estack  = %p\n", &_estack );
 
-      printf_("heap avail       = %p\n", (uint32_t)((char*)__get_MSP() - __brkval));
+      printf_("heap avail       = %u\n", (uint32_t)((char*)__get_MSP() - __brkval));
    }
 
    void listhal(){

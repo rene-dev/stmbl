@@ -136,15 +136,40 @@ int vfprintf_(char *buffer, const char* str,  va_list arp){
 						}
 					break;
 
+					case 'u': // "%u"
+						tmp_pos = 0;
+						ui = va_arg(arp, int);
+
+						do{
+							tmp[tmp_pos++] = ui % 10 + '0';
+							ui /= 10;
+
+						}
+						while(ui > 0);
+
+						while(tmp_pos--){
+							buffer[buffer_pos++] = tmp[tmp_pos];
+						}
+					break;
+
 					case 'p': // "%p"
 						tmp_pos = 0;
 						ui = va_arg(arp, uint32_t);
 
 						do{
-							tmp[tmp_pos++] = ui % 10 + '0';
-							ui /= 10;
+							if(ui % 16 < 10){
+								tmp[tmp_pos++] = ui % 16 + '0';
+							}
+							else{
+								tmp[tmp_pos++] = ui % 16 + 'A' - 10;
+							}
+							ui /= 16;
+
 						}
 						while(ui > 0);
+
+						buffer[buffer_pos++] = '0';
+						buffer[buffer_pos++] = 'x';
 
 						while(tmp_pos--){
 							buffer[buffer_pos++] = tmp[tmp_pos];
@@ -194,6 +219,30 @@ int vfprintf_(char *buffer, const char* str,  va_list arp){
 
 						}
 						while(i > 0);
+
+						buffer[buffer_pos++] = '0';
+						buffer[buffer_pos++] = 'x';
+
+						while(tmp_pos--){
+							buffer[buffer_pos++] = tmp[tmp_pos];
+						}
+					break;
+
+					case 'x': // "%x"
+						tmp_pos = 0;
+						ui = va_arg(arp, uint32_t);
+
+						do{
+							if(ui % 16 < 10){
+								tmp[tmp_pos++] = ui % 16 + '0';
+							}
+							else{
+								tmp[tmp_pos++] = ui % 16 + 'A' - 10;
+							}
+							ui /= 16;
+
+						}
+						while(ui > 0);
 
 						buffer[buffer_pos++] = '0';
 						buffer[buffer_pos++] = 'x';
