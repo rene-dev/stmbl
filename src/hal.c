@@ -84,7 +84,6 @@ void start_hal(){
          if(rt_prio <= min && added[j] == 0 && rt_prio >= 0.0 && hal.hal_comps[j]->rt != 0){
             min = rt_prio;
             min_index = j;
-            break;
          }
       }
       if(min_index >= 0){
@@ -106,7 +105,6 @@ void start_hal(){
          if(frt_prio <= min && added[j] == 0 && frt_prio >= 0.0 && hal.hal_comps[j]->frt != 0){
             min = frt_prio;
             min_index = j;
-            break;
          }
       }
       if(min_index >= 0){
