@@ -56,6 +56,11 @@ MEM(unsigned int send_counter) = 0;
 
 MEM(unsigned int last_fault_sent) = 0; //save last error message
 MEM(uint32_t state) = HAL_OK;
+MEM(uint16_t ee_error);
+
+INIT(
+   ee_error = EE_Init();
+);
 
 RT(
    if(send_counter++ >= PIN(send_step) - 1){
@@ -281,24 +286,76 @@ NRT(
    }
 
    void save(){
+      if(ee_error != 8){
+         printf_("flash error:%i\n",ee_error);
+         return;
+      }
       typedef union{
          float f;
          uint16_t byte[2];
       }param_t;
       param_t param;
+      uint16_t elo;
+      uint16_t ehi;
+      uint16_t address = 0;
       for(int i = 0; i < hal.hal_pin_count; i++){
-         char name[7];
+         char name[6];
          strncpy(name,hal.hal_pins[i]->name,5);
-         name[6] =  '\0';
+         name[5] =  '\0';
          if(!strcmp(name, "conf0")){
             param.f = hal.hal_pins[i]->source->source->value;
-            printf_("param:\n");
-            printf_("%i,%i\n",param.byte[0],param.byte[1]);
-            //address+=2;
-            //printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
+            printf_("param: %s=%f address:%i\n",hal.hal_pins[i]->name,param.f,address);
+            elo = EE_WriteVariable(address,param.byte[0]);
+            ehi = EE_WriteVariable(address+1,param.byte[1]);
+            if(elo != 8 || ehi != 8){
+               printf_("error writing to %i: error%i,%i\n",address,elo,ehi);
+               break;
+            }
+            address+=2;
             Wait(1);
          }
       }
+      printf_("done\n");
+   }
+
+   void load(){
+      if(ee_error != 8){
+         printf_("flash error:%i\n",ee_error);
+         return;
+      }
+      typedef union{
+         float f;
+         uint16_t byte[2];
+      }param_t;
+      param_t param;
+      uint16_t address = 0;
+      uint16_t lo;
+      uint16_t hi;
+      uint16_t elo;
+      uint16_t ehi;
+      for(int i = 0; i < hal.hal_pin_count; i++){
+         char name[6];
+         strncpy(name,hal.hal_pins[i]->name,5);
+         name[5] =  '\0';
+         if(!strcmp(name, "conf0")){
+            param.f = hal.hal_pins[i]->source->source->value;
+            elo = EE_ReadVariable(address,&lo);
+            ehi = EE_ReadVariable(address+1,&hi);
+            if(elo == 0 && ehi == 0){
+               param.byte[0] = lo;
+               param.byte[1] = hi;
+               //TODO: set hal pins
+               //TODO: fbtype stuff umlinken
+               printf_("param: %s=%f address:%i\n",hal.hal_pins[i]->name,param.f,address);
+            }else{
+               printf_("error reading from %i: error%i,%i\n",address,elo,ehi);
+               break;
+            }
+            address+=2;
+            Wait(1);
+         }
+      }
+      printf_("done\n");
    }
 
    void help(){
@@ -350,6 +407,9 @@ NRT(
       }
       else if(!strcmp(s, "save")){
          save();
+      }
+      else if(!strcmp(s, "load")){
+         load();
       }
       else{
          printf_("not found: %s\n",s);
