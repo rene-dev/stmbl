@@ -79,7 +79,7 @@ void start_hal(){
    for(int i = 0; i < hal.comp_count; i++){
       min = INFINITY;
       min_index = -1;
-      for(int j = 0; j < hal.comp_count; j++){
+      for(int j = hal.comp_count - 1; j >= 0; j--){
          rt_prio = hal.hal_pins[hal.hal_comps[j]->hal_pin_start_index + 2]->source->source->value;
          if(rt_prio <= min && added[j] == 0 && rt_prio >= 0.0 && hal.hal_comps[j]->rt != 0){
             min = rt_prio;
@@ -100,7 +100,7 @@ void start_hal(){
    for(int i = 0; i < hal.comp_count; i++){
       min = INFINITY;
       min_index = -1;
-      for(int j = 0; j < hal.comp_count; j++){
+      for(int j = hal.comp_count - 1; j >= 0; j--){
          frt_prio = hal.hal_pins[hal.hal_comps[j]->hal_pin_start_index + 3]->source->source->value;
          if(frt_prio <= min && added[j] == 0 && frt_prio >= 0.0 && hal.hal_comps[j]->frt != 0){
             min = frt_prio;
