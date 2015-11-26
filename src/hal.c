@@ -35,7 +35,7 @@ void init_hal(){
   hal.hal_pin_count = 0;
   hal.comp_count = 0;
 
-  hal.init_func_count = 0;
+  hal.nrt_init_func_count = 0;
   hal.rt_func_count = 0;
   hal.nrt_func_count = 0;
   hal.frt_func_count = 0;
@@ -45,9 +45,6 @@ void init_hal(){
   hal.set_errors = 0;
   hal.get_errors = 0;
   hal.comp_errors = 0;
-  hal.rt_errors = 0;
-  hal.frt_errors = 0;
-  hal.nrt_errors = 0;
 
   hal.rt_state = RT_STOP;
   hal.frt_state = FRT_STOP;
@@ -82,7 +79,7 @@ void start_hal(){
    for(int i = 0; i < hal.comp_count; i++){
       min = INFINITY;
       min_index = -1;
-      for(int j = 0; j < hal.comp_count; j++){
+      for(int j = hal.comp_count - 1; j >= 0; j--){
          rt_prio = hal.hal_pins[hal.hal_comps[j]->hal_pin_start_index + 2]->source->source->value;
          if(rt_prio <= min && added[j] == 0 && rt_prio >= 0.0 && hal.hal_comps[j]->rt != 0){
             min = rt_prio;
@@ -103,7 +100,7 @@ void start_hal(){
    for(int i = 0; i < hal.comp_count; i++){
       min = INFINITY;
       min_index = -1;
-      for(int j = 0; j < hal.comp_count; j++){
+      for(int j = hal.comp_count - 1; j >= 0; j--){
          frt_prio = hal.hal_pins[hal.hal_comps[j]->hal_pin_start_index + 3]->source->source->value;
          if(frt_prio <= min && added[j] == 0 && frt_prio >= 0.0 && hal.hal_comps[j]->frt != 0){
             min = frt_prio;
@@ -135,13 +132,20 @@ void start_hal(){
       hal.rt_init[i]();
    }
 
-   start_frt();
    start_rt();
+
+   if(hal.frt_func_count > 0){
+      start_frt();
+      TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE); // enable frt
+   }
+   TIM_Cmd(TIM2, ENABLE); // enable rt
 }
 
 void stop_hal(){
    stop_frt();
    stop_rt();
+   TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE); // disable frt
+   TIM_Cmd(TIM2, DISABLE); // disable rt
    for(; hal.rt_deinit_func_count > 0; hal.rt_deinit_func_count--){
       hal.rt_deinit[hal.rt_deinit_func_count - 1]();
    }
@@ -297,6 +301,7 @@ void add_comp(struct hal_comp* comp){
    if(comp != 0 && hal.comp_count < MAX_COMPS){
       hal.hal_comps[hal.comp_count++] = comp;
       if(comp->nrt_init != 0){
+         hal.nrt_init[hal.nrt_init_func_count++] = comp->nrt_init;
          comp->nrt_init();
       }
       if(comp->nrt != 0 && hal.nrt_func_count < MAX_COMPS){
