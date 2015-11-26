@@ -40,13 +40,13 @@ _Min_Heap_Size = 0;      /* required amount of heap  */
 _Min_Stack_Size = 0x400; /* required amount of stack */
 
 /* Specify the memory areas */
-//layout: 4*16+1*64+7*128=1024
+/* flash layout: 4*16+1*64+7*128=1024 */
 MEMORY
 {
-  BOOT   (rx)     : ORIGIN = 0x08000000, LENGTH = 32K//sector 0-1
-  PARAM0 (rx)     : ORIGIN = 0x08008000, LENGTH = 16K//sector 2
-  PARAM1 (rx)     : ORIGIN = 0x0800C000, LENGTH = 16K//sector 3
-  FLASH  (rx)     : ORIGIN = 0x08010000, LENGTH = 960K//sector 4-11
+  BOOT   (rx)     : ORIGIN = 0x08000000, LENGTH = 32K/* sector 0-1 */
+  PARAM0 (rx)     : ORIGIN = 0x08008000, LENGTH = 16K/* sector 2 */
+  PARAM1 (rx)     : ORIGIN = 0x0800C000, LENGTH = 16K/* sector 3 */
+  FLASH  (rx)     : ORIGIN = 0x08010000, LENGTH = 960K/* sector 4-11 */
   RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 192K
   MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
 }
@@ -61,7 +61,8 @@ SECTIONS
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
   } >FLASH
-     
+  
+  /* version info needs to have a section, so the bootloader and python script can find it */
   .version_info :
   {
     . = ALIGN(4);
