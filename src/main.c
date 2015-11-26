@@ -34,7 +34,8 @@
 
 GLOBAL_HAL_PIN(rt_time);
 GLOBAL_HAL_PIN(frt_time);
-GLOBAL_HAL_PIN(nrt_time);
+GLOBAL_HAL_PIN(rt_period_time);
+GLOBAL_HAL_PIN(frt_period_time);
 
 int __errno;
 volatile double systime_s = 0.0;
@@ -83,6 +84,8 @@ void TIM2_IRQHandler(void){
      start += SysTick->LOAD;
    }
    PIN(frt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+   PIN(frt_period_time) = period;
+
    hal.frt_state = FRT_SLEEP;
    GPIO_ResetBits(GPIOB,GPIO_Pin_9);
 }
@@ -132,6 +135,8 @@ void DMA2_Stream0_IRQHandler(void){
      start += SysTick->LOAD;
    }
    PIN(rt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+   PIN(rt_period_time) = period;
+
    hal.rt_state = RT_SLEEP;
    GPIO_ResetBits(GPIOB,GPIO_Pin_8);
 }
@@ -165,11 +170,11 @@ int main(void)
    set_hal_pin("fault0.rt_prio", 0.0);
    //#include "comps/enc_cmd.comp"
    #include "comps/enc_fb.comp"
-   set_hal_pin("enc_fb0.rt_prio", -1.0);
+   set_hal_pin("enc_fb0.rt_prio", 0.0);
 
    //#include "comps/en.comp"
-   #include "comps/res.comp"
-   set_hal_pin("res0.rt_prio", 0.0);
+   //#include "comps/res.comp"
+   //set_hal_pin("res0.rt_prio", 0.0);
 
    //#include "comps/encm.comp"
    #include "comps/sim.comp"
@@ -183,9 +188,6 @@ int main(void)
    set_hal_pin("rev0.rt_prio", 3.0);
    #include "comps/rev.comp"
    set_hal_pin("rev1.rt_prio", 3.0);
-
-
-
 
 
    #include "comps/vel.comp"
@@ -203,10 +205,6 @@ int main(void)
    #include "comps/pmsm_t2c.comp"
    set_hal_pin("t2c0.rt_prio", 7.0);
 
-
-   //#include "comps/rev.comp"
-
-   //#include "comps/dq.comp"
    #include "comps/curpid.comp"
    set_hal_pin("curpid0.rt_prio", 8.0);
    #include "comps/pmsm.comp"
@@ -214,15 +212,11 @@ int main(void)
    #include "comps/pmsm_limits.comp"
    set_hal_pin("pmsm_limits0.rt_prio", 10.0);
 
-   //#include "comps/mot.comp"
    #include "comps/idq.comp"
    set_hal_pin("idq0.rt_prio", 11.0);
 
    #include "comps/hv.comp"
    set_hal_pin("hv0.rt_prio", 12.0);
-
-
-   //#include "comps/var.comp"
 
    #include "comps/term.comp"
    set_hal_pin("term0.rt_prio", 13.0);
@@ -244,6 +238,9 @@ int main(void)
    HAL_PIN(rt_calc_time) = 0.0;
    HAL_PIN(frt_calc_time) = 0.0;
    HAL_PIN(nrt_calc_time) = 0.0;
+   HAL_PIN(rt_period) = 0.0;
+   HAL_PIN(frt_period) = 0.0;
+   HAL_PIN(nrt_period) = 0.0;
 
    set_comp_type("conf");
    HAL_PIN(r) = 0.0;
@@ -296,22 +293,17 @@ int main(void)
 
    rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
    frt_time_hal_pin = map_hal_pin("net0.frt_calc_time");
-   nrt_time_hal_pin = map_hal_pin("net0.nrt_calc_time");
-
-   for(int i = 0; i < hal.init_func_count; i++){
-      hal.init[i]();
-   }
-
-   //enable frt interrupt only if frt functions are present
+   rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
+   frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
 
 
    link_pid();
 
    //set_bergerlahr();
    //set_mitsubishi();
-   set_festo();
+   //set_festo();
    //set_sanyo_r2();
-   //set_rexroth();
+   set_rexroth();
    //set_sanyo();
    //set_bosch1();
    //set_bosch1();
@@ -327,23 +319,12 @@ int main(void)
 
    UB_USB_CDC_Init();
 
-   if(hal.pin_errors + hal.comp_errors + hal.rt_errors + hal.frt_errors + hal.nrt_errors == 0){
+   if(hal.pin_errors + hal.comp_errors == 0){
       start_hal();
    }
    else{
       hal.hal_state = MEM_ERROR;
    }
-
-
-
-   TIM_Cmd(TIM2, ENABLE);//int
-
-   if(hal.frt_func_count > 0){
-      TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-   }
-
-
-
 
    while(1)//run non realtime stuff
    {
@@ -365,7 +346,8 @@ int main(void)
       if(start < end){
         start += SysTick->LOAD;
       }
-      PIN(nrt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+      PIN(nrt_calc_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+      PIN(nrt_period) = period;
       Wait(2);
    }
 }

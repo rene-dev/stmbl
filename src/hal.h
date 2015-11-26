@@ -20,7 +20,7 @@
 
 #include "scanf.h"
 #include "printf.h"
-
+#include "stm32f4xx_conf.h"
 
 #pragma once
 
@@ -65,8 +65,8 @@ struct hal_struct{
   void (*rt_deinit[MAX_COMPS])();
   int rt_deinit_func_count;
 
-  void (*init[MAX_COMPS])();
-  int init_func_count;
+  void (*nrt_init[MAX_COMPS])();
+  int nrt_init_func_count;
 
   void (*rt[MAX_COMPS])(float period);
   int rt_func_count;
@@ -109,9 +109,6 @@ struct hal_struct{
   uint32_t set_errors;
   uint32_t get_errors;
   uint32_t comp_errors;
-  uint32_t rt_errors;
-  uint32_t frt_errors;
-  uint32_t nrt_errors;
 } hal;
 
 void init_hal();

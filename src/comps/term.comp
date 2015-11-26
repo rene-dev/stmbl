@@ -55,6 +55,7 @@ MEM(unsigned int write_pos) = 0;
 MEM(unsigned int send_counter) = 0;
 
 MEM(unsigned int last_fault_sent) = 0; //save last error message
+MEM(uint32_t state) = HAL_OK;
 
 RT(
    if(send_counter++ >= PIN(send_step) - 1){
@@ -87,21 +88,22 @@ NRT(
    void hal_info(){
       printf_("#pins %i\n", hal.hal_pin_count);
       printf_("#comps %i\n", hal.comp_count);
-      printf_("#rt %i\n", hal.rt_func_count);
-      printf_("#frt %i\n", hal.frt_func_count);
-      printf_("#nrt %i\n", hal.nrt_func_count);
-      printf_("#init %i\n", hal.init_func_count);
-      printf_("#rt_init %i\n", hal.rt_init_func_count);
-      printf_("#rt_deinit %i\n", hal.rt_deinit_func_count);
       printf_("link errors %i\n", hal.link_errors);
       printf_("pin errors %i\n", hal.pin_errors);
       printf_("comp errors %i\n", hal.comp_errors);
       printf_("set errors %i\n", hal.set_errors);
       printf_("get errors %i\n", hal.get_errors);
-      printf_("rt errors %i\n", hal.rt_errors);
-      printf_("frt errors %i\n", hal.frt_errors);
-      printf_("nrt errors %i\n", hal.nrt_errors);
       printf_("foo0.bar:  %f\n", get_hal_pin("foo0.bar"));
+      float pe = get_hal_pin("net0.rt_period");
+      float ct = get_hal_pin("net0.rt_calc_time");
+      printf_("rt time: %f/%fs\n", ct, pe);
+      pe = get_hal_pin("net0.frt_period");
+      ct = get_hal_pin("net0.frt_calc_time");
+      printf_("frt time: %f/%fs\n", ct, pe);
+      pe = get_hal_pin("net0.nrt_period");
+      ct = get_hal_pin("net0.nrt_calc_time");
+      printf_("nrt time: %f/%fs\n", ct, pe);
+
       switch(hal.rt_state){
          case RT_STOP:
             printf_("rt state:  STOP\n");
@@ -141,6 +143,62 @@ NRT(
             printf_("HAL state:  MEM_ERROR\n");
             break;
       }
+      uint32_t p = 0;
+      printf_("active rt funcs(%u): ", hal.rt_func_count);
+      for(int i = 0; i < hal.rt_func_count; i++){
+         p = (uint32_t)hal.rt[i];
+         for(int i = 0; i < hal.comp_count; i++){
+            if(p == (uint32_t)hal.hal_comps[i]->rt){
+               printf_("%s.rt(%f) ", hal.hal_comps[i]->name, hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value);
+            }
+         }
+      }
+      printf_("\nactive frt funcs(%u): ", hal.frt_func_count);
+      for(int i = 0; i < hal.frt_func_count; i++){
+         p = (uint32_t)hal.frt[i];
+         for(int i = 0; i < hal.comp_count; i++){
+            if(p == (uint32_t)hal.hal_comps[i]->frt){
+               printf_("%s.frt(%f) ", hal.hal_comps[i]->name, hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 3]->source->source->value);
+            }
+         }
+      }
+      printf_("\nactive rt_init funcs(%u): ", hal.rt_init_func_count);
+      for(int i = 0; i < hal.rt_init_func_count; i++){
+         p = (uint32_t)hal.rt_init[i];
+         for(int i = 0; i < hal.comp_count; i++){
+            if(p == (uint32_t)hal.hal_comps[i]->rt_init){
+               printf_("%s.rt_init ", hal.hal_comps[i]->name);
+            }
+         }
+      }
+      printf_("\nactive rt_deinit funcs(%u): ", hal.rt_deinit_func_count);
+      for(int i = 0; i < hal.rt_deinit_func_count; i++){
+         p = (uint32_t)hal.rt_deinit[i];
+         for(int i = 0; i < hal.comp_count; i++){
+            if(p == (uint32_t)hal.hal_comps[i]->rt_deinit){
+               printf_("%s.rt_deinit ", hal.hal_comps[i]->name);
+            }
+         }
+      }
+      printf_("\nactive nrt_init funcs(%u): ", hal.nrt_init_func_count);
+      for(int i = 0; i < hal.nrt_init_func_count; i++){
+         p = (uint32_t)hal.nrt_init[i];
+         for(int i = 0; i < hal.comp_count; i++){
+            if(p == (uint32_t)hal.hal_comps[i]->nrt_init){
+               printf_("%s.nrt_init ", hal.hal_comps[i]->name);
+            }
+         }
+      }
+      printf_("\nactive nrt funcs(%u): ", hal.nrt_func_count);
+      for(int i = 0; i < hal.nrt_func_count; i++){
+         p = (uint32_t)hal.nrt[i];
+         for(int i = 0; i < hal.comp_count; i++){
+            if(p == (uint32_t)hal.hal_comps[i]->nrt){
+               printf_("%s.nrt ", hal.hal_comps[i]->name);
+            }
+         }
+      }
+      printf_("\n");
    }
 
    void about(){
@@ -187,28 +245,13 @@ NRT(
 
       extern char *__brkval;
 
-      printf("RCC->CSR = 0x%08x\n", (unsigned int)RCC->CSR);
-      printf("_etext   = %p\n", &_etext  );
-      printf("_sidata  = %p\n", &_sidata );
-      printf("_sdata   = %p\n", &_sdata  );
-      printf("_edata   = %p\n", &_edata  );
-      printf("_sbss    = %p\n", &_sbss   );
-      printf("_ebss    = %p\n", &_ebss   );
-      //printf("_snoinit = %p\n", &_snoinit);
-      //printf("_enoinit = %p\n", &_enoinit);
-      printf("_end     = %p\n", &_end    );
-      printf("_estack  = %p\n", &_estack );
-
-      printf("heap avail       = %10d\n", (char*)__get_MSP() - __brkval);
-      //malloc_stats();
-
       RCC_ClocksTypeDef  RCC_ClocksStatus;
       RCC_GetClocksFreq(&RCC_ClocksStatus);
 
-      printf("SYSCLK_Frequency = %10ld\n", RCC_ClocksStatus.SYSCLK_Frequency );
-      printf("HCLK_Frequency   = %10ld\n", RCC_ClocksStatus.HCLK_Frequency   );
-      printf("PCLK1_Frequency  = %10ld\n", RCC_ClocksStatus.PCLK1_Frequency  );
-      printf("PCLK2_Frequency  = %10ld\n", RCC_ClocksStatus.PCLK2_Frequency  );
+      printf_("SYSCLK_Frequency = %uHz\n", RCC_ClocksStatus.SYSCLK_Frequency );
+      printf_("HCLK_Frequency   = %uHz\n", RCC_ClocksStatus.HCLK_Frequency   );
+      printf_("PCLK1_Frequency  = %uHz\n", RCC_ClocksStatus.PCLK1_Frequency  );
+      printf_("PCLK2_Frequency  = %uHz\n", RCC_ClocksStatus.PCLK2_Frequency  );
       extern void *g_pfnVectors;
       printf("vtor %lu\n",(uint32_t)&g_pfnVectors);
       //*****************************************************************
@@ -224,7 +267,7 @@ NRT(
       printf_("_end     = %p\n", &_end    );
       printf_("_estack  = %p\n", &_estack );
 
-      printf_("heap avail       = %u\n", (uint32_t)((char*)__get_MSP() - __brkval));
+      printf_("heap avail       = %uB\n", (uint32_t)((char*)__get_MSP() - __brkval));
    }
 
    void listhal(){
@@ -288,6 +331,28 @@ NRT(
       }
       else{
          printf_("not found: %s\n",s);
+      }
+   }
+
+   void hal_error_sender(){
+      if(hal.hal_state != state){
+         switch(hal.hal_state){
+            case HAL_OK:
+               printf_("HAL state:  HAL_OK\n");
+               break;
+            case RT_TOO_LONG:
+               printf_("HAL state:  RT_TOO_LONG\n");
+               break;
+            case FRT_TOO_LONG:
+               printf_("HAL state:  FRT_TOO_LONG\n");
+               break;
+            case MISC_ERROR:
+               printf_("HAL state:  MISC_ERROR\n");
+               break;
+            case MEM_ERROR:
+               printf_("HAL state:  MEM_ERROR\n");
+               break;
+         }
       }
    }
 
@@ -421,6 +486,7 @@ NRT(
       char sink[APP_TX_BUF_SIZE];
 
       fault_sender();
+      hal_error_sender();
 
       int i = -1;
       char rx_buf[APP_TX_BUF_SIZE];
