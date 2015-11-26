@@ -345,9 +345,6 @@ NRT(
       else if(!strcmp(s, "list")){
          listhal();
       }
-      else if(!strcmp(s, "?")){
-         help();
-      }
       else if(!strcmp(s, "help")){
          help();
       }
