@@ -47,6 +47,7 @@ struct hal_comp{
    void (*nrt)(float period);
    int hal_pin_start_index;
    int hal_pin_count;
+   uint32_t instance;
 };
 
 struct hal_struct{
@@ -97,6 +98,8 @@ struct hal_struct{
     RT_TOO_LONG,
     MISC_ERROR,
     MEM_ERROR,
+    CONFIG_LOAD_ERROR,
+    CONFIG_ERROR,
     HAL_OK
   } hal_state;
 

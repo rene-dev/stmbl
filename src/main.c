@@ -159,71 +159,50 @@ int main(void)
    set_comp_type("foo"); // default pin for mem errors
    HAL_PIN(bar) = 0.0;
 
-   #include "comps/sserial.comp"
-   set_hal_pin("sserial0.rt_prio", -1.0);
-   set_hal_pin("sserial0.frt_prio", -1.0);
+//   #include "comps/sserial.comp"
    #include "comps/adc.comp"
-   set_hal_pin("adc0.rt_prio", 0.0);
-
+   
 
    #include "comps/fault.comp"
-   set_hal_pin("fault0.rt_prio", 0.0);
-   //#include "comps/enc_cmd.comp"
+   #include "comps/enc_cmd.comp"
    #include "comps/enc_fb.comp"
-   set_hal_pin("enc_fb0.rt_prio", 0.0);
 
    //#include "comps/en.comp"
-   //#include "comps/res.comp"
-   //set_hal_pin("res0.rt_prio", 0.0);
+   #include "comps/res.comp"
 
    //#include "comps/encm.comp"
    #include "comps/sim.comp"
-   set_hal_pin("sim0.rt_prio", 1.0);
 
    #include "comps/stp.comp"
-   set_hal_pin("stp0.rt_prio", 2.0);
 
 
    #include "comps/rev.comp"
-   set_hal_pin("rev0.rt_prio", 3.0);
    #include "comps/rev.comp"
-   set_hal_pin("rev1.rt_prio", 3.0);
 
 
    #include "comps/vel.comp"
-   set_hal_pin("vel0.rt_prio", 4.0);
    #include "comps/vel.comp"
-   set_hal_pin("vel1.rt_prio", 4.0);
 
    #include "comps/cauto.comp"
-   set_hal_pin("cauto0.rt_prio", 5.0);
 
    //#include "comps/encs.comp"
    #include "comps/pid.comp"
-   set_hal_pin("pid0.rt_prio", 6.0);
 
    #include "comps/pmsm_t2c.comp"
-   set_hal_pin("t2c0.rt_prio", 7.0);
 
    #include "comps/curpid.comp"
-   set_hal_pin("curpid0.rt_prio", 8.0);
    #include "comps/pmsm.comp"
-   set_hal_pin("pmsm0.rt_prio", 9.0);
    #include "comps/pmsm_limits.comp"
-   set_hal_pin("pmsm_limits0.rt_prio", 10.0);
 
    #include "comps/idq.comp"
-   set_hal_pin("idq0.rt_prio", 11.0);
 
    #include "comps/hv.comp"
-   set_hal_pin("hv0.rt_prio", 12.0);
 
    #include "comps/term.comp"
-   set_hal_pin("term0.rt_prio", 13.0);
    #include "comps/led.comp"
    #include "comps/fan.comp"
    #include "comps/brake.comp"
-
+   
 
    set_comp_type("net");
    HAL_PIN(enable) = 0.0;
@@ -243,52 +222,63 @@ int main(void)
    HAL_PIN(nrt_period) = 0.0;
 
    set_comp_type("conf");
-   HAL_PIN(r) = 0.0;
-   HAL_PIN(l) = 0.0;
-   HAL_PIN(j) = 0.0;
-   HAL_PIN(psi) = 0.0;
-   HAL_PIN(polecount) = 0.0;
-   HAL_PIN(fb_polecount) = 0.0;
-   HAL_PIN(fb_offset) = 0.0;
-   HAL_PIN(p) = 0.9;
-   HAL_PIN(pos_p) = 0.0;
-   HAL_PIN(vel_p) = 1.0;
-   HAL_PIN(acc_p) = 0.0;
-   HAL_PIN(acc_pi) = 0.0;
-   HAL_PIN(cur_p) = 0.0;
-   HAL_PIN(cur_i) = 0.0;
-   HAL_PIN(cur_ff) = 1.0;
-   HAL_PIN(cur_ind) = 0.0;
-   HAL_PIN(max_vel) = 0.0;
-   HAL_PIN(max_acc) = 0.0;
-   HAL_PIN(max_force) = 0.0;
-   HAL_PIN(max_dc_cur) = 5.0;
-   HAL_PIN(max_ac_cur) = 0.0;
-   HAL_PIN(fb_type) = 0.0;
-   HAL_PIN(cmd_type) = 0.0;
-   HAL_PIN(fb_rev) = 0.0;
-   HAL_PIN(cmd_rev) = 0.0;
+   HAL_PIN(r) = 1.0;
+   HAL_PIN(l) = 0.01;
+   HAL_PIN(j) = KGCM2(0.26);
+   HAL_PIN(psi) = 0.05;
+   HAL_PIN(polecount) = 4.0;
+   HAL_PIN(mot_type) = 0.0;//ac sync,async/dc,2phase
    HAL_PIN(out_rev) = 0.0;
-   HAL_PIN(fb_res) = 1.0;
+   HAL_PIN(high_motor_temp) = 80.0;
+   HAL_PIN(max_motor_temp) = 100.0;
+   HAL_PIN(phase_time) = 0.5;
+   HAL_PIN(phase_cur) = 1.0;
+   
+   HAL_PIN(max_vel) = RPM(1000.0);
+   HAL_PIN(max_acc) = RPM(1000.0)/0.01;
+   HAL_PIN(max_force) = 1.0;
+   HAL_PIN(max_dc_cur) = 1.0;
+   HAL_PIN(max_ac_cur) = 2.0;
+   
+   HAL_PIN(fb_type) = RES;
+   HAL_PIN(fb_polecount) = 1.0;
+   HAL_PIN(fb_offset) = 0.0;
+   HAL_PIN(fb_rev) = 0.0;
+   HAL_PIN(fb_res) = 1000.0;
+   HAL_PIN(autophase) = 1.0;//constant,cauto,hfi
+   
+   HAL_PIN(cmd_type) = ENC;
+   HAL_PIN(cmd_unit) = 0.0;//pos,vel,torque
+   HAL_PIN(cmd_rev) = 0.0;
    HAL_PIN(cmd_res) = 2000.0;
+   HAL_PIN(en_condition) = 0.0;
+   HAL_PIN(error_out) = 0.0;
+   HAL_PIN(pos_staic) = 0.0;//track pos in disabled and error condition
+         
    HAL_PIN(sin_offset) = 0.0;
    HAL_PIN(cos_offset) = 0.0;
    HAL_PIN(sin_gain) = 1.0;
    HAL_PIN(cos_gain) = 1.0;
-
    HAL_PIN(max_dc_volt) = 370.0;
    HAL_PIN(max_hv_temp) = 90.0;
    HAL_PIN(max_core_temp) = 55.0;
-   HAL_PIN(max_motor_temp) = 100.0;
    HAL_PIN(max_pos_error) = M_PI / 2.0;
    HAL_PIN(high_dc_volt) = 350.0;
    HAL_PIN(low_dc_volt) = 12.0;
    HAL_PIN(high_hv_temp) = 70.0;
-   HAL_PIN(high_motor_temp) = 80.0;
    HAL_PIN(fan_hv_temp) = 60.0;
    HAL_PIN(fan_core_temp) = 450.0;
    HAL_PIN(fan_motor_temp) = 60.0;
-   HAL_PIN(autophase) = 1.0;
+
+   HAL_PIN(p) = 0.99;
+   HAL_PIN(pos_p) = 100.0;
+   HAL_PIN(vel_p) = 1.0;
+   HAL_PIN(acc_p) = 0.3;
+   HAL_PIN(acc_pi) = 50.0;
+   HAL_PIN(cur_p) = 0.0;
+   HAL_PIN(cur_i) = 0.0;
+   HAL_PIN(cur_ff) = 1.0;
+   HAL_PIN(cur_ind) = 0.0;
    HAL_PIN(max_sat) = 0.2;
 
    rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
@@ -296,28 +286,15 @@ int main(void)
    rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
    frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
 
+   for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
+      hal.nrt_init[i]();
+   }
 
    link_pid();
 
-   //set_bergerlahr();
-   //set_mitsubishi();
-   //set_festo();
-   //set_sanyo_r2();
-   set_rexroth();
-   //set_sanyo();
-   //set_bosch1();
-   //set_bosch1();
-   //set_hauser();
-   //set_sanyo();
-   //set_br();
-
-
-   //set_cmd_enc();
-   //set_cmd_stp();
-   //set_cmd_lcnc();
-   //set_cur_cmd();
-
    UB_USB_CDC_Init();
+
+
 
    if(hal.pin_errors + hal.comp_errors == 0){
       start_hal();

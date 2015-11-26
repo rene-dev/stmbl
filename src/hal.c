@@ -300,9 +300,9 @@ int set_comp_type(HPNAME name){
 void add_comp(struct hal_comp* comp){
    if(comp != 0 && hal.comp_count < MAX_COMPS){
       hal.hal_comps[hal.comp_count++] = comp;
+      comp->instance = hal.comp_types_counter[hal.comp_type];
       if(comp->nrt_init != 0){
          hal.nrt_init[hal.nrt_init_func_count++] = comp->nrt_init;
-         comp->nrt_init();
       }
       if(comp->nrt != 0 && hal.nrt_func_count < MAX_COMPS){
          hal.nrt[hal.nrt_func_count++] = comp->nrt;
