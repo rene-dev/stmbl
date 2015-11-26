@@ -86,6 +86,7 @@ NRT(
    }
 
    void hal_info(){
+      printf_("######## hal info ########\n");
       printf_("#pins %i\n", hal.hal_pin_count);
       printf_("#comps %i\n", hal.comp_count);
       printf_("link errors %i\n", hal.link_errors);
@@ -202,6 +203,7 @@ NRT(
    }
 
    void about(){
+      printf_("######## software info ########\n");
       printf_(
           "%s v%i.%i.%i %s\n",
           version_info.product_name,
@@ -232,6 +234,7 @@ NRT(
    }
 
    void sysinfo(){
+      printf_("######## sysinfo ########\n");
       extern char _etext;    // end address of the .text section
       extern char _sidata;   // start address of the initialization values of the .data section
       extern char _sdata;    // start address of the .data section
@@ -298,6 +301,25 @@ NRT(
       }
    }
 
+   void help(){
+      printf_("######## HAL cheat sheet ########\n");
+      printf_("pin name: <comp name><comp instance number>.<pin name> (e.g. pid0.enable)\n");
+      printf_("show pin value and source: pid0.enable (answer: pid0.enable <= fault0.enable_pid = 1.000000)\n");
+      printf_("set pin: pid0.enable = 1.5 (answer: OK pid0.enable = 1.500000)\n");
+      printf_("link pin: pid0.enable = fault0.enable_pid (answer: OK pid0.enable <= fault0.enable_pid = 1.000000)\n");
+      printf_("unlink pin: pid0.enable = pid0.enable (answer: OK pid0.enable <= pid0.enable = 1.000000)\n");
+      printf_("show hal info: hal\n");
+      printf_("show sys info: sysinfo\n");
+      printf_("show software version: about\n");
+      printf_("stop realtime hal: stop\n");
+      printf_("start realtime hal: start\n");
+      printf_("change rt priority: pid0.rt_prio = 6 (-1 = disable, 0 = highest, stop and start hal to apply)\n");
+      printf_("change frt priority: pid0.frt_prio = -1 (-1 = disable, 0 = highest, stop and start hal to apply)\n");
+      printf_("reset cpu: reset\n");
+      printf_("print help: help\n");
+      printf_("list all hal pins: list\n");
+   }
+
    void cmd(char * s){
       if(!strcmp(s, "bootloader")){
          bootloader();
@@ -324,7 +346,10 @@ NRT(
          listhal();
       }
       else if(!strcmp(s, "?")){
-         listhal();
+         help();
+      }
+      else if(!strcmp(s, "help")){
+         help();
       }
       else if(!strcmp(s, "save")){
          save();
