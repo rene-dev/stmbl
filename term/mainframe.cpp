@@ -180,13 +180,7 @@ int ServoFrame::send(const string& s,bool h){
             }
             histpos = history.size();
         }
-        int ret1 = sp_nonblocking_write(port, s.c_str(), s.length());
-        int ret2 = sp_nonblocking_write(port, "\r", 1);
-        if(ret1 != s.length() || ret2!=1){
-            wxMessageBox( wxT("Error while sending"), wxT("Error"), wxICON_EXCLAMATION);
-            disconnect();
-            return 0;
-        }
+        txqueue.push(s);
     }else{
         wxMessageBox( wxT("Not connected"), wxT("Error"), wxICON_EXCLAMATION);
         return 0;
@@ -197,6 +191,15 @@ int ServoFrame::send(const string& s,bool h){
 void ServoFrame::OnTimer(wxTimerEvent& evt){
 	int ret;
 	if(connected){
+        if(!txqueue.empty()){
+            int ret1 = sp_nonblocking_write(port, txqueue.front().c_str(), txqueue.front().length());
+            int ret2 = sp_nonblocking_write(port, "\r", 1);
+            if(ret1 != txqueue.front().length() || ret2!=1){
+                wxMessageBox( wxT("Error while sending"), wxT("Error"), wxICON_EXCLAMATION);
+                disconnect();
+            }
+            txqueue.pop();
+        }
 		ret = sp_nonblocking_read(port, buf, bufsize);
 		if(ret > 0){
 			buf[ret] = 0;

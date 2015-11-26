@@ -14,6 +14,7 @@
 #include <wx/slider.h>
 #include <math.h>
 #include <vector>
+#include <queue>
 #include <libserialport.h>
 #include "basicdrawpane.hpp"
 
@@ -62,4 +63,5 @@ private:
     int histpos;
     int addr;
     float values[16];
+    std::queue<std::string> txqueue;
 };
