@@ -436,6 +436,9 @@ NRT(
       printf_("reset cpu: reset\n");
       printf_("print help: help\n");
       printf_("list all hal pins: list\n");
+      printf_("list all conf pins: conf\n");
+      printf_("save conf: save\n");
+      printf_("load conf: load\n");
    }
 
    void cmd(char * s){
