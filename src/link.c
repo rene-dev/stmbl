@@ -100,8 +100,8 @@ void link_pid(){
    // cauto
 
    link_hal_pins("conf0.fb_offset", "cauto0.mag_offset");
-   link_hal_pins("conf0.cauto_cur", "cauto0.cur");
-   link_hal_pins("conf0.cauto_time", "cauto0.time");
+   link_hal_pins("conf0.phase_cur", "cauto0.cur");
+   link_hal_pins("conf0.phase_time", "cauto0.time");
 
    // pid
    link_hal_pins("conf0.j", "pid0.j");
