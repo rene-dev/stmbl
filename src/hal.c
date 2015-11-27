@@ -52,6 +52,7 @@ void init_hal(){
   hal.active_rt_func = -1;
   hal.active_frt_func = -1;
   hal.active_nrt_func = -1;
+  strcpy(hal.error_name,"no error");
 }
 
 int start_rt(){
@@ -211,6 +212,7 @@ int set_hal_pin(HPNAME name, float value){
       return(1);
     }
   }
+  strcpy(hal.error_name,name);
   hal.set_errors++;
   return(0);
 }
@@ -275,7 +277,7 @@ int link_hal_pins(HPNAME source, HPNAME sink){
     s->source = d;
 	return(1);
   }
-
+  strcpy(hal.error_name,source);
   hal.link_errors++;
   return(0);
 }

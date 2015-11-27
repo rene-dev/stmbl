@@ -112,6 +112,7 @@ struct hal_struct{
   uint32_t set_errors;
   uint32_t get_errors;
   uint32_t comp_errors;
+  char error_name[MAX_HPNAME];
 } hal;
 
 void init_hal();
