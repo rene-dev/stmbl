@@ -159,45 +159,39 @@ int main(void)
    set_comp_type("foo"); // default pin for mem errors
    HAL_PIN(bar) = 0.0;
 
-   #include "comps/sserial.comp"
+   //feedback comps
    #include "comps/adc.comp"
-
-   #include "comps/fault.comp"
-   #include "comps/enc_cmd.comp"
-   #include "comps/enc_fb.comp"
-
-   //#include "comps/en.comp"
    #include "comps/res.comp"
-
+   #include "comps/enc_fb.comp"
    #include "comps/encm.comp"
    #include "comps/encs.comp"
    #include "comps/yaskawa.comp"
+   //TODO: hyperface
+
+   //command comps
+   #include "comps/sserial.comp"
    #include "comps/sim.comp"
-
+   #include "comps/enc_cmd.comp"
+   //TODO: handle en for enable/error
+   //#include "comps/en.comp"   
+   
+   //PID
    #include "comps/stp.comp"
-
-
    #include "comps/rev.comp"
    #include "comps/rev.comp"
-
-
    #include "comps/vel.comp"
    #include "comps/vel.comp"
-
    #include "comps/cauto.comp"
-
    #include "comps/pid.comp"
-
    #include "comps/pmsm_t2c.comp"
-
    #include "comps/curpid.comp"
    #include "comps/pmsm.comp"
    #include "comps/pmsm_limits.comp"
-
    #include "comps/idq.comp"
-
    #include "comps/hv.comp"
 
+   //other comps
+   #include "comps/fault.comp"
    #include "comps/term.comp"
    #include "comps/led.comp"
    #include "comps/fan.comp"
