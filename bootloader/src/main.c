@@ -19,6 +19,7 @@
 */
 
 #include "stm32f4xx_conf.h"
+#include "version.h"
 
 #define APP_START 0x08010000
 #define APP_END   0x08100000

@@ -297,6 +297,18 @@ NRT(
       printf_("newlib     %s\n",_NEWLIB_VERSION);
       printf_("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
       printf_("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
+      printf_("######## Bootloader info ########\n");
+      printf_(
+          "%s v%i.%i.%i %s\n",
+          bt_version_info->product_name,
+          bt_version_info->major,
+          bt_version_info->minor,
+          bt_version_info->patch,
+          bt_version_info->git_version
+      );
+      printf_("Branch %s\n",bt_version_info->git_branch);
+      printf_("Compiled %s %s ",bt_version_info->build_date, bt_version_info->build_time);
+      printf_("by %s on %s\n",bt_version_info->build_user, bt_version_info->build_host);
    }
 
    void start(){
