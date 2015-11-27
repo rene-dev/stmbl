@@ -1,12 +1,8 @@
-#ifdef FB_TX
-#error at the moment you can only have one component using the tx channel of the feeback port(res or encm)
-#else
-#define FB_TX
-#endif
+//using FB_TX
 
 //TODO: ready pin
 
-#define NUM_OF_SAMPLES  800
+#define NUM_OF_SAMPLES_Y  800
 
 COMP(yaskawa);
 
@@ -16,14 +12,14 @@ HAL_PIN(dump) = 0;
 HAL_PIN(len) = 16;
 HAL_PIN(off) = 60;
 
-MEM(volatile uint32_t rxbuf[NUM_OF_SAMPLES + 1]);
+MEM(volatile uint32_t rxbuf[NUM_OF_SAMPLES_Y + 1]);
 MEM(volatile uint32_t txbuf[128]);
 MEM(int pos) = 0;
 MEM(char data[150]);
 MEM(DMA_InitTypeDef DMA_InitStructurerx);
 MEM(float last_dump) = 0;
 
-INIT(
+RT_INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
   
   //TX enable
@@ -82,7 +78,7 @@ INIT(
   DMA_InitStructurerx.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->IDR;
   DMA_InitStructurerx.DMA_Memory0BaseAddr = (uint32_t)&rxbuf;
   DMA_InitStructurerx.DMA_DIR = DMA_DIR_PeripheralToMemory;
-  DMA_InitStructurerx.DMA_BufferSize = NUM_OF_SAMPLES;
+  DMA_InitStructurerx.DMA_BufferSize = NUM_OF_SAMPLES_Y;
   DMA_InitStructurerx.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
   DMA_InitStructurerx.DMA_MemoryInc = DMA_MemoryInc_Enable;
   DMA_InitStructurerx.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;

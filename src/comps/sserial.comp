@@ -1,16 +1,7 @@
 // 11/2015  Rene Hopf<renehopf@mac.com> and Ian McMahon<facetious.ian@gmail.com>
 
-#ifdef CMD_TX
-#error at the moment you can only have one component using the tx channel of the command port
-#else
-#define CMD_TX
-#endif
-
-#ifdef CMD_RX
-#error you can only have one command component
-#else
-#define CMD_RX
-#endif
+//using CMD_TX
+//using CMD_RX
 
 COMP(sserial);
 
@@ -375,7 +366,7 @@ void metadata(pd_metadata_t *pdm, process_data_descriptor_t *ptr) {
   pdm->bitmax = (1<<ptr->data_size)-1;
 }
 
-INIT(
+RT_INIT(
   init_hardware();
   rxpos = 0;
 

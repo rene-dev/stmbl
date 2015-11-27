@@ -150,6 +150,7 @@ NRT(
       printf_("set errors %i\n", hal.set_errors);
       printf_("get errors %i\n", hal.get_errors);
       printf_("foo0.bar:  %f\n", get_hal_pin("foo0.bar"));
+      printf_("error_name: %s\n",hal.error_name);
       float pe = get_hal_pin("net0.rt_period");
       float ct = get_hal_pin("net0.rt_calc_time");
       if(pe > 0.0){
@@ -378,7 +379,7 @@ NRT(
          name[5] =  '\0';
          if(!strcmp(name, "conf0")){
             param.f = hal.hal_pins[i]->source->source->value;
-            printf_("param: %s=%f address:%i\n",hal.hal_pins[i]->name,param.f,address);
+            //printf_("param: %s=%f address:%i\n",hal.hal_pins[i]->name,param.f,address);
             elo = EE_WriteVariable(address,param.byte[0]);
             ehi = EE_WriteVariable(address+1,param.byte[1]);
             if(elo != 8 || ehi != 8){

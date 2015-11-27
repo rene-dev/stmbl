@@ -1,8 +1,4 @@
-#ifdef FB_TX
-#error at the moment you can only have one component using the tx channel of the feeback port(res or encm)
-#else
-#define FB_TX
-#endif
+//using FB_TX
 
 COMP(encm);
 
@@ -13,7 +9,7 @@ HAL_PIN(error) = 0;
 MEM(uint32_t error_) = 0.0;
 MEM(uint8_t menc_buf[10]);
 
-INIT(
+RT_INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
   USART_InitTypeDef USART_InitStruct;
   

@@ -18,7 +18,7 @@ HAL_PIN(c) = 0.0;
 
 MEM(int e_res) = 0.0;
 
-INIT(
+RT_INIT(
   GPIO_InitTypeDef GPIO_InitStructure;
   TIM_ICInitTypeDef TIM_ICInitStructure;
   TIM_ICInitStructure.TIM_Channel = TIM_Channel_1 | TIM_Channel_2;
