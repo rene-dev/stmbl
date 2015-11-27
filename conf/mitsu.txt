@@ -1,6 +1,6 @@
 conf0.r = 1.2
 conf0.l = 0.0025
-conf0.j = 0.0005
+conf0.j = 0.00005
 conf0.psi = 0.04774
 conf0.polecount = 2
 conf0.mot_type = 0.000000

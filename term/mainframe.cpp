@@ -6,6 +6,7 @@ using std::string;
 using std::to_string;
 
 ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
+   ports = 0;
     currentID = wxID_LOWEST;
     addr = -1;
 	connected = false;
@@ -112,7 +113,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     font = wxFont(font.GetPointSize(), wxTELETYPE, font.GetStyle(), font.GetWeight(), font.GetUnderlined());
     textinput->SetFont(font);
     text->SetFont(font);
-    
+
 	wxBoxSizer *bottomsizer = new wxBoxSizer(wxVERTICAL);
 	bottomsizer->Add(text, 1,wxEXPAND|wxALL,3);
 	bottomsizer->Add(textinput, 0,wxEXPAND|wxALL,3);
