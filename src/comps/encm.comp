@@ -12,7 +12,7 @@ MEM(uint8_t menc_buf[10]);
 RT_INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
   USART_InitTypeDef USART_InitStruct;
-  
+
   //TX enable
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
@@ -83,6 +83,7 @@ RT(
 
    if(menc_buf[0] == 0x32 && ((menc_buf[0] ^ menc_buf[1] ^ menc_buf[2] ^ menc_buf[3] ^ menc_buf[4] ^ menc_buf[5] ^ menc_buf[6] ^ menc_buf[7] ^ menc_buf[8]) == 0)){
       tpos = ((menc_buf[2] & 0x80) >> 7) + menc_buf[3]*2 + menc_buf[4]*512;
+      menc_buf[0] = 0; // clear buffer to catch fb error
       PIN(pos) = (tpos * M_PI * 2.0 / 131072.0) - M_PI;
       PIN(error) = 0.0;
    }else{

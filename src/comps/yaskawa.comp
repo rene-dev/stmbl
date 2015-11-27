@@ -17,11 +17,10 @@ MEM(volatile uint32_t txbuf[128]);
 MEM(int pos) = 0;
 MEM(char data[150]);
 MEM(DMA_InitTypeDef DMA_InitStructurerx);
-MEM(float last_dump) = 0;
 
 RT_INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
-  
+
   //TX enable
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
@@ -73,7 +72,7 @@ RT_INIT(
   TIM_ARRPreloadConfig(TIM8,ENABLE);
   TIM_DMACmd(TIM8, TIM_DMA_Update, ENABLE);
   TIM_Cmd(TIM8, ENABLE);
-  
+
   DMA_InitStructurerx.DMA_Channel = DMA_Channel_7; //TIM8 ch1
   DMA_InitStructurerx.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->IDR;
   DMA_InitStructurerx.DMA_Memory0BaseAddr = (uint32_t)&rxbuf;
@@ -89,7 +88,7 @@ RT_INIT(
   DMA_InitStructurerx.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
   DMA_InitStructurerx.DMA_MemoryBurst = DMA_MemoryBurst_Single;
   DMA_InitStructurerx.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  
+
   //manchaster
   //0 -> 01
   //1 -> 10
@@ -105,7 +104,7 @@ RT_INIT(
   uint32_t tim_b = tim_a;
   tim_a &= ~(1<<9);//0
   tim_b |= (1<<9);//1
-  
+
   //encode in manchaster
   int j = 0;
   for(int i = 0;request[i];i++){
@@ -118,7 +117,7 @@ RT_INIT(
      }
   }
   request_m[j] = '\0';
-  
+
   //build txbuf for dma
   for(int i = 0;request_m[i];i++){
      if(request_m[i] == '0'){
@@ -151,15 +150,15 @@ RT(
    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
    DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
    DMA_Init(DMA2_Stream1, &DMA_InitStructure);
-   
+
    TIM8->ARR = 20; // 168 / (20 + 1) = 8MHz
    GPIOB->BSRRL = GPIO_Pin_12;//TX enable
    DMA_Cmd(DMA2_Stream1, DISABLE);
    DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
    DMA_Cmd(DMA2_Stream1, ENABLE);//transmit request
-   
+
    while (!(DMA2->LISR & DMA_FLAG_TCIF1));//wait for request
-   
+
    GPIOB->BSRRH = GPIO_Pin_12;//TX disable
 
    //DMA2-Config
@@ -191,7 +190,7 @@ RT(
          }
          last = current;
       }
-      
+
       last = (rxbuf[first_edge] & GPIO_Pin_11);
       //align edge
       for(int j = first_edge+3; j < 20; j+=3){
@@ -202,13 +201,13 @@ RT(
          }
          last = current;
       }
-      
+
       if(first_edge == 0 || first_edge == 19){
          error++;
       }
-      
+
       first_edge %= 6;
-      
+
       uint32_t bit = 0;// 2 manchaster bits = 1 bit
       uint32_t ones = 0;// received ones, needed for framing and unstuffing
       uint32_t j = 0;// unstuffing and start offset
@@ -251,13 +250,13 @@ RT(
          }
       }
       data[100] = 0; // terminate string
-            
+
       uint32_t pos = 0;
       //extract position data
       for(int i = 0; i < pos_length; i++){
          pos += (data[i + pos_offset]=='1') << i;
       }
-      
+
       if(error){
          PIN(error) = 1.0;
       }else{
@@ -267,8 +266,7 @@ RT(
 );
 
 NRT(
-   if(PIN(dump) != last_dump){
-      last_dump = PIN(dump);
+   if(RISING_EDGE(PIN(dump))){
       printf_("%s\n",data);
    }
 );
