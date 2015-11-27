@@ -327,6 +327,7 @@ NRT(
       RCC_ClocksTypeDef  RCC_ClocksStatus;
       RCC_GetClocksFreq(&RCC_ClocksStatus);
 
+      printf_("HSE_VALUE        = %uHz\n", HSE_VALUE);
       printf_("SYSCLK_Frequency = %uHz\n", RCC_ClocksStatus.SYSCLK_Frequency );
       printf_("HCLK_Frequency   = %uHz\n", RCC_ClocksStatus.HCLK_Frequency   );
       printf_("PCLK1_Frequency  = %uHz\n", RCC_ClocksStatus.PCLK1_Frequency  );
