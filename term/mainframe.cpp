@@ -173,6 +173,8 @@ void ServoFrame::OnChannelChange(wxCommandEvent& event){
 }
 
 int ServoFrame::send(const string& s,bool h){
+    if(!connected)
+        connect();
     if(connected){
         if(h){//history
             if((history.size()==0 || history.back() != s) && !s.empty()){
@@ -181,9 +183,6 @@ int ServoFrame::send(const string& s,bool h){
             histpos = history.size();
         }
         txqueue.push(s);
-    }else{
-        wxMessageBox( wxT("Not connected"), wxT("Error"), wxICON_EXCLAMATION);
-        return 0;
     }
     return 1;
 }
