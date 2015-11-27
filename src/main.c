@@ -159,9 +159,8 @@ int main(void)
    set_comp_type("foo"); // default pin for mem errors
    HAL_PIN(bar) = 0.0;
 
-//   #include "comps/sserial.comp"
+   #include "comps/sserial.comp"
    #include "comps/adc.comp"
-   
 
    #include "comps/fault.comp"
    #include "comps/enc_cmd.comp"
@@ -170,7 +169,9 @@ int main(void)
    //#include "comps/en.comp"
    #include "comps/res.comp"
 
-   //#include "comps/encm.comp"
+   #include "comps/encm.comp"
+   #include "comps/encs.comp"
+   #include "comps/yaskawa.comp"
    #include "comps/sim.comp"
 
    #include "comps/stp.comp"
@@ -185,7 +186,6 @@ int main(void)
 
    #include "comps/cauto.comp"
 
-   //#include "comps/encs.comp"
    #include "comps/pid.comp"
 
    #include "comps/pmsm_t2c.comp"
