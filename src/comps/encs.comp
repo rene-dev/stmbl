@@ -1,8 +1,4 @@
-#ifdef FB_TX
-#error at the moment you can only have one component using the tx channel of the feeback port(res or encm)
-#else
-#define FB_TX
-#endif
+//using FB_TX
 
 /*
 Sanyo denki absolute encoder, tested with PA035C
@@ -28,7 +24,7 @@ word C:
 
 //TODO: error,ready pin, af mapping
 
-#define NUM_OF_SAMPLES  400
+#define NUM_OF_SAMPLES_S  400
 #define TIM_FREQ 84.0
 #define TIM_DIV 5.0
 #define SIG_FREQ 2.5
@@ -46,10 +42,10 @@ HAL_PIN(pos) = 0.0;
 HAL_PIN(error) = 0.0;
 HAL_PIN(cc);
 
-MEM(volatile uint32_t buf[NUM_OF_SAMPLES + 1]);
+MEM(volatile uint32_t buf[NUM_OF_SAMPLES_S + 1]);
 MEM(volatile uint32_t buf2[24]);
 
-INIT(
+RT_INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
 
   //TX enable
@@ -173,7 +169,7 @@ RT(
    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->IDR;
    DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&buf;
    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-   DMA_InitStructure.DMA_BufferSize = NUM_OF_SAMPLES;
+   DMA_InitStructure.DMA_BufferSize = NUM_OF_SAMPLES_S;
    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
@@ -198,13 +194,13 @@ RT(
 
       int i = 0;
       //skip leading ones
-      for(; i < NUM_OF_SAMPLES/5; i++){
+      for(; i < NUM_OF_SAMPLES_S/5; i++){
          if(!(buf[i] & GPIO_Pin_11)){
             break;
          }
       }
       //skip zeros
-      for(; i < NUM_OF_SAMPLES/5; i++){
+      for(; i < NUM_OF_SAMPLES_S/5; i++){
          if(buf[i] & GPIO_Pin_11){
             break;
          }
@@ -213,11 +209,11 @@ RT(
       int d = 0;
       int p = 0;
 
-      p = CLAMP((int)((18 + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES - 1);
+      p = CLAMP((int)((18 + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES_S - 1);
       d += (buf[p] & GPIO_Pin_11) != 0;
 
       for(int j = 0; j < 16; j++){
-         p = CLAMP((int)(((15 - j) + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES - 1);
+         p = CLAMP((int)(((15 - j) + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES_S - 1);
          d = d << 1;
          d += (buf[p] & GPIO_Pin_11) != 0;
       }

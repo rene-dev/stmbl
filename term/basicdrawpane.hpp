@@ -27,5 +27,5 @@ public:
 private:
     wxLongLong time;
     std::vector<std::vector<float>> data;
-    int x,y,xpos,xstep;
+    double x,y,xpos,xstep;
 };

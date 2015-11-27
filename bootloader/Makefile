@@ -4,11 +4,7 @@
 #ld gcollection
 #komische flags
 
-SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c printf.c scanf.c setup.c hal.c misc.c eeprom.c link.c crc.c stm32f103/src/common.c version.c syscalls.c
-#USB
-SRCS +=  ub_lib/stm32_ub_usb_cdc.c ub_lib/usb_cdc_lolevel/usb_core.c ub_lib/usb_cdc_lolevel/usb_dcd_int.c ub_lib/usb_cdc_lolevel/usbd_req.c ub_lib/usb_cdc_lolevel/usbd_cdc_core.c ub_lib/usb_cdc_lolevel/usbd_core.c ub_lib/usb_cdc_lolevel/usb_dcd.c ub_lib/usb_cdc_lolevel/usbd_cdc_vcp.c ub_lib/usb_cdc_lolevel/usbd_desc.c ub_lib/usb_cdc_lolevel/usbd_ioreq.c ub_lib/usb_cdc_lolevel/usb_bsp.c ub_lib/usb_cdc_lolevel/usbd_usr.c
-#SRCS = main.c system.c
-COMPS = df.c
+SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c version.c
 
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
 
@@ -31,7 +27,7 @@ CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork -nostartfile
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -nostartfiles -fsingle-precision-constant
 CFLAGS += -ffunction-sections -fdata-sections -O1
 
-CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals -Isrc/ub_lib -Isrc/ub_lib/usb_cdc_lolevel
+CFLAGS += -I../lib/inc/core -I../lib/inc/peripherals
 
 ###################################################
 
@@ -40,10 +36,10 @@ vpath %.a lib
 
 ROOT=$(shell pwd)
 
-CFLAGS += -Iinc -Ilib -Ilib/inc -Istm32f103/inc
-CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals
+CFLAGS += -I../inc -I../lib -I../lib/inc -I../stm32f103/inc
+CFLAGS += -I../lib/inc/core -I../lib/inc/peripherals
 
-SRCS += lib/startup_stm32f4xx.s # add startup file to build
+SRCS += ../lib/startup_stm32f4xx.s # add startup file to build
 
 OBJS = $(SRCS:.c=.o)
 
@@ -57,28 +53,28 @@ again: clean all
 
 # Flash the STM32F4
 burn: main.elf
-	st-flash --reset write $(PROJ_NAME).bin 0x08010000
+	st-flash --reset write $(PROJ_NAME).bin 0x08000000
 
 btburn: main.elf
 	#change this to your device
 	printf "bootloader\r" > `ls /dev/cu.usbmodem*` || true
 	printf "bootloader\r" > `ls /dev/ttyACM*` || true
 	sleep 1
-	dfu-util -a 0 -d 0483:df11 -s 0x08010000:leave -D main.bin
+	dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D main.bin
 
 # Create tags; assumes ctags exists
 ctags:
 	ctags -R --exclude=*cm0.h --exclude=*cm3.h .
 
 lib:
-	$(MAKE) -C lib
+	$(MAKE) -C ../lib
 
 proj: 	$(PROJ_NAME).elf
 
 
 $(PROJ_NAME).elf: $(SRCS)
-	$(CC) $(CFLAGS) $^ -o $@ -Llib -lstm32f4 -Wl,--gc-sections -Wl,-Map -Wl,$(PROJ_NAME).map
-	tools/add_version_info.py main.elf
+	$(CC) $(CFLAGS) $^ -o $@ -L../lib -lstm32f4 -Wl,--gc-sections -Wl,-Map -Wl,$(PROJ_NAME).map
+	../tools/add_version_info.py main.elf
 	$(OBJCOPY) -O ihex $(PROJ_NAME).elf $(PROJ_NAME).hex
 	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
 	arm-none-eabi-size main.elf

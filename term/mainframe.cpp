@@ -6,6 +6,7 @@ using std::string;
 using std::to_string;
 
 ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
+   ports = 0;
     currentID = wxID_LOWEST;
     addr = -1;
 	connected = false;
@@ -112,7 +113,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     font = wxFont(font.GetPointSize(), wxTELETYPE, font.GetStyle(), font.GetWeight(), font.GetUnderlined());
     textinput->SetFont(font);
     text->SetFont(font);
-    
+
 	wxBoxSizer *bottomsizer = new wxBoxSizer(wxVERTICAL);
 	bottomsizer->Add(text, 1,wxEXPAND|wxALL,3);
 	bottomsizer->Add(textinput, 0,wxEXPAND|wxALL,3);
@@ -173,6 +174,8 @@ void ServoFrame::OnChannelChange(wxCommandEvent& event){
 }
 
 int ServoFrame::send(const string& s,bool h){
+    if(!connected)
+        connect();
     if(connected){
         if(h){//history
             if((history.size()==0 || history.back() != s) && !s.empty()){
@@ -180,16 +183,7 @@ int ServoFrame::send(const string& s,bool h){
             }
             histpos = history.size();
         }
-        int ret1 = sp_nonblocking_write(port, s.c_str(), s.length());
-        int ret2 = sp_nonblocking_write(port, "\r", 1);
-        if(ret1 != s.length() || ret2!=1){
-            wxMessageBox( wxT("Error while sending"), wxT("Error"), wxICON_EXCLAMATION);
-            disconnect();
-            return 0;
-        }
-    }else{
-        wxMessageBox( wxT("Not connected"), wxT("Error"), wxICON_EXCLAMATION);
-        return 0;
+        txqueue.push(s);
     }
     return 1;
 }
@@ -197,6 +191,15 @@ int ServoFrame::send(const string& s,bool h){
 void ServoFrame::OnTimer(wxTimerEvent& evt){
 	int ret;
 	if(connected){
+        if(!txqueue.empty()){
+            int ret1 = sp_nonblocking_write(port, txqueue.front().c_str(), txqueue.front().length());
+            int ret2 = sp_nonblocking_write(port, "\r", 1);
+            if(ret1 != txqueue.front().length() || ret2!=1){
+                wxMessageBox( wxT("Error while sending"), wxT("Error"), wxICON_EXCLAMATION);
+                disconnect();
+            }
+            txqueue.pop();
+        }
 		ret = sp_nonblocking_read(port, buf, bufsize);
 		if(ret > 0){
 			buf[ret] = 0;

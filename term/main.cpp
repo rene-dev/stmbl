@@ -78,7 +78,7 @@ void Servoterm::OnDq(wxCommandEvent& WXUNUSED(event)){
 }
 
 void Servoterm::OnRead(wxCommandEvent& WXUNUSED(event)){
-
+    servoframe->send("conf");
 }
 
 void Servoterm::OnWrite(wxCommandEvent& WXUNUSED(event)){
@@ -86,8 +86,7 @@ void Servoterm::OnWrite(wxCommandEvent& WXUNUSED(event)){
     string line;
     while (std::getline(infile, line))
     {
-        if(!servoframe->send(line))
-            break;
+        servoframe->send(line);
     }
 
 }
@@ -97,7 +96,7 @@ void Servoterm::OnSave(wxCommandEvent& WXUNUSED(event)){
 }
 
 void Servoterm::OnOpen(wxCommandEvent& WXUNUSED(event)){
-    wxFileDialog openFileDialog(servoframe, wxEmptyString, SRCDIR"/..", "","*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+    wxFileDialog openFileDialog(servoframe, wxEmptyString, SRCDIR"/../conf", "","*", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return;
     filename = openFileDialog.GetPath();

@@ -22,7 +22,7 @@ RT(
 
   time += period;
 
-  if(freq * time >= 1.0){ // TODO
+  if(ABS(freq * time) >= 1.0){ // TODO
     time = 0.0;
   }
 
