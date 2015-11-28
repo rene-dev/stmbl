@@ -20,7 +20,6 @@ INIT(
   USART_InitTypeDef USART_InitStruct;
   
   //TX enable
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
   GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
@@ -29,7 +28,6 @@ INIT(
   GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 
   //USART TX
   GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_USART3);
@@ -57,8 +55,6 @@ INIT(
   USART_Cmd(USART3, ENABLE);
 
   //TX DMA
-  // Clock Enable
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
 
   DMA_Cmd(DMA1_Stream3, DISABLE);
   DMA_DeInit(DMA1_Stream3);
@@ -83,8 +79,6 @@ INIT(
   USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
 
   //RX DMA
-  // Clock Enable
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
 
   DMA_Cmd(DMA1_Stream1, DISABLE);
   DMA_DeInit(DMA1_Stream1);

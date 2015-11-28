@@ -177,10 +177,6 @@ void init_hardware() {
   USART_InitTypeDef USART_InitStruct;
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-
   //USART TX
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_UART5);
   GPIO_InitStruct.GPIO_Pin = GPIO_Pin_12;
@@ -218,8 +214,6 @@ void init_hardware() {
   USART_Cmd(UART5, ENABLE);
 
   //RX DMA
-  // Clock Enable
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
 
   DMA_Cmd(DMA2_Stream5, DISABLE);
   DMA_DeInit(DMA2_Stream5);
@@ -247,8 +241,6 @@ void init_hardware() {
   USART_DMACmd(USART1, USART_DMAReq_Rx, ENABLE);
 
   //TX DMA
-  // Clock Enable
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
 
   DMA_Cmd(DMA1_Stream7, DISABLE);
   DMA_DeInit(DMA1_Stream7);

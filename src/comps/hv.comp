@@ -32,8 +32,6 @@ INIT(
    GPIO_InitTypeDef GPIO_InitStruct;
    USART_InitTypeDef USART_InitStruct;
    UART_DRV_CLOCK_COMMAND(UART_DRV_RCC, ENABLE);
-   RCC_AHB1PeriphClockCmd(UART_DRV_RX_IO_RCC, ENABLE);
-   RCC_AHB1PeriphClockCmd(UART_DRV_TX_IO_RCC, ENABLE);
 
    //USART TX
    GPIO_PinAFConfig(UART_DRV_TX_PORT, UART_DRV_TX_PIN_SOURCE, UART_DRV_TX_AF_SOURCE);
@@ -57,19 +55,8 @@ INIT(
    USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
    USART_Init(UART_DRV, &USART_InitStruct);
 
-   // USART_ITConfig(UART_DRV, USART_IT_RXNE, ENABLE);
-   //
-   // NVIC_InitStructure.NVIC_IRQChannel = UART_DRV_IRQN;
-   // NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-   // NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-   // NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-   // NVIC_Init(&NVIC_InitStructure);
-
    /* Enable the USART */
    USART_Cmd(UART_DRV, ENABLE);
-
-   // Clock Enable
-   RCC_AHB1PeriphClockCmd(UART_DRV_TX_DMA_RCC, ENABLE);
 
    // DMA-Disable
    DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
@@ -97,8 +84,6 @@ INIT(
 
    USART_DMACmd(UART_DRV, USART_DMAReq_Tx, ENABLE);
 
-   // Clock Enable
-  RCC_AHB1PeriphClockCmd(UART_DRV_TX_DMA_RCC, ENABLE);
 
   // DMA-Disable
   DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
@@ -122,7 +107,6 @@ INIT(
   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
   DMA_Init(UART_DRV_RX_DMA, &DMA_InitStructure);
 
-  //DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
 
   USART_DMACmd(UART_DRV, USART_DMAReq_Rx, ENABLE);
 

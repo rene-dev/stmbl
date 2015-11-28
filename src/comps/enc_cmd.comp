@@ -28,8 +28,6 @@ RT_INIT(
 	  e_res = 1;
   }
   // enable clocks
-  RCC_AHB1PeriphClockCmd(ENC0_A_IO_RCC, ENABLE);
-  RCC_AHB1PeriphClockCmd(ENC0_B_IO_RCC, ENABLE);
   RCC_APB2PeriphClockCmd(ENC0_TIM_RCC, ENABLE);
 
   // pin af -> tim

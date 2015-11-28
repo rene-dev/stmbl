@@ -34,8 +34,6 @@ RT_INIT(
 	  e_res = 1;
   }
   // enable clocks
-  RCC_AHB1PeriphClockCmd(ENC1_A_IO_RCC, ENABLE);
-  RCC_AHB1PeriphClockCmd(ENC1_B_IO_RCC, ENABLE);
   RCC_APB1PeriphClockCmd(ENC1_TIM_RCC, ENABLE);
 
   // pin mode: af
