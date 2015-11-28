@@ -18,9 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "scanf.h"
-#include "printf.h"
-#include "stm32f4xx_conf.h"
+#include <stdint.h>
 
 #pragma once
 
@@ -153,6 +151,10 @@ int link_hal_pins(HPNAME source, HPNAME sink);
 
 void add_comp(struct hal_comp* comp);
 
+extern void enable_rt();
+extern void enable_frt();
+extern void disable_rt();
+extern void disable_frt();
 
 #define COMP(type)                  \
 {                                   \

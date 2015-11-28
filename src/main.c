@@ -41,6 +41,20 @@ int __errno;
 volatile double systime_s = 0.0;
 void Wait(unsigned int ms);
 
+//hal interface
+void enable_rt(){
+   TIM_Cmd(TIM2, ENABLE);
+}
+void enable_frt(){
+   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+}
+void disable_rt(){
+   TIM_Cmd(TIM2, DISABLE);
+}
+void disable_frt(){
+   TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
+}
+
 //20kHz
 void TIM2_IRQHandler(void){
    TIM_ClearITPendingBit(TIM2,TIM_IT_Update);
