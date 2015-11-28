@@ -12,6 +12,7 @@ HAL_PIN(cos) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
+HAL_PIN(tim2_oc) = 150.0;
 MEM(int lastq) = 0;// last quadrant
 MEM(int abspos) = 0;// multiturn position
 
@@ -63,6 +64,8 @@ RT_DEINIT(
 );
 
 RT(
+   //TODO: arr can change!
+   TIM2->CCR3 = (int)CLAMP(PIN(tim2_oc), 0, TIM2->ARR - 1);
 	float s = 0.0;
 	float c = 0.0;
 	float a = 0.0;

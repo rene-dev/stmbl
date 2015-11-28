@@ -35,8 +35,8 @@ void setup(){
 }
 
 // Setup Resolver Interface
-// TIM8 triggers ADC1 and 2 at 20kHz
-// TIM8 OC1 generates resolver reference signal at 10kHz
+// TIM2 triggers ADC1 and 2 at 20kHz
+// TIM2 OC1 generates resolver reference signal at 10kHz
 // DMA2 moves 4 samples to memory, generates transfer complete interrupt at 5kHz
 void setup_res(){
     //resolver timer
@@ -48,6 +48,7 @@ void setup_res(){
     TIM_TimeBaseStructure.TIM_Prescaler = 9;
     TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+    TIM_ARRPreloadConfig(TIM2,ENABLE);
 
     TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);//trigger ADC
 
