@@ -63,6 +63,18 @@ RT_INIT(
   TIM_Cmd(ENC1_TIM, ENABLE);
 );
 
+RT_DEINIT(
+   TIM_Cmd(ENC1_TIM, DISABLE);
+   TIM_DeInit(ENC1_TIM);
+   RCC_APB2PeriphClockCmd(ENC1_TIM_RCC, DISABLE);
+   GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
+);
+
 RT(
   int32_t tim = TIM_GetCounter(ENC1_TIM);//TODO: interrupt here?
   uint32_t scgpio = GPIOC->IDR;
@@ -100,7 +112,7 @@ RT(
       q = 3;
     }
   }
-  
+  //TODO: sincos stuff at speed
   int qdiff = PIN(quad)-q;
   
   switch(qdiff){
