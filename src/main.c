@@ -193,9 +193,7 @@ int main(void)
    //other comps
    #include "comps/fault.comp"
    #include "comps/term.comp"
-   #include "comps/led.comp"
-   #include "comps/fan.comp"
-   #include "comps/brake.comp"
+   #include "comps/io.comp"
    
 
    set_comp_type("net");

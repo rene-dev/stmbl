@@ -85,16 +85,16 @@ void link_pid(){
 
    link_hal_pins("fault0.cur", "curpid0.max_cur");
 
-   link_hal_pins("fault0.brake", "brake0.brake");
-   link_hal_pins("fault0.hv_fan", "fan0.fan");
+   link_hal_pins("fault0.brake", "io0.brake");
+   link_hal_pins("fault0.hv_fan", "io0.fan");
 
    link_hal_pins("fault0.enable_out", "hv0.enable");
    link_hal_pins("fault0.enable_pid", "pid0.enable");
 
    link_hal_pins("net0.enable", "fault0.enable");
 
-   link_hal_pins("fault0.led_green", "led0.g");
-   link_hal_pins("fault0.led_red", "led0.r");
+   link_hal_pins("fault0.led_green", "io0.green");
+   link_hal_pins("fault0.led_red", "io0.red");
 
    link_hal_pins("fault0.state", "term0.fault"); //sent fault to terminal
    // cauto
