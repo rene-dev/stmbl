@@ -155,11 +155,11 @@ RT(
 
    float a = PIN(a);
    float b = PIN(b);
-   
+
    if(PIN(rev) > 0.0){
       b *= -1.0;
    }
-   
+
   if(e > 0.0){
     packet_to_hv.data.a = TOFIXED(a);
     packet_to_hv.data.b = TOFIXED(b);
@@ -179,9 +179,11 @@ RT(
   DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
   DMA_ClearFlag(UART_DRV_RX_DMA, UART_DRV_RX_DMA_TCIF);
   DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
-  
+
   PIN(power) = PIN(dc_cur) * PIN(dc_volt);
-  PIN(dc_cur_sim) = PIN(iq) / PIN(ac_volt) * sqrtf(a*a + b*b);
+  if(PIN(ac_volt) > 0.0){
+    PIN(dc_cur_sim) = PIN(iq) / PIN(ac_volt) * sqrtf(a*a + b*b)*0.5 + PIN(dc_cur_sim)*0.5;
+  }
 );
 
 ENDCOMP;
