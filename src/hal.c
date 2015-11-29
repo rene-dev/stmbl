@@ -137,16 +137,16 @@ void start_hal(){
 
    if(hal.frt_func_count > 0){
       start_frt();
-      TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE); // enable frt
+      enable_frt();
    }
-   TIM_Cmd(TIM2, ENABLE); // enable rt
+   enable_rt();
 }
 
 void stop_hal(){
    stop_frt();
    stop_rt();
-   TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE); // disable frt
-   TIM_Cmd(TIM2, DISABLE); // disable rt
+   disable_frt();
+   disable_rt();
    for(; hal.rt_deinit_func_count > 0; hal.rt_deinit_func_count--){
       hal.rt_deinit[hal.rt_deinit_func_count - 1]();
    }
@@ -270,9 +270,6 @@ int link_hal_pins(HPNAME source, HPNAME sink){
   s = find_hal_pin(sink);
 
   if(d != 0 && s != 0){
-   //   if(s->source != s){
-   //      printf_("relink %s:%i -> %s:%i to %s:%i -> %s:%i\n", s->source->name, s->source, sink, s, source, d, sink, s);
-   //   }
     s->value = s->source->source->value;
     s->source = d;
 	return(1);

@@ -11,7 +11,6 @@ HAL_PIN(pos) = 0.0;
 
 MEM(int e_res) = 0.0;
 
-
 RT_INIT(
   GPIO_InitTypeDef GPIO_InitStructure;
   TIM_ICInitTypeDef TIM_ICInitStructure;
@@ -28,8 +27,6 @@ RT_INIT(
 	  e_res = 1;
   }
   // enable clocks
-  RCC_AHB1PeriphClockCmd(ENC0_A_IO_RCC, ENABLE);
-  RCC_AHB1PeriphClockCmd(ENC0_B_IO_RCC, ENABLE);
   RCC_APB2PeriphClockCmd(ENC0_TIM_RCC, ENABLE);
 
   // pin af -> tim
@@ -50,6 +47,18 @@ RT_INIT(
   GPIO_Init(ENC0_A_PORT, &GPIO_InitStructure);
   TIM_EncoderInterfaceConfig(ENC0_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
   TIM_Cmd(ENC0_TIM, ENABLE);
+);
+
+RT_DEINIT(
+   TIM_Cmd(ENC0_TIM, DISABLE);
+   TIM_DeInit(ENC0_TIM);
+   RCC_APB2PeriphClockCmd(ENC0_TIM_RCC, DISABLE);
+   GPIO_InitStructure.GPIO_Pin = ENC0_A_PIN | ENC0_B_PIN;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   GPIO_Init(ENC0_A_PORT, &GPIO_InitStructure);
 );
 
 RT(

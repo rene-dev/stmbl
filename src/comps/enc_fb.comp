@@ -34,8 +34,6 @@ RT_INIT(
 	  e_res = 1;
   }
   // enable clocks
-  RCC_AHB1PeriphClockCmd(ENC1_A_IO_RCC, ENABLE);
-  RCC_AHB1PeriphClockCmd(ENC1_B_IO_RCC, ENABLE);
   RCC_APB1PeriphClockCmd(ENC1_TIM_RCC, ENABLE);
 
   // pin mode: af
@@ -63,6 +61,18 @@ RT_INIT(
   GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
   TIM_EncoderInterfaceConfig(ENC1_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
   TIM_Cmd(ENC1_TIM, ENABLE);
+);
+
+RT_DEINIT(
+   TIM_Cmd(ENC1_TIM, DISABLE);
+   TIM_DeInit(ENC1_TIM);
+   RCC_APB2PeriphClockCmd(ENC1_TIM_RCC, DISABLE);
+   GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
 );
 
 RT(
@@ -102,7 +112,7 @@ RT(
       q = 3;
     }
   }
-  
+  //TODO: sincos stuff at speed
   int qdiff = PIN(quad)-q;
   
   switch(qdiff){

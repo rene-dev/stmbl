@@ -26,9 +26,6 @@ HAL_PIN(cos_gain) = 1.0;
 HAL_PIN(sin_offset) = 0.0;
 HAL_PIN(cos_offset) = 0.0;
 
-HAL_PIN(tim2_oc) = 150.0;
-HAL_PIN(tim2_rv) = 420.0;
-
 RT(
    float si[PID_WAVES];
    float co[PID_WAVES];
@@ -49,9 +46,6 @@ RT(
          sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
       }
    }
-
-   TIM2->ARR = (int)CLAMP(PIN(tim2_rv), 300, 1000);
-   TIM2->CCR3 = (int)CLAMP(PIN(tim2_oc), 0, TIM2->ARR - 1);
    //seperate channels
    for(int i = 2; i < PID_WAVES; i++){
       si[i] = 0.0;

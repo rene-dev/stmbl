@@ -12,12 +12,12 @@ HAL_PIN(cos) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
+HAL_PIN(tim2_oc) = 150.0;
 MEM(int lastq) = 0;// last quadrant
 MEM(int abspos) = 0;// multiturn position
 
 RT_INIT(
    //resolver ref signal generation
-   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_10;
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -41,7 +41,6 @@ RT_INIT(
    TIM_CtrlPWMOutputs(TIM2, ENABLE);
    
    //txen
-   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_12;
    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -49,9 +48,24 @@ RT_INIT(
    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
    GPIO_SetBits(GPIOB,GPIO_Pin_12);
-)
+);
+
+RT_DEINIT(
+   GPIO_ResetBits(GPIOB,GPIO_Pin_12);//tx disable
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_12;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
+   TIM_CtrlPWMOutputs(TIM2, DISABLE);
+   TIM_OCStructInit(&TIM_OCInitStructure);
+   TIM_OC3Init(TIM2, &TIM_OCInitStructure);
+);
 
 RT(
+   //TODO: arr can change!
+   TIM2->CCR3 = (int)CLAMP(PIN(tim2_oc), 0, TIM2->ARR - 1);
 	float s = 0.0;
 	float c = 0.0;
 	float a = 0.0;
