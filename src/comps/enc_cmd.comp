@@ -79,3 +79,60 @@ RT(
 );
 
 ENDCOMP;
+
+//http://stackoverflow.com/questions/32947972/stm32-how-to-make-pulse-count-up-down-with-timer
+// #include "mbed.h"
+// #include "stm32f4xx.h"
+// #include "stm32f4xx_hal_tim_ex.h"
+//
+// TIM_HandleTypeDef timer;
+// TIM_Encoder_InitTypeDef encoder;
+//
+// //direction to PA_9 -- step to PA_8
+//
+// int main(){
+//      GPIO_InitTypeDef GPIO_InitStruct;
+//         __TIM1_CLK_ENABLE();
+//         __GPIOA_CLK_ENABLE();
+//         GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
+//         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//         GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+//         GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+//         GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
+//         HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+//
+//     timer.Instance = TIM1;
+//     timer.Init.Period = 0xffff;
+//     timer.Init.Prescaler = 1;
+//     timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+//     timer.Init.CounterMode = TIM_COUNTERMODE_UP;
+//
+//
+//     encoder.EncoderMode = TIM_ENCODERMODE_TI1;
+//     encoder.IC1Filter = 0x0f;
+//     encoder.IC1Polarity = TIM_INPUTCHANNELPOLARITY_RISING; //step signal
+//     encoder.IC1Prescaler = TIM_ICPSC_DIV1;
+//     encoder.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+//
+//     encoder.IC2Filter = 0x0f;
+//     encoder.IC2Polarity = TIM_INPUTCHANNELPOLARITY_BOTHEDGE;  //check direction
+//     encoder.IC2Prescaler = TIM_ICPSC_DIV1;
+//     encoder.IC2Selection = TIM_ICSELECTION_INDIRECTTI;
+//
+//     HAL_TIM_Encoder_Init(&timer, &encoder);
+//     HAL_TIM_Encoder_Start(&timer,TIM_CHANNEL_1);
+//
+//
+//     TIM1->EGR = 1;           // Generate an update event
+//     TIM1->CR1 = 1;           // Enable the counter
+//
+//
+//  while (1) {
+//         int16_t count1;
+//         count1=TIM1->CNT;
+//
+//         printf("%d\r\n", count1);
+//         wait(1.0);
+//
+//  };
+// }
