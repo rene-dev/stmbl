@@ -250,7 +250,7 @@ void usart_init(){
    USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);//Enable USART RX not empty interrupt
 
    NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
-   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 5;
    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
    NVIC_Init(&NVIC_InitStructure);
@@ -306,7 +306,7 @@ void setup_adc(){
    DMA_Init(DMA1_Channel1, &DMA_InitStructure);
 
    NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel1_IRQn;
-   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
    NVIC_Init(&NVIC_InitStructure);
@@ -456,6 +456,7 @@ void USART2_IRQHandler(){
 
 int main(void)
 {
+   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
    RCC_Configuration();
    GPIO_Configuration();
 
