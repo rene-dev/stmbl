@@ -312,6 +312,8 @@ NRT(
       printf_("Branch %s\n",bt_version_info->git_branch);
       printf_("Compiled %s %s ",bt_version_info->build_date, bt_version_info->build_time);
       printf_("by %s on %s\n",bt_version_info->build_user, bt_version_info->build_host);
+
+      printf_("start:%p ,size:%p ,end%p \n",&_binary_stm32f103_main_bin_start,&_binary_stm32f103_main_bin_size,&_binary_stm32f103_main_bin_end);
    }
 
    void start(){

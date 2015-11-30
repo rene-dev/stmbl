@@ -69,6 +69,13 @@ SECTIONS
     KEEP(*(.version_info)) 
     . = ALIGN(4);
   } >FLASH
+     
+  .hv_firmware :
+    {
+      . = ALIGN(4);
+      KEEP(*(.hv_firmware)) 
+      . = ALIGN(4);
+    } >FLASH
 
   /* The program code and other data goes into FLASH */
   .text :

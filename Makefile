@@ -74,9 +74,14 @@ lib:
 	$(MAKE) -C lib
 
 proj: 	$(PROJ_NAME).elf
+	
+hv_firmware.o: stm32f103/main.bin
+	arm-none-eabi-objcopy --rename-section .data=.hv_firmware -I binary stm32f103/main.bin -B arm -O elf32-littlearm hv_firmware.o
 
+stm32f103/main.bin:
+	make -C stm32f103/ all
 
-$(PROJ_NAME).elf: $(SRCS)
+$(PROJ_NAME).elf: $(SRCS) hv_firmware.o
 	$(CC) $(CFLAGS) $^ -o $@ -Llib -lstm32f4 -Wl,--gc-sections -Wl,-Map -Wl,$(PROJ_NAME).map
 	tools/add_version_info.py main.elf
 	$(OBJCOPY) -O ihex $(PROJ_NAME).elf $(PROJ_NAME).hex
