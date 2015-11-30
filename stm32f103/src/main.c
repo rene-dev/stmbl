@@ -260,7 +260,7 @@ void usart_init(){
 
 // Setup ADC
 void setup_adc(){
-   RCC_ADCCLKConfig(RCC_PCLK2_Div4);
+   RCC_ADCCLKConfig(RCC_PCLK2_Div6); // 12MHz
    /* Enable DMA1 clock */
    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
    /* Enable ADC1 and GPIOC clock */
