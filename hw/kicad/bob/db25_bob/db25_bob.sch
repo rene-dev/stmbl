@@ -1232,37 +1232,37 @@ F 3 "" H 5150 4650 60  0000 C CNN
 	1    5150 4650
 	1    0    0    -1  
 $EndComp
-Text GLabel 4800 3700 3    60   Input ~ 0
-0RX+
-Text GLabel 4900 3700 3    60   Input ~ 0
-0RX-
-Text GLabel 5100 3700 3    60   Input ~ 0
-0TX-
 Text GLabel 5200 3700 3    60   Input ~ 0
+0RX+
+Text GLabel 5100 3700 3    60   Input ~ 0
+0RX-
+Text GLabel 4900 3700 3    60   Input ~ 0
+0TX-
+Text GLabel 4800 3700 3    60   Input ~ 0
 0TX+
-Text GLabel 5900 3700 3    60   Input ~ 0
-1RX+
-Text GLabel 6000 3700 3    60   Input ~ 0
-1RX-
-Text GLabel 6200 3700 3    60   Input ~ 0
-1TX-
 Text GLabel 6300 3700 3    60   Input ~ 0
+1RX+
+Text GLabel 6200 3700 3    60   Input ~ 0
+1RX-
+Text GLabel 6000 3700 3    60   Input ~ 0
+1TX-
+Text GLabel 5900 3700 3    60   Input ~ 0
 1TX+
-Text GLabel 4800 5150 3    60   Input ~ 0
-2RX+
-Text GLabel 4900 5150 3    60   Input ~ 0
-2RX-
-Text GLabel 5100 5150 3    60   Input ~ 0
-2TX-
 Text GLabel 5200 5150 3    60   Input ~ 0
+2RX+
+Text GLabel 5100 5150 3    60   Input ~ 0
+2RX-
+Text GLabel 4900 5150 3    60   Input ~ 0
+2TX-
+Text GLabel 4800 5150 3    60   Input ~ 0
 2TX+
-Text GLabel 5900 5150 3    60   Input ~ 0
-3RX+
-Text GLabel 6000 5150 3    60   Input ~ 0
-3RX-
-Text GLabel 6200 5150 3    60   Input ~ 0
-3TX-
 Text GLabel 6300 5150 3    60   Input ~ 0
+3RX+
+Text GLabel 6200 5150 3    60   Input ~ 0
+3RX-
+Text GLabel 6000 5150 3    60   Input ~ 0
+3TX-
+Text GLabel 5900 5150 3    60   Input ~ 0
 3TX+
 $Comp
 L RJ45 J9
@@ -1275,13 +1275,13 @@ F 3 "" H 5150 6000 60  0000 C CNN
 	1    5150 6000
 	1    0    0    -1  
 $EndComp
-Text GLabel 4800 6500 3    60   Input ~ 0
-4RX+
-Text GLabel 4900 6500 3    60   Input ~ 0
-4RX-
-Text GLabel 5100 6500 3    60   Input ~ 0
-4TX-
 Text GLabel 5200 6500 3    60   Input ~ 0
+4RX+
+Text GLabel 5100 6500 3    60   Input ~ 0
+4RX-
+Text GLabel 4900 6500 3    60   Input ~ 0
+4TX-
+Text GLabel 4800 6500 3    60   Input ~ 0
 4TX+
 $Comp
 L GNDA #PWR039
@@ -2027,13 +2027,13 @@ Wire Wire Line
 Wire Wire Line
 	5500 5250 5500 5100
 Wire Wire Line
-	5900 5150 5900 5100
-Wire Wire Line
-	6000 5150 6000 5100
+	6300 5150 6300 5100
 Wire Wire Line
 	6200 5150 6200 5100
 Wire Wire Line
-	6300 5150 6300 5100
+	6000 5150 6000 5100
+Wire Wire Line
+	5900 5150 5900 5100
 Wire Wire Line
 	6500 5250 6500 5100
 Wire Wire Line
@@ -2220,4 +2220,65 @@ Text GLabel 5250 1350 2    60   Input ~ 0
 GND3
 Text GLabel 5250 2050 2    60   Input ~ 0
 GND4
+$Comp
+L DIODE D4
+U 1 1 565D8D3E
+P 8600 1350
+F 0 "D4" H 8600 1450 40  0000 C CNN
+F 1 "DIODE" H 8600 1250 40  0000 C CNN
+F 2 "Diodes_SMD:MiniMELF_Standard" H 8600 1350 60  0001 C CNN
+F 3 "" H 8600 1350 60  0000 C CNN
+	1    8600 1350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L DIODE D5
+U 1 1 565D8EC8
+P 8800 1350
+F 0 "D5" H 8800 1450 40  0000 C CNN
+F 1 "DIODE" H 8800 1250 40  0000 C CNN
+F 2 "Diodes_SMD:MiniMELF_Standard" H 8800 1350 60  0001 C CNN
+F 3 "" H 8800 1350 60  0000 C CNN
+	1    8800 1350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L DIODE D6
+U 1 1 565D8FAE
+P 9000 1350
+F 0 "D6" H 9000 1450 40  0000 C CNN
+F 1 "DIODE" H 9000 1250 40  0000 C CNN
+F 2 "Diodes_SMD:MiniMELF_Standard" H 9000 1350 60  0001 C CNN
+F 3 "" H 9000 1350 60  0000 C CNN
+	1    9000 1350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GNDA #PWR056
+U 1 1 565D90E9
+P 8800 1650
+F 0 "#PWR056" H 8800 1650 40  0001 C CNN
+F 1 "GNDA" H 8800 1580 40  0000 C CNN
+F 2 "" H 8800 1650 60  0000 C CNN
+F 3 "" H 8800 1650 60  0000 C CNN
+	1    8800 1650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8600 1550 9000 1550
+Wire Wire Line
+	8800 1650 8800 1550
+Connection ~ 8800 1550
+Text GLabel 8600 1100 1    60   Input ~ 0
+OUT0FET
+Text GLabel 8800 1100 1    60   Input ~ 0
+OUT1FET
+Text GLabel 9000 1100 1    60   Input ~ 0
+OUT2FET
+Wire Wire Line
+	8600 1150 8600 1100
+Wire Wire Line
+	8800 1150 8800 1100
+Wire Wire Line
+	9000 1150 9000 1100
 $EndSCHEMATC
