@@ -1,8 +1,8 @@
 /**
- * \file crc.c
+ * \file crc8.c
  * Functions and types for CRC checks.
  *
- * Generated on Mon Nov  9 07:24:01 2015,
+ * Generated on Wed Dec  2 02:28:13 2015,
  * by pycrc v0.8.3, https://pycrc.org
  * using the configuration:
  *    Width        = 8
@@ -13,14 +13,14 @@
  *    ReflectOut   = True
  *    Algorithm    = table-driven
  *****************************************************************************/
-#include "crc.h"     /* include the header file generated with pycrc */
-//#include <stdlib.h>
+#include "crc8.h"     /* include the header file generated with pycrc */
+#include <stdlib.h>
 #include <stdint.h>
 
 /**
  * Static table used for the table_driven implementation.
  *****************************************************************************/
-static const crc_t crc_table[256] = {
+static const crc8_t crc_table[256] = {
     0x00, 0x5e, 0xbc, 0xe2, 0x61, 0x3f, 0xdd, 0x83, 0xc2, 0x9c, 0x7e, 0x20, 0xa3, 0xfd, 0x1f, 0x41,
     0x9d, 0xc3, 0x21, 0x7f, 0xfc, 0xa2, 0x40, 0x1e, 0x5f, 0x01, 0xe3, 0xbd, 0x3e, 0x60, 0x82, 0xdc,
     0x23, 0x7d, 0x9f, 0xc1, 0x42, 0x1c, 0xfe, 0xa0, 0xe1, 0xbf, 0x5d, 0x03, 0x80, 0xde, 0x3c, 0x62,
@@ -46,10 +46,10 @@ static const crc_t crc_table[256] = {
  * \param data_len     The width of \a data expressed in number of bits.
  * \return             The reflected data.
  *****************************************************************************/
-crc_t crc_reflect(crc_t data, uint8_t data_len)
+crc8_t crc8_reflect(crc8_t data, size_t data_len)
 {
     unsigned int i;
-    crc_t ret;
+    crc8_t ret;
 
     ret = data & 0x01;
     for (i = 1; i < data_len; i++) {
@@ -68,7 +68,7 @@ crc_t crc_reflect(crc_t data, uint8_t data_len)
  * \param data_len Number of bytes in the \a data buffer.
  * \return         The updated crc value.
  *****************************************************************************/
-crc_t crc_update(crc_t crc, const void *data, uint8_t data_len)
+crc8_t crc8_update(crc8_t crc, const void *data, size_t data_len)
 {
     const unsigned char *d = (const unsigned char *)data;
     unsigned int tbl_idx;

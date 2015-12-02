@@ -416,18 +416,18 @@ RT_INIT(
 );
 
 uint8_t crc_reuest(uint8_t len) {
-   uint8_t crc = crc_init();
+   uint8_t crc = crc8_init();
    for(int i = rxpos; i < rxpos+len; i++){
-      crc = crc_update(crc, (void*)&(rxbuf[i%sizeof(rxbuf)]), 1);  
+      crc = crc8_update(crc, (void*)&(rxbuf[i%sizeof(rxbuf)]), 1);  
    }
-   crc_finalize(crc);
+   crc8_finalize(crc);
    return crc == rxbuf[(rxpos+len)%sizeof(rxbuf)];
 }
 
 uint8_t crc8( uint8_t *addr, uint8_t len) {
-   uint8_t crc = crc_init();
-   crc = crc_update(crc, addr, len);
-   return crc_finalize(crc);
+   uint8_t crc = crc8_init();
+   crc = crc8_update(crc, addr, len);
+   return crc8_finalize(crc);
 }
 
 void send(uint8_t len, uint8_t docrc){

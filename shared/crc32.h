@@ -1,22 +1,22 @@
 /**
- * \file crc.h
+ * \file crc32.h
  * Functions and types for CRC checks.
  *
- * Generated on Mon Nov  9 07:24:11 2015,
+ * Generated on Wed Dec  2 02:28:13 2015,
  * by pycrc v0.8.3, https://pycrc.org
  * using the configuration:
- *    Width        = 8
- *    Poly         = 0x31
- *    XorIn        = 0x00
+ *    Width        = 32
+ *    Poly         = 0x04c11db7
+ *    XorIn        = 0xffffffff
  *    ReflectIn    = True
- *    XorOut       = 0x00
+ *    XorOut       = 0xffffffff
  *    ReflectOut   = True
  *    Algorithm    = table-driven
  *****************************************************************************/
-#ifndef __CRC_H__
-#define __CRC_H__
+#ifndef __CRC32_H__
+#define __CRC32_H__
 
-//#include <stdlib.h>
+#include <stdlib.h>
 #include <stdint.h>
 
 #ifdef __cplusplus
@@ -36,9 +36,9 @@ extern "C" {
 /**
  * The type of the CRC values.
  *
- * This type must be big enough to contain at least 8 bits.
+ * This type must be big enough to contain at least 32 bits.
  *****************************************************************************/
-typedef uint_fast8_t crc_t;
+typedef uint_fast32_t crc32_t;
 
 
 /**
@@ -48,7 +48,7 @@ typedef uint_fast8_t crc_t;
  * \param data_len     The width of \a data expressed in number of bits.
  * \return             The reflected data.
  *****************************************************************************/
-crc_t crc_reflect(crc_t data, uint8_t data_len);
+crc32_t crc32_reflect(crc32_t data, size_t data_len);
 
 
 /**
@@ -56,9 +56,9 @@ crc_t crc_reflect(crc_t data, uint8_t data_len);
  *
  * \return     The initial crc value.
  *****************************************************************************/
-static inline crc_t crc_init(void)
+static inline crc32_t crc32_init(void)
 {
-    return 0x00;
+    return 0xffffffff;
 }
 
 
@@ -70,7 +70,7 @@ static inline crc_t crc_init(void)
  * \param data_len Number of bytes in the \a data buffer.
  * \return         The updated crc value.
  *****************************************************************************/
-crc_t crc_update(crc_t crc, const void *data, uint8_t data_len);
+crc32_t crc32_update(crc32_t crc, const void *data, size_t data_len);
 
 
 /**
@@ -79,9 +79,9 @@ crc_t crc_update(crc_t crc, const void *data, uint8_t data_len);
  * \param crc  The current crc value.
  * \return     The final crc value.
  *****************************************************************************/
-static inline crc_t crc_finalize(crc_t crc)
+static inline crc32_t crc32_finalize(crc32_t crc)
 {
-    return crc ^ 0x00;
+    return crc ^ 0xffffffff;
 }
 
 
@@ -89,4 +89,4 @@ static inline crc_t crc_finalize(crc_t crc)
 }           /* closing brace for extern "C" */
 #endif
 
-#endif      /* __CRC_H__ */
+#endif      /* __CRC32_H__ */
