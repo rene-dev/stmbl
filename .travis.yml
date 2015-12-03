@@ -28,6 +28,7 @@ script:
 - cmake ../
 - make
 - cd ..
+- ls
 
 notifications:
   irc:
