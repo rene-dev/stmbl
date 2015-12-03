@@ -37,6 +37,7 @@ notifications:
     - irc.hackint.org#stmbl
     on_success: never
     on_failure: always
+before_deploy: git fetch --tags
 deploy:
   provider: releases
   skip_cleanup: true
