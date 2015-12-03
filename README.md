@@ -58,6 +58,7 @@ https://www.youtube.com/watch?v=seEV_i7o1NI
 * Sanyo Denki absolute encoders
 * Yaskawa absolute encoders
 * Sick HIPERFACE®
+
 #####Planned:
 * EnDat
 * BiSS
