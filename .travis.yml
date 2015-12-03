@@ -27,10 +27,7 @@ script:
 - cd build/
 - cmake ../
 - make
-branches:
-  only:
-  - master
-  - motsim
+
 notifications:
   irc:
     channels:
