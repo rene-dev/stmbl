@@ -57,7 +57,7 @@ MEM(unsigned int write_pos) = 0;
 MEM(unsigned int send_counter) = 0;
 
 MEM(unsigned int last_fault_sent) = 0; //save last error message
-MEM(uint32_t state) = HAL_OK;
+MEM(uint32_t last_hal_state) = HAL_OK;
 MEM(uint16_t ee_error);
 
 
@@ -506,7 +506,8 @@ NRT(
    }
 
    void hal_error_sender(){
-      if(hal.hal_state != state){
+      if(hal.hal_state != last_hal_state){
+         last_hal_state = hal.hal_state;
          switch(hal.hal_state){
             case HAL_OK:
                printf_("HAL state:  HAL_OK\n");
