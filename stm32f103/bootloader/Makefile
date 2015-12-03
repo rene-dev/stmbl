@@ -17,12 +17,12 @@ LDSCRIPT = "stm32_flash.ld"
 SRCDIR := src/
 INCDIR := inc/
 
-LIBDIR := Libraries/
+LIBDIR := ../Libraries/
 
-LIBINC := -Iinc
-LIBINC += -ILibraries/STM32F10x_StdPeriph_Driver/inc
-LIBINC += -ILibraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
-LIBINC += -ILibraries/CMSIS/CM3/CoreSupport
+LIBINC := -I../inc
+LIBINC += -I../Libraries/STM32F10x_StdPeriph_Driver/inc
+LIBINC += -I../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
+LIBINC += -I../Libraries/CMSIS/CM3/CoreSupport
 
 LIBS := ./$(LIBDIR)/STM32F10x_StdPeriph_Driver/libstm32fw.a
 	   
@@ -38,16 +38,16 @@ GDB		= $(SYSTEM)-gdb
 SIZE	= $(SYSTEM)-size
 
 # INCLUDES = -I$(SRCDIR) $(LIBINC)
-INCLUDES = $(LIBINC) -I../shared
-CFLAGS  = $(CPU) $(CMSIS_OPT) $(OTHER_OPT) -Wall -fno-common -fno-strict-aliasing -O2 $(INCLUDES) -g -Wfatal-errors -g -std=c99 -fdiagnostics-color=always
+INCLUDES = $(LIBINC) -I../../shared
+CFLAGS  = $(CPU) $(CMSIS_OPT) $(OTHER_OPT) -Wall -fno-common -fno-strict-aliasing -Os $(INCLUDES) -g -Wfatal-errors -g -std=c99 -fdiagnostics-color=always -ffunction-sections -fdata-sections -nostartfiles
 ASFLAGS = $(CFLAGS) -x assembler-with-cpp
 LDFLAGS = -Wl,--gc-sections,-Map=$*.map,-cref -T $(LDSCRIPT) $(CPU)
 ARFLAGS = cr
 OBJCOPYFLAGS = -Obinary
 OBJDUMPFLAGS = -S
 
-STARTUP_OBJ = $(CMSIS_DEVSUP)/startup/TrueSTUDIO/startup_$(STARTUP_FILE).o
-SYSTEM_OBJ = $(CMSIS_DEVSUP)/system_$(SYSTEM_FILE).o
+STARTUP_OBJ = ../$(CMSIS_DEVSUP)/startup/TrueSTUDIO/startup_$(STARTUP_FILE).o
+SYSTEM_OBJ = ../$(CMSIS_DEVSUP)/system_$(SYSTEM_FILE).o
 
 BIN = main.bin
 
@@ -55,13 +55,12 @@ OBJS = $(sort \
  $(patsubst %.c,%.o,$(wildcard src/*.c)) \
  $(patsubst %.s,%.o,$(wildcard src/*.s)) \
  $(STARTUP_OBJ) \
- $(SYSTEM_OBJ) \
- ../shared/common.o)
+ $(SYSTEM_OBJ))
 
 all: $(BIN)
 
 burn: $(BIN)
-	st-flash --reset write $(BIN) 0x8001000
+	st-flash --reset write $(BIN) 0x8000000
 	
 $(BIN): main.out
 	$(OBJCOPY) $(OBJCOPYFLAGS) main.out $(BIN)
