@@ -4,7 +4,7 @@
 #ld gcollection
 #komische flags
 
-SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c printf.c scanf.c setup.c hal.c misc.c eeprom.c link.c version.c syscalls.c shared/crc8.c shared/common.c
+SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c printf.c scanf.c setup.c hal.c misc.c eeprom.c link.c version.c syscalls.c shared/crc8.c shared/crc32.c shared/common.c
 #USB
 SRCS +=  ub_lib/stm32_ub_usb_cdc.c ub_lib/usb_cdc_lolevel/usb_core.c ub_lib/usb_cdc_lolevel/usb_dcd_int.c ub_lib/usb_cdc_lolevel/usbd_req.c ub_lib/usb_cdc_lolevel/usbd_cdc_core.c ub_lib/usb_cdc_lolevel/usbd_core.c ub_lib/usb_cdc_lolevel/usb_dcd.c ub_lib/usb_cdc_lolevel/usbd_cdc_vcp.c ub_lib/usb_cdc_lolevel/usbd_desc.c ub_lib/usb_cdc_lolevel/usbd_ioreq.c ub_lib/usb_cdc_lolevel/usb_bsp.c ub_lib/usb_cdc_lolevel/usbd_usr.c
 #SRCS = main.c system.c
@@ -83,10 +83,10 @@ stm32f103/main.bin:
 
 $(PROJ_NAME).elf: $(SRCS) hv_firmware.o
 	$(CC) $(CFLAGS) $^ -o $@ -Llib -lstm32f4 -Wl,--gc-sections -Wl,-Map -Wl,$(PROJ_NAME).map
-	tools/add_version_info.py main.elf
-	$(OBJCOPY) -O ihex $(PROJ_NAME).elf $(PROJ_NAME).hex
-	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
-	arm-none-eabi-size main.elf
+	tools/add_version_info.py $(PROJ_NAME).elf
+	$(OBJCOPY) -O binary --gap-fill 0xFF $(PROJ_NAME).elf $(PROJ_NAME).bin
+	tools/checkcrc.py $(PROJ_NAME).bin
+	arm-none-eabi-size $(PROJ_NAME).elf
 
 clean:
 	rm -f *.o *.i

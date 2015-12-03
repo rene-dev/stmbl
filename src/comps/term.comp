@@ -300,6 +300,15 @@ NRT(
       printf_("newlib     %s\n",_NEWLIB_VERSION);
       printf_("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
       printf_("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
+      uint32_t crc = crc32_init();
+      crc = crc32_update(crc, (void*)0x08010000, version_info.image_size);
+      crc = crc32_finalize(crc);
+      printf_("size: %u crc:%x\n",version_info.image_size,version_info.image_crc);
+      if(crc == 0)
+         printf_("crc ok!\n");
+      else
+         printf_("crc error!:%x\n",crc);
+      
       printf_("######## Bootloader info ########\n");
       printf_(
           "%s v%i.%i.%i %s\n",
