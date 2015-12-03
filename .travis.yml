@@ -27,7 +27,7 @@ script:
 - cd build/
 - cmake ../
 - make
-- ls
+- cd ..
 
 notifications:
   irc:
