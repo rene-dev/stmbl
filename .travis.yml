@@ -46,3 +46,4 @@ deploy:
   file: main.bin
   on:
     repo: rene-dev/stmbl
+    tags: true
