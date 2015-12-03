@@ -4,7 +4,7 @@
 #ld gcollection
 #komische flags
 
-SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c version.c
+SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c version.c ../shared/crc32.c
 
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
 
@@ -27,7 +27,7 @@ CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork -nostartfile
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -nostartfiles -fsingle-precision-constant
 CFLAGS += -ffunction-sections -fdata-sections -O1
 
-CFLAGS += -I../lib/inc/core -I../lib/inc/peripherals
+CFLAGS += -I../lib/inc/core -I../lib/inc/peripherals -I../shared
 
 ###################################################
 
@@ -74,9 +74,9 @@ proj: 	$(PROJ_NAME).elf
 
 $(PROJ_NAME).elf: $(SRCS)
 	$(CC) $(CFLAGS) $^ -o $@ -L../lib -lstm32f4 -Wl,--gc-sections -Wl,-Map -Wl,$(PROJ_NAME).map
-	../tools/add_version_info.py main.elf
-	$(OBJCOPY) -O ihex $(PROJ_NAME).elf $(PROJ_NAME).hex
-	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
+	../tools/add_version_info.py $(PROJ_NAME).elf
+	$(OBJCOPY) -O binary --gap-fill 0xFF $(PROJ_NAME).elf $(PROJ_NAME).bin
+	../tools/checkcrc.py $(PROJ_NAME).bin
 	arm-none-eabi-size main.elf
 
 clean:

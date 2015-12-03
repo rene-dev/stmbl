@@ -25,7 +25,8 @@
 #include "setup.h"
 #include "eeprom.h"
 #include "link.h"
-#include "crc.h"
+#include "crc8.h"
+#include "crc32.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,6 +55,10 @@ void disable_rt(){
 void disable_frt(){
    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
 }
+
+extern char _binary_stm32f103_main_bin_start;
+extern char _binary_stm32f103_main_bin_size;
+extern char _binary_stm32f103_main_bin_end;
 
 //20kHz
 void TIM2_IRQHandler(void){

@@ -20,11 +20,29 @@
 
 #include "stm32f4xx_conf.h"
 #include "version.h"
+#include "crc32.h"
 
 #define APP_START 0x08010000
 #define APP_END   0x08100000
+#define APP_RANGE_VALID(a, s) (!(((a) | (s)) & 3) && (a) >= APP_START && ((a) + (s)) <= APP_END)
 #define VERSION_INFO_OFFSET 0x188
 static volatile const struct version_info *app_info = (void*)(APP_START + VERSION_INFO_OFFSET);
+
+int app_ok(){
+    if (!APP_RANGE_VALID(APP_START, app_info->image_size)) {
+        return 0;
+    }
+
+    uint32_t crc = crc32_init();
+    crc = crc32_update(crc, (void*)APP_START, app_info->image_size);
+    crc = crc32_finalize(crc);
+
+    if (crc != 0) {
+        return 0;
+    }
+
+    return 1;
+}
 
 int main(void){
    GPIO_InitTypeDef GPIO_InitDef;
@@ -35,15 +53,13 @@ int main(void){
    GPIO_InitDef.GPIO_PuPd = GPIO_PuPd_UP;
    GPIO_InitDef.GPIO_Speed = GPIO_Speed_2MHz;
    GPIO_Init(GPIOA, &GPIO_InitDef);
-   
    uint32_t pin = !GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_13);
-   
    GPIO_InitDef.GPIO_PuPd = GPIO_PuPd_NOPULL;
    GPIO_Init(GPIOA, &GPIO_InitDef);
    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, DISABLE);
-   
+
    void (*SysMemBootJump)(void);
-   if ( (*((unsigned long *)0x2001C000) == 0xDEADBEEF) || pin) {//Memory map, datasheet
+   if ( (*((unsigned long *)0x2001C000) == 0xDEADBEEF) || pin || !app_ok()) {//Memory map, datasheet
       *((unsigned long *)0x2001C000) =  0xCAFEFEED; //Reset bootloader trigger
       __set_MSP(0x20001000);
  	   //Point the PC to the System Memory reset vector (+4)
