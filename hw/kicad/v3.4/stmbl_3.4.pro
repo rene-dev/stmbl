@@ -1,4 +1,4 @@
-update=Dienstag, 08. Dezember 2015 'u30' 03:30:45
+update=Dienstag, 08. Dezember 2015 03:42:56
 version=1
 last_client=kicad
 [pcbnew]
@@ -28,6 +28,8 @@ version=1
 LibDir=
 [eeschema/libraries]
 LibName34=stmbl_3.4-cache
+[general]
+version=1
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
@@ -38,5 +40,3 @@ NetFmtName=
 SpiceForceRefPrefix=0
 SpiceUseNetNumbers=0
 LabSize=60
-[general]
-version=1

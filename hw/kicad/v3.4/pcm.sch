@@ -250,7 +250,7 @@ F 3 "" H 6750 2550 60  0000 C CNN
 	1    6750 2550
 	1    0    0    -1  
 $EndComp
-Text HLabel 8150 2400 2    60   Input ~ 0
+Text HLabel 7750 2400 2    60   Input ~ 0
 SCKI
 $Comp
 L +3.3V #PWR?
@@ -304,21 +304,21 @@ Wire Wire Line
 	7350 2700 7450 2700
 Wire Wire Line
 	7350 2400 7450 2400
-$Comp
-L JUMPER JP?
-U 1 1 56660087
-P 7750 2400
-F 0 "JP?" H 7750 2550 50  0000 C CNN
-F 1 "JUMPER" H 7750 2320 50  0000 C CNN
-F 2 "" H 7750 2400 60  0000 C CNN
-F 3 "" H 7750 2400 60  0000 C CNN
-	1    7750 2400
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
-	8050 2400 8150 2400
+	7650 2400 7750 2400
 Text HLabel 6050 2400 0    60   Input ~ 0
 OSCEN
 Wire Wire Line
 	6050 2400 6150 2400
+$Comp
+L Jumper_NC_Small JP?
+U 1 1 566697D1
+P 7550 2400
+F 0 "JP?" H 7550 2480 50  0000 C CNN
+F 1 "Jumper_NC_Small" H 7560 2340 50  0001 C CNN
+F 2 "" H 7550 2400 60  0000 C CNN
+F 3 "" H 7550 2400 60  0000 C CNN
+	1    7550 2400
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
