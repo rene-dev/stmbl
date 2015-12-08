@@ -38,7 +38,7 @@ GDB		= $(SYSTEM)-gdb
 SIZE	= $(SYSTEM)-size
 
 # INCLUDES = -I$(SRCDIR) $(LIBINC)
-INCLUDES = $(LIBINC)
+INCLUDES = $(LIBINC) -I../shared
 CFLAGS  = $(CPU) $(CMSIS_OPT) $(OTHER_OPT) -Wall -fno-common -fno-strict-aliasing -O2 $(INCLUDES) -g -Wfatal-errors -g -std=c99 -fdiagnostics-color=always
 ASFLAGS = $(CFLAGS) -x assembler-with-cpp
 LDFLAGS = -Wl,--gc-sections,-Map=$*.map,-cref -T $(LDSCRIPT) $(CPU)
@@ -55,7 +55,8 @@ OBJS = $(sort \
  $(patsubst %.c,%.o,$(wildcard src/*.c)) \
  $(patsubst %.s,%.o,$(wildcard src/*.s)) \
  $(STARTUP_OBJ) \
- $(SYSTEM_OBJ))
+ $(SYSTEM_OBJ) \
+ ../shared/common.o)
 
 all: $(BIN)
 

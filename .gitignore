@@ -19,6 +19,7 @@ term/win32/bin
 *.list
 *.out
 *.pyc
+tools/pycrc*
 
 sim/sim
 sim/plot
@@ -31,6 +32,7 @@ stmblx
 *.s#?
 *.b#?
 *.l#?
+*.lck
 
 # Eagle project file
 # It contains a serial number and references to the file structure

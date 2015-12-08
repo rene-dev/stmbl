@@ -47,7 +47,10 @@ MEMORY
   PARAM0 (rx)     : ORIGIN = 0x08008000, LENGTH = 16K/* sector 2 */
   PARAM1 (rx)     : ORIGIN = 0x0800C000, LENGTH = 16K/* sector 3 */
   FLASH  (rx)     : ORIGIN = 0x08010000, LENGTH = 960K/* sector 4-11 */
-  RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 192K
+  CCM (xrw)       : ORIGIN = 0x10000000, LENGTH = 64k
+  RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 112K/*SRAM1*/
+  RAM2(xrw)       : ORIGIN = 0x2001C000, LENGTH = 16K/*SRAM2*/
+  BKP(xrw)        : ORIGIN = 0x40024000, LENGTH = 4K/*backup bkp sram*/
   MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
 }
 
@@ -69,6 +72,13 @@ SECTIONS
     KEEP(*(.version_info)) 
     . = ALIGN(4);
   } >FLASH
+     
+  .hv_firmware :
+    {
+      . = ALIGN(4);
+      KEEP(*(.hv_firmware)) 
+      . = ALIGN(4);
+    } >FLASH
 
   /* The program code and other data goes into FLASH */
   .text :

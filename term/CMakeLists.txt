@@ -28,7 +28,7 @@ find_package(wxWidgets 3.0 COMPONENTS core base REQUIRED)
 include(${wxWidgets_USE_FILE})
 
 if(APPLE)
-set(MACOSX_BUNDLE_ICON_FILE "stmbl.icns" )
+#set(MACOSX_BUNDLE_ICON_FILE "stmbl.icns" )
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/resources/stmbl.icns PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SRC_LIST} ${CMAKE_CURRENT_SOURCE_DIR}/resources/stmbl.icns)
 else(APPLE)
