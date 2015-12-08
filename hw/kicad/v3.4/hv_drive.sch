@@ -1,0 +1,278 @@
+EESchema Schematic File Version 2
+LIBS:stmbl_3.4-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 6 14
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L iramxb IC?
+U 1 1 56590A9F
+P 5700 4100
+F 0 "IC?" H 6000 5100 60  0000 C CNN
+F 1 "iramxb" H 6100 3600 60  0000 C CNN
+F 2 "" H 5700 4100 60  0000 C CNN
+F 3 "" H 5700 4100 60  0000 C CNN
+	1    5700 4100
+	1    0    0    -1
+$EndComp
+$Comp
+L CP C?
+U 1 1 56590C91
+P 3800 4400
+F 0 "C?" H 3825 4500 50  0000 L CNN
+F 1 "270µ" H 3825 4300 50  0000 L CNN
+F 2 "" H 3838 4250 30  0000 C CNN
+F 3 "" H 3800 4400 60  0000 C CNN
+	1    3800 4400
+	1    0    0    -1
+$EndComp
+$Comp
+L CP C?
+U 1 1 56590CD1
+P 4150 4400
+F 0 "C?" H 4175 4500 50  0000 L CNN
+F 1 "270µ" H 4175 4300 50  0000 L CNN
+F 2 "" H 4188 4250 30  0000 C CNN
+F 3 "" H 4150 4400 60  0000 C CNN
+	1    4150 4400
+	1    0    0    -1
+$EndComp
+$Comp
+L CP C?
+U 1 1 56590CF5
+P 4500 4400
+F 0 "C?" H 4525 4500 50  0000 L CNN
+F 1 "CP" H 4525 4300 50  0000 L CNN
+F 2 "" H 4538 4250 30  0000 C CNN
+F 3 "" H 4500 4400 60  0000 C CNN
+	1    4500 4400
+	1    0    0    -1
+$EndComp
+$Comp
+L C C?
+U 1 1 56590D2C
+P 4850 4400
+F 0 "C?" H 4875 4500 50  0000 L CNN
+F 1 "10n" H 4875 4300 50  0000 L CNN
+F 2 "" H 4888 4250 30  0000 C CNN
+F 3 "" H 4850 4400 60  0000 C CNN
+	1    4850 4400
+	1    0    0    -1
+$EndComp
+$Comp
+L C C?
+U 1 1 56590D5B
+P 5150 4400
+F 0 "C?" H 5175 4500 50  0000 L CNN
+F 1 "10n" H 5175 4300 50  0000 L CNN
+F 2 "" H 5188 4250 30  0000 C CNN
+F 3 "" H 5150 4400 60  0000 C CNN
+	1    5150 4400
+	1    0    0    -1
+$EndComp
+$Comp
+L C C?
+U 1 1 56590D8A
+P 5450 4400
+F 0 "C?" H 5475 4500 50  0000 L CNN
+F 1 "C" H 5475 4300 50  0000 L CNN
+F 2 "" H 5488 4250 30  0000 C CNN
+F 3 "" H 5450 4400 60  0000 C CNN
+	1    5450 4400
+	1    0    0    -1
+$EndComp
+Wire Wire Line
+	3650 4550 5700 4550
+Connection ~ 5150 4550
+Connection ~ 4850 4550
+Connection ~ 4500 4550
+Connection ~ 4150 4550
+Wire Wire Line
+	3650 4250 5700 4250
+Connection ~ 4150 4250
+Connection ~ 4500 4250
+Connection ~ 4850 4250
+Connection ~ 5150 4250
+$Comp
+L C C?
+U 1 1 5659119D
+P 5450 3500
+F 0 "C?" H 5475 3600 50  0000 L CNN
+F 1 "4.7µ" H 5475 3400 50  0000 L CNN
+F 2 "" H 5488 3350 30  0000 C CNN
+F 3 "" H 5450 3500 60  0000 C CNN
+	1    5450 3500
+	0    -1   -1   0
+$EndComp
+$Comp
+L C C?
+U 1 1 565911DD
+P 5450 3750
+F 0 "C?" H 5475 3850 50  0000 L CNN
+F 1 "4.7µ" H 5475 3650 50  0000 L CNN
+F 2 "" H 5488 3600 30  0000 C CNN
+F 3 "" H 5450 3750 60  0000 C CNN
+	1    5450 3750
+	0    -1   -1   0
+$EndComp
+$Comp
+L C C?
+U 1 1 56591213
+P 5450 4000
+F 0 "C?" H 5475 4100 50  0000 L CNN
+F 1 "4.7µ" H 5475 3900 50  0000 L CNN
+F 2 "" H 5488 3850 30  0000 C CNN
+F 3 "" H 5450 4000 60  0000 C CNN
+	1    5450 4000
+	0    -1   -1   0
+$EndComp
+Connection ~ 5450 4250
+Wire Wire Line
+	5700 4550 5700 4350
+Connection ~ 5450 4550
+Wire Wire Line
+	5700 4000 5600 4000
+Wire Wire Line
+	5700 3750 5600 3750
+Wire Wire Line
+	5700 3500 5600 3500
+Wire Wire Line
+	5200 3600 5700 3600
+Wire Wire Line
+	5300 3600 5300 3500
+Wire Wire Line
+	5200 3850 5700 3850
+Wire Wire Line
+	5300 3850 5300 3750
+Wire Wire Line
+	5200 4100 5700 4100
+Wire Wire Line
+	5300 4100 5300 4000
+Text HLabel 5200 3600 0    60   Input ~ 0
+W
+Text HLabel 5200 3850 0    60   Input ~ 0
+V
+Text HLabel 5200 4100 0    60   Input ~ 0
+U
+Text HLabel 3650 4550 0    60   Input ~ 0
+V-
+Text HLabel 3650 4250 0    60   Input ~ 0
+V+
+Connection ~ 3800 4550
+Connection ~ 3800 4250
+Connection ~ 5300 4100
+Connection ~ 5300 3850
+Connection ~ 5300 3600
+$Comp
+L akl230-03 X?
+U 1 1 5669783C
+P 5300 2800
+F 0 "X?" H 5350 3000 60  0000 C CNN
+F 1 "akl230-03" H 5450 2600 60  0000 C CNN
+F 2 "" H 5300 2700 60  0000 C CNN
+F 3 "" H 5300 2700 60  0000 C CNN
+	1    5300 2800
+	1    0    0    -1
+$EndComp
+Text HLabel 5000 2700 0    60   Input ~ 0
+U
+Text HLabel 5000 2800 0    60   Input ~ 0
+V
+Text HLabel 5000 2900 0    60   Input ~ 0
+W
+Wire Wire Line
+	5100 2900 5000 2900
+Wire Wire Line
+	5100 2800 5000 2800
+Wire Wire Line
+	5100 2700 5000 2700
+Text HLabel 6800 3250 2    60   Input ~ 0
+Vth
+Text HLabel 6800 3500 2    60   Input ~ 0
+HU
+Text HLabel 6800 3600 2    60   Input ~ 0
+LU
+Text HLabel 6800 3750 2    60   Input ~ 0
+HV
+Text HLabel 6800 3850 2    60   Input ~ 0
+LV
+Text HLabel 6800 4000 2    60   Input ~ 0
+HW
+Text HLabel 6800 4100 2    60   Input ~ 0
+LW
+Text HLabel 6800 4250 2    60   Input ~ 0
+en
+Text HLabel 6800 4350 2    60   Input ~ 0
+itirp
+Wire Wire Line
+	6700 3250 6800 3250
+Wire Wire Line
+	6700 3350 7150 3350
+Wire Wire Line
+	6700 3500 6800 3500
+Wire Wire Line
+	6700 3600 6800 3600
+Wire Wire Line
+	6700 3750 6800 3750
+Wire Wire Line
+	6700 3850 6800 3850
+Wire Wire Line
+	6700 4000 6800 4000
+Wire Wire Line
+	6700 4100 6800 4100
+Wire Wire Line
+	6700 4250 6800 4250
+Wire Wire Line
+	6700 4350 6800 4350
+$Comp
+L GNDPWR #PWR?
+U 1 1 56697E7C
+P 7150 4550
+F 0 "#PWR?" H 7150 4350 50  0001 C CNN
+F 1 "GNDPWR" H 7150 4420 50  0000 C CNN
+F 2 "" H 7150 4500 60  0000 C CNN
+F 3 "" H 7150 4500 60  0000 C CNN
+	1    7150 4550
+	1    0    0    -1
+$EndComp
+$Comp
+L +15V #PWR?
+U 1 1 56697EBC
+P 7150 3250
+F 0 "#PWR?" H 7150 3100 50  0001 C CNN
+F 1 "+15V" H 7150 3390 50  0000 C CNN
+F 2 "" H 7150 3250 60  0000 C CNN
+F 3 "" H 7150 3250 60  0000 C CNN
+	1    7150 3250
+	1    0    0    -1
+$EndComp
+Wire Wire Line
+	6700 4450 7150 4450
+Wire Wire Line
+	7150 4050 7150 4550
+Wire Wire Line
+	7150 3250 7150 3750
+$Comp
+L C C?
+U 1 1 56697FB6
+P 7150 3900
+F 0 "C?" H 7175 4000 50  0000 L CNN
+F 1 "100n" H 7175 3800 50  0000 L CNN
+F 2 "" H 7188 3750 30  0000 C CNN
+F 3 "" H 7150 3900 60  0000 C CNN
+	1    7150 3900
+	1    0    0    -1
+$EndComp
+Connection ~ 7150 3350
+Connection ~ 7150 4450
+$EndSCHEMATC
