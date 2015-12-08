@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:power
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
 EELAYER END
@@ -23,7 +24,7 @@ F 1 "STM32F103C6" H 6750 1950 50  0000 C CNN
 F 2 "LQFP48" H 5700 3600 50  0000 C CNN
 F 3 "" H 5700 3600 50  0000 C CNN
 	1    5700 3600
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L GNDPWR #PWR?
@@ -34,7 +35,7 @@ F 1 "GNDPWR" H 5400 5270 50  0000 C CNN
 F 2 "" H 5400 5350 60  0000 C CNN
 F 3 "" H 5400 5350 60  0000 C CNN
 	1    5400 5400
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L GNDPWR #PWR?
@@ -45,7 +46,7 @@ F 1 "GNDPWR" H 5500 5270 50  0000 C CNN
 F 2 "" H 5500 5350 60  0000 C CNN
 F 3 "" H 5500 5350 60  0000 C CNN
 	1    5500 5400
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L GNDPWR #PWR?
@@ -56,7 +57,7 @@ F 1 "GNDPWR" H 5700 5270 50  0000 C CNN
 F 2 "" H 5700 5350 60  0000 C CNN
 F 3 "" H 5700 5350 60  0000 C CNN
 	1    5700 5400
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L GNDPWR #PWR?
@@ -67,7 +68,7 @@ F 1 "GNDPWR" H 6000 5270 50  0000 C CNN
 F 2 "" H 6000 5350 60  0000 C CNN
 F 3 "" H 6000 5350 60  0000 C CNN
 	1    6000 5400
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L C C?
@@ -78,7 +79,7 @@ F 1 "100n" H 5425 1450 50  0000 L CNN
 F 2 "" H 5438 1400 30  0000 C CNN
 F 3 "" H 5400 1550 60  0000 C CNN
 	1    5400 1550
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	5400 1700 5400 1900
@@ -101,7 +102,7 @@ F 1 "GNDPWR" H 5150 1370 50  0000 C CNN
 F 2 "" H 5150 1450 60  0000 C CNN
 F 3 "" H 5150 1450 60  0000 C CNN
 	1    5150 1500
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	5150 1500 5150 1400
@@ -115,7 +116,7 @@ F 1 "+3.3VP" H 6200 1800 50  0000 C CNN
 F 2 "" H 6200 1700 60  0000 C CNN
 F 3 "" H 6200 1700 60  0000 C CNN
 	1    6200 1700
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	6200 1700 6200 1800
@@ -131,7 +132,7 @@ F 1 "100n" H 5525 1450 50  0000 L CNN
 F 2 "" H 5538 1400 30  0000 C CNN
 F 3 "" H 5500 1550 60  0000 C CNN
 	1    5500 1550
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L C C?
@@ -142,7 +143,7 @@ F 1 "100n" H 5725 1450 50  0000 L CNN
 F 2 "" H 5738 1400 30  0000 C CNN
 F 3 "" H 5700 1550 60  0000 C CNN
 	1    5700 1550
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L C C?
@@ -153,7 +154,7 @@ F 1 "100n" H 6025 1450 50  0000 L CNN
 F 2 "" H 6038 1400 30  0000 C CNN
 F 3 "" H 6000 1550 60  0000 C CNN
 	1    6000 1550
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L Crystal Y?
@@ -164,7 +165,7 @@ F 1 "8M" H 3900 2500 50  0000 C CNN
 F 2 "" H 3900 2650 60  0000 C CNN
 F 3 "" H 3900 2650 60  0000 C CNN
 	1    3900 2650
-	0    1    1    0
+	0    1    1    0   
 $EndComp
 $Comp
 L GNDPWR #PWR?
@@ -175,7 +176,7 @@ F 1 "GNDPWR" H 3400 2370 50  0000 C CNN
 F 2 "" H 3400 2450 60  0000 C CNN
 F 3 "" H 3400 2450 60  0000 C CNN
 	1    3400 2500
-	0    1    1    0
+	0    1    1    0   
 $EndComp
 $Comp
 L C C?
@@ -186,7 +187,7 @@ F 1 "18p" H 3675 2400 50  0000 L CNN
 F 2 "" H 3688 2350 30  0000 C CNN
 F 3 "" H 3650 2500 60  0000 C CNN
 	1    3650 2500
-	0    1    1    0
+	0    1    1    0   
 $EndComp
 $Comp
 L GNDPWR #PWR?
@@ -197,7 +198,7 @@ F 1 "GNDPWR" H 3400 2670 50  0000 C CNN
 F 2 "" H 3400 2750 60  0000 C CNN
 F 3 "" H 3400 2750 60  0000 C CNN
 	1    3400 2800
-	0    1    1    0
+	0    1    1    0   
 $EndComp
 $Comp
 L C C?
@@ -208,7 +209,7 @@ F 1 "18p" H 3675 2700 50  0000 L CNN
 F 2 "" H 3688 2650 30  0000 C CNN
 F 3 "" H 3650 2800 60  0000 C CNN
 	1    3650 2800
-	0    1    1    0
+	0    1    1    0   
 $EndComp
 Wire Wire Line
 	3400 2800 3500 2800
@@ -237,7 +238,7 @@ F 1 "100n" H 3525 3100 50  0000 L CNN
 F 2 "" H 3538 3050 30  0000 C CNN
 F 3 "" H 3500 3200 60  0000 C CNN
 	1    3500 3200
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	3500 2900 4200 2900
@@ -252,7 +253,7 @@ F 1 "GNDPWR" H 3500 3320 50  0000 C CNN
 F 2 "" H 3500 3400 60  0000 C CNN
 F 3 "" H 3500 3400 60  0000 C CNN
 	1    3500 3450
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	3500 3450 3500 3350
@@ -265,7 +266,7 @@ F 1 "+3.3VP" H 3800 3100 50  0000 C CNN
 F 2 "" H 3800 3000 60  0000 C CNN
 F 3 "" H 3800 3000 60  0000 C CNN
 	1    3800 3000
-	-1   0    0    1
+	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	3800 3000 3800 2900
@@ -279,7 +280,7 @@ F 1 "100n" H 3875 2100 50  0000 L CNN
 F 2 "" H 3888 2050 30  0000 C CNN
 F 3 "" H 3850 2200 60  0000 C CNN
 	1    3850 2200
-	0    1    1    0
+	0    1    1    0   
 $EndComp
 Wire Wire Line
 	4000 2200 4200 2200
@@ -292,7 +293,7 @@ F 1 "GNDPWR" H 3500 2070 50  0000 C CNN
 F 2 "" H 3500 2150 60  0000 C CNN
 F 3 "" H 3500 2150 60  0000 C CNN
 	1    3500 2200
-	0    1    1    0
+	0    1    1    0   
 $EndComp
 Wire Wire Line
 	3500 2200 3700 2200
@@ -321,7 +322,7 @@ F 1 "CONN_01X04" V 8200 3650 50  0000 C CNN
 F 2 "" H 8100 3650 60  0000 C CNN
 F 3 "" H 8100 3650 60  0000 C CNN
 	1    8100 3650
-	1    0    0    1
+	1    0    0    1   
 $EndComp
 $Comp
 L GNDPWR #PWR?
@@ -332,7 +333,7 @@ F 1 "GNDPWR" H 7700 3570 50  0000 C CNN
 F 2 "" H 7700 3650 60  0000 C CNN
 F 3 "" H 7700 3650 60  0000 C CNN
 	1    7700 3700
-	0    1    1    0
+	0    1    1    0   
 $EndComp
 Wire Wire Line
 	7800 1200 7800 3500
@@ -419,7 +420,7 @@ F 2 "" H 4950 6400 60  0000 C CNN
 F 3 "" H 4950 6400 60  0000 C CNN
 F 4 "TRANSIENT VOLTAGE SUPPRESSOR" H 4950 6150 50  0000 C CNN "Description"
 	1    4950 6400
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Text HLabel 3700 6300 0    60   Input ~ 0
 A_U
@@ -446,7 +447,7 @@ F 1 "GNDPWR" H 3800 6570 50  0000 C CNN
 F 2 "" H 3800 6650 60  0000 C CNN
 F 3 "" H 3800 6650 60  0000 C CNN
 	1    3800 6700
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L +3.3VP #PWR?
@@ -457,7 +458,7 @@ F 1 "+3.3VP" H 6100 6200 50  0000 C CNN
 F 2 "" H 6100 6100 60  0000 C CNN
 F 3 "" H 6100 6100 60  0000 C CNN
 	1    6100 6100
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	6000 6400 6100 6400
@@ -476,7 +477,7 @@ F 1 "100n" H 3125 6300 50  0000 L CNN
 F 2 "" H 3138 6250 30  0000 C CNN
 F 3 "" H 3100 6400 60  0000 C CNN
 	1    3100 6400
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L GNDPWR #PWR?
@@ -487,7 +488,7 @@ F 1 "GNDPWR" H 3100 6570 50  0000 C CNN
 F 2 "" H 3100 6650 60  0000 C CNN
 F 3 "" H 3100 6650 60  0000 C CNN
 	1    3100 6700
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L +3.3VP #PWR?
@@ -498,7 +499,7 @@ F 1 "+3.3VP" H 3100 6200 50  0000 C CNN
 F 2 "" H 3100 6100 60  0000 C CNN
 F 3 "" H 3100 6100 60  0000 C CNN
 	1    3100 6100
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	3100 6250 3100 6100
@@ -513,7 +514,7 @@ F 1 "1k" V 2900 2650 50  0000 C CNN
 F 2 "" V 2830 2650 30  0000 C CNN
 F 3 "" H 2900 2650 30  0000 C CNN
 	1    2900 2650
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	4200 2400 2900 2400
@@ -529,7 +530,7 @@ F 1 "GNDPWR" H 2900 2770 50  0000 C CNN
 F 2 "" H 2900 2850 60  0000 C CNN
 F 3 "" H 2900 2850 60  0000 C CNN
 	1    2900 2900
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	2900 2800 2900 2900
@@ -542,7 +543,7 @@ F 1 "+3.3VP" H 2900 2100 50  0000 C CNN
 F 2 "" H 2900 2000 60  0000 C CNN
 F 3 "" H 2900 2000 60  0000 C CNN
 	1    2900 2000
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	2900 2100 2900 2000
@@ -555,6 +556,6 @@ F 1 "Jumper_NO_Small" H 2910 2140 50  0001 C CNN
 F 2 "" H 2900 2200 60  0000 C CNN
 F 3 "" H 2900 2200 60  0000 C CNN
 	1    2900 2200
-	0    1    1    0
+	0    1    1    0   
 $EndComp
 $EndSCHEMATC

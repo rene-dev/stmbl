@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:power
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
 EELAYER END
@@ -23,7 +24,7 @@ F 1 "CONN_01X03" V 8100 2400 50  0000 C CNN
 F 2 "" H 8000 2400 60  0000 C CNN
 F 3 "" H 8000 2400 60  0000 C CNN
 	1    8000 2400
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L CONN_01X06 P?
@@ -34,7 +35,7 @@ F 1 "CONN_01X06" V 8100 3050 50  0000 C CNN
 F 2 "" H 8000 3050 60  0000 C CNN
 F 3 "" H 8000 3050 60  0000 C CNN
 	1    8000 3050
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $Comp
 L CONN_01X06 P?
@@ -45,7 +46,7 @@ F 1 "CONN_01X06" V 8100 3750 50  0000 C CNN
 F 2 "" H 8000 3750 60  0000 C CNN
 F 3 "" H 8000 3750 60  0000 C CNN
 	1    8000 3750
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 Text HLabel 4400 2400 0    60   Input ~ 0
 CAN_TX
@@ -82,6 +83,6 @@ F 1 "CONN_02X05" H 8000 4200 50  0000 C CNN
 F 2 "" H 8000 3300 60  0000 C CNN
 F 3 "" H 8000 3300 60  0000 C CNN
 	1    8000 4500
-	1    0    0    -1
+	1    0    0    -1  
 $EndComp
 $EndSCHEMATC
