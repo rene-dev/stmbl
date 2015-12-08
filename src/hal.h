@@ -29,6 +29,17 @@
 
 typedef char HPNAME[MAX_HPNAME];
 
+
+typedef struct{
+   HPNAME name;
+   void (*rt_init)();
+   void (*rt_deinit)();
+   void (*nrt_init)();
+   void (*rt)(float period);
+   void (*frt)(float period);
+   void (*nrt)(float period);
+}comp_t;
+
 struct hal_pin{
   HPNAME name;
   volatile float value;

@@ -2,6 +2,7 @@ SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c printf.c scanf.c setup.c hal.c m
 
 SRCS +=  ub_lib/stm32_ub_usb_cdc.c ub_lib/usb_cdc_lolevel/usb_core.c ub_lib/usb_cdc_lolevel/usb_dcd_int.c ub_lib/usb_cdc_lolevel/usbd_req.c ub_lib/usb_cdc_lolevel/usbd_cdc_core.c ub_lib/usb_cdc_lolevel/usbd_core.c ub_lib/usb_cdc_lolevel/usb_dcd.c ub_lib/usb_cdc_lolevel/usbd_cdc_vcp.c ub_lib/usb_cdc_lolevel/usbd_desc.c ub_lib/usb_cdc_lolevel/usbd_ioreq.c ub_lib/usb_cdc_lolevel/usb_bsp.c ub_lib/usb_cdc_lolevel/usbd_usr.c
 
+SRCS += comp1.c comp2.c
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
 
 PROJ_NAME=main

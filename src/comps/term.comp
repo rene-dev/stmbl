@@ -135,6 +135,21 @@ RT(
 );
 
 NRT(
+   void dumpcomp(){
+      extern const comp_t __comp_tbl_start[];
+      extern const comp_t __comp_tbl_end[];
+      const comp_t *comp = __comp_tbl_start;
+      while (comp < __comp_tbl_end){
+         printf_("dumpcomp %s\n",comp->name);
+         printf_("comp.rt_init: %p\n",comp->rt_init);
+         printf_("comp.rt_deinit: %p\n",comp->rt_deinit);
+         printf_("comp.nrt_init: %p\n",comp->nrt_init);
+         printf_("comp.rt: %p\n",comp->rt);
+         printf_("comp.frt: %p\n",comp->frt);
+         printf_("comp.nrt: %p\n",comp->nrt);
+         comp++;
+      }
+   }
 
    void bootloader(){
       *((unsigned long *)0x2001C000) = 0xDEADBEEF;
@@ -281,6 +296,7 @@ NRT(
          }
       }
       printf_("\n");
+      dumpcomp();
    }
 
    void about(){
