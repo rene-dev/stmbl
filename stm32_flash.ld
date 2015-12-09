@@ -96,8 +96,12 @@ SECTIONS
     KEEP (*(.fini))
         
     __comp_tbl_start = .;
-    KEEP(*(SORT(.comp_tbl.*)))  /* comp table */
+    KEEP(*(.comp_tbl.*))  /* comp table */
     __comp_tbl_end = .;
+
+    __pin_tbl_start = .;
+    KEEP(*(.pin_tbl.*))  /* pin table */
+    __pin_tbl_end = .;
 
     . = ALIGN(4);
     _etext = .;        /* define a global symbols at end of code */

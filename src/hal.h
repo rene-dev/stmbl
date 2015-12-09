@@ -29,22 +29,34 @@
 
 typedef char HPNAME[MAX_HPNAME];
 
+struct hal_pin{
+  HPNAME comp;
+  HPNAME name;
+  uint32_t instance;
+  volatile float value;
+  struct hal_pin* source;
+};
+
 
 typedef struct{
    HPNAME name;
-   void (*rt_init)();
+   void (*rt_init)(void* self,struct hal_pin* pins);
    void (*rt_deinit)();
    void (*nrt_init)();
    void (*rt)(float period);
    void (*frt)(float period);
    void (*nrt)(float period);
+   uint32_t self_size;
 }comp_t;
 
-struct hal_pin{
-  HPNAME name;
-  volatile float value;
-  struct hal_pin* source;
-};
+#define HAL_PIN_NEW(name_, value_)               \
+const struct hal_pin name_##_hal_pin __attribute__((used, section (".pin_tbl."comp_name"."#name_))) = {\
+   .comp = comp_name,\
+   .instance = 0,\
+   .name = #name_,\
+   .value = value_,\
+};\
+const uint32_t name_ = __COUNTER__;
 
 struct hal_comp{
    HPNAME name;
