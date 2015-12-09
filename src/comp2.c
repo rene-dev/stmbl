@@ -1,26 +1,27 @@
 #include "hal.h"
 
-//COMP
-#define comp_name "comp2" 
+#define COMP_NAME comp2
 
 HAL_PIN_NEW(pin1, 0.0);
+HAL_PIN_NEW(pin2, 0.0);
+HAL_PIN_NEW(pin3, 0.0);
+HAL_PIN_NEW(pin4, 0.0);
+HAL_PIN_NEW(pin5, 0.0);
 
 typedef struct {
    int foo;
    char bla[100];
 }self_t;
 
-static void rt_init(self_t* self, struct hal_pin* pins){
+static void rt_init(void* self, struct hal_pin* pins){
    //PIN(pin1) = 0.0;
    pins[pin1].source->source->value = 0.0;
    
-   self->foo = 0;
+   ((self_t*)self)->foo = 0;
 }
 
-static const char name[] = "df";
-
-const comp_t comp2 __attribute__((used, section (".comp_tbl."comp_name))) = {
-   .name = comp_name,
+COMP_NEW {
+   .name = TOSTRING(COMP_NAME),
    .rt_init = rt_init,
    .self_size = sizeof(self_t),
 };

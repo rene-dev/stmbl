@@ -27,6 +27,9 @@
 #define MAX_COMP_TYPES 64
 #define MAX_COMPS 64
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 typedef char HPNAME[MAX_HPNAME];
 
 struct hal_pin{
@@ -50,13 +53,15 @@ typedef struct{
 }comp_t;
 
 #define HAL_PIN_NEW(name_, value_)               \
-const struct hal_pin name_##_hal_pin __attribute__((used, section (".pin_tbl."comp_name"."#name_))) = {\
-   .comp = comp_name,\
+static const struct hal_pin name_##_hal_pin __attribute__((used, section (".pin_tbl."TOSTRING(COMP_NAME)"."#name_))) = {\
+   .comp = TOSTRING(COMP_NAME),\
    .instance = 0,\
    .name = #name_,\
    .value = value_,\
 };\
-const uint32_t name_ = __COUNTER__;
+static const uint32_t name_ = __COUNTER__;
+
+#define COMP_NEW const comp_t COMP_NAME __attribute__((used, section (".comp_tbl."TOSTRING(COMP_NAME)))) =
 
 struct hal_comp{
    HPNAME name;

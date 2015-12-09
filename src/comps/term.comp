@@ -139,6 +139,12 @@ NRT(
       extern const comp_t __comp_tbl_start[];
       extern const comp_t __comp_tbl_end[];
       const comp_t *comp = __comp_tbl_start;
+      
+      extern const struct hal_pin __pin_tbl_start[];
+      extern const struct hal_pin __pin_tbl_end[];
+      const struct hal_pin *pin = __pin_tbl_start;
+      
+      printf_("comps: \n");
       while (comp < __comp_tbl_end){
          printf_("dumpcomp %s\n",comp->name);
          printf_("comp.rt_init: %p\n",comp->rt_init);
@@ -149,6 +155,15 @@ NRT(
          printf_("comp.nrt: %p\n",comp->nrt);
          comp++;
       }
+      printf_("pins: \n");
+      while (pin < __pin_tbl_end){
+         printf_("%s.%s\n",pin->comp,pin->name);
+         pin++;
+      }
+   }
+   
+   void newhal(){
+      dumpcomp();
    }
 
    void bootloader(){
@@ -296,7 +311,6 @@ NRT(
          }
       }
       printf_("\n");
-      dumpcomp();
    }
 
    void about(){
@@ -526,6 +540,9 @@ NRT(
       }
       else if(!strcmp(s, "conf")){
          conf();
+      }
+      else if(!strcmp(s, "newhal")){
+         newhal();
       }
       else{
          printf_("not found: %s\n",s);
