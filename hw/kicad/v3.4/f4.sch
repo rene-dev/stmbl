@@ -5,7 +5,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 13 15
+Sheet 14 15
 Title ""
 Date ""
 Rev ""
@@ -29,20 +29,20 @@ $EndComp
 Text HLabel 5100 6300 0    60   Input ~ 0
 CMD_12
 Text HLabel 5100 7000 0    60   Input ~ 0
-CMD_12
-Text HLabel 5100 7300 0    60   Input ~ 0
+IO_SPI_MISO
+Text HLabel 5100 5800 0    60   Input ~ 0
 CMD_12
 Text HLabel 5100 5600 0    60   Input ~ 0
 CMD_36
 Text HLabel 5100 6900 0    60   Input ~ 0
-CMD_36
+IO_SPI_CK
 Text HLabel 5100 7100 0    60   Input ~ 0
-CMD_45
-Text HLabel 5100 7200 0    60   Input ~ 0
+IO_SPI_MOSI
+Text HLabel 5100 5700 0    60   Input ~ 0
 CMD_45
 Text HLabel 5100 8000 0    60   Input ~ 0
 FB0_12
-Text HLabel 5100 7700 0    60   Input ~ 0
+Text HLabel 15300 5700 2    60   Input ~ 0
 FB0_12
 Text HLabel 15300 3900 2    60   Input ~ 0
 FB0_12
@@ -52,7 +52,7 @@ Text HLabel 15300 5800 2    60   Input ~ 0
 FB0_36
 Text HLabel 15300 4100 2    60   Input ~ 0
 FB0_36
-Text HLabel 15300 5700 2    60   Input ~ 0
+Text HLabel 15300 5600 2    60   Input ~ 0
 FB0_45
 Text HLabel 5100 8100 0    60   Input ~ 0
 FB0_45
@@ -1406,4 +1406,67 @@ F 3 "" H 2800 7050 60  0000 C CNN
 $EndComp
 Wire Wire Line
 	4400 6550 4400 6450
+Wire Wire Line
+	15300 5600 15200 5600
+Wire Wire Line
+	5100 5700 5200 5700
+Wire Wire Line
+	5100 5800 5200 5800
+$Comp
+L Jumper_NO_Small JP?
+U 1 1 5669DF96
+P 3150 9200
+F 0 "JP?" H 3150 9280 50  0000 C CNN
+F 1 "Jumper_NO_Small" H 3160 9140 50  0001 C CNN
+F 2 "" H 3150 9200 60  0000 C CNN
+F 3 "" H 3150 9200 60  0000 C CNN
+	1    3150 9200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Jumper_NO_Small JP?
+U 1 1 5669E03D
+P 3150 9300
+F 0 "JP?" H 3150 9380 50  0000 C CNN
+F 1 "Jumper_NO_Small" H 3160 9240 50  0001 C CNN
+F 2 "" H 3150 9300 60  0000 C CNN
+F 3 "" H 3150 9300 60  0000 C CNN
+	1    3150 9300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Jumper_NO_Small JP?
+U 1 1 5669E0D4
+P 3150 9400
+F 0 "JP?" H 3150 9480 50  0000 C CNN
+F 1 "Jumper_NO_Small" H 3160 9340 50  0001 C CNN
+F 2 "" H 3150 9400 60  0000 C CNN
+F 3 "" H 3150 9400 60  0000 C CNN
+	1    3150 9400
+	1    0    0    -1  
+$EndComp
+Text HLabel 2950 9200 0    60   Input ~ 0
+IO_SPI_CK
+Text HLabel 2950 9300 0    60   Input ~ 0
+IO_SPI_MISO
+Text HLabel 2950 9400 0    60   Input ~ 0
+IO_SPI_MOSI
+Text HLabel 3350 9200 2    60   Input ~ 0
+CMD_36
+Text HLabel 3350 9400 2    60   Input ~ 0
+CMD_45
+Text HLabel 3350 9300 2    60   Input ~ 0
+CMD_12
+Wire Wire Line
+	2950 9200 3050 9200
+Wire Wire Line
+	2950 9300 3050 9300
+Wire Wire Line
+	2950 9400 3050 9400
+Wire Wire Line
+	3250 9200 3350 9200
+Wire Wire Line
+	3250 9300 3350 9300
+Wire Wire Line
+	3250 9400 3350 9400
 $EndSCHEMATC
