@@ -285,8 +285,6 @@ void ServoFrame::connect(){
         return;
     port = ports[choose_port->GetSelection()];
 	if(sp_open(port, SP_MODE_READ_WRITE) == SP_OK){//port available and can be opened
-		wxString str;
-		str = sp_get_port_description(port);
 		sp_set_baudrate(port,38400);
 		sp_set_bits(port, 8);
 		sp_set_stopbits(port, 1);
