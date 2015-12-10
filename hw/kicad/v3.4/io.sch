@@ -1,5 +1,5 @@
 EESchema Schematic File Version 2
-LIBS:power
+LIBS:conn
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
 EELAYER END
@@ -74,21 +74,21 @@ Text HLabel 4400 3900 0    60   Input ~ 0
 IO_IN0
 Text HLabel 4400 4000 0    60   Input ~ 0
 IO_IN1
-$Comp
-L CONN_02X05 P?
-U 1 1 566847FE
-P 8000 4500
-F 0 "P?" H 8000 4800 50  0000 C CNN
-F 1 "CONN_02X05" H 8000 4200 50  0000 C CNN
-F 2 "" H 8000 3300 60  0000 C CNN
-F 3 "" H 8000 3300 60  0000 C CNN
-	1    8000 4500
-	1    0    0    -1  
-$EndComp
 Text HLabel 4400 4200 0    60   Input ~ 0
 MISO
 Text HLabel 4400 4300 0    60   Input ~ 0
 MOSI
 Text HLabel 4400 4400 0    60   Input ~ 0
 SCK
+$Comp
+L CONN_02X10 P?
+U 1 1 566AF491
+P 8000 4700
+F 0 "P?" H 8000 5250 50  0000 C CNN
+F 1 "CONN_02X10" V 8000 4700 50  0000 C CNN
+F 2 "" H 8000 3500 50  0000 C CNN
+F 3 "" H 8000 3500 50  0000 C CNN
+	1    8000 4700
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

@@ -1,4 +1,4 @@
-update=Dienstag, 08. Dezember 2015 03:42:56
+update=Donnerstag, 10. Dezember 2015 15:21:45
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,13 +23,6 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
-[eeschema]
-version=1
-LibDir=
-[eeschema/libraries]
-LibName34=stmbl_3.4-cache
-[general]
-version=1
 [schematic_editor]
 version=1
 PageLayoutDescrFile=
@@ -40,3 +33,8 @@ NetFmtName=
 SpiceForceRefPrefix=0
 SpiceUseNetNumbers=0
 LabSize=60
+[eeschema]
+version=1
+LibDir=
+[general]
+version=1
