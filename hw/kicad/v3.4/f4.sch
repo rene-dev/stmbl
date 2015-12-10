@@ -333,8 +333,6 @@ Wire Wire Line
 Wire Wire Line
 	5100 7000 5200 7000
 Wire Wire Line
-	5100 7300 5200 7300
-Wire Wire Line
 	15200 3900 15300 3900
 Wire Wire Line
 	15200 4100 15300 4100
@@ -369,15 +367,11 @@ Wire Wire Line
 Wire Wire Line
 	5100 7800 5200 7800
 Wire Wire Line
-	5100 7700 5200 7700
-Wire Wire Line
 	5100 7600 5200 7600
 Wire Wire Line
 	5100 7500 5200 7500
 Wire Wire Line
 	5100 7400 5200 7400
-Wire Wire Line
-	5100 7200 5200 7200
 Wire Wire Line
 	5100 7100 5200 7100
 Wire Wire Line
