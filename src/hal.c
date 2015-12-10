@@ -28,6 +28,45 @@ char* itoa_(int i){
   return(hal.tmp);
 }
 
+int load(HPNAME name){
+   extern const comp_t __comp_tbl_start[];
+   extern const comp_t __comp_tbl_end[];
+   const comp_t *comp = __comp_tbl_start;
+   
+   extern const struct hal_pin __pin_tbl_start[];
+   extern const struct hal_pin __pin_tbl_end[];
+   const struct hal_pin *pin = __pin_tbl_start;
+   //TODO: platz für comp,pin,self
+   while (comp < __comp_tbl_end){
+      if(!strcmp(comp->name,name)){
+         comp_instance_t inst;
+         inst.comp = comp;
+         inst.num = 0;
+         inst.mem = malloc(comp->self_size);//TODO: return?
+         for(int i = 0;i<hal_new.instance_count;i++){
+            if(!strcmp(comp->name,name)){
+               inst.num++;
+            }
+         }
+         inst.pin_count = 0;
+         while (pin < __pin_tbl_end){
+            //TODO: platz für pin?
+            if(!strcmp(pin->comp,name)){
+               struct hal_pin p = *pin;
+               p.instance = inst.num;
+               p.source = &hal_new.hal_pins[hal_new.hal_pin_count];
+               hal_new.hal_pins[hal_new.hal_pin_count++] = p;
+            }
+            pin++;
+         }
+         hal_new.instance[hal_new.instance_count++] = inst;
+         break;
+      }
+      comp++;
+   }
+   return 0;
+}
+
 void init_hal(){
   hal.comp_type_count = 0;
   for(int i = 0; i < MAX_COMP_TYPES; i++){

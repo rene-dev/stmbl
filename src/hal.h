@@ -44,13 +44,83 @@ struct hal_pin{
 typedef struct{
    HPNAME name;
    void (*rt_init)(void* self,struct hal_pin* pins);
-   void (*rt_deinit)();
-   void (*nrt_init)();
-   void (*rt)(float period);
-   void (*frt)(float period);
-   void (*nrt)(float period);
+   void (*rt_deinit)(void* self,struct hal_pin* pins);
+   void (*nrt_init)(void* self,struct hal_pin* pins);
+   void (*rt)(void* self,struct hal_pin* pins, float period);
+   void (*frt)(void* self,struct hal_pin* pins, float period);
+   void (*nrt)(void* self,struct hal_pin* pins, float period);
    uint32_t self_size;
 }comp_t;
+
+typedef struct{
+   const comp_t* comp;
+   struct hal_pin* pins;
+   uint32_t num;
+   uint32_t pin_count;
+   void* mem;
+}comp_instance_t;
+
+struct hal_struct_new{
+   comp_instance_t instance[MAX_COMPS];
+   uint32_t instance_count;
+   struct hal_pin hal_pins[MAX_HAL_PINS];
+   int hal_pin_count;
+
+  void (*rt_init[MAX_COMPS])(void* self,struct hal_pin* pins);
+  int rt_init_func_count;
+
+  void (*rt_deinit[MAX_COMPS])(void* self,struct hal_pin* pins);
+  int rt_deinit_func_count;
+
+  void (*nrt_init[MAX_COMPS])(void* self,struct hal_pin* pins);
+  int nrt_init_func_count;
+
+  void (*rt[MAX_COMPS])(void* self,struct hal_pin* pins, float period);
+  int rt_func_count;
+
+  void (*nrt[MAX_COMPS])(void* self,struct hal_pin* pins, float period);
+  int nrt_func_count;
+
+  void (*frt[MAX_COMPS])(void* self,struct hal_pin* pins, float period);
+  int frt_func_count;
+
+  // volatile enum{
+  //   RT_CALC,
+  //   RT_SLEEP,
+  //   RT_STOP
+  // } rt_state;
+  //
+  // volatile enum{
+  //   FRT_CALC,
+  //   FRT_SLEEP,
+  //   FRT_STOP
+  // } frt_state;
+  //
+  // volatile enum {
+  //   FRT_TOO_LONG,
+  //   RT_TOO_LONG,
+  //   MISC_ERROR,
+  //   MEM_ERROR,
+  //   CONFIG_LOAD_ERROR,
+  //   CONFIG_ERROR,
+  //   HAL_OK
+  // } hal_state;
+
+  volatile int active_rt_func;
+  volatile int active_frt_func;
+  volatile int active_nrt_func;
+
+  uint32_t link_errors;
+  uint32_t pin_errors;
+  uint32_t set_errors;
+  uint32_t get_errors;
+  uint32_t comp_errors;
+  char error_name[MAX_HPNAME];
+}hal_new;
+
+int load(HPNAME name);
+
+
 
 #define HAL_PIN_NEW(name_, value_)               \
 static const struct hal_pin name_##_hal_pin __attribute__((used, section (".pin_tbl."TOSTRING(COMP_NAME)"."#name_))) = {\
