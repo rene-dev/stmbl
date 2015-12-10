@@ -20,8 +20,9 @@
 
 #include "hal.h"
 #include "misc.h"
+#include <stdlib.h>
 
-char* itoa(int i){
+char* itoa_(int i){
   hal.tmp[0] = (i % 10) + '0';
   hal.tmp[1] = '\0';
   return(hal.tmp);
@@ -177,7 +178,7 @@ void stop_frt(){
 
 void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
   strncpy(pin->name, hal.comp_types[hal.comp_type], MAX_HPNAME);
-  strncat(pin->name, itoa(hal.comp_types_counter[hal.comp_type]), MAX_HPNAME);
+  strncat(pin->name, itoa_(hal.comp_types_counter[hal.comp_type]), MAX_HPNAME);
   strncat(pin->name, ".", MAX_HPNAME);
   strncat(pin->name, name, MAX_HPNAME);
   pin->value = value;
