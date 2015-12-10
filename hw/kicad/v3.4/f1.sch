@@ -5,7 +5,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 3 14
+Sheet 3 15
 Title ""
 Date ""
 Rev ""
@@ -376,16 +376,12 @@ Text HLabel 8000 4800 0    60   Input ~ 0
 A_V
 Text HLabel 8000 4900 0    60   Input ~ 0
 A_W
-Text HLabel 8000 5000 0    60   Input ~ 0
-A_CUR
-Text HLabel 8000 5100 0    60   Input ~ 0
-A_T_HV
 Text HLabel 8000 5200 0    60   Input ~ 0
-A_T_UVW
-Text HLabel 8000 5300 0    60   Input ~ 0
+A_IU
+Text HLabel 8000 5000 0    60   Input ~ 0
+A_T_HV
+Text HLabel 8000 5100 0    60   Input ~ 0
 A_T_MOT
-Text HLabel 8000 5400 0    60   Input ~ 0
-A_T_PCB
 Text HLabel 7400 3400 2    60   Input ~ 0
 HV_EN
 Text HLabel 7400 3500 2    60   Input ~ 0
@@ -558,4 +554,8 @@ F 3 "" H 2900 2200 60  0000 C CNN
 	1    2900 2200
 	0    1    1    0   
 $EndComp
+Text HLabel 8000 5300 0    60   Input ~ 0
+A_IV
+Text HLabel 8000 5400 0    60   Input ~ 0
+A_IW
 $EndSCHEMATC
