@@ -1,0 +1,162 @@
+COMP(enc_fb);
+
+HAL_PIN(res) = 2048.0;
+HAL_PIN(ires) = 1024.0;
+HAL_PIN(pos) = 0.0;
+HAL_PIN(ipos) = 0.0;
+HAL_PIN(sin) = 0.0;
+HAL_PIN(cos) = 0.0;
+HAL_PIN(quad) = 0.0;
+HAL_PIN(oquad) = 0.0;
+HAL_PIN(oquadoff) = 0.0;
+HAL_PIN(qdiff) = 0.0;
+HAL_PIN(error) = 0.0;
+HAL_PIN(amp) = 0.0;
+HAL_PIN(s) = 0.0;
+HAL_PIN(c) = 0.0;
+
+
+MEM(int e_res) = 0.0;
+
+RT_INIT(
+  GPIO_InitTypeDef GPIO_InitStructure;
+  TIM_ICInitTypeDef TIM_ICInitStructure;
+  TIM_ICInitStructure.TIM_Channel = TIM_Channel_1 | TIM_Channel_2;
+  TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_BothEdge;
+  TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
+  TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
+  TIM_ICInitStructure.TIM_ICFilter = 0xF;
+  TIM_ICInit(ENC1_TIM, &TIM_ICInitStructure);
+
+  /***************** port 1, quadrature , sin/cos or resolver *********************/
+  e_res = (int)PIN(res);
+  if(e_res < 1){
+	  e_res = 1;
+  }
+  // enable clocks
+  RCC_APB1PeriphClockCmd(ENC1_TIM_RCC, ENABLE);
+
+  // pin mode: af
+  GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
+
+  // pin af -> tim
+  GPIO_PinAFConfig(ENC1_A_PORT, ENC1_A_PIN_SOURCE, ENC1_A_AF_SOURCE);
+  GPIO_PinAFConfig(ENC1_B_PORT, ENC1_B_PIN_SOURCE, ENC1_B_AF_SOURCE);
+
+  // enc res / turn
+  TIM_SetAutoreload(ENC1_TIM, e_res - 1);
+
+  // quad
+  TIM_Cmd(ENC1_TIM, DISABLE);
+  GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
+  TIM_EncoderInterfaceConfig(ENC1_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+  TIM_Cmd(ENC1_TIM, ENABLE);
+);
+
+RT_DEINIT(
+   TIM_Cmd(ENC1_TIM, DISABLE);
+   TIM_DeInit(ENC1_TIM);
+   RCC_APB2PeriphClockCmd(ENC1_TIM_RCC, DISABLE);
+   GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
+);
+
+RT(
+  int32_t tim = TIM_GetCounter(ENC1_TIM);//TODO: interrupt here?
+  uint32_t scgpio = GPIOC->IDR;
+
+  float p = 0.0;
+  int r = (int)PIN(res);
+  if(r < 1){
+	  r = 1;
+  }
+
+  float ir = PIN(ires);
+  if(ir < 1){
+	  ir = 1;
+  }
+
+  float s = PIN(sin);
+  float c = PIN(cos);
+  float a = sqrtf(s * s + c * c);
+
+  PIN(amp) = a;
+  int q;
+  
+  if(!(scgpio & GPIO_Pin_6)){
+    if(scgpio & GPIO_Pin_7){
+      q = 1;
+    }
+    else{
+      q = 2;
+    }
+  }else{
+    if(scgpio & GPIO_Pin_7){
+      q = 4;
+    }
+    else{
+      q = 3;
+    }
+  }
+  //TODO: sincos stuff at speed
+  int qdiff = PIN(quad)-q;
+  
+  switch(qdiff){
+     case 1:
+     case -3:
+     tim++;
+     break;
+     case -1:
+     case 3:
+     tim--;
+     break;
+     default:
+     break;
+  }
+  
+  if(tim >= e_res){
+     tim = 0;
+  }
+  else if(tim < 0){
+     tim = e_res - 1;
+  }
+  
+  PIN(qdiff) = qdiff;
+  
+  PIN(s) = (scgpio & GPIO_Pin_6)?0:1;
+  PIN(c) = (scgpio & GPIO_Pin_7)?1:0;
+  
+  PIN(oquad) = q;
+  
+  p = mod(tim * 2.0f * M_PI / (float)e_res);
+  PIN(pos) = p;
+
+  if(a < 0.15){
+    PIN(error) = 1.0;
+  }
+  else{
+    PIN(error) = 0.0;
+    PIN(ipos) = mod(p + ((int)(ir * mod(atan2f(s, c) * 4.0 + M_PI) / M_PI)) / ir * M_PI / (float)e_res);
+  }
+
+  if(e_res != r){
+    e_res = r;
+    TIM_SetAutoreload(ENC1_TIM, e_res - 1);
+  }
+);
+
+ENDCOMP;

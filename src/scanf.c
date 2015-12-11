@@ -10,7 +10,6 @@
 
 int scanf_(const char *format, ...){
 	int ret = 0;
-#ifdef USBTERM
 	char rx_buf[APP_TX_BUF_SIZE];
 	va_list arg;
 	if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
@@ -22,7 +21,6 @@ int scanf_(const char *format, ...){
 			ret = -1;
 		}
 	}
-#endif
 	return(ret);
 }
 
@@ -43,6 +41,10 @@ int isBinDigit(char c){
 
 int isChar(char c){
 	return((c <= 'Z' && c >= 'A') || (c <= 'z' && c >= 'a') || isDecDigit(c));
+}
+
+int isNameChar(char c){
+	return(isChar(c) || c == '_' || c == '-' || c == '.');
 }
 
 int isDecDigit(char c){
@@ -125,7 +127,20 @@ int vfsscanf_(const char *buf, const char *format, va_list arg){
 					case 's':
 						string_pos = 0;
 						c = va_arg(arg, char *);
-						while(isChar(buf[buffer_pos])){
+						//while(isChar(buf[buffer_pos])){
+						while(!isWhitespace(buf[buffer_pos])){
+							c[string_pos] = buf[buffer_pos++];
+							string_pos++;
+							c[string_pos] = '\0';
+							found++;
+						}
+						break;
+
+					case 'N':
+						string_pos = 0;
+						c = va_arg(arg, char *);
+						//while(isChar(buf[buffer_pos])){
+						while(isNameChar(buf[buffer_pos])){
 							c[string_pos] = buf[buffer_pos++];
 							string_pos++;
 							c[string_pos] = '\0';

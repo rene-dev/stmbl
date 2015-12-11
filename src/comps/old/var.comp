@@ -1,0 +1,45 @@
+COMP(var);
+
+//in
+HAL_PIN(x) = 0.0;
+HAL_PIN(l1) = 0.999;
+HAL_PIN(l2) = 0.999;
+HAL_PIN(en) = 0.0;
+
+
+//out
+HAL_PIN(var1) = 0.0;
+HAL_PIN(var2) = 0.0;
+HAL_PIN(u) = 0.0;
+
+MEM(unsigned int n) = 0.0;
+MEM(float sum1) = 0.0;
+MEM(float sum2) = 0.0;
+MEM(float var) = 0.0;
+MEM(float u) = 0.0;
+
+RT(
+   if(PIN(en) <= 0.0){
+      sum1 = 0.0;
+      sum2 = 0.0;
+      n = 0;
+   }
+   float x = PIN(x);
+   sum1 += x * x;
+   n++;
+   sum2 += x;
+
+   PIN(var1) = sum1 - sum2 * sum2 / n;
+
+   float l1 = PIN(l1);
+   float l2 = PIN(l2);
+
+   u = l1 * u + x * (1 - l1);
+   var += (x - u) * (x - u);
+   var *= l2;
+
+   PIN(u) = u;
+   PIN(var2) = var;
+);
+
+ENDCOMP;

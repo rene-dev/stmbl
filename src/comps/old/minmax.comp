@@ -1,0 +1,33 @@
+COMP(minmax);
+
+HAL_PIN(in) = 0.0;
+HAL_PIN(min) = 0.0;
+HAL_PIN(max) = 0.0;
+HAL_PIN(hist) = 100.0;
+
+MEM(float history[1000]);
+MEM(int histpos = 0);
+
+RT(
+  float in_ = PIN(in);
+  float min_ = in_;
+  float max_ = in_;
+  int hist_ = (int)PIN(hist);
+  if(hist_ > 1000){
+    hist_ = 1000;
+  }
+  history[hist_-1] = in_;
+  for(int i = 0;i<hist_-2;i++){
+	  history[i] = history[i+1];
+	  if(history[i] < min_){
+		  min_ = history[i];
+	  }
+	  if(history[i] > max_){
+		  max_ = history[i];
+	  }
+  }
+  PIN(max) = max_;
+  PIN(min) = min_;
+);
+
+ENDCOMP;

@@ -17,14 +17,15 @@
 class BasicDrawPane : public wxPanel
 {
 public:
-    BasicDrawPane(wxFrame* parent);
+    BasicDrawPane(wxFrame* parent, int ch);
     void paintEvent(wxPaintEvent & evt);
     void paintNow();
-    void plotvalue(int);
-    void render(wxDC& dc);
+    void plotvalue(float[]);
+    void Clear();
+    int channels;
+    static const wxPen pen[];
 private:
     wxLongLong time;
-    wxLongLong diff;
-    std::vector<float> data;
-    int x,y,xold,yold,xpos,xstep;
+    std::vector<std::vector<float>> data;
+    double x,y,xpos,xstep;
 };

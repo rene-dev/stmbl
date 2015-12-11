@@ -1,0 +1,84 @@
+COMP(adc);
+
+#define AREF 3.3// analog reference voltage
+#define ARES 4096.0// analog resolution, 12 bit
+
+#define R15 1000.0
+#define R22 3900.0
+#define R21 180.0
+#define R19 470.0
+#define V_REF 5.0
+#define INPUT_REF (V_REF * R21 / (R19 + R21))
+#define INPUT_GAIN (R22 / R15 * R21 / (R19 + R21))
+#define V_DIFF(ADC) ((ADC/ADC_ANZ/ARES*AREF-INPUT_REF)/INPUT_GAIN)
+
+HAL_PIN(sin) = 0.0;
+HAL_PIN(cos) = 0.0;
+HAL_PIN(sin3) = 0.0;
+HAL_PIN(cos3) = 0.0;
+HAL_PIN(quad) = 0.0;
+
+HAL_PIN(res_en) = 0.0;
+
+HAL_PIN(sin_gain) = 1.0;
+HAL_PIN(cos_gain) = 1.0;
+
+HAL_PIN(sin_offset) = 0.0;
+HAL_PIN(cos_offset) = 0.0;
+
+RT(
+   float si[PID_WAVES];
+   float co[PID_WAVES];
+   uint32_t sc[PID_WAVES];
+
+   float s_o = PIN(sin_offset);
+   float c_o = PIN(cos_offset);
+   float s_g = PIN(sin_gain);
+   float c_g = PIN(cos_gain);
+   float s;
+   float c;
+
+   for(int i = 2; i < PID_WAVES; i++){
+      sc[i] = 0.0;
+      for(int j = 0; j < ADC_ANZ; j++){
+         //ADC dual mode puts both channels in one word, right aligned.
+         //ugly hack. this works as long as the maximum sum of each channel fits in 16 bits. (up to 16 samples)
+         sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
+      }
+   }
+   //seperate channels
+   for(int i = 2; i < PID_WAVES; i++){
+      si[i] = 0.0;
+      co[i] = 0.0;
+      si[i] += s_g * V_DIFF((sc[i] & 0x0000ffff)) + s_o;
+      co[i] += c_g * V_DIFF((sc[i] >> 16)) + c_o;
+   }
+
+   PIN(sin3) = si[3];
+   PIN(cos3) = co[3];
+
+   if(PIN(res_en) > 0.0){
+      s = 0.5 * si[3] - 0.5 * si[2];// + 0.125 * si[1] - 0.125 * si[0];
+      c = 0.5 * co[3] - 0.5 * co[2];// + 0.125 * co[1] - 0.125 * co[0];
+   }
+   else{
+      s = 0.5 * si[3] + 0.5 * si[2];// + 0.125 * si[1] - 0.125 * si[0];
+      c = 0.5 * co[3] + 0.5 * co[2];
+   }
+   if(s>=0){
+      if(c>0)
+        PIN(quad) = 1;
+      else
+        PIN(quad) = 2;
+   }else{
+      if(c>0)
+        PIN(quad) = 4;
+      else
+        PIN(quad) = 3;
+   }
+   PIN(sin) = s;
+   PIN(cos) = c;
+
+);
+
+ENDCOMP;

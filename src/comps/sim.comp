@@ -1,0 +1,42 @@
+COMP(sim);
+
+HAL_PIN(amp) = M_PI;
+HAL_PIN(freq) = 1.0;
+HAL_PIN(sin) = 0.0;
+HAL_PIN(msin) = 0.0;
+HAL_PIN(square) = 0.0;
+HAL_PIN(vel) = 0.0;
+HAL_PIN(res) = 100000.0;
+HAL_PIN(offset) = 0.0;
+
+MEM(float time) = 0.0;
+MEM(float amp) = 0.0;
+MEM(float freq) = 0.0;
+MEM(float vel) = 0.0;
+
+RT(
+  amp = PIN(amp) * 0.001 + amp * 0.999;
+  freq = PIN(freq) * 0.001 + freq * 0.999;
+  float sin;
+  float r = MAX(PIN(res), 1);
+
+  time += period;
+
+  if(ABS(freq * time) >= 1.0){ // TODO
+    time = 0.0;
+  }
+
+  sin = amp * sinf(freq * time * 2.0 * M_PI);
+
+  float s = sin;
+  float o = PIN(offset);
+  vel += freq * 2.0 * M_PI * period;
+  vel = mod(vel);
+
+  PIN(sin) = s + o;
+  PIN(msin) = ((int)(mod(s + o) * r)) / r;
+  PIN(square) = (sin > 0.0) ? (amp + o) : (-amp + o);
+  PIN(vel) = vel;//mod(((int)(vel * r)) / r + o);
+);
+
+ENDCOMP;

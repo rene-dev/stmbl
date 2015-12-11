@@ -1,396 +1,347 @@
-#include <stm32f4_discovery.h>
-#include <stm32f4xx_conf.h>
+/*
+* This file is part of the stmbl project.
+*
+* Copyright (C) 2013-2015 Rene Hopf <renehopf@mac.com>
+* Copyright (C) 2013-2015 Nico Stute <crinq@crinq.de>
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "stm32f4xx_conf.h"
 #include "printf.h"
 #include "scanf.h"
-#include "param.h"
+#include "hal.h"
 #include "setup.h"
+#include "eeprom.h"
+#include "link.h"
+#include "crc8.h"
+#include "crc32.h"
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#ifdef USBTERM
 #include "stm32_ub_usb_cdc.h"
-#endif
+
+GLOBAL_HAL_PIN(rt_time);
+GLOBAL_HAL_PIN(frt_time);
+GLOBAL_HAL_PIN(rt_period_time);
+GLOBAL_HAL_PIN(frt_period_time);
 
 int __errno;
+volatile double systime_s = 0.0;
 void Wait(unsigned int ms);
 
-//bosch grau, gelb, grün
-#define pole_count 4
-#define res_offset DEG(52) //minimaler positiver resolver output bei mag_pos = 0
-
-//mayr gelb sw, rot
-//amp zu gering!
-// #define pole_count 2
-// #define res_offset 0.5 //minimaler positiver resolver output bei mag_pos = 0
-// float p = 8.000000
-// float i = 400.000000
-// float d = 0.050000
-// float p = 3.000000
-// float i = 100.000000
-// float d = 0.004999
-
-#define pwm_scale 0.9//max/min PWM duty cycle
-
-#define NO 0
-#define YES 1
-
-#define offseta 0.0 * 2.0 * M_PI / 3.0
-#define offsetb 1.0 * 2.0 * M_PI / 3.0
-#define offsetc 2.0 * 2.0 * M_PI / 3.0
-
-volatile float mag_pos = 0;
-volatile float soll_pos = 0;
-volatile float soll_pos_old = 0;
-volatile float ist = 0;
-volatile float ist_old = 0;
-volatile float voltage_scale = 0;// -1 bis 1
-
-volatile int t1, t2;//rohdaten sin/cos
-volatile int t1_last = 0, t2_last = 0;//rohdaten sin/cos letzter aufruf
-volatile int t1_mid = 0,t2_mid = 0;//mittelpunkt sin/cos
-volatile int amp1,amp2;//betrag
-volatile int erreger = 0;//resolver erreger pin an/aus
-volatile int erreger_enable = NO;//erreger aktiv
-volatile float w = -1;
-volatile int k = 0,l = 0;
-volatile int data[10][2][2];
-volatile float vel = 0;//geschwindigkeit testparameter
-volatile int rescal = 0;//potis einstellen
-volatile float calv = 0.5;//potis einstellen
-volatile int wave = 0;//scope ausgabe
-volatile float res_s_var = 0.0;
-volatile float res_c_var = 0.0;
-volatile float jump = 0.0;
-volatile float startpos = 0.0;
-volatile int count = 0;
-enum{
-	STBY,
-	RUNNING,
-	EFOLLOW,
-	EFEEDBACK
-} state;
-
-void enable(){
-	PWM_E = mag_res*0.97;
+//hal interface
+void enable_rt(){
+   TIM_Cmd(TIM2, ENABLE);
+}
+void enable_frt(){
+   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+}
+void disable_rt(){
+   TIM_Cmd(TIM2, DISABLE);
+}
+void disable_frt(){
+   TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
 }
 
-void disable(){
-	PWM_E = 0;
+extern char _binary_stm32f103_main_bin_start;
+extern char _binary_stm32f103_main_bin_size;
+extern char _binary_stm32f103_main_bin_end;
+
+//20kHz
+void TIM2_IRQHandler(void){
+   TIM_ClearITPendingBit(TIM2,TIM_IT_Update);
+   switch(hal.frt_state){
+      case FRT_STOP:
+         return;
+      case FRT_CALC:
+         hal.frt_state = FRT_STOP;
+         hal.hal_state = FRT_TOO_LONG;
+         hal.rt_state = RT_STOP;
+         return;
+      case FRT_SLEEP:
+         if(hal.active_frt_func > -1){
+            hal.frt_state = FRT_STOP;
+            hal.hal_state = MISC_ERROR;
+            hal.rt_state = RT_STOP;
+            return;
+         }
+         hal.frt_state = FRT_CALC;
+   }
+
+   GPIO_SetBits(GPIOB,GPIO_Pin_9);
+
+   static unsigned int last_start = 0;
+   unsigned int start = SysTick->VAL;
+
+   if(last_start < start){
+     last_start += SysTick->LOAD;
+   }
+
+   float period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
+   last_start = start;
+
+   for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_func_count; hal.active_frt_func++){//run all fast realtime hal functions
+      hal.frt[hal.active_frt_func](period);
+   }
+   hal.active_frt_func = -1;
+
+   unsigned int end = SysTick->VAL;
+   if(start < end){
+     start += SysTick->LOAD;
+   }
+   PIN(frt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+   PIN(frt_period_time) = period;
+
+   hal.frt_state = FRT_SLEEP;
+   GPIO_ResetBits(GPIOB,GPIO_Pin_9);
 }
 
-float get_enc_pos(){
-	return (TIM_GetCounter(TIM3) * 2 * M_PI / 2048);//nochmal in der setup
-}
+//5 kHz interrupt for hal. at this point all ADCs have been sampled,
+//see setup_res() in setup.c if you are interested in the magic behind this.
+void DMA2_Stream0_IRQHandler(void){
+   DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
+   switch(hal.rt_state){
+      case RT_STOP:
+         return;
+      case RT_CALC:
+         hal.rt_state = RT_STOP;
+         hal.hal_state = RT_TOO_LONG;
+         hal.frt_state = FRT_STOP;
+         return;
+      case RT_SLEEP:
+         if(hal.active_rt_func > -1){
+            hal.rt_state = RT_STOP;
+            hal.hal_state = MISC_ERROR;
+            hal.frt_state = FRT_STOP;
+            return;
+         }
+         hal.rt_state = RT_CALC;
+   }
 
-float get_res_pos(){
-    return ist - res_offset;
-}
+   GPIO_SetBits(GPIOB,GPIO_Pin_8);
 
-void output_ac_pwm(){
-	float volt = CLAMP(voltage_scale,-1.0,1.0);
-	volt = volt*-1;
+   static unsigned int last_start = 0;
+   unsigned int start = SysTick->VAL;
 
-    if(rescal){
-        mag_pos += DEG(0.36*vel)*pole_count;// u/sec
-        mag_pos = mod(mag_pos);
-        //mag_pos = 0;
-        volt = calv;
-    }else{
-        mag_pos = get_res_pos() * pole_count + DEG(90);
-    }
+   if(last_start < start){
+     last_start += SysTick->LOAD;
+   }
 
-    mag_pos = mod(mag_pos);
-	PWM_U = (sinf(mag_pos + offseta) * pwm_scale * volt + 1.0) * mag_res / 2.0;
-	PWM_V = (sinf(mag_pos + offsetb) * pwm_scale * volt + 1.0) * mag_res / 2.0;
-	PWM_W = (sinf(mag_pos + offsetc) * pwm_scale * volt + 1.0) * mag_res / 2.0;
-}
+   float period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
+   systime_s += period;
+   last_start = start;
 
-void output_dc_pwm(){
-	float volt = CLAMP(voltage_scale,-1.0,1.0);
+   for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){//run all realtime hal functions
+      hal.rt[hal.active_rt_func](period);
+   }
+   hal.active_rt_func = -1;
 
-	int foo = volt * mag_res * pwm_scale / 2 + mag_res / 2;
-	PWM_U = foo;//PD12 PIN1
-	PWM_V = mag_res-foo;//PD13 PIN2
-	PWM_W = 0;//PD15 PIN3
-}
+   unsigned int end = SysTick->VAL;
+   if(start < end){
+     start += SysTick->LOAD;
+   }
+   PIN(rt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+   PIN(rt_period_time) = period;
 
-void DMA2_Stream2_IRQHandler(void){
-  // welches flag?
-  //DMA_ClearFlag(DMA2_FLAG_IT);
-  DMA_ClearITPendingBit(DMA2_Stream2, DMA_IT_TCIF2);
-  printf_("DMA\n");
-}
-
-void TIM2_IRQHandler(void){ //20KHz
-    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-	GPIO_SetBits(GPIOC,GPIO_Pin_4);//messpin
-}
-
-void ADC_IRQHandler(void) // 20khz
-{
-	while(!ADC_GetFlagStatus(ADC2, ADC_FLAG_EOC));
-	ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
-	GPIO_ResetBits(GPIOC,GPIO_Pin_4);//messpin
-
-	t1 = ADC_GetConversionValue(ADC1);
-	t2 = ADC_GetConversionValue(ADC2);
-	t1_mid = t1_mid * 0.95 + (t1+t1_last)/2 * 0.05;
-	t2_mid = t2_mid * 0.95 + (t2+t2_last)/2 * 0.05;
-	if(erreger_enable){//erreger signal aktiv
-		if(erreger){//eine halbwelle
-			GPIO_SetBits(GPIOC,GPIO_Pin_2);//erreger
-			amp1 = (t1-t1_mid)*(t1-t1_mid)+(t2-t2_mid)*(t2-t2_mid);
-            if(w >= 0){
-                data[k][0][0] = t1 - t1_mid;
-                data[k][0][1] = t2 - t2_mid;
-                k++;
-            }
-		}else{//andere halbwelle
-			GPIO_ResetBits(GPIOC,GPIO_Pin_2);//erreger
-			amp2 = (t1_mid-t1)*(t1_mid-t1)+(t2_mid-t2)*(t2_mid-t2);
-            if(w >= 0){
-                data[l][1][0] = t1_mid - t1;
-                data[l][1][1] = t2_mid - t2;
-                l++;
-            }
-		}
-        if(l == 10 && k == 10){
-            w = -1;
-            l = 0;
-            k = 0;
-        }
-	}else{//mittelpunkt messen
-		if(t1_mid == 0 && t2_mid == 0){//erster durchlauf
-			t1_mid = t1;
-			t2_mid = t2;
-		}else{//restliche durchläufe
-			t1_mid = t1_mid * 0.95 + t1 * 0.05;
-			t2_mid = t2_mid * 0.95 + t2 * 0.05;
-		}
-
-	}
-	t1_last = t1;
-	t2_last = t2;
-	erreger = !erreger; // 10khz
-}
-
-void TIM5_IRQHandler(void){ //1KHz
-	TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
-    float s = 0,c = 0;
-    int freq = 1000;
-    kal.periode = 1.0/freq;
-    for(int i = 0;i<10;i++){
-        s += data[i][0][0] * 0.05;
-        c += data[i][0][1] * 0.05;
-    }
-    for(int i = 0;i<10;i++){
-        s += data[i][1][0] * 0.05;
-        c += data[i][1][1] * 0.05;
-    }
-    //revs = (int)(ist/(2*M_PI));
-    //ist = revs*2*M_PI+atan2f(s,c);
-    ist_old = ist;
-    ist = atan2f(s,c);
-
-		if(count > 1000){
-			if(count < 2000){
-				res_s_var += s * s / 1000;
-				res_c_var += c * c / 1000;
-			}
-		}
-
-		count++;
-
-    if(vel == 0)
-        soll_pos = startpos + get_enc_pos() + res_offset;//MIN(res_pos1, res_pos2) + MIN(ABS(minus(res_pos1,res_pos2)), ABS(minus(res_pos2,res_pos1))) / 2;
-	soll_pos += DEG(0.36*vel);// u/sec
-	soll_pos = mod(soll_pos+jump);
-
-	soll_pos_old = soll_pos;
-    pid.feedbackv = minus(ist, ist_old) * freq;
-    pid.commandv = minus(soll_pos, soll_pos_old) * freq*0.5 + pid.commandv*0.5;
-    pid.error = minus(soll_pos, ist);
-	if(ABS(pid.error) > DEG(90)){
-		disable();
-		state = EFOLLOW;
-		pid.enable = 0;
-	}
-
-    kal.res = ist;
-    update(&kal);
-
-	calc_pid(&pid,1.0 / freq * 1000.0);
-    kal.volt = pid.output;
-    predict(&kal);
-	voltage_scale = pid.output;
-
-	if(amp1 < 1000000 || amp2 < 1000000){
-    	//voltage_scale = 0.0;
-		state = EFEEDBACK;
-    }
-	output_ac_pwm();
-    w=0;//request data
+   hal.rt_state = RT_SLEEP;
+   GPIO_ResetBits(GPIOB,GPIO_Pin_8);
 }
 
 int main(void)
 {
-    int e = 0;
-	setup();
-	param_init();
-	register_int("e",&pid.enable);
-	register_float("p",&pid.pgain);
-	register_float("i",&pid.igain);
-	register_float("d",&pid.dgain);
-	register_float("b",&pid.bgain);
-    // register_float("ff0",&pid.ff0gain);
-	register_float("ff1",&pid.ff1gain);
-	register_float("ff2",&pid.ff2gain);
-	register_float("w",&w);
-    register_float("vel",&vel);
-    register_int("rescal",&rescal);
-    register_int("wave",&wave);
-    register_float("ist",&ist);
-    register_float("calv",&calv);
-	register_float("s_var",&res_s_var);
-	register_float("c_var",&res_c_var);
-	register_float("jump",&jump);
+   // Relocate interrupt vectors
+   //
+   extern void *g_pfnVectors;
+   SCB->VTOR = (uint32_t)&g_pfnVectors;
 
-	state = STBY;
+   float period = 0.0;
+   int last_start = 0;
+   int start = 0;
+   int end = 0;
 
-	GPIO_ResetBits(GPIOC,GPIO_Pin_2);//reset erreger
-	Wait(10);
-	TIM_Cmd(TIM2, ENABLE);//int
-	Wait(50);
-	erreger_enable = YES;
-	Wait(50);
-	TIM_Cmd(TIM4, ENABLE);//PWM
-	TIM_Cmd(TIM5, ENABLE);//PID
-	Wait(50);
-	startpos = get_res_pos();
-	pid.enable = 1;
-	enable();
+   setup();
+   init_hal();
 
-	while(1)  // Do not exit
-	{
-		//printf_("%f %f diff: %f\r",RAD(res_pos1),RAD(res_pos2),RAD(res_pos1-res_pos2));
-		//printf_("%i %i",t1_mid,t2_mid);
-		//printf_("%i %i diff: %i\r",amp1,amp2,amp1-amp2);
-		switch(wave){
-            case 1:
-                e = (int)((RAD(pid.error) * 10 + 180) / 360 * 128);
-                break;
-            case 2:
-                e = (int)(pid.error_d * 64 / 16 + 63);
-                break;
-            case 3:
-                e = (int)(pid.error_dd * 64 / 16 + 63);
-                break;
-            case 4:
-                e = (int)(pid.cmd_d * 64 / 16 + 63);
-                break;
-            case 5:
-                e = (int)(pid.cmd_dd * 64 / 16 + 63);
-                break;
-            case 6:
-                e = (int)(pid.feedbackv * 64 / 16 + 63);
-                break;
-            case 7:
-                e = (int)(voltage_scale*50+63);
-                break;
-            case 8:
-                e = (int)(pid.saturated_count * 64 / 100 + 63);
-                break;
-            case 9:
-                e = (int)((ist + M_PI) * 127 / 2 / M_PI);
-                break;
-            case 10:
-                e = (int)(kal.pos * 64 / 2 / M_PI + 63);
-                break;
-            case 11:
-                e = (int)(kal.vel * 64 / 16 + 63);
-                break;
-            case 12:
-                e = (int)(kal.acc * 64 / 16 + 63);
-                break;
-            case 13:
-                e = (int)(kal.cur * 64 / 16 + 63);
-                break;
-	        case 14:
-	            e = (int)(time%100);
-	            break;
-		    case 15:
-		        e = (int)((mag_pos+M_PI)/(2*M_PI)*127);
-		        break;
-            default:
-                e = 0;
-        }
-        e=CLAMP(e,0,127);
-		e+=128;
-		char buf[2];
-		buf[0] = e;
-		buf[1] = 0;
+   set_comp_type("foo"); // default pin for mem errors
+   HAL_PIN(bar) = 0.0;
 
-		//printf_("e: %f\n", pid.error);
-		//printf_("soll: %f\n", soll_pos);
+   //feedback comps
+   #include "comps/adc.comp"
+   #include "comps/res.comp"
+   #include "comps/enc_fb.comp"
+   #include "comps/encm.comp"
+   #include "comps/encs.comp"
+   #include "comps/yaskawa.comp"
+   //TODO: hyperface
 
-#ifdef USBTERM
-		if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
-			if(wave){
-                UB_USB_CDC_SendString(buf, NONE);//schleppfehler senden
-            }
-            /*
-            if(w == -1){
-                w = -2;
-                printf_("pos:\n");
-                for(int i = 0;i<10;i++){
-                    printf_("%i %i\n",data[i][0][0], data[i][0][1]);
-                }
-                printf_("neg:\n");
-                for(int i = 0;i<10;i++){
-                    printf_("%i %i\n",data[i][1][0], data[i][1][1]);
-                }
-            }
-			*/
-            char name[APP_TX_BUF_SIZE];
-			float value = 0;
-			int i = scanf_("%s = %f",name,&value);
-			switch(i){
-				case 2:
-					if(is_param(name))
-						printf_("%s = %f\n",name,get_param(name));
-					else{
-						printf_("not found\n");
-                    }
-					break;
-				case 5:
-					if(is_param(name)){
-						if(set_param(name,value))
-							printf_("OK, %s = %f\n",name,get_param(name));
-						else
-							printf_("error!\n");
-					}
-					break;
-				case -1:
-					break;
-				default:
-					//if(name[0] == '?')
-						list_param();
-					//else
-					//	printf_("unknown command\n");
-					//break;
-			}
-			//if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY) {
-			//  UB_USB_CDC_SendString(rx_buf,LF);
-			//
-			//}
-		}
-#endif
+   //command comps
+   #include "comps/sserial.comp"
+   #include "comps/sim.comp"
+   #include "comps/enc_cmd.comp"
+   //TODO: handle en for enable/error
+   //#include "comps/en.comp"   
+   
+   //PID
+   #include "comps/stp.comp"
+   #include "comps/rev.comp"
+   #include "comps/rev.comp"
+   #include "comps/vel.comp"
+   #include "comps/vel.comp"
+   #include "comps/cauto.comp"
+   #include "comps/pid.comp"
+   #include "comps/pmsm_t2c.comp"
+   #include "comps/curpid.comp"
+   #include "comps/pmsm.comp"
+   #include "comps/pmsm_limits.comp"
+   #include "comps/idq.comp"
+   #include "comps/hv.comp"
 
-		Wait(10);
-	}
+   //other comps
+   #include "comps/fault.comp"
+   #include "comps/term.comp"
+   #include "comps/io.comp"
+   
+
+   set_comp_type("net");
+   HAL_PIN(enable) = 0.0;
+   HAL_PIN(cmd) = 0.0;
+   HAL_PIN(fb) = 0.0;
+   HAL_PIN(fb_error) = 0.0;
+   HAL_PIN(cmd_d) = 0.0;
+   HAL_PIN(fb_d) = 0.0;
+   HAL_PIN(core_temp0) = 0.0;
+   HAL_PIN(core_temp1) = 0.0;
+   HAL_PIN(motor_temp) = 0.0;
+   HAL_PIN(rt_calc_time) = 0.0;
+   HAL_PIN(frt_calc_time) = 0.0;
+   HAL_PIN(nrt_calc_time) = 0.0;
+   HAL_PIN(rt_period) = 0.0;
+   HAL_PIN(frt_period) = 0.0;
+   HAL_PIN(nrt_period) = 0.0;
+
+   set_comp_type("conf");
+   HAL_PIN(r) = 1.0;
+   HAL_PIN(l) = 0.01;
+   HAL_PIN(j) = KGCM2(0.26);
+   HAL_PIN(psi) = 0.05;
+   HAL_PIN(polecount) = 4.0;
+   HAL_PIN(mot_type) = 0.0;//ac sync,async/dc,2phase
+   HAL_PIN(out_rev) = 0.0;
+   HAL_PIN(high_motor_temp) = 80.0;
+   HAL_PIN(max_motor_temp) = 100.0;
+   HAL_PIN(phase_time) = 0.5;
+   HAL_PIN(phase_cur) = 1.0;
+   
+   HAL_PIN(max_vel) = RPM(1000.0);
+   HAL_PIN(max_acc) = RPM(1000.0)/0.01;
+   HAL_PIN(max_force) = 1.0;
+   HAL_PIN(max_dc_cur) = 1.0;
+   HAL_PIN(max_ac_cur) = 2.0;
+   
+   HAL_PIN(fb_type) = RES;
+   HAL_PIN(fb_polecount) = 1.0;
+   HAL_PIN(fb_offset) = 0.0;
+   HAL_PIN(fb_rev) = 0.0;
+   HAL_PIN(fb_res) = 1000.0;
+   HAL_PIN(autophase) = 1.0;//constant,cauto,hfi
+   
+   HAL_PIN(cmd_type) = ENC;
+   HAL_PIN(cmd_unit) = 0.0;//pos,vel,torque
+   HAL_PIN(cmd_rev) = 0.0;
+   HAL_PIN(cmd_res) = 2000.0;
+   HAL_PIN(en_condition) = 0.0;
+   HAL_PIN(error_out) = 0.0;
+   HAL_PIN(pos_staic) = 0.0;//track pos in disabled and error condition
+         
+   HAL_PIN(sin_offset) = 0.0;
+   HAL_PIN(cos_offset) = 0.0;
+   HAL_PIN(sin_gain) = 1.0;
+   HAL_PIN(cos_gain) = 1.0;
+   HAL_PIN(max_dc_volt) = 370.0;
+   HAL_PIN(max_hv_temp) = 90.0;
+   HAL_PIN(max_core_temp) = 55.0;
+   HAL_PIN(max_pos_error) = M_PI / 2.0;
+   HAL_PIN(high_dc_volt) = 350.0;
+   HAL_PIN(low_dc_volt) = 12.0;
+   HAL_PIN(high_hv_temp) = 70.0;
+   HAL_PIN(fan_hv_temp) = 60.0;
+   HAL_PIN(fan_core_temp) = 450.0;
+   HAL_PIN(fan_motor_temp) = 60.0;
+
+   HAL_PIN(p) = 0.99;
+   HAL_PIN(pos_p) = 100.0;
+   HAL_PIN(vel_p) = 1.0;
+   HAL_PIN(acc_p) = 0.3;
+   HAL_PIN(acc_pi) = 50.0;
+   HAL_PIN(cur_p) = 0.0;
+   HAL_PIN(cur_i) = 0.0;
+   HAL_PIN(cur_ff) = 1.0;
+   HAL_PIN(cur_ind) = 0.0;
+   HAL_PIN(max_sat) = 0.2;
+
+   rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
+   frt_time_hal_pin = map_hal_pin("net0.frt_calc_time");
+   rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
+   frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
+
+   for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
+      hal.nrt_init[i]();
+   }
+
+   link_pid();
+
+   UB_USB_CDC_Init();
+
+
+
+   if(hal.pin_errors + hal.comp_errors == 0){
+      start_hal();
+   }
+   else{
+      hal.hal_state = MEM_ERROR;
+   }
+
+   while(1)//run non realtime stuff
+   {
+      start = SysTick->VAL;
+
+      if(last_start < start){
+        last_start += SysTick->LOAD;
+      }
+
+      period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
+      last_start = start;
+
+      for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.nrt_func_count; hal.active_nrt_func++){//run all non realtime hal functions
+         hal.nrt[hal.active_nrt_func](period);
+      }
+      hal.active_nrt_func = -1;
+
+      end = SysTick->VAL;
+      if(start < end){
+        start += SysTick->LOAD;
+      }
+      PIN(nrt_calc_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+      PIN(nrt_period) = period;
+      Wait(2);
+   }
 }
 
 void Wait(unsigned int ms){
-	volatile unsigned int t = time + ms;
-	while(t >= time){
-	}
+   volatile unsigned int t = systime + ms;
+   while(t >= systime){
+   }
 }

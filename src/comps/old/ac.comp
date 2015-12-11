@@ -1,0 +1,19 @@
+COMP(ac);
+
+HAL_PIN(in) = 0.0;
+HAL_PIN(ac) = 0.01;
+HAL_PIN(out) = 0.0;
+
+MEM(float avg) = 0.0;
+
+RT(
+  float i = PIN(in);
+  float a = PIN(ac);
+
+  // avg
+  avg = i * a + avg * (1 - a);
+
+  PIN(out) = i - avg;
+);
+
+ENDCOMP;

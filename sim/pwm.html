@@ -1,0 +1,403 @@
+<html>
+<meta charset="utf-8">
+<head><title>pwm</title>
+<script type="text/javascript">
+
+var isMouseDown = false;
+document.onmousedown = function() { isMouseDown = true  };
+document.onmouseup   = function() { isMouseDown = false };
+
+function round(x, a){
+	return(Math.round(x * a) / a)
+}
+
+function clamp(x, a){
+	return((-a < x) ? ((a < x) ? (a) : (x)) : (-a));
+}
+
+function svm(u, v, w, mode, center){
+	switch(mode){
+		case "std":
+		u += 0.5;
+		v += 0.5;
+		w += 0.5;
+		break;
+
+		case "svm":
+		var uv = v - u;
+		var vw = w - v;
+		var wu = u - w;
+
+		if(Math.abs(uv) > Math.abs(vw)){
+			if(Math.abs(uv) > Math.abs(wu)){ // uv
+				u = -uv / 2.0;
+				v = uv / 2.0;
+				w = v + vw;
+			}
+			else{ // wu
+				u = wu / 2.0;
+				w = -wu / 2.0;
+				v = u + uv;
+			}
+		}
+		else{
+			if(Math.abs(vw) > Math.abs(wu)){ // vw
+				v = -vw / 2.0;
+				w = vw / 2.0;
+				u = w + wu;
+			}
+			else{ // wu
+				u = wu / 2.0;
+				w = -wu / 2.0;
+				v = u + uv;
+			}
+		}
+
+		u += 0.5;
+		v += 0.5;
+		w += 0.5;
+		break;
+
+		case "flat bottom svm":
+		if(u < v){
+			if(u < w){
+				v -= u;
+				w -= u;
+				u = 0.0;
+			}
+			else{
+				u -= w;
+				v -= w;
+				w = 0.0;
+			}
+		}
+		else{
+			if(v < w){
+				u -= v;
+				w -= v;
+				v = 0.0;
+			}
+			else{
+				u -= w;
+				v -= w;
+				w = 0.0;
+			}
+		}
+	}
+
+	var radio = document.getElementById('df');
+	if(radio){
+		radio.innerHTML += "<br>PWM_U = " + round(u, 100) + "<br>PWM_V = " + round(v, 100) + "<br>PWM_W = " + round(w, 100);
+	}
+
+	// var canvas = document.getElementById('canvas_plot');
+	// if (canvas.getContext){
+	// 	var ctx = canvas.getContext('2d');
+	//
+	//
+	// 	ctx.save();
+	// 	ctx.translate(canvas.width / 2, canvas.height / 2);
+	//
+	// 	ctx.moveTo(0, 0);
+	// 	ctx.lineTo(Math.cos(0 / 3 * 2 * Math.PI) * (u - 0.5) * canvas.width, Math.sin(0 / 3 * 2 * Math.PI) * (u - 0.5) * canvas.height);
+	// 	ctx.moveTo(0, 0);
+	// 	ctx.lineTo(Math.cos(1 / 3 * 2 * Math.PI) * (v - 0.5) * canvas.width, Math.sin(1 / 3 * 2 * Math.PI) * (v - 0.5) * canvas.height);
+	// 	ctx.moveTo(0, 0);
+	// 	ctx.lineTo(Math.cos(2 / 3 * 2 * Math.PI) * (w - 0.5) * canvas.width, Math.sin(2 / 3 * 2 * Math.PI) * (w - 0.5) * canvas.height);
+	//
+	//
+	// 	ctx.stroke();
+	// 	ctx.restore();
+	// }
+
+	draw(u, v, w, center);
+}
+
+function draw_vec(x, y){
+	y *= -1;
+	var canvas = document.getElementById('canvas_plot');
+	if (canvas.getContext){
+		var ctx = canvas.getContext('2d');
+		var w = canvas.width;
+		var h = canvas.height;
+
+
+		//clear
+		ctx.clearRect(0, 0, w, h);
+		ctx.beginPath();
+
+		ctx.save();
+		ctx.translate(w / 2, h / 2);
+
+		// limit circle
+		ctx.arc(0, 0, h / 2, 0, 2 * Math.PI);
+		ctx.arc(0, 0, h / 2 * 2 / Math.sqrt(3), 0, 2 * Math.PI);
+
+		// labels
+		ctx.font = "12px serif";
+		ctx.fillText("A", w / 2 - 24, 4);
+		ctx.fillText("B", -4, 10 - h / 2);
+		//ctx.fillText("V", Math.cos(1 / 3 * 2 * Math.PI) * w / 2, Math.sin(120 / 180 * Math.PI) * h / 2);
+		//ctx.fillText("W", Math.cos(2 / 3 * 2 *Math.PI) * w / 2, Math.sin(240 / 180 * Math.PI) * h / 2 + 10);
+		//ctx.fillText("W", -4, 10 - h / 2);
+
+		// vector
+		// voltage
+		ctx.moveTo(0, 0);
+		ctx.lineTo(x * w, y * h);
+		// a, b
+		ctx.moveTo(0, 0);
+		ctx.lineTo(x * w, 0);
+		ctx.moveTo(0, 0);
+		ctx.lineTo(0, y * h);
+
+		ctx.stroke();
+		ctx.restore();
+	}
+}
+
+function draw(u, v, w, align) {
+	u = round(1-u, 250) * 250;
+	v = round(1-v, 250) * 250;
+	w = round(1-w, 250) * 250;
+
+
+	var canvas = document.getElementById('canvas');
+	if (canvas.getContext){
+		var ctx = canvas.getContext('2d');
+
+		//clear
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		ctx.beginPath();
+
+		// axis
+		ctx.moveTo(15,0);
+		ctx.lineTo(15, 100);
+		ctx.lineTo(515, 100);
+
+		// labels
+		ctx.font = "12px serif";
+		ctx.fillText("U", 0, 30);
+		ctx.fillText("V", 0, 60);
+		ctx.fillText("W", 0, 90);
+
+		// UVW waves
+		switch(align){
+			case "center":
+			ctx.moveTo(15,35);
+			ctx.lineTo(u + 15, 35);
+			ctx.lineTo(u + 15, 25);
+			ctx.lineTo(515 - u, 25);
+			ctx.lineTo(515 - u, 35);
+			ctx.lineTo(515, 35);
+
+			ctx.moveTo(15,65);
+			ctx.lineTo(v + 15, 65);
+			ctx.lineTo(v + 15, 55);
+			ctx.lineTo(515 - v, 55);
+			ctx.lineTo(515 - v, 65);
+			ctx.lineTo(515, 65);
+
+			ctx.moveTo(15,95);
+			ctx.lineTo(w + 15, 95);
+			ctx.lineTo(w + 15, 85);
+			ctx.lineTo(515 - w, 85);
+			ctx.lineTo(515 - w, 95);
+			ctx.lineTo(515, 95);
+			break;
+
+			case "right":
+			ctx.moveTo(15,35);
+			ctx.lineTo(u + 15, 35);
+			ctx.lineTo(u + 15, 25);
+			ctx.lineTo(265, 25);
+			ctx.lineTo(265, 35);
+			ctx.lineTo(u + 265, 35);
+			ctx.lineTo(u + 265, 25);
+			ctx.lineTo(515, 25);
+
+			ctx.moveTo(15,65);
+			ctx.lineTo(v + 15, 65);
+			ctx.lineTo(v + 15, 55);
+			ctx.lineTo(265, 55);
+			ctx.lineTo(265, 65);
+			ctx.lineTo(v + 265, 65);
+			ctx.lineTo(v + 265, 55);
+			ctx.lineTo(515, 55);
+
+			ctx.moveTo(15,95);
+			ctx.lineTo(w + 15, 95);
+			ctx.lineTo(w + 15, 85);
+			ctx.lineTo(265, 85);
+			ctx.lineTo(265, 95);
+			ctx.lineTo(w + 265, 95);
+			ctx.lineTo(w + 265, 85);
+			ctx.lineTo(515, 85);
+			break;
+
+			case "left":
+			ctx.moveTo(15, 25);
+			ctx.lineTo(265 - u, 25);
+			ctx.lineTo(265 - u, 35);
+			ctx.lineTo(265, 35);
+			ctx.lineTo(265, 25);
+			ctx.lineTo(515 - u, 25);
+			ctx.lineTo(515 - u, 35);
+			ctx.lineTo(515, 35);
+
+			ctx.moveTo(15, 55);
+			ctx.lineTo(265 - v, 55);
+			ctx.lineTo(265 - v, 65);
+			ctx.lineTo(265, 65);
+			ctx.lineTo(265, 55);
+			ctx.lineTo(515 - v, 55);
+			ctx.lineTo(515 - v, 65);
+			ctx.lineTo(515, 65);
+
+			ctx.moveTo(15, 85);
+			ctx.lineTo(265 - w, 85);
+			ctx.lineTo(265 - w, 95);
+			ctx.lineTo(265, 95);
+			ctx.lineTo(265, 85);
+			ctx.lineTo(515 - w, 85);
+			ctx.lineTo(515 - w, 95);
+			ctx.lineTo(515, 95);
+		}
+
+		ctx.stroke();
+	}
+}
+
+function update(){
+	var mode = "std";
+	var align = "left";
+	var a = 0.0;
+	var b = 0.0;
+	var u = 0.0;
+	var v = 0.0;
+	var w = 0.0;
+
+	var radio = document.getElementById('radio_std');
+	if(radio){
+		if(radio.checked){
+			mode = "std";
+		}
+	}
+	radio = document.getElementById('radio_svm');
+	if(radio){
+		if(radio.checked){
+			mode = "svm";
+		}
+	}
+	radio = document.getElementById('radio_fbsvm');
+	if(radio){
+		if(radio.checked){
+			mode = "flat bottom svm";
+		}
+	}
+
+	radio = document.getElementById('radio_left');
+	if(radio){
+		if(radio.checked){
+			align = "left";
+		}
+	}
+
+	radio = document.getElementById('radio_right');
+	if(radio){
+		if(radio.checked){
+			align = "right";
+		}
+	}
+
+	radio = document.getElementById('radio_center');
+	if(radio){
+		if(radio.checked){
+			align = "center";
+		}
+	}
+
+	radio = document.getElementById('range_a');
+	if(radio){
+		a = radio.value;
+	}
+
+	radio = document.getElementById('range_b');
+	if(radio){
+		b = radio.value;
+	}
+
+	u = a * 1.0; // inverse clarke
+	v = - a / 2.0 + b / 2.0 * Math.sqrt(3);
+	w = - a / 2.0 - b / 2.0 * Math.sqrt(3);
+
+	u = clamp(u, 0.5);
+	v = clamp(v, 0.5);
+	w = clamp(w, 0.5);
+
+	radio = document.getElementById('df');
+	if(radio){
+		radio.innerHTML = "A = " + round(a, 100) + "<br>B = " + round(b, 100) + "<br>U = " + round(u, 100) + "<br>V = " + round(v, 100) + "<br>W = " + round(w, 100);
+	}
+
+
+	draw_vec(a, b);
+	svm(u, v, w, mode, align);
+
+}
+
+function set_ab(e){
+	if(isMouseDown){
+		var mouseX, mouseY;
+
+		if(e.offsetX) {
+			mouseX = e.offsetX;
+			mouseY = e.offsetY;
+		}
+		else if(e.layerX) {
+			mouseX = e.layerX;
+			mouseY = e.layerY;
+		}
+
+		var canvas = document.getElementById('canvas_plot');
+		if (canvas.getContext){
+			var radio = document.getElementById('range_a');
+			if(radio){
+				radio.value = (mouseX - canvas.width / 2) / canvas.width;
+			}
+
+			radio = document.getElementById('range_b');
+			if(radio){
+				radio.value = -(mouseY - canvas.height / 2) / canvas.height;
+			}
+		}
+		update();
+	}
+}
+
+</script>
+</head>
+<style type="text/css">
+input:button {width : 500px}
+</style>
+
+<body onload="update();">
+	<canvas id="canvas" width="550" height="100">
+		not supported
+	</canvas>
+	<canvas id="canvas_plot" width="200" height="200" onmousedown="isMouseDown = true; set_ab(event);" onmousemove="set_ab(event);">
+		not supported
+	</canvas><br>
+	<input type="radio" id="radio_std" name="mode" onclick="update();" checked="checked">std<br>
+	<input type="radio" id="radio_svm" name="mode" onclick="update();">SVM<br>
+	<input type="radio" id="radio_fbsvm" name="mode" onclick="update();">flat bottom SVM<br>
+	<input type="radio" id="radio_left" name="align" onclick="update();">left pwm<br>
+	<input type="radio" id="radio_right" name="align" onclick="update();">right pwm<br>
+	<input type="radio" id="radio_center" name="align" onclick="update();"" checked="checked">center pwm<br>
+	<input type="range" id="range_a" onchange="update();" oninput="update();" min="-0.5" max="0.5" step="0.01" value="0.0">A<br>
+	<input type="range" id="range_b" onchange="update();" oninput="update();" min="-0.5" max="0.5" step="0.01" value="0.0">B<br>
+	<a id="df"></a>
+
+</body>
+</html>

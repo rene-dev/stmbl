@@ -1,0 +1,111 @@
+//using FB_TX
+
+COMP(res);
+
+HAL_PIN(pos) = 0.0;
+HAL_PIN(amp) = 0.0;
+HAL_PIN(quad) = 0.0;
+HAL_PIN(poles) = 1.0;
+
+HAL_PIN(sin) = 0.0;
+HAL_PIN(cos) = 0.0;
+
+HAL_PIN(enable) = 0.0;
+HAL_PIN(error) = 0.0;
+HAL_PIN(tim2_oc) = 150.0;
+MEM(int lastq) = 0;// last quadrant
+MEM(int abspos) = 0;// multiturn position
+
+RT_INIT(
+   //resolver ref signal generation
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_10;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+   GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_TIM2);
+
+   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
+   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+   TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+   TIM_OCInitStructure.TIM_Pulse = 150;
+   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+   TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+   TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
+   TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
+
+   TIM_OC3Init(TIM2, &TIM_OCInitStructure);
+   TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);
+   TIM_CtrlPWMOutputs(TIM2, ENABLE);
+   
+   //txen
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_12;
+   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
+   GPIO_SetBits(GPIOB,GPIO_Pin_12);
+);
+
+RT_DEINIT(
+   GPIO_ResetBits(GPIOB,GPIO_Pin_12);//tx disable
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_12;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
+   TIM_CtrlPWMOutputs(TIM2, DISABLE);
+   TIM_OCStructInit(&TIM_OCInitStructure);
+   TIM_OC3Init(TIM2, &TIM_OCInitStructure);
+);
+
+RT(
+   //TODO: arr can change!
+   TIM2->CCR3 = (int)CLAMP(PIN(tim2_oc), 0, TIM2->ARR - 1);
+	float s = 0.0;
+	float c = 0.0;
+	float a = 0.0;
+
+	s = PIN(sin);
+   c = PIN(cos);
+	a = s * s + c * c;
+
+	float p = MAX(1.0, PIN(poles));
+
+	if(a < 0.3 * 0.3){
+		PIN(error) = 1.0;
+	}
+	else{
+		PIN(error) = 0.0;
+      if(p == 1.0f){
+         PIN(pos) = atan2f(s, c);
+      }else{
+         int q = PIN(quad);// current quadrant
+
+         if(lastq == 2 && q == 3)
+            abspos++;
+         if(lastq == 3 && q == 2)
+            abspos--;
+
+			if(abspos >= p){
+				abspos = 0;
+			}
+			if(abspos <= -1){
+				abspos = p - 1;
+			}
+
+         lastq = q;
+         //TODO: clamp abspos
+         float absa = atan2f(s, c) + abspos * M_PI * 2.0f;
+         PIN(pos) = mod(absa/p);
+      }
+	}
+	PIN(amp) = a;
+);
+
+
+ENDCOMP;

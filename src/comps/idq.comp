@@ -1,0 +1,29 @@
+COMP(idq);
+
+HAL_PIN(d) = 0.0;
+HAL_PIN(q) = 0.0;
+
+HAL_PIN(pos) = 0.0;
+HAL_PIN(polecount) = 1.0;
+
+HAL_PIN(a) = 0.0;
+HAL_PIN(b) = 0.0;
+
+RT(
+  float d = PIN(d);
+  float q = PIN(q);
+
+  float p = (int)MAX(PIN(polecount), 1.0);
+  float pos = PIN(pos) * p;
+
+  float c = cosf(pos);
+  float s = sinf(pos);
+
+  float a = d * c - q * s; // inverse park
+  float b = d * s + q * c;
+
+  PIN(a) = a;
+  PIN(b) = b;
+);
+
+ENDCOMP;

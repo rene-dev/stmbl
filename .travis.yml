@@ -1,0 +1,49 @@
+language: cpp
+cache:
+  directories:
+  - libserialport
+install:
+- git clone git://sigrok.org/libserialport
+- cd libserialport
+- "./autogen.sh && ./configure --prefix=/usr && make && sudo make install"
+- cd ..
+before_install:
+- sudo add-apt-repository -y ppa:terry.guo/gcc-arm-embedded
+- sudo add-apt-repository -y ppa:kalakris/cmake
+- sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+- sudo apt-get -qq update
+- sudo apt-get install -qq gcc-arm-none-eabi python-yaml cmake dosfstools mtools pkg-config
+  libusb-dev libwxgtk3.0-dev libudev-dev
+- sudo apt-get install -qq libstdc++-4.8-dev
+- sudo apt-get install -qq g++-4.8
+- export CXX="g++-4.8" CC="gcc-4.8"
+script:
+- make
+- cd stm32f103/
+- make
+- cd ..
+- cd term/
+- mkdir build/
+- cd build/
+- cmake ../
+- make
+- cd ..
+- cd ..
+- ls
+
+notifications:
+  irc:
+    channels:
+    - irc.hackint.org#stmbl
+    on_success: never
+    on_failure: always
+before_deploy: git fetch --tags
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: PznM4ZF+eMf23fBlpKoTDSSpU1XyPaM4c4vWowIxIYfZ7dMFcEUtnxWXeztKhIgu6PdmZuRiQkBgtCzURL/NvDVOYy2ykNNiLKMq5d3dDk+MehTsucQq7vnS7bIfyj/JKHWYPyalggMFTF+UANxZ5o/gz7TvPagf3kblVYuYVY3QXK9Tvo944LmLB43BLlAS5feQ1EZz8UGBi9RVaHrnBCbsqWJXW2YGIb0Wnw9iWq/ttrjn2Mn7uo2p5XRTuyALEc2U0hmKOIw1bwSc/bYGRMTgZKYM71ioTZXuLgoVIimGR0ZuuOkw+nUq2S2oQ2FzVGoPpEFFeH349uTFYAMXTVBlGG976H/IuvsaW3vEj1dFWCZZodWCIWT/gJZrfmUyMgejjkpe7G02Fv8bD7GbIsnArAxA4yjvwtTejwqpQqVU2njviDoMKLXFbPGIM1K1aZdUGvGfOM1DD1mxJMiJn6ihpq1edXOMVgVdVceguu/PKO01zJuH7vjdsoCrTuyf+Z5X2elIdiOAQilKi8xXSA/MiEZJY2izoP4p6HsCy/CjZ13mtVkxZh7PNnqfgIBg4vLl4l8yVDQrygVHC2lrdEqcPKol9VIGWZZsKYrceTDdLuvc/0Ia1Lihpd43SdG9xcwVpCMQXjWa/OtyxRG8bP3pKaJdqRScw2xpJl1W22w=
+  file: "main.bin"
+  on:
+    tags: true
+    all_branches: true
