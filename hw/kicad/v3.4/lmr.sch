@@ -5,7 +5,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 8 15
+Sheet 9 15
 Title ""
 Date ""
 Rev ""
@@ -25,17 +25,6 @@ F 2 "" H 3950 3600 60  0000 C CNN
 F 3 "" H 3950 3600 60  0000 C CNN
 	1    4050 3600
 	1    0    0    -1  
-$EndComp
-$Comp
-L akl230-02 X?
-U 1 1 566022A6
-P 2200 2350
-F 0 "X?" H 2250 2500 60  0000 C CNN
-F 1 "akl230-02" H 2300 2200 60  0000 C CNN
-F 2 "" H 2200 2200 60  0000 C CNN
-F 3 "" H 2200 2200 60  0000 C CNN
-	1    2200 2350
-	-1   0    0    1   
 $EndComp
 $Comp
 L C C?
@@ -363,4 +352,15 @@ Connection ~ 6300 3500
 Wire Wire Line
 	6300 4000 6300 4100
 Connection ~ 6300 4100
+$Comp
+L CONN_01X02 P?
+U 1 1 566CDEAC
+P 2200 2350
+F 0 "P?" H 2200 2500 50  0000 C CNN
+F 1 "CONN_01X02" V 2300 2350 50  0000 C CNN
+F 2 "" H 2200 2350 60  0000 C CNN
+F 3 "" H 2200 2350 60  0000 C CNN
+	1    2200 2350
+	-1   0    0    1   
+$EndComp
 $EndSCHEMATC

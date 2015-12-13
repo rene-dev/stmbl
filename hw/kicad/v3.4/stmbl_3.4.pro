@@ -1,4 +1,4 @@
-update=Donnerstag, 10. Dezember 2015 15:21:45
+update=Sonntag, 13. Dezember 2015 'u24' 00:24:55
 version=1
 last_client=kicad
 [pcbnew]
@@ -33,8 +33,10 @@ NetFmtName=
 SpiceForceRefPrefix=0
 SpiceUseNetNumbers=0
 LabSize=60
+[general]
+version=1
 [eeschema]
 version=1
 LibDir=
-[general]
-version=1
+[eeschema/libraries]
+LibName1=conn
