@@ -15,6 +15,7 @@
 #include "version.h"
 #include "common.h"
 #include "defines_res.h"
+#define U_ID ((__IO uint32_t *)0x1FFF7A10)
 
 #include "stm32_ub_usb_cdc.h"
 
