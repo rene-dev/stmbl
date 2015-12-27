@@ -2,13 +2,8 @@
 #include "common.h"
 #include <math.h>
 
-//iramx v31 hardware
-#define AREF 3.3// analog reference voltage
 #define ARES 4096.0// analog resolution, 12 bit
-#define RCUR 0.0181//shunt
-#define TPULLUP 10000//iramx temperature pullup
-#define R10 10000
-#define R11 180
+#define AREF 3.3// analog reference voltage
 
 #ifdef TROLLER
 
@@ -28,6 +23,12 @@
 
 #else
 
+//iramx v31 hardware
+#define RCUR 0.0181//shunt
+#define TPULLUP 10000//iramx temperature pullup
+#define R10 10000
+#define R11 180
+
 #define ADC_channels 3
 #define VDIVUP 36000.0//HV div pullup R1,R12
 #define VDIVDOWN 280.0//HV div pulldown R2,R9
@@ -36,11 +37,11 @@
 #define PWM_W TIM1->CCR3
 
 #define AMP(a) ((a * AREF / ARES - AREF / (R10 + R11) * R11) / (RCUR * R10) * (R10 + R11))
+#define TEMP(a) (log10f(a * AREF / ARES * TPULLUP / (AREF - a * AREF / ARES)) * (-53) + 290)
 
 #endif
 
 #define VOLT(a) (a / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
-#define TEMP(a) (log10f(a * AREF / ARES * TPULLUP / (AREF - a * AREF / ARES)) * (-53) + 290)
 
 __IO uint16_t ADCConvertedValue[ADC_channels];//DMA buffer for ADC
 
@@ -134,13 +135,10 @@ void GPIO_Configuration(void)
    //shutdown pins
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
-   GPIO_SetBits(GPIOB,GPIO_Pin_1);
-   GPIO_SetBits(GPIOB,GPIO_Pin_2);
-   GPIO_SetBits(GPIOB,GPIO_Pin_3);
-   // GPIO_ResetBits(GPIOB,GPIO_Pin_1);
-   // GPIO_ResetBits(GPIOB,GPIO_Pin_2);
-   // GPIO_ResetBits(GPIOB,GPIO_Pin_3);
-   //GPIO_ResetBits(GPIOC,GPIO_Pin_2);//greep led off
+   GPIO_ResetBits(GPIOB,GPIO_Pin_1);
+   GPIO_ResetBits(GPIOB,GPIO_Pin_2);
+   GPIO_ResetBits(GPIOB,GPIO_Pin_3);
+   //GPIO_ResetBits(GPIOC,GPIO_Pin_2);//green led off
 #else
    //Enable output
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
@@ -152,13 +150,13 @@ void GPIO_Configuration(void)
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
-#endif
    
    //PA5,6,7 sv2
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
    GPIO_Init(GPIOA, &GPIO_InitStructure);
+#endif
 }
 
 void tim1_init(){
@@ -169,12 +167,14 @@ void tim1_init(){
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
    GPIO_Init(GPIOA, &GPIO_InitStructure);
+#ifndef TROLLER
    //TIM1 N
 	// not needed for troller
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
 
    /* Channel 1, 2 and 3 Configuration in PWM mode */
    TIM_TimeBaseStructure.TIM_Period = PWM_RES;
@@ -365,13 +365,27 @@ void TIM1_UP_IRQHandler(){
    TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
    ADC_SoftwareStartConvCmd(ADC1, ENABLE);   //trigger ADC
    if(timeout > 30){
-      GPIO_ResetBits(GPIOB,GPIO_Pin_6);   //disable driver
-      //GPIO_SetBits(GPIOC,GPIO_Pin_1);  //yellow led on
-      //GPIO_ResetBits(GPIOC,GPIO_Pin_2);   //green led off
+	   //disable driver
+#ifdef TROLLER
+	   GPIO_ResetBits(GPIOB,GPIO_Pin_1);
+	   GPIO_ResetBits(GPIOB,GPIO_Pin_2);
+	   GPIO_ResetBits(GPIOB,GPIO_Pin_3);
+#else
+	   GPIO_ResetBits(GPIOB,GPIO_Pin_6);
+#endif
+	   GPIO_SetBits(GPIOC,GPIO_Pin_1);//yellow led on
+	   GPIO_ResetBits(GPIOC,GPIO_Pin_2);//green led off
    }else{
-      GPIO_SetBits(GPIOB,GPIO_Pin_6);  //Enable driver
-      //GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
-      //GPIO_ResetBits(GPIOC,GPIO_Pin_1);   //yellow led off
+	   //Enable driver
+#ifdef TROLLER
+	   GPIO_SetBits(GPIOB,GPIO_Pin_1);
+	   GPIO_SetBits(GPIOB,GPIO_Pin_2);
+	   GPIO_SetBits(GPIOB,GPIO_Pin_3);
+#else
+	   GPIO_SetBits(GPIOB,GPIO_Pin_6);
+#endif
+	   GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
+	   GPIO_ResetBits(GPIOC,GPIO_Pin_1);//yellow led off
       timeout ++;
    }
    //GPIO_SetBits(GPIOB,GPIO_Pin_12);
@@ -383,12 +397,14 @@ void DMA1_Channel1_IRQHandler(){
 
    //TODO: hadrware limits for current, temperature and voltage
 
+#ifndef TROLLER
    //fault test
    if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)){
-      //GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
+	   GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
    }else{
-      //GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
+	   GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
    }
+#endif
 
    volt_raw = ADCConvertedValue[0];
    amp_raw = ADCConvertedValue[1];
@@ -480,11 +496,11 @@ int main(void)
 
    packet_from_hv.head.start = 255;
    packet_from_hv.head.key = 0;
-
+#ifndef TROLLER
    for(int i = 0; i < TEMP_RES; i++){
       temp_buf[i] = TOFIXED(TEMP(i / SCALE));
    }
-
+#endif
    while(1){
       if(uartsend == 1){
          amp = AMP(amp_raw);
