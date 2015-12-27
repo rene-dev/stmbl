@@ -207,6 +207,7 @@ int main(void)
    #include "comps/pmsm.comp"
    #include "comps/pmsm_limits.comp"
    #include "comps/idq.comp"
+   #include "comps/dq.comp"
    #include "comps/hv.comp"
 
    //other comps
