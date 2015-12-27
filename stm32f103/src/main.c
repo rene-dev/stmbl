@@ -153,7 +153,7 @@ void GPIO_Configuration(void)
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
 #endif
-   
+
    //PA5,6,7 sv2
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -504,9 +504,22 @@ int main(void)
          uartsend = 0;
          //while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
 
-         // DMA_Cmd(DMA1_Channel7, DISABLE);
-         // DMA_ClearFlag(DMA1_FLAG_TC7);
-         // DMA_Cmd(DMA1_Channel7, ENABLE);
+         DMA_Cmd(DMA1_Channel7, DISABLE);
+         DMA_DeInit(DMA1_Channel7);
+         DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART2->DR;
+         DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&packet_from_hv;
+         DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
+         DMA_InitStructure.DMA_BufferSize = sizeof(packet_from_hv_t);
+         DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+         DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+         DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+         DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+         DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+         DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+         DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+         DMA_Init(DMA1_Channel7, &DMA_InitStructure);
+         DMA_ClearFlag(DMA1_FLAG_TC7);
+         DMA_Cmd(DMA1_Channel7, ENABLE);
          //
          //
          // while(DMA_GetFlagStatus(DMA1_FLAG_TC7) == RESET){
@@ -516,10 +529,10 @@ int main(void)
          //GPIO_SetBits(GPIOC,GPIO_Pin_2);
 
 
-         for(int j = 0;j<sizeof(packet_from_hv_t);j++){
-            while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-            USART_SendData(USART2, ((uint8_t*)&packet_from_hv)[j]);
-         }
+         // for(int j = 0;j<sizeof(packet_from_hv_t);j++){
+         //    while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+         //    USART_SendData(USART2, ((uint8_t*)&packet_from_hv)[j]);
+         // }
 
          if(temp_raw < ARES && temp_raw > 0){
             temp = tempb(temp_raw);
