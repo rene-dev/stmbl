@@ -1,5 +1,4 @@
 EESchema Schematic File Version 2
-LIBS:conn
 LIBS:power
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
@@ -395,7 +394,7 @@ Wire Wire Line
 	7500 5100 7500 5400
 Connection ~ 7500 5200
 Wire Wire Line
-	8400 5200 8500 5200
+	8400 5200 8600 5200
 Wire Wire Line
 	8500 5100 8500 5400
 Connection ~ 8500 5200
@@ -424,7 +423,7 @@ $EndComp
 Wire Wire Line
 	7400 5200 7600 5200
 Wire Wire Line
-	7000 5800 8500 5800
+	7000 5800 8600 5800
 Connection ~ 8500 5800
 $Comp
 L +3.3VP #PWR?
@@ -437,8 +436,6 @@ F 3 "" H 8500 5100 60  0000 C CNN
 	1    8500 5100
 	1    0    0    -1  
 $EndComp
-Text HLabel 6900 5200 0    60   Input ~ 0
-A_15V
 $Comp
 L R R?
 U 1 1 566D5762
@@ -462,13 +459,10 @@ F 3 "" H 7000 5450 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6900 5200 7100 5200
-Wire Wire Line
 	7000 5200 7000 5300
 Wire Wire Line
 	7000 5600 7000 5800
 Connection ~ 7500 5800
-Connection ~ 7000 5200
 $Comp
 L C C?
 U 1 1 5681ECD1
@@ -479,6 +473,41 @@ F 2 "" H 8538 5400 30  0000 C CNN
 F 3 "" H 8500 5550 60  0000 C CNN
 F 4 "25V" H 8500 5550 60  0001 C CNN "Voltage"
 	1    8500 5550
+	1    0    0    -1  
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 56822428
+P 7650 3800
+F 0 "T?" H 7650 3900 60  0000 C CNN
+F 1 "testpoint" H 7650 3700 60  0000 C CNN
+F 2 "" H 7650 3800 60  0000 C CNN
+F 3 "" H 7650 3800 60  0000 C CNN
+	1    7650 3800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 568224B7
+P 8800 5200
+F 0 "T?" H 8800 5300 60  0000 C CNN
+F 1 "testpoint" H 8800 5100 60  0000 C CNN
+F 2 "" H 8800 5200 60  0000 C CNN
+F 3 "" H 8800 5200 60  0000 C CNN
+	1    8800 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7000 5200 7100 5200
+$Comp
+L testpoint T?
+U 1 1 5682FEC2
+P 8800 5800
+F 0 "T?" H 8800 5900 60  0000 C CNN
+F 1 "testpoint" H 8800 5700 60  0000 C CNN
+F 2 "" H 8800 5800 60  0000 C CNN
+F 3 "" H 8800 5800 60  0000 C CNN
+	1    8800 5800
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC

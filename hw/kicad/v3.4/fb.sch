@@ -1,5 +1,4 @@
 EESchema Schematic File Version 2
-LIBS:conn
 LIBS:power
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
@@ -934,7 +933,7 @@ Wire Wire Line
 	8600 1250 8650 1250
 Connection ~ 8600 1250
 Wire Wire Line
-	8550 1450 8900 1450
+	8900 1450 8550 1450
 Wire Wire Line
 	8550 2550 8600 2550
 Wire Wire Line
@@ -973,7 +972,7 @@ Wire Wire Line
 	8600 2650 8650 2650
 Connection ~ 8600 2650
 Wire Wire Line
-	8550 2850 8900 2850
+	8900 2850 8550 2850
 Wire Wire Line
 	8550 3950 8600 3950
 Wire Wire Line
@@ -1012,7 +1011,7 @@ Wire Wire Line
 	8600 4050 8650 4050
 Connection ~ 8600 4050
 Wire Wire Line
-	8550 4250 8900 4250
+	8900 4250 8550 4250
 Wire Wire Line
 	2200 2950 6300 2950
 Wire Wire Line
@@ -1086,7 +1085,7 @@ Wire Wire Line
 Wire Wire Line
 	4450 4050 4450 4000
 Wire Wire Line
-	6100 4500 6100 4600
+	6100 4400 6100 4600
 Wire Wire Line
 	6000 4600 6200 4600
 Connection ~ 6100 4600
@@ -1110,7 +1109,7 @@ Wire Wire Line
 Wire Wire Line
 	5500 5600 5700 5600
 Wire Wire Line
-	6100 5600 6100 5700
+	6100 5500 6100 5700
 Wire Wire Line
 	6000 5700 6200 5700
 Connection ~ 6100 5700
@@ -1140,7 +1139,7 @@ Connection ~ 2500 5750
 Wire Wire Line
 	2700 6150 2700 6250
 Wire Wire Line
-	2700 6250 2500 6250
+	2500 6250 2800 6250
 Wire Wire Line
 	2600 6350 2600 6250
 Connection ~ 2600 6250
@@ -1151,13 +1150,13 @@ Wire Wire Line
 Wire Wire Line
 	3000 4900 3000 5000
 Wire Wire Line
-	8900 1450 8900 1050
+	8900 950  8900 1450
 Connection ~ 8900 1050
 Wire Wire Line
-	8900 2850 8900 2450
+	8900 2350 8900 2850
 Connection ~ 8900 2450
 Wire Wire Line
-	8900 4250 8900 3850
+	8900 3750 8900 4250
 Connection ~ 8900 3850
 Wire Wire Line
 	4900 4100 4900 4000
@@ -1193,7 +1192,7 @@ Connection ~ 2400 4100
 Wire Wire Line
 	2600 4150 2600 4100
 Wire Wire Line
-	2400 4100 2650 4100
+	2200 4100 2650 4100
 Wire Wire Line
 	2600 4500 2600 4450
 Connection ~ 2600 4100
@@ -1283,4 +1282,107 @@ Connection ~ 3200 4650
 Wire Wire Line
 	3200 4950 3000 4950
 Connection ~ 3000 4950
+$Comp
+L testpoint T?
+U 1 1 5681BCA9
+P 8900 750
+AR Path="/56590966/5659191C/5681BCA9" Ref="T?"  Part="1" 
+AR Path="/56590966/565F7162/5681BCA9" Ref="T?"  Part="1" 
+F 0 "T?" H 8900 850 60  0000 C CNN
+F 1 "testpoint" H 8900 650 60  0000 C CNN
+F 2 "" H 8900 750 60  0000 C CNN
+F 3 "" H 8900 750 60  0000 C CNN
+	1    8900 750 
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 5681BE5B
+P 8900 2150
+AR Path="/56590966/5659191C/5681BE5B" Ref="T?"  Part="1" 
+AR Path="/56590966/565F7162/5681BE5B" Ref="T?"  Part="1" 
+F 0 "T?" H 8900 2250 60  0000 C CNN
+F 1 "testpoint" H 8900 2050 60  0000 C CNN
+F 2 "" H 8900 2150 60  0000 C CNN
+F 3 "" H 8900 2150 60  0000 C CNN
+	1    8900 2150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 5681C17F
+P 8900 3550
+AR Path="/56590966/5659191C/5681C17F" Ref="T?"  Part="1" 
+AR Path="/56590966/565F7162/5681C17F" Ref="T?"  Part="1" 
+F 0 "T?" H 8900 3650 60  0000 C CNN
+F 1 "testpoint" H 8900 3450 60  0000 C CNN
+F 2 "" H 8900 3550 60  0000 C CNN
+F 3 "" H 8900 3550 60  0000 C CNN
+	1    8900 3550
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 5681CB1F
+P 6100 4200
+AR Path="/56590966/5659191C/5681CB1F" Ref="T?"  Part="1" 
+AR Path="/56590966/565F7162/5681CB1F" Ref="T?"  Part="1" 
+F 0 "T?" H 6100 4300 60  0000 C CNN
+F 1 "testpoint" H 6100 4100 60  0000 C CNN
+F 2 "" H 6100 4200 60  0000 C CNN
+F 3 "" H 6100 4200 60  0000 C CNN
+	1    6100 4200
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 5681CBE7
+P 6100 5300
+AR Path="/56590966/565F7162/5681CBE7" Ref="T?"  Part="1" 
+AR Path="/56590966/5659191C/5681CBE7" Ref="T?"  Part="1" 
+F 0 "T?" H 6100 5400 60  0000 C CNN
+F 1 "testpoint" H 6100 5200 60  0000 C CNN
+F 2 "" H 6100 5300 60  0000 C CNN
+F 3 "" H 6100 5300 60  0000 C CNN
+	1    6100 5300
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 5681D090
+P 2000 4100
+AR Path="/56590966/5659191C/5681D090" Ref="T?"  Part="1" 
+AR Path="/56590966/565F7162/5681D090" Ref="T?"  Part="1" 
+F 0 "T?" H 2000 4200 60  0000 C CNN
+F 1 "testpoint" H 2000 4000 60  0000 C CNN
+F 2 "" H 2000 4100 60  0000 C CNN
+F 3 "" H 2000 4100 60  0000 C CNN
+	1    2000 4100
+	-1   0    0    1   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 568217DB
+P 2300 5750
+AR Path="/56590966/565F7162/568217DB" Ref="T?"  Part="1" 
+AR Path="/56590966/5659191C/568217DB" Ref="T?"  Part="1" 
+F 0 "T?" H 2300 5850 60  0000 C CNN
+F 1 "testpoint" H 2300 5650 60  0000 C CNN
+F 2 "" H 2300 5750 60  0000 C CNN
+F 3 "" H 2300 5750 60  0000 C CNN
+	1    2300 5750
+	-1   0    0    1   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 5682DB05
+P 3000 6250
+F 0 "T?" H 3000 6350 60  0000 C CNN
+F 1 "testpoint" H 3000 6150 60  0000 C CNN
+F 2 "" H 3000 6250 60  0000 C CNN
+F 3 "" H 3000 6250 60  0000 C CNN
+	1    3000 6250
+	1    0    0    -1  
+$EndComp
+Connection ~ 2700 6250
 $EndSCHEMATC

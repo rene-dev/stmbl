@@ -1,5 +1,4 @@
 EESchema Schematic File Version 2
-LIBS:conn
 LIBS:power
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
@@ -161,7 +160,7 @@ Wire Wire Line
 Wire Wire Line
 	5800 3500 5800 3700
 Wire Wire Line
-	1950 4100 7550 4100
+	1950 4100 7650 4100
 Wire Wire Line
 	5800 3700 5000 3700
 Wire Wire Line
@@ -207,7 +206,7 @@ Wire Wire Line
 	5800 3500 6650 3500
 Connection ~ 6550 3500
 Wire Wire Line
-	7450 3500 7550 3500
+	7450 3500 7800 3500
 Wire Wire Line
 	7550 3400 7550 3700
 $Comp
@@ -297,7 +296,7 @@ Wire Wire Line
 	1950 3900 1950 4100
 Connection ~ 2450 4100
 Wire Wire Line
-	2050 3500 1950 3500
+	1700 3500 2050 3500
 Wire Wire Line
 	1950 3400 1950 3600
 $Comp
@@ -370,4 +369,63 @@ F 3 "" H 2200 2350 60  0000 C CNN
 	1    2200 2350
 	-1   0    0    1   
 $EndComp
+$Comp
+L testpoint T?
+U 1 1 5681960A
+P 2950 3300
+F 0 "T?" H 2950 3400 60  0000 C CNN
+F 1 "testpoint" H 2950 3200 60  0000 C CNN
+F 2 "" H 2950 3300 60  0000 C CNN
+F 3 "" H 2950 3300 60  0000 C CNN
+	1    2950 3300
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 56819741
+P 6300 3300
+F 0 "T?" H 6300 3400 60  0000 C CNN
+F 1 "testpoint" H 6300 3200 60  0000 C CNN
+F 2 "" H 6300 3300 60  0000 C CNN
+F 3 "" H 6300 3300 60  0000 C CNN
+	1    6300 3300
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 568197A1
+P 7800 3300
+F 0 "T?" H 7800 3400 60  0000 C CNN
+F 1 "testpoint" H 7800 3200 60  0000 C CNN
+F 2 "" H 7800 3300 60  0000 C CNN
+F 3 "" H 7800 3300 60  0000 C CNN
+	1    7800 3300
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 568197F9
+P 1700 3300
+F 0 "T?" H 1700 3400 60  0000 C CNN
+F 1 "testpoint" H 1700 3200 60  0000 C CNN
+F 2 "" H 1700 3300 60  0000 C CNN
+F 3 "" H 1700 3300 60  0000 C CNN
+	1    1700 3300
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1950 3500 1950 3450
+Connection ~ 1950 3450
+$Comp
+L testpoint T?
+U 1 1 5682CF3A
+P 7850 4100
+F 0 "T?" H 7850 4200 60  0000 C CNN
+F 1 "testpoint" H 7850 4000 60  0000 C CNN
+F 2 "" H 7850 4100 60  0000 C CNN
+F 3 "" H 7850 4100 60  0000 C CNN
+	1    7850 4100
+	1    0    0    -1  
+$EndComp
+Connection ~ 7550 4100
 $EndSCHEMATC

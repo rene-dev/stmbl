@@ -1,5 +1,4 @@
 EESchema Schematic File Version 2
-LIBS:conn
 LIBS:power
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
@@ -350,7 +349,7 @@ F 3 "" H 2700 4250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2700 4100 2700 4000
+	2700 3900 2700 4100
 Connection ~ 2700 4000
 Wire Wire Line
 	2700 4400 2700 4450
@@ -391,7 +390,7 @@ F 3 "" H 5200 4250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3500 4100 3500 4000
+	3500 3900 3500 4100
 Connection ~ 3500 4000
 Wire Wire Line
 	3500 4400 3500 4450
@@ -399,7 +398,7 @@ Wire Wire Line
 	3500 4450 3700 4450
 Connection ~ 3700 4450
 Wire Wire Line
-	4300 4100 4300 4000
+	4300 3900 4300 4100
 Connection ~ 4300 4000
 Wire Wire Line
 	4300 4400 4300 4450
@@ -407,11 +406,66 @@ Wire Wire Line
 	4300 4450 4500 4450
 Connection ~ 4500 4450
 Wire Wire Line
-	5200 4100 5200 4000
+	5200 3900 5200 4100
 Connection ~ 5200 4000
 Wire Wire Line
 	5200 4400 5200 4450
 Wire Wire Line
-	5200 4450 5400 4450
+	5200 4450 5500 4450
 Connection ~ 5400 4450
+$Comp
+L testpoint T?
+U 1 1 56822E3C
+P 2700 3700
+F 0 "T?" H 2700 3800 60  0000 C CNN
+F 1 "testpoint" H 2700 3600 60  0000 C CNN
+F 2 "" H 2700 3700 60  0000 C CNN
+F 3 "" H 2700 3700 60  0000 C CNN
+	1    2700 3700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 56822E9B
+P 3500 3700
+F 0 "T?" H 3500 3800 60  0000 C CNN
+F 1 "testpoint" H 3500 3600 60  0000 C CNN
+F 2 "" H 3500 3700 60  0000 C CNN
+F 3 "" H 3500 3700 60  0000 C CNN
+	1    3500 3700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 56822EF1
+P 4300 3700
+F 0 "T?" H 4300 3800 60  0000 C CNN
+F 1 "testpoint" H 4300 3600 60  0000 C CNN
+F 2 "" H 4300 3700 60  0000 C CNN
+F 3 "" H 4300 3700 60  0000 C CNN
+	1    4300 3700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 56822FD0
+P 5200 3700
+F 0 "T?" H 5200 3800 60  0000 C CNN
+F 1 "testpoint" H 5200 3600 60  0000 C CNN
+F 2 "" H 5200 3700 60  0000 C CNN
+F 3 "" H 5200 3700 60  0000 C CNN
+	1    5200 3700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 568301A4
+P 5700 4450
+F 0 "T?" H 5700 4550 60  0000 C CNN
+F 1 "testpoint" H 5700 4350 60  0000 C CNN
+F 2 "" H 5700 4450 60  0000 C CNN
+F 3 "" H 5700 4450 60  0000 C CNN
+	1    5700 4450
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

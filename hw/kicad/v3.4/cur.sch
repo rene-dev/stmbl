@@ -1,5 +1,4 @@
 EESchema Schematic File Version 2
-LIBS:conn
 LIBS:power
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
@@ -110,7 +109,7 @@ $EndComp
 Wire Wire Line
 	6950 2450 7150 2450
 Wire Wire Line
-	7050 2450 7050 2550
+	7050 2350 7050 2550
 Wire Wire Line
 	7050 2850 7050 2950
 Wire Wire Line
@@ -263,7 +262,7 @@ $EndComp
 Wire Wire Line
 	10150 2600 10350 2600
 Wire Wire Line
-	10250 2600 10250 2700
+	10250 2500 10250 2700
 Wire Wire Line
 	10250 3000 10250 3100
 Wire Wire Line
@@ -416,7 +415,7 @@ $EndComp
 Wire Wire Line
 	3800 2450 4000 2450
 Wire Wire Line
-	3900 2450 3900 2550
+	3900 2350 3900 2550
 Wire Wire Line
 	3900 2850 3900 2950
 Wire Wire Line
@@ -603,7 +602,7 @@ Wire Wire Line
 Wire Wire Line
 	4300 1100 4300 1000
 Wire Wire Line
-	4600 1500 4300 1500
+	4300 1500 4700 1500
 Wire Wire Line
 	4600 1300 4600 1600
 Connection ~ 4300 1500
@@ -635,4 +634,48 @@ Wire Wire Line
 	4600 2000 4600 1900
 Connection ~ 4300 2000
 Connection ~ 4600 1500
+$Comp
+L testpoint T?
+U 1 1 56823817
+P 3900 2150
+F 0 "T?" H 3900 2250 60  0000 C CNN
+F 1 "testpoint" H 3900 2050 60  0000 C CNN
+F 2 "" H 3900 2150 60  0000 C CNN
+F 3 "" H 3900 2150 60  0000 C CNN
+	1    3900 2150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 568238DC
+P 7050 2150
+F 0 "T?" H 7050 2250 60  0000 C CNN
+F 1 "testpoint" H 7050 2050 60  0000 C CNN
+F 2 "" H 7050 2150 60  0000 C CNN
+F 3 "" H 7050 2150 60  0000 C CNN
+	1    7050 2150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 56823B0A
+P 4900 1500
+F 0 "T?" H 4900 1600 60  0000 C CNN
+F 1 "testpoint" H 4900 1400 60  0000 C CNN
+F 2 "" H 4900 1500 60  0000 C CNN
+F 3 "" H 4900 1500 60  0000 C CNN
+	1    4900 1500
+	1    0    0    -1  
+$EndComp
+$Comp
+L testpoint T?
+U 1 1 56823DB5
+P 10250 2300
+F 0 "T?" H 10250 2400 60  0000 C CNN
+F 1 "testpoint" H 10250 2200 60  0000 C CNN
+F 2 "" H 10250 2300 60  0000 C CNN
+F 3 "" H 10250 2300 60  0000 C CNN
+	1    10250 2300
+	0    -1   -1   0   
+$EndComp
 $EndSCHEMATC

@@ -1,5 +1,4 @@
 EESchema Schematic File Version 2
-LIBS:conn
 LIBS:power
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
@@ -285,8 +284,6 @@ F 3 "" H 7700 3650 60  0000 C CNN
 	1    7700 3700
 	0    1    1    0   
 $EndComp
-Text HLabel 8000 4500 0    60   Input ~ 0
-A_15V
 Text HLabel 8000 4600 0    60   Input ~ 0
 A_HV
 Text HLabel 8000 4700 0    60   Input ~ 0
@@ -592,7 +589,7 @@ Wire Wire Line
 Wire Wire Line
 	3800 2800 4100 2800
 Wire Wire Line
-	3800 2500 4100 2500
+	4100 2500 3800 2500
 Wire Wire Line
 	3400 2500 3500 2500
 Wire Wire Line
@@ -617,4 +614,89 @@ Wire Wire Line
 	5500 1700 5500 1900
 Wire Wire Line
 	5400 1700 5400 1900
+$Comp
+L R R?
+U 1 1 5682634B
+P 9300 4950
+F 0 "R?" V 9380 4950 50  0000 C CNN
+F 1 "1k" V 9300 4950 50  0000 C CNN
+F 2 "" V 9230 4950 30  0000 C CNN
+F 3 "" H 9300 4950 30  0000 C CNN
+	1    9300 4950
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDPWR #PWR?
+U 1 1 568263AB
+P 9300 5300
+F 0 "#PWR?" H 9300 5100 50  0001 C CNN
+F 1 "GNDPWR" H 9300 5170 50  0000 C CNN
+F 2 "" H 9300 5250 60  0000 C CNN
+F 3 "" H 9300 5250 60  0000 C CNN
+	1    9300 5300
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 568264D7
+P 9300 4450
+F 0 "R?" V 9380 4450 50  0000 C CNN
+F 1 "10k" V 9300 4450 50  0000 C CNN
+F 2 "" V 9230 4450 30  0000 C CNN
+F 3 "" H 9300 4450 30  0000 C CNN
+	1    9300 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L +15V #PWR?
+U 1 1 56826605
+P 9300 4200
+F 0 "#PWR?" H 9300 4050 50  0001 C CNN
+F 1 "+15V" H 9300 4340 50  0000 C CNN
+F 2 "" H 9300 4200 50  0000 C CNN
+F 3 "" H 9300 4200 50  0000 C CNN
+	1    9300 4200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9300 4200 9300 4300
+Wire Wire Line
+	9300 4600 9300 4800
+Wire Wire Line
+	9300 5100 9300 5300
+Text HLabel 9200 4700 0    60   Input ~ 0
+A_15V
+Wire Wire Line
+	9200 4700 9600 4700
+Connection ~ 9300 4700
+$Comp
+L C C?
+U 1 1 568272A5
+P 9500 4950
+F 0 "C?" H 9525 5050 50  0000 L CNN
+F 1 "1n" H 9525 4850 50  0000 L CNN
+F 2 "" H 9538 4800 30  0000 C CNN
+F 3 "" H 9500 4950 60  0000 C CNN
+	1    9500 4950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9500 4700 9500 4800
+Wire Wire Line
+	9500 5100 9500 5200
+Wire Wire Line
+	9500 5200 9300 5200
+Connection ~ 9300 5200
+$Comp
+L testpoint T?
+U 1 1 56827AA7
+P 9800 4700
+F 0 "T?" H 9800 4800 60  0000 C CNN
+F 1 "testpoint" H 9800 4600 60  0000 C CNN
+F 2 "" H 9800 4700 60  0000 C CNN
+F 3 "" H 9800 4700 60  0000 C CNN
+	1    9800 4700
+	1    0    0    -1  
+$EndComp
+Connection ~ 9500 4700
 $EndSCHEMATC
