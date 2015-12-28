@@ -1,5 +1,6 @@
 EESchema Schematic File Version 2
 LIBS:conn
+LIBS:power
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
 EELAYER END
@@ -48,19 +49,19 @@ F 3 "" H 8000 3750 60  0000 C CNN
 	1    8000 3750
 	1    0    0    -1  
 $EndComp
-Text HLabel 4400 2400 0    60   Input ~ 0
+Text HLabel 5700 1600 0    60   Input ~ 0
 CAN_TX
-Text HLabel 4400 2500 0    60   Input ~ 0
+Text HLabel 5700 1700 0    60   Input ~ 0
 CAN_RX
-Text HLabel 4400 2700 0    60   Input ~ 0
+Text HLabel 5700 1800 0    60   Input ~ 0
 TX
-Text HLabel 4400 2800 0    60   Input ~ 0
+Text HLabel 5700 1900 0    60   Input ~ 0
 RX
-Text HLabel 4400 2900 0    60   Input ~ 0
+Text HLabel 5700 2000 0    60   Input ~ 0
 CK
-Text HLabel 4400 3100 0    60   Input ~ 0
+Text HLabel 5700 2100 0    60   Input ~ 0
 I2C_SCL
-Text HLabel 4400 3200 0    60   Input ~ 0
+Text HLabel 5700 2200 0    60   Input ~ 0
 I2C_SDA
 Text HLabel 4400 3400 0    60   Input ~ 0
 IO_FAN
@@ -74,21 +75,94 @@ Text HLabel 4400 3900 0    60   Input ~ 0
 IO_IN0
 Text HLabel 4400 4000 0    60   Input ~ 0
 IO_IN1
-Text HLabel 4400 4200 0    60   Input ~ 0
+Text HLabel 5700 2300 0    60   Input ~ 0
 MISO
-Text HLabel 4400 4300 0    60   Input ~ 0
+Text HLabel 5700 2400 0    60   Input ~ 0
 MOSI
-Text HLabel 4400 4400 0    60   Input ~ 0
+Text HLabel 5700 2500 0    60   Input ~ 0
 SCK
 $Comp
 L CONN_02X10 P?
 U 1 1 566AF491
-P 8000 4700
-F 0 "P?" H 8000 5250 50  0000 C CNN
-F 1 "CONN_02X10" V 8000 4700 50  0000 C CNN
-F 2 "" H 8000 3500 50  0000 C CNN
-F 3 "" H 8000 3500 50  0000 C CNN
-	1    8000 4700
+P 6650 2050
+F 0 "P?" H 6650 2600 50  0000 C CNN
+F 1 "CONN_02X10" V 6650 2050 50  0000 C CNN
+F 2 "" H 6650 850 50  0000 C CNN
+F 3 "" H 6650 850 50  0000 C CNN
+	1    6650 2050
+	1    0    0    -1  
+$EndComp
+Text HLabel 4400 4100 0    60   Input ~ 0
+IO_IN2
+Text HLabel 4400 4200 0    60   Input ~ 0
+IO_IN3
+$Comp
+L USBLC6-4SC6 U?
+U 1 1 56819D62
+P 4650 5100
+F 0 "U?" H 3951 5448 50  0000 C CNN
+F 1 "USBLC6-4SC6" H 4650 5350 50  0000 C CNN
+F 2 "" H 4650 5100 60  0000 C CNN
+F 3 "" H 4650 5100 60  0000 C CNN
+F 4 "TRANSIENT VOLTAGE SUPPRESSOR" H 4650 4850 50  0000 C CNN "Description"
+	1    4650 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L USBLC6-4SC6 U?
+U 1 1 56819DA2
+P 4650 5800
+F 0 "U?" H 3951 6148 50  0000 C CNN
+F 1 "USBLC6-4SC6" H 4650 6050 50  0000 C CNN
+F 2 "" H 4650 5800 60  0000 C CNN
+F 3 "" H 4650 5800 60  0000 C CNN
+F 4 "TRANSIENT VOLTAGE SUPPRESSOR" H 4650 5550 50  0000 C CNN "Description"
+	1    4650 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L USBLC6-4SC6 U?
+U 1 1 56819DFD
+P 4650 6500
+F 0 "U?" H 3951 6848 50  0000 C CNN
+F 1 "USBLC6-4SC6" H 4650 6750 50  0000 C CNN
+F 2 "" H 4650 6500 60  0000 C CNN
+F 3 "" H 4650 6500 60  0000 C CNN
+F 4 "TRANSIENT VOLTAGE SUPPRESSOR" H 4650 6250 50  0000 C CNN "Description"
+	1    4650 6500
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 56819E35
+P 3300 5050
+F 0 "C?" H 3325 5150 50  0000 L CNN
+F 1 "C" H 3325 4950 50  0000 L CNN
+F 2 "" H 3338 4900 30  0000 C CNN
+F 3 "" H 3300 5050 60  0000 C CNN
+	1    3300 5050
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 56819EA9
+P 3300 5750
+F 0 "C?" H 3325 5850 50  0000 L CNN
+F 1 "C" H 3325 5650 50  0000 L CNN
+F 2 "" H 3338 5600 30  0000 C CNN
+F 3 "" H 3300 5750 60  0000 C CNN
+	1    3300 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 56819EF3
+P 3300 6450
+F 0 "C?" H 3325 6550 50  0000 L CNN
+F 1 "C" H 3325 6350 50  0000 L CNN
+F 2 "" H 3338 6300 30  0000 C CNN
+F 3 "" H 3300 6450 60  0000 C CNN
+	1    3300 6450
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC

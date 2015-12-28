@@ -1,5 +1,6 @@
 EESchema Schematic File Version 2
 LIBS:conn
+LIBS:power
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
 EELAYER END

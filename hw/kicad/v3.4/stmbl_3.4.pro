@@ -1,4 +1,4 @@
-update=Sonntag, 13. Dezember 2015 'u24' 00:24:55
+update=Montag, 28. Dezember 2015 15:54:49
 version=1
 last_client=kicad
 [pcbnew]
@@ -38,5 +38,3 @@ version=1
 [eeschema]
 version=1
 LibDir=
-[eeschema/libraries]
-LibName1=conn

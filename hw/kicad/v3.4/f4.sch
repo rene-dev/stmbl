@@ -1,5 +1,6 @@
 EESchema Schematic File Version 2
 LIBS:conn
+LIBS:power
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
 EELAYER END
@@ -72,9 +73,9 @@ Text HLabel 15300 7800 2    60   Input ~ 0
 FB1_45
 Text HLabel 15300 7200 2    60   Input ~ 0
 FB1_45
-Text HLabel 5100 7400 0    60   Input ~ 0
+Text HLabel 5100 7200 0    60   Input ~ 0
 I2C_SCL
-Text HLabel 5100 7500 0    60   Input ~ 0
+Text HLabel 5100 7300 0    60   Input ~ 0
 I2C_SDA
 Text HLabel 5100 7600 0    60   Input ~ 0
 I2S_CK
@@ -805,7 +806,7 @@ Text HLabel 3550 8400 0    60   Input ~ 0
 FB1_C
 Text HLabel 3550 8500 0    60   Input ~ 0
 FB1_A
-Text HLabel 2850 8600 0    60   Input ~ 0
+Text HLabel 15300 3600 2    60   Input ~ 0
 FB0_PCM_CK
 Text HLabel 2850 8700 0    60   Input ~ 0
 FB0_PCM_BYPAS
@@ -853,8 +854,6 @@ F 4 "TRANSIENT VOLTAGE SUPPRESSOR" H 2800 6300 50  0000 C CNN "Description"
 	1    2800 6550
 	1    0    0    -1  
 $EndComp
-Text HLabel 5500 9300 0    60   Input ~ 0
-A_TEMP
 $Comp
 L R R?
 U 1 1 5668EA86
@@ -1142,35 +1141,6 @@ Wire Wire Line
 Text HLabel 6100 9300 0    60   Input ~ 0
 A_IO0_
 $Comp
-L R R?
-U 1 1 56691226
-P 5600 9050
-F 0 "R?" V 5680 9050 50  0000 C CNN
-F 1 "10k" V 5600 9050 50  0000 C CNN
-F 2 "" V 5530 9050 30  0000 C CNN
-F 3 "" H 5600 9050 30  0000 C CNN
-	1    5600 9050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5500 9300 5600 9300
-Wire Wire Line
-	5600 9200 5600 9400
-$Comp
-L +3.3V #PWR?
-U 1 1 566913DF
-P 5600 8800
-F 0 "#PWR?" H 5600 8650 50  0001 C CNN
-F 1 "+3.3V" H 5600 8940 50  0000 C CNN
-F 2 "" H 5600 8800 60  0000 C CNN
-F 3 "" H 5600 8800 60  0000 C CNN
-	1    5600 8800
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5600 8900 5600 8800
-Connection ~ 5600 9300
-$Comp
 L C C?
 U 1 1 56692A64
 P 6400 9550
@@ -1258,30 +1228,6 @@ Wire Wire Line
 Wire Wire Line
 	8050 9800 8050 9700
 Connection ~ 7850 9800
-$Comp
-L C C?
-U 1 1 566940F5
-P 5600 9550
-F 0 "C?" H 5625 9650 50  0000 L CNN
-F 1 "1n" H 5625 9450 50  0000 L CNN
-F 2 "" H 5638 9400 30  0000 C CNN
-F 3 "" H 5600 9550 60  0000 C CNN
-	1    5600 9550
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR?
-U 1 1 56694185
-P 5600 9900
-F 0 "#PWR?" H 5600 9650 50  0001 C CNN
-F 1 "GND" H 5600 9750 50  0000 C CNN
-F 2 "" H 5600 9900 60  0000 C CNN
-F 3 "" H 5600 9900 60  0000 C CNN
-	1    5600 9900
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5600 9900 5600 9700
 $Comp
 L R R?
 U 1 1 566A9C27
@@ -1463,4 +1409,18 @@ Wire Wire Line
 	3250 9300 3350 9300
 Wire Wire Line
 	3250 9400 3350 9400
+Wire Wire Line
+	5100 7300 5200 7300
+Wire Wire Line
+	5100 7200 5200 7200
+Text HLabel 5100 7500 0    60   Input ~ 0
+CAN_TX
+Text HLabel 5100 7400 0    60   Input ~ 0
+CAN_RX
+Wire Wire Line
+	15300 3600 15200 3600
+Text HLabel 1500 8200 0    60   Input ~ 0
+IO_AIN2
+Text HLabel 1500 8300 0    60   Input ~ 0
+IO_AIN3
 $EndSCHEMATC
