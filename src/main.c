@@ -191,8 +191,7 @@ int main(void)
    #include "comps/sserial.comp"
    #include "comps/sim.comp"
    #include "comps/enc_cmd.comp"
-   //TODO: handle en for enable/error
-   //#include "comps/en.comp"
+   #include "comps/en.comp"
 
    //PID
    #include "comps/stp.comp"
