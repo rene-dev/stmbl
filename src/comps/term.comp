@@ -57,7 +57,7 @@ MEM(unsigned int write_pos) = 0;
 MEM(unsigned int send_counter) = 0;
 
 MEM(unsigned int last_fault_sent) = 0; //save last error message
-MEM(uint32_t state) = HAL_OK;
+MEM(uint32_t last_hal_state) = HAL_OK;
 MEM(uint16_t ee_error);
 
 
@@ -300,7 +300,8 @@ NRT(
       printf_("newlib     %s\n",_NEWLIB_VERSION);
       printf_("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
       printf_("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
-      uint32_t crc = crc32_init();
+      printf_("CPU ID     %x %x %x\n",U_ID[0], U_ID[1], U_ID[2]);
+	  uint32_t crc = crc32_init();
       crc = crc32_update(crc, (void*)0x08010000, version_info.image_size);
       crc = crc32_finalize(crc);
       printf_("size: %u crc:%x\n",version_info.image_size,version_info.image_crc);
@@ -517,7 +518,8 @@ NRT(
    }
 
    void hal_error_sender(){
-      if(hal.hal_state != state){
+      if(hal.hal_state != last_hal_state){
+         last_hal_state = hal.hal_state;
          switch(hal.hal_state){
             case HAL_OK:
                printf_("HAL state:  HAL_OK\n");

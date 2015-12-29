@@ -9,7 +9,7 @@ COMP(en);
 HAL_PIN(en) = 0.0;
 HAL_PIN(txen) = 0.0;
 
-INIT(
+INIT(//TODO: change init, implement deinit
 	 //PC12 TX
 	 //PB13 TXEN
 

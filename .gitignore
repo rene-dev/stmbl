@@ -34,6 +34,11 @@ stmblx
 *.l#?
 *.lck
 
+# kicad bak files
+hw/kicad/*.bak
+hw/kicad/*/*.bak
+hw/kicad/*/*/*.bak
+
 # Eagle project file
 # It contains a serial number and references to the file structure
 # on your computer.

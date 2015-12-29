@@ -1,22 +1,10 @@
-# put your *.o targets here, make should handle the rest!
-#TODO
-#dependency files
-#ld gcollection
-#komische flags
-
 SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c printf.c scanf.c setup.c hal.c misc.c eeprom.c link.c version.c syscalls.c shared/crc8.c shared/crc32.c shared/common.c
-#USB
+
 SRCS +=  ub_lib/stm32_ub_usb_cdc.c ub_lib/usb_cdc_lolevel/usb_core.c ub_lib/usb_cdc_lolevel/usb_dcd_int.c ub_lib/usb_cdc_lolevel/usbd_req.c ub_lib/usb_cdc_lolevel/usbd_cdc_core.c ub_lib/usb_cdc_lolevel/usbd_core.c ub_lib/usb_cdc_lolevel/usb_dcd.c ub_lib/usb_cdc_lolevel/usbd_cdc_vcp.c ub_lib/usb_cdc_lolevel/usbd_desc.c ub_lib/usb_cdc_lolevel/usbd_ioreq.c ub_lib/usb_cdc_lolevel/usb_bsp.c ub_lib/usb_cdc_lolevel/usbd_usr.c
-#SRCS = main.c system.c
-COMPS = df.c
 
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
 
 PROJ_NAME=main
-
-# Put your stlink folder here so make burn will work.
-
-#STLINK=/mnt/share/Programming/embedded/stm32/stlink
 
 # that's it, no need to change anything below this line!
 
@@ -30,7 +18,6 @@ CFLAGS  = -g -Wall -Tstm32_flash.ld -std=gnu99 -fno-builtin -CC -fdiagnostics-co
 CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork -nostartfiles
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -nostartfiles -fsingle-precision-constant
 CFLAGS += -ffunction-sections -fdata-sections -O1
-
 CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals -Isrc/ub_lib -Isrc/ub_lib/usb_cdc_lolevel
 
 ###################################################
