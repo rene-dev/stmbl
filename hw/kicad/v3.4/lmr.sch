@@ -299,17 +299,6 @@ Wire Wire Line
 	1700 3500 2050 3500
 Wire Wire Line
 	1950 3400 1950 3600
-$Comp
-L +12V #PWR?
-U 1 1 5660831D
-P 1950 3400
-F 0 "#PWR?" H 1950 3250 50  0001 C CNN
-F 1 "+12V" H 1950 3540 50  0000 C CNN
-F 2 "" H 1950 3400 60  0000 C CNN
-F 3 "" H 1950 3400 60  0000 C CNN
-	1    1950 3400
-	1    0    0    -1  
-$EndComp
 Connection ~ 1950 3500
 $Comp
 L GND #PWR?
@@ -413,9 +402,6 @@ F 3 "" H 1700 3300 60  0000 C CNN
 	1    1700 3300
 	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	1950 3500 1950 3450
-Connection ~ 1950 3450
 $Comp
 L testpoint T?
 U 1 1 5682CF3A
@@ -428,4 +414,15 @@ F 3 "" H 7850 4100 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Connection ~ 7550 4100
+$Comp
+L +12V #PWR?
+U 1 1 5660831D
+P 1950 3400
+F 0 "#PWR?" H 1950 3250 50  0001 C CNN
+F 1 "+12V" H 1950 3540 50  0000 C CNN
+F 2 "" H 1950 3400 60  0000 C CNN
+F 3 "" H 1950 3400 60  0000 C CNN
+	1    1950 3400
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
