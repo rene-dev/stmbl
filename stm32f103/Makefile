@@ -155,12 +155,8 @@ showsize: build
 # Flash the device  
 #
 	
-btburn: build showsize
-	#change this to your device
-	printf "bootloader\r" > `ls /dev/cu.usbmodem*` || true
-	printf "bootloader\r" > `ls /dev/ttyACM*` || true
-	sleep 1
-	dfu-util -a 0 -d 0483:df11 -s 0x08010000:leave -D $(TARGET).bin
+flash: build
+	st-flash --reset write $(TARGET).bin 0x8000000
 
 # Target: clean project
 #

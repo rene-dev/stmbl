@@ -182,6 +182,9 @@ boot_clean:
 boot_flash: boot
 	$(MAKE) -f bootloader/Makefile flash
 
+hv_flash: boot
+	$(MAKE) -f stm32f103/Makefile flash
+
 boot_btflash: boot
 	$(MAKE) -f bootloader/Makefile btflash
 
