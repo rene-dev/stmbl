@@ -68,3 +68,6 @@ eagle.epf
 *.info
 
 *.eps
+obj_app/
+obj_boot/
+obj_hv/

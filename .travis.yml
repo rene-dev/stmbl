@@ -19,9 +19,6 @@ before_install:
 - export CXX="g++-4.8" CC="gcc-4.8"
 script:
 - make
-- cd stm32f103/
-- make
-- cd ..
 - cd term/
 - mkdir build/
 - cd build/

@@ -56,9 +56,9 @@ void disable_frt(){
    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
 }
 
-extern char _binary_stm32f103_main_bin_start;
-extern char _binary_stm32f103_main_bin_size;
-extern char _binary_stm32f103_main_bin_end;
+extern char _binary_obj_hv_hv_bin_start;
+extern char _binary_obj_hv_hv_bin_size;
+extern char _binary_obj_hv_hv_bin_end;
 
 //20kHz
 void TIM2_IRQHandler(void){

@@ -23,4 +23,4 @@ struct version_info {
     int         patch;
 };
 
-extern const struct version_info version_info __attribute__((section(".version_info")));
+extern volatile const struct version_info version_info __attribute__((section(".version_info")));

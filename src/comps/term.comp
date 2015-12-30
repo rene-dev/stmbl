@@ -323,7 +323,7 @@ NRT(
       printf_("Compiled %s %s ",bt_version_info->build_date, bt_version_info->build_time);
       printf_("by %s on %s\n",bt_version_info->build_user, bt_version_info->build_host);
 
-      printf_("start:%p ,size:%p ,end%p \n",&_binary_stm32f103_main_bin_start,&_binary_stm32f103_main_bin_size,&_binary_stm32f103_main_bin_end);
+      printf_("start:%p ,size:%p ,end%p \n",&_binary_obj_hv_hv_bin_start,&_binary_obj_hv_hv_bin_size,&_binary_obj_hv_hv_bin_end);
    }
 
    void start(){

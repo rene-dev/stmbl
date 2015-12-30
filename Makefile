@@ -1,82 +1,238 @@
-SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c printf.c scanf.c setup.c hal.c misc.c eeprom.c link.c version.c syscalls.c shared/crc8.c shared/crc32.c shared/common.c
+# Optimization level, can be [0, 1, 2, 3, s]. 
+#     0 = turn off optimization. s = optimize for size.
+# 
+OPT = -O1 -flto
+# OPT = -O1         # for debugging
 
-SRCS +=  ub_lib/stm32_ub_usb_cdc.c ub_lib/usb_cdc_lolevel/usb_core.c ub_lib/usb_cdc_lolevel/usb_dcd_int.c ub_lib/usb_cdc_lolevel/usbd_req.c ub_lib/usb_cdc_lolevel/usbd_cdc_core.c ub_lib/usb_cdc_lolevel/usbd_core.c ub_lib/usb_cdc_lolevel/usb_dcd.c ub_lib/usb_cdc_lolevel/usbd_cdc_vcp.c ub_lib/usb_cdc_lolevel/usbd_desc.c ub_lib/usb_cdc_lolevel/usbd_ioreq.c ub_lib/usb_cdc_lolevel/usb_bsp.c ub_lib/usb_cdc_lolevel/usbd_usr.c
+# Object files directory
+# Warning: this will be removed by make clean!
+#
+OBJDIR = obj_app
 
-# all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
+# Target file name (without extension)
+TARGET = $(OBJDIR)/stmbl
 
-PROJ_NAME=main
+# Define all C source files (dependencies are generated automatically)
+INCDIRS += inc
+INCDIRS += shared
 
-# that's it, no need to change anything below this line!
+SOURCES += src/main.c
+SOURCES += src/stm32f4xx_it.c
+SOURCES += src/system_stm32f4xx.c
+SOURCES += src/printf.c
+SOURCES += src/scanf.c
+SOURCES += src/setup.c
+SOURCES += src/hal.c
+SOURCES += src/misc.c
+SOURCES += src/eeprom.c
+SOURCES += src/link.c
+SOURCES += src/version.c
+SOURCES += src/syscalls.c
 
-###################################################
+SOURCES += shared/crc8.c
+SOURCES += shared/crc32.c
+SOURCES += shared/common.c
 
-CC=arm-none-eabi-gcc
-OBJCOPY=arm-none-eabi-objcopy
-#CCDIR = /Users/rene/Downloads/gcc-arm-none-eabi-4_7-2013q3/bin
+#USB CDC
+INCDIRS += src/ub_lib
+INCDIRS += src/ub_lib/usb_cdc_lolevel
 
-CFLAGS  = -g -Wall -Tstm32_flash.ld -std=gnu99 -fno-builtin -CC -fdiagnostics-color=always
-CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork -nostartfiles
-CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -nostartfiles -fsingle-precision-constant
-CFLAGS += -ffunction-sections -fdata-sections -O1
-CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals -Isrc/ub_lib -Isrc/ub_lib/usb_cdc_lolevel
+SOURCES += src/ub_lib/stm32_ub_usb_cdc.c
+SOURCES += src/ub_lib/usb_cdc_lolevel/usb_core.c
+SOURCES += src/ub_lib/usb_cdc_lolevel/usb_dcd_int.c
+SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_req.c
+SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_cdc_core.c
+SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_core.c
+SOURCES += src/ub_lib/usb_cdc_lolevel/usb_dcd.c
+SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_cdc_vcp.c
+SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_desc.c
+SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_ioreq.c
+SOURCES += src/ub_lib/usb_cdc_lolevel/usb_bsp.c
+SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_usr.c
 
-###################################################
+# Standard peripheral library
+CPPFLAGS += -DUSE_STDPERIPH_DRIVER
+#CPPFLAGS += -DUSE_FULL_ASSERT
 
-vpath %.c src
-vpath %.a lib
+INCDIRS += lib/inc/peripherals
+INCDIRS += lib/inc
+INCDIRS += lib/inc/core
 
-ROOT=$(shell pwd)
+SOURCES += lib/src/peripherals/stm32f4xx_adc.c
+SOURCES += lib/src/peripherals/stm32f4xx_dma.c
+SOURCES += lib/src/peripherals/stm32f4xx_flash.c
+SOURCES += lib/src/peripherals/stm32f4xx_gpio.c
+SOURCES += lib/src/peripherals/stm32f4xx_pwr.c
+SOURCES += lib/src/peripherals/stm32f4xx_rcc.c
+SOURCES += lib/src/peripherals/stm32f4xx_tim.c
+SOURCES += lib/src/peripherals/stm32f4xx_usart.c
+SOURCES += lib/src/peripherals/misc.c
 
-CFLAGS += -Iinc -Ilib -Ilib/inc -Ishared
-CFLAGS += -Ilib/inc/core -Ilib/inc/peripherals
+SOURCES += lib/startup_stm32f4xx.s
 
-SRCS += lib/startup_stm32f4xx.s # add startup file to build
+#CPPFLAGS += -DSTM32F40_41xxx
+LDSCRIPT = stm32_flash.ld
 
-OBJS = $(SRCS:.c=.o)
+#============================================================================
+OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
+OBJECTS += hv_firmware.o
+CPPFLAGS += $(addprefix -I,$(INCDIRS))
 
-###################################################
+#---------------- Preprocessor Options ----------------
+#  -fsingle...    make better use of the single-precision FPU
+#  -g             generate debugging information
+#  -save-temps    preserve .s and .i-files
+#
+CPPFLAGS += -fsingle-precision-constant
+CPPFLAGS += -g
+# CPPFLAGS += -save-temps=obj
 
-.PHONY: lib proj
+#---------------- C Compiler Options ----------------
+#  -O*            optimization level
+#  -f...          tuning, see GCC documentation
+#  -Wall...       warning level
+#
+CFLAGS += $(OPT)
+CFLAGS += -std=gnu11
+CFLAGS += -ffunction-sections
+CFLAGS += -fdata-sections
+CFLAGS += -Wall
+CFLAGS += -fno-builtin ## from old
+CFLAGS += -nostartfiles
+#CFLAGS += -Wstrict-prototypes
+#CFLAGS += -Wextra
+#CFLAGS += -Wpointer-arith
+#CFLAGS += -Winline
+#CFLAGS += -Wunreachable-code
+#CFLAGS += -Wundef
 
-all: lib proj
+# Use a friendly C dialect
+CPPFLAGS += -fno-strict-aliasing
+CPPFLAGS += -fwrapv
 
-again: clean all
+#---------------- C++ Compiler Options ----------------
+#
+CXXFLAGS += $(OPT)
+CXXFLAGS += -ffunction-sections
+CXXFLAGS += -fdata-sections
+CXXFLAGS += -Wall
 
-# Flash the STM32F4
-burn: main.elf
-	st-flash --reset write $(PROJ_NAME).bin 0x08010000
+#---------------- Assembler Options ----------------
+#  -Wa,...    tell GCC to pass this to the assembler
+#
 
-btburn: main.elf
+#---------------- Linker Options ----------------
+#  -Wl,...      tell GCC to pass this to linker
+#  -Map         create map file
+#  --cref       add cross reference to  map file
+#
+LDFLAGS += $(OPT)
+LDFLAGS += -lm
+LDFLAGS += -Wl,-Map=$(TARGET).map,--cref
+LDFLAGS += -Wl,--gc-sections
+
+# LDFLAGS += -specs=nano.specs -u _printf_float -u _scanf_float
+LDFLAGS += -T$(LDSCRIPT)
+
+#============================================================================
+
+# Define programs and commands
+#
+TOOLCHAIN = arm-none-eabi-
+CC       = $(TOOLCHAIN)gcc
+OBJCOPY  = $(TOOLCHAIN)objcopy
+OBJDUMP  = $(TOOLCHAIN)objdump
+SIZE     = $(TOOLCHAIN)size
+NM       = $(TOOLCHAIN)nm
+MKDIR    = mkdir
+POSTLD   = Tools/add_version_info.py # -q
+
+# Compiler flags to generate dependency files
+#
+GENDEPFLAGS = -MMD -MP
+
+# Combine all necessary flags and optional flags
+# Add target processor to flags.
+#
+CPU = -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16
+
+CFLAGS   += $(CPU)
+CXXFLAGS += $(CPU)
+ASFLAGS  += $(CPU)
+LDFLAGS  += $(CPU)
+
+# Default target
+#
+all: hv gccversion boot hv build showsize
+
+build: elf hex bin lss sym
+
+elf: $(TARGET).elf
+hex: $(TARGET).hex
+bin: $(TARGET).bin
+lss: $(TARGET).lss
+sym: $(TARGET).sym
+
+boot:
+	$(MAKE) -f bootloader/Makefile
+
+boot_clean:
+	$(MAKE) -f bootloader/Makefile clean
+
+boot_flash: boot
+	$(MAKE) -f bootloader/Makefile flash
+
+boot_btflash: boot
+	$(MAKE) -f bootloader/Makefile btflash
+
+hv:
+	$(MAKE) -f stm32f103/Makefile
+
+hv_firmware.o: hv
+	arm-none-eabi-objcopy --rename-section .data=.hv_firmware -I binary obj_hv/hv.bin -B arm -O elf32-littlearm hv_firmware.o
+
+# Display compiler version information
+#
+gccversion: 
+	@$(CC) --version
+
+
+# Show the final program size
+#
+showsize: build
+	@echo
+	@$(SIZE) $(TARGET).elf 2>/dev/null
+
+# Flash the device  
+#
+	
+btburn: build showsize
 	#change this to your device
 	printf "bootloader\r" > `ls /dev/cu.usbmodem*` || true
 	printf "bootloader\r" > `ls /dev/ttyACM*` || true
 	sleep 1
-	dfu-util -a 0 -d 0483:df11 -s 0x08010000:leave -D main.bin
+	dfu-util -a 0 -d 0483:df11 -s 0x08010000:leave -D $(TARGET).bin
 
-# Create tags; assumes ctags exists
-ctags:
-	ctags -R --exclude=*cm0.h --exclude=*cm3.h .
-
-lib:
-	$(MAKE) -C lib
-
-proj: 	$(PROJ_NAME).elf
-	
-hv_firmware.o: stm32f103/main.bin
-	arm-none-eabi-objcopy --rename-section .data=.hv_firmware -I binary stm32f103/main.bin -B arm -O elf32-littlearm hv_firmware.o
-
-stm32f103/main.bin:
-	make -C stm32f103/ all
-
-$(PROJ_NAME).elf: $(SRCS) hv_firmware.o
-	$(CC) $(CFLAGS) $^ -o $@ -Llib -lstm32f4 -Wl,--gc-sections -Wl,-Map -Wl,$(PROJ_NAME).map
-	tools/add_version_info.py $(PROJ_NAME).elf
-	$(OBJCOPY) -O binary --gap-fill 0xFF $(PROJ_NAME).elf $(PROJ_NAME).bin
-	tools/checkcrc.py $(PROJ_NAME).bin
-	arm-none-eabi-size $(PROJ_NAME).elf
-
+# Target: clean project
+#
 clean:
-	rm -f *.o *.i
-	rm -f $(PROJ_NAME).elf
-	rm -f $(PROJ_NAME).hex
-	rm -f $(PROJ_NAME).bin
+	@echo Cleaning project:
+	rm -rf hv_firmware.o
+	rm -rf $(OBJDIR)
+	@$(MAKE) -f bootloader/Makefile clean
+	@$(MAKE) -f stm32f103/Makefile clean
+	
+# Include the base rules
+#
+include base.mak
+
+# Include the dependency files
+#
+-include $(OBJECTS:.o=.d)
+
+# Listing of phony targets
+#
+.PHONY: all build flash clean \
+        boot boot_clean boot_flash btburn boot_btflash boot_flash\
+        elf lss sym \
+        showsize gccversion
