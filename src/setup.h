@@ -9,7 +9,6 @@
 #ifndef test_setup_h
 #define test_setup_h
 
-#include "stm32f4_discovery.h"
 #include "stm32f4xx_conf.h"
 #include "misc.h"
 #include "version.h"

@@ -54,23 +54,23 @@ SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_usr.c
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 #CPPFLAGS += -DUSE_FULL_ASSERT
 
-INCDIRS += lib/inc/peripherals
-INCDIRS += lib/inc
-INCDIRS += lib/inc/core
+INCDIRS += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/inc
+INCDIRS += lib/CMSIS/Include
+INCDIRS += lib/CMSIS/Device/ST/STM32F4xx/Include
 
-SOURCES += lib/src/peripherals/stm32f4xx_adc.c
-SOURCES += lib/src/peripherals/stm32f4xx_dma.c
-SOURCES += lib/src/peripherals/stm32f4xx_flash.c
-SOURCES += lib/src/peripherals/stm32f4xx_gpio.c
-SOURCES += lib/src/peripherals/stm32f4xx_pwr.c
-SOURCES += lib/src/peripherals/stm32f4xx_rcc.c
-SOURCES += lib/src/peripherals/stm32f4xx_tim.c
-SOURCES += lib/src/peripherals/stm32f4xx_usart.c
-SOURCES += lib/src/peripherals/misc.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_adc.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_dma.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_flash.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_gpio.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_pwr.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_rcc.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_tim.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_usart.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/misc.c
 
-SOURCES += lib/startup_stm32f4xx.s
+SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
 
-#CPPFLAGS += -DSTM32F40_41xxx
+CPPFLAGS += -DSTM32F40_41xxx
 LDSCRIPT = stm32_flash.ld
 
 #============================================================================
@@ -224,7 +224,7 @@ clean:
 	rm -rf $(OBJDIR)
 	@$(MAKE) -f bootloader/Makefile clean
 	@$(MAKE) -f stm32f103/Makefile clean
-	
+
 # Include the base rules
 #
 include base.mak

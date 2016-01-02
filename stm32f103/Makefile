@@ -22,21 +22,22 @@ SOURCES += shared/common.c
 # Standard peripheral library
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 #CPPFLAGS += -DUSE_FULL_ASSERT
-INCDIRS += stm32f103/Libraries/CMSIS/CM3/CoreSupport/
-INCDIRS += stm32f103/Libraries/STM32F10x_StdPeriph_Driver/inc/
-INCDIRS += stm32f103/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/
 
-SOURCES += stm32f103/Libraries/STM32F10x_StdPeriph_Driver/src/misc.c
-SOURCES += stm32f103/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_rcc.c
-SOURCES += stm32f103/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_adc.c
-SOURCES += stm32f103/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_dma.c
-SOURCES += stm32f103/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_gpio.c
-SOURCES += stm32f103/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_tim.c
-SOURCES += stm32f103/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_flash.c
-SOURCES += stm32f103/Libraries/STM32F10x_StdPeriph_Driver/src/stm32f10x_usart.c
+INCDIRS += lib/CMSIS/Include/
+INCDIRS += lib/STM32F10x_StdPeriph_Driver-V3.6.1/inc/
+INCDIRS += lib/CMSIS/Device/ST/STM32F10x/Include/
 
-SOURCES += stm32f103//Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c
-SOURCES += stm32f103//Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO/startup_stm32f10x_ld.s
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/misc.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_rcc.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_adc.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_dma.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_gpio.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_tim.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_flash.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_usart.c
+
+SOURCES += lib/CMSIS/Device/ST/STM32F10x/Source/system_stm32f10x.c
+SOURCES += lib/CMSIS/Device/ST/STM32F10x/Source/startup_stm32f10x_ld.s
 
 CPPFLAGS += -DSTM32F10X_LD
 LDSCRIPT = stm32f103/stm32_flash.ld
@@ -163,7 +164,7 @@ flash: build
 clean:
 	@echo Cleaning project:
 	rm -rf $(OBJDIR)
-	
+
 # Include the base rules
 #
 include base.mak
