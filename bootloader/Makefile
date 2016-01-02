@@ -42,6 +42,7 @@ SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/misc.c
 SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
 
 CPPFLAGS += -DSTM32F40_41xxx
+CPPFLAGS += -DHSE_VALUE=8000000
 LDSCRIPT = bootloader/stm32_flash.ld
 
 #============================================================================
