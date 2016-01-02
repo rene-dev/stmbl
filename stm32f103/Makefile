@@ -23,9 +23,9 @@ SOURCES += shared/common.c
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 #CPPFLAGS += -DUSE_FULL_ASSERT
 
-INCDIRS += lib/CMSIS/Include/
-INCDIRS += lib/STM32F10x_StdPeriph_Driver-V3.6.1/inc/
-INCDIRS += lib/CMSIS/Device/ST/STM32F10x/Include/
+INCDIRS += lib/CMSIS/Include
+INCDIRS += lib/STM32F10x_StdPeriph_Driver-V3.6.1/inc
+INCDIRS += lib/CMSIS/Device/ST/STM32F10x/Include
 
 SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/misc.c
 SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_rcc.c
