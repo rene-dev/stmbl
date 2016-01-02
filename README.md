@@ -4,6 +4,8 @@ Build Log: https://travis-ci.org/rene-dev/stmbl
 
 DISCLAIMER
 ===
+
+[![Join the chat at https://gitter.im/rene-dev/stmbl](https://badges.gitter.im/rene-dev/stmbl.svg)](https://gitter.im/rene-dev/stmbl?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 THE AUTHORS OF THIS SOFTWARE ACCEPT ABSOLUTELY NO LIABILITY FOR
 ANY HARM OR LOSS RESULTING FROM ITS USE.  IT IS _EXTREMELY_ UNWISE
 TO RELY ON SOFTWARE ALONE FOR SAFETY.  Any machinery capable of
