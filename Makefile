@@ -30,7 +30,6 @@ SOURCES += src/version.c
 SOURCES += src/syscalls.c
 
 SOURCES += shared/crc8.c
-SOURCES += shared/crc32.c
 SOURCES += shared/common.c
 
 #USB CDC
@@ -60,6 +59,7 @@ INCDIRS += lib/CMSIS/Device/ST/STM32F4xx/Include
 
 SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_adc.c
 SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_dma.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_crc.c
 SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_flash.c
 SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_gpio.c
 SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_pwr.c
