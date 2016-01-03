@@ -1,6 +1,6 @@
-# Optimization level, can be [0, 1, 2, 3, s]. 
+# Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
-# 
+#
 OPT = -O1 -flto
 # OPT = -O1         # for debugging
 
@@ -143,7 +143,7 @@ sym: $(TARGET).sym
 
 # Display compiler version information
 #
-gccversion: 
+gccversion:
 	@$(CC) --version
 
 
@@ -155,7 +155,6 @@ showsize: build
 
 # Flash the device
 #
-	
 flash: build
 	st-flash --reset write $(TARGET).bin 0x8000000
 
