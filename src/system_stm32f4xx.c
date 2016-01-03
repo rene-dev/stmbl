@@ -291,8 +291,7 @@ void SystemCoreClockUpdate(void)
     case 0x04:  /* HSE used as system clock source */
       SystemCoreClock = HSE_VALUE;
       break;
-    case 0x08:  /* PLL used as system clock source */
-
+    case 0x08:  /* PLL P used as system clock source */
       /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N
          SYSCLK = PLL_VCO / PLL_P
          */
@@ -362,7 +361,7 @@ static void SetSysClock(void)
   {
     /* Enable high performance mode, System frequency up to 168 MHz */
     RCC->APB1ENR |= RCC_APB1ENR_PWREN;
-    PWR->CR |= PWR_CR_PMODE;
+    PWR->CR |= PWR_CR_VOS;
 
     /* HCLK = SYSCLK / 1*/
     RCC->CFGR |= RCC_CFGR_HPRE_DIV1;
@@ -386,7 +385,7 @@ static void SetSysClock(void)
     }
 
     /* Configure Flash prefetch, Instruction cache, Data cache and wait state */
-    FLASH->ACR = FLASH_ACR_ICEN |FLASH_ACR_DCEN |FLASH_ACR_LATENCY_5WS;
+    FLASH->ACR = FLASH_ACR_PRFTEN | FLASH_ACR_ICEN |FLASH_ACR_DCEN |FLASH_ACR_LATENCY_5WS;
 
     /* Select the main PLL as system clock source */
     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
