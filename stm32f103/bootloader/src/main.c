@@ -1,4 +1,12 @@
 #include "stm32f10x.h"
+#include "version.h"
+
+#define APP_START 0x08001000
+#define APP_END   0x08008000
+#define APP_RANGE_VALID(a, s) (!(((a) | (s)) & 3) && (a) >= APP_START && ((a) + (s)) <= APP_END)
+#define VERSION_INFO_OFFSET 0x188
+static volatile const struct version_info *app_info = (void*)(APP_START + VERSION_INFO_OFFSET);
+
 /* Cortex-M architecture allows plain C startup code
 * from the linker file */
 extern unsigned int __data_flash_start_addr, __data_flash_end_addr, __data_sram_start_addr, __data_sram_end_addr, __bss_start_addr, __bss_end_addr, __stack_end_addr;
@@ -101,6 +109,22 @@ __attribute__ ((noreturn)) void ResetHandler(void) {
 
    /* should never return from main */
    for(;;) {}
+}
+
+int app_ok(void) {
+    if (!APP_RANGE_VALID(APP_START, app_info->image_size)) {
+        return 0;
+    }
+
+    uint32_t crc = crc32_init();
+    crc = crc32_update(crc, (void*)APP_START, app_info->image_size);
+    crc = crc32_finalize(crc);
+
+    if (crc != 0) {
+        return 0;
+    }
+
+    return 1;
 }
 
 int main(void) {

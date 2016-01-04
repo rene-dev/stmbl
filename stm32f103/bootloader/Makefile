@@ -1,98 +1,180 @@
-export
+# Optimization level, can be [0, 1, 2, 3, s]. 
+#     0 = turn off optimization. s = optimize for size.
+# 
+OPT = -O1 -flto
+# OPT = -O1         # for debugging
 
-DEVICE_FAMILY = STM32F10x
-DEVICE_TYPE = STM32F10X_LD
-STARTUP_FILE = stm32f10x_ld
-SYSTEM_FILE = stm32f10x
+# Object files directory
+# Warning: this will be removed by make clean!
+#
+OBJDIR = obj_hv_boot
 
-CMSIS = Libraries/CMSIS
-CMSIS_DEVSUP = $(CMSIS)/CM3/DeviceSupport/ST/$(DEVICE_FAMILY)/
-CMSIS_OPT = -D$(DEVICE_TYPE)
-# -DUSE_STDPERIPH_DRIVER
-OTHER_OPT = "-D__weak=__attribute__((weak))" "-D__packed=__attribute__((__packed__))"
+# Target file name (without extension)
+TARGET = $(OBJDIR)/hv_boot
+
+# Define all C source files (dependencies are generated automatically)
+INCDIRS += stm32f103/bootloader/inc
+INCDIRS += shared
+
+SOURCES += stm32f103/bootloader/src/main.c
+SOURCES += stm32f103/bootloader/src/version.c
+SOURCES += shared/common.c
+
+# Standard peripheral library
+CPPFLAGS += -DUSE_STDPERIPH_DRIVER
+#CPPFLAGS += -DUSE_FULL_ASSERT
+
+INCDIRS += lib/CMSIS/Include
+INCDIRS += lib/STM32F10x_StdPeriph_Driver-V3.6.1/inc
+INCDIRS += lib/CMSIS/Device/ST/STM32F10x/Include
+
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/misc.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_rcc.c
+#SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_dma.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_gpio.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_flash.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_usart.c
+
+#SOURCES += lib/CMSIS/Device/ST/STM32F10x/Source/startup_stm32f10x_ld.s
+
+CPPFLAGS += -DSTM32F10X_LD
+LDSCRIPT = stm32f103/bootloader/stm32_flash.ld
+
+#============================================================================
+OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
+CPPFLAGS += $(addprefix -I,$(INCDIRS))
+
+#---------------- Preprocessor Options ----------------
+#  -fsingle...    make better use of the single-precision FPU
+#  -g             generate debugging information
+#  -save-temps    preserve .s and .i-files
+#
+CPPFLAGS += -fsingle-precision-constant
+CPPFLAGS += -g
+# CPPFLAGS += -save-temps=obj
+
+#---------------- C Compiler Options ----------------
+#  -O*            optimization level
+#  -f...          tuning, see GCC documentation
+#  -Wall...       warning level
+#
+CFLAGS += $(OPT)
+CFLAGS += -std=gnu11
+CFLAGS += -ffunction-sections
+CFLAGS += -fdata-sections
+CFLAGS += -Wall
+CFLAGS += -fno-builtin ## from old
+CFLAGS += -nostartfiles
+#CFLAGS += -Wstrict-prototypes
+#CFLAGS += -Wextra
+#CFLAGS += -Wpointer-arith
+#CFLAGS += -Winline
+#CFLAGS += -Wunreachable-code
+#CFLAGS += -Wundef
+
+# Use a friendly C dialect
+CPPFLAGS += -fno-strict-aliasing
+CPPFLAGS += -fno-common
+CPPFLAGS += -Wfatal-errors -g -specs=nosys.specs -nostdlib
+CPPFLAGS += -fwrapv
+
+#---------------- C++ Compiler Options ----------------
+#
+CXXFLAGS += $(OPT)
+CXXFLAGS += -ffunction-sections
+CXXFLAGS += -fdata-sections
+CXXFLAGS += -Wall
+
+#---------------- Assembler Options ----------------
+#  -Wa,...    tell GCC to pass this to the assembler
+#
+
+#---------------- Linker Options ----------------
+#  -Wl,...      tell GCC to pass this to linker
+#  -Map         create map file
+#  --cref       add cross reference to  map file
+#
+LDFLAGS += $(OPT)
+LDFLAGS += -lm
+LDFLAGS += -Wl,-Map=$(TARGET).map,--cref
+LDFLAGS += -Wl,--gc-sections
+
+# LDFLAGS += -specs=nano.specs -u _printf_float -u _scanf_float
+LDFLAGS += -T$(LDSCRIPT)
+
+#============================================================================
+
+# Define programs and commands
+#
+TOOLCHAIN = arm-none-eabi-
+CC       = $(TOOLCHAIN)gcc
+OBJCOPY  = $(TOOLCHAIN)objcopy
+OBJDUMP  = $(TOOLCHAIN)objdump
+SIZE     = $(TOOLCHAIN)size
+NM       = $(TOOLCHAIN)nm
+MKDIR    = mkdir
+#POSTLD   = Tools/add_version_info.py # -q
+POSTLD   = cp
+# Compiler flags to generate dependency files
+#
+GENDEPFLAGS = -MMD -MP
+
+# Combine all necessary flags and optional flags
+# Add target processor to flags.
+#
 CPU = -mthumb -mcpu=cortex-m3
-SYSTEM = arm-none-eabi
 
-LDSCRIPT = "stm32_flash.ld"
+CFLAGS   += $(CPU)
+CXXFLAGS += $(CPU)
+ASFLAGS  += $(CPU)
+LDFLAGS  += $(CPU)
 
-SRCDIR := src/
-INCDIR := inc/
+# Default target
+#
+all:  gccversion build showsize
 
-LIBDIR := ../Libraries/
+build: elf hex bin lss sym
 
-LIBINC := -I../inc
-LIBINC += -I../Libraries/STM32F10x_StdPeriph_Driver/inc
-LIBINC += -I../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
-LIBINC += -I../Libraries/CMSIS/CM3/CoreSupport
+elf: $(TARGET).elf
+hex: $(TARGET).hex
+bin: $(TARGET).bin
+lss: $(TARGET).lss
+sym: $(TARGET).sym
 
-#LIBS := ./$(LIBDIR)/STM32F10x_StdPeriph_Driver/libstm32fw.a
-	   
-#LIBS += -lm
-CC      = $(SYSTEM)-gcc
-CCDEP   = $(SYSTEM)-gcc
-LD      = $(SYSTEM)-gcc
-AR      = $(SYSTEM)-ar
-AS      = $(SYSTEM)-gcc
-OBJCOPY = $(SYSTEM)-objcopy
-OBJDUMP	= $(SYSTEM)-objdump
-GDB		= $(SYSTEM)-gdb
-SIZE	= $(SYSTEM)-size
+# Display compiler version information
+#
+gccversion: 
+	@$(CC) --version
 
-# INCLUDES = -I$(SRCDIR) $(LIBINC)
-INCLUDES = $(LIBINC) -I../../shared
-CFLAGS  = $(CPU) $(CMSIS_OPT) $(OTHER_OPT) -Wall -fno-common -fno-builtin -fno-strict-aliasing -Os $(INCLUDES) -g -Wfatal-errors -g -std=c99 -fdiagnostics-color=always -ffunction-sections -fdata-sections -nostartfiles -specs=nosys.specs -nostdlib
-ASFLAGS = $(CFLAGS) -x assembler-with-cpp
-LDFLAGS = -Wl,--gc-sections,-Map=$*.map,-cref -T $(LDSCRIPT) $(CPU)
-ARFLAGS = cr
-OBJCOPYFLAGS = -Obinary
-OBJDUMPFLAGS = -S
 
-#STARTUP_OBJ = ../$(CMSIS_DEVSUP)/startup/TrueSTUDIO/startup_$(STARTUP_FILE).o
-#SYSTEM_OBJ = ../$(CMSIS_DEVSUP)/system_$(SYSTEM_FILE).o
+# Show the final program size
+#
+showsize: build
+	@echo
+	@$(SIZE) $(TARGET).elf 2>/dev/null
 
-BIN = main.bin
-
-OBJS = $(sort \
- $(patsubst %.c,%.o,$(wildcard src/*.c)) \
- $(patsubst %.s,%.o,$(wildcard src/*.s)))
-# $(STARTUP_OBJ) \
-# $(SYSTEM_OBJ))
-
-all: $(BIN)
-
-burn: $(BIN)
-	st-flash --reset write $(BIN) 0x8000000
+# Flash the device
+#
 	
-$(BIN): main.out
-	$(OBJCOPY) $(OBJCOPYFLAGS) main.out $(BIN)
-	$(OBJDUMP) $(OBJDUMPFLAGS) main.out > main.list
-	$(SIZE) main.out
-	@echo Make finished
+flash: build
+	st-flash --reset write $(TARGET).bin 0x8000000
 
-main.out: $(LIBS) $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
-
-$(LIBS): libs
-
-libs:
-	@$(MAKE) -C $(LIBDIR)
-
-libclean: clean
-	@$(MAKE) -C $(LIBDIR) clean
-
+# Target: clean project
+#
 clean:
-	-rm -f $(OBJS)
-	-rm -f main.list main.out main.hex main.map main.bin .depend
+	@echo Cleaning project:
+	rm -rf $(OBJDIR)
 
-depend dep: .depend
+# Include the base rules
+#
+include base.mak
 
-include .depend
+# Include the dependency files
+#
+-include $(OBJECTS:.o=.d)
 
-.depend: src/*.c
-	$(CCDEP) $(CFLAGS) -MM $^ | sed -e 's@.*.o:@src/&@' > .depend 
-
-.c.o:
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-.s.o:
-	$(AS) $(ASFLAGS) -c -o $@ $<
+# Listing of phony targets
+#
+.PHONY: all build flash clean \
+        elf lss sym \
+        showsize gccversion

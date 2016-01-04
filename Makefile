@@ -195,6 +195,12 @@ hv:
 	$(MAKE) -f stm32f103/Makefile
 
 
+hv_boot:
+	$(MAKE) -f stm32f103/bootloader/Makefile
+
+hv_boot_flash:
+	$(MAKE) -f stm32f103/bootloader/Makefile flash
+
 # Display compiler version information
 #
 gccversion:
