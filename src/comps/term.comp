@@ -301,7 +301,9 @@ NRT(
       printf_("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
       printf_("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
       printf_("CPU ID     %x %x %x\n",U_ID[0], U_ID[1], U_ID[2]);
-      uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08010000, version_info.image_size);
+	  uint32_t crc = crc32_init();
+      crc = crc32_update(crc, (void*)0x08010000, version_info.image_size);
+      crc = crc32_finalize(crc);
       printf_("size: %u crc:%x\n",version_info.image_size,version_info.image_crc);
       if(crc == 0)
          printf_("crc ok!\n");
