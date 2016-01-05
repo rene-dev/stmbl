@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 #
 # Add CRC checksum and version information to an ELF file
 # Copyright (C)2015 Thomas Kindler <mail@t-kindler.de>
