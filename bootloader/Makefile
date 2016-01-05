@@ -22,6 +22,8 @@ SOURCES += bootloader/src/version.c
 SOURCES += bootloader/src/stm32f4xx_it.c
 SOURCES += bootloader/src/system_stm32f4xx.c
 
+SOURCES += shared/crc32.c
+
 # Standard peripheral library
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 #CPPFLAGS += -DUSE_FULL_ASSERT
@@ -31,7 +33,6 @@ INCDIRS += lib/CMSIS/Include
 INCDIRS += lib/CMSIS/Device/ST/STM32F4xx/Include
 
 SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_flash.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_crc.c
 SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_gpio.c
 SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_pwr.c
 SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_rcc.c
