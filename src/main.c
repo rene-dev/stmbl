@@ -26,7 +26,6 @@
 #include "eeprom.h"
 #include "link.h"
 #include "crc8.h"
-#include "crc32.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
