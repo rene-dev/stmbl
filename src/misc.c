@@ -20,7 +20,8 @@
 
 #include "misc.h"
 
-inline float minus(float a, float b){
+inline float minus(float a, float b)
+{
 	if(ABS(a - b) < M_PI){
 		return(a - b);
 	}
@@ -32,7 +33,8 @@ inline float minus(float a, float b){
 	}
 }
 
-inline float mod(float a){
+inline float mod(float a)
+{
 	while(a < -M_PI){
 		a += 2.0 * M_PI;
 	}
@@ -42,33 +44,36 @@ inline float mod(float a){
 	return(a);
 }
 
-void* memcpy(void* dest, const void* src, size_t count){
-   char* dst8 = (char*)dest;
-   char* src8 = (char*)src;
+void *memcpy(void *dest, const void *src, size_t count)
+{
+    char *dst8 = (char *) dest;
+    char *src8 = (char *) src;
    
-   while (count--) {
-      *dst8++ = *src8++;
-   }
+    while (count--) {
+        *dst8++ = *src8++;
+    }
    return dest;
 }
 
-int strcmp(const char* s1, const char* s2){
-  while(*s1 && (*s1 == *s2)){
+int strcmp(const char *s1, const char *s2)
+{
+    while (*s1 && (*s1 == *s2)) {
   	s1++;
-		s2++;
-	}
-  return(*(const unsigned char*)s1 - *(const unsigned char*)s2);
+        s2++;
+    }
+    return(*(const unsigned char*)s1 - *(const unsigned char*)s2);
 }
 
-void strncpy(char* dst, char* src, int n){
-  while (n-- && (*dst++ = *src++));
+void strncpy(char *dst, char *src, int n)
+{
+    while (n-- && (*dst++ = *src++));
 }
 
-char* strncat(char *dest, const char *src, int n){
+char *strncat(char *dest, const char *src, int n){
     char *rdest = dest;
-		dest[n] = '\0';
+    dest[n] = '\0';
     while (n-- && *dest){
-      dest++;
+        dest++;
     }
 		while (n-- && (*dest++ = *src++)){
 		}

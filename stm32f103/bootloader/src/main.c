@@ -47,17 +47,17 @@ void (* const vector[])(void) __attribute__ ((section(".vector"))) __attribute__
 char stack[4096] __attribute__ ((section (".stack"))) __attribute__ ((used)) = { 0 };
 
 /* http://www.danielvik.com/2010/02/fast-memcpy-in-c.html */
-inline void memcpy(void* dest, const void* src, u32 length) {
-   char* dst8 = (char*)dest;
-   char* src8 = (char*)src;
+inline void memcpy(void *dest, const void *src, u32 length) {
+   char *dst8 = (char *) dest;
+   char *src8 = (char *) src;
 
    while (length--) {
       *dst8++ = *src8++;
    }
 }
 
-inline void mempat(void* dest, u8 pattern, u32 length) {
-   char* dst8 = (char*)dest;
+inline void mempat(void *dest, u8 pattern, u32 length) {
+   char *dst8 = (char *) dest;
 
    while (length--) {
       *dst8++ = pattern;
@@ -127,26 +127,27 @@ static int app_ok(void)
     return 1;
 }
 
-int main(void) {
-   /* #1 configuration
-   * CPU now running at 8MHz (HSI) */
+int main(void)
+{
+    /* #1 configuration
+    * CPU now running at 8MHz (HSI) */
 
-   /* flash settings */
-   /* Enable or disable the Prefetch Buffer */
-   FLASH->ACR =
+    /* flash settings */
+    /* Enable or disable the Prefetch Buffer */
+    FLASH->ACR =
       FLASH_ACR_PRFTBE
          /* FLASH_ACR_HLFCYA */
          | 0b010; /* FLASH_ACR_LATENCY: 2 wait states */
 
-   /* Configure system clock
-   * External oscillator: 8MHz
-   * Max PLL multiplicator: x9
-   * Max SYSCLK: 72MHz
-   * Max AHB: SYSCLK = 72MHz
-   * Max APB1: SYSCLK/2 = 36MHz
-   * Max APB2: SYSCLK = 72MHz
-   * Max ADC: SYSCLK/6 = 12MHz (max freq 14) */
-   RCC->CFGR =
+    /* Configure system clock
+    * External oscillator: 8MHz
+    * Max PLL multiplicator: x9
+    * Max SYSCLK: 72MHz
+    * Max AHB: SYSCLK = 72MHz
+    * Max APB1: SYSCLK/2 = 36MHz
+    * Max APB2: SYSCLK = 72MHz
+    * Max ADC: SYSCLK/6 = 12MHz (max freq 14) */
+    RCC->CFGR =
       RCC_CFGR_MCO_PLL                      /* Output clock is PLL/2 */
          /* USBPRE */
          | RCC_CFGR_PLLMULL9                     /* PLL multiplicator is 9 */
@@ -156,42 +157,42 @@ int main(void) {
                      | RCC_CFGR_PPRE2_DIV1           /* APB2 prescaler is 1 */
                         | RCC_CFGR_PPRE1_DIV2           /* APB1 prescaler is 2 */
                            | RCC_CFGR_HPRE_DIV1;           /* AHB prescaler is 1 */
-   /* SWS */
-   /* SW */
+    /* SWS */
+    /* SW */
 
-   {
-      const u32 rcc_cr_hserdy_msk = 0x00020000;
-      const u32 rcc_cr_pllrdy_msk = 0x02000000;
-      const u32 rcc_cfgr_sw_msk   = 0x00000003;
+    {
+        const u32 rcc_cr_hserdy_msk = 0x00020000;
+        const u32 rcc_cr_pllrdy_msk = 0x02000000;
+        const u32 rcc_cfgr_sw_msk   = 0x00000003;
 
-      /* Clock control register */
-      RCC->CR = RCC_CR_HSEON;         /* Enable external oscillator */
+        /* Clock control register */
+        RCC->CR = RCC_CR_HSEON;         /* Enable external oscillator */
 
-      /* Wait for locked external oscillator */
-      while((RCC->CR & rcc_cr_hserdy_msk) != RCC_CR_HSERDY);
+        /* Wait for locked external oscillator */
+        while ((RCC->CR & rcc_cr_hserdy_msk) != RCC_CR_HSERDY);
 
-      /* Clock control register */
-      RCC->CR |=
+        /* Clock control register */
+        RCC->CR |=
          /* PLLRDY */
          RCC_CR_PLLON;
-      /* CSSON */
-      /* HSEBYP */
-      /* HSERDY */
-      /* HSEON */
-      /* HSICAL */
-      /* HSITRIM */
-      /* HSIRDY */
-      /* HSION */
+        /* CSSON */
+        /* HSEBYP */
+        /* HSERDY */
+        /* HSEON */
+        /* HSICAL */
+        /* HSITRIM */
+        /* HSIRDY */
+        /* HSION */
 
-      /* Wait for locked PLL */
-      while((RCC->CR & rcc_cr_pllrdy_msk) != RCC_CR_PLLRDY);
+        /* Wait for locked PLL */
+        while ((RCC->CR & rcc_cr_pllrdy_msk) != RCC_CR_PLLRDY);
 
-      RCC->CFGR &= ~0x00000003; /* clear */
-      RCC->CFGR |= RCC_CFGR_SW_PLL;   /* SYSCLK is PLL */
+        RCC->CFGR &= ~0x00000003; /* clear */
+        RCC->CFGR |= RCC_CFGR_SW_PLL;   /* SYSCLK is PLL */
 
-      /* Wait for SYSCLK to be PPL */
-      while((RCC->CFGR & rcc_cfgr_sw_msk) != RCC_CFGR_SW_PLL);
-   }
+        /* Wait for SYSCLK to be PPL */
+        while ((RCC->CFGR & rcc_cfgr_sw_msk) != RCC_CFGR_SW_PLL);
+    }
 
     /* GPIO is in APB2 peripherals */
     /* enable APB2 clock */
