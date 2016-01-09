@@ -7,6 +7,7 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Network REQUIRED)
+find_package(glm REQUIRED)
 
 set(TERM_INC
 	include/mainwindow.hpp
@@ -26,15 +27,6 @@ set(TERM_UI
 set(TERM_CONF
 	config
 	)
-
-foreach(loop_config ${TERM_CONF})
-	configure_file(
-		"${PROJECT_SOURCE_DIR}/conf/${loop_config}.h.in",
-		"${PROJECT_SOURCE_DIR}/conf/${loop_config}.hpp"
-		)
-	set(TERM_INC "${TERM_INC} conf/${loop_config}.hpp")
-
-endforeach(loop_config)
 
 QT5_WRAP_UI(TERM_UI_INC ${TERM_UI})
 

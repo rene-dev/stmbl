@@ -23,8 +23,6 @@ the AUTHORS file.
 
 #include <QVector>
 
-#include <conf/config.h>
-
 GLWidget::GLWidget(QWidget * parent) :
 	QOpenGLWidget(parent)
 {
@@ -35,34 +33,66 @@ void GLWidget::initializeGL()
 {
 	initializeOpenGLFunctions();
 
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
+	m_vao.create();
+	m_vao.bind();
+
 	QVector<GLfloat> data;
 
-	for(int i = 0; i <= 2000; i++) {
-		data.append(sin(i * 10.0) / (1.0 + i * i));
+	for(int i = -2000; i <= 2000; i++) {
+		data.append(i);
+		data.append(sin(i));
 	}
 
 	m_vbo.create();
 	m_vbo.bind();
 	m_vbo.allocate(data.constData(), data.count() * sizeof(GLfloat));
 
+	//todo: find better method for shaderpathhandling
 	QOpenGLShader* vs = new QOpenGLShader(QOpenGLShader::Vertex, this);
-	vs->compileSourceFile("shader/main.vs");
+	vs->compileSourceFile("../shader/main.vs");
 	QOpenGLShader* fs = new QOpenGLShader(QOpenGLShader::Fragment, this);
-	fs->compileSourceFile("shader/main.fs");
+	fs->compileSourceFile("../shader/main.fs");
 
 	m_shader = new QOpenGLShaderProgram();
 	m_shader->addShader(vs);
 	m_shader->addShader(fs);
-	m_shader->bindAttributeLocation("vertex", 0);
 	m_shader->link();
 	m_shader->bind();
+	m_shader->enableAttributeArray("vertex");
+	m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
 
+	m_shader->release();
+	m_vao.release();
 }
 
 void GLWidget::paintGL()
 {
-	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glClearColor(0.0, 1.0, 1.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glDrawArrays(GL_POINTS, 0, 2000);
+	m_vao.bind();
+	m_shader->bind();
+	m_vbo.bind();
+
+	QMatrix4x4 m;
+	m.ortho(-100.5f, +100.5f, +100.5f, -100.5f, 0.0f, 15.0f);
+	m.translate(0.0f, 0.0f, -10.0f);
+
+	m_shader->setUniformValue("mvp", m);
+	m_shader->enableAttributeArray("vertex");
+	m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
+
+	glDrawArrays(GL_LINE_STRIP, 0, 4000);
+
+	m_shader->release();
+	m_vao.release();
+}
+
+void GLWidget::resizeGL(int w, int h)
+{
+	int side = qMin(w, h);
+	glViewport((w - side) / 2, (h - side) / 2, side, side);
 }

@@ -26,6 +26,7 @@ the AUTHORS file.
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
+#include <QOpenGLVertexArrayObject>
 
 class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -34,10 +35,12 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 	private:
 		QOpenGLShaderProgram* m_shader;
 		QOpenGLBuffer m_vbo;
+		QOpenGLVertexArrayObject m_vao;
 
 	protected:
 		void initializeGL() override;
 		void paintGL() override;
+		void resizeGL(int w, int h) override;
 
 	public:
 		explicit GLWidget(QWidget* parent = 0);
