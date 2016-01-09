@@ -20,7 +20,6 @@
 
 #include "stm32f4xx_conf.h"
 #include "version.h"
-#include "crc32.h"
 
 #define APP_START 0x08010000
 #define APP_END   0x08100000
@@ -28,14 +27,13 @@
 #define VERSION_INFO_OFFSET 0x188
 static volatile const struct version_info *app_info = (void*)(APP_START + VERSION_INFO_OFFSET);
 
-int app_ok(){
+static int app_ok(void)
+{
     if (!APP_RANGE_VALID(APP_START, app_info->image_size)) {
         return 0;
     }
-
-    uint32_t crc = crc32_init();
-    crc = crc32_update(crc, (void*)APP_START, app_info->image_size);
-    crc = crc32_finalize(crc);
+    CRC_ResetDR();
+    uint32_t crc = CRC_CalcBlockCRC((uint32_t *) APP_START, app_info->image_size / 4);
 
     if (crc != 0) {
         return 0;
@@ -44,9 +42,10 @@ int app_ok(){
     return 1;
 }
 
-int main(void){
+int main(void)
+{
    GPIO_InitTypeDef GPIO_InitDef;
-   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_CRC, ENABLE);
    GPIO_InitDef.GPIO_Pin = GPIO_Pin_13;
    GPIO_InitDef.GPIO_Mode = GPIO_Mode_IN;
    GPIO_InitDef.GPIO_OType = GPIO_OType_PP;

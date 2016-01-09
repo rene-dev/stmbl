@@ -26,6 +26,11 @@
 #
 #
 
+
+#https://code.google.com/p/tweakcrc/
+#http://blog.stalkr.net/2011/03/crc-32-forging.html
+
+
 """Calculate and manipulate CRC32.
 http://en.wikipedia.org/wiki/Cyclic_redundancy_check
 -- StalkR
@@ -35,10 +40,7 @@ import sys
 
 # Polynoms in reversed notation
 POLYNOMS = {
-  'CRC-32-IEEE': 0xedb88320, # 802.3
-  'CRC-32C': 0x82F63B78, # Castagnoli
-  'CRC-32K': 0xEB31D82E, # Koopman
-  'CRC-32Q': 0xD5828281,
+  'CRC-32-IEEE': 0x04C11DB7, # 802.3
 }
 
 class Error(Exception):
@@ -46,7 +48,7 @@ class Error(Exception):
 
 class CRC32(object):
   """A class to calculate and manipulate CRC32.
-  
+
   Use one instance per type of polynom you want to use.
   Use calc() to calculate a crc32.
   Use forge() to forge crc32 by adding 4 bytes anywhere.
@@ -55,57 +57,63 @@ class CRC32(object):
     if type not in POLYNOMS:
       raise Error("Unknown polynom. %s" % type)
     self.polynom = POLYNOMS[type]
-    self.table, self.reverse = [0]*256, [0]*256
-    self._build_tables()
 
-  def _build_tables(self):
-    for i in range(256):
-      fwd = i
-      rev = i << 24
-      for j in range(8, 0, -1):
-        # build normal table
-        if (fwd & 1) == 1:
-          fwd = (fwd >> 1) ^ self.polynom
-        else:
-          fwd >>= 1
-        self.table[i] = fwd & 0xffffffff
-        # build reverse table =)
-        if rev & 0x80000000 == 0x80000000:
-          rev = ((rev ^ self.polynom) << 1) | 1
-        else:
-          rev <<= 1
-        rev &= 0xffffffff
-        self.reverse[i] = rev
+
+  def calc_next(self, crc, data):
+    crc = crc ^ data
+    for i in range(32):
+      if (crc & 0x80000000):
+        crc = (crc << 1) ^ self.polynom
+      else:
+        crc = (crc << 1)
+    return crc & 0xffffffff
+
+  def calc_rev(self, crc, data):
+    for i in range(32):
+      if (crc & 1):
+        crc = ((crc ^ self.polynom) >> 1) | 0x80000000
+      else:
+        crc = crc >> 1
+    crc = crc ^ data
+    return crc
 
   def calc(self, s):
-    """Calculate crc32 of a string.
-    Same crc32 as in (binascii.crc32)&0xffffffff.
-    """
+    """Calculate crc32 of a string."""
+
     crc = 0xffffffff
-    for c in s:
-      crc = (crc >> 8) ^ self.table[(crc ^ ord(c)) & 0xff]
-    return crc^0xffffffff
+    for i in range(0, len(s), 4):
+      c = struct.unpack('<L', s[i:i + 4])[0]
+      crc = self.calc_next(crc, c)
+
+    return crc
+
+  def rcalc(self, s, wanna_crc):
+    crc = wanna_crc
+    for i in range(len(s) - 4, -4, -4): # go from last byte to 0
+      c = struct.unpack('<L', s[i:i + 4])[0]
+      crc = self.calc_rev(crc, c)
+    return crc
 
   def forge(self, wanted_crc, s, pos):
     """Forge crc32 of a string by changing 4 bytes at position pos."""
-    
+
     # forward calculation of CRC up to pos, sets current forward CRC state
-    fwd_crc = 0xffffffff
-    for c in s[:pos]:
-      fwd_crc = (fwd_crc >> 8) ^ self.table[(fwd_crc ^ ord(c)) & 0xff]
-    
+    fwd_crc = self.calc(s[:pos])
+
     # backward calculation of CRC up to pos, sets wanted backward CRC state
-    bkd_crc = wanted_crc^0xffffffff
-    for c in s[pos+4:][::-1]:
-      bkd_crc = ((bkd_crc << 8)&0xffffffff) ^ self.reverse[bkd_crc >> 24] ^ ord(c)
-    
+    bkd_crc = wanted_crc
+    for i in range(len(s) - 4, pos, -4): # go from last byte to pos + 4
+      c = struct.unpack('<L', s[i:i + 4])[0]
+      bkd_crc = self.calc_rev(bkd_crc, c)
+
     # deduce the 4 bytes we need to insert
-    for c in struct.pack('<L',fwd_crc)[::-1]:
-      bkd_crc = ((bkd_crc << 8)&0xffffffff) ^ self.reverse[bkd_crc >> 24] ^ ord(c)
-        
-    # test result 
+    bkd_crc = self.calc_rev(bkd_crc, 0) # xor 0 to ignore data
+    bkd_crc = bkd_crc ^ fwd_crc
+
+
+    # test result
     assert(self.calc(s[:pos] + struct.pack('<L', bkd_crc) + s[pos+4:]) == wanted_crc)
-       
+
     return bkd_crc
 
 
@@ -113,12 +121,16 @@ if __name__=='__main__':
   if len(sys.argv) > 1:
     arg = sys.argv[1]
   else:
-    arg = "test"
-  
+    arg = "\x12\x34\x56\x78"
+    check = "\xdf\x8a\x8a\x2b"
+
   # CRC32 with default polynom
-  crc = CRC32().calc(arg)
-  print "CRC32(%s) = 0x%08x" % (arg, crc)
-  
-  # check with library
-  from binascii import crc32
-  assert(crc == crc32(arg)&0xffffffff)
+  crc = CRC32().calc(arg[::-1])
+  print "CRC32(%s) = 0x%08x" % (repr(arg), crc)
+  assert(struct.pack('<L', crc) == check[::-1])
+
+  rcrc = CRC32().rcalc(arg[::-1], crc)
+  print "RCRC32(%s, 0x%08x) = 0x%08x" % (repr(arg), crc, rcrc)
+  assert(rcrc == 0xffffffff)
+
+
