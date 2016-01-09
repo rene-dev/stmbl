@@ -21,6 +21,10 @@
 #include "stm32f4xx_conf.h"
 #include "version.h"
 
+#if __GNUC__ < 5
+   #error gcc to old (< 5.0)
+#endif
+
 #define APP_START 0x08010000
 #define APP_END   0x08100000
 #define APP_RANGE_VALID(a, s) (!(((a) | (s)) & 3) && (a) >= APP_START && ((a) + (s)) <= APP_END)

@@ -1,6 +1,10 @@
 #pragma once
 #include <stdint.h>
 
+#if __GNUC__ < 5
+   #error gcc to old (< 5.0)
+#endif
+
 //#define TROLLER
 
 #define STATIC_ASSERT(COND, MSG) extern char MSG[(COND)?1:-1]
