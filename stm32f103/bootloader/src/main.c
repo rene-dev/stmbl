@@ -111,14 +111,14 @@ __attribute__ ((noreturn)) void ResetHandler(void) {
    for(;;) {}
 }
 
-int app_ok(void) {
+static int app_ok(void)
+{
     if (!APP_RANGE_VALID(APP_START, app_info->image_size)) {
         return 0;
     }
 
-    uint32_t crc = crc32_init();
-    crc = crc32_update(crc, (void*)APP_START, app_info->image_size);
-    crc = crc32_finalize(crc);
+    CRC_ResetDR();
+    uint32_t crc = CRC_CalcBlockCRC((uint32_t *) APP_START, app_info->image_size / 4);
 
     if (crc != 0) {
         return 0;
@@ -193,20 +193,26 @@ int main(void) {
       while((RCC->CFGR & rcc_cfgr_sw_msk) != RCC_CFGR_SW_PLL);
    }
 
-   /* GPIO is in APB2 peripherals */
-   /* enable APB2 clock */
-   RCC->APB2ENR =
+    /* GPIO is in APB2 peripherals */
+    /* enable APB2 clock */
+    RCC->APB2ENR =
       RCC_APB2ENR_IOPAEN
          | RCC_APB2ENR_IOPBEN
-            | RCC_APB2ENR_IOPCEN
-               | RCC_APB2ENR_IOPDEN
-                  | RCC_APB2ENR_USART1EN;
+            | RCC_APB2ENR_IOPCEN;
+    RCC->AHBENR |= RCC_AHBENR_CRCEN;
+    RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
 
-   /* Set PA to output mode */
-   /* CRL: configuration register low (0..7) */
-   GPIOD->CRL &= 0x00000000;       /* clear */
-   GPIOD->CRL |= 0x33333333;       /* set */
-
-   while(1);
-
+    if ( (*((unsigned long *) 0x2001C000) == 0xDEADBEEF) || !app_ok()) {//Memory map, datasheet
+        *((unsigned long *) 0x2001C000) = 0xCAFEFEED; //Reset bootloader trigger
+        while (1);
+    } else {
+        uint32_t  stack = ((const uint32_t *) APP_START)[0];
+        uint32_t  entry = ((const uint32_t *) APP_START)[1];
+        asm volatile(
+            "msr    msp, %0        \n\t"
+            "bx     %1             \n\t"
+            : : "r" (stack), "r" (entry)
+        );
+        while (1);
+    }
 }

@@ -30,7 +30,7 @@ INCDIRS += lib/CMSIS/Device/ST/STM32F10x/Include
 
 SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/misc.c
 SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_rcc.c
-#SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_dma.c
+SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_crc.c
 SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_gpio.c
 SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_flash.c
 SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_usart.c

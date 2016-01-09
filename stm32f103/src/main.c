@@ -463,7 +463,8 @@ int main(void)
 	tim1_init();
 	usart_init();
 
-	uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08000000, version_info.image_size);
+	CRC_ResetDR();
+	uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08001000, version_info.image_size / 4);
 
 	PWM_U = 0;
 	PWM_V = 0;
