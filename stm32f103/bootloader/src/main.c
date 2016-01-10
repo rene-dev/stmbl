@@ -5,7 +5,7 @@
 #define APP_START 0x08001000
 #define APP_END   0x08008000
 #define APP_RANGE_VALID(a, s) (!(((a) | (s)) & 3) && (a) >= APP_START && ((a) + (s)) <= APP_END)
-#define VERSION_INFO_OFFSET 0x188
+#define VERSION_INFO_OFFSET 0x10c
 static volatile const struct version_info *app_info = (void*)(APP_START + VERSION_INFO_OFFSET);
 
 static int app_ok(void)
@@ -13,7 +13,6 @@ static int app_ok(void)
     if (!APP_RANGE_VALID(APP_START, app_info->image_size)) {
         return 0;
     }
-
     CRC_ResetDR();
     uint32_t crc = CRC_CalcBlockCRC((uint32_t *) APP_START, app_info->image_size / 4);
 
