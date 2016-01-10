@@ -1,7 +1,7 @@
 # Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
 #
-OPT = -O1 -flto
+OPT = -Os -flto
 # OPT = -O1         # for debugging
 
 # Object files directory
