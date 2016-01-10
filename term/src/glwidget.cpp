@@ -22,10 +22,14 @@ the AUTHORS file.
 #include <include/glwidget.hpp>
 
 #include <QVector>
+#include <QMouseEvent>
 
 GLWidget::GLWidget(QWidget * parent) :
         QOpenGLWidget(parent)
 {
+    m_translating = false;
+    m_scaling = false;
+
     m_translation.setX(0.0f);
     m_translation.setY(0.0f);
     m_translation.setZ(-10.0f);
@@ -36,6 +40,7 @@ GLWidget::GLWidget(QWidget * parent) :
     m_scalation.setX(1.0f);
     m_scalation.setY(1.0f);
     m_scalation.setZ(1.0f);
+
     updateMatrix();
 }
 
@@ -63,7 +68,6 @@ void GLWidget::initializeGL()
     for(int i = -10000; i <= 10000; i++) {
         float f = i;
         data.append(f);
-        //data.append((int)round(f) % 10);
         data.append(sin(f/10)*10);
     }
 
@@ -104,6 +108,7 @@ void GLWidget::paintGL()
     m_shader->bind();
     m_vbo.bind();
 
+    updateMatrix();
     m_shader->setUniformValue("mvp", m_matrix);
     m_shader->enableAttributeArray("vertex");
     m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
@@ -119,4 +124,48 @@ void GLWidget::resizeGL(int w, int h)
     int side = qMin(w, h);
     glViewport((w - side) / 2, (h - side) / 2, side, side);
     updateMatrix();
+}
+
+void GLWidget::mousePressEvent(QMouseEvent *event)
+{
+    if(event->buttons() == Qt::LeftButton) {
+        m_translating = true;
+        m_transpos = event->pos();
+    }
+    if(event->buttons() == Qt::RightButton) {
+        m_scaling = true;
+        m_scalepos = event->pos();
+    }
+}
+
+void GLWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    if(m_translating && event->buttons() == Qt::LeftButton) {
+        QPoint pos = m_transpos - event->pos();
+
+        pos.setY(-pos.y());
+
+        m_translation += QVector3D(pos);
+
+        m_transpos = event->pos();
+        repaint();
+    }
+
+    if(m_scaling && event->buttons() == Qt::RightButton) {
+        QPoint pos = m_scalepos - event->pos();
+
+        //todo
+
+        m_scalepos = event->pos();
+        repaint();
+    }
+}
+
+void GLWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(event->buttons() != Qt::LeftButton)
+        m_translating = false;
+
+    if(event->buttons() != Qt::RightButton)
+        m_scaling = false;
 }

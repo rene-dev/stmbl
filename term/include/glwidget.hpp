@@ -43,12 +43,21 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
         QVector3D m_rotation;
         QVector3D m_scalation;
 
+        bool m_translating;
+        bool m_scaling;
+
+        QPoint m_transpos;
+        QPoint m_scalepos;
+
         void updateMatrix();
 
 	protected:
 		void initializeGL() override;
 		void paintGL() override;
         void resizeGL(int w, int h) override;
+        void mousePressEvent(QMouseEvent* event);
+        void mouseMoveEvent(QMouseEvent* event);
+        void mouseReleaseEvent(QMouseEvent* event);
 
 	public:
 		explicit GLWidget(QWidget* parent = 0);
