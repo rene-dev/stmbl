@@ -24,75 +24,99 @@ the AUTHORS file.
 #include <QVector>
 
 GLWidget::GLWidget(QWidget * parent) :
-	QOpenGLWidget(parent)
+        QOpenGLWidget(parent)
 {
+    m_translation.setX(0.0f);
+    m_translation.setY(0.0f);
+    m_translation.setZ(-10.0f);
+    m_angle = 0.0f;
+    m_rotation.setX(0.0f);
+    m_rotation.setY(0.0f);
+    m_rotation.setZ(0.0f);
+    m_scalation.setX(1.0f);
+    m_scalation.setY(1.0f);
+    m_scalation.setZ(1.0f);
+    updateMatrix();
+}
 
+void GLWidget::updateMatrix()
+{
+    m_matrix.setToIdentity();
+    m_matrix.ortho(+width()/2, -width()/2, +height()/2, -height()/2, 0.0f, 15.0f);
+    m_matrix.translate(m_translation);
+    m_matrix.rotate(m_angle, m_rotation);
+    m_matrix.scale(m_scalation);
 }
 
 void GLWidget::initializeGL()
 {
-	initializeOpenGLFunctions();
+    initializeOpenGLFunctions();
 
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 
-	m_vao.create();
-	m_vao.bind();
+    m_vao.create();
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
-	QVector<GLfloat> data;
+    QVector<GLfloat> data;
 
-	for(int i = -2000; i <= 2000; i++) {
-		data.append(i);
-		data.append(sin(i));
-	}
+    for(int i = -10000; i <= 10000; i++) {
+        float f = i;
+        data.append(f);
+        //data.append((int)round(f) % 10);
+        data.append(sin(f/10)*10);
+    }
 
-	m_vbo.create();
-	m_vbo.bind();
-	m_vbo.allocate(data.constData(), data.count() * sizeof(GLfloat));
+    m_vbo.create();
+    m_vbo.bind();
+    m_vbo.allocate(data.constData(), data.count() * sizeof(GLfloat));
 
-	//todo: find better method for shaderpathhandling
-	QOpenGLShader* vs = new QOpenGLShader(QOpenGLShader::Vertex, this);
-	vs->compileSourceFile("../shader/main.vs");
-	QOpenGLShader* fs = new QOpenGLShader(QOpenGLShader::Fragment, this);
-	fs->compileSourceFile("../shader/main.fs");
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+    f->glEnableVertexAttribArray(0);
+    f->glEnableVertexAttribArray(1);
+    f->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-	m_shader = new QOpenGLShaderProgram();
-	m_shader->addShader(vs);
-	m_shader->addShader(fs);
-	m_shader->link();
-	m_shader->bind();
-	m_shader->enableAttributeArray("vertex");
-	m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
+    //todo: find better method for shaderpathhandling
+    QOpenGLShader* vs = new QOpenGLShader(QOpenGLShader::Vertex, this);
+    vs->compileSourceFile("../shader/main.vs");
+    QOpenGLShader* fs = new QOpenGLShader(QOpenGLShader::Fragment, this);
+    fs->compileSourceFile("../shader/main.fs");
 
-	m_shader->release();
-	m_vao.release();
+    m_shader = new QOpenGLShaderProgram();
+    m_shader->addShader(vs);
+    m_shader->addShader(fs);
+    m_shader->link();
+    m_shader->bind();
+    m_shader->enableAttributeArray("vertex");
+    m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
+
+    m_shader->release();
+    m_vao.release();
+    m_vbo.release();
 }
 
 void GLWidget::paintGL()
 {
-	glClearColor(0.0, 1.0, 1.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(1.0, 1.0, 1.0, 0.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	m_vao.bind();
-	m_shader->bind();
-	m_vbo.bind();
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+    m_shader->bind();
+    m_vbo.bind();
 
-	QMatrix4x4 m;
-	m.ortho(-100.5f, +100.5f, +100.5f, -100.5f, 0.0f, 15.0f);
-	m.translate(0.0f, 0.0f, -10.0f);
+    m_shader->setUniformValue("mvp", m_matrix);
+    m_shader->enableAttributeArray("vertex");
+    m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
 
-	m_shader->setUniformValue("mvp", m);
-	m_shader->enableAttributeArray("vertex");
-	m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
+    glDrawArrays(GL_LINE_STRIP, 0, 20000);
 
-	glDrawArrays(GL_LINE_STRIP, 0, 4000);
-
-	m_shader->release();
-	m_vao.release();
+    m_shader->release();
+    m_vao.release();
 }
 
 void GLWidget::resizeGL(int w, int h)
 {
-	int side = qMin(w, h);
-	glViewport((w - side) / 2, (h - side) / 2, side, side);
+    int side = qMin(w, h);
+    glViewport((w - side) / 2, (h - side) / 2, side, side);
+    updateMatrix();
 }

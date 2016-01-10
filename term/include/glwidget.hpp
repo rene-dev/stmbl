@@ -35,12 +35,20 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 	private:
 		QOpenGLShaderProgram* m_shader;
 		QOpenGLBuffer m_vbo;
-		QOpenGLVertexArrayObject m_vao;
+        QOpenGLVertexArrayObject m_vao;
+
+        QMatrix4x4 m_matrix;
+        QVector3D m_translation;
+        float m_angle;
+        QVector3D m_rotation;
+        QVector3D m_scalation;
+
+        void updateMatrix();
 
 	protected:
 		void initializeGL() override;
 		void paintGL() override;
-		void resizeGL(int w, int h) override;
+        void resizeGL(int w, int h) override;
 
 	public:
 		explicit GLWidget(QWidget* parent = 0);
