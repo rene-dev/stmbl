@@ -15,6 +15,7 @@ before_install:
 - sudo apt-get install -qq libstdc++-4.8-dev
 - sudo apt-get install -qq g++-4.8
 - export CXX="g++-4.8" CC="gcc-4.8"
+- sudo apt-get install libisl13 libmpc3 libmpfr4
 before_script:
 - wget https://launchpad.net/~team-gcc-arm-embedded/+archive/ubuntu/ppa/+files/gcc-arm-embedded_5-2015q4-1~wily1_amd64.deb
 - sudo dpkg -i gcc-arm-embedded_5-2015q4-1~wily1_amd64.deb
