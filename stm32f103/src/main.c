@@ -455,6 +455,10 @@ void USART2_IRQHandler(){
 
 int main(void)
 {
+	// Relocate interrupt vectors
+	extern void *g_pfnVectors;
+	SCB->VTOR = (uint32_t) &g_pfnVectors;
+
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	RCC_Configuration();
 	GPIO_Configuration();

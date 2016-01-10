@@ -130,16 +130,18 @@ int main(void)
     if (  !app_ok()) {//Memory map, datasheet (*((unsigned long *) 0x2001C000) == 0xDEADBEEF) ||
 //        *((unsigned long *) 0x2001C000) = 0xCAFEFEED; //Reset bootloader trigger
         GPIOC->BSRR = 0x10002; //gelb
+
         while (1);
     } else {
         GPIOC->BSRR = 0x00004; // rot, grün
-        uint32_t  stack = ((const uint32_t *) APP_START)[0];
-        uint32_t  entry = ((const uint32_t *) APP_START)[1];
-        asm volatile(
-            "msr    msp, %0        \n\t"
-            "bx     %1             \n\t"
-            : : "r" (stack), "r" (entry)
-        );
+
+        /* Jump to application */
+        uint32_t JumpAddress = *(__IO uint32_t *) (APP_START + 4);
+        uint32_t (*Jump_To_Application)() = (void *) JumpAddress;
+        /* Initialize user application's Stack Pointer */
+        __set_MSP(*(__IO uint32_t *) APP_START);
+        Jump_To_Application();
+
         while (1);
     }
 }
