@@ -57,8 +57,8 @@ int main(void)
    GPIO_InitDef.GPIO_Speed = GPIO_Speed_2MHz;
    GPIO_Init(GPIOA, &GPIO_InitDef);
    uint32_t pin = !GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_13);
-   GPIO_InitDef.GPIO_PuPd = GPIO_PuPd_NOPULL;
-   GPIO_Init(GPIOA, &GPIO_InitDef);
+   RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_GPIOA, ENABLE); // reset gpio a
+   RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_GPIOA, DISABLE);
    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, DISABLE);
 
    void (*SysMemBootJump)(void);
