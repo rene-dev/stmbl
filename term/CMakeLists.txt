@@ -7,7 +7,6 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Network REQUIRED)
-find_package(glm REQUIRED)
 
 set(TERM_INC
 	include/mainwindow.hpp
