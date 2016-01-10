@@ -154,9 +154,9 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     if(m_scaling && event->buttons() == Qt::RightButton) {
         QPoint pos = m_scalepos - event->pos();
 
-        if(false) {
-            m_scalation.setX(m_scalation.x() + (pos.y() / 10));
-            m_scalation.setY(m_scalation.y() + (pos.y() / 10));
+        if(pos.y() != 0) {
+            m_scalation.setX(m_scalation.x() + (pos.y() / 5));
+            m_scalation.setY(m_scalation.y() + (pos.y() / 5));
         }
 
         m_scalepos = event->pos();
