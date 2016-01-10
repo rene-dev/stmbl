@@ -71,3 +71,4 @@ eagle.epf
 obj_app/
 obj_boot/
 obj_hv/
+obj_hv_boot/
