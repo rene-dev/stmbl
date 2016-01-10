@@ -34,7 +34,7 @@ SOURCES += $(STD_PERIPH_DIR)/src/misc.c
 SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_crc.c
 SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_flash.c
 
-#SOURCES += lib/CMSIS/Device/ST/STM32F10x/Source/startup_stm32f10x_ld.s
+SOURCES += lib/CMSIS/Device/ST/STM32F10x/Source/startup_stm32f10x_ld.s
 
 CPPFLAGS += -DSTM32F10X_LD
 LDSCRIPT = stm32f103/bootloader/stm32_flash.ld

@@ -8,110 +8,6 @@
 #define VERSION_INFO_OFFSET 0x188
 static volatile const struct version_info *app_info = (void*)(APP_START + VERSION_INFO_OFFSET);
 
-/* Cortex-M architecture allows plain C startup code
-* from the linker file */
-extern unsigned int __data_flash_start_addr, __data_flash_end_addr, __data_sram_start_addr, __data_sram_end_addr, __bss_start_addr, __bss_end_addr, __stack_end_addr;
-
-/* Exception handlers prototypes */
-void EmptyHandler(void);
-void ResetHandler(void);
-void NmiHandler(void);
-void HardFaultHandler(void);
-void MemManageHandler(void);
-void BusFaultHandler(void);
-void UsageFaultHandler(void);
-void SvCallHandler(void);
-void DebugMonitorHandler(void);
-
-/* Exception and interrupt vector */
-void (* const vector[])(void) __attribute__ ((section(".vector"))) __attribute__ ((used)) =
-{
-   (void (*)())&__stack_end_addr,  /* 0x0000_0000  stack address   */
-   ResetHandler,                           /* 0x0000_0004  Reset                   */
-   NmiHandler,                                     /* 0x0000_0008  NMI                             */
-   HardFaultHandler,                       /* 0x0000_000C  HardFault               */
-   MemManageHandler,                       /* 0x0000_0010  MemManage               */
-   BusFaultHandler,                        /* 0x0000_0014  BusFault                */
-   UsageFaultHandler,              /* 0x0000_0018  UsageFault              */
-   0x0,                                                    /* 0x0000_001C  Reserved                */
-   0x0,                                                    /* 0x0000_0020  Reserved                */
-   0x0,                                                    /* 0x0000_0024  Reserved                */
-   0x0,                                                    /* 0x0000_0028  Reserved                */
-   SvCallHandler,                          /* 0x0000_002C  SVcall                  */
-   DebugMonitorHandler,            /* 0x0000_0030  Debug Monitor   */
-   0x0,                                                    /* 0x0000_0034  Reserved                */
-   EmptyHandler,                           /* 0x0000_0038  PendSV                  */
-   EmptyHandler,                           /* 0x0000_003C  SysTick                 */
-};
-
-/* stack */
-char stack[4096] __attribute__ ((section (".stack"))) __attribute__ ((used)) = { 0 };
-
-/* http://www.danielvik.com/2010/02/fast-memcpy-in-c.html */
-inline void memcpy(void *dest, const void *src, u32 length) {
-   char *dst8 = (char *) dest;
-   char *src8 = (char *) src;
-
-   while (length--) {
-      *dst8++ = *src8++;
-   }
-}
-
-inline void mempat(void *dest, u8 pattern, u32 length) {
-   char *dst8 = (char *) dest;
-
-   while (length--) {
-      *dst8++ = pattern;
-   }
-}
-
-__attribute__ ((noreturn)) void EmptyHandler(void) {
-   for(;;) {}
-}
-
-__attribute__ ((noreturn)) void NmiHandler(void) {
-   for(;;) {}
-}
-
-__attribute__ ((noreturn)) void HardFaultHandler(void) {
-   for(;;) {}
-}
-
-__attribute__ ((noreturn)) void MemManageHandler(void) {
-   for(;;) {}
-}
-
-__attribute__ ((noreturn)) void BusFaultHandler(void) {
-   for(;;) {}
-}
-
-__attribute__ ((noreturn)) void UsageFaultHandler(void) {
-   for(;;) {}
-}
-
-__attribute__ ((noreturn)) void SvCallHandler(void) {
-   for(;;) {}
-}
-
-__attribute__ ((noreturn)) void DebugMonitorHandler(void) {
-   for(;;) {}
-}
-
-int main(void);
-
-__attribute__ ((noreturn)) void ResetHandler(void) {
-   /* Copy .data to SRAM */
-   memcpy(&__data_sram_start_addr, &__data_flash_start_addr, &__data_sram_end_addr - &__data_sram_start_addr);
-   /* Set .bss to zero */
-   mempat(&__bss_start_addr, 0x00, &__bss_end_addr - &__bss_start_addr);
-
-   /* jump to main */
-   main();
-
-   /* should never return from main */
-   for(;;) {}
-}
-
 static int app_ok(void)
 {
     if (!APP_RANGE_VALID(APP_START, app_info->image_size)) {
@@ -127,6 +23,28 @@ static int app_ok(void)
 
     return 1;
 }
+void SystemInit (void)
+{
+    /* Reset the RCC clock configuration to the default reset state(for debug purpose) */
+    /* Set HSION bit */
+    RCC->CR |= (uint32_t)0x00000001;
+    /* Reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
+    RCC->CFGR &= (uint32_t)0xF0FF0000;
+    /* Reset HSEON, CSSON and PLLON bits */
+    RCC->CR &= (uint32_t)0xFEF6FFFF;
+
+    /* Reset HSEBYP bit */
+    RCC->CR &= (uint32_t)0xFFFBFFFF;
+
+    /* Reset PLLSRC, PLLXTPRE, PLLMUL and USBPRE/OTGFSPRE bits */
+    RCC->CFGR &= (uint32_t)0xFF80FFFF;
+
+    /* Disable all interrupts and clear pending bits  */
+    RCC->CIR = 0x009F0000;
+
+    SCB->VTOR = FLASH_BASE | 0x0; /* Vector Table Relocation in Internal FLASH. */
+}
+
 static void rcc_config(void)
 {
     /* Enable external oscillator */
