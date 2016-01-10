@@ -157,6 +157,12 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
         if(pos.y() != 0) {
             m_scalation.setX(m_scalation.x() + (pos.y() / 5));
             m_scalation.setY(m_scalation.y() + (pos.y() / 5));
+
+            if(m_scalation.x() <= 0.0f) {
+                m_scalation.setX(0.05f);
+                m_scalation.setY(0.05f);
+                m_scalation.setZ(1.0f);
+            }
         }
 
         m_scalepos = event->pos();
