@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>583</width>
-    <height>487</height>
+    <height>678</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,10 +32,16 @@
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="QTextEdit" name="textEdit">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="font">
             <font>
              <family>Monospace</family>
             </font>
+           </property>
+           <property name="inputMethodHints">
+            <set>Qt::ImhNone</set>
            </property>
           </widget>
          </item>
