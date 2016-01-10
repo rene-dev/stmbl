@@ -16,9 +16,8 @@ before_install:
 - sudo apt-get install -qq g++-4.8
 - export CXX="g++-4.8" CC="gcc-4.8"
 before_script:
-- wget https://launchpad.net/gcc-arm-embedded/5.0/5-2015-q4-major/+download/gcc-arm-none-eabi-5_2-2015q4-20151219-linux.tar.bz2
-- tar -xf gcc-arm-none-eabi-5_2-2015q4-20151219-linux.tar.bz2
-- export PATH=$PATH:$PWD/gcc-arm-none-eabi-5_2-2015q4/bin/
+- wget https://launchpad.net/~team-gcc-arm-embedded/+archive/ubuntu/ppa/+files/gcc-arm-embedded_5-2015q4-1~wily1_amd64.deb
+- sudo dpkg -i gcc-arm-embedded_5-2015q4-1~wily1_amd64.deb
 script:
 - make
 - cd term/
