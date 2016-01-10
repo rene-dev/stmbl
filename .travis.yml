@@ -24,7 +24,11 @@ script:
 - ls
 - ls gcc-arm-none-eabi-5_2-2015q4
 - ls gcc-arm-none-eabi-5_2-2015q4/*
+- /home/travis/build/rene-dev/stmbl/gcc-arm-none-eabi-5_2-2015q4/bin/arm-none-eabi-gcc --version
+- gcc-arm-none-eabi-5_2-2015q4/bin/arm-none-eabi-gcc --version
+- arm-none-eabi-gcc --version
 - echo $PATH
+- echo $PWD
 - make
 - cd term/
 - mkdir build/
