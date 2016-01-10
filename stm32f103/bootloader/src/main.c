@@ -62,7 +62,7 @@ static void rcc_config(void)
     RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE |
                                         RCC_CFGR_PLLMULL));
 
-    /* PLLCLK = HSE * 9 = 72 MHz, HCLK = SYSCLK, PCLK2 = HCLK, PCLK1 = HCLK */
+    /* PLLCLK = HSE 8MHz * 9 = 72 MHz, HCLK = SYSCLK, PCLK2 = HCLK, PCLK1 = HCLK */
     RCC->CFGR |= (uint32_t) (RCC_CFGR_PLLSRC_HSE | RCC_CFGR_PLLMULL9 | RCC_CFGR_HPRE_DIV1 | RCC_CFGR_PPRE2_DIV1 | RCC_CFGR_PPRE1_DIV2 | RCC_CFGR_ADCPRE_DIV6);
 
     /* Enable PLL */
@@ -86,7 +86,7 @@ static void rcc_config(void)
     RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
 }
 
-static void io_init(void)
+static void usart_init(void)
 {
     // init usart
     GPIOA->CRL = 0x4444EB44; // set gpioa[2,3] to 50 MHz, AFIO; 2 -> pp, 3 -> open drain
@@ -106,30 +106,19 @@ static void io_init(void)
     /* Write to USART BRR */
     USART2->BRR = (uint16_t) tmpreg;
     USART2->CR1 = USART_Clock_Enable | USART_Mode_Rx | USART_Mode_Tx; // configure usart: rx, tx
-    // init led
-    GPIOC->CRL = 0x44444222; // set gpioc[2-0] to pp, 2 MHz, output
 }
 
 int main(void)
 {
     rcc_config();
-    io_init();
-    /* Configure system clock
-    * External oscillator: 8MHz
-    * Max PLL multiplicator: x9
-    * Max SYSCLK: 72MHz
-    * Max AHB: SYSCLK = 72MHz
-    * Max APB1: SYSCLK/2 = 36MHz
-    * Max APB2: SYSCLK = 72MHz
-    * Max ADC: SYSCLK/6 = 12MHz (max freq 14) */
-//    RCC->CFGR =
-//      RCC_CFGR_MCO_PLL                      /* Output clock is PLL/2 */
-//          | RCC_CFGR_PLLXTPRE_HSE         /* oscillator prescaler is /1 */
+    // init gpio leds
+    GPIOC->CRL = 0x44444222; // set gpioc[2-0] to pp, 2 MHz, output
 
     GPIOC->BSRR = 0x01; // red led on
     if (  !app_ok()) {//Memory map, datasheet (*((unsigned long *) 0x2001C000) == 0xDEADBEEF) ||
 //        *((unsigned long *) 0x2001C000) = 0xCAFEFEED; //Reset bootloader trigger
         GPIOC->BSRR = 0x10002; //gelb
+        usart_init();
 
         while (1);
     } else {
