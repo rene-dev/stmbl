@@ -23,6 +23,22 @@ the AUTHORS file.
 
 #include <QVector>
 #include <QMouseEvent>
+#include <math.h>
+
+static const char *vertexShaderSource =
+"#version 120\n"
+"uniform mat4 mvp;\n"
+"void main(void)\n"
+"{\n"
+"    gl_Position = mvp * gl_Vertex;\n"
+"}\n";
+
+static const char *fragmentShaderSource =
+"#version 120\n"
+"void main(void)\n"
+"{\n"
+"    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
+"}\n";
 
 GLWidget::GLWidget(QWidget * parent) :
         QOpenGLWidget(parent)
@@ -80,15 +96,9 @@ void GLWidget::initializeGL()
     f->glEnableVertexAttribArray(1);
     f->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-    //todo: find better method for shaderpathhandling
-    QOpenGLShader* vs = new QOpenGLShader(QOpenGLShader::Vertex, this);
-    vs->compileSourceFile("../shader/main.vs");
-    QOpenGLShader* fs = new QOpenGLShader(QOpenGLShader::Fragment, this);
-    fs->compileSourceFile("../shader/main.fs");
-
     m_shader = new QOpenGLShaderProgram();
-    m_shader->addShader(vs);
-    m_shader->addShader(fs);
+    m_shader->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
+    m_shader->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
     m_shader->link();
     m_shader->bind();
     m_shader->enableAttributeArray("vertex");
