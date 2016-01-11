@@ -1,0 +1,3 @@
+# Hashes of file build rules.
+fbc21119b5478e822c59865d11e6b225 CMakeFiles/term_automoc
+9651c50cbde3af8056c90308d62789d8 ui_mainwindow.h

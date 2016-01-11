@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="term" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\usr\lib64\;CMake Files\..\..\..\..\..\usr\lib64\cmake\;CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\;CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Widgets\;CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\;CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5SerialPort\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/end/projects/stmbl/build/qt_term" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="term_automoc">
+         <Option working_dir="/home/end/projects/stmbl/build/qt_term" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 term_automoc" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="edit_cache">
+         <Option working_dir="/home/end/projects/stmbl/build/qt_term" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 edit_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="rebuild_cache">
+         <Option working_dir="/home/end/projects/stmbl/build/qt_term" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 rebuild_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="term">
+         <Option output="/home/end/projects/stmbl/build/qt_term/term" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/end/projects/stmbl/build/qt_term" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DQT_CORE_LIB" />
+            <Add option="-DQT_NO_DEBUG" />
+            <Add option="-DQT_WIDGETS_LIB" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_SERIALPORT_LIB" />
+            <Add directory="/home/end/projects/stmbl/build/qt_term" />
+            <Add directory="/home/end/projects/stmbl/qt_term" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/qt" />
+            <Add directory="/usr/include/qt/QtCore" />
+            <Add directory="/usr/include/qt/QtGui" />
+            <Add directory="/usr/include/qt/QtSerialPort" />
+            <Add directory="/usr/include/qt/QtWidgets" />
+            <Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/../../../../include/c++/5.3.0" />
+            <Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/../../../../include/c++/5.3.0/backward" />
+            <Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/../../../../include/c++/5.3.0/x86_64-unknown-linux-gnu" />
+            <Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/include" />
+            <Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/include-fixed" />
+            <Add directory="/usr/lib/qt/mkspecs/linux-g++" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 term" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="term/fast">
+         <Option output="/home/end/projects/stmbl/build/qt_term/term" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/end/projects/stmbl/build/qt_term" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DQT_CORE_LIB" />
+            <Add option="-DQT_NO_DEBUG" />
+            <Add option="-DQT_WIDGETS_LIB" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_SERIALPORT_LIB" />
+            <Add directory="/home/end/projects/stmbl/build/qt_term" />
+            <Add directory="/home/end/projects/stmbl/qt_term" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/qt" />
+            <Add directory="/usr/include/qt/QtCore" />
+            <Add directory="/usr/include/qt/QtGui" />
+            <Add directory="/usr/include/qt/QtSerialPort" />
+            <Add directory="/usr/include/qt/QtWidgets" />
+            <Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/../../../../include/c++/5.3.0" />
+            <Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/../../../../include/c++/5.3.0/backward" />
+            <Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/../../../../include/c++/5.3.0/x86_64-unknown-linux-gnu" />
+            <Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/include" />
+            <Add directory="/usr/lib/gcc/x86_64-unknown-linux-gnu/5.3.0/include-fixed" />
+            <Add directory="/usr/lib/qt/mkspecs/linux-g++" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 term/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/end/projects/stmbl/build/qt_term/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/end/projects/stmbl/qt_term/include/glwidget.hpp">
+         <Option target="term"/>
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/include/mainwindow.hpp">
+         <Option target="term"/>
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/src/glwidget.cpp">
+         <Option target="term"/>
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/src/main.cpp">
+         <Option target="term"/>
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/src/mainwindow.cpp">
+         <Option target="term"/>
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/ui/mainwindow.ui">
+         <Option target="term"/>
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Core/Qt5CoreConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Core/Qt5CoreConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Core/Qt5CoreConfigExtras.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Core/Qt5CoreMacros.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Core\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Widgets\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Widgets\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Widgets\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Widgets\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5GuiConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5GuiConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QJpegPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QIbusPlatformInputContextPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QGifPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QComposePlatformInputContextPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QMinimalEglIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QLinuxFbIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEglFSIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEvdevMousePlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QXcbIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QGtk2ThemePlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEvdevTouchScreenPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEvdevKeyboardPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEvdevTabletPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QTuioTouchPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QLibInputPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEglFSKmsIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QEglFSX11IntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QXcbEglIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QXcbGlxIntegrationPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QMngPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QJp2Plugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QTgaPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QDDSPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QICNSPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QTiffPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QWbmpPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5Gui_QWebpPlugin.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5Gui\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5SerialPort/Qt5SerialPortConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5SerialPort\" />
+      </Unit>
+      <Unit filename="/home/end/projects/stmbl/qt_term/../../../../../usr/lib64/cmake/Qt5SerialPort/Qt5SerialPortConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\..\usr\lib64\cmake\Qt5SerialPort\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/term.dir/src/main.cpp.o CMakeFiles/term.dir/src/mainwindow.cpp.o CMakeFiles/term.dir/src/glwidget.cpp.o CMakeFiles/term.dir/term_automoc.cpp.o  -o term -rdynamic /usr/lib/libQt5Widgets.so.5.5.1 /usr/lib/libQt5SerialPort.so.5.5.1 /usr/lib/libQt5Gui.so.5.5.1 /usr/lib/libQt5Core.so.5.5.1 

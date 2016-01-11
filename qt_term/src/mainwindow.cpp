@@ -20,11 +20,19 @@ the AUTHORS file.
 */
 
 #include <include/mainwindow.hpp>
+#include <QKeyEvent>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent)
 {
-	this->setupUi(this);
+    this->setupUi(this);
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if( (event->key() == Qt::Key_Enter) || (event->key() == Qt::Key_Return)) {
+
+    }
 }
 
 void MainWindow::on_lineEdit_textChanged(const QString &arg1)
