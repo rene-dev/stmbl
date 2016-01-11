@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if( (event->key() == Qt::Key_Enter) || (event->key() == Qt::Key_Return)) {
-
+        this->textEdit->append(this->lineEdit->text());
+        this->lineEdit->clear();
     }
 }
