@@ -26,3 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	this->setupUi(this);
 }
+
+void MainWindow::on_lineEdit_textChanged(const QString &arg1)
+{
+    //stub
+}

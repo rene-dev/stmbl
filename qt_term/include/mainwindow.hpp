@@ -31,6 +31,8 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 
 	public:
 		explicit MainWindow(QWidget *parent = 0);
+private slots:
+    void on_lineEdit_textChanged(const QString &arg1);
 };
 
 #endif // MAINWINDOW_HPP
