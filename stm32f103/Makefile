@@ -17,6 +17,7 @@ INCDIRS += stm32f103/inc
 INCDIRS += shared
 
 SOURCES += stm32f103/src/main.c
+SOURCES += stm32f103/src/version.c
 SOURCES += shared/common.c
 
 # Standard peripheral library
@@ -31,6 +32,7 @@ INCDIRS += lib/CMSIS/Device/ST/STM32F10x/Include
 
 SOURCES += $(PERIPH_DRV_DIR)/src/misc.c
 SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_rcc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_crc.c
 SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_adc.c
 SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_dma.c
 SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_gpio.c

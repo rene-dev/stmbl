@@ -1,5 +1,6 @@
 #include "stm32f10x_conf.h"
 #include "common.h"
+#include "version.h"
 #include <math.h>
 
 #define ARES 4096.0// analog resolution, 12 bit
@@ -105,6 +106,7 @@ void RCC_Configuration(void)
 	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000 - 1);
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
 }
 
 void GPIO_Configuration(void)
@@ -460,6 +462,8 @@ int main(void)
 	setup_adc();
 	tim1_init();
 	usart_init();
+
+	uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08000000, version_info.image_size);
 
 	PWM_U = 0;
 	PWM_V = 0;
