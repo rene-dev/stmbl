@@ -137,13 +137,15 @@ LDFLAGS  += $(CPU)
 #
 all:  gccversion build showsize
 
-build: elf hex bin lss sym
+build: elf hex bin lss sym hv_firmware.o
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
 bin: $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
+hv_firmware.o:
+	arm-none-eabi-objcopy --rename-section .data=.hv_firmware -I binary obj_hv/hv.bin -B arm -O elf32-littlearm hv_firmware.o
 
 # Display compiler version information
 #

@@ -166,7 +166,7 @@ LDFLAGS  += $(CPU)
 
 # Default target
 #
-all: hv gccversion boot hv build showsize
+all: hv gccversion boot build showsize
 
 build: elf hex bin lss sym
 
@@ -194,8 +194,6 @@ boot_btflash: boot
 hv:
 	$(MAKE) -f stm32f103/Makefile
 
-hv_firmware.o: hv
-	arm-none-eabi-objcopy --rename-section .data=.hv_firmware -I binary obj_hv/hv.bin -B arm -O elf32-littlearm hv_firmware.o
 
 # Display compiler version information
 #
