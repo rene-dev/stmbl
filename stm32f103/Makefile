@@ -1,6 +1,6 @@
-# Optimization level, can be [0, 1, 2, 3, s]. 
+# Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
-# 
+#
 OPT = -O1 -flto
 # OPT = -O1         # for debugging
 
@@ -23,18 +23,20 @@ SOURCES += shared/common.c
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 #CPPFLAGS += -DUSE_FULL_ASSERT
 
+PERIPH_DRV_DIR = lib/STM32F10x_StdPeriph_Driver-V3.6.1
+
+INCDIRS += $(PERIPH_DRV_DIR)/inc
 INCDIRS += lib/CMSIS/Include
-INCDIRS += lib/STM32F10x_StdPeriph_Driver-V3.6.1/inc
 INCDIRS += lib/CMSIS/Device/ST/STM32F10x/Include
 
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/misc.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_rcc.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_adc.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_dma.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_gpio.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_tim.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_flash.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_usart.c
+SOURCES += $(PERIPH_DRV_DIR)/src/misc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_rcc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_adc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_dma.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_gpio.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_tim.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_flash.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f10x_usart.c
 
 SOURCES += lib/CMSIS/Device/ST/STM32F10x/Source/system_stm32f10x.c
 SOURCES += lib/CMSIS/Device/ST/STM32F10x/Source/startup_stm32f10x_ld.s
@@ -115,7 +117,7 @@ OBJDUMP  = $(TOOLCHAIN)objdump
 SIZE     = $(TOOLCHAIN)size
 NM       = $(TOOLCHAIN)nm
 MKDIR    = mkdir
-#POSTLD   = Tools/add_version_info.py # -q
+#POSTLD   = tools/add_version_info.py # -q
 POSTLD   = cp
 # Compiler flags to generate dependency files
 #
@@ -145,9 +147,8 @@ sym: $(TARGET).sym
 
 # Display compiler version information
 #
-gccversion: 
+gccversion:
 	@$(CC) --version
-
 
 # Show the final program size
 #
@@ -155,9 +156,8 @@ showsize: build
 	@echo
 	@$(SIZE) $(TARGET).elf 2>/dev/null
 
-# Flash the device  
+# Flash the device
 #
-	
 flash: build
 	st-flash --reset write $(TARGET).bin 0x8000000
 
