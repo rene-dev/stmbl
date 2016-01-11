@@ -60,6 +60,14 @@ SECTIONS
     . = ALIGN(4);
   } >FLASH
 
+  /* version info needs to have a section, so the bootloader and python script can find it */
+  .version_info :
+  {
+    . = ALIGN(4);
+    KEEP(*(.version_info))
+    . = ALIGN(4);
+  } >FLASH
+
   /* The program code and other data goes into FLASH */
   .text :
   {

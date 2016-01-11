@@ -31,11 +31,8 @@ INCDIRS += lib/CMSIS/Include
 INCDIRS += lib/CMSIS/Device/ST/STM32F10x/Include
 
 SOURCES += $(STD_PERIPH_DIR)/src/misc.c
-SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_rcc.c
 SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_crc.c
-SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_gpio.c
 SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_flash.c
-SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_usart.c
 
 #SOURCES += lib/CMSIS/Device/ST/STM32F10x/Source/startup_stm32f10x_ld.s
 
@@ -115,7 +112,7 @@ OBJDUMP  = $(TOOLCHAIN)objdump
 SIZE     = $(TOOLCHAIN)size
 NM       = $(TOOLCHAIN)nm
 MKDIR    = mkdir
-#POSTLD   = Tools/add_version_info.py # -q
+#POSTLD   = tools/add_version_info.py # -q
 POSTLD   = cp
 # Compiler flags to generate dependency files
 #
@@ -148,7 +145,6 @@ sym: $(TARGET).sym
 gccversion:
 	@$(CC) --version
 
-
 # Show the final program size
 #
 showsize: build
@@ -157,8 +153,8 @@ showsize: build
 
 # Flash the device
 #
-flash: build
-	st-flash --reset write $(TARGET).bin 0x8000000
+flash: build showsize
+	st-flash --reset write $(TARGET).bin 0x08000000
 
 # Target: clean project
 #
