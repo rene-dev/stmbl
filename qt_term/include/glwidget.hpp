@@ -55,9 +55,9 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 		void initializeGL() override;
 		void paintGL() override;
         void resizeGL(int w, int h) override;
-        void mousePressEvent(QMouseEvent* event);
-        void mouseMoveEvent(QMouseEvent* event);
-        void mouseReleaseEvent(QMouseEvent* event);
+        void mousePressEvent(QMouseEvent* event) override;
+        void mouseMoveEvent(QMouseEvent* event) override;
+        void mouseReleaseEvent(QMouseEvent* event) override;
 
 	public:
 		explicit GLWidget(QWidget* parent = 0);
