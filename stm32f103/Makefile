@@ -119,7 +119,7 @@ OBJDUMP  = $(TOOLCHAIN)objdump
 SIZE     = $(TOOLCHAIN)size
 NM       = $(TOOLCHAIN)nm
 MKDIR    = mkdir
-#POSTLD   = tools/add_version_info.py # -q
+POSTLD   = tools/add_version_info.py # -q
 POSTLD   = cp
 # Compiler flags to generate dependency files
 #

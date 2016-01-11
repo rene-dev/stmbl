@@ -24,16 +24,18 @@ SOURCES += shared/common.c
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 #CPPFLAGS += -DUSE_FULL_ASSERT
 
+STD_PERIPH_DIR = lib/STM32F10x_StdPeriph_Driver-V3.6.1
+
+INCDIRS += $(STD_PERIPH_DIR)/inc
 INCDIRS += lib/CMSIS/Include
-INCDIRS += lib/STM32F10x_StdPeriph_Driver-V3.6.1/inc
 INCDIRS += lib/CMSIS/Device/ST/STM32F10x/Include
 
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/misc.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_rcc.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_crc.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_gpio.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_flash.c
-SOURCES += lib/STM32F10x_StdPeriph_Driver-V3.6.1/src/stm32f10x_usart.c
+SOURCES += $(STD_PERIPH_DIR)/src/misc.c
+SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_rcc.c
+SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_crc.c
+SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_gpio.c
+SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_flash.c
+SOURCES += $(STD_PERIPH_DIR)/src/stm32f10x_usart.c
 
 #SOURCES += lib/CMSIS/Device/ST/STM32F10x/Source/startup_stm32f10x_ld.s
 

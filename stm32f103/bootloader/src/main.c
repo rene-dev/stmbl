@@ -202,6 +202,7 @@ int main(void)
             | RCC_APB2ENR_IOPCEN;
     RCC->AHBENR |= RCC_AHBENR_CRCEN;
     RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+    // init led
 
     if ( (*((unsigned long *) 0x2001C000) == 0xDEADBEEF) || !app_ok()) {//Memory map, datasheet
         *((unsigned long *) 0x2001C000) = 0xCAFEFEED; //Reset bootloader trigger
