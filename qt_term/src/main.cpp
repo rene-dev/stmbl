@@ -23,9 +23,33 @@ the AUTHORS file.
 
 #include <QApplication>
 
+#include <QtSerialPort/QtSerialPort>
+#include <QtSerialPort/QSerialPortInfo>
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
+
+    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
+        qDebug() << "Name : " << info.portName();
+        qDebug() << "Description : " << info.description();
+        qDebug() << "Manufacturer: " << info.manufacturer();
+        qDebug() << "SystemLocation: " << info.systemLocation();
+        
+        /* STMBL:
+        Name :  "cu.usbmodem1D1441"
+        Description :  "STMBL Virtual ComPort" <--- darauf matchen
+        Manufacturer:  "STMicroelectronics"
+        SystemLocation:  "/dev/cu.usbmodem1D1441"
+        */
+        
+        // Example use QSerialPort
+        QSerialPort serial;
+        serial.setPort(info);
+        if (serial.open(QIODevice::ReadWrite))
+            serial.close();
+    }
+
 	MainWindow w;
 	w.show();
 

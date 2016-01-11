@@ -6,6 +6,7 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5SerialPort REQUIRED)
 
 set(TERM_INC
 	include/mainwindow.hpp
@@ -36,4 +37,4 @@ target_compile_options(term PRIVATE -Wall -Wextra)
 target_compile_options(term PRIVATE $<$<CONFIG:DEBUG>:-ggdb -O2>)
 target_compile_options(term PRIVATE $<$<CONFIG:RELEASE>:-O3 -NDEBUG>)
 
-target_link_libraries(term Qt5::Core Qt5::Widgets)
+target_link_libraries(term Qt5::Core Qt5::Widgets Qt5::SerialPort)
