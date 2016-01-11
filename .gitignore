@@ -71,3 +71,6 @@ eagle.epf
 
 *.eps
 *.txt.user
+obj_app/
+obj_boot/
+obj_hv/

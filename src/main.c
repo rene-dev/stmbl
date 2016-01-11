@@ -26,7 +26,6 @@
 #include "eeprom.h"
 #include "link.h"
 #include "crc8.h"
-#include "crc32.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,9 +55,9 @@ void disable_frt(){
    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
 }
 
-extern char _binary_stm32f103_main_bin_start;
-extern char _binary_stm32f103_main_bin_size;
-extern char _binary_stm32f103_main_bin_end;
+extern char _binary_obj_hv_hv_bin_start;
+extern char _binary_obj_hv_hv_bin_size;
+extern char _binary_obj_hv_hv_bin_end;
 
 //20kHz
 void TIM2_IRQHandler(void){
@@ -191,9 +190,8 @@ int main(void)
    #include "comps/sserial.comp"
    #include "comps/sim.comp"
    #include "comps/enc_cmd.comp"
-   //TODO: handle en for enable/error
-   //#include "comps/en.comp"   
-   
+   #include "comps/en.comp"
+
    //PID
    #include "comps/stp.comp"
    #include "comps/rev.comp"
@@ -207,13 +205,14 @@ int main(void)
    #include "comps/pmsm.comp"
    #include "comps/pmsm_limits.comp"
    #include "comps/idq.comp"
+   #include "comps/dq.comp"
    #include "comps/hv.comp"
 
    //other comps
    #include "comps/fault.comp"
    #include "comps/term.comp"
    #include "comps/io.comp"
-   
+
 
    set_comp_type("net");
    HAL_PIN(enable) = 0.0;
@@ -244,28 +243,28 @@ int main(void)
    HAL_PIN(max_motor_temp) = 100.0;
    HAL_PIN(phase_time) = 0.5;
    HAL_PIN(phase_cur) = 1.0;
-   
+
    HAL_PIN(max_vel) = RPM(1000.0);
    HAL_PIN(max_acc) = RPM(1000.0)/0.01;
    HAL_PIN(max_force) = 1.0;
    HAL_PIN(max_dc_cur) = 1.0;
    HAL_PIN(max_ac_cur) = 2.0;
-   
+
    HAL_PIN(fb_type) = RES;
    HAL_PIN(fb_polecount) = 1.0;
    HAL_PIN(fb_offset) = 0.0;
    HAL_PIN(fb_rev) = 0.0;
    HAL_PIN(fb_res) = 1000.0;
    HAL_PIN(autophase) = 1.0;//constant,cauto,hfi
-   
+
    HAL_PIN(cmd_type) = ENC;
    HAL_PIN(cmd_unit) = 0.0;//pos,vel,torque
    HAL_PIN(cmd_rev) = 0.0;
    HAL_PIN(cmd_res) = 2000.0;
    HAL_PIN(en_condition) = 0.0;
    HAL_PIN(error_out) = 0.0;
-   HAL_PIN(pos_staic) = 0.0;//track pos in disabled and error condition
-         
+   HAL_PIN(pos_static) = 0.0;//track pos in disabled and error condition
+
    HAL_PIN(sin_offset) = 0.0;
    HAL_PIN(cos_offset) = 0.0;
    HAL_PIN(sin_gain) = 1.0;

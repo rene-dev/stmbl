@@ -1,4 +1,12 @@
-#!/usr/bin/env python
+#! /bin/sh
+"true" '''\'
+if command -v python2 > /dev/null; then
+  exec python2 "$0" "$@"
+else
+  exec python "$0" "$@"
+fi
+exit $?
+'''
 #
 # Add CRC checksum and version information to an ELF file
 # Copyright (C)2015 Thomas Kindler <mail@t-kindler.de>

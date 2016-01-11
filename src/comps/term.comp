@@ -65,7 +65,7 @@ int load(){
    if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
       return(-4);
    }
-   if(ee_error != 8){
+   if(ee_error != FLASH_COMPLETE){
       return -1;
    }
    typedef union{
@@ -301,9 +301,8 @@ NRT(
       printf_("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
       printf_("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
       printf_("CPU ID     %x %x %x\n",U_ID[0], U_ID[1], U_ID[2]);
-	  uint32_t crc = crc32_init();
-      crc = crc32_update(crc, (void*)0x08010000, version_info.image_size);
-      crc = crc32_finalize(crc);
+      CRC_ResetDR();
+      uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08010000, version_info.image_size / 4);
       printf_("size: %u crc:%x\n",version_info.image_size,version_info.image_crc);
       if(crc == 0)
          printf_("crc ok!\n");
@@ -323,7 +322,7 @@ NRT(
       printf_("Compiled %s %s ",bt_version_info->build_date, bt_version_info->build_time);
       printf_("by %s on %s\n",bt_version_info->build_user, bt_version_info->build_host);
 
-      printf_("start:%p ,size:%p ,end%p \n",&_binary_stm32f103_main_bin_start,&_binary_stm32f103_main_bin_size,&_binary_stm32f103_main_bin_end);
+      printf_("start:%p ,size:%p ,end%p \n",&_binary_obj_hv_hv_bin_start,&_binary_obj_hv_hv_bin_size,&_binary_obj_hv_hv_bin_end);
    }
 
    void start(){
@@ -387,7 +386,7 @@ NRT(
    }
 
    void save(){
-      if(ee_error != 8){
+      if(ee_error != FLASH_COMPLETE){
          printf_("flash error:%i\n",ee_error);
          return;
       }
@@ -414,7 +413,7 @@ NRT(
             //printf_("param: %s=%f address:%i\n",hal.hal_pins[i]->name,param.f,address);
             elo = EE_WriteVariable(address,param.byte[0]);
             ehi = EE_WriteVariable(address+1,param.byte[1]);
-            if(elo != 8 || ehi != 8){
+            if(elo != FLASH_COMPLETE || ehi != FLASH_COMPLETE){
                printf_("error writing to %i: error%i,%i\n",address,elo,ehi);
                break;
             }

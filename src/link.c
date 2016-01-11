@@ -17,6 +17,7 @@ void link_pid(){
    set_hal_pin("pmsm_limits0.rt_prio", 12.0);
    set_hal_pin("idq0.rt_prio", 13.0);
    set_hal_pin("hv0.rt_prio", 14.0);
+   set_hal_pin("dq0.rt_prio", 14.1);
    set_hal_pin("sim0.rt_prio", 15.0);
    set_hal_pin("term0.rt_prio", 15.0);
 
@@ -168,13 +169,13 @@ void link_pid(){
    link_hal_pins("pmsm_limits0.next_min_torque", "pid0.min_torque");
    link_hal_pins("pmsm_limits0.abs_max_vel", "pid0.max_vel");
 
-   //troller
-   // idq, dq
-   // link_hal_pins("conf0.polecount", "dq0.polecount");
-   // link_hal_pins("cauto0.pos", "dq0.pos");
-   // link_hal_pins("hv0.iu", "dq0.u");
-   // link_hal_pins("hv0.iv", "dq0.v");
-   // link_hal_pins("hv0.iw", "dq0.w");
+   //troller only
+   link_hal_pins("conf0.polecount", "dq0.polecount");
+   link_hal_pins("cauto0.pos", "dq0.pos");
+   link_hal_pins("hv0.iu", "dq0.u");
+   link_hal_pins("hv0.iv", "dq0.v");
+   link_hal_pins("hv0.iw", "dq0.w");
+
    link_hal_pins("curpid0.ud", "idq0.d");
    link_hal_pins("curpid0.uq", "idq0.q");
    link_hal_pins("conf0.polecount", "idq0.polecount");
@@ -259,11 +260,17 @@ int update_cmd(){
    set_hal_pin("enc_cmd0.rt_prio", -1.0);
    set_hal_pin("sserial0.rt_prio", -1.0);
    set_hal_pin("sserial0.frt_prio", -1.0);
+   set_hal_pin("en0.rt_prio", -1.0);
    switch((protocol_t)get_hal_pin("conf0.cmd_type")){
       case ENC:
          link_hal_pins("enc_cmd0.pos", "rev0.in");
          link_hal_pins("conf0.cmd_res", "enc_cmd0.res");
          set_hal_pin("enc_cmd0.rt_prio", 2.0);
+         if(get_hal_pin("conf0.error_out") == 1.0){//error out using rs485
+            set_hal_pin("en0.rt_prio", 15.0);
+            set_hal_pin("en0.en", 1.0);
+            set_hal_pin("en0.txen", 1.0);
+         }
          break;
       default:
          return -1;

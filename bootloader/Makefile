@@ -1,86 +1,189 @@
-# put your *.o targets here, make should handle the rest!
-#TODO
-#dependency files
-#ld gcollection
-#komische flags
+# Optimization level, can be [0, 1, 2, 3, s]. 
+#     0 = turn off optimization. s = optimize for size.
+# 
+OPT = -O1 -flto
+# OPT = -O1         # for debugging
 
-SRCS = main.c stm32f4xx_it.c system_stm32f4xx.c version.c ../shared/crc32.c
+# Object files directory
+# Warning: this will be removed by make clean!
+#
+OBJDIR = obj_boot
 
-# all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
+# Target file name (without extension)
+TARGET = $(OBJDIR)/blboot
 
-PROJ_NAME=main
+# Define all C source files (dependencies are generated automatically)
+INCDIRS += inc
+INCDIRS += bootloader/src
+INCDIRS += shared
 
-# Put your stlink folder here so make burn will work.
+SOURCES += bootloader/src/main.c
+SOURCES += bootloader/src/version.c
+SOURCES += bootloader/src/stm32f4xx_it.c
+SOURCES += bootloader/src/system_stm32f4xx.c
 
-#STLINK=/mnt/share/Programming/embedded/stm32/stlink
+# Standard peripheral library
+CPPFLAGS += -DUSE_STDPERIPH_DRIVER
+#CPPFLAGS += -DUSE_FULL_ASSERT
 
-# that's it, no need to change anything below this line!
+INCDIRS += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/inc
+INCDIRS += lib/CMSIS/Include
+INCDIRS += lib/CMSIS/Device/ST/STM32F4xx/Include
 
-###################################################
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_flash.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_crc.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_gpio.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_pwr.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_rcc.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_usart.c
+SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/misc.c
 
-CC=arm-none-eabi-gcc
-OBJCOPY=arm-none-eabi-objcopy
-#CCDIR = /Users/rene/Downloads/gcc-arm-none-eabi-4_7-2013q3/bin
+SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
 
-CFLAGS  = -g -Wall -Tstm32_flash.ld -std=gnu99 -fno-builtin -CC -fdiagnostics-color=always
-CFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m4 -mthumb-interwork -nostartfiles
-CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16 -nostartfiles -fsingle-precision-constant
-CFLAGS += -ffunction-sections -fdata-sections -O1
+CPPFLAGS += -DSTM32F40_41xxx
+CPPFLAGS += -DHSE_VALUE=8000000
+LDSCRIPT = bootloader/stm32_flash.ld
 
-CFLAGS += -I../lib/inc/core -I../lib/inc/peripherals -I../shared
+#============================================================================
+OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
+CPPFLAGS += $(addprefix -I,$(INCDIRS))
 
-###################################################
+#---------------- Preprocessor Options ----------------
+#  -fsingle...    make better use of the single-precision FPU
+#  -g             generate debugging information
+#  -save-temps    preserve .s and .i-files
+#
+CPPFLAGS += -fsingle-precision-constant
+CPPFLAGS += -g
+# CPPFLAGS += -save-temps=obj
 
-vpath %.c src
-vpath %.a lib
+#---------------- C Compiler Options ----------------
+#  -O*            optimization level
+#  -f...          tuning, see GCC documentation
+#  -Wall...       warning level
+#
+CFLAGS += $(OPT)
+CFLAGS += -std=gnu11
+CFLAGS += -ffunction-sections
+CFLAGS += -fdata-sections
+CFLAGS += -Wall
+CFLAGS += -fno-builtin ## from old
+CFLAGS += -nostartfiles
+#CFLAGS += -Wstrict-prototypes
+#CFLAGS += -Wextra
+#CFLAGS += -Wpointer-arith
+#CFLAGS += -Winline
+#CFLAGS += -Wunreachable-code
+#CFLAGS += -Wundef
 
-ROOT=$(shell pwd)
+# Use a friendly C dialect
+CPPFLAGS += -fno-strict-aliasing
+CPPFLAGS += -fwrapv
 
-CFLAGS += -I../inc -I../lib -I../lib/inc -I../stm32f103/inc
-CFLAGS += -I../lib/inc/core -I../lib/inc/peripherals
+#---------------- C++ Compiler Options ----------------
+#
+CXXFLAGS += $(OPT)
+CXXFLAGS += -ffunction-sections
+CXXFLAGS += -fdata-sections
+CXXFLAGS += -Wall
 
-SRCS += ../lib/startup_stm32f4xx.s # add startup file to build
+#---------------- Assembler Options ----------------
+#  -Wa,...    tell GCC to pass this to the assembler
+#
 
-OBJS = $(SRCS:.c=.o)
+#---------------- Linker Options ----------------
+#  -Wl,...      tell GCC to pass this to linker
+#  -Map         create map file
+#  --cref       add cross reference to  map file
+#
+LDFLAGS += $(OPT)
+LDFLAGS += -lm
+LDFLAGS += -Wl,-Map=$(TARGET).map,--cref
+LDFLAGS += -Wl,--gc-sections
 
-###################################################
+# LDFLAGS += -specs=nano.specs -u _printf_float -u _scanf_float
+LDFLAGS += -T$(LDSCRIPT)
 
-.PHONY: lib proj
+#============================================================================
 
-all: lib proj
+# Define programs and commands
+#
+TOOLCHAIN = arm-none-eabi-
+CC       = $(TOOLCHAIN)gcc
+OBJCOPY  = $(TOOLCHAIN)objcopy
+OBJDUMP  = $(TOOLCHAIN)objdump
+SIZE     = $(TOOLCHAIN)size
+NM       = $(TOOLCHAIN)nm
+MKDIR    = mkdir
+POSTLD   = tools/add_version_info.py # -q
 
-again: clean all
+# Compiler flags to generate dependency files
+#
+GENDEPFLAGS = -MMD -MP
 
-# Flash the STM32F4
-burn: main.elf
-	st-flash --reset write $(PROJ_NAME).bin 0x08000000
+# Combine all necessary flags and optional flags
+# Add target processor to flags.
+#
+CPU = -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16
 
-btburn: main.elf
+CFLAGS   += $(CPU)
+CXXFLAGS += $(CPU)
+ASFLAGS  += $(CPU)
+LDFLAGS  += $(CPU)
+
+# Default target
+#
+all:  gccversion build showsize
+
+build: elf hex bin lss sym
+
+elf: $(TARGET).elf
+hex: $(TARGET).hex
+bin: $(TARGET).bin
+lss: $(TARGET).lss
+sym: $(TARGET).sym
+
+# Display compiler version information
+#
+gccversion: 
+	@$(CC) --version
+
+# Show the final program size
+#
+showsize: build
+	@echo
+	@$(SIZE) $(TARGET).elf 2>/dev/null
+
+# Flash the device  
+#
+	
+btflash: build showsize
 	#change this to your device
 	printf "bootloader\r" > `ls /dev/cu.usbmodem*` || true
 	printf "bootloader\r" > `ls /dev/ttyACM*` || true
 	sleep 1
-	dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D main.bin
+	dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D $(TARGET).bin
 
-# Create tags; assumes ctags exists
-ctags:
-	ctags -R --exclude=*cm0.h --exclude=*cm3.h .
+flash: build showsize
+	st-flash --reset write $(TARGET).bin 0x08000000
 
-lib:
-	$(MAKE) -C ../lib
-
-proj: 	$(PROJ_NAME).elf
-
-
-$(PROJ_NAME).elf: $(SRCS)
-	$(CC) $(CFLAGS) $^ -o $@ -L../lib -lstm32f4 -Wl,--gc-sections -Wl,-Map -Wl,$(PROJ_NAME).map
-	../tools/add_version_info.py $(PROJ_NAME).elf
-	$(OBJCOPY) -O binary --gap-fill 0xFF $(PROJ_NAME).elf $(PROJ_NAME).bin
-	../tools/checkcrc.py $(PROJ_NAME).bin
-	arm-none-eabi-size main.elf
-
+# Target: clean project
+#
 clean:
-	rm -f *.o *.i
-	rm -f $(PROJ_NAME).elf
-	rm -f $(PROJ_NAME).hex
-	rm -f $(PROJ_NAME).bin
+	@echo Cleaning project:
+	rm -rf $(OBJDIR)
+
+# Include the base rules
+#
+include base.mak
+
+# Include the dependency files
+#
+-include $(OBJECTS:.o=.d)
+
+# Listing of phony targets
+#
+.PHONY: all build flash btfash clean \
+        boot boot_clean boot_flash \
+        elf lss sym \
+        showsize gccversion
