@@ -12,6 +12,8 @@
 .DS_Store
 term/build
 term/xbuild
+qt_term/build
+qt_term/xbuild
 new_term/build
 new_term/xbuild
 term/win32/bin
