@@ -7,7 +7,8 @@ SYSTEM_FILE = stm32f10x
 
 CMSIS = Libraries/CMSIS
 CMSIS_DEVSUP = $(CMSIS)/CM3/DeviceSupport/ST/$(DEVICE_FAMILY)/
-CMSIS_OPT = -D$(DEVICE_TYPE) -DUSE_STDPERIPH_DRIVER
+CMSIS_OPT = -D$(DEVICE_TYPE)
+# -DUSE_STDPERIPH_DRIVER
 OTHER_OPT = "-D__weak=__attribute__((weak))" "-D__packed=__attribute__((__packed__))"
 CPU = -mthumb -mcpu=cortex-m3
 SYSTEM = arm-none-eabi
@@ -24,9 +25,9 @@ LIBINC += -I../Libraries/STM32F10x_StdPeriph_Driver/inc
 LIBINC += -I../Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
 LIBINC += -I../Libraries/CMSIS/CM3/CoreSupport
 
-LIBS := ./$(LIBDIR)/STM32F10x_StdPeriph_Driver/libstm32fw.a
+#LIBS := ./$(LIBDIR)/STM32F10x_StdPeriph_Driver/libstm32fw.a
 	   
-LIBS += -lm
+#LIBS += -lm
 CC      = $(SYSTEM)-gcc
 CCDEP   = $(SYSTEM)-gcc
 LD      = $(SYSTEM)-gcc
@@ -39,23 +40,23 @@ SIZE	= $(SYSTEM)-size
 
 # INCLUDES = -I$(SRCDIR) $(LIBINC)
 INCLUDES = $(LIBINC) -I../../shared
-CFLAGS  = $(CPU) $(CMSIS_OPT) $(OTHER_OPT) -Wall -fno-common -fno-strict-aliasing -Os $(INCLUDES) -g -Wfatal-errors -g -std=c99 -fdiagnostics-color=always -ffunction-sections -fdata-sections -nostartfiles
+CFLAGS  = $(CPU) $(CMSIS_OPT) $(OTHER_OPT) -Wall -fno-common -fno-builtin -fno-strict-aliasing -Os $(INCLUDES) -g -Wfatal-errors -g -std=c99 -fdiagnostics-color=always -ffunction-sections -fdata-sections -nostartfiles -specs=nosys.specs -nostdlib
 ASFLAGS = $(CFLAGS) -x assembler-with-cpp
 LDFLAGS = -Wl,--gc-sections,-Map=$*.map,-cref -T $(LDSCRIPT) $(CPU)
 ARFLAGS = cr
 OBJCOPYFLAGS = -Obinary
 OBJDUMPFLAGS = -S
 
-STARTUP_OBJ = ../$(CMSIS_DEVSUP)/startup/TrueSTUDIO/startup_$(STARTUP_FILE).o
-SYSTEM_OBJ = ../$(CMSIS_DEVSUP)/system_$(SYSTEM_FILE).o
+#STARTUP_OBJ = ../$(CMSIS_DEVSUP)/startup/TrueSTUDIO/startup_$(STARTUP_FILE).o
+#SYSTEM_OBJ = ../$(CMSIS_DEVSUP)/system_$(SYSTEM_FILE).o
 
 BIN = main.bin
 
 OBJS = $(sort \
  $(patsubst %.c,%.o,$(wildcard src/*.c)) \
- $(patsubst %.s,%.o,$(wildcard src/*.s)) \
- $(STARTUP_OBJ) \
- $(SYSTEM_OBJ))
+ $(patsubst %.s,%.o,$(wildcard src/*.s)))
+# $(STARTUP_OBJ) \
+# $(SYSTEM_OBJ))
 
 all: $(BIN)
 
