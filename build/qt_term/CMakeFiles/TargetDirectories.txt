@@ -1,2 +1,0 @@
-/home/end/projects/stmbl/build/qt_term/CMakeFiles/term_automoc.dir
-/home/end/projects/stmbl/build/qt_term/CMakeFiles/term.dir

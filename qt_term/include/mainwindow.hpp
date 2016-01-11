@@ -32,8 +32,6 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 	public:
         explicit MainWindow(QWidget *parent = 0);
         void keyPressEvent(QKeyEvent * event) override;
-private slots:
-    void on_lineEdit_textChanged(const QString &arg1);
 };
 
 #endif // MAINWINDOW_HPP

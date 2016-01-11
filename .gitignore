@@ -74,4 +74,5 @@ eagle.epf
 obj_app/
 obj_boot/
 obj_hv/
-qt_term/CMakeLists
+build/
+*.autosave
