@@ -10,13 +10,15 @@ find_package(Qt5SerialPort REQUIRED)
 
 set(TERM_INC
 	include/mainwindow.hpp
-	include/glwidget.hpp
+        include/glwidget.hpp
+        include/functiongraph.hpp
 	)
 
 set(TERM_SRC
 	src/main.cpp
 	src/mainwindow.cpp
-	src/glwidget.cpp
+        src/glwidget.cpp
+        src/functiongraph.cpp
 	)
 
 set(TERM_UI

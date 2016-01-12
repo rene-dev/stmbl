@@ -15,7 +15,7 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 FEEDBACK & QUESTIONS
 
-For feedback and questions about Reunion please e-mail one of the authors named in
+For feedback and questions about stmbl please e-mail one of the authors named in
 the AUTHORS file.
 */
 
@@ -30,25 +30,25 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
-    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
-        qDebug() << "Name : " << info.portName();
-        qDebug() << "Description : " << info.description();
-        qDebug() << "Manufacturer: " << info.manufacturer();
-        qDebug() << "SystemLocation: " << info.systemLocation();
-        
-        /* STMBL:
-        Name :  "cu.usbmodem1D1441"
-        Description :  "STMBL Virtual ComPort" <--- darauf matchen
-        Manufacturer:  "STMicroelectronics"
-        SystemLocation:  "/dev/cu.usbmodem1D1441"
-        */
-        
-        // Example use QSerialPort
-        QSerialPort serial;
-        serial.setPort(info);
-        if (serial.open(QIODevice::ReadWrite))
-            serial.close();
-    }
+	foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
+		qDebug() << "Name : " << info.portName();
+		qDebug() << "Description : " << info.description();
+		qDebug() << "Manufacturer: " << info.manufacturer();
+		qDebug() << "SystemLocation: " << info.systemLocation();
+
+		/* STMBL:
+	Name :  "cu.usbmodem1D1441"
+	Description :  "STMBL Virtual ComPort" <--- darauf matchen
+	Manufacturer:  "STMicroelectronics"
+	SystemLocation:  "/dev/cu.usbmodem1D1441"
+	*/
+
+		// Example use QSerialPort
+		QSerialPort serial;
+		serial.setPort(info);
+		if (serial.open(QIODevice::ReadWrite))
+			serial.close();
+	}
 
 	MainWindow w;
 	w.show();

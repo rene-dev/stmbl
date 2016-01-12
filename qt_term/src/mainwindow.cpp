@@ -15,7 +15,7 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 FEEDBACK & QUESTIONS
 
-For feedback and questions about Reunion please e-mail one of the authors named in
+For feedback and questions about stmbl please e-mail one of the authors named in
 the AUTHORS file.
 */
 
@@ -23,15 +23,21 @@ the AUTHORS file.
 #include <QKeyEvent>
 
 MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent)
+		QMainWindow(parent)
 {
-    this->setupUi(this);
+	this->setupUi(this);
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    if( (event->key() == Qt::Key_Enter) || (event->key() == Qt::Key_Return)) {
-        this->textEdit->append(this->lineEdit->text());
-        this->lineEdit->clear();
-    }
+	if( (event->key() == Qt::Key_Enter) || (event->key() == Qt::Key_Return)) {
+		this->textEdit->append(this->lineEdit->text());
+		this->lineEdit->clear();
+	}
+
+	if(event->key() == Qt::Key_R) {
+		this->openGLWidget->resetMatrix();
+	}
+
+	event->accept();
 }

@@ -15,7 +15,7 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 FEEDBACK & QUESTIONS
 
-For feedback and questions about Reunion please e-mail one of the authors named in
+For feedback and questions about stmbl please e-mail one of the authors named in
 the AUTHORS file.
 */
 
@@ -25,166 +25,157 @@ the AUTHORS file.
 #include <QMouseEvent>
 #include <math.h>
 
+#include <QKeyEvent>
+
 static const char *vertexShaderSource =
-"#version 120\n"
-"uniform mat4 mvp;\n"
-"void main(void)\n"
-"{\n"
-"    gl_Position = mvp * gl_Vertex;\n"
-"}\n";
+				"#version 120\n"
+				"uniform mat4 mvp;\n"
+				"void main(void)\n"
+				"{\n"
+				"    gl_Position = mvp * gl_Vertex;\n"
+				"}\n";
 
 static const char *fragmentShaderSource =
-"#version 120\n"
-"void main(void)\n"
-"{\n"
-"    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
-"}\n";
+				"#version 120\n"
+				"void main(void)\n"
+				"{\n"
+				"    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
+				"}\n";
 
 GLWidget::GLWidget(QWidget * parent) :
-        QOpenGLWidget(parent)
+		QOpenGLWidget(parent)
 {
-    m_translating = false;
-    m_scaling = false;
+	m_translating = false;
+	m_scaling = false;
 
-    m_translation.setX(0.0f);
-    m_translation.setY(0.0f);
-    m_translation.setZ(-10.0f);
-    m_angle = 0.0f;
-    m_rotation.setX(0.0f);
-    m_rotation.setY(0.0f);
-    m_rotation.setZ(0.0f);
-    m_scalation.setX(1.0f);
-    m_scalation.setY(1.0f);
-    m_scalation.setZ(1.0f);
+	m_translation.setX(0.0f);
+	m_translation.setY(0.0f);
+	m_translation.setZ(-10.0f);
+	m_scalation.setX(1.0f);
+	m_scalation.setY(1.0f);
+	m_scalation.setZ(1.0f);
 
-    updateMatrix();
+	updateMatrix();
+}
+
+void GLWidget::resetMatrix()
+{
+	m_translation.setX(0.0f);
+	m_translation.setY(0.0f);
+	m_translation.setZ(-10.0f);
+	m_scalation.setX(1.0f);
+	m_scalation.setY(1.0f);
+	m_scalation.setZ(1.0f);
+
+	repaint();
 }
 
 void GLWidget::updateMatrix()
 {
-    m_matrix.setToIdentity();
-    m_matrix.ortho(+width()/2, -width()/2, +height()/2, -height()/2, 0.0f, 15.0f);
-    m_matrix.translate(m_translation);
-    m_matrix.rotate(m_angle, m_rotation);
-    m_matrix.scale(m_scalation);
+	m_matrix.setToIdentity();
+	m_matrix.ortho(+width()/2, -width()/2, +height()/2, -height()/2, 0.0f, 15.0f);
+	m_matrix.translate(m_translation);
+	m_matrix.scale(m_scalation);
 }
 
 void GLWidget::initializeGL()
 {
-    initializeOpenGLFunctions();
+	initializeOpenGLFunctions();
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
-    m_vao.create();
-    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+	m_function1.initializeGL();
 
-    QVector<GLfloat> data;
+	for(int i = 0; i < 1000; i++) {
+		m_function1.addPoint(sin(i));
+	}
 
-    for(int i = -10000; i <= 10000; i++) {
-        float f = i;
-        data.append(f);
-        data.append(sin(f/10)*10);
-    }
+	m_shader = new QOpenGLShaderProgram();
+	m_shader->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
+	m_shader->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+	m_shader->link();
+	m_shader->bind();
+	m_shader->enableAttributeArray("vertex");
+	m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
 
-    m_vbo.create();
-    m_vbo.bind();
-    m_vbo.allocate(data.constData(), data.count() * sizeof(GLfloat));
-
-    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-    f->glEnableVertexAttribArray(0);
-    f->glEnableVertexAttribArray(1);
-    f->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-    m_shader = new QOpenGLShaderProgram();
-    m_shader->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
-    m_shader->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
-    m_shader->link();
-    m_shader->bind();
-    m_shader->enableAttributeArray("vertex");
-    m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
-
-    m_shader->release();
-    m_vao.release();
-    m_vbo.release();
+	m_shader->release();
 }
 
 void GLWidget::paintGL()
 {
-    glClearColor(1.0, 1.0, 1.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
-    m_shader->bind();
-    m_vbo.bind();
+	m_shader->bind();
 
-    updateMatrix();
-    m_shader->setUniformValue("mvp", m_matrix);
-    m_shader->enableAttributeArray("vertex");
-    m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
+	updateMatrix();
 
-    glDrawArrays(GL_LINE_STRIP, 0, 20000);
+	m_shader->setUniformValue("mvp", m_matrix);
+	m_shader->enableAttributeArray("vertex");
+	m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
 
-    m_shader->release();
-    m_vao.release();
+	m_function1.paintGL();
+
+	m_shader->release();
 }
 
 void GLWidget::resizeGL(int w, int h)
 {
-    int side = qMin(w, h);
-    glViewport((w - side) / 2, (h - side) / 2, side, side);
-    updateMatrix();
+	int side = qMin(w, h);
+	glViewport((w - side) / 2, (h - side) / 2, side, side);
+	updateMatrix();
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *event)
 {
-    if(event->buttons() == Qt::LeftButton) {
-        m_translating = true;
-        m_transpos = event->pos();
-    }
-    if(event->buttons() == Qt::RightButton) {
-        m_scaling = true;
-        m_scalepos = event->pos();
-    }
+	if(event->buttons() == Qt::LeftButton) {
+		m_translating = true;
+		m_transpos = event->pos();
+	}
+	if(event->buttons() == Qt::RightButton) {
+		m_scaling = true;
+		m_scalepos = event->pos();
+	}
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    if(m_translating && event->buttons() == Qt::LeftButton) {
-        QPoint pos = m_transpos - event->pos();
+	if(m_translating && event->buttons() == Qt::LeftButton) {
+		QPoint pos = m_transpos - event->pos();
 
-        pos.setY(-pos.y());
+		pos.setY(-pos.y());
 
-        m_translation += QVector3D(pos);
+		m_translation += QVector3D(pos);
 
-        m_transpos = event->pos();
-        repaint();
-    }
+		m_transpos = event->pos();
+		repaint();
+	}
 
-    if(m_scaling && event->buttons() == Qt::RightButton) {
-        QPoint pos = m_scalepos - event->pos();
+	if(m_scaling && event->buttons() == Qt::RightButton) {
+		QPoint pos = m_scalepos - event->pos();
 
-        if(pos.y() != 0) {
-            m_scalation.setX(m_scalation.x() + (pos.y() / 5));
-            m_scalation.setY(m_scalation.y() + (pos.y() / 5));
+		if(pos.y() != 0) {
+			m_scalation.setX(m_scalation.x() + (pos.y() / 5));
+			m_scalation.setY(m_scalation.y() + (pos.y() / 5));
 
-            if(m_scalation.x() <= 0.0f) {
-                m_scalation.setX(0.05f);
-                m_scalation.setY(0.05f);
-                m_scalation.setZ(1.0f);
-            }
-        }
+			if(m_scalation.x() <= 0.0f) {
+				m_scalation.setX(0.05f);
+				m_scalation.setY(0.05f);
+				m_scalation.setZ(1.0f);
+			}
+		}
 
-        m_scalepos = event->pos();
-        repaint();
-    }
+		m_scalepos = event->pos();
+		repaint();
+	}
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    if(event->buttons() != Qt::LeftButton)
-        m_translating = false;
+	if(event->buttons() != Qt::LeftButton)
+		m_translating = false;
 
-    if(event->buttons() != Qt::RightButton)
-        m_scaling = false;
+	if(event->buttons() != Qt::RightButton)
+		m_scaling = false;
 }

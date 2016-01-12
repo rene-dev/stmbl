@@ -19,51 +19,33 @@ For feedback and questions about stmbl please e-mail one of the authors named in
 the AUTHORS file.
 */
 
-#ifndef GLWIDGET_HPP
-#define GLWIDGET_HPP
+#ifndef FUNCTIONGRAPH_HPP
+#define FUNCTIONGRAPH_HPP
 
-#include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 
-#include <QVector>
-#include <include/functiongraph.hpp>
+#include <chrono>
 
-class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
+typedef std::chrono::steady_clock monoclock;
+
+class FunctionGraph
 {
-		Q_OBJECT
-
 	private:
-		QOpenGLShaderProgram* m_shader;
+		QOpenGLBuffer m_vbo;
+		QOpenGLVertexArrayObject m_vao;
 
-		QMatrix4x4 m_matrix;
-		QVector3D m_translation;
-		QVector3D m_scalation;
-
-		bool m_translating;
-		bool m_scaling;
-
-		QPoint m_transpos;
-		QPoint m_scalepos;
-
-		FunctionGraph m_function1;
-
-	protected:
-		void initializeGL() override;
-		void paintGL() override;
-		void resizeGL(int w, int h) override;
-
-		void mousePressEvent(QMouseEvent* event) override;
-		void mouseMoveEvent(QMouseEvent* event) override;
-		void mouseReleaseEvent(QMouseEvent* event) override;
-
-		void updateMatrix();\
+		size_t m_xpos;
+		size_t m_datasize;
 
 	public:
-		explicit GLWidget(QWidget* parent = 0);
-		void resetMatrix();
+		FunctionGraph();
+		void initializeGL();
+		void paintGL();
+		void addPoint(float y);
+		void restart();
 };
 
-#endif // GLWIDGET_HPP
+#endif // FUNCTIONGRAPH_HPP

@@ -15,7 +15,7 @@ this program.  If not, see <http://www.gnu.org/licenses/>.
 
 FEEDBACK & QUESTIONS
 
-For feedback and questions about Reunion please e-mail one of the authors named in
+For feedback and questions about stmbl please e-mail one of the authors named in
 the AUTHORS file.
 */
 
@@ -27,11 +27,11 @@ the AUTHORS file.
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
-		Q_OBJECT
+	Q_OBJECT
 
 	public:
-        explicit MainWindow(QWidget *parent = 0);
-        void keyPressEvent(QKeyEvent * event) override;
+		explicit MainWindow(QWidget *parent = 0);
+		void keyPressEvent(QKeyEvent * event) override;
 };
 
 #endif // MAINWINDOW_HPP
