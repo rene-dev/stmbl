@@ -1,6 +1,6 @@
-# Optimization level, can be [0, 1, 2, 3, s]. 
+# Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
-# 
+#
 OPT = -O1 -flto
 # OPT = -O1         # for debugging
 
@@ -53,20 +53,22 @@ SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_usr.c
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 #CPPFLAGS += -DUSE_FULL_ASSERT
 
-INCDIRS += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/inc
+PERIPH_DRV_DIR = lib/STM32F4xx_StdPeriph_Driver-V1.6.0
+
+INCDIRS += $(PERIPH_DRV_DIR)/inc
 INCDIRS += lib/CMSIS/Include
 INCDIRS += lib/CMSIS/Device/ST/STM32F4xx/Include
 
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_adc.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_crc.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_dma.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_flash.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_gpio.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_pwr.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_rcc.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_tim.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_usart.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/misc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_adc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_crc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_dma.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_flash.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_gpio.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_pwr.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_rcc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_tim.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_usart.c
+SOURCES += $(PERIPH_DRV_DIR)/src/misc.c
 
 SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
 
@@ -164,7 +166,7 @@ LDFLAGS  += $(CPU)
 
 # Default target
 #
-all: hv gccversion boot hv build showsize
+all: hv gccversion boot build showsize
 
 build: elf hex bin lss sym
 
@@ -192,14 +194,11 @@ boot_btflash: boot
 hv:
 	$(MAKE) -f stm32f103/Makefile
 
-hv_firmware.o: hv
-	arm-none-eabi-objcopy --rename-section .data=.hv_firmware -I binary obj_hv/hv.bin -B arm -O elf32-littlearm hv_firmware.o
 
 # Display compiler version information
 #
-gccversion: 
+gccversion:
 	@$(CC) --version
-
 
 # Show the final program size
 #
@@ -207,9 +206,8 @@ showsize: build
 	@echo
 	@$(SIZE) $(TARGET).elf 2>/dev/null
 
-# Flash the device  
+# Flash the device
 #
-	
 btburn: build showsize
 	#change this to your device
 	printf "bootloader\r" > `ls /dev/cu.usbmodem*` || true
