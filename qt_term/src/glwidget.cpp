@@ -85,6 +85,37 @@ void GLWidget::initializeGL()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
+	m_vao.create();
+	QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
+	m_vbo.create();
+	m_vbo.bind();
+
+	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+	if(f) {
+		f->glEnableVertexAttribArray(0);
+		f->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	} else {
+		qWarning("couldn't get function context");
+	}
+
+	QVector<GLfloat> data;
+
+	data.append(-10000000.0);
+	data.append(0.0);
+	data.append(10000000.0);
+	data.append(0.0);
+
+	data.append(0.0);
+	data.append(-10000000.0);
+	data.append(0.0);
+	data.append(10000000.0);
+
+	m_vbo.allocate(data.constData(), data.count() * sizeof(GLfloat));
+
+	m_vao.release();
+	m_vbo.release();
+
 	m_function1.initializeGL();
 
 	for(int i = 0; i < 1000; i++) {
@@ -116,6 +147,15 @@ void GLWidget::paintGL()
 	m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
 
 	m_function1.paintGL();
+
+	QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
+	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+	if(f) {
+		f->glDrawArrays(GL_LINES, 0, 4);
+	}
+
+	m_vao.release();
 
 	m_shader->release();
 }

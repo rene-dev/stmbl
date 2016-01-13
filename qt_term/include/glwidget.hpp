@@ -50,6 +50,9 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 
 		FunctionGraph m_function1;
 
+		QOpenGLBuffer m_vbo;
+		QOpenGLVertexArrayObject m_vao;
+
 	protected:
 		void initializeGL() override;
 		void paintGL() override;

@@ -45,7 +45,6 @@ void FunctionGraph::initializeGL()
 	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 	if(f) {
 		f->glEnableVertexAttribArray(0);
-		f->glEnableVertexAttribArray(1);
 		f->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	} else {
 		qWarning("couldn't get function context");
