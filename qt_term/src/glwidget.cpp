@@ -73,7 +73,7 @@ void GLWidget::resetMatrix()
 void GLWidget::updateMatrix()
 {
 	m_matrix.setToIdentity();
-	m_matrix.ortho(+width()/2, -width()/2, +height()/2, -height()/2, 0.0f, 15.0f);
+	m_matrix.ortho(-width()/2, +width()/2, +height()/2, -height()/2, 0.0f, 15.0f);
 	m_matrix.translate(m_translation);
 	m_matrix.scale(m_scalation);
 }
@@ -184,6 +184,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 	if(m_translating && event->buttons() == Qt::LeftButton) {
 		QPoint pos = m_transpos - event->pos();
 
+		pos.setX(-pos.x());
 		pos.setY(-pos.y());
 
 		m_translation += QVector3D(pos);
