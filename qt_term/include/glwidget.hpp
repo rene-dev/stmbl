@@ -31,6 +31,10 @@ the AUTHORS file.
 #include <QVector>
 #include <include/functiongraph.hpp>
 
+#include <chrono>
+
+typedef std::chrono::steady_clock monoclock;
+
 class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
 		Q_OBJECT
@@ -62,7 +66,7 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 		void mouseMoveEvent(QMouseEvent* event) override;
 		void mouseReleaseEvent(QMouseEvent* event) override;
 
-		void updateMatrix();\
+		void updateMatrix();
 
 	public:
 		explicit GLWidget(QWidget* parent = 0);

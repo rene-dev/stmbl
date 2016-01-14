@@ -25,10 +25,18 @@ the AUTHORS file.
 #include <ui_mainwindow.h>
 #include <QMainWindow>
 
+#include <vector>
+
+using namespace std;
+
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 	Q_OBJECT
-
+	
+	private:
+		vector<string> m_history;
+		size_t m_historypos;
+		
 	public:
 		explicit MainWindow(QWidget *parent = 0);
 		void keyPressEvent(QKeyEvent * event) override;

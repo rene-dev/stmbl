@@ -135,6 +135,8 @@ void GLWidget::initializeGL()
 
 void GLWidget::paintGL()
 {
+	monoclock::time_point foo = monoclock::now();
+
 	glClearColor(1.0, 1.0, 1.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -158,6 +160,8 @@ void GLWidget::paintGL()
 	m_vao.release();
 
 	m_shader->release();
+
+	update();
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -190,7 +194,6 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 		m_translation += QVector3D(pos);
 
 		m_transpos = event->pos();
-		repaint();
 	}
 
 	if(m_scaling && event->buttons() == Qt::RightButton) {
@@ -208,7 +211,6 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 		}
 
 		m_scalepos = event->pos();
-		repaint();
 	}
 }
 

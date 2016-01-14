@@ -23,20 +23,38 @@ the AUTHORS file.
 #include <QKeyEvent>
 
 MainWindow::MainWindow(QWidget *parent) :
-		QMainWindow(parent)
+		QMainWindow(parent),
+		m_historypos(0)
 {
 	this->setupUi(this);
+	this->lineEdit->setFocus();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
 	if( (event->key() == Qt::Key_Enter) || (event->key() == Qt::Key_Return)) {
+		this->m_history.push_back(this->lineEdit->text().toStdString());
 		this->textEdit->append(this->lineEdit->text());
 		this->lineEdit->clear();
 	}
 
 	if(event->key() == Qt::Key_R) {
 		this->openGLWidget->resetMatrix();
+	}
+
+	if(event->key() == Qt::Key_Up) {
+		if(m_historypos < m_history.size()) {
+			m_historypos++;
+			string temp = m_history[m_history.size() - m_historypos];
+			this->lineEdit->setText(QString::fromStdString(temp));
+		}
+	}
+	if(event->key() == Qt::Key_Down) {
+		if(m_historypos > 1) {
+			m_historypos--;
+			string temp = m_history[m_history.size() - m_historypos];
+			this->lineEdit->setText(QString::fromStdString(temp));
+		}
 	}
 
 	event->accept();
