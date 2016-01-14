@@ -94,7 +94,12 @@ void GLWidget::initializeGL()
 	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 	if(f) {
 		f->glEnableVertexAttribArray(0);
-		f->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+#ifdef __APPLE__
+        //wat
+        //http://stackoverflow.com/questions/28156524/meaning-of-index-parameter-in-glenablevertexattribarray-and-possibly-a-bug-i
+        f->glEnableVertexAttribArray(1);
+#endif
+        f->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	} else {
 		qWarning("couldn't get function context");
 	}
