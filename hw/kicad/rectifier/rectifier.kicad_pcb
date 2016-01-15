@@ -1,9 +1,9 @@
-(kicad_pcb (version 4) (host pcbnew "(2016-01-09 BZR 6434, Git 5e36c48)-product")
+(kicad_pcb (version 4) (host pcbnew "(2016-01-14 BZR 6474)-product")
 
   (general
     (links 29)
-    (no_connects 4)
-    (area 40.564999 69.330499 134.631501 115.454501)
+    (no_connects 0)
+    (area 34.809999 66.82 140.945301 116.21226)
     (thickness 1.6)
     (drawings 30)
     (tracks 113)
@@ -37,7 +37,7 @@
   )
 
   (setup
-    (last_trace_width 1)
+    (last_trace_width 0.25)
     (user_trace_width 1)
     (user_trace_width 2.5)
     (trace_clearance 0.2)
@@ -838,7 +838,7 @@
   (gr_text "24V enable" (at 42.291 100.965 270) (layer B.SilkS)
     (effects (font (size 1.5 1.5) (thickness 0.3)) (justify mirror))
   )
-  (gr_text "Stmbl\nGleich-Riecht-Er\nV0.0.1" (at 114.554 105.156) (layer B.SilkS)
+  (gr_text "Stmbl\nGleich-Riecht-Er\nV0.0.2" (at 114.554 105.156) (layer B.SilkS)
     (effects (font (size 1.5 1.5) (thickness 0.3)) (justify mirror))
   )
   (gr_circle (center 80.7466 96.012) (end 82.6008 96.1263) (layer Edge.Cuts) (width 0.15))
