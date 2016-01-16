@@ -24,6 +24,7 @@ the AUTHORS file.
 
 #include <ui_mainwindow.h>
 #include <QMainWindow>
+#include <QTimer>
 
 #include <vector>
 
@@ -36,10 +37,22 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 	private:
 		vector<string> m_history;
 		size_t m_historypos;
-		
+
+		QTimer* timer;
+
 	public:
 		explicit MainWindow(QWidget *parent = 0);
 		void keyPressEvent(QKeyEvent * event) override;
+
+	signals:
+		void timeoutEvent();
+
+	public slots:
+		void on_actionReset_triggered();
+		void on_actionResetMatrix_triggered();
+		void timerEvent();
+	private slots:
+		void on_actionExit_triggered();
 };
 
 #endif // MAINWINDOW_HPP

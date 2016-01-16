@@ -28,6 +28,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	this->setupUi(this);
 	this->lineEdit->setFocus();
+	timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), this, SLOT(timerEvent()));
+	timer->setInterval(5);
+	timer->start();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -36,10 +40,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		this->m_history.push_back(this->lineEdit->text().toStdString());
 		this->textEdit->append(this->lineEdit->text());
 		this->lineEdit->clear();
-	}
-
-	if(event->key() == Qt::Key_R) {
-		this->openGLWidget->resetMatrix();
 	}
 
 	if(event->key() == Qt::Key_Up) {
@@ -58,4 +58,23 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 	}
 
 	event->accept();
+}
+
+void MainWindow::on_actionReset_triggered()
+{
+}
+
+void MainWindow::on_actionResetMatrix_triggered()
+{
+	this->openGLWidget->resetMatrix();
+}
+
+void MainWindow::timerEvent()
+{
+}
+
+
+void MainWindow::on_actionExit_triggered()
+{
+	this->close();
 }
