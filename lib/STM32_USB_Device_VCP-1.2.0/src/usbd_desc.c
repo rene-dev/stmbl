@@ -70,8 +70,8 @@
 #ifndef USBD_PRODUCT_STRING
 #define USBD_PRODUCT_STRING             "STM32 Virtual ComPort"
 #endif
-#define USBD_CONFIGURATION_STRING    "VCP Config"
-#define USBD_INTERFACE_STRING        "VCP Interface"
+#define USBD_CONFIGURATION_STRING       "VCP Config"
+#define USBD_INTERFACE_STRING           "VCP Interface"
 /**
   * @}
   */
@@ -301,18 +301,15 @@ uint8_t *USBD_USR_InterfaceStrDescriptor(uint8_t speed, uint16_t *length)
   */
 static void Get_SerialNum(void)
 {
-  uint32_t deviceserial0, deviceserial1, deviceserial2;
+  uint32_t deviceserial;
 
-  deviceserial0 = *(uint32_t*)DEVICE_ID1;
-  deviceserial1 = *(uint32_t*)DEVICE_ID2;
-  deviceserial2 = *(uint32_t*)DEVICE_ID3;
+  deviceserial = DEVICE_ID[0];
+  deviceserial += DEVICE_ID[2];
 
-  deviceserial0 += deviceserial2;
-
-  if (deviceserial0 != 0)
+  if (deviceserial != 0)
   {
-    IntToUnicode (deviceserial0, &USBD_StringSerial[2] ,8);
-    IntToUnicode (deviceserial1, &USBD_StringSerial[18] ,4);
+    IntToUnicode (deviceserial, &USBD_StringSerial[2] ,8);
+    IntToUnicode (DEVICE_ID[1], &USBD_StringSerial[18] ,4);
   }
 }
 
