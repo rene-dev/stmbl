@@ -94,6 +94,7 @@ void GLWidget::initializeGL()
 	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 	if(f) {
 		f->glEnableVertexAttribArray(0);
+		f->glEnableVertexAttribArray(1);
 		f->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	} else {
 		qWarning("couldn't get function context");
@@ -135,7 +136,7 @@ void GLWidget::initializeGL()
 
 void GLWidget::paintGL()
 {
-	monoclock::time_point t = monoclock::now();
+	//monoclock::time_point t = monoclock::now();
 
 	glClearColor(1.0, 1.0, 1.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -163,12 +164,9 @@ void GLWidget::paintGL()
 
 	update();
 
-	monoclock::time_point t2 = monoclock::now();
-
-	auto seconds_passed =
-			std::chrono::duration_cast<std::chrono::duration<float, std::ratio<1, 1> > >(t2 - t).count() * 60;
-
-	//qDebug() << seconds_passed;
+	//monoclock::time_point t2 = monoclock::now();
+	//auto seconds_passed = std::chrono::duration_cast<std::chrono::duration<float, std::ratio<1, 1> > >(t2 - t).count();
+	//qDebug() << 1 / seconds_passed;
 }
 
 void GLWidget::resizeGL(int w, int h)
