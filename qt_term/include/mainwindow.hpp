@@ -51,6 +51,8 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 		void on_actionReset_triggered();
 		void on_actionResetMatrix_triggered();
 		void timerEvent();
+	private slots:
+		void on_actionExit_triggered();
 };
 
 #endif // MAINWINDOW_HPP

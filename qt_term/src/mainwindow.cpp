@@ -73,3 +73,8 @@ void MainWindow::timerEvent()
 {
 }
 
+
+void MainWindow::on_actionExit_triggered()
+{
+	this->close();
+}
