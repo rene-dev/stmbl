@@ -31,7 +31,12 @@ set(TERM_CONF
 
 QT5_WRAP_UI(TERM_UI_INC ${TERM_UI})
 
-add_executable(term ${TERM_INC} ${TERM_SRC} ${TERM_UI_INC})
+if(APPLE)
+add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${TERM_INC} ${TERM_SRC} ${TERM_UI_INC})
+else(APPLE)
+add_executable(${PROJECT_NAME} ${TERM_INC} ${TERM_SRC} ${TERM_UI_INC})
+endif(APPLE)
+
 set_property(TARGET term PROPERTY CXX_STANDARD 14)
 set_property(TARGET term PROPERTY CXX_STANDARD_REQUIRED ON)
 
