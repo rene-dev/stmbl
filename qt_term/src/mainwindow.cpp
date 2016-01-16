@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->lineEdit->setFocus();
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(timerEvent()));
-	timer->setInterval(5);
+	timer->setInterval(500);
 	timer->start();
 }
 
@@ -71,6 +71,7 @@ void MainWindow::on_actionResetMatrix_triggered()
 
 void MainWindow::timerEvent()
 {
+	this->openGLWidget->m_function1.addPoint(sin(random()));
 }
 
 

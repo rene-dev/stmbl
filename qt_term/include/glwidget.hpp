@@ -52,8 +52,6 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 		QPoint m_transpos;
 		QPoint m_scalepos;
 
-		FunctionGraph m_function1;
-
 		QOpenGLBuffer m_vbo;
 		QOpenGLVertexArrayObject m_vao;
 
@@ -69,6 +67,8 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 		void updateMatrix();
 
 	public:
+		FunctionGraph m_function1;
+
 		explicit GLWidget(QWidget* parent = 0);
 		void resetMatrix();
 };

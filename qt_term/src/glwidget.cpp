@@ -123,10 +123,6 @@ void GLWidget::initializeGL()
 
 	m_function1.initializeGL();
 
-	for(int i = 0; i < 1000; i++) {
-		m_function1.addPoint(sin(i));
-	}
-
 	m_shader = new QOpenGLShaderProgram();
 	m_shader->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
 	m_shader->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
