@@ -188,6 +188,14 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 	}
 }
 
+void GLWidget::wheelEvent(QWheelEvent *event)
+{
+    QPoint numPixels = event->pixelDelta();
+    QPoint numDegrees = event->angleDelta();
+    qDebug() << "wh pix " << numPixels << endl << "wh deg" << numDegrees;    
+    event->accept();
+}
+
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
 	if(m_translating && event->buttons() == Qt::LeftButton) {
