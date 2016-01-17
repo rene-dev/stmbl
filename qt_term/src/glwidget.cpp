@@ -54,6 +54,9 @@ GLWidget::GLWidget(QWidget * parent) :
 	m_scalation.setX(1.0f);
 	m_scalation.setY(1.0f);
 	m_scalation.setZ(1.0f);
+	m_scalepos.setX(width()/2);
+	m_scalepos.setY(height()/2);
+	
 
 	updateMatrix();
 }
@@ -66,6 +69,8 @@ void GLWidget::resetMatrix()
 	m_scalation.setX(1.0f);
 	m_scalation.setY(1.0f);
 	m_scalation.setZ(1.0f);
+	m_scalepos.setX(width()/2);
+	m_scalepos.setY(height()/2);
 
 	repaint();
 }
@@ -74,8 +79,15 @@ void GLWidget::updateMatrix()
 {
 	m_matrix.setToIdentity();
 	m_matrix.ortho(-width()/2, +width()/2, +height()/2, -height()/2, 0.0f, 15.0f);
-	m_matrix.translate(m_translation);
-	m_matrix.scale(m_scalation);
+	QVector3D p(m_scalepos.x() - width()/2, m_scalepos.y() - height()/2, 0.0);
+	
+	m_matrix.translate(p);
+	m_matrix.scale(m_scalation.x(), m_scalation.x(), 1.0);
+	m_matrix.translate(-p / m_scalation.x());
+	QVector3D q = m_translation;
+	q /= m_scalation.x();
+	q.setZ(-10.0);
+	m_matrix.translate(q);
 }
 
 void GLWidget::initializeGL()
@@ -181,6 +193,9 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 	if(event->buttons() == Qt::LeftButton) {
 		m_translating = true;
 		m_transpos = event->pos();
+		QVector3D p(event->pos().x() - width()/2, event->pos().y() - height()/2, 0.0);
+		qDebug() << event->pos() << " " << p << " " << p / m_scalation;
+		
 	}
 	if(event->buttons() == Qt::RightButton) {
 		m_scaling = true;
@@ -192,8 +207,21 @@ void GLWidget::wheelEvent(QWheelEvent *event)
 {
     QPoint numPixels = event->pixelDelta();
     QPoint numDegrees = event->angleDelta();
-    qDebug() << "wh pix " << numPixels << endl << "wh deg" << numDegrees;    
+    //qDebug() << "wh pix " << numPixels << endl << "wh deg" << numDegrees;
+	 
+	 m_scalepos = event->pos();
+	 m_scalation.setX(m_scalation.x() + numPixels.y() / 20.0);
+	 m_scalation.setY(m_scalation.y() + numPixels.y() / 20.0);
+	 
+	 if(m_scalation.x() <= 0.0){
+		 m_scalation.setX(1.0 / 20.0);
+	 }
+	 if(m_scalation.y() <= 0.0){
+		 m_scalation.setY(1.0 / 20.0);
+	 }
+	 
     event->accept();
+	 
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
@@ -209,22 +237,22 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 		m_transpos = event->pos();
 	}
 
-	if(m_scaling && event->buttons() == Qt::RightButton) {
-		QPoint pos = m_scalepos - event->pos();
-
-		if(pos.y() != 0) {
-			m_scalation.setX(m_scalation.x() + (pos.y() / 5));
-			m_scalation.setY(m_scalation.y() + (pos.y() / 5));
-
-			if(m_scalation.x() <= 0.0f) {
-				m_scalation.setX(0.05f);
-				m_scalation.setY(0.05f);
-				m_scalation.setZ(1.0f);
-			}
-		}
-
-		m_scalepos = event->pos();
-	}
+	// if(m_scaling && event->buttons() == Qt::RightButton) {
+	// 	QPoint pos = m_scalepos - event->pos();
+	// 
+	// 	if(pos.y() != 0) {
+	// 		m_scalation.setX(m_scalation.x() + (pos.y() / 5));
+	// 		m_scalation.setY(m_scalation.y() + (pos.y() / 5));
+	// 
+	// 		if(m_scalation.x() <= 0.0f) {
+	// 			m_scalation.setX(0.05f);
+	// 			m_scalation.setY(0.05f);
+	// 			m_scalation.setZ(1.0f);
+	// 		}
+	// 	}
+	// 
+	// 	m_scalepos = event->pos();
+	// }
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent *event)

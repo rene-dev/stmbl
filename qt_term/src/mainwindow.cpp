@@ -64,6 +64,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::on_actionReset_triggered()
 {
+	this->openGLWidget->resetMatrix();
 }
 
 void MainWindow::on_actionResetMatrix_triggered()
