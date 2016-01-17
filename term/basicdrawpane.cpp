@@ -62,7 +62,6 @@ void BasicDrawPane::paintEvent(wxPaintEvent & evt)
                 path.AddLineToPoint(x, y);
                 x += xstep;
             }
-            //path.CloseSubpath();
             gc->StrokePath(path);
         }
 
@@ -73,7 +72,6 @@ void BasicDrawPane::paintEvent(wxPaintEvent & evt)
         path.AddLineToPoint(w, h/2);
         path.CloseSubpath();
         gc->StrokePath(path);
-
         delete gc;
     }
 }
