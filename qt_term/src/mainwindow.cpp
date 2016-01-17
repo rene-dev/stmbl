@@ -21,6 +21,7 @@ the AUTHORS file.
 
 #include <include/mainwindow.hpp>
 #include <QKeyEvent>
+#include <math.h>
 
 MainWindow::MainWindow(QWidget *parent) :
 		QMainWindow(parent),
@@ -29,8 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->setupUi(this);
 	this->lineEdit->setFocus();
 	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(timerEvent()));
-	timer->setInterval(500);
+	connect(timer, SIGNAL(timeout()), this, SLOT(pollTimerEvent()));
+	timer->setInterval(50);
+    timer->setTimerType(Qt::PreciseTimer);
 	timer->start();
 }
 
@@ -69,9 +71,10 @@ void MainWindow::on_actionResetMatrix_triggered()
 	this->openGLWidget->resetMatrix();
 }
 
-void MainWindow::timerEvent()
+void MainWindow::pollTimerEvent()
 {
-	this->openGLWidget->m_function1.addPoint(sin(random()));
+    static int i = 0;
+	this->openGLWidget->m_function1.addPoint(20.0*sin(i++/10.0));
 }
 
 

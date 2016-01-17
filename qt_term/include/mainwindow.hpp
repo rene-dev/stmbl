@@ -50,7 +50,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 	public slots:
 		void on_actionReset_triggered();
 		void on_actionResetMatrix_triggered();
-		void timerEvent();
+        void pollTimerEvent();
 	private slots:
 		void on_actionExit_triggered();
 };
