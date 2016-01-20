@@ -70,7 +70,8 @@ void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
 
 int _write(int file, char *ptr, int len) {
    while(len--){
-      UB_VCP_DataTx(*ptr++);
+      UB_VCP_DataTx(*ptr);
+      ptr++;
    }
-	return len;
+   return len;
 }
