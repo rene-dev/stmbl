@@ -43,7 +43,6 @@ private:
     void OnReset(wxCommandEvent& WXUNUSED(event));
     void OnClear(wxCommandEvent& WXUNUSED(event));
     void OnInput(wxCommandEvent& event);
-    void OnColorChange(wxMouseEvent& event);
     void OnChannelChange(wxCommandEvent& event);
     void OnPosChange(wxCommandEvent& event);
     void OnGainChange(wxCommandEvent& event);
