@@ -21,15 +21,19 @@ the AUTHORS file.
 
 #include <include/functiongraph.hpp>
 
+#include <QtOpenGLExtensions/qopenglextensions.h>
+
 #include <QVector>
 
 using namespace std;
 
-#define VBO_SIZE 20000
+#define VBO_SIZE 100
 
 FunctionGraph::FunctionGraph() :
 	m_xpos(0),
-	m_datasize(0)
+	m_data_mid(0),
+	m_data_size(0),
+	m_filled(false)
 {
 }
 
@@ -40,15 +44,19 @@ void FunctionGraph::initializeGL()
 
 	m_vbo.create();
 	m_vbo.bind();
-	m_vbo.allocate(VBO_SIZE * sizeof(GLfloat));
+	m_vbo.allocate(VBO_SIZE * 2 * sizeof(GLfloat));
+	QVector<GLfloat> data;
+	data.append(0);
+	data.append(0);
+	m_vbo.write(0, data.constData(), data.count() * sizeof(GLfloat));
 
 	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 	if(f) {
 		f->glEnableVertexAttribArray(0);
 #ifdef __APPLE__
-        //wat
-        //http://stackoverflow.com/questions/28156524/meaning-of-index-parameter-in-glenablevertexattribarray-and-possibly-a-bug-i
-        f->glEnableVertexAttribArray(1);
+		//wat
+		//http://stackoverflow.com/questions/28156524/meaning-of-index-parameter-in-glenablevertexattribarray-and-possibly-a-bug-i
+		f->glEnableVertexAttribArray(1);
 #endif
 		f->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	} else {
@@ -64,8 +72,16 @@ void FunctionGraph::paintGL()
 	QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
 	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-	if(f && m_datasize) {
-		f->glDrawArrays(GL_LINE_STRIP, 0, m_datasize / 2);
+	if(f) {
+		if(m_data_size > 0) {
+			if(!m_filled) {
+				f->glDrawArrays(GL_LINE_STRIP, 0, m_data_size);
+			} else {
+				f->glDrawArrays(GL_LINE_STRIP, 0, m_data_mid);
+				if(m_data_mid < m_data_size)
+					f->glDrawArrays(GL_LINE_STRIP, m_data_mid + 1, m_data_size - m_data_mid - 1);
+			}
+		}
 	}
 
 	m_vao.release();
@@ -74,18 +90,43 @@ void FunctionGraph::paintGL()
 void FunctionGraph::addPoint(float y)
 {
 	m_vbo.bind();
+
+	size_t offset = 0;
 	QVector<GLfloat> data;
+
+	if(!m_filled) {
+		if(m_data_size < VBO_SIZE) {
+			offset = m_data_size * 2;
+			m_data_size++;
+		} else {
+			m_xpos = 0;
+			m_data_mid = 2;
+			m_filled = true;
+			//keep the two front zeros
+			offset = 2;
+		}
+	} else {
+		if(m_data_mid < VBO_SIZE) {
+			offset = m_data_mid * 2;
+			m_data_mid++;
+		} else {
+			m_xpos = 0;
+			m_data_mid = 2;
+			offset = 2;
+		}
+	}
 
 	data.append(m_xpos++);
 	data.append(y);
 
-	m_vbo.write(m_datasize * sizeof(GLfloat), data.constData(), data.count() * sizeof(GLfloat));
-	m_datasize += data.count();
+	m_vbo.write(offset * sizeof(GLfloat), data.constData(), data.count() * sizeof(GLfloat));
+
 	m_vbo.release();
 }
 
 void FunctionGraph::restart()
 {
 	m_xpos = 0;
-	m_datasize = 0;
+	m_data_size = 0;
+	m_filled = false;
 }
