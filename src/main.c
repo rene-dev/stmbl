@@ -27,6 +27,7 @@
 #include "link.h"
 #include "crc8.h"
 #include <math.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
