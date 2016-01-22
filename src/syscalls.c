@@ -5,7 +5,6 @@
 //#include <string.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include "printf.h"
 
 #include "stm32_ub_usb_cdc.h"
 
