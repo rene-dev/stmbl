@@ -122,6 +122,9 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev)
     RCC->AHB2ENR |= RCC_APB2ENR_SYSCFGEN;
     RCC->AHB2ENR |= RCC_AHB2ENR_OTGFSEN;
 
+    // enable I/O compensation cell to reduce the I/O noise on power supply
+    SYSCFG->CMPCR = SYSCFG_CMPCR_CMP_PD;
+
     // Configure DM and DP Pins
     //
     GPIO_PinAFConfig(GPIOA, GPIO_PinSource11, GPIO_AF_OTG1_FS);
