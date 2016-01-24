@@ -29,8 +29,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "usb_cdc.h"
 
-#include "stm32_ub_usb_cdc.h"
 
 GLOBAL_HAL_PIN(rt_time);
 GLOBAL_HAL_PIN(frt_time);
@@ -301,9 +301,6 @@ int main(void)
    }
 
    link_pid();
-
-   UB_USB_CDC_Init();
-
 
 
    if(hal.pin_errors + hal.comp_errors == 0){

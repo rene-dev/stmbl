@@ -7,6 +7,7 @@
 //
 
 #include "setup.h"
+#include "usb_cdc.h"
 
 void setup(){
    //Enable clocks
@@ -20,10 +21,10 @@ void setup(){
    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//wird in UB_USB_CDC_Init() nochmal gesetzt!
+   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
    setup_res();
-
+   usb_init();
 	// systick timer
 	systime = 0;
 

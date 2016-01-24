@@ -657,9 +657,9 @@ NRT(
 
       buf[8 + 1] = 0;
 
-      if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
+      if (USB_CDC_is_connected()) {
          PIN(con) = 1.0;
-         UB_USB_CDC_SendString((char*)buf, NONE);
+         USB_VCP_send_string(buf);
       }else{
          PIN(con) = 0.0;
       }
@@ -669,8 +669,7 @@ NRT(
 
 
 
-   if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED && systime >= 1000){
-
+   if (USB_CDC_is_connected() && systime >= 1000) {
       char source[APP_TX_BUF_SIZE];
       char sink[APP_TX_BUF_SIZE];
 
@@ -679,8 +678,8 @@ NRT(
 
       int i = -1;
       char rx_buf[APP_TX_BUF_SIZE];
-      if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY){
-         i = sscanf_(rx_buf, "%N = %N",sink ,source);
+      if (USB_VCP_get_string(rx_buf)) {
+         i = sscanf_(rx_buf, "%N = %N", sink, source);
       }
       if(i == 2){ // read hal pin
          if(is_hal_pin(sink)){
@@ -703,7 +702,6 @@ NRT(
          }
       }
    }
-
 );
 
 ENDCOMP;
