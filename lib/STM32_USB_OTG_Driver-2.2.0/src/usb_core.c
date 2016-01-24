@@ -460,7 +460,7 @@ USB_OTG_STS USB_OTG_EnableGlobalInt(USB_OTG_CORE_HANDLE *pdev)
 
 /**
 * @brief  USB_OTG_DisableGlobalInt
-*         Enables the controller's Global Int in the AHB Config reg
+*         Disables the controller's Global Int in the AHB Config reg
 * @param  pdev : Selected device
 * @retval USB_OTG_STS : status
 */
@@ -469,7 +469,7 @@ USB_OTG_STS USB_OTG_DisableGlobalInt(USB_OTG_CORE_HANDLE *pdev)
   USB_OTG_STS status = USB_OTG_OK;
   USB_OTG_GAHBCFG_TypeDef  ahbcfg;
   ahbcfg.d32 = 0;
-  ahbcfg.b.glblintrmsk = 1; /* Enable interrupts */
+  ahbcfg.b.glblintrmsk = 0; /* Disable interrupts */
   USB_OTG_MODIFY_REG32(&pdev->regs.GREGS->GAHBCFG, ahbcfg.d32, 0);
   return status;
 }
