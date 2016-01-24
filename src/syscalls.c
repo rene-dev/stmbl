@@ -5,7 +5,6 @@
 //#include <string.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include "printf.h"
 
 #include "stm32_ub_usb_cdc.h"
 
@@ -70,7 +69,8 @@ void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
 
 int _write(int file, char *ptr, int len) {
    while(len--){
-      UB_VCP_DataTx(*ptr++);
+      UB_VCP_DataTx(*ptr);
+      ptr++;
    }
-	return len;
+   return len;
 }

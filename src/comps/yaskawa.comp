@@ -265,7 +265,7 @@ RT(
 
 NRT(
    if(RISING_EDGE(PIN(dump))){
-      printf_("%s\n",data);
+      printf("%s\n",data);
    }
 );
 

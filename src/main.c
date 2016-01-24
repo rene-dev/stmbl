@@ -19,7 +19,6 @@
 */
 
 #include "stm32f4xx_conf.h"
-#include "printf.h"
 #include "scanf.h"
 #include "hal.h"
 #include "setup.h"
@@ -27,6 +26,7 @@
 #include "link.h"
 #include "crc8.h"
 #include <math.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
