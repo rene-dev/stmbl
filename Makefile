@@ -207,12 +207,17 @@ showsize: build
 
 # Flash the device
 #
-btburn: build showsize
+btburn: build showsize $(TARGET).dfu
 	#change this to your device
 	printf "bootloader\r" > `ls /dev/cu.usbmodem*` || true
 	printf "bootloader\r" > `ls /dev/ttyACM*` || true
 	sleep 1
-	dfu-util -a 0 -d 0483:df11 -s 0x08010000:leave -D $(TARGET).bin
+	dfu-util -a 0 -s 0x08010000:leave -D $(TARGET).dfu
+
+# Create a DFU file from bin file
+%.dfu: %.bin
+	@cp $< $@
+	dfu-suffix -v 0483 -p df11 -a $@
 
 # Target: clean project
 #
