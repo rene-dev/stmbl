@@ -19,7 +19,6 @@ INCDIRS += shared
 SOURCES += src/main.c
 SOURCES += src/stm32f4xx_it.c
 SOURCES += src/system_stm32f4xx.c
-SOURCES += src/printf.c
 SOURCES += src/scanf.c
 SOURCES += src/setup.c
 SOURCES += src/hal.c

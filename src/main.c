@@ -19,7 +19,6 @@
 */
 
 #include "stm32f4xx_conf.h"
-#include "printf.h"
 #include "scanf.h"
 #include "hal.h"
 #include "setup.h"
