@@ -10,8 +10,6 @@
 
 #include <stdarg.h>
 
-#include "stm32_ub_usb_cdc.h"
-
 int scanf_(const char *format, ...);
 int sscanf_(const char* buf, const char *format, ...);
 int vfsscanf_(const char *buf, const char *format, va_list arg);

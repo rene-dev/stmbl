@@ -21,6 +21,7 @@ SOURCES += src/stm32f4xx_it.c
 SOURCES += src/system_stm32f4xx.c
 SOURCES += src/scanf.c
 SOURCES += src/setup.c
+SOURCES += src/usb_cdc.c
 SOURCES += src/hal.c
 SOURCES += src/misc.c
 SOURCES += src/eeprom.c
@@ -31,22 +32,31 @@ SOURCES += src/syscalls.c
 SOURCES += shared/crc8.c
 SOURCES += shared/common.c
 
-#USB CDC
-INCDIRS += src/ub_lib
-INCDIRS += src/ub_lib/usb_cdc_lolevel
+USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
 
-SOURCES += src/ub_lib/stm32_ub_usb_cdc.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usb_core.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usb_dcd_int.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_req.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_cdc_core.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_core.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usb_dcd.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_cdc_vcp.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_desc.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_ioreq.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usb_bsp.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_usr.c
+CPPFLAGS += -DUSBD_PRODUCT_STRING='"STMBL Virtual ComPort"'
+CPPFLAGS += -DCDC_IN_FRAME_INTERVAL=1
+CPPFLAGS += -DAPP_RX_DATA_SIZE=4096
+
+INCDIRS += $(USB_VCP_DIR)/inc
+SOURCES += $(USB_VCP_DIR)/src/usbd_desc.c
+
+USB_DEVICE_DIR = lib/STM32_USB_Device_Library-1.2.0
+
+INCDIRS += $(USB_DEVICE_DIR)/Class/cdc/inc
+SOURCES += $(USB_DEVICE_DIR)/Class/cdc/src/usbd_cdc_core.c
+
+INCDIRS += $(USB_DEVICE_DIR)/Core/inc
+SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_core.c
+SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_ioreq.c
+SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_req.c
+
+USB_DRIVER_DIR = lib/STM32_USB_OTG_Driver-2.2.0
+
+INCDIRS += $(USB_DRIVER_DIR)/inc
+SOURCES += $(USB_DRIVER_DIR)/src/usb_core.c
+SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd.c
+SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd_int.c
 
 # Standard peripheral library
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
