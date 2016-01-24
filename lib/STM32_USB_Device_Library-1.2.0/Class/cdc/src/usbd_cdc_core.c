@@ -543,7 +543,8 @@ uint8_t  usbd_cdc_Setup (void  *pdev,
       else /* No Data request */
       {
         /* Transfer the command to the interface layer */
-        APP_FOPS.pIf_Ctrl(req->bRequest, NULL, 0);
+        /* https://my.st.com/public/STe2ecommunities/mcu/Lists/cortex_mx_stm32/Flat.aspx?RootFolder=https%3A%2F%2Fmy.st.com%2Fpublic%2FSTe2ecommunities%2Fmcu%2FLists%2Fcortex_mx_stm32%2FKnown%20bugs%20in%20the%20OTG%20%20USB%20library%20v2.1.0&FolderCTID=0x01200200770978C69A1141439FE559EB459D7580009C4E14902C3CDE46A77F0FFD06506F5B&currentviews=1178 */
+        APP_FOPS.pIf_Ctrl(req->bRequest, (uint8_t *) req, 0);
       }
       
       return USBD_OK;
