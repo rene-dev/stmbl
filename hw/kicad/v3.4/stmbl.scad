@@ -94,6 +94,20 @@ module pin2(l){
   color("grey") translate([0, 0, 0]) cube([l * 2.54, 2.54, 5.08]);
 }
 
+module soc2(l){
+  for(a = [0:l - 1]){
+		color("gold") translate([2.54 / 2 + a * 2.54, 2.54 / 2, -3 / 2]) cube([0.64, 0.64, 3], true);
+    color("gold") translate([2.54 / 2 + a * 2.54, 2.54 + 2.54 / 2, -3 / 2]) cube([0.64, 0.64, 3], true);
+	}
+  difference(){
+    color("grey") translate([0, 0, 0]) cube([l * 2.54, 5.08, 2.54 + 6]);
+    for(a = [0:l - 1]){
+		color("gold") translate([2.54 / 2 + a * 2.54, 2.54 / 2, 5]) cube([0.64, 0.64, 10], true);
+    color("gold") translate([2.54 / 2 + a * 2.54, 2.54 + 2.54 / 2, 5]) cube([0.64, 0.64, 10], true);
+	}
+  }
+}
+
 module usb(){
   difference(){
     color("silver") cube([7.8, 5.06, 2.5]);
@@ -202,21 +216,23 @@ module cover(){
   difference(){
     translate([-1, -9, 54]) color("silver") cube([48, 104, 1]);
     translate([5, 61, 53]) color("silver") cube([9.5, 23.5, 3]);
-    translate([11, 45, 53]) color("silver") cube([3.5, 11, 3]);
-    translate([8.5, 38, 53]) color("silver") cube([6, 8, 3]);
-    translate([15, 9, 53]) color("silver") cube([6, 26, 3]);
+    translate([11, 43, 53]) color("silver") cube([3.5, 11, 3]);
+    translate([8.5, 52, 53]) color("silver") cube([6, 10, 3]);
+    translate([8.5, 15.5, 53]) color("silver") cube([6, 26, 3]);
+    translate([4, -5, 53]) color("silver") cylinder($fn = 100, r = 1.25, h = 3);
+    translate([42, -5, 53]) color("silver") cylinder($fn = 100, r = 1.25, h = 3);
   }
   translate([40, 0, 55]) color("black") rotate([0, 0, 90]) text("STMBL 3.4", font = "Liberation Sans", size = 13);
-  translate([20, 4, 55]) color("black") rotate([0, 0, 90]) text("IO", font = "Liberation Sans", size = 3);
-  translate([15, 10, 55]) color("black") rotate([0, 0, 90]) text("1", font = "Liberation Sans", size = 2);
-  translate([15, 32, 55]) color("black") rotate([0, 0, 90]) text("10", font = "Liberation Sans", size = 2);
-  translate([24, 10, 55]) color("black") rotate([0, 0, 90]) text("11", font = "Liberation Sans", size = 2);
-  translate([24, 32, 55]) color("black") rotate([0, 0, 90]) text("20", font = "Liberation Sans", size = 2);
-  translate([6, 38, 55]) color("black") rotate([0, 0, 90]) text("FB0", font = "Liberation Sans", size = 2);
-  translate([8, 38, 55]) color("black") rotate([0, 0, 90]) text("5V 12V", font = "Liberation Sans", size = 2);
-  translate([19, 38, 55]) color("black") rotate([0, 0, 90]) text("FB1", font = "Liberation Sans", size = 2);
-  translate([17, 38, 55]) color("black") rotate([0, 0, 90]) text("5V 12V", font = "Liberation Sans", size = 2);
-  translate([10, 48, 55]) color("black") rotate([0, 0, 90]) text("USB", font = "Liberation Sans", size = 2);
+  //translate([20, 4, 55]) color("black") rotate([0, 0, 90]) text("IO", font = "Liberation Sans", size = 3);
+  //translate([15, 10, 55]) color("black") rotate([0, 0, 90]) text("1", font = "Liberation Sans", size = 2);
+  //translate([15, 32, 55]) color("black") rotate([0, 0, 90]) text("10", font = "Liberation Sans", size = 2);
+  //translate([24, 10, 55]) color("black") rotate([0, 0, 90]) text("11", font = "Liberation Sans", size = 2);
+  //translate([24, 32, 55]) color("black") rotate([0, 0, 90]) text("20", font = "Liberation Sans", size = 2);
+  //translate([6, 38, 55]) color("black") rotate([0, 0, 90]) text("FB0", font = "Liberation Sans", size = 2);
+  //translate([8, 38, 55]) color("black") rotate([0, 0, 90]) text("5V 12V", font = "Liberation Sans", size = 2);
+  //translate([19, 38, 55]) color("black") rotate([0, 0, 90]) text("FB1", font = "Liberation Sans", size = 2);
+  //translate([17, 38, 55]) color("black") rotate([0, 0, 90]) text("5V 12V", font = "Liberation Sans", size = 2);
+  //translate([10, 48, 55]) color("black") rotate([0, 0, 90]) text("USB", font = "Liberation Sans", size = 2);
   translate([-1, -10, -10]) color("silver") cube([1, 106, 64]);
   difference(){
     translate([0, 95, -10]) color("silver") cube([22.8, 1, 64]);
@@ -289,10 +305,10 @@ module f1(){
   translate([9.5,56,0]) rotate([0, 180, 0]) r2512();
 }
 
-module spacer(){
+module spacer(l){
   difference(){
-    color("grey") cylinder($fn = 100, r = 3, h = 8);
-    color("grey") cylinder($fn = 100, r = 1.5, h = 9);
+    color("grey") cylinder($fn = 100, r = 3, h = l);
+    translate([0, 0, -1]) color("grey") cylinder($fn = 100, r = 1.5, h = l + 2);
   }
 }
 
@@ -301,19 +317,34 @@ module m3(l){
   color("silver") cylinder($fn = 100, r = 2.5, h = 2);
 }
 
+module ethercat(){
+  difference(){
+    color("green") cube([46, 51, pcb_hight]);
+    translate([4, 4, -1]) color("green") cylinder($fn = 100, r = 1.5, h = 3);
+    translate([4 + 38, 4, -1]) color("green") cylinder($fn = 100, r = 1.5, h = 3);
+  }
+  translate([46 / 2 - 16, -1, pcb_hight]) rj45();
+  translate([46 / 2, -1, pcb_hight]) rj45();
+  translate([9, 25, 0]) rotate([180, 0, 90]) soc2(10);
+  translate([4, 4, -3]) spacer(3);
+  translate([4, 4, pcb_hight]) m3(8);
+  translate([4 + 38, 4, -3]) spacer(3);
+  translate([4 + 38, 4, pcb_hight]) m3(8);
+}
+
 module stmbl(){
 	rotate([0, 90, 0]) translate([-50 - 2 - 2 - 33 - 8, 0, 14 ]) f4();
 	translate([0, 10, 33 + 8]) f1();
 	rotate([90, 0, 0]) translate([3, -41 + 33 + 8, -11]) fan();
 	translate([0, 11, 0]) heatsink();
-  translate([5, 20, 33]) spacer();
-  translate([5 + 36, 20, 33]) spacer();
+  translate([5, 20, 33]) spacer(8);
+  translate([5 + 36, 20, 33]) spacer(8);
   translate([5, 20, 33 + 8 + pcb_hight]) m3(15);
   translate([5 + 36, 20, 33 + 8 + pcb_hight]) m3(15);
   translate([21 + 11.4, 27 + 3 + 10, 33 + 5.7]) m3(10);
   translate([21 + 11.4, 27 + 3 + 10 + 56, 33 + 5.7]) m3(10);
-  
-  //translate([0, 10, 33 + 8]) cover();
+  translate([0, 1, 96 + 3]) ethercat();
+  translate([0, 10, 33 + 8]) cover();
 }
 
 
