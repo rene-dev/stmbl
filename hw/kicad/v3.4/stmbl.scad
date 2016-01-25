@@ -102,13 +102,27 @@ module usb(){
 }
 
 module heatsink(l){
-	difference(){
-		color("grey") cube([46, 94, 33]);
-		color("grey") translate([8, -1, -1]) cube([5, 97, 30]);
-		color("grey") translate([16, -1, -1]) cube([5, 97, 30]);
-		color("grey") translate([24, -1, -1]) cube([5, 97, 30]);
-		color("grey") translate([32, -1, -1]) cube([5, 97, 30]);
-	}
+  translate([46, 0, 0]) rotate([90, 0, 180]) color("grey") linear_extrude(height = 94, convexity = 10, twist = 0) polygon( points=[[0, 1], [0, 9.5], [7, 9.5], 
+  [7, 12.5], [0, 12.5], [0, 32], [1, 33], 
+  [3.5, 33], [3.5, 25], [6.5, 25], [6.5, 33], 
+  [39.5, 33], [39.5, 25], [42.5, 25], [42.5, 33], 
+  [45, 33], [46, 32], [46, 17.5], [39, 17.5], 
+  [39, 14.5], [46, 14.5], [46, 1], [45, 0], [43, 0], 
+  [43, 7], [40, 7], [40, 0], [38, 0], [37, 1], 
+  [37, 27], [35, 29], [33.5, 29], [31.5, 27], 
+  [31.5, 3], [30.5, 2], [29.5, 3], [29.5, 27], 
+  [27.5, 29], [26, 29], [24, 27], [24, 3], [23, 2], 
+  [22, 3], [22, 27], [20, 29], [18.5, 29], [16.5, 27], 
+  [16.5, 3], [15.5, 2], [14.5, 3], [14.5, 27], 
+  [12.5, 29], [11, 29], [9, 27], [9, 1], [8, 0], 
+  [6, 0], [6, 7], [3, 7], [3, 0], [1, 0]]);
+	//difference(){
+	//	color("grey") cube([46, 94, 33]);
+	//	color("grey") translate([8, -1, -1]) cube([5, 97, 30]);
+	//	color("grey") translate([16, -1, -1]) cube([5, 97, 30]);
+	//	color("grey") translate([24, -1, -1]) cube([5, 97, 30]);
+	//	color("grey") translate([32, -1, -1]) cube([5, 97, 30]);
+	//}
 }
 
 module fan(){
@@ -169,7 +183,7 @@ module iram256(){
 
 module f4_pcb(){
 	difference(){
-    translate([0, 1, 0]) color("green") cube([50, 104, pcb_hight], false);
+    translate([0, 1, 0]) color("green") cube([50, 100, pcb_hight], false);
     color("green") translate([44, 93.5, -1]) cube([10, 16, 4], false);
   }
 }
@@ -239,12 +253,12 @@ module f4(){
   translate([6 * 3.5 + 1.6 + 5, 105 - 11.2 + 1, 0]) rotate([0, 180, 0]) akl182(6);
   translate([2 * 3.5 + 1.6 + 6 * 3.5 + 1.6 + 5, 105 - 11.2 + 1, 0]) rotate([0, 180, 0]) akl182(2);
   translate([11.2 - 1, 94 , 0]) rotate([0, 180, 90]) akl182(6);
-  translate([-1, 57, 0]) rotate([0, 180, -90]) usb();
-  translate([6 - 1, 45, pcb_hight]) rotate([0, 0, -90]) pin2(10);
-  translate([6 - 1, 48, 0]) rotate([0, 180, -90]) pin2(3);
+  translate([-1, 54, 0]) rotate([0, 180, -90]) usb();
+  translate([6 - 1, 26, 0]) rotate([0, 180, -90]) pin2(10);
+  translate([6 - 1, 63, 0]) rotate([0, 180, -90]) pin2(3);
   translate([1 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
   translate([1 + 0.25 + 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
-  translate([1 + 0.25 + 5 + 0.25 + 5 + 0.25, 28, 0]) rotate([180, 0, 90]) soic8();
+  translate([1 + 0.25 + 5 + 0.25 + 5 + 0.25 + 2.5, 28, 0]) rotate([180, 0, 90]) soic8();
   translate([1 + 0.25 + 5 + 0.25 + 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
   translate([17 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
   translate([17 + 0.25 + 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
@@ -275,11 +289,30 @@ module f1(){
   translate([9.5,56,0]) rotate([0, 180, 0]) r2512();
 }
 
+module spacer(){
+  difference(){
+    color("grey") cylinder($fn = 100, r = 3, h = 8);
+    color("grey") cylinder($fn = 100, r = 1.5, h = 9);
+  }
+}
+
+module m3(l){
+  translate([0, 0, -l]) color("silver") cylinder($fn = 100, r = 1.5, h = l);
+  color("silver") cylinder($fn = 100, r = 2.5, h = 2);
+}
+
 module stmbl(){
 	rotate([0, 90, 0]) translate([-50 - 2 - 2 - 33 - 8, 0, 14 ]) f4();
 	translate([0, 10, 33 + 8]) f1();
 	rotate([90, 0, 0]) translate([3, -41 + 33 + 8, -11]) fan();
 	translate([0, 11, 0]) heatsink();
+  translate([5, 20, 33]) spacer();
+  translate([5 + 36, 20, 33]) spacer();
+  translate([5, 20, 33 + 8 + pcb_hight]) m3(15);
+  translate([5 + 36, 20, 33 + 8 + pcb_hight]) m3(15);
+  translate([21 + 11.4, 27 + 3 + 10, 33 + 5.7]) m3(10);
+  translate([21 + 11.4, 27 + 3 + 10 + 56, 33 + 5.7]) m3(10);
+  
   //translate([0, 10, 33 + 8]) cover();
 }
 
