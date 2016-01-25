@@ -143,7 +143,7 @@ void USB_OTG_BSP_EnableInterrupt(USB_OTG_CORE_HANDLE *pdev)
 {
     NVIC_Init(&(NVIC_InitTypeDef) {
         .NVIC_IRQChannel = OTG_FS_IRQn,
-        .NVIC_IRQChannelPreemptionPriority = 1,
+        .NVIC_IRQChannelPreemptionPriority = 15,
         .NVIC_IRQChannelSubPriority = 0,
         .NVIC_IRQChannelCmd = ENABLE
     });
