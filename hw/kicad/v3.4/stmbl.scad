@@ -141,14 +141,14 @@ module heatsink(l){
 
 module fan(){
 	difference(){
-		color("grey") cube([40, 40, 10], false);
-		color("grey") translate([20, 20, -1]) cylinder($fn=100, r = 18, h = 12);
+		color("grey") cube([45, 45, 10], false);
+		color("grey") translate([22.5, 22.5, -1]) cylinder($fn=100, r = 20, h = 12);
     color("grey") translate([4, 4, -1]) cylinder($fn=100, r = 1.5, h = 12);
-    color("grey") translate([4 + 32, 4, -1]) cylinder($fn=100, r = 1.5, h = 12);
-    color("grey") translate([4, 4 + 32, -1]) cylinder($fn=100, r = 1.5, h = 12);
-    color("grey") translate([4 + 32, 4 + 32, -1]) cylinder($fn=100, r = 1.5, h = 12);
+    color("grey") translate([4 + 37, 4, -1]) cylinder($fn=100, r = 1.5, h = 12);
+    color("grey") translate([4, 4 + 37, -1]) cylinder($fn=100, r = 1.5, h = 12);
+    color("grey") translate([4 + 37, 4 + 37, -1]) cylinder($fn=100, r = 1.5, h = 12);
 	}
-	color("grey") translate([20, 20, 0]) cylinder($fn=100, r = 10, h = 10);
+	color("grey") translate([22.5, 22.5, 0]) cylinder($fn=100, r = 10, h = 10);
 }
 
 module lqfp100(){
@@ -243,8 +243,8 @@ module cover(){
   difference(){
     translate([0, -9.95, -10]) color("silver") cube([22.8, 1, 64]);
     translate([15.5, -11, 4.5]) color("silver") cube([8, 3, 50]);
-    translate([7, -11, -5]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 1.5, h = 3);
-    translate([23, -11, -21]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 18, h = 3);
+    translate([4.5, -11, 0]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 1.5, h = 3);
+    translate([23, -11, -18.5]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 20, h = 3);
   }
   translate([-1 + 46 + 1, -10, -10]) color("silver") cube([1, 105, 64]);
   difference(){
@@ -256,8 +256,8 @@ module cover(){
   difference(){
     translate([23, -9.95, -10]) color("silver") cube([23, 1, 64]);
     translate([21, -11, 4.5]) color("silver") cube([8, 3, 64]);
-    translate([7 + 32, -11, -5]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 1.5, h = 3);
-    translate([23, -11, -21]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 18, h = 3);
+    translate([4.5 + 37, -11, 0]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 1.5, h = 3);
+    translate([23, -11, -18.5]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 20, h = 3);
   }
  
 }
@@ -334,18 +334,22 @@ module ethercat(){
 }
 
 module stmbl(){
-	rotate([0, 90, 0]) translate([-50 - 2 - 2 - 33 - 8, 0, 14 ]) f4();
-	translate([0, 10, 33 + 8]) f1();
-	rotate([90, 0, 0]) translate([3, -41 + 33 + 8, -11]) fan();
-	translate([0, 11, 0]) heatsink();
-  translate([5, 20, 33]) spacer(8);
-  translate([5 + 36, 20, 33]) spacer(8);
-  translate([5, 20, 33 + 8 + pcb_hight]) m3(15);
-  translate([5 + 36, 20, 33 + 8 + pcb_hight]) m3(15);
-  translate([21 + 11.4, 27 + 3 + 10, 33 + 5.7]) m3(10);
-  translate([21 + 11.4, 27 + 3 + 10 + 56, 33 + 5.7]) m3(10);
-  translate([0, 1, 96 + 3]) ethercat();
-  translate([0, 10, 33 + 8]) cover();
+	rotate([0, 90, 0]) translate([-50 - 2 - 2 - 33 - 8, 0, 15 ]) f4();
+	translate([1, 10, 33 + 8]) f1();
+	rotate([90, 0, 0]) translate([1.5, -41 + 33 + 8, -11]) fan();
+	translate([1, 11, 0]) heatsink();
+  translate([5, 1, 4]) rotate([90, 0, 0]) m3(15);
+  translate([5 + 37, 1, 4]) rotate([90, 0, 0]) m3(15);
+  translate([5, 0, 4 + 37]) rotate([90, 0, 0]) m3(10);
+  translate([5 + 37, 0, 4 + 37]) rotate([90, 0, 0]) m3(10);
+  translate([6, 20, 33]) spacer(8);
+  translate([6 + 36, 20, 33]) spacer(8);
+  translate([6, 20, 33 + 8 + pcb_hight]) m3(15);
+  translate([6 + 36, 20, 33 + 8 + pcb_hight]) m3(15);
+  translate([22 + 11.4, 27 + 3 + 10, 33 + 5.7]) m3(10);
+  translate([22 + 11.4, 27 + 3 + 10 + 56, 33 + 5.7]) m3(10);
+  translate([1, 1, 96 + 3]) ethercat();
+  translate([1, 10, 33 + 8]) cover();
 }
 
 
