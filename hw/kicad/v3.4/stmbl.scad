@@ -207,7 +207,7 @@ module f1_pcb(){
     color("green") translate([0, 5, 0]) cube([46, 90, pcb_hight], false);
     color("green") translate([32.5, 30, -1]) cylinder($fn = 100, r = 3, h = 3);
     color("green") translate([32.5, 30 + 56, -1]) cylinder($fn = 100, r = 3, h = 3);
-    color("green") translate([5, 10, -1]) cylinder($fn = 100, r = 1.5, h = 3);
+    color("green") translate([5, 28, -1]) cylinder($fn = 100, r = 1.5, h = 3);
     color("green") translate([5 + 36, 10, -1]) cylinder($fn = 100, r = 1.5, h = 3);
   }
 }
@@ -241,8 +241,8 @@ module cover(){
   }
   
   difference(){
-    translate([0, -9.95, -10]) color("silver") cube([22.8, 1, 64]);
-    translate([15.5, -11, 4.5]) color("silver") cube([8, 3, 50]);
+    translate([0, -9.95, -10]) color("silver") cube([15.5, 1, 64]);
+    //translate([15.5, -11, 4.5]) color("silver") cube([8, 3, 50]);
     translate([4.5, -11, 0]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 1.5, h = 3);
     translate([23, -11, -18.5]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 20, h = 3);
   }
@@ -254,8 +254,8 @@ module cover(){
     translate([15, 94, 22.5]) color("silver") cube([9.5, 3, 33]);
   }
   difference(){
-    translate([23, -9.95, -10]) color("silver") cube([23, 1, 64]);
-    translate([21, -11, 4.5]) color("silver") cube([8, 3, 64]);
+    translate([29, -9.95, -10]) color("silver") cube([17, 1, 64]);
+    //translate([21, -11, 0]) color("silver") cube([8, 3, 64]);
     translate([4.5 + 37, -11, 0]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 1.5, h = 3);
     translate([23, -11, -18.5]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 20, h = 3);
   }
@@ -342,9 +342,9 @@ module stmbl(){
   translate([5 + 37, 1, 4]) rotate([90, 0, 0]) m3(15);
   translate([5, 0, 4 + 37]) rotate([90, 0, 0]) m3(10);
   translate([5 + 37, 0, 4 + 37]) rotate([90, 0, 0]) m3(10);
-  translate([6, 20, 33]) spacer(8);
+  translate([6, 38, 33]) spacer(8);
   translate([6 + 36, 20, 33]) spacer(8);
-  translate([6, 20, 33 + 8 + pcb_hight]) m3(15);
+  translate([6, 38, 33 + 8 + pcb_hight]) m3(15);
   translate([6 + 36, 20, 33 + 8 + pcb_hight]) m3(15);
   translate([22 + 11.4, 27 + 3 + 10, 33 + 5.7]) m3(10);
   translate([22 + 11.4, 27 + 3 + 10 + 56, 33 + 5.7]) m3(10);
