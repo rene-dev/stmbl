@@ -233,28 +233,30 @@ module cover(){
   //translate([19, 38, 55]) color("black") rotate([0, 0, 90]) text("FB1", font = "Liberation Sans", size = 2);
   //translate([17, 38, 55]) color("black") rotate([0, 0, 90]) text("5V 12V", font = "Liberation Sans", size = 2);
   //translate([10, 48, 55]) color("black") rotate([0, 0, 90]) text("USB", font = "Liberation Sans", size = 2);
-  translate([-1, -10, -10]) color("silver") cube([1, 105, 64]);
+  translate([-1, -10, -12]) color("silver") cube([1, 105, 66]);
   difference(){
-    translate([-1, 95, -10]) color("silver") cube([23.8, 0.95, 64]);
+    translate([-1, 95, -12]) color("silver") cube([23.8, 0.95, 66]);
     translate([-2, 94, 1]) color("silver") cube([27, 3, 9]);
     translate([15, 94, 22.5]) color("silver") cube([9.5, 3, 333]);
+    translate([5, 97, -10]) color("silver") rotate([90, 0, 0]) cylinder($fn = 100, r = 1.5, h = 3);
   }
   
   difference(){
-    translate([0, -9.95, -10]) color("silver") cube([15.5, 1, 64]);
+    translate([0, -9.95, -12]) color("silver") cube([15.5, 1, 66]);
     //translate([15.5, -11, 4.5]) color("silver") cube([8, 3, 50]);
     translate([4.5, -11, 0]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 1.5, h = 3);
     translate([23, -11, -18.5]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 20, h = 3);
   }
-  translate([-1 + 46 + 1, -10, -10]) color("silver") cube([1, 105, 64]);
+  translate([-1 + 46 + 1, -10, -12]) color("silver") cube([1, 105, 66]);
   difference(){
-    translate([23, 95, -10]) color("silver") cube([24, 0.95, 64]);
+    translate([23, 95, -12]) color("silver") cube([24, 0.95, 66]);
     translate([37, 94, 1]) color("silver") cube([11, 3, 9.5]);
     translate([23, 94, 1]) color("silver") cube([5, 3, 9]);
     translate([15, 94, 22.5]) color("silver") cube([9.5, 3, 33]);
+    translate([5 + 36, 97, -10]) color("silver") rotate([90, 0, 0]) cylinder($fn = 100, r = 1.5, h = 3);
   }
   difference(){
-    translate([29, -9.95, -10]) color("silver") cube([17, 1, 64]);
+    translate([29, -9.95, -12]) color("silver") cube([17, 1, 66]);
     //translate([21, -11, 0]) color("silver") cube([8, 3, 64]);
     translate([4.5 + 37, -11, 0]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 1.5, h = 3);
     translate([23, -11, -18.5]) color("silver") rotate([-90, 0, 0]) cylinder($fn=100, r = 20, h = 3);
@@ -350,6 +352,8 @@ module stmbl(){
   translate([22 + 11.4, 27 + 3 + 10 + 56, 33 + 5.7]) m3(10);
   translate([1, 1, 96 + 3]) ethercat();
   translate([1, 10, 33 + 8]) cover();
+  translate([6, 106, 31]) rotate([-90, 0, 0]) m3(5);
+  translate([6 + 36, 106, 31]) rotate([-90, 0, 0]) m3(5);
 }
 
 
