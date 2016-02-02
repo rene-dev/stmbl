@@ -1,4 +1,4 @@
-conf0.r = 1.2
+conf0.r = 0.6
 conf0.l = 0.0025
 conf0.j = 0.00005
 conf0.psi = 0.04774
@@ -13,7 +13,7 @@ conf0.max_dc_cur = 10
 conf0.max_ac_cur = 6
 
 conf0.fb_type = 8
-conf0.fb_offset = 1.638
+conf0.fb_offset = 1.54
 conf0.fb_res = 16384
 conf0.autophase = 0
 
