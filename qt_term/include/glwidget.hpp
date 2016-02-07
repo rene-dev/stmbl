@@ -43,14 +43,13 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 		QOpenGLShaderProgram* m_shader;
 
 		QMatrix4x4 m_matrix;
-		QVector3D m_translation;
-		QVector3D m_scalation;
+        QVector2D m_center;
+        float m_scale;
 
 		bool m_translating;
-		bool m_scaling;
+        bool m_scaling;
 
-		QPoint m_transpos;
-		QPoint m_scalepos;
+        QPoint m_translation_start;
 
 		QOpenGLBuffer m_vbo;
 		QOpenGLVertexArrayObject m_vao;
