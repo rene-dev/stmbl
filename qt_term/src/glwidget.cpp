@@ -236,23 +236,6 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
 		m_transpos = event->pos();
 	}
-
-	// if(m_scaling && event->buttons() == Qt::RightButton) {
-	// 	QPoint pos = m_scalepos - event->pos();
-	// 
-	// 	if(pos.y() != 0) {
-	// 		m_scalation.setX(m_scalation.x() + (pos.y() / 5));
-	// 		m_scalation.setY(m_scalation.y() + (pos.y() / 5));
-	// 
-	// 		if(m_scalation.x() <= 0.0f) {
-	// 			m_scalation.setX(0.05f);
-	// 			m_scalation.setY(0.05f);
-	// 			m_scalation.setZ(1.0f);
-	// 		}
-	// 	}
-	// 
-	// 	m_scalepos = event->pos();
-	// }
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent *event)

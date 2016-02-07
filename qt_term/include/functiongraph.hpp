@@ -26,6 +26,7 @@ the AUTHORS file.
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
+#include <QOpenGLContext>
 
 #include <chrono>
 
@@ -38,7 +39,10 @@ class FunctionGraph
 		QOpenGLVertexArrayObject m_vao;
 
 		size_t m_xpos;
-		size_t m_datasize;
+		size_t m_data_mid;
+		size_t m_data_size;
+
+		bool m_filled;
 
 	public:
 		FunctionGraph();

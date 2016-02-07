@@ -28,14 +28,12 @@ the AUTHORS file.
 
 #include <vector>
 
-using namespace std;
-
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 	Q_OBJECT
 	
 	private:
-		vector<string> m_history;
+		std::vector<std::string> m_history;
 		size_t m_historypos;
 
 		QTimer* timer;

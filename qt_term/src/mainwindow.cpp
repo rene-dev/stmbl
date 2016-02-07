@@ -47,14 +47,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 	if(event->key() == Qt::Key_Up) {
 		if(m_historypos < m_history.size()) {
 			m_historypos++;
-			string temp = m_history[m_history.size() - m_historypos];
+			std::string temp = m_history[m_history.size() - m_historypos];
 			this->lineEdit->setText(QString::fromStdString(temp));
 		}
 	}
 	if(event->key() == Qt::Key_Down) {
 		if(m_historypos > 1) {
 			m_historypos--;
-			string temp = m_history[m_history.size() - m_historypos];
+			std::string temp = m_history[m_history.size() - m_historypos];
 			this->lineEdit->setText(QString::fromStdString(temp));
 		}
 	}
