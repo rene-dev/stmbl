@@ -167,8 +167,6 @@ void GLWidget::paintGL()
 
 void GLWidget::resizeGL(int w, int h)
 {
-    //int side = qMin(w, h);
-    //glViewport((w - side) / 2, (h - side) / 2, side, side);
 	updateMatrix();
 }
 
@@ -177,22 +175,16 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 	if(event->buttons() == Qt::LeftButton) {
 		m_translating = true;
         m_translation_start = event->pos();
-        //QVector3D p(event->pos().x() - width()/2, event->pos().y() - height()/2, 0.0);
-        //qDebug() << event->pos() << " " << p << " " << p / m_scalation;
 	}
 }
 
 void GLWidget::wheelEvent(QWheelEvent *event)
 {
-    //QPoint numPixels = event->pixelDelta();
-    //QPoint numDegrees = event->angleDelta();
-    //qDebug() << "wh pix " << numPixels << endl << "wh deg" << numDegrees;
-
+    //TODO: windows only provides angleDelta, no angleDelta
     QVector2D mouse = QVector2D(event->pos().x() - width() / 2, event->pos().y() - height() / 2);
     m_center -= mouse / m_scale;
-    m_scale *= 1.0f + event->angleDelta().y() / 500.0f; // TODO: angleDelta????
+    m_scale *= 1.0f + qMax(-0.9f,event->angleDelta().y() / 500.0f);
     m_center += mouse / m_scale;
-
     event->accept();
 }
 
