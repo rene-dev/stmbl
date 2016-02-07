@@ -19,8 +19,7 @@ For feedback and questions about stmbl please e-mail one of the authors named in
 the AUTHORS file.
 */
 
-#ifndef MAINWINDOW_HPP
-#define MAINWINDOW_HPP
+#pragma once
 
 #include <ui_mainwindow.h>
 #include <QMainWindow>
@@ -52,5 +51,3 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 	private slots:
 		void on_actionExit_triggered();
 };
-
-#endif // MAINWINDOW_HPP

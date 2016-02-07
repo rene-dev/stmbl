@@ -19,8 +19,7 @@ For feedback and questions about stmbl please e-mail one of the authors named in
 the AUTHORS file.
 */
 
-#ifndef GLWIDGET_HPP
-#define GLWIDGET_HPP
+#pragma once
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
@@ -72,5 +71,3 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 		explicit GLWidget(QWidget* parent = 0);
 		void resetMatrix();
 };
-
-#endif // GLWIDGET_HPP

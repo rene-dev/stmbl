@@ -19,8 +19,7 @@ For feedback and questions about stmbl please e-mail one of the authors named in
 the AUTHORS file.
 */
 
-#ifndef FUNCTIONGRAPH_HPP
-#define FUNCTIONGRAPH_HPP
+#pragma once
 
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
@@ -51,5 +50,3 @@ class FunctionGraph
 		void addPoint(float y);
 		void restart();
 };
-
-#endif // FUNCTIONGRAPH_HPP
