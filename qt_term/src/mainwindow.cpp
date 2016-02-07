@@ -25,10 +25,11 @@ the AUTHORS file.
 
 MainWindow::MainWindow(QWidget *parent) :
 		QMainWindow(parent),
-		m_historypos(0)
+		historypos(0)
 {
-	this->setupUi(this);
-	this->lineEdit->setFocus();
+	setupUi(this);
+	lineEdit->setFocus();
+    lineEdit->installEventFilter(this);
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(pollTimerEvent()));
 	timer->setInterval(50);
@@ -36,30 +37,44 @@ MainWindow::MainWindow(QWidget *parent) :
 	timer->start();
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-	if( (event->key() == Qt::Key_Enter) || (event->key() == Qt::Key_Return)) {
-		this->m_history.push_back(this->lineEdit->text().toStdString());
-		this->textEdit->append(this->lineEdit->text());
-		this->lineEdit->clear();
-	}
+bool MainWindow::eventFilter(QObject* obj, QEvent *event){
+    if (obj == lineEdit){
+        if (event->type() == QEvent::KeyPress){
+            QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+            
+            if( (keyEvent->key() == Qt::Key_Enter) || (keyEvent->key() == Qt::Key_Return)) {
+                if((history.size()==0 || history.back() != lineEdit->text()) && !lineEdit->text().isEmpty()){
+                    history.push_back(lineEdit->text());
+                }
+                historypos = history.size();
+                
+                textEdit->append(lineEdit->text());
+                lineEdit->clear();
+                return true;
+            }
+            
+            if(keyEvent->key() == Qt::Key_Up) {
+                if(historypos > 0 && history.size()>0){
+                    lineEdit->setText(history.at(--historypos));
+                    //textinput->SetInsertionPointEnd();
+                }
+                return true;
+            }
 
-	if(event->key() == Qt::Key_Up) {
-		if(m_historypos < m_history.size()) {
-			m_historypos++;
-			std::string temp = m_history[m_history.size() - m_historypos];
-			this->lineEdit->setText(QString::fromStdString(temp));
-		}
-	}
-	if(event->key() == Qt::Key_Down) {
-		if(m_historypos > 1) {
-			m_historypos--;
-			std::string temp = m_history[m_history.size() - m_historypos];
-			this->lineEdit->setText(QString::fromStdString(temp));
-		}
-	}
-
-	event->accept();
+            if(keyEvent->key() == Qt::Key_Down) {
+                if(historypos < history.size()-1 && history.size()>0){
+                    lineEdit->setText(history.at(++historypos));
+                    //textinput->SetInsertionPointEnd();
+                }else if(historypos < history.size()){
+                    historypos++;
+                    lineEdit->clear();
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+    return QMainWindow::eventFilter(obj, event);
 }
 
 void MainWindow::on_actionReset_triggered()

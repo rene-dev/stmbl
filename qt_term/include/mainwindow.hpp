@@ -24,6 +24,8 @@ the AUTHORS file.
 #include <ui_mainwindow.h>
 #include <QMainWindow>
 #include <QTimer>
+#include <QString>
+#include <QVector>
 
 #include <vector>
 
@@ -32,14 +34,16 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 	Q_OBJECT
 	
 	private:
-		std::vector<std::string> m_history;
-		size_t m_historypos;
+		QVector<QString> history;
+		int historypos;
 
 		QTimer* timer;
 
 	public:
 		explicit MainWindow(QWidget *parent = 0);
-		void keyPressEvent(QKeyEvent * event) override;
+    
+    protected:
+        bool eventFilter(QObject* obj, QEvent *event) override;
 
 	signals:
 		void timeoutEvent();
