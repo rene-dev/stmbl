@@ -48,29 +48,18 @@ GLWidget::GLWidget(QWidget * parent) :
 	m_translating = false;
 	m_scaling = false;
 
-	m_translation.setX(0.0f);
-	m_translation.setY(0.0f);
-	m_translation.setZ(-10.0f);
-	m_scalation.setX(1.0f);
-	m_scalation.setY(1.0f);
-	m_scalation.setZ(1.0f);
-	m_scalepos.setX(width()/2);
-	m_scalepos.setY(height()/2);
+    m_center.setX(0.0f);
+    m_center.setY(0.0f);
+    m_scale = 1.0f;
 	
-
 	updateMatrix();
 }
 
 void GLWidget::resetMatrix()
 {
-	m_translation.setX(0.0f);
-	m_translation.setY(0.0f);
-	m_translation.setZ(-10.0f);
-	m_scalation.setX(1.0f);
-	m_scalation.setY(1.0f);
-	m_scalation.setZ(1.0f);
-	m_scalepos.setX(width()/2);
-	m_scalepos.setY(height()/2);
+    m_center.setX(0.0f);
+    m_center.setY(0.0f);
+    m_scale = 1.0f;
 
 	repaint();
 }
@@ -79,15 +68,9 @@ void GLWidget::updateMatrix()
 {
 	m_matrix.setToIdentity();
 	m_matrix.ortho(-width()/2, +width()/2, +height()/2, -height()/2, 0.0f, 15.0f);
-	QVector3D p(m_scalepos.x() - width()/2, m_scalepos.y() - height()/2, 0.0);
-	
-	m_matrix.translate(p);
-	m_matrix.scale(m_scalation.x(), m_scalation.x(), 1.0);
-	m_matrix.translate(-p / m_scalation.x());
-	QVector3D q = m_translation;
-	q /= m_scalation.x();
-	q.setZ(-10.0);
-	m_matrix.translate(q);
+
+    m_matrix.scale(m_scale, m_scale, 1.0);
+    m_matrix.translate(QVector3D(m_center.x(), m_center.y(), -10.0f));
 }
 
 void GLWidget::initializeGL()
@@ -183,8 +166,8 @@ void GLWidget::paintGL()
 
 void GLWidget::resizeGL(int w, int h)
 {
-	int side = qMin(w, h);
-	glViewport((w - side) / 2, (h - side) / 2, side, side);
+    //int side = qMin(w, h);
+    //glViewport((w - side) / 2, (h - side) / 2, side, side);
 	updateMatrix();
 }
 
@@ -192,49 +175,32 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 {
 	if(event->buttons() == Qt::LeftButton) {
 		m_translating = true;
-		m_transpos = event->pos();
-		QVector3D p(event->pos().x() - width()/2, event->pos().y() - height()/2, 0.0);
-		qDebug() << event->pos() << " " << p << " " << p / m_scalation;
-		
-	}
-	if(event->buttons() == Qt::RightButton) {
-		m_scaling = true;
-		m_scalepos = event->pos();
+        m_translation_start = event->pos();
+        //QVector3D p(event->pos().x() - width()/2, event->pos().y() - height()/2, 0.0);
+        //qDebug() << event->pos() << " " << p << " " << p / m_scalation;
 	}
 }
 
 void GLWidget::wheelEvent(QWheelEvent *event)
 {
-    QPoint numPixels = event->pixelDelta();
-    QPoint numDegrees = event->angleDelta();
+    //QPoint numPixels = event->pixelDelta();
+    //QPoint numDegrees = event->angleDelta();
     //qDebug() << "wh pix " << numPixels << endl << "wh deg" << numDegrees;
-	 
-	 m_scalepos = event->pos();
-	 m_scalation.setX(m_scalation.x() + numPixels.y() / 20.0);
-	 m_scalation.setY(m_scalation.y() + numPixels.y() / 20.0);
-	 
-	 if(m_scalation.x() <= 0.0){
-		 m_scalation.setX(1.0 / 20.0);
-	 }
-	 if(m_scalation.y() <= 0.0){
-		 m_scalation.setY(1.0 / 20.0);
-	 }
-	 
+
+    QVector2D mouse = QVector2D(event->pos().x() - width() / 2, event->pos().y() - height() / 2);
+    m_center -= mouse / m_scale;
+    m_scale *= 1.0f + event->angleDelta().y() / 500.0f; // TODO: angleDelta????
+    m_center += mouse / m_scale;
+
     event->accept();
-	 
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *event)
 {
 	if(m_translating && event->buttons() == Qt::LeftButton) {
-		QPoint pos = m_transpos - event->pos();
-
-		pos.setX(-pos.x());
-		pos.setY(-pos.y());
-
-		m_translation += QVector3D(pos);
-
-		m_transpos = event->pos();
+        QPoint pos = event->pos() - m_translation_start;
+        m_translation_start = event->pos();
+        m_center += QVector2D(pos) / m_scale;
 	}
 }
 
