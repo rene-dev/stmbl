@@ -79,22 +79,21 @@ bool MainWindow::eventFilter(QObject* obj, QEvent *event){
 
 void MainWindow::on_actionReset_triggered()
 {
-	this->openGLWidget->resetMatrix();
+	openGLWidget->resetMatrix();
 }
 
 void MainWindow::on_actionResetMatrix_triggered()
 {
-	this->openGLWidget->resetMatrix();
+	openGLWidget->resetMatrix();
 }
 
 void MainWindow::pollTimerEvent()
 {
     static int i = 0;
-	this->openGLWidget->m_function1.addPoint(20.0*sin(i++/10.0));
+	openGLWidget->m_function1.addPoint(20.0*sin(i++/10.0));
 }
-
 
 void MainWindow::on_actionExit_triggered()
 {
-	this->close();
+	close();
 }
