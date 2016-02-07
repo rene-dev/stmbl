@@ -23,9 +23,10 @@ the AUTHORS file.
 
 #include <QVector>
 #include <QMouseEvent>
-#include <math.h>
-
 #include <QKeyEvent>
+#include <QtGlobal>
+
+#include <math.h>
 
 static const char *vertexShaderSource =
 				"#version 120\n"
