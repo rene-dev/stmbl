@@ -49,18 +49,15 @@ GLWidget::GLWidget(QWidget * parent) :
 	m_translating = false;
 	m_scaling = false;
 
-    m_center.setX(0.0f);
-    m_center.setY(0.0f);
-    m_scale = 1.0f;
-	
+    resetMatrix();
 	updateMatrix();
 }
 
 void GLWidget::resetMatrix()
 {
-    m_center.setX(0.0f);
+    m_center.setX(-45.0f);
     m_center.setY(0.0f);
-    m_scale = 1.0f;
+    m_scale = 4.0f;
 
 	repaint();
 }
