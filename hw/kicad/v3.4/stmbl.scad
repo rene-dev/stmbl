@@ -352,7 +352,7 @@ module stmbl(){
   translate([22 + 11.4, 27 + 3 + 10, 33 + 5.7]) m3(10);
   translate([22 + 11.4, 27 + 3 + 10 + 56, 33 + 5.7]) m3(10);
   translate([1, 1, 96 + 3]) ethercat();
-  translate([1, 10, 33 + 8]) cover();
+  //translate([1, 10, 33 + 8]) cover();
   translate([6, 106, 31]) rotate([-90, 0, 0]) m3(5);
   translate([6 + 36, 106, 31]) rotate([-90, 0, 0]) m3(5);
 }
