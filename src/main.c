@@ -37,9 +37,7 @@ GLOBAL_HAL_PIN(frt_time);
 GLOBAL_HAL_PIN(rt_period_time);
 GLOBAL_HAL_PIN(frt_period_time);
 
-int __errno;
-volatile double systime_s = 0.0;
-void Wait(unsigned int ms);
+void Wait(uint32_t ms);
 
 //hal interface
 void enable_rt(){
@@ -58,6 +56,13 @@ void disable_frt(){
 extern char _binary_obj_hv_hv_bin_start;
 extern char _binary_obj_hv_hv_bin_size;
 extern char _binary_obj_hv_hv_bin_end;
+
+volatile uint64_t systime = 0;
+
+void SysTick_Handler(void)
+{
+  systime++;
+}
 
 //20kHz
 void TIM2_IRQHandler(void){
@@ -140,7 +145,6 @@ void DMA2_Stream0_IRQHandler(void){
    }
 
    float period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
-   systime_s += period;
    last_start = start;
 
    for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){//run all realtime hal functions
@@ -336,8 +340,8 @@ int main(void)
    }
 }
 
-void Wait(unsigned int ms){
-   volatile unsigned int t = systime + ms;
+void Wait(uint32_t ms){
+   uint64_t t = systime + ms;
    while(t >= systime){
    }
 }

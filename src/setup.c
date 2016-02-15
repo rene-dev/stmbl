@@ -25,9 +25,8 @@ void setup(){
 
    setup_res();
    usb_init();
-	// systick timer
-	systime = 0;
 
+	// systick timer
 	RCC_GetClocksFreq(&RCC_Clocks);
 	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
    //systick prio
@@ -135,8 +134,3 @@ void setup_res(){
 
     DMA_ITConfig(DMA2_Stream0, DMA_IT_TC, ENABLE);
  }
-
-void SysTick_Handler(void)
-{
-  systime++;
-}
