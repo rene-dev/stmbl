@@ -130,7 +130,7 @@ ifeq ($(CPU_LS), F303)
 	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f30x_tim.c
 	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f30x_usart.c
 
-	SOURCES += lib/CMSIS/Device/ST/stm32f30x/Source/Templates/gcc_ride7/startup_stm32f30x.s
+	SOURCES += lib/CMSIS/Device/ST/STM32F30x/Source/Templates/gcc_ride7/startup_stm32f30x.s
 
 	CPPFLAGS += -DSTM32F303xC
 	CPPFLAGS += -DHSE_VALUE=8000000
