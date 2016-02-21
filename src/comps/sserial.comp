@@ -3,7 +3,7 @@
 //using CMD_TX
 //using CMD_RX
 
-COMP(sserial);
+HAL_COMP(sserial);
 
 //dump:
 //sigrok-cli --driver fx2lafw --config samplerate=24m --time 1s --channels 3=rx,2=tx -t rx=f -o sserial.sr

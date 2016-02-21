@@ -1,4 +1,4 @@
-COMP(fault);
+HAL_COMP(fault);
 // max current
 HAL_PIN(max_dc_cur) = 0.0;
 HAL_PIN(max_ac_cur) = 0.0;

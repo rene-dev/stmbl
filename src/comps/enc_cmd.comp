@@ -4,7 +4,7 @@
 #define CMD_RX
 #endif
 
-COMP(enc_cmd);
+HAL_COMP(enc_cmd);
 
 HAL_PIN(res) = 2048.0;
 HAL_PIN(pos) = 0.0;

@@ -1,4 +1,4 @@
-COMP(term);
+HAL_COMP(term);
 
 HAL_PIN(wave0) = 0.0;
 HAL_PIN(gain0) = 10.0;

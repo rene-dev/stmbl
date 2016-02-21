@@ -1,4 +1,4 @@
-COMP(stp);
+HAL_COMP(stp);
 
 HAL_PIN(target) = 0.0;
 HAL_PIN(pos) = 0.0;

@@ -1,4 +1,4 @@
-COMP(rev);
+HAL_COMP(rev);
 
 HAL_PIN(in) = 0.0;
 HAL_PIN(out) = 0.0;

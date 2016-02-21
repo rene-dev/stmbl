@@ -1,4 +1,4 @@
-COMP(enc_fb);
+HAL_COMP(enc_fb);
 
 HAL_PIN(res) = 2048.0;
 HAL_PIN(ires) = 1024.0;

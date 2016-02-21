@@ -1,4 +1,4 @@
-COMP(sim);
+HAL_COMP(sim);
 
 HAL_PIN(amp) = 3.1;
 HAL_PIN(freq) = 1.0;
