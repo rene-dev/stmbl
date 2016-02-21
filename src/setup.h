@@ -27,10 +27,6 @@
 
 void setup(void);
 void setup_res(void);
-void setup_usb(void);
-void SysTick_Handler(void);
-
-volatile unsigned long systime;
 
 volatile uint32_t ADC_DMA_Buffer[ADC_ANZ * PID_WAVES];
 
@@ -38,8 +34,6 @@ TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 TIM_OCInitTypeDef TIM_OCInitStructure;
 NVIC_InitTypeDef NVIC_InitStructure;
 GPIO_InitTypeDef GPIO_InitStructure;
-DAC_InitTypeDef DAC_InitStructure;
 DMA_InitTypeDef DMA_InitStructure;
 ADC_InitTypeDef ADC_InitStructure;
 RCC_ClocksTypeDef RCC_Clocks;
-

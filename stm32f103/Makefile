@@ -70,6 +70,7 @@ CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
 CFLAGS += -Wall
 CFLAGS += -fno-builtin ## from old
+CFLAGS += -Wfatal-errors
 CFLAGS += -nostartfiles
 #CFLAGS += -Wstrict-prototypes
 #CFLAGS += -Wextra
