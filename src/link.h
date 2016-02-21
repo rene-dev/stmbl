@@ -1,5 +1,6 @@
 #pragma once
 
+//Do not change order, append new types at the end
 typedef enum{
   ENC = 1,
   RES,

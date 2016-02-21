@@ -1,4 +1,4 @@
-COMP(io);
+HAL_COMP(io);
 
 HAL_PIN(fan) = 0.0;
 HAL_PIN(red) = 0.0;

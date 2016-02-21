@@ -156,7 +156,7 @@ extern void enable_frt();
 extern void disable_rt();
 extern void disable_frt();
 
-#define COMP(type)                  \
+#define HAL_COMP(type)                  \
 {                                   \
   static struct hal_comp self; \
   strncpy(self.name, #type, MAX_HPNAME); \

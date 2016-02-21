@@ -32,7 +32,7 @@ word C:
 #define OFFSET (OVER / 2.0)//half bit
 #define SIG_POS_START 16
 
-COMP(encs);
+HAL_COMP(encs);
 
 HAL_PIN(en) = 1.0;
 HAL_PIN(start) = 0.0;

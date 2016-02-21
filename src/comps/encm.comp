@@ -1,6 +1,6 @@
 //using FB_TX
 
-COMP(encm);
+HAL_COMP(encm);
 
 HAL_PIN(pos) = 0.0;
 

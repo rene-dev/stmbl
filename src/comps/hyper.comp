@@ -4,7 +4,7 @@
 #define FB_TX
 #endif
 
-COMP(hyper);// https://www.youtube.com/watch?v=aoXOdAUD7IM&t=44
+HAL_COMP(hyper);// https://www.youtube.com/watch?v=aoXOdAUD7IM&t=44
 
 HAL_PIN(pos) = 0.0;
 HAL_PIN(error) = 0;

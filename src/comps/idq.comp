@@ -1,4 +1,4 @@
-COMP(idq);
+HAL_COMP(idq);
 
 HAL_PIN(d) = 0.0;
 HAL_PIN(q) = 0.0;

@@ -1,4 +1,4 @@
-COMP(pmsm_limits);
+HAL_COMP(pmsm_limits);
 
 // motor values
 HAL_PIN(psi) = 0.01;

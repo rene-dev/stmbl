@@ -1,4 +1,4 @@
-COMP(curpid);
+HAL_COMP(curpid);
 
 HAL_PIN(id_cmd) = 0.0;
 HAL_PIN(iq_cmd) = 0.0;

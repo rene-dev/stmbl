@@ -1,4 +1,4 @@
-COMP(pmsm);
+HAL_COMP(pmsm);
 
 //in
 HAL_PIN(psi) = 0.01;
