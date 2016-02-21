@@ -1,11 +1,11 @@
 #include "usb_cdc.h"
-#include "usbd_cdc_core.h"
-#include "usbd_usr.h"
-#include "usbd_desc.h"
-#include "usbd_conf.h"
-#include "usb_dcd_int.h"
-#include "stm32f4xx.h"
-#include "stm32f4xx_conf.h"
+//#include "usbd_cdc_core.h"
+//#include "usbd_usr.h"
+//#include "usbd_desc.h"
+//#include "usbd_conf.h"
+//#include "usb_dcd_int.h"
+#include "stm32f30x.h"
+#include "stm32f30x_conf.h"
 
 
 
@@ -14,7 +14,7 @@
 struct ringbuf usb_rx_buf = { .buf = (char[RX_QUEUE_SIZE]) {0}, .bufsize = RX_QUEUE_SIZE };
 
 
-static USB_OTG_CORE_HANDLE  USB_OTG_dev;
+//static USB_OTG_CORE_HANDLE  USB_OTG_dev;
 
 static uint16_t VCP_Init(void)
 {
@@ -227,4 +227,3 @@ uint8_t USB_CDC_is_connected(void)
 {
     return usb_cdc_status;
 }
-

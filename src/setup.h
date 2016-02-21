@@ -7,8 +7,7 @@
 //
 
 #pragma once
-
-#include "stm32f4xx_conf.h"
+#include "stm32f30x_conf.h"
 #include "misc.h"
 #include "version.h"
 #include "common.h"

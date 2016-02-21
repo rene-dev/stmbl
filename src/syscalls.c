@@ -4,7 +4,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include "stm32f4xx.h"
+#include "stm32f30x.h"
 #include "usb_cdc.h"
 
 //int __errno;

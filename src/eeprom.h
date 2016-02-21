@@ -26,7 +26,7 @@
 #define __EEPROM_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx.h"
+#include "stm32f30x.h"
 
 /* Exported constants --------------------------------------------------------*/
 /* Define the size of the sectors to be used */

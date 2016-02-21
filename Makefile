@@ -1,3 +1,5 @@
+BOARD = IO
+VERSION = 1
 # Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
 #
@@ -17,14 +19,14 @@ INCDIRS += inc
 INCDIRS += shared
 
 SOURCES += src/main.c
-SOURCES += src/stm32f4xx_it.c
-SOURCES += src/system_stm32f4xx.c
+SOURCES += src/stm32_it.c
+SOURCES += src/system_stm32f30x.c
 SOURCES += src/scanf.c
 SOURCES += src/setup.c
-SOURCES += src/usb_cdc.c
+# SOURCES += src/usb_cdc.c
 SOURCES += src/hal.c
 SOURCES += src/misc.c
-SOURCES += src/eeprom.c
+#SOURCES += src/eeprom.c
 SOURCES += src/link.c
 SOURCES += src/version.c
 SOURCES += src/syscalls.c
@@ -32,58 +34,113 @@ SOURCES += src/syscalls.c
 SOURCES += shared/crc8.c
 SOURCES += shared/common.c
 
-USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
-
 CPPFLAGS += -DUSBD_PRODUCT_STRING='"STMBL Virtual ComPort"'
 CPPFLAGS += -DCDC_IN_FRAME_INTERVAL=1
 CPPFLAGS += -DAPP_RX_DATA_SIZE=4096
 
-INCDIRS += $(USB_VCP_DIR)/inc
-SOURCES += $(USB_VCP_DIR)/src/usbd_desc.c
 
-USB_DEVICE_DIR = lib/STM32_USB_Device_Library-1.2.0
+ifeq ($(BOARD), STMBL)
+	ifeq ($(VERSION), 3)
+		CPU_LS = F405
+		CPU_HS = F103
+	endif
+	ifeq ($(VERSION), 4)
+		CPU_LS = F405
+		CPU_HS = F303
+	endif
+endif
+ifeq ($(BOARD), IO)
+	ifeq ($(VERSION), 1)
+		CPU_LS = F303
+		CPU_HS = NA
+	endif
+endif
+		
+ifeq ($(CPU_LS), F405)
 
-INCDIRS += $(USB_DEVICE_DIR)/Class/cdc/inc
-SOURCES += $(USB_DEVICE_DIR)/Class/cdc/src/usbd_cdc_core.c
+	USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
+	USB_DEVICE_DIR = lib/STM32_USB_Device_Library-1.2.0
+	USB_DRIVER_DIR = lib/STM32_USB_OTG_Driver-2.2.0
 
-INCDIRS += $(USB_DEVICE_DIR)/Core/inc
-SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_core.c
-SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_ioreq.c
-SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_req.c
+	INCDIRS += $(USB_VCP_DIR)/inc
+	SOURCES += $(USB_VCP_DIR)/src/usbd_desc.c
 
-USB_DRIVER_DIR = lib/STM32_USB_OTG_Driver-2.2.0
+	INCDIRS += $(USB_DEVICE_DIR)/Class/cdc/inc
+	SOURCES += $(USB_DEVICE_DIR)/Class/cdc/src/usbd_cdc_core.c
 
-INCDIRS += $(USB_DRIVER_DIR)/inc
-SOURCES += $(USB_DRIVER_DIR)/src/usb_core.c
-SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd.c
-SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd_int.c
+	INCDIRS += $(USB_DEVICE_DIR)/Core/inc
+	SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_core.c
+	SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_ioreq.c
+	SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_req.c
+
+	INCDIRS += $(USB_DRIVER_DIR)/inc
+	SOURCES += $(USB_DRIVER_DIR)/src/usb_core.c
+	SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd.c
+	SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd_int.c
+	
+	PERIPH_DRV_DIR = lib/STM32F4xx_StdPeriph_Driver-V1.6.0
+
+	INCDIRS += $(PERIPH_DRV_DIR)/inc
+	INCDIRS += lib/CMSIS/Include
+	INCDIRS += lib/CMSIS/Device/ST/STM32F4xx/Include
+
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_adc.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_crc.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_dma.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_flash.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_gpio.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_pwr.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_rcc.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_tim.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_usart.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/misc.c
+
+	SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
+
+	CPPFLAGS += -DSTM32F40_41xxx
+	CPPFLAGS += -DHSE_VALUE=8000000
+	LDSCRIPT = stm32_flash.ld
+endif
+
+
+ifeq ($(CPU_LS), F303)
+	//USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
+	USB_DEVICE_DRIVER_DIR = lib/STM32_USB-FS-Device_Driver
+
+	//INCDIRS += $(USB_VCP_DIR)/inc
+	//SOURCES += $(USB_VCP_DIR)/src/usbd_desc.c
+
+	INCDIRS += $(USB_DEVICE_DRIVER_DIR)/inc
+	SOURCES += $(USB_DEVICE_DRIVER_DIR)/src/usb_core.c
+
+	
+	PERIPH_DRV_DIR = lib/STM32F30x_StdPeriph_Driver
+
+	INCDIRS += $(PERIPH_DRV_DIR)/inc
+	INCDIRS += lib/CMSIS/Include
+	INCDIRS += lib/CMSIS/Device/ST/STM32F30x/Include
+
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f30x_adc.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f30x_crc.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f30x_dma.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f30x_flash.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f30x_gpio.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f30x_pwr.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f30x_rcc.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f30x_tim.c
+	SOURCES += $(PERIPH_DRV_DIR)/src/stm32f30x_usart.c
+
+	SOURCES += lib/CMSIS/Device/ST/stm32f30x/Source/Templates/gcc_ride7/startup_stm32f30x.s
+
+	CPPFLAGS += -DSTM32F303xC
+	CPPFLAGS += -DHSE_VALUE=8000000
+	LDSCRIPT = stm32_flash.ld
+endif
 
 # Standard peripheral library
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 #CPPFLAGS += -DUSE_FULL_ASSERT
 
-PERIPH_DRV_DIR = lib/STM32F4xx_StdPeriph_Driver-V1.6.0
-
-INCDIRS += $(PERIPH_DRV_DIR)/inc
-INCDIRS += lib/CMSIS/Include
-INCDIRS += lib/CMSIS/Device/ST/STM32F4xx/Include
-
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_adc.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_crc.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_dma.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_flash.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_gpio.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_pwr.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_rcc.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_tim.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_usart.c
-SOURCES += $(PERIPH_DRV_DIR)/src/misc.c
-
-SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
-
-CPPFLAGS += -DSTM32F40_41xxx
-CPPFLAGS += -DHSE_VALUE=8000000
-LDSCRIPT = stm32_flash.ld
 
 #============================================================================
 OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))

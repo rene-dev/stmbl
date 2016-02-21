@@ -3,7 +3,7 @@
 // resolver
 //// adc
 #define SIN_ADC ADC1
-#define SIN_ADC_RCC RCC_APB2Periph_ADC1
+//#define SIN_ADC_RCC RCC_APB2Periph_ADC1
 #define SIN_ADC_CHAN ADC_Channel_14
 
 #define COS_ADC ADC2

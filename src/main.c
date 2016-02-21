@@ -18,7 +18,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stm32f4xx_conf.h"
+#include "stm32f30x_conf.h"
 #include "scanf.h"
 #include "hal.h"
 #include "setup.h"
@@ -116,7 +116,7 @@ void TIM2_IRQHandler(void){
 //5 kHz interrupt for hal. at this point all ADCs have been sampled,
 //see setup_res() in setup.c if you are interested in the magic behind this.
 void DMA2_Stream0_IRQHandler(void){
-   DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
+   //DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
    switch(hal.rt_state){
       case RT_STOP:
          return;
@@ -183,18 +183,18 @@ int main(void)
 
    //feedback comps
    #include "comps/adc.comp"
-   #include "comps/res.comp"
-   #include "comps/enc_fb.comp"
-   #include "comps/encm.comp"
-   #include "comps/encs.comp"
-   #include "comps/yaskawa.comp"
+   //#include "comps/res.comp"
+   //#include "comps/enc_fb.comp"
+   //#include "comps/encm.comp"
+   //#include "comps/encs.comp"
+   //#include "comps/yaskawa.comp"
    //TODO: hyperface
 
    //command comps
-   #include "comps/sserial.comp"
+   //#include "comps/sserial.comp"
    #include "comps/sim.comp"
-   #include "comps/enc_cmd.comp"
-   #include "comps/en.comp"
+   //#include "comps/enc_cmd.comp"
+   //#include "comps/en.comp"
 
    //PID
    #include "comps/stp.comp"
@@ -210,7 +210,7 @@ int main(void)
    #include "comps/pmsm_limits.comp"
    #include "comps/idq.comp"
    #include "comps/dq.comp"
-   #include "comps/hv.comp"
+   //#include "comps/hv.comp"
 
    //other comps
    #include "comps/fault.comp"

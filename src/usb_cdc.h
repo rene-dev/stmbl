@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include "ringbuf.h"
-#include "usbd_cdc_core.h"
+//#include "usbd_cdc_core.h"
 
 #define APP_TX_BUF_SIZE 128
 #define APP_RX_BUF_SIZE 128
