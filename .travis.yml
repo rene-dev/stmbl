@@ -43,4 +43,4 @@ deploy:
   file: "main.bin"
   on:
     tags: true
-    all_branches: true
+    branch: master
