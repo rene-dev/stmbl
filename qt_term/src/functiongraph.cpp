@@ -33,7 +33,8 @@ FunctionGraph::FunctionGraph() :
 	m_xpos(0),
 	m_data_mid(0),
 	m_data_size(0),
-	m_filled(false)
+    m_filled(false),
+    m_color(0.0f,0.0f,0.0f)
 {
 }
 
@@ -67,13 +68,14 @@ void FunctionGraph::initializeGL()
 	m_vbo.release();
 }
 
-void FunctionGraph::paintGL()
+void FunctionGraph::paintGL(QOpenGLShaderProgram* shader)
 {
 	QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
 	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-	if(f) {
-		if(m_data_size > 0) {
+    if(f && shader) {
+        if(m_data_size > 0) {
+            shader->setUniformValue("color", m_color);
 			if(!m_filled) {
 				f->glDrawArrays(GL_LINE_STRIP, 0, m_data_size);
 			} else {
@@ -82,7 +84,7 @@ void FunctionGraph::paintGL()
 					f->glDrawArrays(GL_LINE_STRIP, m_data_mid + 1, m_data_size - m_data_mid - 1);
 			}
 		}
-	}
+    }
 
 	m_vao.release();
 }
@@ -121,7 +123,14 @@ void FunctionGraph::addPoint(float y)
 
 	m_vbo.write(offset * sizeof(GLfloat), data.constData(), data.count() * sizeof(GLfloat));
 
-	m_vbo.release();
+    m_vbo.release();
+}
+
+void FunctionGraph::setColor(float r, float g, float b)
+{
+    m_color.setX(r);
+    m_color.setY(g);
+    m_color.setZ(b);
 }
 
 void FunctionGraph::restart()

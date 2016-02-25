@@ -68,7 +68,7 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 		void updateMatrix();
 
 	public:
-		FunctionGraph m_function1;
+        std::array<FunctionGraph, 2> m_functions;
 
 		explicit GLWidget(QWidget* parent = 0);
 		void resetMatrix();

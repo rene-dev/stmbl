@@ -40,15 +40,18 @@ class FunctionGraph
 
 		size_t m_xpos;
 		size_t m_data_mid;
-		size_t m_data_size;
+        size_t m_data_size;
 
 		bool m_filled;
 
-	public:
+        QVector3D m_color;
+
+    public:
 		FunctionGraph();
 		void initializeGL();
-		void paintGL();
-		void addPoint(float y);
+        void paintGL(QOpenGLShaderProgram *shader);
+        void addPoint(float y);
+        void setColor(float r, float g, float b);
 		void restart();
 };
 
