@@ -198,24 +198,24 @@ extern void disable_frt();
 
 #define RT(func)                    \
  self.rt = ({ void function(float period){ \
-   unsigned int __start_time__ = SysTick->VAL; \
+   unsigned int __start_time__ = systick_get_value(); \
    func \
-   unsigned int __end_time__ = SysTick->VAL; \
+   unsigned int __end_time__ = systick_get_value(); \
    if(__start_time__ < __end_time__){ \
-     __start_time__ += SysTick->LOAD; \
+     __start_time__ += systick_get_reload(); \
    } \
-   PIN(rt_calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
+   PIN(rt_calc_time) = ((float)(__start_time__ - __end_time__)) / rcc_ahb_frequency; \
    } function;});
 
 #define FRT(func)                    \
  self.frt = ({ void function(float period){ \
-   unsigned int __start_time__ = SysTick->VAL; \
+   unsigned int __start_time__ = systick_get_value(); \
    func \
-   unsigned int __end_time__ = SysTick->VAL; \
+   unsigned int __end_time__ = systick_get_value(); \
    if(__start_time__ < __end_time__){ \
-     __start_time__ += SysTick->LOAD; \
+     __start_time__ += systick_get_reload(); \
    } \
-   PIN(frt_calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
+   PIN(frt_calc_time) = ((float)(__start_time__ - __end_time__)) / rcc_ahb_frequency; \
    } function;});
 
 #define NRT(func)                    \

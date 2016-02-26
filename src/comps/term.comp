@@ -60,7 +60,7 @@ MEM(unsigned int last_fault_sent) = 0; //save last error message
 MEM(uint32_t last_hal_state) = HAL_OK;
 MEM(uint16_t ee_error);
 
-
+/*
 int load(){
    if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
       return(-4);
@@ -104,9 +104,10 @@ int load(){
    update_fb();
    return 0;
 }
-
+*/
 
 INIT(
+   /*
    FLASH_Unlock();
    ee_error = EE_Init();
    FLASH_Lock();
@@ -114,10 +115,11 @@ INIT(
    if(ret){//flash load error
       hal.hal_state = CONFIG_LOAD_ERROR;
    }
+   */
 );
 
 RT(
-   TIM2->ARR = (int)CLAMP(PIN(tim2_rv), 1, 1500);
+   TIM2_ARR = (int)CLAMP(PIN(tim2_rv), 1, 1500);
    if(send_counter++ >= PIN(send_step) - 1){
       w0[write_pos] = PIN(wave0);
       w1[write_pos] = PIN(wave1);
@@ -138,11 +140,11 @@ NRT(
 
    void bootloader(){
       *((unsigned long *)0x2001C000) = 0xDEADBEEF;
-      NVIC_SystemReset();
+      scb_reset_system();
    }
 
    void reset(){
-      NVIC_SystemReset();
+      scb_reset_system();
    }
 
    void hal_info(){
@@ -298,16 +300,15 @@ NRT(
       printf("by %s on %s\n",version_info.build_user, version_info.build_host);
       printf("GCC        %s\n",__VERSION__);
       printf("newlib     %s\n",_NEWLIB_VERSION);
-      printf("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
-      printf("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
       printf("CPU ID     %lx %lx %lx\n",U_ID[0], U_ID[1], U_ID[2]);
-      CRC_ResetDR();
-      uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08010000, version_info.image_size / 4);
+      //TODO
+      //CRC_ResetDR();
+      //uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08010000, version_info.image_size / 4);
       printf("size: %lu crc:%lx\n", version_info.image_size, version_info.image_crc);
-      if(crc == 0)
-         printf("crc ok!\n");
-      else
-         printf("crc error!:%lx\n", crc);
+      //if(crc == 0)
+      //   printf("crc ok!\n");
+      //else
+      //   printf("crc error!:%lx\n", crc);
       
       printf("######## Bootloader info ########\n");
       printf(
@@ -339,43 +340,43 @@ NRT(
 
    void sysinfo(){
       printf("######## sysinfo ########\n");
-      extern char _etext;    // end address of the .text section
-      extern char _sidata;   // start address of the initialization values of the .data section
-      extern char _sdata;    // start address of the .data section
-      extern char _edata;    // end address of the .data section
-      extern char _sbss;     // start address of the .bss section
-      extern char _ebss;     // end address of the .bss section
+      // extern char _etext;    // end address of the .text section
+      // extern char _sidata;   // start address of the initialization values of the .data section
+      // extern char _sdata;    // start address of the .data section
+      // extern char _edata;    // end address of the .data section
+      // extern char _sbss;     // start address of the .bss section
+      // extern char _ebss;     // end address of the .bss section
       //extern char _snoinit;  // start address of the .noinit section
       //extern char _enoinit;  // end address of the .noinit section
-      extern char _end;      // end address of the .bss section
-      extern char _estack;   // initial value of the stack pointer
+      // extern char _end;      // end address of the .bss section
+      // extern char _estack;   // initial value of the stack pointer
+      //
+      // extern char *__brkval;
 
-      extern char *__brkval;
+      //RCC_ClocksTypeDef  RCC_ClocksStatus;
+      //RCC_GetClocksFreq(&RCC_ClocksStatus);
 
-      RCC_ClocksTypeDef  RCC_ClocksStatus;
-      RCC_GetClocksFreq(&RCC_ClocksStatus);
-
-      printf("HSE_VALUE        = %uHz\n", HSE_VALUE);
-      printf("SYSCLK_Frequency = %luHz\n", RCC_ClocksStatus.SYSCLK_Frequency );
-      printf("HCLK_Frequency   = %luHz\n", RCC_ClocksStatus.HCLK_Frequency   );
-      printf("PCLK1_Frequency  = %luHz\n", RCC_ClocksStatus.PCLK1_Frequency  );
-      printf("PCLK2_Frequency  = %luHz\n", RCC_ClocksStatus.PCLK2_Frequency  );
-      extern void *g_pfnVectors;
-      printf("vtor %lu\n",(uint32_t)&g_pfnVectors);
+      // printf("HSE_VALUE        = %uHz\n", HSE_VALUE);
+      // printf("SYSCLK_Frequency = %luHz\n", RCC_ClocksStatus.SYSCLK_Frequency );
+      // printf("HCLK_Frequency   = %luHz\n", RCC_ClocksStatus.HCLK_Frequency   );
+      // printf("PCLK1_Frequency  = %luHz\n", RCC_ClocksStatus.PCLK1_Frequency  );
+      // printf("PCLK2_Frequency  = %luHz\n", RCC_ClocksStatus.PCLK2_Frequency  );
+      //extern void *g_pfnVectors;
+      //printf("vtor %lu\n",(uint32_t)&g_pfnVectors);
       //*****************************************************************
-      printf("RCC->CSR = %x\n", (unsigned int)RCC->CSR);
-      printf("_etext   = %p\n", &_etext  );
-      printf("_sidata  = %p\n", &_sidata );
-      printf("_sdata   = %p\n", &_sdata  );
-      printf("_edata   = %p\n", &_edata  );
-      printf("_sbss    = %p\n", &_sbss   );
-      printf("_ebss    = %p\n", &_ebss   );
+      //printf("RCC->CSR = %x\n", (unsigned int)RCC_CSR);
+      // printf("_etext   = %p\n", &_etext  );
+      // printf("_sidata  = %p\n", &_sidata );
+      // printf("_sdata   = %p\n", &_sdata  );
+      // printf("_edata   = %p\n", &_edata  );
+      // printf("_sbss    = %p\n", &_sbss   );
+      // printf("_ebss    = %p\n", &_ebss   );
       // printf("_snoinit = %p\n", &_snoinit);
       // printf("_enoinit = %p\n", &_enoinit);
-      printf("_end     = %p\n", &_end    );
-      printf("_estack  = %p\n", &_estack );
+      // printf("_end     = %p\n", &_end    );
+      // printf("_estack  = %p\n", &_estack );
 
-      printf("heap avail       = %luB\n", (uint32_t)((char*)__get_MSP() - __brkval));
+      // printf("heap avail       = %luB\n", (uint32_t)((char*)__get_MSP() - __brkval));
    }
 
    void listhal(){
@@ -384,7 +385,7 @@ NRT(
          Wait(1);
       }
    }
-
+   /*
    void save(){
       if(ee_error != FLASH_COMPLETE){
          printf("flash error:%i\n",ee_error);
@@ -423,6 +424,7 @@ NRT(
       FLASH_Lock();
       printf("done\n");
    }
+   */
 
    void conf(){
       for(int i = 0; i < hal.hal_pin_count; i++){
@@ -434,7 +436,7 @@ NRT(
          }
       }
    }
-
+   /*
    void load_cmd(){
       int ret = load();
       if(ret == -1){
@@ -451,7 +453,7 @@ NRT(
          printf("done\n");
       }
    }
-
+*/
    void help(){
       printf("######## HAL cheat sheet ########\n");
       printf("pin name: <comp name><comp instance number>.<pin name> (e.g. pid0.enable)\n");
@@ -503,16 +505,20 @@ NRT(
          help();
       }
       else if(!strcmp(s, "save")){
-         save();
+         //TODO:
+         //save();
+         printf("not implemented\n");
       }
       else if(!strcmp(s, "load")){
-         load_cmd();
+         //TODO:
+         //load_cmd();
+         printf("not implemented\n");
       }
       else if(!strcmp(s, "conf")){
          conf();
       }
       else{
-         printf("not found: %s\n",s);
+         printf("cmd not found: %s\n",s);
       }
    }
 
@@ -657,9 +663,9 @@ NRT(
 
       buf[8 + 1] = 0;
 
-      if (USB_CDC_is_connected()) {
+      if (cdcacm_is_connected()) {
          PIN(con) = 1.0;
-         USB_VCP_send_string(buf);
+         cdcacm_tx(buf,9);
       }else{
          PIN(con) = 0.0;
       }
@@ -669,16 +675,16 @@ NRT(
 
 
 
-   if (USB_CDC_is_connected() && systime >= 1000) {
-      char source[APP_TX_BUF_SIZE];
-      char sink[APP_TX_BUF_SIZE];
+   if (cdcacm_is_connected()) {
+      char source[MAX_HPNAME];
+      char sink[MAX_HPNAME];
 
       fault_sender();
       hal_error_sender();
 
       int i = -1;
-      char rx_buf[APP_TX_BUF_SIZE];
-      if (USB_VCP_get_string(rx_buf)) {
+      char rx_buf[65];
+      if (cdcacm_getstring(rx_buf)) {
          i = sscanf_(rx_buf, "%N = %N", sink, source);
       }
       if(i == 2){ // read hal pin

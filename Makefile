@@ -1,8 +1,8 @@
 # Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
 #
-OPT = -O1 -flto
-# OPT = -O1         # for debugging
+#OPT = -O1 -flto
+OPT = -ggdb3 # for debugging
 
 # Object files directory
 # Warning: this will be removed by make clean!
@@ -17,72 +17,24 @@ INCDIRS += inc
 INCDIRS += shared
 
 SOURCES += src/main.c
-SOURCES += src/stm32f4xx_it.c
-SOURCES += src/system_stm32f4xx.c
 SOURCES += src/scanf.c
 SOURCES += src/setup.c
-SOURCES += src/usb_cdc.c
+SOURCES += src/cdc.c
 SOURCES += src/hal.c
 SOURCES += src/misc.c
-SOURCES += src/eeprom.c
+#SOURCES += src/eeprom.c
 SOURCES += src/link.c
 SOURCES += src/version.c
 SOURCES += src/syscalls.c
 
 SOURCES += shared/crc8.c
 SOURCES += shared/common.c
+SOURCES += shared/ringbuf.c
 
-USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
+LDFLAGS += -lopencm3_stm32f4 -Llibopencm3/lib/ -nostartfiles
+CFLAGS += -DSTM32F4
+INCDIRS += libopencm3/include
 
-CPPFLAGS += -DUSBD_PRODUCT_STRING='"STMBL Virtual ComPort"'
-CPPFLAGS += -DCDC_IN_FRAME_INTERVAL=1
-CPPFLAGS += -DAPP_RX_DATA_SIZE=4096
-
-INCDIRS += $(USB_VCP_DIR)/inc
-SOURCES += $(USB_VCP_DIR)/src/usbd_desc.c
-
-USB_DEVICE_DIR = lib/STM32_USB_Device_Library-1.2.0
-
-INCDIRS += $(USB_DEVICE_DIR)/Class/cdc/inc
-SOURCES += $(USB_DEVICE_DIR)/Class/cdc/src/usbd_cdc_core.c
-
-INCDIRS += $(USB_DEVICE_DIR)/Core/inc
-SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_core.c
-SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_ioreq.c
-SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_req.c
-
-USB_DRIVER_DIR = lib/STM32_USB_OTG_Driver-2.2.0
-
-INCDIRS += $(USB_DRIVER_DIR)/inc
-SOURCES += $(USB_DRIVER_DIR)/src/usb_core.c
-SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd.c
-SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd_int.c
-
-# Standard peripheral library
-CPPFLAGS += -DUSE_STDPERIPH_DRIVER
-#CPPFLAGS += -DUSE_FULL_ASSERT
-
-PERIPH_DRV_DIR = lib/STM32F4xx_StdPeriph_Driver-V1.6.0
-
-INCDIRS += $(PERIPH_DRV_DIR)/inc
-INCDIRS += lib/CMSIS/Include
-INCDIRS += lib/CMSIS/Device/ST/STM32F4xx/Include
-
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_adc.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_crc.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_dma.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_flash.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_gpio.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_pwr.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_rcc.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_tim.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_usart.c
-SOURCES += $(PERIPH_DRV_DIR)/src/misc.c
-
-SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
-
-CPPFLAGS += -DSTM32F40_41xxx
-CPPFLAGS += -DHSE_VALUE=8000000
 LDSCRIPT = stm32_flash.ld
 
 #============================================================================
@@ -96,7 +48,6 @@ CPPFLAGS += $(addprefix -I,$(INCDIRS))
 #  -save-temps    preserve .s and .i-files
 #
 CPPFLAGS += -fsingle-precision-constant
-CPPFLAGS += -g
 # CPPFLAGS += -save-temps=obj
 
 #---------------- C Compiler Options ----------------
@@ -194,6 +145,9 @@ boot_clean:
 
 boot_flash: boot
 	$(MAKE) -f bootloader/Makefile flash
+	
+flash:
+	st-flash --reset write $(TARGET).bin 0x08000000
 
 hv_flash: boot
 	$(MAKE) -f stm32f103/Makefile flash

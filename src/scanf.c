@@ -7,23 +7,23 @@
 //
 
 #include "scanf.h"
-#include "usb_cdc.h"
+//#include "usb_cdc.h"
 
-int scanf_(const char *format, ...){
-   int ret = 0;
-   char rx_buf[APP_TX_BUF_SIZE];
-   va_list arg;
-   if (USB_CDC_is_connected()) {
-      if (USB_VCP_get_string(rx_buf)) {
-         va_start(arg, format);
-         ret = vfsscanf_(rx_buf, format, arg);
-         va_end(arg);
-      } else {
-         ret = -1;
-      }
-   }
-   return(ret);
-}
+// int scanf_(const char *format, ...){
+//    int ret = 0;
+//    char rx_buf[10];
+//    va_list arg;
+//    if (USB_CDC_is_connected()) {
+//       if (USB_VCP_get_string(rx_buf)) {
+//          va_start(arg, format);
+//          ret = vfsscanf_(rx_buf, format, arg);
+//          va_end(arg);
+//       } else {
+//          ret = -1;
+//       }
+//    }
+//    return(ret);
+// }
 
 int sscanf_(const char *buf, const char *format, ...){
    int ret = 0;
