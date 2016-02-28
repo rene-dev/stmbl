@@ -222,10 +222,6 @@ static void cdcacm_data_rx_cb(usbd_device *usbd_dev, uint8_t ep)
    int ret = rb_write(&rx_buf, buf, len);
 }
 
-void cdcacm_flush(){
-   
-}
-
 int cdcacm_tx(void* data, uint32_t len){
    if(usb_connected == 0){
       return 0;

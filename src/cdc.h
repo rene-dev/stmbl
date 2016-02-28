@@ -11,7 +11,6 @@ void cdc_init(void);
 int cdcacm_tx(void* data, uint32_t len);
 int cdcacm_getline(char *ptr, int len);
 int cdcacm_is_connected();
-void cdcacm_flush();
 
 usbd_device *usbd_dev;
 int usb_connected;

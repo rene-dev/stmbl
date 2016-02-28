@@ -181,7 +181,7 @@ int main(void)
    HAL_PIN(bar) = 0.0;
 
    //feedback comps
-   // #include "comps/adc.comp"
+   #include "comps/adc.comp"
    // #include "comps/res.comp"
    // #include "comps/enc_fb.comp"
    // #include "comps/encm.comp"
