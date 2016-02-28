@@ -302,14 +302,13 @@ NRT(
       printf("GCC        %s\n",__VERSION__);
       printf("newlib     %s\n",_NEWLIB_VERSION);
       printf("CPU ID     %lx %lx %lx\n",U_ID[0], U_ID[1], U_ID[2]);
-      //TODO
-      //CRC_ResetDR();
-      //uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08010000, version_info.image_size / 4);
+      crc_reset();
+      uint32_t crc = crc_calculate_block((uint32_t *) &vector_table, version_info.image_size / 4);
       printf("size: %lu crc:%lx\n", version_info.image_size, version_info.image_crc);
-      //if(crc == 0)
-      //   printf("crc ok!\n");
-      //else
-      //   printf("crc error!:%lx\n", crc);
+      if(crc == 0)
+        printf("crc ok!\n");
+      else
+        printf("crc error!:%lx\n", crc);
       
       printf("######## Bootloader info ########\n");
       printf(
@@ -353,19 +352,13 @@ NRT(
       // extern char _estack;   // initial value of the stack pointer
       //
       // extern char *__brkval;
-
-      //RCC_ClocksTypeDef  RCC_ClocksStatus;
-      //RCC_GetClocksFreq(&RCC_ClocksStatus);
-
-      // printf("HSE_VALUE        = %uHz\n", HSE_VALUE);
-      // printf("SYSCLK_Frequency = %luHz\n", RCC_ClocksStatus.SYSCLK_Frequency );
-      // printf("HCLK_Frequency   = %luHz\n", RCC_ClocksStatus.HCLK_Frequency   );
-      // printf("PCLK1_Frequency  = %luHz\n", RCC_ClocksStatus.PCLK1_Frequency  );
-      // printf("PCLK2_Frequency  = %luHz\n", RCC_ClocksStatus.PCLK2_Frequency  );
-      //extern void *g_pfnVectors;
-      //printf("vtor %lu\n",(uint32_t)&g_pfnVectors);
-      //*****************************************************************
-      //printf("RCC->CSR = %x\n", (unsigned int)RCC_CSR);
+      
+      printf("rcc_ahb_frequency  = %luHz\n", rcc_ahb_frequency);
+      printf("rcc_apb1_frequency = %luHz\n", rcc_apb1_frequency);
+      printf("rcc_apb2_frequency = %luHz\n", rcc_apb2_frequency);
+      printf("vector_table = 0x%lx\n",(uint32_t)&vector_table);
+      printf("SCB_VTOR = 0x%lx\n", SCB_VTOR);
+      printf("RCC_CSR = 0x%lx\n", RCC_CSR);
       // printf("_etext   = %p\n", &_etext  );
       // printf("_sidata  = %p\n", &_sidata );
       // printf("_sdata   = %p\n", &_sdata  );

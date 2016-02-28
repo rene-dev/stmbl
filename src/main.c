@@ -166,8 +166,8 @@ int main(void)
    rcc_clock_setup_hse_3v3(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
    // Relocate interrupt vectors
    //
-   //extern void *vector_table;
-   //SCB_VTOR = (uint32_t)&vector_table;
+   extern void *vector_table;
+   SCB_VTOR = (uint32_t)&vector_table;
 
    float period = 0.0;
    int last_start = 0;
