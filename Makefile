@@ -146,7 +146,7 @@ boot_clean:
 boot_flash: boot
 	$(MAKE) -f bootloader/Makefile flash
 	
-flash:
+flash: $(TARGET).bin
 	st-flash --reset write $(TARGET).bin 0x08000000
 
 hv_flash: boot
