@@ -45,6 +45,7 @@ void setup(){
 	// systick timer
 	//RCC_GetClocksFreq(&RCC_Clocks);
 	//SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
+   systick_set_clocksource(STK_CSR_CLKSOURCE_AHB);
    systick_set_reload(rcc_ahb_frequency / 1000);
    systick_interrupt_enable();
    systick_counter_enable();//??
