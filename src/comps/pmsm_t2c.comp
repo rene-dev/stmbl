@@ -1,4 +1,4 @@
-COMP(t2c);
+HAL_COMP(t2c);
 
 // motor values
 HAL_PIN(psi) = 0.01;

@@ -3,7 +3,7 @@
 //using CMD_TX
 //using CMD_RX
 
-COMP(sserial);
+HAL_COMP(sserial);
 
 //dump:
 //sigrok-cli --driver fx2lafw --config samplerate=24m --time 1s --channels 3=rx,2=tx -t rx=f -o sserial.sr
@@ -521,19 +521,19 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
       // for instance, if we receive 0xFFF in a 12 bit field, that is a negative number, but we stored it as 0x0FFF in memory.
       // strategy is to set the most significant n bits of the MSB to the most significant bit of the output value, iff the pd is defined as signed.
       if (SIGNED(pd) && pd->data_size % 8 != 0) {
-        //printf_("in output fixup.  data_addr %h  data_size %i num_bytes %i\n", pd->data_addr, pd->data_size, NUM_BYTES(pd->data_size));
+        //printf("in output fixup.  data_addr %h  data_size %i num_bytes %i\n", pd->data_addr, pd->data_size, NUM_BYTES(pd->data_size));
         uint8_t msb_addr = pd->data_addr + NUM_BYTES(pd->data_size) - 1;
-        //printf_("in output fixup.  MSB (at %h): %h\n", msb_addr, MEMU8(msb_addr));
+        //printf("in output fixup.  MSB (at %h): %h\n", msb_addr, MEMU8(msb_addr));
         
         // these two masks use data_size%8, this is the number of bits in the most significant byte, and since we tested for %8!=0 above, we know it's a partial byte
         if(MEMU8(msb_addr) & 1<<(pd->data_size%8 - 1)) { // this test uses a mask that is 1 in the most significant bit position, we only need to fixup the val if it's 1 (ie negative)
           // this mask is all the unused high bits set
           uint8_t mask = 0xFF ^ ((1<<pd->data_size%8) - 1);
-          //printf_("applying mask: %h\n", mask);
+          //printf("applying mask: %h\n", mask);
           MEMU8(msb_addr) |= mask;
         }
 
-        //printf_("fixed up val: %h\n", MEMU8(msb_addr));
+        //printf("fixed up val: %h\n", MEMU8(msb_addr));
       }
     }
   }
@@ -692,16 +692,16 @@ FRT(
 NRT(
   if(PIN(dump_pd_vals) != 0.0) {
     if(PIN(error) != 0) {
-      printf_("Error count: %i\n", PIN(error));
+      printf("Error count: %f\n", PIN(error));
     }
     PIN(dump_pd_vals) = 0.0;
 
-    printf_("pos_cmd: %f\n", PIN(pos_cmd));
+    printf("pos_cmd: %f\n", PIN(pos_cmd));
 
     uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
     while(*ptocp != 0x0000) {
       process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
-      printf_("pd has data at %h with value %h\n", pd->data_addr, MEMU16(pd->data_addr));
+      printf("pd has data at %x with value %x\n", pd->data_addr, MEMU16(pd->data_addr));
     }
   }
 );

@@ -1,6 +1,6 @@
 //using FB_TX
 
-COMP(res);
+HAL_COMP(res);
 
 HAL_PIN(pos) = 0.0;
 HAL_PIN(amp) = 0.0;

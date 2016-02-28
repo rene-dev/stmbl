@@ -4,7 +4,7 @@
 
 #define NUM_OF_SAMPLES_Y  800
 
-COMP(yaskawa);
+HAL_COMP(yaskawa);
 
 HAL_PIN(pos) = 0.0;
 HAL_PIN(error) = 0.0;
@@ -265,7 +265,7 @@ RT(
 
 NRT(
    if(RISING_EDGE(PIN(dump))){
-      printf_("%s\n",data);
+      printf("%s\n",data);
    }
 );
 

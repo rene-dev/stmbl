@@ -2,12 +2,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-//#include <string.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include "printf.h"
-
-#include "stm32_ub_usb_cdc.h"
+#include "stm32f4xx.h"
+#include "usb_cdc.h"
 
 //int __errno;
 size_t   __malloc_margin = 256;
@@ -33,20 +31,6 @@ int _open(const char *name, int flags, int mode) {
 	return -1;
 }
 
-int _read(int file, char *ptr, int len) {
-	if (file != 0) {
-		return 0;
-	}
-
-   // // Use USB CDC Port for stdin
-   // while(!VCP_get_char((uint8_t*)ptr)){};
-   //
-   // // Echo typed characters
-   // VCP_put_char((uint8_t)*ptr);
-
-	return 1;
-}
-
 /* Register name faking - works in collusion with the linker.  */
 register char * stack_ptr asm ("sp");
 
@@ -68,9 +52,38 @@ void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
     return ret;
 }
 
-int _write(int file, char *ptr, int len) {
-   while(len--){
-      UB_VCP_DataTx(*ptr++);
-   }
+ssize_t _read(int fd, void *ptr, size_t len)
+{
+	(void) fd;
+	while (!usb_rx_buf.len);
+
+	if (len > usb_rx_buf.len)
+		len = usb_rx_buf.len;
+
+	char *c = (char *) ptr;
+	for (uint16_t i = 0; i < len; i++)
+		rb_getc(&usb_rx_buf, c++);
+
 	return len;
+}
+
+
+int _write(int fd, const char *ptr, int len)
+{
+	char *c = (char *) ptr;
+	(void) fd;
+	int sent = 0;
+
+	while (len--) {
+		// send a queued byte - copy to usb stack buffer
+                APP_Rx_Buffer[APP_Rx_ptr_in++] = *c;
+                c++;
+
+                // To avoid buffer overflow
+                if (APP_Rx_ptr_in >= APP_RX_DATA_SIZE) {
+                    APP_Rx_ptr_in = 0;
+                }
+		sent++;
+	}
+	return sent;
 }

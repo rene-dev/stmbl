@@ -7,6 +7,7 @@
 //
 
 #include "setup.h"
+#include "usb_cdc.h"
 
 void setup(){
    //Enable clocks
@@ -20,13 +21,12 @@ void setup(){
    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
    GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//wird in UB_USB_CDC_Init() nochmal gesetzt!
+   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
    setup_res();
+   usb_init();
 
 	// systick timer
-	systime = 0;
-
 	RCC_GetClocksFreq(&RCC_Clocks);
 	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
    //systick prio
@@ -134,8 +134,3 @@ void setup_res(){
 
     DMA_ITConfig(DMA2_Stream0, DMA_IT_TC, ENABLE);
  }
-
-void SysTick_Handler(void)
-{
-  systime++;
-}

@@ -1,4 +1,4 @@
-COMP(adc);
+HAL_COMP(adc);
 
 #define AREF 3.3// analog reference voltage
 #define ARES 4096.0// analog resolution, 12 bit

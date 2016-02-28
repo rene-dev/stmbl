@@ -4,7 +4,7 @@
 #define CMD_TX
 #endif
 
-COMP(en);
+HAL_COMP(en);
 
 HAL_PIN(en) = 0.0;
 HAL_PIN(txen) = 0.0;

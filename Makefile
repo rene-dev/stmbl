@@ -1,6 +1,6 @@
-# Optimization level, can be [0, 1, 2, 3, s]. 
+# Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
-# 
+#
 OPT = -O1 -flto
 # OPT = -O1         # for debugging
 
@@ -19,9 +19,9 @@ INCDIRS += shared
 SOURCES += src/main.c
 SOURCES += src/stm32f4xx_it.c
 SOURCES += src/system_stm32f4xx.c
-SOURCES += src/printf.c
 SOURCES += src/scanf.c
 SOURCES += src/setup.c
+SOURCES += src/usb_cdc.c
 SOURCES += src/hal.c
 SOURCES += src/misc.c
 SOURCES += src/eeprom.c
@@ -32,41 +32,52 @@ SOURCES += src/syscalls.c
 SOURCES += shared/crc8.c
 SOURCES += shared/common.c
 
-#USB CDC
-INCDIRS += src/ub_lib
-INCDIRS += src/ub_lib/usb_cdc_lolevel
+USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
 
-SOURCES += src/ub_lib/stm32_ub_usb_cdc.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usb_core.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usb_dcd_int.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_req.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_cdc_core.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_core.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usb_dcd.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_cdc_vcp.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_desc.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_ioreq.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usb_bsp.c
-SOURCES += src/ub_lib/usb_cdc_lolevel/usbd_usr.c
+CPPFLAGS += -DUSBD_PRODUCT_STRING='"STMBL Virtual ComPort"'
+CPPFLAGS += -DCDC_IN_FRAME_INTERVAL=1
+CPPFLAGS += -DAPP_RX_DATA_SIZE=4096
+
+INCDIRS += $(USB_VCP_DIR)/inc
+SOURCES += $(USB_VCP_DIR)/src/usbd_desc.c
+
+USB_DEVICE_DIR = lib/STM32_USB_Device_Library-1.2.0
+
+INCDIRS += $(USB_DEVICE_DIR)/Class/cdc/inc
+SOURCES += $(USB_DEVICE_DIR)/Class/cdc/src/usbd_cdc_core.c
+
+INCDIRS += $(USB_DEVICE_DIR)/Core/inc
+SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_core.c
+SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_ioreq.c
+SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_req.c
+
+USB_DRIVER_DIR = lib/STM32_USB_OTG_Driver-2.2.0
+
+INCDIRS += $(USB_DRIVER_DIR)/inc
+SOURCES += $(USB_DRIVER_DIR)/src/usb_core.c
+SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd.c
+SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd_int.c
 
 # Standard peripheral library
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 #CPPFLAGS += -DUSE_FULL_ASSERT
 
-INCDIRS += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/inc
+PERIPH_DRV_DIR = lib/STM32F4xx_StdPeriph_Driver-V1.6.0
+
+INCDIRS += $(PERIPH_DRV_DIR)/inc
 INCDIRS += lib/CMSIS/Include
 INCDIRS += lib/CMSIS/Device/ST/STM32F4xx/Include
 
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_adc.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_crc.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_dma.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_flash.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_gpio.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_pwr.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_rcc.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_tim.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/stm32f4xx_usart.c
-SOURCES += lib/STM32F4xx_StdPeriph_Driver-V1.6.0/src/misc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_adc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_crc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_dma.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_flash.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_gpio.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_pwr.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_rcc.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_tim.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_usart.c
+SOURCES += $(PERIPH_DRV_DIR)/src/misc.c
 
 SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
 
@@ -100,6 +111,7 @@ CFLAGS += -fdata-sections
 CFLAGS += -Wall
 CFLAGS += -fno-builtin ## from old
 CFLAGS += -nostartfiles
+CFLAGS += -Wfatal-errors
 #CFLAGS += -Wstrict-prototypes
 #CFLAGS += -Wextra
 #CFLAGS += -Wpointer-arith
@@ -164,7 +176,7 @@ LDFLAGS  += $(CPU)
 
 # Default target
 #
-all: hv gccversion boot hv build showsize
+all: hv gccversion boot build showsize
 
 build: elf hex bin lss sym
 
@@ -192,14 +204,11 @@ boot_btflash: boot
 hv:
 	$(MAKE) -f stm32f103/Makefile
 
-hv_firmware.o: hv
-	arm-none-eabi-objcopy --rename-section .data=.hv_firmware -I binary obj_hv/hv.bin -B arm -O elf32-littlearm hv_firmware.o
 
 # Display compiler version information
 #
-gccversion: 
+gccversion:
 	@$(CC) --version
-
 
 # Show the final program size
 #
@@ -207,15 +216,19 @@ showsize: build
 	@echo
 	@$(SIZE) $(TARGET).elf 2>/dev/null
 
-# Flash the device  
+# Flash the device
 #
-	
-btburn: build showsize
+btburn: build showsize $(TARGET).dfu
 	#change this to your device
 	printf "bootloader\r" > `ls /dev/cu.usbmodem*` || true
 	printf "bootloader\r" > `ls /dev/ttyACM*` || true
 	sleep 1
-	dfu-util -a 0 -d 0483:df11 -s 0x08010000:leave -D $(TARGET).bin
+	dfu-util -a 0 -s 0x08010000:leave -D $(TARGET).dfu
+
+# Create a DFU file from bin file
+%.dfu: %.bin
+	@cp $< $@
+	dfu-suffix -v 0483 -p df11 -a $@
 
 # Target: clean project
 #

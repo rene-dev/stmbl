@@ -203,18 +203,6 @@ static void SetSysClock(void);
   */
 void SystemInit(void)
 {
-  void (*SysMemBootJump)(void);
-  if ( *((unsigned long *)0x2001C000) == 0xDEADBEEF ) {//Memory map, datasheet
-    *((unsigned long *)0x2001C000) =  0xCAFEFEED; //Reset bootloader trigger
-    __set_MSP(0x20001000);
-	//Point the PC to the System Memory reset vector (+4)
-	//AN2606
-	//Table 64. Bootloader device-dependent parameters
-    SysMemBootJump = (void (*)(void)) (*((uint32_t *) 0x1FFF0004));
-    SysMemBootJump();
-    while (1);
-  }
-
   SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));  /* Set CP10 and CP11 to full access */
 
   /* Reset the RCC clock configuration to the default reset state ------------*/

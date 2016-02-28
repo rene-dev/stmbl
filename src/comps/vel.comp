@@ -1,9 +1,8 @@
-COMP(vel);
+HAL_COMP(vel);
 
 HAL_PIN(pos_in) = 0.0;
 HAL_PIN(pos_out) = 0.0;
 HAL_PIN(vel) = 0.0;
-HAL_PIN(vel1) = 0.0;
 HAL_PIN(acc) = 0.0;
 HAL_PIN(w) = 1000.0;
 HAL_PIN(d) = 0.9;
@@ -12,6 +11,7 @@ HAL_PIN(j) = 0.00001;
 HAL_PIN(lp) = 100.0;
 HAL_PIN(torque) = 0.0;
 HAL_PIN(en) = 1.0;
+HAL_PIN(pos_error) = 0.0;
 
 MEM(float last_acc) = 0.0;
 MEM(float acc_sum) = 0.0;
@@ -22,6 +22,8 @@ RT(
       vel_sum = PIN(pos_in);
       acc_sum = 0.0;
    }
+   vel_sum += acc_sum * period; // ff
+   
    float pos_error = minus(PIN(pos_in), vel_sum);
    float w = PIN(w);
    float d = PIN(d);
@@ -41,13 +43,13 @@ RT(
    PIN(vel) = acc_sum;
    PIN(acc) = acc_ff;
 
-   float vel_ff = acc_sum + 2.0 * d * w * pos_error;
-   PIN(vel1) = vel_ff;
-
+   float vel_ff = 2.0 * d * w * pos_error;
+   
    vel_sum += vel_ff * period;
    vel_sum = mod(vel_sum);
 
    PIN(pos_out) = vel_sum;
+   PIN(pos_error) = minus(PIN(pos_in), vel_sum);
 );
 
 ENDCOMP;

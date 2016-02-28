@@ -1,4 +1,4 @@
-COMP(cauto);
+HAL_COMP(cauto);
 
 HAL_PIN(i_q) = 0.0;
 HAL_PIN(i_d) = 0.0;

@@ -26,6 +26,7 @@ There will be documentation.
 **PCBs are now available, let me know if you are interested.**
 
 **IRC: #stmbl on irc.hackint.eu**
+https://webirc.hackint.org/#stmbl
 
 stmbl is an open source servo drive designed for Retrofitting CNC machines and Robots. It supports Industrial AC and DC servos with up to 320V and 1kW.
 

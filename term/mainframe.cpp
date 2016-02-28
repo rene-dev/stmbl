@@ -22,7 +22,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     timer = new wxTimer(this, wxID_ANY);
     Bind(wxEVT_TIMER,&ServoFrame::OnTimer,this,wxID_ANY);
 
-	//oben
+	//top
 	wxPanel *top = new wxPanel(mainsplitter, wxID_ANY);
 	wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *leiste = new wxBoxSizer(wxHORIZONTAL);
@@ -33,8 +33,8 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     connectbutton->Disable();
 	clear = new wxButton(top, wxID_ANY, wxT("Clear"));
 	refresh = new wxButton(top, wxID_ANY, wxT("&Refresh"));
-  reset = new wxButton(top, wxID_ANY, wxT("Reset Fault"));
-  reset->Disable();
+	reset = new wxButton(top, wxID_ANY, wxT("Reset Fault"));
+	reset->Disable();
 	uhu = new wxRadioButton(top,wxID_ANY, "UHU");
 	stmbl = new wxRadioButton(top, wxID_ANY,"STMBL");
 	stmbl->SetValue(true);
@@ -42,13 +42,13 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	refresh->Bind(wxEVT_BUTTON, &ServoFrame::OnRefresh, this, wxID_ANY);
 	connectbutton->Bind(wxEVT_BUTTON, &ServoFrame::OnConnect, this, wxID_ANY);
 	clear->Bind(wxEVT_BUTTON, &ServoFrame::OnClear, this, wxID_ANY);
-  reset->Bind(wxEVT_BUTTON, &ServoFrame::OnReset, this, wxID_ANY);
+	reset->Bind(wxEVT_BUTTON, &ServoFrame::OnReset, this, wxID_ANY);
 	listports();
 	leiste->Add(choose_port, 0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(connectbutton,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(refresh,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(clear,0,wxALIGN_LEFT|wxALL,3);
-  leiste->Add(reset,0,wxALIGN_LEFT|wxALL,3);
+	leiste->Add(reset,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(uhu,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(stmbl,0,wxALIGN_LEFT|wxALL,3);
 	topsizer->Add(leiste);
@@ -82,7 +82,6 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
         wxPanel *c_panel;
         c_panel = new wxPanel(top, wxID_NEW, wxPoint(150, 20), wxSize(20, 20), wxBORDER_NONE);
         c_panel->SetBackgroundColour(drawpanel->pen[i].GetColour());
-        c_panel->Bind(wxEVT_LEFT_UP, &ServoFrame::OnColorChange, this, wxID_ANY);
 
         wxBoxSizer *sizer1 = new wxBoxSizer(wxHORIZONTAL);
         wxBoxSizer *sizer2 = new wxBoxSizer(wxHORIZONTAL);
@@ -101,7 +100,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 
     top->SetSizer(topsizer);
 
-	//unten
+	//bottom
 	wxPanel *bottom = new wxPanel(mainsplitter, wxID_ANY);
 	text = new wxTextCtrl((wxFrame*)bottom,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	textinput = new wxTextCtrl((wxFrame*)bottom,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
@@ -143,10 +142,6 @@ void ServoFrame::OnKeyDown(wxKeyEvent& event){
 	else{
 		event.Skip();
 	}
-}
-
-void ServoFrame::OnColorChange(wxMouseEvent& event){
-
 }
 
 void ServoFrame::OnChannelChange(wxCommandEvent& event){
@@ -294,7 +289,7 @@ void ServoFrame::connect(){
 		connected = true;
 		connectbutton->SetLabel(wxT("&Disonnect"));
 		refresh->Disable();
-    reset->Enable();
+		reset->Enable();
 		choose_port->Disable();
         uhu->Disable();
         stmbl->Disable();
@@ -311,7 +306,7 @@ void ServoFrame::disconnect(){
 		connected = false;
 		connectbutton->SetLabel(wxT("&Connect"));
 		refresh->Enable();
-    reset->Disable();
+		reset->Disable();
 		choose_port->Enable();
         uhu->Enable();
         stmbl->Enable();

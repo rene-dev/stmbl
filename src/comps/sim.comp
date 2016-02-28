@@ -1,6 +1,6 @@
-COMP(sim);
+HAL_COMP(sim);
 
-HAL_PIN(amp) = M_PI;
+HAL_PIN(amp) = 3.1;
 HAL_PIN(freq) = 1.0;
 HAL_PIN(sin) = 0.0;
 HAL_PIN(msin) = 0.0;

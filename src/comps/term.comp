@@ -1,4 +1,4 @@
-COMP(term);
+HAL_COMP(term);
 
 HAL_PIN(wave0) = 0.0;
 HAL_PIN(gain0) = 10.0;
@@ -146,146 +146,146 @@ NRT(
    }
 
    void hal_info(){
-      printf_("######## hal info ########\n");
-      printf_("#pins %i\n", hal.hal_pin_count);
-      printf_("#comps %i\n", hal.comp_count);
-      printf_("link errors %i\n", hal.link_errors);
-      printf_("pin errors %i\n", hal.pin_errors);
-      printf_("comp errors %i\n", hal.comp_errors);
-      printf_("set errors %i\n", hal.set_errors);
-      printf_("get errors %i\n", hal.get_errors);
-      printf_("foo0.bar:  %f\n", get_hal_pin("foo0.bar"));
-      printf_("error_name: %s\n",hal.error_name);
+      printf("######## hal info ########\n");
+      printf("#pins %i\n", hal.hal_pin_count);
+      printf("#comps %i\n", hal.comp_count);
+      printf("link errors %lu\n", hal.link_errors);
+      printf("pin errors %lu\n", hal.pin_errors);
+      printf("comp errors %lu\n", hal.comp_errors);
+      printf("set errors %lu\n", hal.set_errors);
+      printf("get errors %lu\n", hal.get_errors);
+      printf("foo0.bar:  %f\n", get_hal_pin("foo0.bar"));
+      printf("error_name: %s\n",hal.error_name);
       float pe = get_hal_pin("net0.rt_period");
       float ct = get_hal_pin("net0.rt_calc_time");
       if(pe > 0.0){
-         printf_("rt time: %f/%fs", ct, pe);
-         printf_("=%f%%\n",(ct/pe)*100);
+         printf("rt time: %f/%fs", ct, pe);
+         printf("=%f%%\n",(ct/pe)*100);
       }
       pe = get_hal_pin("net0.frt_period");
       ct = get_hal_pin("net0.frt_calc_time");
       if(pe > 0.0){
-         printf_("frt time: %f/%fs", ct, pe);
-         printf_("=%f%%\n",(ct/pe)*100);
+         printf("frt time: %f/%fs", ct, pe);
+         printf("=%f%%\n",(ct/pe)*100);
       }
       pe = get_hal_pin("net0.nrt_period");
       ct = get_hal_pin("net0.nrt_calc_time");
       if(pe > 0.0){
-         printf_("nrt time: %f/%fs", ct, pe);
-         printf_("=%f%%\n",(ct/pe)*100);
+         printf("nrt time: %f/%fs", ct, pe);
+         printf("=%f%%\n",(ct/pe)*100);
       }
       switch(hal.rt_state){
          case RT_STOP:
-            printf_("rt state:  STOP\n");
+            printf("rt state:  STOP\n");
             break;
          case RT_SLEEP:
-            printf_("rt state:  SLEEP\n");
+            printf("rt state:  SLEEP\n");
             break;
          case RT_CALC:
-            printf_("rt state:  CALC\n");
+            printf("rt state:  CALC\n");
             break;
       }
       switch(hal.frt_state){
          case FRT_STOP:
-            printf_("frt state:  STOP\n");
+            printf("frt state:  STOP\n");
             break;
          case FRT_SLEEP:
-            printf_("frt state:  SLEEP\n");
+            printf("frt state:  SLEEP\n");
             break;
          case FRT_CALC:
-            printf_("frt state:  CALC\n");
+            printf("frt state:  CALC\n");
             break;
       }
       switch(hal.hal_state){
          case HAL_OK:
-            printf_("HAL state:  HAL_OK\n");
+            printf("HAL state:  HAL_OK\n");
             break;
          case RT_TOO_LONG:
-            printf_("HAL state:  RT_TOO_LONG\n");
+            printf("HAL state:  RT_TOO_LONG\n");
             break;
          case FRT_TOO_LONG:
-            printf_("HAL state:  FRT_TOO_LONG\n");
+            printf("HAL state:  FRT_TOO_LONG\n");
             break;
          case MISC_ERROR:
-            printf_("HAL state:  MISC_ERROR\n");
+            printf("HAL state:  MISC_ERROR\n");
             break;
          case MEM_ERROR:
-            printf_("HAL state:  MEM_ERROR\n");
+            printf("HAL state:  MEM_ERROR\n");
             break;
          case CONFIG_LOAD_ERROR:
-            printf_("HAL state:  CONFIG_LOAD_ERROR\n");
+            printf("HAL state:  CONFIG_LOAD_ERROR\n");
             break;
          case CONFIG_ERROR:
-            printf_("HAL state:  CONFIG_ERROR\n");
+            printf("HAL state:  CONFIG_ERROR\n");
             break;
       }
       uint32_t p = 0;
-      printf_("active rt funcs(%u):\n", hal.rt_func_count);
+      printf("active rt funcs(%u):\n", hal.rt_func_count);
       for(int i = 0; i < hal.rt_func_count; i++){
          p = (uint32_t)hal.rt[i];
          for(int i = 0; i < hal.comp_count; i++){
             if(p == (uint32_t)hal.hal_comps[i]->rt){
-               printf_("   %s%u.rt(%f)\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance,  hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value);
+               printf("   %s%lu.rt(%f)\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance,  hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value);
                break;
             }
          }
       }
-      printf_("\nactive frt funcs(%u):\n", hal.frt_func_count);
+      printf("\nactive frt funcs(%u):\n", hal.frt_func_count);
       for(int i = 0; i < hal.frt_func_count; i++){
          p = (uint32_t)hal.frt[i];
          for(int i = 0; i < hal.comp_count; i++){
             if(p == (uint32_t)hal.hal_comps[i]->frt){
-               printf_("   %s%u.frt(%f)\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance, hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 3]->source->source->value);
+               printf("   %s%lu.frt(%f)\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance, hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 3]->source->source->value);
                break;
             }
          }
       }
-      printf_("\nactive rt_init funcs(%u):\n", hal.rt_init_func_count);
+      printf("\nactive rt_init funcs(%u):\n", hal.rt_init_func_count);
       for(int i = 0; i < hal.rt_init_func_count; i++){
          p = (uint32_t)hal.rt_init[i];
          for(int i = 0; i < hal.comp_count; i++){
             if(p == (uint32_t)hal.hal_comps[i]->rt_init){
-               printf_("   %s%u.rt_init\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
+               printf("   %s%lu.rt_init\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
                break;
             }
          }
       }
-      printf_("\nactive rt_deinit funcs(%u):\n", hal.rt_deinit_func_count);
+      printf("\nactive rt_deinit funcs(%u):\n", hal.rt_deinit_func_count);
       for(int i = 0; i < hal.rt_deinit_func_count; i++){
          p = (uint32_t)hal.rt_deinit[i];
          for(int i = 0; i < hal.comp_count; i++){
             if(p == (uint32_t)hal.hal_comps[i]->rt_deinit){
-               printf_("   %s%u.rt_deinit\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
+               printf("   %s%lu.rt_deinit\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
                break;
             }
          }
       }
-      printf_("\nactive nrt_init funcs(%u):\n", hal.nrt_init_func_count);
+      printf("\nactive nrt_init funcs(%u):\n", hal.nrt_init_func_count);
       for(int i = 0; i < hal.nrt_init_func_count; i++){
          p = (uint32_t)hal.nrt_init[i];
          for(int i = 0; i < hal.comp_count; i++){
             if(p == (uint32_t)hal.hal_comps[i]->nrt_init){
-               printf_("   %s%u.nrt_init\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
+               printf("   %s%lu.nrt_init\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
                break;
             }
          }
       }
-      printf_("\nactive nrt funcs(%u):\n", hal.nrt_func_count);
+      printf("\nactive nrt funcs(%u):\n", hal.nrt_func_count);
       for(int i = 0; i < hal.nrt_func_count; i++){
          p = (uint32_t)hal.nrt[i];
          for(int i = 0; i < hal.comp_count; i++){
             if(p == (uint32_t)hal.hal_comps[i]->nrt){
-               printf_("   %s%u.nrt\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
+               printf("   %s%lu.nrt\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
                break;
             }
          }
       }
-      printf_("\n");
+      printf("\n");
    }
 
    void about(){
-      printf_("######## software info ########\n");
-      printf_(
+      printf("######## software info ########\n");
+      printf(
           "%s v%i.%i.%i %s\n",
           version_info.product_name,
           version_info.major,
@@ -293,24 +293,24 @@ NRT(
           version_info.patch,
           version_info.git_version
       );
-      printf_("Branch %s\n",version_info.git_branch);
-      printf_("Compiled %s %s ",version_info.build_date, version_info.build_time);
-      printf_("by %s on %s\n",version_info.build_user, version_info.build_host);
-      printf_("GCC        %s\n",__VERSION__);
-      printf_("newlib     %s\n",_NEWLIB_VERSION);
-      printf_("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
-      printf_("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
-      printf_("CPU ID     %x %x %x\n",U_ID[0], U_ID[1], U_ID[2]);
+      printf("Branch %s\n",version_info.git_branch);
+      printf("Compiled %s %s ",version_info.build_date, version_info.build_time);
+      printf("by %s on %s\n",version_info.build_user, version_info.build_host);
+      printf("GCC        %s\n",__VERSION__);
+      printf("newlib     %s\n",_NEWLIB_VERSION);
+      printf("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
+      printf("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
+      printf("CPU ID     %lx %lx %lx\n",U_ID[0], U_ID[1], U_ID[2]);
       CRC_ResetDR();
       uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08010000, version_info.image_size / 4);
-      printf_("size: %u crc:%x\n",version_info.image_size,version_info.image_crc);
+      printf("size: %lu crc:%lx\n", version_info.image_size, version_info.image_crc);
       if(crc == 0)
-         printf_("crc ok!\n");
+         printf("crc ok!\n");
       else
-         printf_("crc error!:%x\n",crc);
+         printf("crc error!:%lx\n", crc);
       
-      printf_("######## Bootloader info ########\n");
-      printf_(
+      printf("######## Bootloader info ########\n");
+      printf(
           "%s v%i.%i.%i %s\n",
           bt_version_info->product_name,
           bt_version_info->major,
@@ -318,27 +318,27 @@ NRT(
           bt_version_info->patch,
           bt_version_info->git_version
       );
-      printf_("Branch %s\n",bt_version_info->git_branch);
-      printf_("Compiled %s %s ",bt_version_info->build_date, bt_version_info->build_time);
-      printf_("by %s on %s\n",bt_version_info->build_user, bt_version_info->build_host);
+      printf("Branch %s\n",bt_version_info->git_branch);
+      printf("Compiled %s %s ",bt_version_info->build_date, bt_version_info->build_time);
+      printf("by %s on %s\n",bt_version_info->build_user, bt_version_info->build_host);
 
-      printf_("start:%p ,size:%p ,end%p \n",&_binary_obj_hv_hv_bin_start,&_binary_obj_hv_hv_bin_size,&_binary_obj_hv_hv_bin_end);
+      printf("start:%p ,size:%p ,end%p \n",&_binary_obj_hv_hv_bin_start,&_binary_obj_hv_hv_bin_size,&_binary_obj_hv_hv_bin_end);
    }
 
    void start(){
-      printf_("starting hal ... ");
+      printf("starting hal ... ");
       start_hal();
-      printf_("done\n");
+      printf("done\n");
    }
 
    void stop(){
-      printf_("stopping hal ... ");
+      printf("stopping hal ... ");
       stop_hal();
-      printf_("done\n");
+      printf("done\n");
    }
 
    void sysinfo(){
-      printf_("######## sysinfo ########\n");
+      printf("######## sysinfo ########\n");
       extern char _etext;    // end address of the .text section
       extern char _sidata;   // start address of the initialization values of the .data section
       extern char _sdata;    // start address of the .data section
@@ -355,39 +355,39 @@ NRT(
       RCC_ClocksTypeDef  RCC_ClocksStatus;
       RCC_GetClocksFreq(&RCC_ClocksStatus);
 
-      printf_("HSE_VALUE        = %uHz\n", HSE_VALUE);
-      printf_("SYSCLK_Frequency = %uHz\n", RCC_ClocksStatus.SYSCLK_Frequency );
-      printf_("HCLK_Frequency   = %uHz\n", RCC_ClocksStatus.HCLK_Frequency   );
-      printf_("PCLK1_Frequency  = %uHz\n", RCC_ClocksStatus.PCLK1_Frequency  );
-      printf_("PCLK2_Frequency  = %uHz\n", RCC_ClocksStatus.PCLK2_Frequency  );
+      printf("HSE_VALUE        = %uHz\n", HSE_VALUE);
+      printf("SYSCLK_Frequency = %luHz\n", RCC_ClocksStatus.SYSCLK_Frequency );
+      printf("HCLK_Frequency   = %luHz\n", RCC_ClocksStatus.HCLK_Frequency   );
+      printf("PCLK1_Frequency  = %luHz\n", RCC_ClocksStatus.PCLK1_Frequency  );
+      printf("PCLK2_Frequency  = %luHz\n", RCC_ClocksStatus.PCLK2_Frequency  );
       extern void *g_pfnVectors;
       printf("vtor %lu\n",(uint32_t)&g_pfnVectors);
       //*****************************************************************
-      printf_("RCC->CSR = %x\n", (unsigned int)RCC->CSR);
-      printf_("_etext   = %p\n", &_etext  );
-      printf_("_sidata  = %p\n", &_sidata );
-      printf_("_sdata   = %p\n", &_sdata  );
-      printf_("_edata   = %p\n", &_edata  );
-      printf_("_sbss    = %p\n", &_sbss   );
-      printf_("_ebss    = %p\n", &_ebss   );
-      // printf_("_snoinit = %p\n", &_snoinit);
-      // printf_("_enoinit = %p\n", &_enoinit);
-      printf_("_end     = %p\n", &_end    );
-      printf_("_estack  = %p\n", &_estack );
+      printf("RCC->CSR = %x\n", (unsigned int)RCC->CSR);
+      printf("_etext   = %p\n", &_etext  );
+      printf("_sidata  = %p\n", &_sidata );
+      printf("_sdata   = %p\n", &_sdata  );
+      printf("_edata   = %p\n", &_edata  );
+      printf("_sbss    = %p\n", &_sbss   );
+      printf("_ebss    = %p\n", &_ebss   );
+      // printf("_snoinit = %p\n", &_snoinit);
+      // printf("_enoinit = %p\n", &_enoinit);
+      printf("_end     = %p\n", &_end    );
+      printf("_estack  = %p\n", &_estack );
 
-      printf_("heap avail       = %uB\n", (uint32_t)((char*)__get_MSP() - __brkval));
+      printf("heap avail       = %luB\n", (uint32_t)((char*)__get_MSP() - __brkval));
    }
 
    void listhal(){
       for(int i = 0; i < hal.hal_pin_count; i++){
-         printf_("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
+         printf("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
          Wait(1);
       }
    }
 
    void save(){
       if(ee_error != FLASH_COMPLETE){
-         printf_("flash error:%i\n",ee_error);
+         printf("flash error:%i\n",ee_error);
          return;
       }
       typedef union{
@@ -401,7 +401,7 @@ NRT(
       FLASH_Unlock();
       for(int i = 0; i < hal.hal_pin_count; i++){
          if(address >= NB_OF_VAR){
-            printf_("NB_OF_VAR too small\n");
+            printf("NB_OF_VAR too small\n");
             FLASH_Lock();
             return;
          }
@@ -410,18 +410,18 @@ NRT(
          name[5] =  '\0';
          if(!strcmp(name, "conf0")){
             param.f = hal.hal_pins[i]->source->source->value;
-            //printf_("param: %s=%f address:%i\n",hal.hal_pins[i]->name,param.f,address);
+            //printf("param: %s=%f address:%i\n",hal.hal_pins[i]->name,param.f,address);
             elo = EE_WriteVariable(address,param.byte[0]);
             ehi = EE_WriteVariable(address+1,param.byte[1]);
             if(elo != FLASH_COMPLETE || ehi != FLASH_COMPLETE){
-               printf_("error writing to %i: error%i,%i\n",address,elo,ehi);
+               printf("error writing to %i: error%i,%i\n",address,elo,ehi);
                break;
             }
             address+=2;
          }
       }
       FLASH_Lock();
-      printf_("done\n");
+      printf("done\n");
    }
 
    void conf(){
@@ -430,7 +430,7 @@ NRT(
          strncpy(name,hal.hal_pins[i]->name,5);
          name[5] =  '\0';
          if(!strcmp(name, "conf0")){
-            printf_("%s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->value);
+            printf("%s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->value);
          }
       }
    }
@@ -438,40 +438,40 @@ NRT(
    void load_cmd(){
       int ret = load();
       if(ret == -1){
-         printf_("flash error:%i\n",ee_error);
+         printf("flash error:%i\n",ee_error);
          return;
       }else if(ret == -2){
-         printf_("NB_OF_VAR too small\n");
+         printf("NB_OF_VAR too small\n");
          return;
       }else if(ret == -3){
-         printf_("flash read error\n");
+         printf("flash read error\n");
       }else if(ret == -4){
-         printf_("hal running error\n");
+         printf("hal running error\n");
       }else{
-         printf_("done\n");
+         printf("done\n");
       }
    }
 
    void help(){
-      printf_("######## HAL cheat sheet ########\n");
-      printf_("pin name: <comp name><comp instance number>.<pin name> (e.g. pid0.enable)\n");
-      printf_("show pin value and source: pid0.enable (answer: pid0.enable <= fault0.enable_pid = 1.000000)\n");
-      printf_("set pin: pid0.enable = 1.5 (answer: OK pid0.enable = 1.500000)\n");
-      printf_("link pin: pid0.enable = fault0.enable_pid (answer: OK pid0.enable <= fault0.enable_pid = 1.000000)\n");
-      printf_("unlink pin: pid0.enable = pid0.enable (answer: OK pid0.enable <= pid0.enable = 1.000000)\n");
-      printf_("show hal info: hal\n");
-      printf_("show sys info: sysinfo\n");
-      printf_("show software version: about\n");
-      printf_("stop realtime hal: stop\n");
-      printf_("start realtime hal: start\n");
-      printf_("change rt priority: pid0.rt_prio = 6 (-1 = disable, 0 = highest, stop and start hal to apply)\n");
-      printf_("change frt priority: pid0.frt_prio = -1 (-1 = disable, 0 = highest, stop and start hal to apply)\n");
-      printf_("reset cpu: reset\n");
-      printf_("print help: help\n");
-      printf_("list all hal pins: list\n");
-      printf_("list all conf pins: conf\n");
-      printf_("save conf: save\n");
-      printf_("load conf: load\n");
+      printf("######## HAL cheat sheet ########\n");
+      printf("pin name: <comp name><comp instance number>.<pin name> (e.g. pid0.enable)\n");
+      printf("show pin value and source: pid0.enable (answer: pid0.enable <= fault0.enable_pid = 1.000000)\n");
+      printf("set pin: pid0.enable = 1.5 (answer: OK pid0.enable = 1.500000)\n");
+      printf("link pin: pid0.enable = fault0.enable_pid (answer: OK pid0.enable <= fault0.enable_pid = 1.000000)\n");
+      printf("unlink pin: pid0.enable = pid0.enable (answer: OK pid0.enable <= pid0.enable = 1.000000)\n");
+      printf("show hal info: hal\n");
+      printf("show sys info: sysinfo\n");
+      printf("show software version: about\n");
+      printf("stop realtime hal: stop\n");
+      printf("start realtime hal: start\n");
+      printf("change rt priority: pid0.rt_prio = 6 (-1 = disable, 0 = highest, stop and start hal to apply)\n");
+      printf("change frt priority: pid0.frt_prio = -1 (-1 = disable, 0 = highest, stop and start hal to apply)\n");
+      printf("reset cpu: reset\n");
+      printf("print help: help\n");
+      printf("list all hal pins: list\n");
+      printf("list all conf pins: conf\n");
+      printf("save conf: save\n");
+      printf("load conf: load\n");
    }
 
    void cmd(char * s){
@@ -512,7 +512,7 @@ NRT(
          conf();
       }
       else{
-         printf_("not found: %s\n",s);
+         printf("not found: %s\n",s);
       }
    }
 
@@ -521,25 +521,25 @@ NRT(
          last_hal_state = hal.hal_state;
          switch(hal.hal_state){
             case HAL_OK:
-               printf_("HAL state:  HAL_OK\n");
+               printf("HAL state:  HAL_OK\n");
                break;
             case RT_TOO_LONG:
-               printf_("HAL state:  RT_TOO_LONG\n");
+               printf("HAL state:  RT_TOO_LONG\n");
                break;
             case FRT_TOO_LONG:
-               printf_("HAL state:  FRT_TOO_LONG\n");
+               printf("HAL state:  FRT_TOO_LONG\n");
                break;
             case MISC_ERROR:
-               printf_("HAL state:  MISC_ERROR\n");
+               printf("HAL state:  MISC_ERROR\n");
                break;
             case MEM_ERROR:
-               printf_("HAL state:  MEM_ERROR\n");
+               printf("HAL state:  MEM_ERROR\n");
                break;
             case CONFIG_LOAD_ERROR:
-               printf_("HAL state:  CONFIG_LOAD_ERROR\n");
+               printf("HAL state:  CONFIG_LOAD_ERROR\n");
                break;
             case CONFIG_ERROR:
-               printf_("HAL state:  CONFIG_ERROR\n");
+               printf("HAL state:  CONFIG_ERROR\n");
                break;
          }
       }
@@ -553,43 +553,43 @@ NRT(
        last_fault_sent = flt;
        switch(flt){
          case STATE_DISABLED:
-           printf_("INFO: Disabled \n");
+           printf("INFO: Disabled \n");
          break;
 
          case STATE_RESET:
-           printf_("INFO: Reset \n");
+           printf("INFO: Reset \n");
          break;
 
          case STATE_FB_ERROR:
-           printf_("ERROR: Feedback \n");
+           printf("ERROR: Feedback \n");
          break;
 
          case STATE_SAT_ERROR:
-           printf_("ERROR: Saturation \n");
+           printf("ERROR: Saturation \n");
          break;
 
          case STATE_OVR_CURR:
-           printf_("ERROR: Overcurrent \n");
+           printf("ERROR: Overcurrent \n");
          break;
 
          case STATE_POS_ERROR:
-           printf_("ERROR: Position \n");
+           printf("ERROR: Position \n");
          break;
 
          case STATE_OVR_TEMP:
-           printf_("ERROR: Overtemperture \n");
+           printf("ERROR: Overtemperture \n");
          break;
 
          case STATE_OVR_VOLT:
-           printf_("ERROR: Overvoltage \n");
+           printf("ERROR: Overvoltage \n");
          break;
 
          case STATE_ENABLED:
-           printf_("INFO: Enabled \n");
+           printf("INFO: Enabled \n");
          break;
 
          case STATE_PHASING:
-           printf_("INFO: Phasing \n");
+           printf("INFO: Phasing \n");
          break;
 
          default:
@@ -657,9 +657,9 @@ NRT(
 
       buf[8 + 1] = 0;
 
-      if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED){
+      if (USB_CDC_is_connected()) {
          PIN(con) = 1.0;
-         UB_USB_CDC_SendString((char*)buf, NONE);
+         USB_VCP_send_string(buf);
       }else{
          PIN(con) = 0.0;
       }
@@ -669,8 +669,7 @@ NRT(
 
 
 
-   if(UB_USB_CDC_GetStatus()==USB_CDC_CONNECTED && systime >= 1000){
-
+   if (USB_CDC_is_connected() && systime >= 1000) {
       char source[APP_TX_BUF_SIZE];
       char sink[APP_TX_BUF_SIZE];
 
@@ -679,12 +678,12 @@ NRT(
 
       int i = -1;
       char rx_buf[APP_TX_BUF_SIZE];
-      if(UB_USB_CDC_ReceiveString(rx_buf)==RX_READY){
-         i = sscanf_(rx_buf, "%N = %N",sink ,source);
+      if (USB_VCP_get_string(rx_buf)) {
+         i = sscanf_(rx_buf, "%N = %N", sink, source);
       }
       if(i == 2){ // read hal pin
          if(is_hal_pin(sink)){
-            printf_("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
+            printf("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
          }else{
             cmd(rx_buf);
          }
@@ -692,18 +691,17 @@ NRT(
       else if(i == 5){// link hal pin
          if(is_hal_pin(source) && is_hal_pin(sink)){
             link_hal_pins(source, sink);
-            printf_("OK %s <= %s = %f\n", sink, source, get_hal_pin(sink));
+            printf("OK %s <= %s = %f\n", sink, source, get_hal_pin(sink));
          }
          else if(is_hal_pin(sink)){// set hal pin
             set_hal_pin(sink, strtof(source,NULL));
-            printf_("OK %s = %f\n", sink, get_hal_pin(sink));
+            printf("OK %s = %f\n", sink, get_hal_pin(sink));
          }
          else{// hal pin not found
-            printf_("not found: %s\n", sink);
+            printf("not found: %s\n", sink);
          }
       }
    }
-
 );
 
 ENDCOMP;

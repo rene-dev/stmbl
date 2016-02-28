@@ -32,7 +32,7 @@ word C:
 #define OFFSET (OVER / 2.0)//half bit
 #define SIG_POS_START 16
 
-COMP(encs);
+HAL_COMP(encs);
 
 HAL_PIN(en) = 1.0;
 HAL_PIN(start) = 0.0;
@@ -42,8 +42,10 @@ HAL_PIN(pos) = 0.0;
 HAL_PIN(error) = 0.0;
 HAL_PIN(cc);
 
-MEM(volatile uint32_t buf[NUM_OF_SAMPLES_S + 1]);
-MEM(volatile uint32_t buf2[24]);
+MEM(volatile uint32_t reply_buf[NUM_OF_SAMPLES_S + 1]);
+MEM(volatile uint32_t request_buf[24]);
+MEM(DMA_InitTypeDef dma_tx_config);
+MEM(DMA_InitTypeDef dma_rx_config);
 
 RT_INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -57,29 +59,14 @@ RT_INIT(
   GPIO_Init(GPIOB, &GPIO_InitStruct);
   GPIO_ResetBits(GPIOB,GPIO_Pin_12);
 
-  //TODO: AF mapping
   //TX
-  // GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
-  // GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
-  // GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-  // GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-  // GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL ;
-  // GPIO_Init(GPIOB, &GPIO_InitStruct);
-  // GPIO_ResetBits(GPIOB,GPIO_Pin_10);
-
-
-  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
-  TIM_OCInitStructure.TIM_Pulse = 0;
-  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-  TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
-  TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
-  TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
-
-  TIM_OC3Init(TIM2, &TIM_OCInitStructure);
-  TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);
-  TIM_CtrlPWMOutputs(TIM2, ENABLE);
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL ;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_ResetBits(GPIOB,GPIO_Pin_10);
 
   //RX
   GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
@@ -99,108 +86,103 @@ RT_INIT(
   TIM_DMACmd(TIM8, TIM_DMA_Update, ENABLE);
   TIM_Cmd(TIM8, ENABLE);
   
-  uint32_t foo = TIM2->CCER;
-  uint32_t bar = foo;
-  bar &= ~(1<<9);//0
-  foo |= (1<<9);//1
+  uint32_t tx_high   = GPIO_BSRR_BS_10;
+  uint32_t tx_low    = GPIO_BSRR_BR_10;
+  uint32_t txen_high = GPIO_BSRR_BS_12;
+  uint32_t txen_low  = GPIO_BSRR_BR_12;
   int pos = 0;
-  buf2[pos++] = foo;
-  buf2[pos++] = foo;
-  buf2[pos++] = foo;
-  buf2[pos++] = foo;
-  buf2[pos++] = bar;
-  buf2[pos++] = bar;
-  buf2[pos++] = foo;
-  buf2[pos++] = bar;
-  buf2[pos++] = bar;
-  buf2[pos++] = bar;
-  buf2[pos++] = bar;
-  buf2[pos++] = bar;
-  buf2[pos++] = bar;
-  buf2[pos++] = foo;
-  buf2[pos++] = bar;
-  buf2[pos++] = bar;
-  buf2[pos++] = bar;
-  buf2[pos++] = bar;
-  buf2[pos++] = bar;
-  buf2[pos++] = bar;
-  buf2[pos++] = foo;
-  buf2[pos++] = foo;
-  buf2[pos++] = foo;
-  buf2[pos++] = foo;
-
+  request_buf[pos++] = tx_high | txen_high;
+  request_buf[pos++] = tx_high;
+  request_buf[pos++] = tx_high;
+  request_buf[pos++] = tx_high;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_high;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_high;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_low;
+  request_buf[pos++] = tx_high;
+  request_buf[pos++] = tx_high;
+  request_buf[pos++] = tx_high;
+  request_buf[pos++] = tx_high | txen_low;
+  
+  //DMA tx config
+  dma_tx_config.DMA_Channel = DMA_Channel_7; //TIM8 ch1
+  dma_tx_config.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->BSRRL;
+  dma_tx_config.DMA_Memory0BaseAddr = (uint32_t)&request_buf;
+  dma_tx_config.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+  dma_tx_config.DMA_BufferSize = pos;
+  dma_tx_config.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  dma_tx_config.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  dma_tx_config.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
+  dma_tx_config.DMA_MemoryDataSize = DMA_PeripheralDataSize_Word;
+  dma_tx_config.DMA_Mode = DMA_Mode_Normal;
+  dma_tx_config.DMA_Priority = DMA_Priority_VeryHigh;
+  dma_tx_config.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  dma_tx_config.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  dma_tx_config.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  dma_tx_config.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  
+  //DMA rx config
+  dma_rx_config.DMA_Channel = DMA_Channel_7; //TIM8 ch1
+  dma_rx_config.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->IDR;
+  dma_rx_config.DMA_Memory0BaseAddr = (uint32_t)&reply_buf;
+  dma_rx_config.DMA_DIR = DMA_DIR_PeripheralToMemory;
+  dma_rx_config.DMA_BufferSize = NUM_OF_SAMPLES_S;
+  dma_rx_config.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  dma_rx_config.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  dma_rx_config.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
+  dma_rx_config.DMA_MemoryDataSize = DMA_PeripheralDataSize_Word;
+  dma_rx_config.DMA_Mode = DMA_Mode_Normal;
+  dma_rx_config.DMA_Priority = DMA_Priority_High;
+  dma_rx_config.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  dma_rx_config.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  dma_rx_config.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  dma_rx_config.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
 );
 
 RT(
-   // DMA2-Config
-   DMA_Cmd(DMA2_Stream1, DISABLE);
-   DMA_DeInit(DMA2_Stream1);
-   DMA_InitStructure.DMA_Channel = DMA_Channel_7; //TIM8 ch1
-   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&TIM2->CCER;
-   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&buf2;
-   DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-   DMA_InitStructure.DMA_BufferSize = 24;
-   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
-   DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Word;
-   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
-   DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
-   DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
-   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-   DMA_Init(DMA2_Stream1, &DMA_InitStructure);
-   
-   TIM8->ARR = 32;//2.545 Mhz
-   GPIOB->BSRRL = GPIO_Pin_12;//TX enable
-   DMA_Cmd(DMA2_Stream1, DISABLE);
-   DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
-   DMA_Cmd(DMA2_Stream1, ENABLE);
-   while (DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET);
-   GPIOB->BSRRH = GPIO_Pin_12;//TX disable
-
-   //DMA2-Config
-   DMA_Cmd(DMA2_Stream1, DISABLE);
-   DMA_DeInit(DMA2_Stream1);
-   TIM8->ARR = 4;//16.8 Mhz
-   DMA_InitStructure.DMA_Channel = DMA_Channel_7; //TIM8 ch1
-   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->IDR;
-   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&buf;
-   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-   DMA_InitStructure.DMA_BufferSize = NUM_OF_SAMPLES_S;
-   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
-   DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Word;
-   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
-   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-   DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
-   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-   DMA_Init(DMA2_Stream1, &DMA_InitStructure);
-
    if(PIN(en) > 0.0){
-      GPIOB->BSRRH = GPIO_Pin_3;
-      //start DMA
+      //request
+      TIM8->ARR = 32;//2.545 Mhz
       DMA_Cmd(DMA2_Stream1, DISABLE);
       DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
+      DMA_DeInit(DMA2_Stream1);
+      DMA_Init(DMA2_Stream1, &dma_tx_config);
       DMA_Cmd(DMA2_Stream1, ENABLE);
       //wait for DMA transfer complete
       while (DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET);
-      GPIOB->BSRRL = GPIO_Pin_3;
+      
+      //reply
+      TIM8->ARR = 4;//16.8 Mhz
+      DMA_Cmd(DMA2_Stream1, DISABLE);
+      DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
+      DMA_DeInit(DMA2_Stream1);
+      DMA_Init(DMA2_Stream1, &dma_rx_config);
+      DMA_Cmd(DMA2_Stream1, ENABLE);
+      //wait for DMA transfer complete
+      while (DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET);
 
       int i = 0;
       //skip leading ones
       for(; i < NUM_OF_SAMPLES_S/5; i++){
-         if(!(buf[i] & GPIO_Pin_11)){
+         if(!(reply_buf[i] & GPIO_Pin_11)){
             break;
          }
       }
       //skip zeros
       for(; i < NUM_OF_SAMPLES_S/5; i++){
-         if(buf[i] & GPIO_Pin_11){
+         if(reply_buf[i] & GPIO_Pin_11){
             break;
          }
       }
@@ -209,12 +191,12 @@ RT(
       int p = 0;
 
       p = CLAMP((int)((18 + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES_S - 1);
-      d += (buf[p] & GPIO_Pin_11) != 0;
+      d += (reply_buf[p] & GPIO_Pin_11) != 0;
 
       for(int j = 0; j < 16; j++){
          p = CLAMP((int)(((15 - j) + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES_S - 1);
          d = d << 1;
-         d += (buf[p] & GPIO_Pin_11) != 0;
+         d += (reply_buf[p] & GPIO_Pin_11) != 0;
       }
 
       PIN(d) = d;

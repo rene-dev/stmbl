@@ -64,19 +64,19 @@ SECTIONS
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
   } >FLASH
-  
+
   /* version info needs to have a section, so the bootloader and python script can find it */
   .version_info :
   {
     . = ALIGN(4);
-    KEEP(*(.version_info)) 
+    KEEP(*(.version_info))
     . = ALIGN(4);
   } >FLASH
-     
+
   .hv_firmware :
     {
       . = ALIGN(4);
-      KEEP(*(.hv_firmware)) 
+      KEEP(*(.hv_firmware))
       . = ALIGN(4);
     } >FLASH
 
@@ -90,7 +90,7 @@ SECTIONS
     *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
     *(.glue_7)         /* glue arm to thumb code */
     *(.glue_7t)        /* glue thumb to arm code */
-	*(.eh_frame)
+    *(.eh_frame)
 
     KEEP (*(.init))
     KEEP (*(.fini))
