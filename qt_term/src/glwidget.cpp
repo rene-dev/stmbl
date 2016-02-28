@@ -37,10 +37,11 @@ static const char *vertexShaderSource =
 				"}\n";
 
 static const char *fragmentShaderSource =
-				"#version 120\n"
+                "#version 120\n"
+                "uniform vec3 color;\n"
 				"void main(void)\n"
 				"{\n"
-				"    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
+                "    gl_FragColor = vec4(color, 1.0);\n"
 				"}\n";
 
 GLWidget::GLWidget(QWidget * parent) :
@@ -48,7 +49,6 @@ GLWidget::GLWidget(QWidget * parent) :
 {
 	m_translating = false;
 	m_scaling = false;
-
     resetMatrix();
 	updateMatrix();
 }
@@ -114,7 +114,12 @@ void GLWidget::initializeGL()
 	m_vao.release();
 	m_vbo.release();
 
-	m_function1.initializeGL();
+    m_functions[0].setColor(0.0f, 1.0f, 0.0f);
+    m_functions[1].setColor(0.0f, 0.0f, 1.0f);
+
+    for(auto &f : m_functions) {
+        f.initializeGL();
+    }
 
 	m_shader = new QOpenGLShaderProgram();
 	m_shader->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
@@ -142,9 +147,13 @@ void GLWidget::paintGL()
 	m_shader->enableAttributeArray("vertex");
 	m_shader->setAttributeBuffer("vertex", GL_FLOAT, 0, 2, 0);
 
-	m_function1.paintGL();
+    for(auto &func : m_functions) {
+        func.paintGL(m_shader);
+    }
 
 	QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
+    m_shader->setUniformValue("color", QVector3D(1.0f, 0.0f, 0.0f));
 
 	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 	if(f) {

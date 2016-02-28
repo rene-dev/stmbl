@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(timer, SIGNAL(timeout()), this, SLOT(pollTimerEvent()));
 	timer->setInterval(50);
     timer->setTimerType(Qt::PreciseTimer);
-	timer->start();
+    timer->start();
 }
 
 bool MainWindow::eventFilter(QObject* obj, QEvent *event){
@@ -90,7 +90,8 @@ void MainWindow::on_actionResetMatrix_triggered()
 void MainWindow::pollTimerEvent()
 {
     static int i = 0;
-	openGLWidget->m_function1.addPoint(20.0*sin(i++/10.0));
+    openGLWidget->m_functions[0].addPoint(20.0*sin(i++/10.0));
+    openGLWidget->m_functions[1].addPoint(50.0*sin(i++/10.0));
 }
 
 void MainWindow::on_actionExit_triggered()
