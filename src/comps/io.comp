@@ -6,47 +6,36 @@ HAL_PIN(green) = 0.0;
 HAL_PIN(brake) = 0.0;
 
 INIT(
-   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-   
    //fan
-   GPIO_InitStructure.GPIO_Pin   = FAN_PIN;
-   GPIO_Init(FAN_PORT, &GPIO_InitStructure);
-
-   //led
-   GPIO_InitStructure.GPIO_Pin   = LED_R_PIN;
-   GPIO_Init(LED_R_PORT, &GPIO_InitStructure);
-
-   GPIO_InitStructure.GPIO_Pin   = LED_G_PIN;
-   GPIO_Init(LED_G_PORT, &GPIO_InitStructure);
-
+   gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO8);
    //brake
-   GPIO_InitStructure.GPIO_Pin   = BRAKE_PIN;
-   GPIO_Init(BRAKE_PORT, &GPIO_InitStructure);
+   gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO9);
+   //red led
+   gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO10);
+   //green led
+   gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO11);
 );
 
 NRT(
    if(PIN(fan) > 0)
-      GPIO_SetBits(FAN_PORT, FAN_PIN);
+      gpio_set(GPIOC, GPIO8);
    else
-      GPIO_ResetBits(FAN_PORT, FAN_PIN);
-
-   if(PIN(red) > 0)
-      GPIO_SetBits(LED_R_PORT, LED_R_PIN);
-   else
-      GPIO_ResetBits(LED_R_PORT, LED_R_PIN);
-
-   if(PIN(green) > 0)
-      GPIO_SetBits(LED_G_PORT, LED_G_PIN);
-   else
-      GPIO_ResetBits(LED_G_PORT, LED_G_PIN);
+      gpio_clear(GPIOC, GPIO8);
 
    if(PIN(brake) > 0)
-      GPIO_SetBits(BRAKE_PORT, BRAKE_PIN);
+      gpio_set(GPIOC, GPIO9);
    else
-      GPIO_ResetBits(BRAKE_PORT, BRAKE_PIN);
+      gpio_clear(GPIOC, GPIO9);
+
+   if(PIN(red) > 0)
+      gpio_set(GPIOC, GPIO10);
+   else
+      gpio_clear(GPIOC, GPIO10);
+
+   if(PIN(green) > 0)
+      gpio_set(GPIOC, GPIO11);
+   else
+      gpio_clear(GPIOC, GPIO11);
 );
 
 ENDCOMP;

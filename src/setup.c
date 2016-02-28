@@ -29,12 +29,6 @@ void setup(){
  //   GPIO_Init(GPIOB, &GPIO_InitStructure);
 	gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO3 | GPIO4 | GPIO5 | GPIO8 | GPIO9);
    //gpio_set_output_options(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, GPIO3 | GPIO4 | GPIO5 | GPIO8 | GPIO9);
-   
-   //foo leds
-	gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO10 | GPIO11);
-   gpio_set(GPIOC, GPIO11);
-   gpio_clear(GPIOC, GPIO10);
-   //foo
 
    //NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
    //scb_set_priority_grouping();//TODO
