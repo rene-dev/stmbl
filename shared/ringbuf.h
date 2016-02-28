@@ -48,3 +48,13 @@ int rb_read(struct ringbuf *rb, void *data, int len);
  *
  */
 int rb_write(struct ringbuf *rb, const void *data, int len);
+
+/**
+ * undo rb_read
+ *
+ * \param   rb    pointer to ringbuffer struct
+ * \param   len   length to reset read pointer
+ * \return  0 on error
+ *
+ */
+int rb_undo(struct ringbuf *rb, int len);

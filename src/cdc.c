@@ -21,6 +21,8 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/cm3/scb.h>
+#include <libopencm3/stm32/otg_fs.h>
+#include <libopencm3/cm3/common.h>
 
 #include "cdc.h"
 
@@ -213,12 +215,11 @@ static int cdcacm_control_request(usbd_device *usbd_dev,
 
 static void cdcacm_data_rx_cb(usbd_device *usbd_dev, uint8_t ep)
 {
-   //gpio_toggle(GPIOB,GPIO8);
 	(void)ep;
 
 	char buf[64];
 	int len = usbd_ep_read_packet(usbd_dev, 0x01, buf, 64);
-   rb_write(&rx_buf, buf, len);
+   int ret = rb_write(&rx_buf, buf, len);
 }
 
 void cdcacm_flush(){
@@ -229,13 +230,15 @@ int cdcacm_tx(void* data, uint32_t len){
    if(usb_connected == 0){
       return 0;
    }
-   int ret, len2;
+   int ret, len2, len3;
    char buf[64];
    ret = rb_write(&tx_buf, data, len);
-   if(!usbd_ep_stall_get(usbd_dev, 0.82) && tx_buf.len > 0){
-      len2 = rb_read(&tx_buf,buf,64);
-      usbd_ep_write_packet(usbd_dev, 0x82, buf,len2);
-   }
+	
+	if(tx_buf.len > 0){
+		len2 = rb_read(&tx_buf,buf,64);
+		len3 = usbd_ep_write_packet(usbd_dev, 0x82, buf, len2);
+		rb_undo(&tx_buf, len2 - len3);
+	}
    return ret;
 }
 
@@ -245,38 +248,41 @@ static void cdcacm_data_tx_cb(usbd_device *usbd_dev, uint8_t ep)
       return;
    }
    char buf[64];
-   int len;
-   if(tx_buf.len > 0){
-      len = rb_read(&tx_buf,buf,64);
-      usbd_ep_write_packet(usbd_dev, 0x82, buf,len);
-   }
+   int len2, len3;
+	if(tx_buf.len > 0){
+		len2 = rb_read(&tx_buf,buf,64);
+		len3 = usbd_ep_write_packet(usbd_dev, 0x82, buf, len2);
+		rb_undo(&tx_buf, len2 - len3);
+	}
 }
 
 int cdcacm_is_connected(){
    return usb_connected;
 }
 
-//TODO: ptr overflow
-int cdcacm_getstring(char *ptr){
-   int len = 0;
+int cdcacm_getline(char *ptr, int len){
+   int ret = 0;
    char c;
-   if (rx_buf.len == 0) return 0;
+   if (rx_buf.len == 0){ 
+		return 0;
+	}
 
-   while(rb_getc(&rx_buf, &c)){
-      len++;
+   while(rb_getc(&rx_buf, &c) && ret < len){
+      ret++;
       *ptr++ = c;
-      if(c == 0x0D){
-         *--ptr = 0x00;
-         return len;
+      if(c == '\r'){
+         *--ptr = '\0';
+         return ret;
       }
    }
+	rb_undo(&rx_buf, ret);
+	return 0;
 }
 
 // use suspend callback to detect disconnect
 static void suspend_cb(void)
 {
    usb_connected = 0;
-   gpio_clear(GPIOC, GPIO10);
 }
 
 static void cdcacm_set_config(usbd_device *usbd_dev, uint16_t wValue)
@@ -295,7 +301,6 @@ static void cdcacm_set_config(usbd_device *usbd_dev, uint16_t wValue)
    usb_connected = 1;
    tx_buf.len = 0;
    rx_buf.len = 0;
-   gpio_set(GPIOC, GPIO10);
    usbd_register_suspend_callback(usbd_dev, suspend_cb);
 }
 
@@ -307,8 +312,9 @@ void cdc_init(void)
 	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO11 | GPIO12);
 	gpio_set_af(GPIOA, GPIO_AF10, GPIO11 | GPIO12);
 
-	usbd_dev = usbd_init(&otgfs_usb_driver, &dev, &config, usb_strings, 3, usbd_control_buffer, sizeof(usbd_control_buffer));
-
+	OTG_FS_GCCFG |= OTG_GCCFG_NOVBUSSENS;
+	usbd_dev = usbd_init(&otgfs_usb_driver, &dev, &config, usb_strings, 3, usbd_control_buffer, sizeof(usbd_control_buffer));	
+	
 	usbd_register_set_config_callback(usbd_dev, cdcacm_set_config);
    usb_connected = 0;
 }

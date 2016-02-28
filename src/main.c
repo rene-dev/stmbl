@@ -315,8 +315,8 @@ int main(void)
 
    while(1)//run non realtime stuff
    {
-      usbd_poll(usbd_dev);
       start = systick_get_value();
+      usbd_poll(usbd_dev);
 
       if(last_start < start){
         last_start += systick_get_reload();
@@ -336,7 +336,6 @@ int main(void)
       }
       PIN(nrt_calc_time) = ((float)(start - end)) / rcc_ahb_frequency;
       PIN(nrt_period) = period;
-      //Wait(2);
    }
 }
 

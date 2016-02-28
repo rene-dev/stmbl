@@ -35,6 +35,7 @@ HAL_PIN(offset7) = 0.0;
 HAL_PIN(send_step) = 10.0;
 
 HAL_PIN(buf_use) = 0.0;
+HAL_PIN(tx_buf_use) = 0.0;
 
 HAL_PIN(fault) = 0.0;
 HAL_PIN(con) = 0.0;
@@ -661,8 +662,6 @@ NRT(
       read_pos++;
       read_pos %= TERM_BUF_SIZE;
 
-      buf[8 + 1] = 0;
-
       if (cdcacm_is_connected()) {
          PIN(con) = 1.0;
          cdcacm_tx(buf,9);
@@ -672,6 +671,7 @@ NRT(
    }
 
    PIN(buf_use) = bc;
+   PIN(tx_buf_use) = tx_buf.len;
 
 
 
@@ -683,15 +683,15 @@ NRT(
       hal_error_sender();
 
       int i = -1;
-      char rx_buf[65];
-      if (cdcacm_getstring(rx_buf)) {
-         i = sscanf_(rx_buf, "%N = %N", sink, source);
+      char rx_buf2[129];
+      if (cdcacm_getline(rx_buf2, 129)){
+         i = sscanf_(rx_buf2, "%N = %N", sink, source);
       }
       if(i == 2){ // read hal pin
          if(is_hal_pin(sink)){
             printf("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
          }else{
-            cmd(rx_buf);
+            cmd(rx_buf2);
          }
       }
       else if(i == 5){// link hal pin
