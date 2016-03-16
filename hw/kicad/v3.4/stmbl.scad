@@ -53,6 +53,7 @@ module r2512(){
 }
 
 module akl230(l){
+   //color("red") translate([0, 1.4, 7.8]) cube([l * 5.08 + 1.2, 12 - 1.4, 4.5 - (7.8 - 1.4 - 5)]);
 	difference(){
 		color("grey") cube([l * 5.08 + 1.2, 12, 7.8]);
 		for(a = [0:l - 1]){
@@ -198,7 +199,7 @@ module iram256(){
 module f4_pcb(){
 	difference(){
     translate([0, 1, 0]) color("green") cube([50, 100, pcb_hight], false);
-    color("green") translate([44, 93.5, -1]) cube([10, 16, 4], false);
+    color("green") translate([41, 93.5, -1]) cube([10, 16, 4], false);
   }
 }
 
@@ -237,7 +238,7 @@ module cover(){
   translate([-1, -10, -12]) color("silver") cube([1, 105, 66]);
   difference(){
     translate([-1, 95, -12]) color("silver") cube([23.8, 0.95, 66]);
-    translate([-2, 94, 1]) color("silver") cube([27, 3, 9]);
+    translate([-2, 94, 1]) color("silver") cube([27, 3, 12]);
     translate([15, 94, 22.5]) color("silver") cube([9.5, 3, 333]);
     translate([5, 97, -10]) color("silver") rotate([90, 0, 0]) cylinder($fn = 100, r = 1.5, h = 3);
   }
@@ -252,7 +253,7 @@ module cover(){
   difference(){
     translate([23, 95, -12]) color("silver") cube([24, 0.95, 66]);
     translate([37, 94, 1]) color("silver") cube([11, 3, 9.5]);
-    translate([23, 94, 1]) color("silver") cube([5, 3, 9]);
+    translate([23, 94, 1]) color("silver") cube([5, 3, 12]);
     translate([15, 94, 22.5]) color("silver") cube([9.5, 3, 33]);
     translate([5 + 36, 97, -10]) color("silver") rotate([90, 0, 0]) cylinder($fn = 100, r = 1.5, h = 3);
   }
@@ -352,7 +353,7 @@ module stmbl(){
   translate([22 + 11.4, 27 + 3 + 10, 33 + 5.7]) m3(10);
   translate([22 + 11.4, 27 + 3 + 10 + 56, 33 + 5.7]) m3(10);
   translate([1, 1, 96 + 3]) ethercat();
-  //translate([1, 10, 33 + 8]) cover();
+  translate([1, 10, 33 + 8]) cover();
   translate([6, 106, 31]) rotate([-90, 0, 0]) m3(5);
   translate([6 + 36, 106, 31]) rotate([-90, 0, 0]) m3(5);
 }
