@@ -31,8 +31,8 @@ SOURCES += shared/crc8.c
 SOURCES += shared/common.c
 SOURCES += shared/ringbuf.c
 
-LDFLAGS += -lopencm3_stm32f4 -Llibopencm3/lib/ -nostartfiles
-CFLAGS += -DSTM32F4
+LDFLAGS += -lopencm3_stm32f3 -Llibopencm3/lib/ -nostartfiles
+CFLAGS += -DSTM32F3
 INCDIRS += libopencm3/include
 
 LDSCRIPT = stm32_flash.ld

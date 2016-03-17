@@ -27,13 +27,13 @@ void setup(){
  //   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
  //   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
  //   GPIO_Init(GPIOB, &GPIO_InitStructure);
-	gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO3 | GPIO4 | GPIO5 | GPIO8 | GPIO9);
+	//gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO3 | GPIO4 | GPIO5 | GPIO8 | GPIO9);
    //gpio_set_output_options(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, GPIO3 | GPIO4 | GPIO5 | GPIO8 | GPIO9);
 
    //NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
    //scb_set_priority_grouping();//TODO
 
-   setup_res();
+   //setup_res();
    //usb_init();
    cdc_init();
 	// systick timer
@@ -87,8 +87,8 @@ void setup_res(){
 
     /* ADC clock enable */
     //RCC_APB2PeriphClockCmd(SIN_ADC_RCC | COS_ADC_RCC, ENABLE);
-    rcc_periph_clock_enable(RCC_ADC1);
-    rcc_periph_clock_enable(RCC_ADC2);
+    //rcc_periph_clock_enable(RCC_ADC1);
+    //rcc_periph_clock_enable(RCC_ADC2);
 
     //Analog pin configuration
     // GPIO_InitStructure.GPIO_Pin = SIN_PIN;
@@ -110,20 +110,20 @@ void setup_res(){
     adc_set_right_aligned(ADC1);
     adc_set_right_aligned(ADC2);
     // ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;//Input voltage is converted into a 12bit number giving a maximum value of 4096
-    adc_set_resolution(ADC1,ADC_CR1_RES_12BIT);
-    adc_set_resolution(ADC2,ADC_CR1_RES_12BIT);
+   //  adc_set_resolution(ADC1,ADC_CR1_RES_12BIT);
+   //  adc_set_resolution(ADC2,ADC_CR1_RES_12BIT);
     // ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; //the conversion is continuous, the input data is converted more than once
-    adc_enable_discontinuous_mode_regular(ADC1,ADC_ANZ);
-    adc_enable_discontinuous_mode_regular(ADC2,ADC_ANZ);
-    adc_disable_external_trigger_injected(ADC1);
-    adc_disable_external_trigger_injected(ADC2);
-    // ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T2_TRGO;//trigger on rising edge of TIM8
-    // ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
-    adc_enable_external_trigger_regular(ADC1,ADC_CR2_EXTSEL_TIM2_TRGO,ADC_CR2_EXTEN_RISING_EDGE);//ADC2 trigger via dual mode
-    // ADC_InitStructure.ADC_NbrOfConversion = ADC_ANZ;//I think this one is clear :p
-    // ADC_InitStructure.ADC_ScanConvMode = ENABLE;//The scan is configured in one channel
-    adc_enable_scan_mode(ADC1);
-    adc_enable_scan_mode(ADC2);
+   //  adc_enable_discontinuous_mode_regular(ADC1,ADC_ANZ);
+   //  adc_enable_discontinuous_mode_regular(ADC2,ADC_ANZ);
+   //  adc_disable_external_trigger_injected(ADC1);
+   //  adc_disable_external_trigger_injected(ADC2);
+   //  // ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T2_TRGO;//trigger on rising edge of TIM8
+   //  // ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
+   //  adc_enable_external_trigger_regular(ADC1,ADC_CR2_EXTSEL_TIM2_TRGO,ADC_CR2_EXTEN_RISING_EDGE);//ADC2 trigger via dual mode
+   //  // ADC_InitStructure.ADC_NbrOfConversion = ADC_ANZ;//I think this one is clear :p
+   //  // ADC_InitStructure.ADC_ScanConvMode = ENABLE;//The scan is configured in one channel
+   //  adc_enable_scan_mode(ADC1);
+   //  adc_enable_scan_mode(ADC2);
     // ADC_Init(SIN_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
     // ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
     // ADC_Init(COS_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
@@ -131,11 +131,11 @@ void setup_res(){
     // ADC_CommonInitTypeDef ADC_CommonInitStructure;
     // ADC_CommonInitStructure.ADC_Mode = ADC_DualMode_RegSimult;
     // ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;
-    adc_set_clk_prescale(ADC_CCR_ADCPRE_BY4);
+   //  adc_set_clk_prescale(ADC_CCR_ADCPRE_BY4);
     // ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_2;
     //TODO: set this bit: ADC_CCR_DMA_MODE_2
-    ADC_CCR |= ADC_CCR_DMA_MODE_2;
-    ADC_CCR |= ADC_CCR_DDS;
+   //  ADC_CCR |= ADC_CCR_DMA_MODE_2;
+   //  ADC_CCR |= ADC_CCR_DDS;
     // ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
     // ADC_CommonInit(&ADC_CommonInitStructure);
     // for(int i = 1;i<=ADC_ANZ;i++){16
@@ -143,77 +143,77 @@ void setup_res(){
     //     ADC_RegularChannelConfig(COS_ADC, COS_ADC_CHAN, i, RES_SampleTime);15
     // }
     //TODO: sample time?
-    adc_set_sample_time_on_all_channels(ADC1,ADC_SMPR_SMP_28CYC);
-    adc_set_sample_time_on_all_channels(ADC2,ADC_SMPR_SMP_28CYC);
+   //  adc_set_sample_time_on_all_channels(ADC1,ADC_SMPR_SMP_28CYC);
+   //  adc_set_sample_time_on_all_channels(ADC2,ADC_SMPR_SMP_28CYC);
     uint8_t sin_ch[] = {14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14};
     uint8_t cos_ch[] = {15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15};
-    adc_set_regular_sequence(ADC1, 16, sin_ch);
-    adc_set_regular_sequence(ADC2, 16, cos_ch);
-    
-    adc_enable_dma(ADC1);
-    adc_enable_dma(ADC2);
-    //
-    // ADC_MultiModeDMARequestAfterLastTransferCmd(ENABLE);
-    adc_set_multi_mode(ADC_CCR_MULTI_DUAL_REGULAR_SIMUL);
+   //  adc_set_regular_sequence(ADC1, 16, sin_ch);
+   //  adc_set_regular_sequence(ADC2, 16, cos_ch);
+   //  
+   //  adc_enable_dma(ADC1);
+   //  adc_enable_dma(ADC2);
+   //  //
+   //  // ADC_MultiModeDMARequestAfterLastTransferCmd(ENABLE);
+   //  adc_set_multi_mode(ADC_CCR_MULTI_DUAL_REGULAR_SIMUL);
 
     // //Enable ADC conversion
     // ADC_Cmd(SIN_ADC,ENABLE);
-    adc_power_on(ADC1);
-    // ADC_Cmd(COS_ADC,ENABLE);
-    adc_power_on(ADC2);
-    //
-    // // DMA-Disable
-    // DMA_Cmd(DMA2_Stream0, DISABLE);
-    // DMA_DeInit(DMA2_Stream0);
-    dma_stream_reset(DMA2, DMA_STREAM0);
-    //
-    // // DMA2-Config
-    // DMA_InitStructure.DMA_Channel = DMA_Channel_0;
-    dma_channel_select(DMA2, DMA_STREAM0, DMA_SxCR_CHSEL_0);
-    // DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC->CDR;
-    dma_set_peripheral_address(DMA2, DMA_STREAM0, (uint32_t)&ADC_CDR);
-    // DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ADC_DMA_Buffer;
-    dma_set_memory_address(DMA2, DMA_STREAM0, (uint32_t)&ADC_DMA_Buffer);
-    // DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-    dma_set_transfer_mode(DMA2, DMA_STREAM0, DMA_SxCR_DIR_PERIPHERAL_TO_MEM);
-    // DMA_InitStructure.DMA_BufferSize = ADC_ANZ * PID_WAVES;
-    dma_set_number_of_data(DMA2, DMA_STREAM0, ADC_ANZ * PID_WAVES);
-    // DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-    // DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    dma_enable_memory_increment_mode(DMA2, DMA_STREAM0);
-    // DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
-    dma_set_peripheral_size(DMA2, DMA_STREAM0, DMA_SxCR_PSIZE_32BIT);
-    // DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
-    dma_set_memory_size(DMA2, DMA_STREAM0, DMA_SxCR_MSIZE_32BIT);
-    // DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
-    dma_enable_circular_mode(DMA2, DMA_STREAM0);
-    // DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-    dma_set_priority(DMA2, DMA_STREAM0, DMA_SxCR_PL_HIGH);
-    // DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-    // DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
-    // DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-    // DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-    // DMA_Init(DMA2_Stream0, &DMA_InitStructure);
-
-    // NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-    // NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    // NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-    // NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    // NVIC_Init(&NVIC_InitStructure);
-    nvic_enable_irq(NVIC_TIM2_IRQ);
-    nvic_set_priority(NVIC_TIM2_IRQ,0);
-    //
-    // NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream0_IRQn;
-    // NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
-    // NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-    // NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    // NVIC_Init(&NVIC_InitStructure);
-    nvic_enable_irq(NVIC_DMA2_STREAM0_IRQ);
-    nvic_set_priority(NVIC_DMA2_STREAM0_IRQ,2);
-    //
-    // DMA_Cmd(DMA2_Stream0, ENABLE);
-    dma_enable_stream(DMA2, DMA_STREAM0);
-    //
-    // DMA_ITConfig(DMA2_Stream0, DMA_IT_TC, ENABLE);
-    dma_enable_transfer_complete_interrupt(DMA2, DMA_STREAM0);
+   //  adc_power_on(ADC1);
+   //  // ADC_Cmd(COS_ADC,ENABLE);
+   //  adc_power_on(ADC2);
+   //  //
+   //  // // DMA-Disable
+   //  // DMA_Cmd(DMA2_Stream0, DISABLE);
+   //  // DMA_DeInit(DMA2_Stream0);
+   //  dma_stream_reset(DMA2, DMA_STREAM0);
+   //  //
+   //  // // DMA2-Config
+   //  // DMA_InitStructure.DMA_Channel = DMA_Channel_0;
+   //  dma_channel_select(DMA2, DMA_STREAM0, DMA_SxCR_CHSEL_0);
+   //  // DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC->CDR;
+   //  dma_set_peripheral_address(DMA2, DMA_STREAM0, (uint32_t)&ADC_CDR);
+   //  // DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ADC_DMA_Buffer;
+   //  dma_set_memory_address(DMA2, DMA_STREAM0, (uint32_t)&ADC_DMA_Buffer);
+   //  // DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+   //  dma_set_transfer_mode(DMA2, DMA_STREAM0, DMA_SxCR_DIR_PERIPHERAL_TO_MEM);
+   //  // DMA_InitStructure.DMA_BufferSize = ADC_ANZ * PID_WAVES;
+   //  dma_set_number_of_data(DMA2, DMA_STREAM0, ADC_ANZ * PID_WAVES);
+   //  // DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+   //  // DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+   //  dma_enable_memory_increment_mode(DMA2, DMA_STREAM0);
+   //  // DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
+   //  dma_set_peripheral_size(DMA2, DMA_STREAM0, DMA_SxCR_PSIZE_32BIT);
+   //  // DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
+   //  dma_set_memory_size(DMA2, DMA_STREAM0, DMA_SxCR_MSIZE_32BIT);
+   //  // DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+   //  dma_enable_circular_mode(DMA2, DMA_STREAM0);
+   //  // DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+   //  dma_set_priority(DMA2, DMA_STREAM0, DMA_SxCR_PL_HIGH);
+   //  // DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+   //  // DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+   //  // DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+   //  // DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+   //  // DMA_Init(DMA2_Stream0, &DMA_InitStructure);
+    // 
+   //  // NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+   //  // NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+   //  // NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+   //  // NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+   //  // NVIC_Init(&NVIC_InitStructure);
+   //  nvic_enable_irq(NVIC_TIM2_IRQ);
+   //  nvic_set_priority(NVIC_TIM2_IRQ,0);
+   //  //
+   //  // NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream0_IRQn;
+   //  // NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+   //  // NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+   //  // NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+   //  // NVIC_Init(&NVIC_InitStructure);
+   //  nvic_enable_irq(NVIC_DMA2_STREAM0_IRQ);
+   //  nvic_set_priority(NVIC_DMA2_STREAM0_IRQ,2);
+   //  //
+   //  // DMA_Cmd(DMA2_Stream0, ENABLE);
+   //  dma_enable_stream(DMA2, DMA_STREAM0);
+   //  //
+   //  // DMA_ITConfig(DMA2_Stream0, DMA_IT_TC, ENABLE);
+   //  dma_enable_transfer_complete_interrupt(DMA2, DMA_STREAM0);
  }

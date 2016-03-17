@@ -19,6 +19,8 @@
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/cm3/systick.h>
 #include <libopencm3/cm3/scb.h>
+#include <libopencm3/stm32/flash.h>
+
 
 #include "misc.h"
 #include "version.h"
