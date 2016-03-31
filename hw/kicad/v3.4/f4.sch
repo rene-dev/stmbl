@@ -1,11 +1,12 @@
 EESchema Schematic File Version 2
-LIBS:power
+LIBS:transistors
+LIBS:stm32
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 13 15
+Sheet 13 14
 Title ""
 Date ""
 Rev ""
@@ -76,12 +77,6 @@ Text HLabel 5100 7200 0    60   Input ~ 0
 I2C_SCL
 Text HLabel 5100 7300 0    60   Input ~ 0
 I2C_SDA
-Text HLabel 5100 7600 0    60   Input ~ 0
-I2S_CK
-Text HLabel 5100 7800 0    60   Input ~ 0
-I2S_WS
-Text HLabel 15300 6900 2    60   Input ~ 0
-I2S_SD
 Text HLabel 5100 4800 0    60   Input ~ 0
 HV_TX
 Text HLabel 5100 4900 0    60   Input ~ 0
@@ -591,10 +586,6 @@ Text HLabel 2850 8300 0    60   Input ~ 0
 FB0_S
 Text HLabel 3550 8300 0    60   Input ~ 0
 FB1_S
-Text HLabel 7700 8800 0    60   Input ~ 0
-A_24V
-Text HLabel 8550 8800 0    60   Input ~ 0
-A_12V
 Text HLabel 6900 8800 0    60   Input ~ 0
 A_IO1
 Text HLabel 2850 8400 0    60   Input ~ 0
@@ -605,12 +596,6 @@ Text HLabel 3550 8400 0    60   Input ~ 0
 FB1_C
 Text HLabel 3550 8500 0    60   Input ~ 0
 FB1_A
-Text HLabel 15300 3600 2    60   Input ~ 0
-FB0_PCM_CK
-Text HLabel 2850 8700 0    60   Input ~ 0
-FB0_PCM_BYPAS
-Text HLabel 2850 8800 0    60   Input ~ 0
-FB0_PCM_OSC_EN
 Text HLabel 1500 7800 0    60   Input ~ 0
 IO_FAN
 Text HLabel 1500 7900 0    60   Input ~ 0
@@ -719,8 +704,6 @@ F 3 "" H 8700 9900 60  0000 C CNN
 	1    8700 9900
 	1    0    0    -1  
 $EndComp
-Text HLabel 9400 8800 0    60   Input ~ 0
-A_5V
 $Comp
 L R 10k?
 U 1 1 5668F2EF
@@ -1277,23 +1260,17 @@ Wire Wire Line
 Wire Wire Line
 	1250 6200 1250 6300
 Wire Wire Line
-	7700 8800 7850 8800
-Wire Wire Line
 	7850 8800 7850 8900
 Wire Wire Line
 	7850 9200 7850 9400
 Wire Wire Line
 	7850 9700 7850 9900
 Wire Wire Line
-	8550 8800 8700 8800
-Wire Wire Line
 	8700 8800 8700 8900
 Wire Wire Line
 	8700 9200 8700 9400
 Wire Wire Line
 	8700 9700 8700 9900
-Wire Wire Line
-	9400 8800 9500 8800
 Wire Wire Line
 	9500 8800 9500 8900
 Wire Wire Line
@@ -1465,7 +1442,7 @@ F 3 "" H 8350 9500 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	6000 9300 6200 9300
+	6000 9300 6400 9300
 Wire Wire Line
 	6100 9500 6100 9300
 Connection ~ 6100 9300
@@ -1562,4 +1539,37 @@ Wire Wire Line
 	1450 5800 1550 5800
 Wire Wire Line
 	1550 5800 1550 5700
+$Comp
+L +24V #PWR?
+U 1 1 56FF1B13
+P 7850 8800
+F 0 "#PWR?" H 7850 8650 50  0001 C CNN
+F 1 "+24V" H 7868 8974 50  0000 C CNN
+F 2 "" H 7850 8800 50  0000 C CNN
+F 3 "" H 7850 8800 50  0000 C CNN
+	1    7850 8800
+	1    0    0    -1  
+$EndComp
+$Comp
+L +12V #PWR?
+U 1 1 56FF1DA3
+P 8700 8800
+F 0 "#PWR?" H 8700 8650 50  0001 C CNN
+F 1 "+12V" H 8718 8974 50  0000 C CNN
+F 2 "" H 8700 8800 50  0000 C CNN
+F 3 "" H 8700 8800 50  0000 C CNN
+	1    8700 8800
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR?
+U 1 1 56FF1E56
+P 9500 8800
+F 0 "#PWR?" H 9500 8650 50  0001 C CNN
+F 1 "+5V" H 9518 8974 50  0000 C CNN
+F 2 "" H 9500 8800 50  0000 C CNN
+F 3 "" H 9500 8800 50  0000 C CNN
+	1    9500 8800
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

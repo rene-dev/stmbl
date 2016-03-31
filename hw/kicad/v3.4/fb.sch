@@ -1,11 +1,12 @@
 EESchema Schematic File Version 2
-LIBS:power
+LIBS:transistors
+LIBS:stm32
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 11 15
+Sheet 12 14
 Title ""
 Date ""
 Rev ""
@@ -441,7 +442,7 @@ P 5850 4500
 AR Path="/56590966/565F7162/565E236D" Ref="R?"  Part="1" 
 AR Path="/56590966/5659191C/565E236D" Ref="R?"  Part="1" 
 F 0 "R?" V 5930 4500 50  0000 C CNN
-F 1 "200" V 5850 4500 50  0000 C CNN
+F 1 "120" V 5850 4500 50  0000 C CNN
 F 2 "" V 5780 4500 30  0000 C CNN
 F 3 "" H 5850 4500 30  0000 C CNN
 	1    5850 4500
@@ -573,7 +574,7 @@ P 5850 5600
 AR Path="/56590966/565F7162/565E32C5" Ref="R?"  Part="1" 
 AR Path="/56590966/5659191C/565E32C5" Ref="R?"  Part="1" 
 F 0 "R?" V 5930 5600 50  0000 C CNN
-F 1 "200" V 5850 5600 50  0000 C CNN
+F 1 "120" V 5850 5600 50  0000 C CNN
 F 2 "" V 5780 5600 30  0000 C CNN
 F 3 "" H 5850 5600 30  0000 C CNN
 	1    5850 5600
@@ -1387,4 +1388,6 @@ F 3 "" H 3000 6250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Connection ~ 2700 6250
+Text Notes 6350 5200 0    60   ~ 0
+LM358 max. output: 5V - 1.5V = 3.5V\nSTM32 max. input: 3.5V / (1k + 120) * 1k = 3.125V
 $EndSCHEMATC
