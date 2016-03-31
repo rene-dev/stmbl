@@ -1,11 +1,12 @@
 EESchema Schematic File Version 2
-LIBS:power
+LIBS:transistors
+LIBS:stm32
 LIBS:stmbl_3.4-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 15
+Sheet 2 14
 Title ""
 Date ""
 Rev ""

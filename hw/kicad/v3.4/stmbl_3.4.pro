@@ -1,4 +1,4 @@
-update=Montag, 28. Dezember 2015 15:54:49
+update=Dienstag, 29. März 2016 09:28:51
 version=1
 last_client=kicad
 [pcbnew]
@@ -38,3 +38,6 @@ version=1
 [eeschema]
 version=1
 LibDir=
+[eeschema/libraries]
+LibName1=transistors
+LibName2=stm32
