@@ -35,7 +35,7 @@ void setup(){
 
    //setup_res();
    //usb_init();
-   cdc_init();
+   //cdc_init();
 	// systick timer
 	//RCC_GetClocksFreq(&RCC_Clocks);
 	//SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);

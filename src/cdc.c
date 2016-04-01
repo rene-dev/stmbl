@@ -300,6 +300,22 @@ static void cdcacm_set_config(usbd_device *usbd_dev, uint16_t wValue)
    usbd_register_suspend_callback(usbd_dev, suspend_cb);
 }
 
+void setup_usb(){
+   rcc_usb_prescale_1_5();
+	rcc_periph_clock_enable(RCC_USB);
+	rcc_periph_clock_enable(RCC_GPIOA);
+	rcc_periph_clock_enable(RCC_GPIOB);
+	gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO15);
+	gpio_set(GPIOB, GPIO15);
+
+	/* Setup GPIO pin GPIO_USART2_TX/GPIO9 on GPIO port A for transmit. */
+	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO11 | GPIO12);
+	gpio_set_af(GPIOA, GPIO_AF14, GPIO11| GPIO12);
+
+	usbd_dev = usbd_init(&st_usbfs_v1_usb_driver, &dev, &config, usb_strings, 3, usbd_control_buffer, sizeof(usbd_control_buffer));
+	usbd_register_set_config_callback(usbd_dev, cdcacm_set_config);
+}
+
 void cdc_init(void)
 {
 	rcc_periph_clock_enable(RCC_GPIOA);

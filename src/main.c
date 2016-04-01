@@ -160,63 +160,6 @@ void dma2_stream0_isr(void){
    hal.rt_state = RT_SLEEP;
    gpio_clear(GPIOB,GPIO8);
 }
-const struct rcc_clock_scale rcc_hse_8mhz = {
-    /* 72MHz */
-		.pll = RCC_CFGR_PLLMUL_PLL_IN_CLK_X9,
-		.pllsrc = RCC_CFGR_PLLSRC_HSE_PREDIV,
-		.hpre = RCC_CFGR_HPRE_DIV_NONE,
-		.ppre1 = RCC_CFGR_PPRE1_DIV_2,
-		.ppre2 = RCC_CFGR_PPRE2_DIV_NONE,
-		.flash_config = FLASH_ACR_PRFTBE | FLASH_ACR_LATENCY_2WS,
-		.ahb_frequency	= 72000000,
-		.apb1_frequency = 36000000,
-		.apb2_frequency = 72000000,
-	
-};
-
-void rcc_clock_setup_hse_3v3(const struct rcc_clock_scale *clock)
-{
-	/* Enable internal high-speed oscillator. */
-	rcc_osc_on(RCC_HSI);
-	rcc_wait_for_osc_ready(RCC_HSI);
-
-	/* Select HSI as SYSCLK source. */
-	rcc_set_sysclk_source(RCC_CFGR_SW_HSI);
-
-	/* Enable external high-speed oscillator 8MHz. */
-	rcc_osc_on(RCC_HSE);
-	rcc_wait_for_osc_ready(RCC_HSE);
-
-   rcc_osc_off(RCC_PLL);
-	rcc_wait_for_osc_not_ready(RCC_PLL);
-   rcc_set_prediv(RCC_CFGR2_PREDIV_NODIV);
-	rcc_set_pll_source(clock->pllsrc);
-	rcc_set_pll_multiplier(clock->pll);
-	/* Enable PLL oscillator and wait for it to stabilize. */
-	rcc_osc_on(RCC_PLL);
-	rcc_wait_for_osc_ready(RCC_PLL);
-	/*
-	 * Set prescalers for AHB, ADC, ABP1, ABP2.
-	 * Do this before touching the PLL (TODO: why?).
-	 */
-	rcc_set_hpre(clock->hpre);
-	rcc_set_ppre2(clock->ppre2);
-	rcc_set_ppre1(clock->ppre1);
-	/* Configure flash settings. */
-	flash_set_ws(clock->flash_config);
-	/* Select PLL as SYSCLK source. */
-	rcc_set_sysclk_source(RCC_CFGR_SW_PLL); /* XXX: se cayo */
-	/* Wait for PLL clock to be selected. */
-	rcc_wait_for_sysclk_status(RCC_PLL);
-
-	/* Set the peripheral clock frequencies used. */
-	rcc_ahb_frequency  = clock->ahb_frequency;
-	rcc_apb1_frequency = clock->apb1_frequency;
-	rcc_apb2_frequency = clock->apb2_frequency;
-
-	/* Disable internal high-speed oscillator. */
-	rcc_osc_off(RCC_HSI);
-}
 
 void rcc_set_pllxtpre(uint32_t pllxtpre)
 {
@@ -299,11 +242,29 @@ void rcc_clock_setup_in_hse_8mhz_out_72mhz(void)
 	rcc_apb2_frequency = 72000000;
 }
 
+void setup_systick(){
+   systick_set_reload(72000);
+	systick_set_clocksource(STK_CSR_CLKSOURCE_AHB);
+	systick_counter_enable();
+
+	/* this done last */
+	systick_interrupt_enable();
+   //systick prio
+
+   //NVIC_SetPriority(SysTick_IRQn, 14);
+   nvic_set_priority(NVIC_SYSTICK_IRQ, 14);
+   nvic_enable_irq(NVIC_SYSTICK_IRQ);
+}
+
+
+
 int main(void)
 {
    //rcc_clock_setup_hse_3v3(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
    //rcc_clock_setup_hsi(&rcc_hsi_8mhz[RCC_CLOCK_48MHZ]);
    rcc_clock_setup_in_hse_8mhz_out_72mhz();
+   setup_systick();
+   setup_usb();
    // Relocate interrupt vectors
    //
    extern void *vector_table;
@@ -313,174 +274,175 @@ int main(void)
    int last_start = 0;
    int start = 0;
    int end = 0;
+   
 
-   setup();
    init_hal();
 
-   set_comp_type("foo"); // default pin for mem errors
-   HAL_PIN(bar) = 0.0;
-
-   //feedback comps
-   #include "comps/adc.comp"
-   // #include "comps/res.comp"
-   // #include "comps/enc_fb.comp"
-   // #include "comps/encm.comp"
-   // #include "comps/encs.comp"
-   // #include "comps/yaskawa.comp"
-   //TODO: hyperface
-
-   //command comps
-   // #include "comps/sserial.comp"
-   #include "comps/sim.comp"
-   // #include "comps/enc_cmd.comp"
-   // #include "comps/en.comp"
-
-   //PID
-   // #include "comps/stp.comp"
-   // #include "comps/rev.comp"
-   // #include "comps/rev.comp"
-   // #include "comps/vel.comp"
-   // #include "comps/vel.comp"
-   // #include "comps/cauto.comp"
-   // #include "comps/pid.comp"
-   // #include "comps/pmsm_t2c.comp"
-   // #include "comps/curpid.comp"
-   // #include "comps/pmsm.comp"
-   // #include "comps/pmsm_limits.comp"
-   // #include "comps/idq.comp"
-   // #include "comps/dq.comp"
-   // #include "comps/hv.comp"
-
-   //other comps
-   // #include "comps/fault.comp"
+   // set_comp_type("foo"); // default pin for mem errors
+   // HAL_PIN(bar) = 0.0;
+   // 
+   // //feedback comps
+   // //#include "comps/adc.comp"
+   // // #include "comps/res.comp"
+   // // #include "comps/enc_fb.comp"
+   // // #include "comps/encm.comp"
+   // // #include "comps/encs.comp"
+   // // #include "comps/yaskawa.comp"
+   // //TODO: hyperface
+   // 
+   // //command comps
+   // // #include "comps/sserial.comp"
+   // #include "comps/sim.comp"
+   // // #include "comps/enc_cmd.comp"
+   // // #include "comps/en.comp"
+   // 
+   // //PID
+   // // #include "comps/stp.comp"
+   // // #include "comps/rev.comp"
+   // // #include "comps/rev.comp"
+   // // #include "comps/vel.comp"
+   // // #include "comps/vel.comp"
+   // // #include "comps/cauto.comp"
+   // // #include "comps/pid.comp"
+   // // #include "comps/pmsm_t2c.comp"
+   // // #include "comps/curpid.comp"
+   // // #include "comps/pmsm.comp"
+   // // #include "comps/pmsm_limits.comp"
+   // // #include "comps/idq.comp"
+   // // #include "comps/dq.comp"
+   // // #include "comps/hv.comp"
+   // 
+   // //other comps
+   // // #include "comps/fault.comp"
    #include "comps/term.comp"
-   // #include "comps/io.comp"
-
-
-   set_comp_type("net");
-   HAL_PIN(enable) = 0.0;
-   HAL_PIN(cmd) = 0.0;
-   HAL_PIN(fb) = 0.0;
-   HAL_PIN(fb_error) = 0.0;
-   HAL_PIN(cmd_d) = 0.0;
-   HAL_PIN(fb_d) = 0.0;
-   HAL_PIN(core_temp0) = 0.0;
-   HAL_PIN(core_temp1) = 0.0;
-   HAL_PIN(motor_temp) = 0.0;
-   HAL_PIN(rt_calc_time) = 0.0;
-   HAL_PIN(frt_calc_time) = 0.0;
+   // // #include "comps/io.comp"
+   // 
+   // 
+   // set_comp_type("net");
+   // HAL_PIN(enable) = 0.0;
+   // HAL_PIN(cmd) = 0.0;
+   // HAL_PIN(fb) = 0.0;
+   // HAL_PIN(fb_error) = 0.0;
+   // HAL_PIN(cmd_d) = 0.0;
+   // HAL_PIN(fb_d) = 0.0;
+   // HAL_PIN(core_temp0) = 0.0;
+   // HAL_PIN(core_temp1) = 0.0;
+   // HAL_PIN(motor_temp) = 0.0;
+   // HAL_PIN(rt_calc_time) = 0.0;
+   // HAL_PIN(frt_calc_time) = 0.0;
    HAL_PIN(nrt_calc_time) = 0.0;
-   HAL_PIN(rt_period) = 0.0;
-   HAL_PIN(frt_period) = 0.0;
+   // HAL_PIN(rt_period) = 0.0;
+   // HAL_PIN(frt_period) = 0.0;
    HAL_PIN(nrt_period) = 0.0;
-
-   set_comp_type("conf");
-   HAL_PIN(r) = 1.0;
-   HAL_PIN(l) = 0.01;
-   HAL_PIN(j) = KGCM2(0.26);
-   HAL_PIN(psi) = 0.05;
-   HAL_PIN(polecount) = 4.0;
-   HAL_PIN(mot_type) = 0.0;//ac sync,async/dc,2phase
-   HAL_PIN(out_rev) = 0.0;
-   HAL_PIN(high_motor_temp) = 80.0;
-   HAL_PIN(max_motor_temp) = 100.0;
-   HAL_PIN(phase_time) = 0.5;
-   HAL_PIN(phase_cur) = 1.0;
-
-   HAL_PIN(max_vel) = RPM(1000.0);
-   HAL_PIN(max_acc) = RPM(1000.0)/0.01;
-   HAL_PIN(max_force) = 1.0;
-   HAL_PIN(max_dc_cur) = 1.0;
-   HAL_PIN(max_ac_cur) = 2.0;
-
-   HAL_PIN(fb_type) = RES;
-   HAL_PIN(fb_polecount) = 1.0;
-   HAL_PIN(fb_offset) = 0.0;
-   HAL_PIN(fb_rev) = 0.0;
-   HAL_PIN(fb_res) = 1000.0;
-   HAL_PIN(autophase) = 1.0;//constant,cauto,hfi
-
-   HAL_PIN(cmd_type) = ENC;
-   HAL_PIN(cmd_unit) = 0.0;//pos,vel,torque
-   HAL_PIN(cmd_rev) = 0.0;
-   HAL_PIN(cmd_res) = 2000.0;
-   HAL_PIN(en_condition) = 0.0;
-   HAL_PIN(error_out) = 0.0;
-   HAL_PIN(pos_static) = 0.0;//track pos in disabled and error condition
-
-   HAL_PIN(sin_offset) = 0.0;
-   HAL_PIN(cos_offset) = 0.0;
-   HAL_PIN(sin_gain) = 1.0;
-   HAL_PIN(cos_gain) = 1.0;
-   HAL_PIN(max_dc_volt) = 370.0;
-   HAL_PIN(max_hv_temp) = 90.0;
-   HAL_PIN(max_core_temp) = 55.0;
-   HAL_PIN(max_pos_error) = M_PI / 2.0;
-   HAL_PIN(high_dc_volt) = 350.0;
-   HAL_PIN(low_dc_volt) = 12.0;
-   HAL_PIN(high_hv_temp) = 70.0;
-   HAL_PIN(fan_hv_temp) = 60.0;
-   HAL_PIN(fan_core_temp) = 450.0;
-   HAL_PIN(fan_motor_temp) = 60.0;
-
-   HAL_PIN(p) = 0.99;
-   HAL_PIN(pos_p) = 100.0;
-   HAL_PIN(vel_p) = 1.0;
-   HAL_PIN(acc_p) = 0.3;
-   HAL_PIN(acc_pi) = 50.0;
-   HAL_PIN(cur_p) = 0.0;
-   HAL_PIN(cur_i) = 0.0;
-   HAL_PIN(cur_ff) = 1.0;
-   HAL_PIN(cur_ind) = 0.0;
-   HAL_PIN(max_sat) = 0.2;
-
-   rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
-   frt_time_hal_pin = map_hal_pin("net0.frt_calc_time");
-   rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
-   frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
-
-   for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
-      hal.nrt_init[i]();
-   }
-
-   link_pid();
-
-
-   if(hal.pin_errors + hal.comp_errors == 0){
-      start_hal();
-   }
-   else{
-      hal.hal_state = MEM_ERROR;
-   }
-
+   // 
+   // set_comp_type("conf");
+   // HAL_PIN(r) = 1.0;
+   // HAL_PIN(l) = 0.01;
+   // HAL_PIN(j) = KGCM2(0.26);
+   // HAL_PIN(psi) = 0.05;
+   // HAL_PIN(polecount) = 4.0;
+   // HAL_PIN(mot_type) = 0.0;//ac sync,async/dc,2phase
+   // HAL_PIN(out_rev) = 0.0;
+   // HAL_PIN(high_motor_temp) = 80.0;
+   // HAL_PIN(max_motor_temp) = 100.0;
+   // HAL_PIN(phase_time) = 0.5;
+   // HAL_PIN(phase_cur) = 1.0;
+   // 
+   // HAL_PIN(max_vel) = RPM(1000.0);
+   // HAL_PIN(max_acc) = RPM(1000.0)/0.01;
+   // HAL_PIN(max_force) = 1.0;
+   // HAL_PIN(max_dc_cur) = 1.0;
+   // HAL_PIN(max_ac_cur) = 2.0;
+   // 
+   // HAL_PIN(fb_type) = RES;
+   // HAL_PIN(fb_polecount) = 1.0;
+   // HAL_PIN(fb_offset) = 0.0;
+   // HAL_PIN(fb_rev) = 0.0;
+   // HAL_PIN(fb_res) = 1000.0;
+   // HAL_PIN(autophase) = 1.0;//constant,cauto,hfi
+   // 
+   // HAL_PIN(cmd_type) = ENC;
+   // HAL_PIN(cmd_unit) = 0.0;//pos,vel,torque
+   // HAL_PIN(cmd_rev) = 0.0;
+   // HAL_PIN(cmd_res) = 2000.0;
+   // HAL_PIN(en_condition) = 0.0;
+   // HAL_PIN(error_out) = 0.0;
+   // HAL_PIN(pos_static) = 0.0;//track pos in disabled and error condition
+   // 
+   // HAL_PIN(sin_offset) = 0.0;
+   // HAL_PIN(cos_offset) = 0.0;
+   // HAL_PIN(sin_gain) = 1.0;
+   // HAL_PIN(cos_gain) = 1.0;
+   // HAL_PIN(max_dc_volt) = 370.0;
+   // HAL_PIN(max_hv_temp) = 90.0;
+   // HAL_PIN(max_core_temp) = 55.0;
+   // HAL_PIN(max_pos_error) = M_PI / 2.0;
+   // HAL_PIN(high_dc_volt) = 350.0;
+   // HAL_PIN(low_dc_volt) = 12.0;
+   // HAL_PIN(high_hv_temp) = 70.0;
+   // HAL_PIN(fan_hv_temp) = 60.0;
+   // HAL_PIN(fan_core_temp) = 450.0;
+   // HAL_PIN(fan_motor_temp) = 60.0;
+   // 
+   // HAL_PIN(p) = 0.99;
+   // HAL_PIN(pos_p) = 100.0;
+   // HAL_PIN(vel_p) = 1.0;
+   // HAL_PIN(acc_p) = 0.3;
+   // HAL_PIN(acc_pi) = 50.0;
+   // HAL_PIN(cur_p) = 0.0;
+   // HAL_PIN(cur_i) = 0.0;
+   // HAL_PIN(cur_ff) = 1.0;
+   // HAL_PIN(cur_ind) = 0.0;
+   // HAL_PIN(max_sat) = 0.2;
+   // 
+   // rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
+   // frt_time_hal_pin = map_hal_pin("net0.frt_calc_time");
+   // rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
+   // frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
+   // 
+   // for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
+   //    hal.nrt_init[i]();
+   // }
+   // 
+   // link_pid();
+   // 
+   // 
+   // if(hal.pin_errors + hal.comp_errors == 0){
+   //    start_hal();
+   // }
+   // else{
+   //    hal.hal_state = MEM_ERROR;
+   // }
    while(1)//run non realtime stuff
    {
-      start = systick_get_value();
+      //start = systick_get_value();
       usbd_poll(usbd_dev);
-
-      if(last_start < start){
-        last_start += systick_get_reload();
-      }
-
-      period = ((float)(last_start - start)) / rcc_ahb_frequency;
-      last_start = start;
-
+      
+      // if(last_start < start){
+      //   //last_start += systick_get_reload();
+      // }
+      // 
+      // //period = ((float)(last_start - start)) / rcc_ahb_frequency;
+      // last_start = start;
+      
       for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.nrt_func_count; hal.active_nrt_func++){//run all non realtime hal functions
-         hal.nrt[hal.active_nrt_func](period);
+         hal.nrt[hal.active_nrt_func](0.01);
       }
       hal.active_nrt_func = -1;
-
-      end = systick_get_value();
-      if(start < end){
-        start += systick_get_reload();
-      }
-      PIN(nrt_calc_time) = ((float)(start - end)) / rcc_ahb_frequency;
-      PIN(nrt_period) = period;
+      
+      //end = systick_get_value();
+      // if(start < end){
+      //   //start += systick_get_reload();
+      // }
+      //PIN(nrt_calc_time) = ((float)(start - end)) / rcc_ahb_frequency;
+      //PIN(nrt_period) = period;
    }
 }
 
 void Wait(uint32_t ms){
-   uint64_t t = systime + ms;
-   while(t >= systime){
-   }
+   // uint64_t t = systime + ms;
+   // while(t >= systime){
+   // }
+   for (int i = 0; i < 20000; i++) /* Wait a bit. */
+			__asm__("nop");
 }
