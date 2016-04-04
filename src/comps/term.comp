@@ -162,12 +162,14 @@ NRT(
       float pe = get_hal_pin("net0.rt_period");
       float ct = get_hal_pin("net0.rt_calc_time");
       if(pe > 0.0){
+         printf("rt freq: %fHz\n", 1.0 / pe);
          printf("rt time: %f/%fs", ct, pe);
          printf("=%f%%\n",(ct/pe)*100);
       }
       pe = get_hal_pin("net0.frt_period");
       ct = get_hal_pin("net0.frt_calc_time");
       if(pe > 0.0){
+         printf("frt freq: %fHz\n", 1.0 / pe);
          printf("frt time: %f/%fs", ct, pe);
          printf("=%f%%\n",(ct/pe)*100);
       }
