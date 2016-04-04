@@ -301,7 +301,7 @@ NRT(
       printf("by %s on %s\n",version_info.build_user, version_info.build_host);
       printf("GCC        %s\n",__VERSION__);
       printf("newlib     %s\n",_NEWLIB_VERSION);
-      printf("CPU ID     %lx %lx %lx\n",U_ID[0], U_ID[1], U_ID[2]);
+      printf("CPU ID     %lx %lx %lx\n",DESIG_UNIQUE_ID0, DESIG_UNIQUE_ID1, DESIG_UNIQUE_ID2);
       crc_reset();
       uint32_t crc = crc_calculate_block((uint32_t *) &vector_table, version_info.image_size / 4);
       printf("size: %lu crc:%lx\n", version_info.image_size, version_info.image_crc);
