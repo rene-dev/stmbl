@@ -40,7 +40,7 @@ HAL_PIN(tx_buf_use) = 0.0;
 HAL_PIN(fault) = 0.0;
 HAL_PIN(con) = 0.0;
 
-HAL_PIN(tim2_rv) = 420.0;
+HAL_PIN(tim2_rv) = 3600.0;
 
 #define TERM_BUF_SIZE 24
 
@@ -120,7 +120,7 @@ INIT(
 );
 
 RT(
-   TIM2_ARR = (int)CLAMP(PIN(tim2_rv), 1, 1500);
+   TIM2_ARR = (int)CLAMP(PIN(tim2_rv), 1.0, 60000.0);
    if(send_counter++ >= PIN(send_step) - 1){
       w0[write_pos] = PIN(wave0);
       w1[write_pos] = PIN(wave1);
@@ -162,12 +162,14 @@ NRT(
       float pe = get_hal_pin("net0.rt_period");
       float ct = get_hal_pin("net0.rt_calc_time");
       if(pe > 0.0){
+         printf("rt freq: %fHz\n", 1.0 / pe);
          printf("rt time: %f/%fs", ct, pe);
          printf("=%f%%\n",(ct/pe)*100);
       }
       pe = get_hal_pin("net0.frt_period");
       ct = get_hal_pin("net0.frt_calc_time");
       if(pe > 0.0){
+         printf("frt freq: %fHz\n", 1.0 / pe);
          printf("frt time: %f/%fs", ct, pe);
          printf("=%f%%\n",(ct/pe)*100);
       }
@@ -301,7 +303,7 @@ NRT(
       printf("by %s on %s\n",version_info.build_user, version_info.build_host);
       printf("GCC        %s\n",__VERSION__);
       printf("newlib     %s\n",_NEWLIB_VERSION);
-      printf("CPU ID     %lx %lx %lx\n",U_ID[0], U_ID[1], U_ID[2]);
+      printf("CPU ID     %lx %lx %lx\n",DESIG_UNIQUE_ID0, DESIG_UNIQUE_ID1, DESIG_UNIQUE_ID2);
       crc_reset();
       uint32_t crc = crc_calculate_block((uint32_t *) &vector_table, version_info.image_size / 4);
       printf("size: %lu crc:%lx\n", version_info.image_size, version_info.image_crc);
@@ -323,7 +325,7 @@ NRT(
       printf("Compiled %s %s ",bt_version_info->build_date, bt_version_info->build_time);
       printf("by %s on %s\n",bt_version_info->build_user, bt_version_info->build_host);
 
-      printf("start:%p ,size:%p ,end%p \n",&_binary_obj_hv_hv_bin_start,&_binary_obj_hv_hv_bin_size,&_binary_obj_hv_hv_bin_end);
+      //printf("start:%p ,size:%p ,end%p \n",&_binary_obj_hv_hv_bin_start,&_binary_obj_hv_hv_bin_size,&_binary_obj_hv_hv_bin_end);
    }
 
    void start(){
@@ -376,7 +378,7 @@ NRT(
    void listhal(){
       for(int i = 0; i < hal.hal_pin_count; i++){
          printf("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
-         Wait(1);
+         //Wait(1);
       }
    }
    /*

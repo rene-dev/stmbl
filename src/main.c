@@ -38,22 +38,18 @@ GLOBAL_HAL_PIN(frt_period_time);
 void Wait(uint32_t ms);
 
 //hal interface
-void enable_rt(){
-   timer_enable_counter(TIM2);
-}
 void enable_frt(){
+   //timer_enable_counter(TIM2);
+}
+void enable_rt(){
    timer_enable_irq(TIM2,TIM_DIER_UIE);
 }
-void disable_rt(){
-   timer_disable_counter(TIM2);
-}
 void disable_frt(){
+   //timer_disable_counter(TIM2);
+}
+void disable_rt(){
    timer_disable_irq(TIM2,TIM_DIER_UIE);
 }
-
-extern char _binary_obj_hv_hv_bin_start;
-extern char _binary_obj_hv_hv_bin_size;
-extern char _binary_obj_hv_hv_bin_end;
 
 volatile uint64_t systime = 0;
 
@@ -62,59 +58,9 @@ void SysTick_Handler(void)
   systime++;
 }
 
-//20kHz
+//1kHz
 void tim2_isr(void){
    timer_clear_flag(TIM2,TIM_SR_UIF);
-   switch(hal.frt_state){
-      case FRT_STOP:
-         return;
-      case FRT_CALC:
-         hal.frt_state = FRT_STOP;
-         hal.hal_state = FRT_TOO_LONG;
-         hal.rt_state = RT_STOP;
-         return;
-      case FRT_SLEEP:
-         if(hal.active_frt_func > -1){
-            hal.frt_state = FRT_STOP;
-            hal.hal_state = MISC_ERROR;
-            hal.rt_state = RT_STOP;
-            return;
-         }
-         hal.frt_state = FRT_CALC;
-   }
-
-   gpio_set(GPIOB,GPIO9);
-
-   static unsigned int last_start = 0;
-   unsigned int start = systick_get_value();
-
-   if(last_start < start){
-     last_start += systick_get_reload();
-   }
-
-   float period = ((float)(last_start - start)) / rcc_ahb_frequency;
-   last_start = start;
-
-   for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_func_count; hal.active_frt_func++){//run all fast realtime hal functions
-      hal.frt[hal.active_frt_func](period);
-   }
-   hal.active_frt_func = -1;
-
-   unsigned int end = systick_get_value();
-   if(start < end){
-     start += systick_get_reload();
-   }
-   PIN(frt_time) = ((float)(start - end)) / rcc_ahb_frequency;
-   PIN(frt_period_time) = period;
-
-   hal.frt_state = FRT_SLEEP;
-   gpio_clear(GPIOB,GPIO9);
-}
-
-//5 kHz interrupt for hal. at this point all ADCs have been sampled,
-//see setup_res() in setup.c if you are interested in the magic behind this.
-void dma2_stream0_isr(void){
-   //dma_clear_interrupt_flags(DMA2, DMA_STREAM0, DMA_TCIF);
    switch(hal.rt_state){
       case RT_STOP:
          return;
@@ -132,8 +78,6 @@ void dma2_stream0_isr(void){
          }
          hal.rt_state = RT_CALC;
    }
-
-   gpio_set(GPIOB,GPIO8);
 
    static unsigned int last_start = 0;
    unsigned int start = systick_get_value();
@@ -158,8 +102,9 @@ void dma2_stream0_isr(void){
    PIN(rt_period_time) = period;
 
    hal.rt_state = RT_SLEEP;
-   gpio_clear(GPIOB,GPIO8);
 }
+
+
 
 void rcc_set_pllxtpre(uint32_t pllxtpre)
 {
@@ -256,6 +201,22 @@ void setup_systick(){
    nvic_enable_irq(NVIC_SYSTICK_IRQ);
 }
 
+void setup_tim(){
+   rcc_periph_clock_enable(RCC_TIM2);
+   timer_reset(TIM2);
+   timer_set_mode(TIM2, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
+   timer_set_clock_division(TIM2, TIM_CR1_CKD_CK_INT);
+   timer_direction_up(TIM2);
+   timer_set_repetition_counter(TIM2, 0);
+   //timer_enable_preload(TIM2);
+   timer_set_period(TIM2, 3600);
+   timer_set_prescaler(TIM2, 9);
+   timer_enable_update_event(TIM2);
+   nvic_enable_irq(NVIC_TIM2_IRQ);
+   nvic_set_priority(NVIC_TIM2_IRQ, 0);
+   timer_enable_counter(TIM2);
+   //timer_enable_irq(TIM2,TIM_DIER_UIE);
+}
 
 
 int main(void)
@@ -265,6 +226,8 @@ int main(void)
    rcc_clock_setup_in_hse_8mhz_out_72mhz();
    setup_systick();
    setup_usb();
+   setup_tim();
+   rcc_periph_clock_enable(RCC_CRC);
    // Relocate interrupt vectors
    //
    extern void *vector_table;
@@ -278,8 +241,8 @@ int main(void)
 
    init_hal();
 
-   // set_comp_type("foo"); // default pin for mem errors
-   // HAL_PIN(bar) = 0.0;
+   set_comp_type("foo"); // default pin for mem errors
+   HAL_PIN(bar) = 0.0;
    // 
    // //feedback comps
    // //#include "comps/adc.comp"
@@ -292,7 +255,7 @@ int main(void)
    // 
    // //command comps
    // // #include "comps/sserial.comp"
-   // #include "comps/sim.comp"
+   #include "comps/sim.comp"
    // // #include "comps/enc_cmd.comp"
    // // #include "comps/en.comp"
    // 
@@ -318,7 +281,7 @@ int main(void)
    // // #include "comps/io.comp"
    // 
    // 
-   // set_comp_type("net");
+   set_comp_type("net");
    // HAL_PIN(enable) = 0.0;
    // HAL_PIN(cmd) = 0.0;
    // HAL_PIN(fb) = 0.0;
@@ -328,11 +291,11 @@ int main(void)
    // HAL_PIN(core_temp0) = 0.0;
    // HAL_PIN(core_temp1) = 0.0;
    // HAL_PIN(motor_temp) = 0.0;
-   // HAL_PIN(rt_calc_time) = 0.0;
-   // HAL_PIN(frt_calc_time) = 0.0;
+   HAL_PIN(rt_calc_time) = 0.0;
+   HAL_PIN(frt_calc_time) = 0.0;
    HAL_PIN(nrt_calc_time) = 0.0;
-   // HAL_PIN(rt_period) = 0.0;
-   // HAL_PIN(frt_period) = 0.0;
+   HAL_PIN(rt_period) = 0.0;
+   HAL_PIN(frt_period) = 0.0;
    HAL_PIN(nrt_period) = 0.0;
    // 
    // set_comp_type("conf");
@@ -395,47 +358,50 @@ int main(void)
    // HAL_PIN(cur_ind) = 0.0;
    // HAL_PIN(max_sat) = 0.2;
    // 
-   // rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
-   // frt_time_hal_pin = map_hal_pin("net0.frt_calc_time");
-   // rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
-   // frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
+   rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
+   frt_time_hal_pin = map_hal_pin("net0.frt_calc_time");
+   rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
+   frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
    // 
-   // for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
-   //    hal.nrt_init[i]();
-   // }
+   for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
+      hal.nrt_init[i]();
+   }
    // 
    // link_pid();
    // 
    // 
-   // if(hal.pin_errors + hal.comp_errors == 0){
-   //    start_hal();
-   // }
-   // else{
-   //    hal.hal_state = MEM_ERROR;
-   // }
+   set_hal_pin("sim0.rt_prio", 1.0);
+   set_hal_pin("term0.rt_prio", 2.0);
+   
+   if(hal.pin_errors + hal.comp_errors == 0){
+      start_hal();
+   }
+   else{
+      hal.hal_state = MEM_ERROR;
+   }
+   
    while(1)//run non realtime stuff
    {
-      //start = systick_get_value();
+      start = systick_get_value();
       usbd_poll(usbd_dev);
       
-      // if(last_start < start){
-      //   //last_start += systick_get_reload();
-      // }
+      if(last_start < start){
+        last_start += systick_get_reload();
+      }
       // 
-      // //period = ((float)(last_start - start)) / rcc_ahb_frequency;
-      // last_start = start;
-      
+      period = ((float)(last_start - start)) / rcc_ahb_frequency;
+      last_start = start;
       for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.nrt_func_count; hal.active_nrt_func++){//run all non realtime hal functions
-         hal.nrt[hal.active_nrt_func](0.01);
+         hal.nrt[hal.active_nrt_func](period);
       }
       hal.active_nrt_func = -1;
       
-      //end = systick_get_value();
-      // if(start < end){
-      //   //start += systick_get_reload();
-      // }
-      //PIN(nrt_calc_time) = ((float)(start - end)) / rcc_ahb_frequency;
-      //PIN(nrt_period) = period;
+      end = systick_get_value();
+      if(start < end){
+        start += systick_get_reload();
+      }
+      PIN(nrt_calc_time) = ((float)(start - end)) / rcc_ahb_frequency;
+      PIN(nrt_period) = period;
    }
 }
 

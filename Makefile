@@ -1,8 +1,8 @@
 # Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
 #
-#OPT = -O1 -flto
-OPT = -ggdb3 # for debugging
+OPT = -O2 -flto
+#OPT = -ggdb3 # for debugging
 
 # Object files directory
 # Warning: this will be removed by make clean!
@@ -39,7 +39,7 @@ LDSCRIPT = stm32_flash.ld
 
 #============================================================================
 OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
-OBJECTS += hv_firmware.o
+#OBJECTS += hv_firmware.o
 CPPFLAGS += $(addprefix -I,$(INCDIRS))
 
 #---------------- Preprocessor Options ----------------

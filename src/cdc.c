@@ -314,25 +314,22 @@ void setup_usb(){
 
 	usbd_dev = usbd_init(&st_usbfs_v1_usb_driver, &dev, &config, usb_strings, 3, usbd_control_buffer, sizeof(usbd_control_buffer));
 	usbd_register_set_config_callback(usbd_dev, cdcacm_set_config);
+	usb_connected = 0;
 }
 
 void cdc_init(void)
 {
+	rcc_usb_prescale_1_5();
 	rcc_periph_clock_enable(RCC_GPIOA);
 	rcc_periph_clock_enable(RCC_GPIOB); // usb pullup
-	rcc_periph_clock_enable(RCC_GPIOC);
 	rcc_periph_clock_enable(RCC_USB);
-	rcc_usb_prescale_1_5();
+	gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO15);
+	gpio_set(GPIOB, GPIO15);
 
-
-	gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO15); // usb pullup
-	gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO13); // usb pullup
 	
-	//gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO11 | GPIO12);
-	//gpio_set_af(GPIOA, GPIO_AF10, GPIO11 | GPIO12);
+	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO11 | GPIO12);
+	gpio_set_af(GPIOA, GPIO_AF14, GPIO11 | GPIO12);
 	
-	gpio_set(GPIOB, GPIO15); // usb pullup
-	gpio_set(GPIOC, GPIO13); // usb pullup
 	//OTG_FS_GCCFG |= OTG_GCCFG_NOVBUSSENS;
 	usbd_dev = usbd_init(&st_usbfs_v1_usb_driver, &dev, &config, usb_strings, 3, usbd_control_buffer, sizeof(usbd_control_buffer));	
 	

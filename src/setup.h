@@ -28,9 +28,6 @@
 #include "defines_res.h"
 #include "cdc.h"
 
-#define U_ID ((volatile uint32_t *)0x1FFF7A10)//TODO: should be in opencm3
-
-
 //#define mag_res 5250
 #define mag_res 8400
 
