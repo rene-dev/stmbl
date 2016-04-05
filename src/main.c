@@ -210,7 +210,7 @@ void setup_tim(){
    timer_set_repetition_counter(TIM2, 0);
    //timer_enable_preload(TIM2);
    timer_set_period(TIM2, 3600);
-   timer_set_prescaler(TIM2, 9);
+   timer_set_prescaler(TIM2, 19);
    timer_enable_update_event(TIM2);
    nvic_enable_irq(NVIC_TIM2_IRQ);
    nvic_set_priority(NVIC_TIM2_IRQ, 0);
@@ -256,6 +256,8 @@ int main(void)
    // //command comps
    // // #include "comps/sserial.comp"
    #include "comps/sim.comp"
+   //#include "comps/imu.comp"
+   #include "comps/gripper.comp"
    // // #include "comps/enc_cmd.comp"
    // // #include "comps/en.comp"
    // 
@@ -372,6 +374,9 @@ int main(void)
    // 
    set_hal_pin("sim0.rt_prio", 1.0);
    set_hal_pin("term0.rt_prio", 2.0);
+   set_hal_pin("imu0.rt_prio", 1.0);
+   set_hal_pin("gripper0.rt_prio", 1.0);
+   
    
    if(hal.pin_errors + hal.comp_errors == 0){
       start_hal();
@@ -406,9 +411,9 @@ int main(void)
 }
 
 void Wait(uint32_t ms){
-   // uint64_t t = systime + ms;
-   // while(t >= systime){
-   // }
-   for (int i = 0; i < 20000; i++) /* Wait a bit. */
-			__asm__("nop");
+   uint64_t t = systime + ms;
+   while(t >= systime){
+   }
+   // for (int i = 0; i < 20000; i++) /* Wait a bit. */
+	// 		__asm__("nop");
 }

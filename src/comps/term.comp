@@ -40,7 +40,7 @@ HAL_PIN(tx_buf_use) = 0.0;
 HAL_PIN(fault) = 0.0;
 HAL_PIN(con) = 0.0;
 
-HAL_PIN(tim2_rv) = 3600.0;
+HAL_PIN(tim2_rv) = 20000.0;
 
 #define TERM_BUF_SIZE 24
 
