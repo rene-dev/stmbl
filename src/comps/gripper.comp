@@ -30,7 +30,6 @@ RT_INIT(
    usart_set_mode(USART1, USART_MODE_TX_RX);
    usart_set_parity(USART1, USART_PARITY_NONE);
    usart_set_flow_control(USART1, USART_FLOWCONTROL_NONE);
-   usart_enable(USART1);
    
    // single wire half duplex
 	reg32 = USART_CR3(USART1);
@@ -39,6 +38,7 @@ RT_INIT(
    
 
    /* Finally enable the USART. */
+   usart_enable(USART1);
    
    // rcc_periph_clock_enable(RCC_DMA1);
 
