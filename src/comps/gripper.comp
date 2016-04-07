@@ -1,13 +1,17 @@
 HAL_COMP(gripper);
 
-HAL_PIN(who) = 0;
+HAL_PIN(step) = 15;
 
 MEM(uint8_t txbuf[16]);
 MEM(uint8_t rxbuf[16]);
 MEM(uint8_t txsize) = 0;
 
+MEM(uint32_t counter) = 0;
+
+
 #define GRIPPER_MODBUS_ADDR 0x09
 #define GRIPPER_MODBUS_READ 0x03
+
 
 RT_INIT(
    uint32_t reg32;
@@ -36,14 +40,13 @@ RT_INIT(
 	reg32 = reg32  | USART_CR3_HDSEL;
 	USART_CR3(USART1) = reg32;
    
-
    /* Finally enable the USART. */
    usart_enable(USART1);
    
    // rcc_periph_clock_enable(RCC_DMA1);
 
    // TX DMA
-   // rcc_periph_clock_enable(RCC_DMA1);
+   rcc_periph_clock_enable(RCC_DMA1);
    // dma_channel_reset(DMA1, DMA_CHANNEL4);
    // dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL4);
    // dma_disable_peripheral_increment_mode(DMA1, DMA_CHANNEL4);
@@ -54,7 +57,6 @@ RT_INIT(
    // dma_set_peripheral_size(DMA1, DMA_CHANNEL4, DMA_CCR_MSIZE_8BIT);
    // dma_set_priority(DMA1, DMA_CHANNEL4, DMA_CCR_PL_LOW);
    // dma_set_read_from_memory(DMA1, DMA_CHANNEL4);
-   //usart_enable(USART1);
 
    txbuf[txsize++] = GRIPPER_MODBUS_ADDR;
    txbuf[txsize++] = GRIPPER_MODBUS_READ;
@@ -83,37 +85,46 @@ RT_INIT(
 
 
 RT(
-   // usart_disable_tx_dma(USART1);
-	// dma_disable_channel(DMA1, DMA_CHANNEL4);
-   // 
-   // dma_channel_reset(DMA1, DMA_CHANNEL4);
-   // dma_set_peripheral_address(DMA1, DMA_CHANNEL4, (uint32_t)USART1_TDR); //(uint32_t) USART1_TDR);
-   // dma_set_memory_address(DMA1, DMA_CHANNEL4, (uint32_t) txbuf);
-   // dma_set_number_of_data(DMA1, DMA_CHANNEL4, txsize);
-   // dma_set_read_from_memory(DMA1, DMA_CHANNEL4);
-   // dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL4);
-   // dma_set_peripheral_size(DMA1, DMA_CHANNEL4, DMA_CCR_MSIZE_8BIT);
-   // dma_set_memory_size(DMA1, DMA_CHANNEL4, DMA_CCR_MSIZE_8BIT);
-   // dma_set_priority(DMA1, DMA_CHANNEL4, DMA_CCR_PL_LOW);
-   //dma_disable_peripheral_increment_mode(DMA1, DMA_CHANNEL4);
-   
-   gpio_set(GPIOB, GPIO7);
-   // dma_enable_channel(DMA1, DMA_CHANNEL4);
-   // usart_enable_tx_dma(USART1);
+   counter++;
+   counter %= 25;
+   if(counter == 0){
+      usart_disable_tx_dma(USART1);
+   	dma_disable_channel(DMA1, DMA_CHANNEL4);
+      
+      dma_channel_reset(DMA1, DMA_CHANNEL4);
+      dma_set_peripheral_address(DMA1, DMA_CHANNEL4, (uint32_t)&USART1_TDR); //(uint32_t) USART1_TDR);
+      dma_set_memory_address(DMA1, DMA_CHANNEL4, (uint32_t) txbuf);
+      dma_set_number_of_data(DMA1, DMA_CHANNEL4, txsize);
+      dma_set_read_from_memory(DMA1, DMA_CHANNEL4);
+      dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL4);
+      dma_set_peripheral_size(DMA1, DMA_CHANNEL4, DMA_CCR_MSIZE_8BIT);
+      dma_set_memory_size(DMA1, DMA_CHANNEL4, DMA_CCR_MSIZE_8BIT);
+      dma_set_priority(DMA1, DMA_CHANNEL4, DMA_CCR_PL_LOW);
+      dma_disable_peripheral_increment_mode(DMA1, DMA_CHANNEL4);
+      
+      gpio_set(GPIOB, GPIO7);
+      dma_enable_channel(DMA1, DMA_CHANNEL4);
+      usart_enable_tx_dma(USART1);
+   }
 
    // tx en = 1
    // send
-   usart_send_blocking(USART1, GRIPPER_MODBUS_ADDR);
-   usart_send_blocking(USART1, GRIPPER_MODBUS_READ);
-   usart_send_blocking(USART1, 0x07);
-   usart_send_blocking(USART1, 0xD0);
-   usart_send_blocking(USART1, 0x00);
-   usart_send_blocking(USART1, 0x02);
-   usart_send_blocking(USART1, 0xC5);
-   usart_send_blocking(USART1, 0xCE);
-   while(!usart_get_flag(USART1, USART_SR_TC)){}
-   // tx en = 0
-   gpio_clear(GPIOB, GPIO7);
+   // usart_send_blocking(USART1, GRIPPER_MODBUS_ADDR);
+   // usart_send_blocking(USART1, GRIPPER_MODBUS_READ);
+   // usart_send_blocking(USART1, 0x07);
+   // usart_send_blocking(USART1, 0xD0);
+   // usart_send_blocking(USART1, 0x00);
+   // usart_send_blocking(USART1, 0x02);
+   // usart_send_blocking(USART1, 0xC5);
+   // usart_send_blocking(USART1, 0xCE);
+   if(dma_get_interrupt_flag(DMA1, DMA_CHANNEL4, DMA_TCIF )){
+      if(usart_get_flag(USART1, USART_SR_TC)){
+         // tx en = 0
+         gpio_clear(GPIOB, GPIO7);
+      }
+   }
+   
+   
    
    
 

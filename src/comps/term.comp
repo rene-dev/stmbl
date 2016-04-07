@@ -40,7 +40,7 @@ HAL_PIN(tx_buf_use) = 0.0;
 HAL_PIN(fault) = 0.0;
 HAL_PIN(con) = 0.0;
 
-HAL_PIN(tim2_rv) = 20000.0;
+HAL_PIN(tim2_rv) = 1440.0;
 
 #define TERM_BUF_SIZE 24
 
@@ -120,7 +120,7 @@ INIT(
 );
 
 RT(
-   TIM2_ARR = (int)CLAMP(PIN(tim2_rv), 1.0, 60000.0);
+   timer_set_period(TIM2, (int)CLAMP(PIN(tim2_rv), 100.0, 60000.0));
    if(send_counter++ >= PIN(send_step) - 1){
       w0[write_pos] = PIN(wave0);
       w1[write_pos] = PIN(wave1);
@@ -659,7 +659,7 @@ NRT(
 
       if (cdcacm_is_connected()) {
          PIN(con) = 1.0;
-         cdcacm_tx(buf,9);
+         //cdcacm_tx(buf,9);
       }else{
          PIN(con) = 0.0;
       }
