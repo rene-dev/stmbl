@@ -10,10 +10,23 @@ HAL_PIN(b5) = 0;
 HAL_PIN(b6) = 0;
 HAL_PIN(b7) = 0;
 HAL_PIN(b8) = 0;
+HAL_PIN(b9) = 0;
+HAL_PIN(b10) = 0;
+HAL_PIN(b11) = 0;
+HAL_PIN(b12) = 0;
+HAL_PIN(b13) = 0;
+HAL_PIN(b14) = 0;
+HAL_PIN(b15) = 0;
+HAL_PIN(b16) = 0;
+HAL_PIN(b17) = 0;
+HAL_PIN(b18) = 0;
+HAL_PIN(b19) = 0;
+HAL_PIN(b20) = 0;
+
 HAL_PIN(todo) = 0;
 
 MEM(uint8_t txbuf[16]);
-MEM(uint8_t rxbuf[16]);
+MEM(uint8_t rxbuf[32]);
 MEM(uint8_t txsize) = 0;
 MEM(uint8_t rxsize) = 7;
 
@@ -29,26 +42,26 @@ MEM(uint32_t send) = 0;
 RT_INIT(
    uint32_t reg32;
 
-   /* Enable clocks for GPIOB, USART1 and USART3. */
+   /* Enable clocks for GPIOB, USART1 and USART1. */
    rcc_periph_clock_enable(RCC_GPIOB);
    rcc_periph_clock_enable(RCC_USART1);
-   rcc_periph_clock_enable(RCC_USART3);
+   // rcc_periph_clock_enable(RCC_USART1);
    
    // tx1 en PB7
    gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO7);
-
    // tx3 en PB11
-   gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO11);
+   // gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO11);
    // tx3 en = 0
-   gpio_clear(GPIOB, GPIO11);
+   // gpio_clear(GPIOB, GPIO11);
 
    /* Setup GPIO pin GPIO_USART1_TX/GPIO6 on GPIO port B for transmit. */
-   gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO6);
+   gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO6);
+   gpio_set_output_options(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, GPIO6);
    gpio_set_af(GPIOB, GPIO_AF7, GPIO6);
    
-   /* Setup GPIO pin GPIO_USART3_TX/GPIO10 on GPIO port B for transmit. */
-   gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO10);
-   gpio_set_af(GPIOB, GPIO_AF7, GPIO10);
+   /* Setup GPIO pin GPIO_USART1_TX/GPIO10 on GPIO port B for transmit. */
+   // gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO10);
+   // gpio_set_af(GPIOB, GPIO_AF7, GPIO10);
 
 
    /* Setup USART1 parameters. */
@@ -59,13 +72,13 @@ RT_INIT(
    usart_set_parity(USART1, USART_PARITY_NONE);
    usart_set_flow_control(USART1, USART_FLOWCONTROL_NONE);
    
-   /* Setup USART3 parameters. */
-   usart_set_baudrate(USART3, 115200);
-   usart_set_databits(USART3, 8);
-   usart_set_stopbits(USART3, USART_STOPBITS_1);
-   usart_set_mode(USART3, USART_MODE_TX_RX);
-   usart_set_parity(USART3, USART_PARITY_NONE);
-   usart_set_flow_control(USART3, USART_FLOWCONTROL_NONE);
+   // /* Setup USART1 parameters. */
+   // usart_set_baudrate(USART1, 115200);
+   // usart_set_databits(USART1, 8);
+   // usart_set_stopbits(USART1, USART_STOPBITS_1);
+   // usart_set_mode(USART1, USART_MODE_TX_RX);
+   // usart_set_parity(USART1, USART_PARITY_NONE);
+   // usart_set_flow_control(USART1, USART_FLOWCONTROL_NONE);
    
    // single wire half duplex
 	reg32 = USART_CR3(USART1);
@@ -73,15 +86,15 @@ RT_INIT(
 	USART_CR3(USART1) = reg32;
    
    // single wire half duplex
-	reg32 = USART_CR3(USART3);
-	reg32 = reg32  | USART_CR3_HDSEL;
-	USART_CR3(USART3) = reg32;
+	// reg32 = USART_CR3(USART1);
+	// reg32 = reg32  | USART_CR3_HDSEL;
+	// USART_CR3(USART1) = reg32;
    
    /* Finally enable the USART. */
    usart_enable(USART1);
    
    /* Finally enable the USART. */
-   usart_enable(USART3);
+   // usart_enable(USART1);
    
    rcc_periph_clock_enable(RCC_DMA1);
 
@@ -108,25 +121,50 @@ RT(
    counter++;
    counter %= 25;
    if(counter == 0){
-      // rx
-      usart_disable_rx_dma(USART3);
-      dma_channel_reset(DMA1, DMA_CHANNEL3);
-      dma_set_peripheral_address(DMA1, DMA_CHANNEL3, (uint32_t)&USART3_RDR);
-      dma_set_memory_address(DMA1, DMA_CHANNEL3, (uint32_t)rxbuf);
-      dma_set_number_of_data(DMA1, DMA_CHANNEL3, txsize);
-      dma_set_read_from_peripheral(DMA1, DMA_CHANNEL3);
-      dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL3);
-      dma_set_peripheral_size(DMA1, DMA_CHANNEL3, DMA_CCR_PSIZE_8BIT);
-      dma_set_memory_size(DMA1, DMA_CHANNEL3, DMA_CCR_MSIZE_8BIT);
-      dma_set_priority(DMA1, DMA_CHANNEL3, DMA_CCR_PL_HIGH);
-      dma_disable_peripheral_increment_mode(DMA1, DMA_CHANNEL3);
+      PIN(b0) = rxbuf[0];
+      PIN(b1) = rxbuf[1];
+      PIN(b2) = rxbuf[2];
+      PIN(b3) = rxbuf[3];
+      PIN(b4) = rxbuf[4];
+      PIN(b5) = rxbuf[5];
+      PIN(b6) = rxbuf[6];
+      PIN(b7) = rxbuf[7];
+      PIN(b8) = rxbuf[8];
+      PIN(b9) = rxbuf[9];
+      PIN(b10) = rxbuf[10];
+      PIN(b11) = rxbuf[11];
+      PIN(b12) = rxbuf[12];
+      PIN(b13) = rxbuf[13];
+      PIN(b14) = rxbuf[14];
+      PIN(b15) = rxbuf[15];
+      PIN(b16) = rxbuf[16];
+      PIN(b17) = rxbuf[17];
+      PIN(b18) = rxbuf[18];
+      PIN(b19) = rxbuf[19];
+      PIN(b20) = rxbuf[20];
+      
+      
+      PIN(todo) = DMA1_CNDTR5;
 
-      dma_enable_channel(DMA1, DMA_CHANNEL3);
-      usart_enable_rx_dma(USART3);
+      // rx dma config
+      usart_disable_rx_dma(USART1);
+      dma_channel_reset(DMA1, DMA_CHANNEL5);
+      dma_set_peripheral_address(DMA1, DMA_CHANNEL5, (uint32_t)&USART1_RDR);
+      dma_set_memory_address(DMA1, DMA_CHANNEL5, (uint32_t)rxbuf);
+      dma_set_number_of_data(DMA1, DMA_CHANNEL5, sizeof(rxbuf));
+      dma_set_read_from_peripheral(DMA1, DMA_CHANNEL5);
+      dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL5);
+      dma_set_peripheral_size(DMA1, DMA_CHANNEL5, DMA_CCR_PSIZE_8BIT);
+      dma_set_memory_size(DMA1, DMA_CHANNEL5, DMA_CCR_MSIZE_8BIT);
+      dma_set_priority(DMA1, DMA_CHANNEL5, DMA_CCR_PL_HIGH);
+      dma_disable_peripheral_increment_mode(DMA1, DMA_CHANNEL5);
       
+      // start rx dma
+      dma_enable_channel(DMA1, DMA_CHANNEL5);
+      usart_enable_rx_dma(USART1);
       
-      // tx
-      usart_disable_tx_dma(USART1);      
+      // tx dma config
+      usart_disable_tx_dma(USART1);
       dma_channel_reset(DMA1, DMA_CHANNEL4);
       dma_set_peripheral_address(DMA1, DMA_CHANNEL4, (uint32_t)&USART1_TDR); //(uint32_t) USART1_TDR);
       dma_set_memory_address(DMA1, DMA_CHANNEL4, (uint32_t) txbuf);
@@ -138,9 +176,13 @@ RT(
       dma_set_priority(DMA1, DMA_CHANNEL4, DMA_CCR_PL_HIGH);
       dma_disable_peripheral_increment_mode(DMA1, DMA_CHANNEL4);
       
+      // tx en = 1
       gpio_set(GPIOB, GPIO7);
+      
+      // start tx dma
       dma_enable_channel(DMA1, DMA_CHANNEL4);
       usart_enable_tx_dma(USART1);
+      
       send = 1;
    }
 
@@ -150,16 +192,7 @@ RT(
             // tx en = 0
             gpio_clear(GPIOB, GPIO7);
             
-            PIN(b0) = rxbuf[0];
-            PIN(b1) = rxbuf[1];
-            PIN(b2) = rxbuf[2];
-            PIN(b3) = rxbuf[3];
-            PIN(b4) = rxbuf[4];
-            PIN(b5) = rxbuf[5];
-            PIN(b6) = rxbuf[6];
-            PIN(b7) = rxbuf[7];
-            PIN(b8) = rxbuf[8];
-            PIN(todo) = DMA1_CNDTR3;
+            
          }
       }
    }
