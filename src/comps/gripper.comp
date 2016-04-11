@@ -1,6 +1,20 @@
 HAL_COMP(gripper);
 
-HAL_PIN(step) = 15;
+// inputs
+HAL_PIN(reset) = 1.0;
+HAL_PIN(state) = 0.0;
+HAL_PIN(pos_cmd) = 0.0;
+HAL_PIN(max_force) = 0.0;
+HAL_PIN(max_speed) = 0.0;
+
+// outputs
+HAL_PIN(pos_fb) = 0.0;
+HAL_PIN(grip_force) = 0.0;
+HAL_PIN(left_finger_force) = 0.0;
+HAL_PIN(right_finger_force) = 0.0;
+
+
+
 HAL_PIN(b0) = 0;
 HAL_PIN(b1) = 0;
 HAL_PIN(b2) = 0;
@@ -23,12 +37,41 @@ HAL_PIN(b18) = 0;
 HAL_PIN(b19) = 0;
 HAL_PIN(b20) = 0;
 
-HAL_PIN(todo) = 0;
+HAL_PIN(todo) = 10;
 
-MEM(uint8_t txbuf[16]);
-MEM(uint8_t rxbuf[32]);
-MEM(uint8_t txsize) = 0;
-MEM(uint8_t rxsize) = 7;
+
+#pragma pack(1)
+MEM(struct {
+   uint8_t slave_id;
+   uint8_t function_code;
+   uint16_t read_addr;
+   uint16_t read_reg_count;
+   uint16_t write_addr;
+   uint16_t write_reg_count;
+   uint8_t write_byte_count;
+   uint8_t reg0;
+   uint8_t reg1;
+   uint8_t reg2;
+   uint8_t reg3;
+   uint8_t reg4;
+   uint8_t reg5;
+   uint16_t crc;
+} txbuf);
+
+#pragma pack(1)
+MEM(struct {
+   uint8_t request[sizeof(txbuf)];
+   uint8_t slave_id;
+   uint8_t function_code;
+   uint8_t read_byte_count;
+   uint8_t reg0;
+   uint8_t reg1;
+   uint8_t reg2;
+   uint8_t reg3;
+   uint8_t reg4;
+   uint8_t reg5;
+   uint16_t crc;
+} rxbuf);
 
 MEM(uint32_t counter) = 0;
 MEM(uint32_t send) = 0;
@@ -36,7 +79,12 @@ MEM(uint32_t send) = 0;
 
 
 #define GRIPPER_MODBUS_ADDR 0x09
-#define GRIPPER_MODBUS_READ 0x03
+#define MODBUS_READ_WRITE 0x17
+#define GRIPPER_FIRST_OUTPUT_REGISTER 0xD007
+#define GRIPPER_FIRST_INPUT_REGISTER 0xE803
+#define GRIPPER_INPUT_REGISTER_COUNT 0x0300
+#define GRIPPER_OUTPUT_REGISTER_COUNT 0x0300
+
 
 
 RT_INIT(
@@ -45,24 +93,14 @@ RT_INIT(
    /* Enable clocks for GPIOB, USART1 and USART1. */
    rcc_periph_clock_enable(RCC_GPIOB);
    rcc_periph_clock_enable(RCC_USART1);
-   // rcc_periph_clock_enable(RCC_USART1);
    
    // tx1 en PB7
    gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO7);
-   // tx3 en PB11
-   // gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO11);
-   // tx3 en = 0
-   // gpio_clear(GPIOB, GPIO11);
 
    /* Setup GPIO pin GPIO_USART1_TX/GPIO6 on GPIO port B for transmit. */
    gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO6);
    gpio_set_output_options(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, GPIO6);
    gpio_set_af(GPIOB, GPIO_AF7, GPIO6);
-   
-   /* Setup GPIO pin GPIO_USART1_TX/GPIO10 on GPIO port B for transmit. */
-   // gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO10);
-   // gpio_set_af(GPIOB, GPIO_AF7, GPIO10);
-
 
    /* Setup USART1 parameters. */
    usart_set_baudrate(USART1, 115200);
@@ -72,41 +110,79 @@ RT_INIT(
    usart_set_parity(USART1, USART_PARITY_NONE);
    usart_set_flow_control(USART1, USART_FLOWCONTROL_NONE);
    
-   // /* Setup USART1 parameters. */
-   // usart_set_baudrate(USART1, 115200);
-   // usart_set_databits(USART1, 8);
-   // usart_set_stopbits(USART1, USART_STOPBITS_1);
-   // usart_set_mode(USART1, USART_MODE_TX_RX);
-   // usart_set_parity(USART1, USART_PARITY_NONE);
-   // usart_set_flow_control(USART1, USART_FLOWCONTROL_NONE);
-   
    // single wire half duplex
 	reg32 = USART_CR3(USART1);
 	reg32 = reg32  | USART_CR3_HDSEL;
 	USART_CR3(USART1) = reg32;
-   
-   // single wire half duplex
-	// reg32 = USART_CR3(USART1);
-	// reg32 = reg32  | USART_CR3_HDSEL;
-	// USART_CR3(USART1) = reg32;
-   
+      
    /* Finally enable the USART. */
    usart_enable(USART1);
    
-   /* Finally enable the USART. */
-   // usart_enable(USART1);
-   
    rcc_periph_clock_enable(RCC_DMA1);
 
-   txbuf[txsize++] = GRIPPER_MODBUS_ADDR;
-   txbuf[txsize++] = GRIPPER_MODBUS_READ;
-   txbuf[txsize++] = 0x07;
-   txbuf[txsize++] = 0xD0;
-   txbuf[txsize++] = 0x00;
-   txbuf[txsize++] = 0x02;
-   txbuf[txsize++] = 0xC5;
-   txbuf[txsize++] = 0xCE;
+   txbuf.slave_id = GRIPPER_MODBUS_ADDR;
+   txbuf.function_code = MODBUS_READ_WRITE;
+   txbuf.read_addr = GRIPPER_FIRST_OUTPUT_REGISTER;
+   txbuf.read_reg_count = GRIPPER_OUTPUT_REGISTER_COUNT;
+   txbuf.write_addr = GRIPPER_FIRST_INPUT_REGISTER;
+   txbuf.write_reg_count = GRIPPER_INPUT_REGISTER_COUNT;
+   txbuf.write_byte_count = (GRIPPER_INPUT_REGISTER_COUNT >> 8) * 2;
+   
+   txbuf.crc = 0x00FF;
+   
 );
+
+uint32_t crc16(uint32_t crc, uint8_t data){
+   const uint32_t poly16 = 0xA001;
+   uint32_t lsb;
+   
+   crc = ((crc^data) | 0xFF00) & (crc | 0x00FF);
+   for (uint32_t i = 0; i < 8; i++){
+      lsb = (crc & 0x0001);
+      crc /= 2;
+      if(lsb){
+         crc ^= poly16;
+      }
+   }
+   return(crc); 
+}
+
+void rs485_rw(uint8_t *txbuf, uint32_t txsize, uint8_t *rxbuf, uint32_t rxsize){
+   // rx dma config
+   usart_disable_rx_dma(USART1);
+   dma_channel_reset(DMA1, DMA_CHANNEL5);
+   dma_set_peripheral_address(DMA1, DMA_CHANNEL5, (uint32_t)&USART1_RDR);
+   dma_set_memory_address(DMA1, DMA_CHANNEL5, (uint32_t)rxbuf);
+   dma_set_number_of_data(DMA1, DMA_CHANNEL5, rxsize);
+   dma_set_read_from_peripheral(DMA1, DMA_CHANNEL5);
+   dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL5);
+   dma_set_peripheral_size(DMA1, DMA_CHANNEL5, DMA_CCR_PSIZE_8BIT);
+   dma_set_memory_size(DMA1, DMA_CHANNEL5, DMA_CCR_MSIZE_8BIT);
+   dma_set_priority(DMA1, DMA_CHANNEL5, DMA_CCR_PL_HIGH);
+   dma_disable_peripheral_increment_mode(DMA1, DMA_CHANNEL5);
+   
+   // start rx dma
+   dma_enable_channel(DMA1, DMA_CHANNEL5);
+   usart_enable_rx_dma(USART1);
+   
+   // tx dma config
+   usart_disable_tx_dma(USART1);
+   dma_channel_reset(DMA1, DMA_CHANNEL4);
+   dma_set_peripheral_address(DMA1, DMA_CHANNEL4, (uint32_t)&USART1_TDR); //(uint32_t) USART1_TDR);
+   dma_set_memory_address(DMA1, DMA_CHANNEL4, (uint32_t)txbuf);
+   dma_set_number_of_data(DMA1, DMA_CHANNEL4, txsize);
+   dma_set_read_from_memory(DMA1, DMA_CHANNEL4);
+   dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL4);
+   dma_set_peripheral_size(DMA1, DMA_CHANNEL4, DMA_CCR_MSIZE_8BIT);
+   dma_set_memory_size(DMA1, DMA_CHANNEL4, DMA_CCR_MSIZE_8BIT);
+   dma_set_priority(DMA1, DMA_CHANNEL4, DMA_CCR_PL_HIGH);
+   dma_disable_peripheral_increment_mode(DMA1, DMA_CHANNEL4);
+   
+   // start tx dma
+   dma_enable_channel(DMA1, DMA_CHANNEL4);
+   usart_enable_tx_dma(USART1);
+}
+
 
 
 
@@ -118,82 +194,52 @@ RT_INIT(
 
 
 RT(
+   
+   
+   
    counter++;
-   counter %= 25;
+   counter %= 40;
    if(counter == 0){
-      PIN(b0) = rxbuf[0];
-      PIN(b1) = rxbuf[1];
-      PIN(b2) = rxbuf[2];
-      PIN(b3) = rxbuf[3];
-      PIN(b4) = rxbuf[4];
-      PIN(b5) = rxbuf[5];
-      PIN(b6) = rxbuf[6];
-      PIN(b7) = rxbuf[7];
-      PIN(b8) = rxbuf[8];
-      PIN(b9) = rxbuf[9];
-      PIN(b10) = rxbuf[10];
-      PIN(b11) = rxbuf[11];
-      PIN(b12) = rxbuf[12];
-      PIN(b13) = rxbuf[13];
-      PIN(b14) = rxbuf[14];
-      PIN(b15) = rxbuf[15];
-      PIN(b16) = rxbuf[16];
-      PIN(b17) = rxbuf[17];
-      PIN(b18) = rxbuf[18];
-      PIN(b19) = rxbuf[19];
-      PIN(b20) = rxbuf[20];
+      txbuf.crc = 0xFFFF;
+      if(PIN(reset) > 0.0){
+         txbuf.reg0 = 0x00;
+         txbuf.reg3 = 0x00;
+         txbuf.reg4 = 0x00;
+         txbuf.reg5 = 0x00;
+         
+         PIN(state) = 0.0;
+         PIN(pos_fb) = 0.0;
+         PIN(grip_force) = 0.0;
+      }
+      else{
+         txbuf.reg0 = 0x01 + 0x08; // activate + GTO
+         txbuf.reg3 = PIN(pos_cmd);
+         txbuf.reg4 = PIN(max_speed);
+         txbuf.reg5 = PIN(max_force);
+         
+         PIN(state) = rxbuf.reg0 - (rxbuf.reg2 << 8);
+         PIN(pos_fb) = rxbuf.reg4;
+         PIN(grip_force) = rxbuf.reg5;
+      }
       
       
-      PIN(todo) = DMA1_CNDTR5;
+      for(int i = 0; i < sizeof(txbuf) - sizeof(txbuf.crc); i++){
+         txbuf.crc = crc16(txbuf.crc, ((uint8_t *)&txbuf)[i]);
+      }
 
-      // rx dma config
-      usart_disable_rx_dma(USART1);
-      dma_channel_reset(DMA1, DMA_CHANNEL5);
-      dma_set_peripheral_address(DMA1, DMA_CHANNEL5, (uint32_t)&USART1_RDR);
-      dma_set_memory_address(DMA1, DMA_CHANNEL5, (uint32_t)rxbuf);
-      dma_set_number_of_data(DMA1, DMA_CHANNEL5, sizeof(rxbuf));
-      dma_set_read_from_peripheral(DMA1, DMA_CHANNEL5);
-      dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL5);
-      dma_set_peripheral_size(DMA1, DMA_CHANNEL5, DMA_CCR_PSIZE_8BIT);
-      dma_set_memory_size(DMA1, DMA_CHANNEL5, DMA_CCR_MSIZE_8BIT);
-      dma_set_priority(DMA1, DMA_CHANNEL5, DMA_CCR_PL_HIGH);
-      dma_disable_peripheral_increment_mode(DMA1, DMA_CHANNEL5);
-      
-      // start rx dma
-      dma_enable_channel(DMA1, DMA_CHANNEL5);
-      usart_enable_rx_dma(USART1);
-      
-      // tx dma config
-      usart_disable_tx_dma(USART1);
-      dma_channel_reset(DMA1, DMA_CHANNEL4);
-      dma_set_peripheral_address(DMA1, DMA_CHANNEL4, (uint32_t)&USART1_TDR); //(uint32_t) USART1_TDR);
-      dma_set_memory_address(DMA1, DMA_CHANNEL4, (uint32_t) txbuf);
-      dma_set_number_of_data(DMA1, DMA_CHANNEL4, txsize);
-      dma_set_read_from_memory(DMA1, DMA_CHANNEL4);
-      dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL4);
-      dma_set_peripheral_size(DMA1, DMA_CHANNEL4, DMA_CCR_MSIZE_8BIT);
-      dma_set_memory_size(DMA1, DMA_CHANNEL4, DMA_CCR_MSIZE_8BIT);
-      dma_set_priority(DMA1, DMA_CHANNEL4, DMA_CCR_PL_HIGH);
-      dma_disable_peripheral_increment_mode(DMA1, DMA_CHANNEL4);
-      
       // tx en = 1
       gpio_set(GPIOB, GPIO7);
-      
-      // start tx dma
-      dma_enable_channel(DMA1, DMA_CHANNEL4);
-      usart_enable_tx_dma(USART1);
-      
-      send = 1;
+
+      // send request
+      rs485_rw((uint8_t *)&txbuf, sizeof(txbuf), (uint8_t *)&rxbuf, sizeof(rxbuf));
    }
 
-   if(send == 1){
-      if(dma_get_interrupt_flag(DMA1, DMA_CHANNEL4, DMA_TCIF )){
-         if(usart_get_flag(USART1, USART_SR_TC)){
-            // tx en = 0
-            gpio_clear(GPIOB, GPIO7);
-            
-            
-         }
+   if(dma_get_interrupt_flag(DMA1, DMA_CHANNEL4, DMA_TCIF )){
+      if(usart_get_flag(USART1, USART_SR_TC)){
+         // tx en = 0
+         gpio_clear(GPIOB, GPIO7);
+         
+         
       }
    }
 );
