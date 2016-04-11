@@ -266,7 +266,7 @@ int cdcacm_getline(char *ptr, int len){
    while(rb_getc(&rx_buf, &c) && ret < len){
       ret++;
       *ptr++ = c;
-      if(c == '\r'){
+      if(c == '\n'){
          *--ptr = '\0';
          return ret;
       }
