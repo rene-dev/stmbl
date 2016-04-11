@@ -246,9 +246,11 @@ int main(void)
    // 
    
    #include "comps/sim.comp"
-   //#include "comps/imu.comp"
+   #include "comps/imu.comp"
    #include "comps/gripper.comp"
-   //#include "comps/io.comp"
+   #include "comps/io.comp"
+   #include "comps/ft.comp"
+   #include "comps/led.comp"
    
    #include "comps/term.comp"
    // 
@@ -274,9 +276,9 @@ int main(void)
    
    set_hal_pin("sim0.rt_prio", 1.0);
    set_hal_pin("term0.rt_prio", 2.0);
-   set_hal_pin("imu0.rt_prio", 1.0);
+   //set_hal_pin("imu0.rt_prio", 1.0);
    set_hal_pin("gripper0.rt_prio", 1.0);
-   set_hal_pin("io0.rt_prio", 1.0);
+   //set_hal_pin("io0.rt_prio", 1.0);
    
    
    if(hal.pin_errors + hal.comp_errors == 0){

@@ -1,0 +1,16 @@
+HAL_COMP(ft);
+
+HAL_PIN(reset) = 0.0;
+HAL_PIN(state) = 0.0;
+HAL_PIN(a) = 0.0;
+HAL_PIN(b) = 0.0;
+HAL_PIN(c) = 0.0;
+HAL_PIN(x) = 0.0;
+HAL_PIN(y) = 0.0;
+HAL_PIN(z) = 0.0;
+
+
+RT(
+);
+
+ENDCOMP;

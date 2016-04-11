@@ -1,41 +1,21 @@
 HAL_COMP(io);
 
-HAL_PIN(fan) = 0.0;
-HAL_PIN(red) = 0.0;
-HAL_PIN(green) = 0.0;
-HAL_PIN(brake) = 0.0;
+HAL_PIN(out0) = 0.0;
+HAL_PIN(out1) = 0.0;
+HAL_PIN(out2) = 0.0;
+HAL_PIN(ain0) = 0.0;
+HAL_PIN(ain1) = 0.0;
+HAL_PIN(ain2) = 0.0;
+HAL_PIN(ain3) = 0.0;
+HAL_PIN(dc5v) = 0.0;
+HAL_PIN(dc24v) = 0.0;
+HAL_PIN(dc48v) = 0.0;
+
 
 INIT(
-   //fan
-   gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO8);
-   //brake
-   gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO9);
-   //red led
-   gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO10);
-   //green led
-   gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO11);
 );
 
-NRT(
-   if(PIN(fan) > 0)
-      gpio_set(GPIOC, GPIO8);
-   else
-      gpio_clear(GPIOC, GPIO8);
-
-   if(PIN(brake) > 0)
-      gpio_set(GPIOC, GPIO9);
-   else
-      gpio_clear(GPIOC, GPIO9);
-
-   if(PIN(red) > 0)
-      gpio_set(GPIOC, GPIO10);
-   else
-      gpio_clear(GPIOC, GPIO10);
-
-   if(PIN(green) > 0)
-      gpio_set(GPIOC, GPIO11);
-   else
-      gpio_clear(GPIOC, GPIO11);
+RT(
 );
 
 ENDCOMP;

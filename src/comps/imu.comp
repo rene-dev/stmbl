@@ -1,0 +1,60 @@
+HAL_COMP(imu);
+
+HAL_PIN(reset) = 0.0;
+HAL_PIN(state) = 0.0;
+HAL_PIN(a) = 0.0;
+HAL_PIN(b) = 0.0;
+HAL_PIN(c) = 0.0;
+HAL_PIN(da) = 0.0;
+HAL_PIN(db) = 0.0;
+HAL_PIN(dc) = 0.0;
+
+
+// RT_INIT(
+// 
+//    rcc_periph_clock_enable(RCC_I2C1);
+//    rcc_periph_clock_enable(RCC_GPIOB);
+//    rcc_set_i2c_clock_sysclk(I2C1);
+// 
+//    i2c_reset(I2C1);
+//    /* Setup GPIO pin GPIO_USART2_TX/GPIO9 on GPIO port A for transmit. */
+//    gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO8 | GPIO9);
+//    gpio_set_af(GPIOB, GPIO_AF4, GPIO8 | GPIO9);
+//    i2c_peripheral_disable(I2C1);
+//    //configure ANFOFF DNF[3:0] in CR1
+//    i2c_enable_analog_filter(I2C1);
+//    i2c_set_digital_filter(I2C1, I2C_CR1_DNF_DISABLED);
+//    //Configure PRESC[3:0] SDADEL[3:0] SCLDEL[3:0] SCLH[7:0] SCLL[7:0]
+//    // in TIMINGR
+//    i2c_set_clock_frequency(I2C1, I2C_CR2_FREQ_32MHZ);
+// 
+//    i2c_set_prescaler(I2C1, 10);
+//    i2c_set_scl_low_period(I2C1, 0x13);
+//    i2c_set_scl_high_period(I2C1, 0xF);
+//    i2c_set_data_hold_time(I2C1, 0x2);
+//    i2c_set_data_setup_time(I2C1, 0x4);
+// 
+//    //configure No-Stretch CR1 (only relevant in slave mode)
+//    i2c_enable_stretching(I2C1);
+//    //addressing mode
+//    i2c_set_7bit_addr_mode(I2C1);
+//    i2c_peripheral_enable(I2C1);
+// 
+//    
+//    
+// );
+// 
+// #define I2C_ADDR            0xD0
+// #define WHO_AM_I            0x75
+// 
+// RT(
+//    uint8_t who_am_i;
+//    //read_i2c(I2C1, I2C_ADDR, WHO_AM_I, 1, &who_am_i);
+//    i2c_send_start(I2C1);
+//    //i2c_send_data(I2C1, I2C_ADDR);
+//    //i2c_send_stop(I2C1);
+//    
+//    PIN(who) = who_am_i;
+// );
+
+ENDCOMP;

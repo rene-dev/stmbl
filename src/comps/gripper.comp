@@ -13,33 +13,6 @@ HAL_PIN(grip_force) = 0.0;
 HAL_PIN(left_finger_force) = 0.0;
 HAL_PIN(right_finger_force) = 0.0;
 
-
-
-HAL_PIN(b0) = 0;
-HAL_PIN(b1) = 0;
-HAL_PIN(b2) = 0;
-HAL_PIN(b3) = 0;
-HAL_PIN(b4) = 0;
-HAL_PIN(b5) = 0;
-HAL_PIN(b6) = 0;
-HAL_PIN(b7) = 0;
-HAL_PIN(b8) = 0;
-HAL_PIN(b9) = 0;
-HAL_PIN(b10) = 0;
-HAL_PIN(b11) = 0;
-HAL_PIN(b12) = 0;
-HAL_PIN(b13) = 0;
-HAL_PIN(b14) = 0;
-HAL_PIN(b15) = 0;
-HAL_PIN(b16) = 0;
-HAL_PIN(b17) = 0;
-HAL_PIN(b18) = 0;
-HAL_PIN(b19) = 0;
-HAL_PIN(b20) = 0;
-
-HAL_PIN(todo) = 10;
-
-
 #pragma pack(1)
 MEM(struct {
    uint8_t slave_id;

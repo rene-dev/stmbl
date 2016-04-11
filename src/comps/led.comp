@@ -1,0 +1,10 @@
+HAL_COMP(led);
+
+HAL_PIN(r) = 0.0;
+HAL_PIN(g) = 0.0;
+HAL_PIN(b) = 0.0;
+
+RT(
+);
+
+ENDCOMP;
