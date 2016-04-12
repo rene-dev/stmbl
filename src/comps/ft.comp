@@ -9,8 +9,82 @@ HAL_PIN(x) = 0.0;
 HAL_PIN(y) = 0.0;
 HAL_PIN(z) = 0.0;
 
+MEM(uint8_t rxbuf[32]);
+MEM(uint32_t read) = 0;
+
+RT_INIT(
+   uint32_t reg32;
+
+   /* Enable clocks for GPIOB, USART1 and USART1. */
+   rcc_periph_clock_enable(RCC_GPIOB);
+   rcc_periph_clock_enable(RCC_USART3);
+   
+   // tx1 en PB11
+   gpio_mode_setup(GPIOB, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO11);
+
+   /* Setup GPIO pin GPIO_USART3_TX/GPIO10 on GPIO port B for transmit. */
+   gpio_mode_setup(GPIOB, GPIO_MODE_AF, GPIO_PUPD_PULLUP, GPIO10);
+   gpio_set_output_options(GPIOB, GPIO_OTYPE_PP, GPIO_OSPEED_2MHZ, GPIO10);
+   gpio_set_af(GPIOB, GPIO_AF7, GPIO10);
+
+   /* Setup USART parameters. */
+   usart_set_baudrate(USART3, 19200);
+   usart_set_databits(USART3, 8);
+   usart_set_stopbits(USART3, USART_STOPBITS_1);
+   usart_set_mode(USART3, USART_MODE_TX_RX);
+   usart_set_parity(USART3, USART_PARITY_NONE);
+   usart_set_flow_control(USART3, USART_FLOWCONTROL_NONE);
+   
+   // single wire half duplex
+	reg32 = USART_CR3(USART3);
+	reg32 = reg32  | USART_CR3_HDSEL;
+	USART_CR3(USART3) = reg32;
+      
+   /* Finally enable the USART. */
+   usart_enable(USART3);
+   
+   rcc_periph_clock_enable(RCC_DMA1);
+
+   // rx dma config
+   usart_disable_rx_dma(USART3);
+   dma_channel_reset(DMA1, DMA_CHANNEL3);
+   dma_set_peripheral_address(DMA1, DMA_CHANNEL3, (uint32_t)&USART3_RDR);
+   dma_set_memory_address(DMA1, DMA_CHANNEL3, (uint32_t)rxbuf);
+   dma_set_number_of_data(DMA1, DMA_CHANNEL3, sizeof(rxbuf));
+   dma_set_read_from_peripheral(DMA1, DMA_CHANNEL3);
+   dma_enable_memory_increment_mode(DMA1, DMA_CHANNEL3);
+   dma_set_peripheral_size(DMA1, DMA_CHANNEL3, DMA_CCR_PSIZE_8BIT);
+   dma_set_memory_size(DMA1, DMA_CHANNEL3, DMA_CCR_MSIZE_8BIT);
+   dma_set_priority(DMA1, DMA_CHANNEL3, DMA_CCR_PL_HIGH);
+   dma_disable_peripheral_increment_mode(DMA1, DMA_CHANNEL3);
+   dma_enable_circular_mode(DMA1, DMA_CHANNEL3);
+   
+   // start rx dma
+   dma_enable_channel(DMA1, DMA_CHANNEL3);
+   usart_enable_rx_dma(USART3);
+);
+
+uint32_t crc16(uint32_t crc, uint8_t data){
+   const uint32_t poly16 = 0xA001;
+   uint32_t lsb;
+   
+   crc = ((crc^data) | 0xFF00) & (crc | 0x00FF);
+   for (uint32_t i = 0; i < 8; i++){
+      lsb = (crc & 0x0001);
+      crc /= 2;
+      if(lsb){
+         crc ^= poly16;
+      }
+   }
+   return(crc); 
+}
 
 RT(
+   uint32_t write = sizeof(rxbuf) - DMA_CNDTR(dma, channel);
+   uint32_t ready = (write + sizeof(rxbuf) - read) % sizeof(rxbuf);
+   if(ready){
+      
+   }
 );
 
 ENDCOMP;

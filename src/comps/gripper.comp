@@ -100,9 +100,6 @@ RT_INIT(
    txbuf.write_addr = GRIPPER_FIRST_INPUT_REGISTER;
    txbuf.write_reg_count = GRIPPER_INPUT_REGISTER_COUNT;
    txbuf.write_byte_count = (GRIPPER_INPUT_REGISTER_COUNT >> 8) * 2;
-   
-   txbuf.crc = 0x00FF;
-   
 );
 
 uint32_t crc16(uint32_t crc, uint8_t data){
