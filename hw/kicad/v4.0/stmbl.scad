@@ -366,7 +366,10 @@ module spacer(l){
 
 module m3(l){
   translate([0, 0, -l]) color("darkgrey") cylinder(r = 1.5, h = l);
-  color("darkgrey") cylinder(r = 2.5, h = 2);
+  difference(){
+    color("darkgrey") cylinder(r = 2.5, h = 2);
+    color("darkgrey") translate([0, 0, 0.5]) cylinder($fn = 6, r = 1.3, h = 1.6);
+  }
 }
 
 module io(){
