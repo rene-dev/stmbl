@@ -188,7 +188,7 @@ void ServoFrame::OnTimer(wxTimerEvent& evt){
 	if(connected){
         if(!txqueue.empty()){
             int ret1 = sp_nonblocking_write(port, txqueue.front().c_str(), txqueue.front().length());
-            int ret2 = sp_nonblocking_write(port, "\r", 1);
+            int ret2 = sp_nonblocking_write(port, "\n", 1);
             if(ret1 != txqueue.front().length() || ret2!=1){
                 wxMessageBox( wxT("Error while sending"), wxT("Error"), wxICON_EXCLAMATION);
                 disconnect();

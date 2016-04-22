@@ -42,7 +42,7 @@ uint16_t cr_count = 0;
 static uint16_t VCP_DataRx(uint8_t *buf, uint32_t len)
 {
     for (uint32_t i = 0; i < len; i++) {
-    	if (buf[i] == 0x0D)
+    	if (buf[i] == 0x0A)
     	    cr_count++;
         rb_putc(&usb_rx_buf, buf[i]);
     }
@@ -71,7 +71,7 @@ uint16_t USB_VCP_get_string(char *ptr)
             *(ptr + akt_pos) = wert;
             akt_pos++;
         }
-    } while ((usb_rx_buf.len != 0) && (wert != 0x0D));
+    } while ((usb_rx_buf.len != 0) && (wert != 0x0A));
 
     // Stringende anhängen
     *(ptr + akt_pos) = 0x00;
@@ -227,4 +227,3 @@ uint8_t USB_CDC_is_connected(void)
 {
     return usb_cdc_status;
 }
-
