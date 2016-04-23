@@ -218,6 +218,7 @@ int update_fb(){
          break;
       case RES:
          link_hal_pins("res0.pos", "rev1.in");
+         link_hal_pins("conf0.fb_polecount", "res0.poles");
          link_hal_pins("adc0.sin", "res0.sin");
          link_hal_pins("adc0.cos", "res0.cos");
          link_hal_pins("adc0.quad", "res0.quad");
