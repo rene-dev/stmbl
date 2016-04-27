@@ -95,24 +95,31 @@ RT_INIT(
   request_buf[pos++] = tx_high;
   request_buf[pos++] = tx_high;
   request_buf[pos++] = tx_high;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_high;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_high;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_low;
-  request_buf[pos++] = tx_high;
-  request_buf[pos++] = tx_high;
+  
+  request_buf[pos++] = tx_low;//start bit
+  
+  request_buf[pos++] = tx_low; //sync
+  request_buf[pos++] = tx_high;//sync
+  request_buf[pos++] = tx_low; //sync
+  
+  request_buf[pos++] = tx_low; //frame
+  request_buf[pos++] = tx_low; //frame
+  //encoder address
+  request_buf[pos++] = tx_low; //EA
+  request_buf[pos++] = tx_low; //EA
+  request_buf[pos++] = tx_low; //EA
+  //command code = CDF1 = Absolute lower 24-bit data request
+  request_buf[pos++] = tx_high;//CC
+  request_buf[pos++] = tx_low; //CC
+  request_buf[pos++] = tx_low; //CC
+  request_buf[pos++] = tx_low; //CC
+  request_buf[pos++] = tx_low; //CC
+  //crc of 10 bit, frame code to command code
+  request_buf[pos++] = tx_low; //crc
+  request_buf[pos++] = tx_low; //crc
+  request_buf[pos++] = tx_high;//crc
+  
+  request_buf[pos++] = tx_high;//stop bit
   request_buf[pos++] = tx_high;
   request_buf[pos++] = tx_high | txen_low;
   
