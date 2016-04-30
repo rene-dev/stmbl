@@ -23,20 +23,20 @@
 #pragma once
 
 #define MAX_HAL_PINS 600
-#define MAX_HPNAME 32
+#define HAL_NAME_LENGTH 32
 #define MAX_COMP_TYPES 64
 #define MAX_COMPS 64
 
-typedef char HPNAME[MAX_HPNAME];
+typedef char hal_name_t[HAL_NAME_LENGTH];
 
-struct hal_pin{
-  HPNAME name;
+typedef struct hal_pin_t{
+  hal_name_t name;
   volatile float value;
-  struct hal_pin* source;
-};
+  struct hal_pin_t* source;
+} hal_pin_t;
 
-struct hal_comp{
-   HPNAME name;
+typedef struct{
+   hal_name_t name;
    void (*rt_init)();
    void (*rt_deinit)();
    void (*nrt_init)();
@@ -46,16 +46,16 @@ struct hal_comp{
    int hal_pin_start_index;
    int hal_pin_count;
    uint32_t instance;
-};
+} hal_comp_t;
 
-struct hal_struct{
-  HPNAME comp_types[MAX_COMP_TYPES];
+typedef struct{
+  hal_name_t comp_types[MAX_COMP_TYPES];
   int comp_types_counter[MAX_COMP_TYPES];
   int comp_type_count;
   int comp_type;
-  HPNAME tmp;
+  hal_name_t tmp;
 
-  struct hal_comp* hal_comps[MAX_COMPS];
+  hal_comp_t* hal_comps[MAX_COMPS];
   int comp_count;
 
   void (*rt_init[MAX_COMPS])();
@@ -76,7 +76,7 @@ struct hal_struct{
   void (*frt[MAX_COMPS])(float period);
   int frt_func_count;
 
-  struct hal_pin* hal_pins[MAX_HAL_PINS];
+  hal_pin_t* hal_pins[MAX_HAL_PINS];
   int hal_pin_count;
 
   volatile enum{
@@ -110,61 +110,63 @@ struct hal_struct{
   uint32_t set_errors;
   uint32_t get_errors;
   uint32_t comp_errors;
-  char error_name[MAX_HPNAME];
-} hal;
+  char error_name[HAL_NAME_LENGTH];
+} hal_struct_t;
 
-void init_hal();
+hal_struct_t hal;
+
+void hal_init();
 
 void hal_comp_init();
 void hal_run_rt(float period);
 void hal_run_nrt(float period);
 void hal_run_frt(float period);
 
-void start_hal();
+void hal_start();
 
-void stop_hal();
+void hal_stop();
 
-int start_rt();
+int hal_start_rt();
 
-int start_frt();
+int hal_start_frt();
 
-void stop_rt();
+void hal_stop_rt();
 
-void stop_frt();
+void hal_stop_frt();
 
-void init_hal_pin(HPNAME name, struct hal_pin* pin, float value);
+void hal_init_pin(hal_name_t name, hal_pin_t* pin, float value);
 
-int register_hal_pin(struct hal_pin* pin);
+int hal_register_pin(hal_pin_t* pin);
 
-int set_comp_type(HPNAME name);
+int hal_set_comp_type(hal_name_t name);
 
-int set_hal_pin(HPNAME name, float value);
+int hal_set_pin(hal_name_t name, float value);
 
-int is_hal_pin(HPNAME name);
+int hal_is_pin(hal_name_t name);
 
-float get_hal_pin(HPNAME name);
+float hal_get_pin(hal_name_t name);
 
-struct hal_pin map_hal_pin(HPNAME name);
+hal_pin_t hal_map_pin(hal_name_t name);
 
-void write_hal_pin(struct hal_pin* pin, float value);
+void hal_write_pin(hal_pin_t* pin, float value);
 
-float read_hal_pin(struct hal_pin* pin);
+float hal_read_pin(hal_pin_t* pin);
 
-struct hal_pin* find_hal_pin(HPNAME name);
+struct hal_pin_t* hal_find_pin(hal_name_t name);
 
-int link_hal_pins(HPNAME source, HPNAME sink);
+int hal_link_pins(hal_name_t source, hal_name_t sink);
 
-void add_comp(struct hal_comp* comp);
+void hal_add_comp(hal_comp_t* comp);
 
-extern void enable_rt();
-extern void enable_frt();
-extern void disable_rt();
-extern void disable_frt();
+extern void hal_enable_rt();
+extern void hal_enable_frt();
+extern void hal_disable_rt();
+extern void hal_disable_frt();
 
 #define HAL_COMP(type)                  \
 {                                   \
-  static struct hal_comp self; \
-  strncpy(self.name, #type, MAX_HPNAME); \
+  static hal_comp_t self; \
+  strncpy(self.name, #type, HAL_NAME_LENGTH); \
   self.nrt_init = 0; \
   self.rt_init = 0; \
   self.rt_deinit = 0; \
@@ -173,19 +175,19 @@ extern void disable_frt();
   self.nrt = 0; \
   self.hal_pin_start_index = hal.hal_pin_count; \
   self.hal_pin_count = 0; \
-  set_comp_type(self.name);             \
+  hal_set_comp_type(self.name);             \
   HAL_PIN(rt_calc_time) = 0.0; \
   HAL_PIN(frt_calc_time) = 0.0; \
   HAL_PIN(rt_prio) = -1.0; \
   HAL_PIN(frt_prio) = -1.0;
 
 #define HAL_PIN(name)               \
-  static struct hal_pin name##_hal_pin;       \
-  init_hal_pin(#name, &name##_hal_pin, 0.0);  \
+  static hal_pin_t name##_hal_pin;       \
+  hal_init_pin(#name, &name##_hal_pin, 0.0);  \
   (name##_hal_pin.value)
 
 #define GLOBAL_HAL_PIN(name)               \
-  volatile struct hal_pin name##_hal_pin;
+  volatile hal_pin_t name##_hal_pin;
 
 #define MEM(var) static var
 
@@ -281,7 +283,7 @@ jump_label_pointer = jump_label_pointer_old;
 
 #define ENDCOMP \
   self.hal_pin_count = hal.hal_pin_count - self.hal_pin_start_index; \
-  add_comp(&self); \
+  hal_add_comp(&self); \
 }
 
 #define RISING_EDGE(sig)\

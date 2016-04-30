@@ -28,7 +28,7 @@ char* itoa(int i){
   return(hal.tmp);
 }
 
-void init_hal(){
+void hal_init(){
   hal.comp_type_count = 0;
   for(int i = 0; i < MAX_COMP_TYPES; i++){
     hal.comp_types_counter[i] = 0;
@@ -86,7 +86,7 @@ void hal_run_frt(float period){
    hal.active_frt_func = -1;
 }
 
-int start_rt(){
+int hal_start_rt(){
    if(hal.rt_state == RT_STOP && hal.hal_state == HAL_OK){
       hal.active_rt_func = -1;
       hal.rt_state = RT_SLEEP;
@@ -95,7 +95,7 @@ int start_rt(){
    return(0);
 }
 
-void start_hal(){
+void hal_start(){
    float min = INFINITY;
    int min_index = -1;
    float rt_prio = 0.0;
@@ -164,26 +164,26 @@ void start_hal(){
       hal.rt_init[i]();
    }
 
-   start_rt();
+   hal_start_rt();
 
    if(hal.frt_func_count > 0){
-      start_frt();
-      enable_frt();
+      hal_start_frt();
+      hal_enable_frt();
    }
-   enable_rt();
+   hal_enable_rt();
 }
 
-void stop_hal(){
-   stop_frt();
-   stop_rt();
-   disable_frt();
-   disable_rt();
+void hal_stop(){
+   hal_stop_frt();
+   hal_stop_rt();
+   hal_disable_frt();
+   hal_disable_rt();
    for(; hal.rt_deinit_func_count > 0; hal.rt_deinit_func_count--){
       hal.rt_deinit[hal.rt_deinit_func_count - 1]();
    }
 }
 
-int start_frt(){
+int hal_start_frt(){
    if(hal.frt_state == FRT_STOP && hal.hal_state == HAL_OK){
       hal.active_frt_func = -1;
       hal.frt_state = FRT_SLEEP;
@@ -192,31 +192,31 @@ int start_frt(){
    return(0);
 }
 
-void stop_rt(){
+void hal_stop_rt(){
    hal.active_rt_func = -1;
    hal.rt_state = RT_STOP;
    hal.active_rt_func = -1;
    hal.rt_state = RT_STOP;
 }
 
-void stop_frt(){
+void hal_stop_frt(){
    hal.active_frt_func = -1;
    hal.frt_state = FRT_STOP;
    hal.active_frt_func = -1;
    hal.frt_state = FRT_STOP;
 }
 
-void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
-  strncpy(pin->name, hal.comp_types[hal.comp_type], MAX_HPNAME);
-  strncat(pin->name, itoa(hal.comp_types_counter[hal.comp_type]), MAX_HPNAME);
-  strncat(pin->name, ".", MAX_HPNAME);
-  strncat(pin->name, name, MAX_HPNAME);
+void hal_init_pin(hal_name_t name, hal_pin_t* pin, float value){
+  strncpy(pin->name, hal.comp_types[hal.comp_type], HAL_NAME_LENGTH);
+  strncat(pin->name, itoa(hal.comp_types_counter[hal.comp_type]), HAL_NAME_LENGTH);
+  strncat(pin->name, ".", HAL_NAME_LENGTH);
+  strncat(pin->name, name, HAL_NAME_LENGTH);
   pin->value = value;
   pin->source = pin;
-  register_hal_pin(pin);
+  hal_register_pin(pin);
 }
 
-int register_hal_pin(struct hal_pin* pin){
+int hal_register_pin(hal_pin_t* pin){
   if(hal.hal_pin_count >= MAX_HAL_PINS){
     hal.pin_errors++;
     return(0);
@@ -235,7 +235,7 @@ int register_hal_pin(struct hal_pin* pin){
   return(1);
 }
 
-int set_hal_pin(HPNAME name, float value){
+int hal_set_pin(hal_name_t name, float value){
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, name)){
       hal.hal_pins[i]->value = value;
@@ -248,7 +248,7 @@ int set_hal_pin(HPNAME name, float value){
   return(0);
 }
 
-int is_hal_pin(HPNAME name){
+int hal_is_pin(hal_name_t name){
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, name)){
       return(1);
@@ -257,7 +257,7 @@ int is_hal_pin(HPNAME name){
   return(0);
 }
 
-float get_hal_pin(HPNAME name){
+float hal_get_pin(hal_name_t name){
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, name)){
       return(hal.hal_pins[i]->source->source->value);
@@ -267,7 +267,7 @@ float get_hal_pin(HPNAME name){
   return(0.0);
 }
 
-struct hal_pin map_hal_pin(HPNAME name){
+hal_pin_t hal_map_pin(hal_name_t name){
     for(int i = 0; i < hal.hal_pin_count; i++){
       if(!strcmp(hal.hal_pins[i]->name, name)){
 		  return(*hal.hal_pins[i]);
@@ -276,16 +276,16 @@ struct hal_pin map_hal_pin(HPNAME name){
     return(*hal.hal_pins[0]);
 }
 
-void write_hal_pin(struct hal_pin* pin, float value){
+void hal_write_pin(hal_pin_t* pin, float value){
   pin->value = value;
   pin->source = pin;
 }
 
-float read_hal_pin(struct hal_pin* pin){
+float hal_read_pin(hal_pin_t* pin){
   return(pin->source->source->value);
 }
 
-struct hal_pin* find_hal_pin(HPNAME name){
+hal_pin_t* hal_find_pin(hal_name_t name){
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, name)){
       return(hal.hal_pins[i]);
@@ -294,11 +294,11 @@ struct hal_pin* find_hal_pin(HPNAME name){
   return(0);
 }
 
-int link_hal_pins(HPNAME source, HPNAME sink){
-  struct hal_pin* d;
-  struct hal_pin* s;
-  d = find_hal_pin(source);
-  s = find_hal_pin(sink);
+int hal_link_pins(hal_name_t source, hal_name_t sink){
+  hal_pin_t* d;
+  hal_pin_t* s;
+  d = hal_find_pin(source);
+  s = hal_find_pin(sink);
 
   if(d != 0 && s != 0){
     s->value = s->source->source->value;
@@ -310,7 +310,7 @@ int link_hal_pins(HPNAME source, HPNAME sink){
   return(0);
 }
 
-int set_comp_type(HPNAME name){
+int hal_set_comp_type(hal_name_t name){
   for(int i = 0; i < hal.comp_type_count; i++){
     if(!strcmp(hal.comp_types[i], name)){
       hal.comp_type = i;
@@ -319,7 +319,7 @@ int set_comp_type(HPNAME name){
   }
 
   if(hal.comp_type_count < MAX_COMP_TYPES){
-    strncpy(hal.comp_types[hal.comp_type_count], name, MAX_HPNAME);
+    strncpy(hal.comp_types[hal.comp_type_count], name, HAL_NAME_LENGTH);
     hal.comp_type = hal.comp_type_count++;
     return(0);
   }
@@ -327,7 +327,7 @@ int set_comp_type(HPNAME name){
   return(-1);
 }
 
-void add_comp(struct hal_comp* comp){
+void hal_add_comp(hal_comp_t* comp){
    if(comp != 0 && hal.comp_count < MAX_COMPS){
       hal.hal_comps[hal.comp_count++] = comp;
       comp->instance = hal.comp_types_counter[hal.comp_type];

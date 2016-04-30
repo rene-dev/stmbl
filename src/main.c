@@ -39,16 +39,16 @@ GLOBAL_HAL_PIN(rt_time_ms);
 void Wait(uint32_t ms);
 
 //hal interface
-void enable_frt(){
+void hal_enable_frt(){
    //timer_enable_counter(TIM2);
 }
-void enable_rt(){
+void hal_enable_rt(){
    timer_enable_irq(TIM2,TIM_DIER_UIE);
 }
-void disable_frt(){
+void hal_disable_frt(){
    //timer_disable_counter(TIM2);
 }
-void disable_rt(){
+void hal_disable_rt(){
    timer_disable_irq(TIM2,TIM_DIER_UIE);
 }
 
@@ -237,9 +237,9 @@ int main(void)
    int end = 0;
    
 
-   init_hal();
+   hal_init();
 
-   set_comp_type("foo"); // default pin for mem errors
+   hal_set_comp_type("foo"); // default pin for mem errors
    HAL_PIN(bar) = 0.0;
    // 
    
@@ -247,7 +247,7 @@ int main(void)
    #include "comps/hw/f3troller/io.comp"
    #include "comps/term.comp"
    // 
-   set_comp_type("net");
+   hal_set_comp_type("net");
    HAL_PIN(core_temp) = 0.0;
 
    HAL_PIN(rt_calc_time) = 0.0;
@@ -260,21 +260,21 @@ int main(void)
    
 
    // 
-   rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
-   frt_time_hal_pin = map_hal_pin("net0.frt_calc_time");
-   rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
-   frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
-   rt_time_ms_hal_pin = map_hal_pin("net0.time_ms");
+   rt_time_hal_pin = hal_map_pin("net0.rt_calc_time");
+   frt_time_hal_pin = hal_map_pin("net0.frt_calc_time");
+   rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
+   frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
+   rt_time_ms_hal_pin = hal_map_pin("net0.time_ms");
    
    hal_comp_init();
    
-   set_hal_pin("sim0.rt_prio", 1.0);
-   set_hal_pin("term0.rt_prio", 2.0);
-   set_hal_pin("io0.rt_prio", 1.0);
+   hal_set_pin("sim0.rt_prio", 1.0);
+   hal_set_pin("term0.rt_prio", 2.0);
+   hal_set_pin("io0.rt_prio", 1.0);
    
    
    if(hal.pin_errors + hal.comp_errors == 0){
-      start_hal();
+      hal_start();
    }
    else{
       hal.hal_state = MEM_ERROR;
