@@ -91,11 +91,7 @@ void tim2_isr(void){
    last_start = start;
    systime++;
    PIN(rt_time_ms) = systime;
-   for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){//run all realtime hal functions
-      hal.rt[hal.active_rt_func](period);
-   }
-   hal.active_rt_func = -1;
-
+   hal_run_rt(period);
    unsigned int end = systick_get_value();
    if(start < end){
      start += systick_get_reload();
@@ -270,10 +266,7 @@ int main(void)
    frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
    rt_time_ms_hal_pin = map_hal_pin("net0.time_ms");
    
-   // 
-   for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
-      hal.nrt_init[i]();
-   }
+   hal_comp_init();
    
    set_hal_pin("sim0.rt_prio", 1.0);
    set_hal_pin("term0.rt_prio", 2.0);
