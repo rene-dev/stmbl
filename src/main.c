@@ -97,10 +97,7 @@ void TIM2_IRQHandler(void){
    float period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
    last_start = start;
 
-   for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_func_count; hal.active_frt_func++){//run all fast realtime hal functions
-      hal.frt[hal.active_frt_func](period);
-   }
-   hal.active_frt_func = -1;
+   hal_run_frt(period);
 
    unsigned int end = SysTick->VAL;
    if(start < end){
@@ -147,10 +144,7 @@ void DMA2_Stream0_IRQHandler(void){
    float period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
    last_start = start;
 
-   for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){//run all realtime hal functions
-      hal.rt[hal.active_rt_func](period);
-   }
-   hal.active_rt_func = -1;
+   hal_run_rt(period);
 
    unsigned int end = SysTick->VAL;
    if(start < end){
@@ -299,10 +293,8 @@ int main(void)
    frt_time_hal_pin = map_hal_pin("net0.frt_calc_time");
    rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
    frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
-
-   for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
-      hal.nrt_init[i]();
-   }
+   
+   hal_comp_init();
 
    link_pid();
 
@@ -325,10 +317,7 @@ int main(void)
       period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
       last_start = start;
 
-      for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.nrt_func_count; hal.active_nrt_func++){//run all non realtime hal functions
-         hal.nrt[hal.active_nrt_func](period);
-      }
-      hal.active_nrt_func = -1;
+      hal_run_nrt(period);
 
       end = SysTick->VAL;
       if(start < end){

@@ -115,6 +115,11 @@ struct hal_struct{
 
 void init_hal();
 
+void hal_comp_init();
+void hal_run_rt(float period);
+void hal_run_nrt(float period);
+void hal_run_frt(float period);
+
 void start_hal();
 
 void stop_hal();

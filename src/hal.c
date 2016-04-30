@@ -56,6 +56,36 @@ void init_hal(){
   strcpy(hal.error_name,"no error");
 }
 
+void hal_comp_init(){
+   for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
+      hal.nrt_init[i]();
+   }
+}
+
+void hal_run_nrt(float period){
+   //run all non realtime hal functions
+   for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.nrt_func_count; hal.active_nrt_func++){
+      hal.nrt[hal.active_nrt_func](period);
+   }
+   hal.active_nrt_func = -1;
+}
+
+void hal_run_rt(float period){
+   //run all realtime hal functions
+   for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){
+      hal.rt[hal.active_rt_func](period);
+   }
+   hal.active_rt_func = -1;
+}
+
+void hal_run_frt(float period){
+   //run all fast realtime hal functions
+   for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_func_count; hal.active_frt_func++){
+      hal.frt[hal.active_frt_func](period);
+   }
+   hal.active_frt_func = -1;
+}
+
 int start_rt(){
    if(hal.rt_state == RT_STOP && hal.hal_state == HAL_OK){
       hal.active_rt_func = -1;
