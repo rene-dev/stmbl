@@ -40,16 +40,16 @@ GLOBAL_HAL_PIN(frt_period_time);
 void Wait(uint32_t ms);
 
 //hal interface
-void enable_rt(){
+void hal_enable_rt(){
    TIM_Cmd(TIM2, ENABLE);
 }
-void enable_frt(){
+void hal_enable_frt(){
    TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 }
-void disable_rt(){
+void hal_disable_rt(){
    TIM_Cmd(TIM2, DISABLE);
 }
-void disable_frt(){
+void hal_disable_frt(){
    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
 }
 
@@ -170,9 +170,9 @@ int main(void)
    int end = 0;
 
    setup();
-   init_hal();
+   hal_init();
 
-   set_comp_type("foo"); // default pin for mem errors
+   hal_set_comp_type("foo"); // default pin for mem errors
    HAL_PIN(bar) = 0.0;
 
    //feedback comps
@@ -212,7 +212,7 @@ int main(void)
    #include "comps/io.comp"
 
 
-   set_comp_type("net");
+   hal_set_comp_type("net");
    HAL_PIN(enable) = 0.0;
    HAL_PIN(cmd) = 0.0;
    HAL_PIN(fb) = 0.0;
@@ -229,7 +229,7 @@ int main(void)
    HAL_PIN(frt_period) = 0.0;
    HAL_PIN(nrt_period) = 0.0;
 
-   set_comp_type("conf");
+   hal_set_comp_type("conf");
    HAL_PIN(r) = 1.0;
    HAL_PIN(l) = 0.01;
    HAL_PIN(j) = KGCM2(0.26);
@@ -289,10 +289,10 @@ int main(void)
    HAL_PIN(cur_ind) = 0.0;
    HAL_PIN(max_sat) = 0.2;
 
-   rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
-   frt_time_hal_pin = map_hal_pin("net0.frt_calc_time");
-   rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
-   frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
+   rt_time_hal_pin = hal_map_pin("net0.rt_calc_time");
+   frt_time_hal_pin = hal_map_pin("net0.frt_calc_time");
+   rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
+   frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
    
    hal_comp_init();
 
@@ -300,7 +300,7 @@ int main(void)
 
 
    if(hal.pin_errors + hal.comp_errors == 0){
-      start_hal();
+      hal_start();
    }
    else{
       hal.hal_state = MEM_ERROR;
