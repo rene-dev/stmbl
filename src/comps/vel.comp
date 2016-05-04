@@ -7,9 +7,11 @@ HAL_PIN(acc) = 0.0;
 HAL_PIN(w) = 1000.0;
 HAL_PIN(d) = 0.9;
 HAL_PIN(g) = 1.0;
+HAL_PIN(h) = 1.0;
 HAL_PIN(j) = 0.00001;
 HAL_PIN(lp) = 100.0;
 HAL_PIN(torque) = 0.0;
+HAL_PIN(vel_ff) = 0.0;
 HAL_PIN(en) = 1.0;
 HAL_PIN(pos_error) = 0.0;
 
@@ -22,6 +24,7 @@ RT(
       vel_sum = PIN(pos_in);
       acc_sum = 0.0;
    }
+   vel_sum += PIN(vel_ff) * PIN(h) * period;
    vel_sum += acc_sum * period; // ff
    
    float pos_error = minus(PIN(pos_in), vel_sum);
