@@ -24,8 +24,8 @@ RT(
       vel_sum = PIN(pos_in);
       acc_sum = 0.0;
    }
-   vel_sum += PIN(vel_ff) * PIN(h) * period;
-   vel_sum += acc_sum * period; // ff
+   float vel_ff = PIN(vel_ff) * PIN(h);
+   vel_sum += (acc_sum + vel_ff) * period; // ff
    
    float pos_error = minus(PIN(pos_in), vel_sum);
    float w = PIN(w);
@@ -43,7 +43,7 @@ RT(
 
    acc_sum += acc_ff * period;
 
-   PIN(vel) = acc_sum;
+   PIN(vel) = acc_sum + vel_ff;
    PIN(acc) = acc_ff;
 
    float vel_ff = 2.0 * d * w * pos_error;
