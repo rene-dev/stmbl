@@ -176,7 +176,7 @@ RT(
       if(available == 7 && rxbuf[1] == 0x42 && rxbuf[6] == (rxbuf[0] ^ rxbuf[1] ^ rxbuf[2] ^ rxbuf[3] ^ rxbuf[4] ^ rxbuf[5])){
          pos = (rxbuf[2] << 24) + (rxbuf[3] << 16) + (rxbuf[4] << 8) + rxbuf[5];
          pos = pos % (128 * 32);
-         PIN(pos) = pos * 2.0 * M_PI / (128 * 32);
+         PIN(pos) = pos * 2.0 * M_PI / (128 * 32) - M_PI;
          PIN(read_status) = 0;
       }else if(available == 4 && rxbuf[1] == 0x50 && rxbuf[3] == (rxbuf[0] ^ rxbuf[1] ^ rxbuf[2])){
          PIN(read_status) = rxbuf[2];
