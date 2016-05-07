@@ -257,6 +257,15 @@ int hal_is_pin(hal_name_t name){
   return(0);
 }
 
+int hal_is_compname(hal_name_t name){
+  for(int i = 0; i < hal.hal_pin_count; i++){
+    if(!strncmp(hal.hal_pins[i]->name, name, strlen(name))){
+      return(1);
+    }
+  }
+  return(0);
+}
+
 float hal_get_pin(hal_name_t name){
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, name)){

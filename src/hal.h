@@ -144,6 +144,8 @@ int hal_set_pin(hal_name_t name, float value);
 
 int hal_is_pin(hal_name_t name);
 
+int hal_is_compname(hal_name_t name);
+
 float hal_get_pin(hal_name_t name);
 
 hal_pin_t hal_map_pin(hal_name_t name);

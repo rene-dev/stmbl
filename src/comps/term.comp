@@ -684,6 +684,14 @@ NRT(
       if(i == 2){ // read hal pin
          if(hal_is_pin(sink)){
             printf("%s <= %s = %f\n", sink, hal_find_pin(sink)->source->name, hal_get_pin(sink));
+         }
+         else if(hal_is_compname(sink)){
+            printf("%s\n",sink);
+            for(int i = 0; i < hal.hal_pin_count; i++){
+              if(!strncmp(hal.hal_pins[i]->name, sink, strlen(sink))){
+                 printf("%s\n",hal.hal_pins[i]->name);
+              }
+            }
          }else{
             cmd(rx_buf);
          }
