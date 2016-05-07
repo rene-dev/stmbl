@@ -46,7 +46,7 @@ RT(
    PIN(vel) = acc_sum + vel_ff;
    PIN(acc) = acc_ff;
 
-   float vel_ff = 2.0 * d * w * pos_error;
+   vel_ff = 2.0 * d * w * pos_error;
    
    vel_sum += vel_ff * period;
    vel_sum = mod(vel_sum);
