@@ -266,8 +266,16 @@ void init_hardware() {
   //DMA_Cmd(DMA1_Stream7, ENABLE);
 
   USART_DMACmd(UART5, USART_DMAReq_Tx, ENABLE);
+  
+  //tx enable
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
    
-  GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
+  GPIO_SetBits(GPIOB, GPIO_Pin_13);
 }
 
 process_data_descriptor_t create_pdr(uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, float param_min, float param_max) {

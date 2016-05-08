@@ -9,7 +9,7 @@ HAL_COMP(en);
 HAL_PIN(en) = 0.0;
 HAL_PIN(txen) = 0.0;
 
-INIT(//TODO: change init, implement deinit
+RT_INIT(//TODO: change init, implement deinit
 	 //PC12 TX
 	 //PB13 TXEN
 
@@ -25,7 +25,7 @@ INIT(//TODO: change init, implement deinit
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 );
 
-NRT(
+RT(
 	if(PIN(txen) > 0){
 		GPIO_SetBits(GPIOB, GPIO_Pin_13);
 	}

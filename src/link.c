@@ -273,6 +273,13 @@ int update_cmd(){
             set_hal_pin("en0.txen", 1.0);
          }
          break;
+      case SSERIAL:
+         link_hal_pins("sserial0.pos_cmd", "rev0.in");
+         //this breaks cmd rev...
+         //net0.cmd_d <= sserial0.pos_cmd_d
+         set_hal_pin("sserial0.rt_prio", 2.0);
+         set_hal_pin("sserial0.frt_prio", 2.0);
+         break;
       default:
          return -1;
    }
