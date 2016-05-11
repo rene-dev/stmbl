@@ -1,4 +1,23 @@
-// 11/2015  Rene Hopf<renehopf@mac.com> and Ian McMahon<facetious.ian@gmail.com>
+/*
+* This file is part of the stmbl project.
+*
+* Copyright (C) 2013 Rene Hopf <renehopf@mac.com>
+* Copyright (C) 2015 Ian McMahon <facetious.ian@gmail.com>
+* Copyright (C) 2013 Nico Stute <crinq@crinq.de>
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 //using CMD_TX
 //using CMD_RX
@@ -11,6 +30,7 @@ HAL_COMP(sserial);
 //sigrok-cli -i sserial.sr -P uart:baudrate=2500000:tx=tx:rx=rx:format=hex -A uart=tx-data:rx-data
 //decode more:
 //sigrok-cli -i sserial.sr -P uart:baudrate=2500000:tx=tx:rx=rx,sserial
+//sudo mesaflash --device 5i25 --sserial --verbose
 
 #define UnitNumberRPC 0xbc
 #define DiscoveryRPC 0xbb
