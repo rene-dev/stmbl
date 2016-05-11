@@ -269,7 +269,7 @@ int update_cmd(){
          set_hal_pin("enc_cmd0.rt_prio", 2.0);
          if(get_hal_pin("conf0.error_out") == 1.0){//error out using rs485
             set_hal_pin("en0.rt_prio", 15.0);
-            set_hal_pin("en0.en", 1.0);
+            set_hal_pin("en0.en", 1.0);//TODO: link to error pin
             set_hal_pin("en0.txen", 1.0);
          }
          break;
