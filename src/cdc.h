@@ -5,7 +5,7 @@
 #include "ringbuf.h"
 
 #define RX_QUEUE_SIZE  1024
-#define TX_QUEUE_SIZE  8096
+#define TX_QUEUE_SIZE  4096
 
 void cdc_init(void);
 void setup_usb(void);

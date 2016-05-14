@@ -34,6 +34,7 @@ GLOBAL_HAL_PIN(rt_time);
 GLOBAL_HAL_PIN(frt_time);
 GLOBAL_HAL_PIN(rt_period_time);
 GLOBAL_HAL_PIN(frt_period_time);
+GLOBAL_HAL_PIN(rt_time_ms);
 
 void Wait(uint32_t ms);
 
@@ -55,7 +56,7 @@ volatile uint64_t systime = 0;
 
 void SysTick_Handler(void)
 {
-  systime++;
+  //systime++;
 }
 
 //1kHz
@@ -88,7 +89,8 @@ void tim2_isr(void){
 
    float period = ((float)(last_start - start)) / rcc_ahb_frequency;
    last_start = start;
-
+   systime++;
+   PIN(rt_time_ms) = systime;
    for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){//run all realtime hal functions
       hal.rt[hal.active_rt_func](period);
    }
@@ -209,7 +211,7 @@ void setup_tim(){
    timer_direction_up(TIM2);
    timer_set_repetition_counter(TIM2, 0);
    //timer_enable_preload(TIM2);
-   timer_set_period(TIM2, 1440);
+   timer_set_period(TIM2, 900);
    timer_set_prescaler(TIM2, 19);
    timer_enable_update_event(TIM2);
    nvic_enable_irq(NVIC_TIM2_IRQ);
@@ -245,7 +247,7 @@ int main(void)
    HAL_PIN(bar) = 0.0;
    // 
    
-   #include "comps/sim.comp"
+   //#include "comps/sim.comp"
    #include "comps/imu.comp"
    #include "comps/gripper.comp"
    #include "comps/io.comp"
@@ -263,12 +265,16 @@ int main(void)
    HAL_PIN(rt_period) = 0.0;
    HAL_PIN(frt_period) = 0.0;
    HAL_PIN(nrt_period) = 0.0;
+   HAL_PIN(time_ms) = 0.0;
+   
 
    // 
    rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
    frt_time_hal_pin = map_hal_pin("net0.frt_calc_time");
    rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
    frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
+   rt_time_ms_hal_pin = map_hal_pin("net0.time_ms");
+   
    // 
    for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
       hal.nrt_init[i]();
@@ -278,6 +284,7 @@ int main(void)
    set_hal_pin("term0.rt_prio", 2.0);
    //set_hal_pin("imu0.rt_prio", 1.0);
    set_hal_pin("gripper0.rt_prio", 1.0);
+   set_hal_pin("ft0.rt_prio", 1.0);
    //set_hal_pin("io0.rt_prio", 1.0);
    
    

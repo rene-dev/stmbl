@@ -13,7 +13,7 @@ OBJDIR = obj_app
 TARGET = $(OBJDIR)/stmbl
 
 # Define all C source files (dependencies are generated automatically)
-INCDIRS += inc
+#INCDIRS += inc
 INCDIRS += shared
 
 SOURCES += src/main.c
@@ -39,7 +39,6 @@ LDSCRIPT = stm32_flash.ld
 
 #============================================================================
 OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
-#OBJECTS += hv_firmware.o
 CPPFLAGS += $(addprefix -I,$(INCDIRS))
 
 #---------------- Preprocessor Options ----------------
@@ -127,7 +126,7 @@ LDFLAGS  += $(CPU)
 
 # Default target
 #
-all: hv gccversion boot build showsize
+all: gccversion build showsize
 
 build: elf hex bin lss sym
 
@@ -149,14 +148,8 @@ boot_flash: boot
 flash: $(TARGET).bin
 	st-flash --reset write $(TARGET).bin 0x08000000
 
-hv_flash: boot
-	$(MAKE) -f stm32f103/Makefile flash
-
 boot_btflash: boot
 	$(MAKE) -f bootloader/Makefile btflash
-
-hv:
-	$(MAKE) -f stm32f103/Makefile
 
 
 # Display compiler version information
@@ -188,10 +181,8 @@ btburn: build showsize $(TARGET).dfu
 #
 clean:
 	@echo Cleaning project:
-	rm -rf hv_firmware.o
 	rm -rf $(OBJDIR)
 	@$(MAKE) -f bootloader/Makefile clean
-	@$(MAKE) -f stm32f103/Makefile clean
 
 # Include the base rules
 #
