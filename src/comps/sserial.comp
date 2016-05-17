@@ -113,6 +113,7 @@ HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, ne
 HAL_PIN(timeout) = 100.0;// 20khz / 1khz * 2 reads = 40
 
 HAL_PIN(pos_cmd) = 0.0;
+HAL_PIN(pos_cmd_d) = 0.0;
 HAL_PIN(pos_fb) = 0.0;
 HAL_PIN(vel_fb) = 0.0;
 
@@ -187,6 +188,7 @@ MEM(memory_t memory);
 MEM(uint8_t *heap_ptr);
 MEM(uint32_t timeout);
 MEM(pd_table_t pd_table);
+MEM(float last_pos_cmd);
 
 
 //pb13 txen
@@ -670,6 +672,10 @@ FRT(
              //TODO: maybe packing and unpacking can be moved to RT
              process_data_rpc(0x00, txbuf, &(rxbuf[rxpos+1])); // todo: send a proper fault byte?
              send(memory.discovery.input,1);
+             uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
+             float p = scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
+             PIN(pos_cmd_d) = minus(p,last_pos_cmd)*1000.0f;//TODO: only valid for 1khz servo thread
+             last_pos_cmd = p;
              //we cannot send the reply based on crc, as this causes timeouts
              //instead we should check for errors in RT
              if(!crc_reuest(memory.discovery.output + 1)){
