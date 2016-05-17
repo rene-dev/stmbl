@@ -584,8 +584,9 @@ int32_t scale_in(pd_metadata_t pd, float val) {
 RT (
   // update all hal pins with values from their associated pds
 
-  PIN(pos_cmd) = scale_out(pd_table.pos_cmd, (int16_t)(MEMU16(pd_table.pos_cmd.ptr->data_addr)));
 
+   uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
+  PIN(pos_cmd) = scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
   uint8_t outpins = MEMU8(pd_table.output_pins.ptr->data_addr);
   PIN(out0) = outpins & 1 ? 1.0 : 0.0;
   PIN(out1) = outpins & 1 ? 1.0 : 0.0;
