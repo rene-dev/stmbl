@@ -384,7 +384,7 @@ uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
 
 void metadata(pd_metadata_t *pdm, process_data_descriptor_t *ptr) {
   pdm->ptr = ptr;
-  pdm->range = ptr->data_type == DATA_TYPE_SIGNED ? MAX(ptr->param_min, ptr->param_max)*2 : ptr->param_max;
+  pdm->range = ptr->data_type == DATA_TYPE_SIGNED ? MAX(ABS(ptr->param_min), ABS(ptr->param_max))*2 : ptr->param_max;
   pdm->bitmax = (1<<ptr->data_size)-1;
 }
 
