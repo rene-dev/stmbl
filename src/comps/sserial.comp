@@ -665,7 +665,7 @@ FRT(
               send(4,1);
               rxpos += 2;
           }else if(lbp.byte == DiscoveryRPC && available >= 2){//discovery, cmd+crc = 2b
-             memcpy((void*)txbuf,((uint8_t*)&memory.discovery),sizeof(memory.discovery));
+              memcpy((void*)txbuf,((uint8_t*)&memory.discovery),sizeof(memory.discovery));
               send(sizeof(memory.discovery),1);
               rxpos += 2;
           }else if(lbp.byte == ProcessDataRPC && available >= memory.discovery.output + 2){//process data, requires cmd+output bytes+crc
@@ -689,8 +689,8 @@ FRT(
          if(available >= 2){
             if (lbp.as == 1){ //address included in command = cmd+addr+addr+crc
                if (available >= 4) {
-               address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
-               rxpos += 4;
+                  address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
+                  rxpos += 4;
                }else{
                   continue;
                }
