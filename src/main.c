@@ -18,7 +18,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stm32f4xx_conf.h"
+#include "stm32f4xx_hal_conf.h"
 #include "scanf.h"
 #include "hal.h"
 #include "setup.h"
@@ -29,7 +29,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "usb_cdc.h"
+//#include "usb_cdc.h"
 
 
 GLOBAL_HAL_PIN(rt_time);
@@ -41,16 +41,18 @@ void Wait(uint32_t ms);
 
 //hal interface
 void enable_rt(){
-   TIM_Cmd(TIM2, ENABLE);
+   TIM2->CR1 |= TIM_CR1_CEN;
 }
 void enable_frt(){
-   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+   //TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+   TIM2->DIER |= TIM_IT_UPDATE;
 }
 void disable_rt(){
-   TIM_Cmd(TIM2, DISABLE);
+   TIM2->CR1 &= (uint16_t)~TIM_CR1_CEN;
 }
 void disable_frt(){
-   TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
+   //TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
+   TIM2->DIER &= (uint16_t)~TIM_IT_UPDATE;
 }
 
 extern char _binary_obj_hv_hv_bin_start;
@@ -66,7 +68,7 @@ void SysTick_Handler(void)
 
 //20kHz
 void TIM2_IRQHandler(void){
-   TIM_ClearITPendingBit(TIM2,TIM_IT_Update);
+   TIM2->SR = (uint16_t)~TIM_IT_UPDATE;
    switch(hal.frt_state){
       case FRT_STOP:
          return;
@@ -85,7 +87,7 @@ void TIM2_IRQHandler(void){
          hal.frt_state = FRT_CALC;
    }
 
-   GPIO_SetBits(GPIOB,GPIO_Pin_9);
+   //GPIO_SetBits(GPIOB,GPIO_Pin_9);
 
    static unsigned int last_start = 0;
    unsigned int start = SysTick->VAL;
@@ -135,7 +137,7 @@ void DMA2_Stream0_IRQHandler(void){
          hal.rt_state = RT_CALC;
    }
 
-   GPIO_SetBits(GPIOB,GPIO_Pin_8);
+   // GPIO_SetBits(GPIOB,GPIO_Pin_8);
 
    static unsigned int last_start = 0;
    unsigned int start = SysTick->VAL;

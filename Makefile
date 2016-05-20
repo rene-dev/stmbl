@@ -32,56 +32,56 @@ SOURCES += src/syscalls.c
 SOURCES += shared/crc8.c
 SOURCES += shared/common.c
 
-USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
-
-CPPFLAGS += -DUSBD_PRODUCT_STRING='"STMBL Virtual ComPort"'
-CPPFLAGS += -DCDC_IN_FRAME_INTERVAL=1
-CPPFLAGS += -DAPP_RX_DATA_SIZE=4096
-
-INCDIRS += $(USB_VCP_DIR)/inc
-SOURCES += $(USB_VCP_DIR)/src/usbd_desc.c
-
-USB_DEVICE_DIR = lib/STM32_USB_Device_Library-1.2.0
-
-INCDIRS += $(USB_DEVICE_DIR)/Class/cdc/inc
-SOURCES += $(USB_DEVICE_DIR)/Class/cdc/src/usbd_cdc_core.c
-
-INCDIRS += $(USB_DEVICE_DIR)/Core/inc
-SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_core.c
-SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_ioreq.c
-SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_req.c
-
-USB_DRIVER_DIR = lib/STM32_USB_OTG_Driver-2.2.0
-
-INCDIRS += $(USB_DRIVER_DIR)/inc
-SOURCES += $(USB_DRIVER_DIR)/src/usb_core.c
-SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd.c
-SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd_int.c
+# USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
+#
+# CPPFLAGS += -DUSBD_PRODUCT_STRING='"STMBL Virtual ComPort"'
+# CPPFLAGS += -DCDC_IN_FRAME_INTERVAL=1
+# CPPFLAGS += -DAPP_RX_DATA_SIZE=4096
+#
+# INCDIRS += $(USB_VCP_DIR)/inc
+# SOURCES += $(USB_VCP_DIR)/src/usbd_desc.c
+#
+# USB_DEVICE_DIR = lib/STM32_USB_Device_Library-1.2.0
+#
+# INCDIRS += $(USB_DEVICE_DIR)/Class/cdc/inc
+# SOURCES += $(USB_DEVICE_DIR)/Class/cdc/src/usbd_cdc_core.c
+#
+# INCDIRS += $(USB_DEVICE_DIR)/Core/inc
+# SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_core.c
+# SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_ioreq.c
+# SOURCES += $(USB_DEVICE_DIR)/Core/src/usbd_req.c
+#
+# USB_DRIVER_DIR = lib/STM32_USB_OTG_Driver-2.2.0
+#
+# INCDIRS += $(USB_DRIVER_DIR)/inc
+# SOURCES += $(USB_DRIVER_DIR)/src/usb_core.c
+# SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd.c
+# SOURCES += $(USB_DRIVER_DIR)/src/usb_dcd_int.c
 
 # Standard peripheral library
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 #CPPFLAGS += -DUSE_FULL_ASSERT
 
-PERIPH_DRV_DIR = lib/STM32F4xx_StdPeriph_Driver-V1.6.0
+HAL_DRV_DIR = lib/STM32F4xx_HAL_Driver/
 
-INCDIRS += $(PERIPH_DRV_DIR)/inc
+INCDIRS += $(HAL_DRV_DIR)/Inc
 INCDIRS += lib/CMSIS/Include
 INCDIRS += lib/CMSIS/Device/ST/STM32F4xx/Include
 
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_adc.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_crc.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_dma.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_flash.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_gpio.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_pwr.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_rcc.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_tim.c
-SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_usart.c
-SOURCES += $(PERIPH_DRV_DIR)/src/misc.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_adc.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_crc.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_dma.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_flash.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_gpio.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_pwr.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_rcc.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_tim.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_usart.c
+#SOURCES += $(HAL_DRV_DIR)/Src/misc.c
 
 SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
 
-CPPFLAGS += -DSTM32F40_41xxx
+CPPFLAGS += -DSTM32F407xx
 CPPFLAGS += -DHSE_VALUE=8000000
 LDSCRIPT = stm32_flash.ld
 
@@ -176,7 +176,7 @@ LDFLAGS  += $(CPU)
 
 # Default target
 #
-all: hv gccversion boot build showsize
+all: gccversion build showsize
 
 build: elf hex bin lss sym
 

@@ -98,7 +98,7 @@ struct hal_struct{
     MEM_ERROR,
     CONFIG_LOAD_ERROR,
     CONFIG_ERROR,
-    HAL_OK
+    HAL2_OK
   } hal_state;
 
   volatile int active_rt_func;

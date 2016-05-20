@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "stm32f4xx_conf.h"
+#include "stm32f4xx_hal_conf.h"
 #include "misc.h"
 #include "version.h"
 #include "common.h"
@@ -30,10 +30,10 @@ void setup_res(void);
 
 volatile uint32_t ADC_DMA_Buffer[ADC_ANZ * PID_WAVES];
 
-TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-TIM_OCInitTypeDef TIM_OCInitStructure;
-NVIC_InitTypeDef NVIC_InitStructure;
-GPIO_InitTypeDef GPIO_InitStructure;
-DMA_InitTypeDef DMA_InitStructure;
-ADC_InitTypeDef ADC_InitStructure;
-RCC_ClocksTypeDef RCC_Clocks;
+//TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+// TIM_OCInitTypeDef TIM_OCInitStructure;
+// NVIC_InitTypeDef NVIC_InitStructure;
+// GPIO_InitTypeDef GPIO_InitStructure;
+// DMA_InitTypeDef DMA_InitStructure;
+// ADC_InitTypeDef ADC_InitStructure;
+// RCC_ClocksTypeDef RCC_Clocks;
