@@ -269,9 +269,16 @@ int update_cmd(){
          hal_set_pin("enc_cmd0.rt_prio", 2.0);
          if(hal_get_pin("conf0.error_out") == 1.0){//error out using rs485
             hal_set_pin("en0.rt_prio", 15.0);
-            hal_set_pin("en0.en", 1.0);
+            hal_set_pin("en0.en", 1.0);//TODO: link to error pin
             hal_set_pin("en0.txen", 1.0);
          }
+         break;
+      case SSERIAL:
+         hal_link_pins("sserial0.pos_cmd", "rev0.in");
+         //this breaks cmd rev...
+         //net0.cmd_d <= sserial0.pos_cmd_d
+         hal_set_pin("sserial0.rt_prio", 2.0);
+         hal_set_pin("sserial0.frt_prio", 2.0);
          break;
       default:
          return -1;
