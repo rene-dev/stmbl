@@ -204,7 +204,7 @@ extern void disable_frt();
    if(__start_time__ < __end_time__){ \
      __start_time__ += SysTick->LOAD; \
    } \
-   PIN(rt_calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
+   PIN(rt_calc_time) = ((float)(__start_time__ - __end_time__)) / HAL_RCC_GetHCLKFreq(); \
    } function;});
 
 #define FRT(func)                    \
@@ -215,7 +215,7 @@ extern void disable_frt();
    if(__start_time__ < __end_time__){ \
      __start_time__ += SysTick->LOAD; \
    } \
-   PIN(frt_calc_time) = ((float)(__start_time__ - __end_time__)) / RCC_Clocks.HCLK_Frequency; \
+   PIN(frt_calc_time) = ((float)(__start_time__ - __end_time__)) / HAL_RCC_GetHCLKFreq(); \
    } function;});
 
 #define NRT(func)                    \

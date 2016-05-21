@@ -87,7 +87,7 @@ void TIM2_IRQHandler(void){
          hal.frt_state = FRT_CALC;
    }
 
-   //GPIO_SetBits(GPIOB,GPIO_Pin_9);
+   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
 
    static unsigned int last_start = 0;
    unsigned int start = SysTick->VAL;
@@ -96,7 +96,7 @@ void TIM2_IRQHandler(void){
      last_start += SysTick->LOAD;
    }
 
-   float period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
+   float period = ((float)(last_start - start)) / HAL_RCC_GetHCLKFreq();
    last_start = start;
 
    for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_func_count; hal.active_frt_func++){//run all fast realtime hal functions
@@ -108,17 +108,19 @@ void TIM2_IRQHandler(void){
    if(start < end){
      start += SysTick->LOAD;
    }
-   PIN(frt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+   PIN(frt_time) = ((float)(start - end)) / HAL_RCC_GetHCLKFreq();
    PIN(frt_period_time) = period;
 
    hal.frt_state = FRT_SLEEP;
-   GPIO_ResetBits(GPIOB,GPIO_Pin_9);
+   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 }
 
 //5 kHz interrupt for hal. at this point all ADCs have been sampled,
 //see setup_res() in setup.c if you are interested in the magic behind this.
 void DMA2_Stream0_IRQHandler(void){
-   DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
+   //DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
+   //__HAL_DMA_CLEAR_FLAG(hdma, __HAL_DMA_GET_TE_FLAG_INDEX(hdma));
+   DMA2->LIFCR = DMA_LIFCR_CTCIF0;
    switch(hal.rt_state){
       case RT_STOP:
          return;
@@ -137,7 +139,7 @@ void DMA2_Stream0_IRQHandler(void){
          hal.rt_state = RT_CALC;
    }
 
-   // GPIO_SetBits(GPIOB,GPIO_Pin_8);
+   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
 
    static unsigned int last_start = 0;
    unsigned int start = SysTick->VAL;
@@ -146,7 +148,7 @@ void DMA2_Stream0_IRQHandler(void){
      last_start += SysTick->LOAD;
    }
 
-   float period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
+   float period = ((float)(last_start - start)) / HAL_RCC_GetHCLKFreq();
    last_start = start;
 
    for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){//run all realtime hal functions
@@ -158,11 +160,11 @@ void DMA2_Stream0_IRQHandler(void){
    if(start < end){
      start += SysTick->LOAD;
    }
-   PIN(rt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+   PIN(rt_time) = ((float)(start - end)) / HAL_RCC_GetHCLKFreq();
    PIN(rt_period_time) = period;
 
    hal.rt_state = RT_SLEEP;
-   GPIO_ResetBits(GPIOB,GPIO_Pin_8);
+   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
 }
 
 int main(void)
@@ -185,18 +187,18 @@ int main(void)
 
    //feedback comps
    #include "comps/adc.comp"
-   #include "comps/res.comp"
-   #include "comps/enc_fb.comp"
-   #include "comps/encm.comp"
-   #include "comps/encs.comp"
-   #include "comps/yaskawa.comp"
+   // #include "comps/res.comp"
+  //  #include "comps/enc_fb.comp"
+  //  #include "comps/encm.comp"
+  //  #include "comps/encs.comp"
+  //  #include "comps/yaskawa.comp"
    //TODO: hyperface
 
    //command comps
-   #include "comps/sserial.comp"
+   // #include "comps/sserial.comp"
    #include "comps/sim.comp"
-   #include "comps/enc_cmd.comp"
-   #include "comps/en.comp"
+   // #include "comps/enc_cmd.comp"
+   // #include "comps/en.comp"
 
    //PID
    #include "comps/stp.comp"
@@ -212,12 +214,12 @@ int main(void)
    #include "comps/pmsm_limits.comp"
    #include "comps/idq.comp"
    #include "comps/dq.comp"
-   #include "comps/hv.comp"
+   // #include "comps/hv.comp"
 
    //other comps
    #include "comps/fault.comp"
-   #include "comps/term.comp"
-   #include "comps/io.comp"
+   // #include "comps/term.comp"
+   // #include "comps/io.comp"
 
 
    set_comp_type("net");
@@ -324,7 +326,7 @@ int main(void)
         last_start += SysTick->LOAD;
       }
 
-      period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
+      period = ((float)(last_start - start)) / HAL_RCC_GetHCLKFreq();
       last_start = start;
 
       for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.nrt_func_count; hal.active_nrt_func++){//run all non realtime hal functions
@@ -336,7 +338,7 @@ int main(void)
       if(start < end){
         start += SysTick->LOAD;
       }
-      PIN(nrt_calc_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+      PIN(nrt_calc_time) = ((float)(start - end)) / HAL_RCC_GetHCLKFreq();
       PIN(nrt_period) = period;
       Wait(2);
    }
