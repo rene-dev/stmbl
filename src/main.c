@@ -62,6 +62,7 @@ volatile uint64_t systime = 0;
 void SysTick_Handler(void)
 {
   systime++;
+  PIN(time_ms) = systime;
 }
 
 //20kHz
@@ -234,6 +235,8 @@ int main(void)
    HAL_PIN(rt_period) = 0.0;
    HAL_PIN(frt_period) = 0.0;
    HAL_PIN(nrt_period) = 0.0;
+   HAL_PIN(time_ms) = 0.0;
+   
 
    set_comp_type("conf");
    HAL_PIN(r) = 1.0;
