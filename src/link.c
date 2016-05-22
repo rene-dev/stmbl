@@ -276,7 +276,10 @@ int update_cmd(){
       case SSERIAL:
          link_hal_pins("sserial0.pos_cmd", "rev0.in");
          //this breaks cmd rev...
-         //net0.cmd_d <= sserial0.pos_cmd_d
+         link_hal_pins("sserial0.pos_cmd_d", "net0.cmd_d");
+         link_hal_pins("net0.cmd_d", "vel0.vel_ff");
+         set_hal_pin("vel0.w", 0);
+         set_hal_pin("vel0.lp", 0);
          set_hal_pin("sserial0.rt_prio", 2.0);
          set_hal_pin("sserial0.frt_prio", 2.0);
          break;

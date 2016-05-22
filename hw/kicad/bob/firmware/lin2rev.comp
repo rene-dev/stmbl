@@ -12,7 +12,7 @@ if(s == 0){
    s = 1;
 }
 pi = 3.141592654;
-out = in/scale;
+out = (in/scale)*2.0*pi;
 while(out < -pi){
    out += 2.0 * pi;
 }
