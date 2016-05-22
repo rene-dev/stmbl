@@ -11,7 +11,6 @@
 #include <wx/arrstr.h>
 #include <wx/button.h>
 #include <wx/config.h>
-#include <wx/slider.h>
 #include <math.h>
 #include <vector>
 #include <queue>
@@ -35,8 +34,6 @@ private:
     struct sp_port *port;
     wxChoice *choose_port;
     std::vector<wxComboBox *> channelchoice;
-    std::vector<wxSlider *> channelpos;
-    std::vector<wxSlider *> channelgain;
     bool connected;
     void OnConnect(wxCommandEvent& WXUNUSED(event));
     void OnRefresh(wxCommandEvent& WXUNUSED(event));

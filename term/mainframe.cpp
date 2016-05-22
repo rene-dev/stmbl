@@ -12,7 +12,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	connected = false;
 	histpos = 0;
 	wxBoxSizer *mainsizer = new wxBoxSizer(wxHORIZONTAL);
-	wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
+	wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,700),wxSP_LIVE_UPDATE|wxSP_3DSASH);
 	wxImage::AddHandler(new wxGIFHandler);
 
 	mainsplitter->SetSashGravity(0);
@@ -73,26 +73,14 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
         channelchoice.back()->Set(waves);
         channelchoice.back()->SetSelection(0);
 
-        channelpos.push_back(new wxSlider(top, ++currentID, 0, -100, 100));
-        channelpos.back()->Bind(wxEVT_SLIDER,&ServoFrame::OnChannelChange, this, currentID);
-
-        channelgain.push_back(new wxSlider(top, ++currentID, 10, 1, 100));
-        channelgain.back()->Bind(wxEVT_SLIDER,&ServoFrame::OnChannelChange, this, currentID);
-
         wxPanel *c_panel;
         c_panel = new wxPanel(top, wxID_NEW, wxPoint(150, 20), wxSize(20, 20), wxBORDER_NONE);
         c_panel->SetBackgroundColour(drawpanel->pen[i].GetColour());
 
         wxBoxSizer *sizer1 = new wxBoxSizer(wxHORIZONTAL);
-        wxBoxSizer *sizer2 = new wxBoxSizer(wxHORIZONTAL);
-        wxBoxSizer *sizer3 = new wxBoxSizer(wxHORIZONTAL);
         sizer1->Add(c_panel, 0,wxALIGN_LEFT|wxALL,3);
         sizer1->Add(channelchoice.back(), 1,wxALIGN_LEFT|wxALL,3);
-        sizer2->Add(channelpos.back(), 1,wxALIGN_LEFT|wxALL,3);
-        sizer3->Add(channelgain.back(), 1,wxALIGN_LEFT|wxALL,3);
         channelsizer->Add(sizer1);
-        channelsizer->Add(sizer2);
-        channelsizer->Add(sizer3);
         channelleiste->Add(channelsizer);
     }
 
@@ -145,23 +133,9 @@ void ServoFrame::OnKeyDown(wxKeyEvent& event){
 }
 
 void ServoFrame::OnChannelChange(wxCommandEvent& event){
-    int param = (event.GetId()-channelstartID-2)%3;
-    int channel = (int)((event.GetId()-channelstartID-2)/3);
-    string params[] = {"term0.wave","term0.offset","term0.gain"};
-    wxString value;
-    switch (param) {
-        case 0://wave
-            value = event.GetString();
-            break;
-        case 1://offset
-        case 2://gain
-            value = to_string(event.GetSelection()/10.0f);
-            break;
-        default:
-            break;
-    }
-
-    string df = params[param];
+    int channel = (int)((event.GetId()-channelstartID-2));
+    wxString value = event.GetString();
+    string df = "term0.wave";
     df += to_string(channel);
     df += " = ";
     df += value;

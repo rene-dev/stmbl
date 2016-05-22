@@ -1,4 +1,23 @@
-// 11/2015  Rene Hopf<renehopf@mac.com> and Ian McMahon<facetious.ian@gmail.com>
+/*
+* This file is part of the stmbl project.
+*
+* Copyright (C) 2013 Rene Hopf <renehopf@mac.com>
+* Copyright (C) 2015 Ian McMahon <facetious.ian@gmail.com>
+* Copyright (C) 2013 Nico Stute <crinq@crinq.de>
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 //using CMD_TX
 //using CMD_RX
@@ -11,6 +30,7 @@ HAL_COMP(sserial);
 //sigrok-cli -i sserial.sr -P uart:baudrate=2500000:tx=tx:rx=rx:format=hex -A uart=tx-data:rx-data
 //decode more:
 //sigrok-cli -i sserial.sr -P uart:baudrate=2500000:tx=tx:rx=rx,sserial
+//sudo mesaflash --device 5i25 --sserial --verbose
 
 #define UnitNumberRPC 0xbc
 #define DiscoveryRPC 0xbb
@@ -93,6 +113,7 @@ HAL_PIN(connected) = 0.0;//connection status TODO: not stable during startup, ne
 HAL_PIN(timeout) = 100.0;// 20khz / 1khz * 2 reads = 40
 
 HAL_PIN(pos_cmd) = 0.0;
+HAL_PIN(pos_cmd_d) = 0.0;
 HAL_PIN(pos_fb) = 0.0;
 HAL_PIN(vel_fb) = 0.0;
 
@@ -167,6 +188,7 @@ MEM(memory_t memory);
 MEM(uint8_t *heap_ptr);
 MEM(uint32_t timeout);
 MEM(pd_table_t pd_table);
+MEM(float last_pos_cmd);
 
 
 //pb13 txen
@@ -266,8 +288,16 @@ void init_hardware() {
   //DMA_Cmd(DMA1_Stream7, ENABLE);
 
   USART_DMACmd(UART5, USART_DMAReq_Tx, ENABLE);
+  
+  //tx enable
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
    
-  GPIO_SetBits(GPIOB, GPIO_Pin_13);//tx enable
+  GPIO_SetBits(GPIOB, GPIO_Pin_13);
 }
 
 process_data_descriptor_t create_pdr(uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, float param_min, float param_max) {
@@ -354,7 +384,7 @@ uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
 
 void metadata(pd_metadata_t *pdm, process_data_descriptor_t *ptr) {
   pdm->ptr = ptr;
-  pdm->range = ptr->data_type == DATA_TYPE_SIGNED ? MAX(ptr->param_min, ptr->param_max)*2 : ptr->param_max;
+  pdm->range = ptr->data_type == DATA_TYPE_SIGNED ? MAX(ABS(ptr->param_min), ABS(ptr->param_max))*2 : ptr->param_max;
   pdm->bitmax = (1<<ptr->data_size)-1;
 }
 
@@ -554,8 +584,9 @@ int32_t scale_in(pd_metadata_t pd, float val) {
 RT (
   // update all hal pins with values from their associated pds
 
-  PIN(pos_cmd) = scale_out(pd_table.pos_cmd, (int16_t)(MEMU16(pd_table.pos_cmd.ptr->data_addr)));
 
+   uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
+  PIN(pos_cmd) = scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
   uint8_t outpins = MEMU8(pd_table.output_pins.ptr->data_addr);
   PIN(out0) = outpins & 1 ? 1.0 : 0.0;
   PIN(out1) = outpins & 1 ? 1.0 : 0.0;
@@ -635,13 +666,17 @@ FRT(
               send(4,1);
               rxpos += 2;
           }else if(lbp.byte == DiscoveryRPC && available >= 2){//discovery, cmd+crc = 2b
-             memcpy((void*)txbuf,((uint8_t*)&memory.discovery),sizeof(memory.discovery));
+              memcpy((void*)txbuf,((uint8_t*)&memory.discovery),sizeof(memory.discovery));
               send(sizeof(memory.discovery),1);
               rxpos += 2;
           }else if(lbp.byte == ProcessDataRPC && available >= memory.discovery.output + 2){//process data, requires cmd+output bytes+crc
              //TODO: maybe packing and unpacking can be moved to RT
              process_data_rpc(0x00, txbuf, &(rxbuf[rxpos+1])); // todo: send a proper fault byte?
              send(memory.discovery.input,1);
+             uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
+             float p = scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
+             PIN(pos_cmd_d) = minus(p,last_pos_cmd)*1000.0f;//TODO: only valid for 1khz servo thread
+             last_pos_cmd = p;
              //we cannot send the reply based on crc, as this causes timeouts
              //instead we should check for errors in RT
              if(!crc_reuest(memory.discovery.output + 1)){
@@ -655,8 +690,8 @@ FRT(
          if(available >= 2){
             if (lbp.as == 1){ //address included in command = cmd+addr+addr+crc
                if (available >= 4) {
-               address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
-               rxpos += 4;
+                  address = rxbuf[(rxpos+1)%sizeof(rxbuf)] + (rxbuf[(rxpos+2)%sizeof(rxbuf)]<<8);
+                  rxpos += 4;
                }else{
                   continue;
                }

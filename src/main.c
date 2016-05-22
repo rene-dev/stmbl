@@ -303,12 +303,11 @@ int main(void)
    rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
    frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
 
+   link_pid();
+
    for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
       hal.nrt_init[i]();
    }
-
-   link_pid();
-
 
    if(hal.pin_errors + hal.comp_errors == 0){
       start_hal();
