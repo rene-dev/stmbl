@@ -110,9 +110,7 @@ Wire Wire Line
 Wire Wire Line
 	7000 2400 7400 2400
 Wire Wire Line
-	7000 2600 7200 2600
-Wire Wire Line
-	7200 2600 7400 2600
+	7000 2600 7400 2600
 Wire Wire Line
 	7000 2700 7200 2700
 Wire Wire Line
@@ -199,13 +197,9 @@ F 3 "" H 4400 1050 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4400 1050 4400 1150
+	4400 1050 4400 1250
 Wire Wire Line
-	4400 1150 4400 1250
-Wire Wire Line
-	3700 1050 3700 1150
-Wire Wire Line
-	3700 1150 3700 1250
+	3700 1050 3700 1250
 Wire Wire Line
 	3100 1800 3200 1800
 Wire Wire Line
@@ -217,9 +211,7 @@ Wire Wire Line
 Wire Wire Line
 	4900 1800 5400 1800
 Wire Wire Line
-	5400 1800 5400 1800
-Wire Wire Line
-	5400 1800 5400 1900
+	5400 1700 5400 1900
 Wire Wire Line
 	5400 1900 6000 1900
 Wire Wire Line
@@ -327,30 +319,18 @@ F 3 "" H 5750 1050 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5400 1200 5400 1300
-Wire Wire Line
-	5400 1300 5400 1400
-Wire Wire Line
-	5400 1700 5400 1800
+	5400 1200 5400 1400
 Connection ~ 5400 1800
 Wire Wire Line
-	5400 1300 5600 1300
+	5400 1300 5850 1300
 Wire Wire Line
-	5600 1300 5750 1300
-Wire Wire Line
-	5750 1300 5850 1300
-Wire Wire Line
-	5750 1200 5750 1300
-Wire Wire Line
-	5750 1300 5750 2100
+	5750 1200 5750 2100
 Wire Wire Line
 	5600 1200 5600 1300
 Connection ~ 5600 1300
 Connection ~ 5400 1300
 Wire Wire Line
-	5400 700  5400 800 
-Wire Wire Line
-	5400 800  5400 900 
+	5400 700  5400 900 
 Wire Wire Line
 	5400 800  5600 800 
 Wire Wire Line
@@ -498,9 +478,7 @@ F 3 "" H 3000 3250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2900 3100 3000 3100
-Wire Wire Line
-	3000 3100 3100 3100
+	2900 3100 3100 3100
 Wire Wire Line
 	3000 3000 3000 3100
 Connection ~ 3000 3100
@@ -522,9 +500,7 @@ $EndComp
 Wire Wire Line
 	3000 2700 3000 2600
 Wire Wire Line
-	3400 3100 4050 3100
-Wire Wire Line
-	4050 3100 5050 3100
+	3400 3100 5050 3100
 Wire Wire Line
 	5050 3100 5050 2200
 Wire Wire Line
@@ -577,5 +553,4 @@ F 3 "" H 5600 2100 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Connection ~ 5400 2100
-Connection ~ 5400 1800
 $EndSCHEMATC
