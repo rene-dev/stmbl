@@ -203,6 +203,7 @@ int main(void)
    #include "comps/rev.comp"
    #include "comps/vel.comp"
    #include "comps/vel.comp"
+   #include "comps/vel_int.comp"
    #include "comps/cauto.comp"
    #include "comps/pid.comp"
    #include "comps/pmsm_t2c.comp"
