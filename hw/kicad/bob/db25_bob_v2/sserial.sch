@@ -1,0 +1,1450 @@
+EESchema Schematic File Version 2
+LIBS:db25_bob_v2-rescue
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:stm32
+LIBS:adm4857
+LIBS:ncv7608
+LIBS:db25_bob_v2-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 3 5
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L ADM4857-RESCUE-db25_bob_v2 U10
+U 1 1 5742FE0C
+P 4850 2300
+AR Path="/5742FE0C" Ref="U10"  Part="1" 
+AR Path="/5742FAA4/5742FE0C" Ref="U10"  Part="1" 
+F 0 "U10" V 4896 3041 50  0000 L CNN
+F 1 "ADM4857" V 4804 3041 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 4850 2300 50  0001 C CIN
+F 3 "" H 4850 2300 50  0000 C CNN
+	1    4850 2300
+	0    1    -1   0   
+$EndComp
+$Comp
+L RJ45 J5
+U 1 1 574304BB
+P 4900 1100
+F 0 "J5" H 4973 1716 50  0000 C CNN
+F 1 "RJ45" H 4973 1624 50  0000 C CNN
+F 2 "rj45_MHRJJ88NFVS:MHRJJ88NFVS" H 4900 1100 50  0001 C CNN
+F 3 "" H 4900 1100 50  0000 C CNN
+	1    4900 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L ADuM1201WT-RESCUE-db25_bob_v2 U11
+U 1 1 57430920
+P 4850 3450
+AR Path="/57430920" Ref="U11"  Part="1" 
+AR Path="/5742FAA4/57430920" Ref="U11"  Part="1" 
+F 0 "U11" V 4942 3830 50  0000 L CNN
+F 1 "ADuM1201WT" V 4850 3830 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" V 4758 3830 50  0001 L CIN
+F 3 "" H 4850 3450 50  0000 C CNN
+	1    4850 3450
+	0    1    -1   0   
+$EndComp
+Text GLabel 5500 1550 2    60   Input ~ 0
+GND3
+Text GLabel 5250 1700 2    60   Input ~ 0
+5V3
+Wire Wire Line
+	4550 1550 4550 1800
+Wire Wire Line
+	4650 1550 4650 1750
+Wire Wire Line
+	4650 1750 4750 1750
+Wire Wire Line
+	4750 1750 4750 1800
+Wire Wire Line
+	4850 1550 4850 1800
+Wire Wire Line
+	4850 1800 4950 1800
+Wire Wire Line
+	5150 1800 5150 1750
+Wire Wire Line
+	5150 1750 4950 1750
+Wire Wire Line
+	4950 1750 4950 1550
+Wire Wire Line
+	5150 1550 5150 1700
+Wire Wire Line
+	5250 1550 5500 1550
+Connection ~ 5450 1550
+Wire Wire Line
+	5450 1550 5450 750 
+Wire Wire Line
+	5150 1700 5250 1700
+Wire Wire Line
+	4550 3000 4600 3000
+Wire Wire Line
+	4750 3000 4650 3000
+Wire Wire Line
+	4650 3000 4650 2800
+Wire Wire Line
+	4950 3000 5050 3000
+Wire Wire Line
+	5050 3000 5050 2800
+Wire Wire Line
+	5100 3000 5150 3000
+Wire Wire Line
+	5550 2550 5600 2550
+Wire Wire Line
+	5550 2000 5600 2000
+$Comp
+L C-RESCUE-db25_bob_v2 C5
+U 1 1 57430E3E
+P 5750 3050
+AR Path="/57430E3E" Ref="C5"  Part="1" 
+AR Path="/5742FAA4/57430E3E" Ref="C5"  Part="1" 
+F 0 "C5" H 5865 3096 50  0000 L CNN
+F 1 "C" H 5865 3004 50  0000 L CNN
+F 2 "Capacitors_SMD:C_1206" H 5788 2900 50  0001 C CNN
+F 3 "" H 5750 3050 50  0000 C CNN
+	1    5750 3050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5650 2900 5750 2900
+Wire Wire Line
+	5650 3200 5750 3200
+$Comp
+L ADM4857-RESCUE-db25_bob_v2 U12
+U 1 1 574311BC
+P 6600 2300
+AR Path="/574311BC" Ref="U12"  Part="1" 
+AR Path="/5742FAA4/574311BC" Ref="U12"  Part="1" 
+F 0 "U12" V 6646 3041 50  0000 L CNN
+F 1 "ADM4857" V 6554 3041 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 6600 2300 50  0001 C CIN
+F 3 "" H 6600 2300 50  0000 C CNN
+	1    6600 2300
+	0    1    -1   0   
+$EndComp
+$Comp
+L RJ45 J6
+U 1 1 574311C2
+P 6650 1100
+F 0 "J6" H 6723 1716 50  0000 C CNN
+F 1 "RJ45" H 6723 1624 50  0000 C CNN
+F 2 "rj45_MHRJJ88NFVS:MHRJJ88NFVS" H 6650 1100 50  0001 C CNN
+F 3 "" H 6650 1100 50  0000 C CNN
+	1    6650 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L ADuM1201WT-RESCUE-db25_bob_v2 U13
+U 1 1 574311C8
+P 6600 3450
+AR Path="/574311C8" Ref="U13"  Part="1" 
+AR Path="/5742FAA4/574311C8" Ref="U13"  Part="1" 
+F 0 "U13" V 6692 3830 50  0000 L CNN
+F 1 "ADuM1201WT" V 6600 3830 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" V 6508 3830 50  0001 L CIN
+F 3 "" H 6600 3450 50  0000 C CNN
+	1    6600 3450
+	0    1    -1   0   
+$EndComp
+Text GLabel 7250 1550 2    60   Input ~ 0
+GND4
+Text GLabel 7000 1700 2    60   Input ~ 0
+5V4
+Wire Wire Line
+	6300 1550 6300 1800
+Wire Wire Line
+	6400 1550 6400 1750
+Wire Wire Line
+	6400 1750 6500 1750
+Wire Wire Line
+	6500 1750 6500 1800
+Wire Wire Line
+	6600 1550 6600 1800
+Wire Wire Line
+	6600 1800 6700 1800
+Wire Wire Line
+	6900 1800 6900 1750
+Wire Wire Line
+	6900 1750 6700 1750
+Wire Wire Line
+	6700 1750 6700 1550
+Wire Wire Line
+	6900 1550 6900 1700
+Wire Wire Line
+	7000 1550 7250 1550
+Connection ~ 7200 1550
+Wire Wire Line
+	7200 1550 7200 750 
+Wire Wire Line
+	6900 1700 7000 1700
+Wire Wire Line
+	6300 3000 6350 3000
+Wire Wire Line
+	6500 3000 6400 3000
+Wire Wire Line
+	6400 3000 6400 2800
+Wire Wire Line
+	6700 3000 6800 3000
+Wire Wire Line
+	6800 3000 6800 2800
+Wire Wire Line
+	6850 3000 6900 3000
+Wire Wire Line
+	7300 2550 7350 2550
+Wire Wire Line
+	7300 2000 7350 2000
+$Comp
+L C-RESCUE-db25_bob_v2 C6
+U 1 1 574311EB
+P 7500 3050
+AR Path="/574311EB" Ref="C6"  Part="1" 
+AR Path="/5742FAA4/574311EB" Ref="C6"  Part="1" 
+F 0 "C6" H 7615 3096 50  0000 L CNN
+F 1 "C" H 7615 3004 50  0000 L CNN
+F 2 "Capacitors_SMD:C_1206" H 7538 2900 50  0001 C CNN
+F 3 "" H 7500 3050 50  0000 C CNN
+	1    7500 3050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7400 2900 7500 2900
+Wire Wire Line
+	7400 3200 7500 3200
+$Comp
+L ADM4857-RESCUE-db25_bob_v2 U14
+U 1 1 574318D5
+P 8350 2300
+AR Path="/574318D5" Ref="U14"  Part="1" 
+AR Path="/5742FAA4/574318D5" Ref="U14"  Part="1" 
+F 0 "U14" V 8396 3041 50  0000 L CNN
+F 1 "ADM4857" V 8304 3041 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 8350 2300 50  0001 C CIN
+F 3 "" H 8350 2300 50  0000 C CNN
+	1    8350 2300
+	0    1    -1   0   
+$EndComp
+$Comp
+L RJ45 J7
+U 1 1 574318DB
+P 8400 1100
+F 0 "J7" H 8473 1716 50  0000 C CNN
+F 1 "RJ45" H 8473 1624 50  0000 C CNN
+F 2 "rj45_MHRJJ88NFVS:MHRJJ88NFVS" H 8400 1100 50  0001 C CNN
+F 3 "" H 8400 1100 50  0000 C CNN
+	1    8400 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L ADuM1201WT-RESCUE-db25_bob_v2 U15
+U 1 1 574318E1
+P 8350 3450
+AR Path="/574318E1" Ref="U15"  Part="1" 
+AR Path="/5742FAA4/574318E1" Ref="U15"  Part="1" 
+F 0 "U15" V 8442 3830 50  0000 L CNN
+F 1 "ADuM1201WT" V 8350 3830 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" V 8258 3830 50  0001 L CIN
+F 3 "" H 8350 3450 50  0000 C CNN
+	1    8350 3450
+	0    1    -1   0   
+$EndComp
+Text GLabel 9000 1550 2    60   Input ~ 0
+GND5
+Text GLabel 8750 1700 2    60   Input ~ 0
+5V5
+Wire Wire Line
+	8050 1550 8050 1800
+Wire Wire Line
+	8150 1550 8150 1750
+Wire Wire Line
+	8150 1750 8250 1750
+Wire Wire Line
+	8250 1750 8250 1800
+Wire Wire Line
+	8350 1550 8350 1800
+Wire Wire Line
+	8350 1800 8450 1800
+Wire Wire Line
+	8650 1800 8650 1750
+Wire Wire Line
+	8650 1750 8450 1750
+Wire Wire Line
+	8450 1750 8450 1550
+Wire Wire Line
+	8650 1550 8650 1700
+Wire Wire Line
+	8750 1550 9000 1550
+Connection ~ 8950 1550
+Wire Wire Line
+	8950 1550 8950 750 
+Wire Wire Line
+	8650 1700 8750 1700
+Wire Wire Line
+	8050 3000 8100 3000
+Wire Wire Line
+	8250 3000 8150 3000
+Wire Wire Line
+	8150 3000 8150 2800
+Wire Wire Line
+	8450 3000 8550 3000
+Wire Wire Line
+	8550 3000 8550 2800
+Wire Wire Line
+	8600 3000 8650 3000
+Wire Wire Line
+	9050 2550 9100 2550
+Wire Wire Line
+	9050 2000 9100 2000
+$Comp
+L C-RESCUE-db25_bob_v2 C7
+U 1 1 57431904
+P 9250 3050
+AR Path="/57431904" Ref="C7"  Part="1" 
+AR Path="/5742FAA4/57431904" Ref="C7"  Part="1" 
+F 0 "C7" H 9365 3096 50  0000 L CNN
+F 1 "C" H 9365 3004 50  0000 L CNN
+F 2 "Capacitors_SMD:C_1206" H 9288 2900 50  0001 C CNN
+F 3 "" H 9250 3050 50  0000 C CNN
+	1    9250 3050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9150 2900 9250 2900
+Wire Wire Line
+	9150 3200 9250 3200
+$Comp
+L ADM4857-RESCUE-db25_bob_v2 U16
+U 1 1 5743190E
+P 10100 2300
+AR Path="/5743190E" Ref="U16"  Part="1" 
+AR Path="/5742FAA4/5743190E" Ref="U16"  Part="1" 
+F 0 "U16" V 10146 3041 50  0000 L CNN
+F 1 "ADM4857" V 10054 3041 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 10100 2300 50  0001 C CIN
+F 3 "" H 10100 2300 50  0000 C CNN
+	1    10100 2300
+	0    1    -1   0   
+$EndComp
+$Comp
+L RJ45 J8
+U 1 1 57431914
+P 10150 1100
+F 0 "J8" H 10223 1716 50  0000 C CNN
+F 1 "RJ45" H 10223 1624 50  0000 C CNN
+F 2 "rj45_MHRJJ88NFVS:MHRJJ88NFVS" H 10150 1100 50  0001 C CNN
+F 3 "" H 10150 1100 50  0000 C CNN
+	1    10150 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L ADuM1201WT-RESCUE-db25_bob_v2 U17
+U 1 1 5743191A
+P 10100 3450
+AR Path="/5743191A" Ref="U17"  Part="1" 
+AR Path="/5742FAA4/5743191A" Ref="U17"  Part="1" 
+F 0 "U17" V 10192 3830 50  0000 L CNN
+F 1 "ADuM1201WT" V 10100 3830 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" V 10008 3830 50  0001 L CIN
+F 3 "" H 10100 3450 50  0000 C CNN
+	1    10100 3450
+	0    1    -1   0   
+$EndComp
+Text GLabel 10750 1550 2    60   Input ~ 0
+GND6
+Text GLabel 10500 1700 2    60   Input ~ 0
+5V6
+Wire Wire Line
+	9800 1550 9800 1800
+Wire Wire Line
+	9900 1550 9900 1750
+Wire Wire Line
+	9900 1750 10000 1750
+Wire Wire Line
+	10000 1750 10000 1800
+Wire Wire Line
+	10100 1550 10100 1800
+Wire Wire Line
+	10100 1800 10200 1800
+Wire Wire Line
+	10400 1800 10400 1750
+Wire Wire Line
+	10400 1750 10200 1750
+Wire Wire Line
+	10200 1750 10200 1550
+Wire Wire Line
+	10400 1550 10400 1700
+Wire Wire Line
+	10500 1550 10750 1550
+Connection ~ 10700 1550
+Wire Wire Line
+	10700 1550 10700 750 
+Wire Wire Line
+	10400 1700 10500 1700
+Wire Wire Line
+	9800 3000 9850 3000
+Wire Wire Line
+	10000 3000 9900 3000
+Wire Wire Line
+	9900 3000 9900 2800
+Wire Wire Line
+	10200 3000 10300 3000
+Wire Wire Line
+	10300 3000 10300 2800
+Wire Wire Line
+	10350 3000 10400 3000
+Wire Wire Line
+	10800 2550 10850 2550
+Wire Wire Line
+	10800 2000 10850 2000
+$Comp
+L C-RESCUE-db25_bob_v2 C8
+U 1 1 5743193D
+P 11000 3050
+AR Path="/5743193D" Ref="C8"  Part="1" 
+AR Path="/5742FAA4/5743193D" Ref="C8"  Part="1" 
+F 0 "C8" H 11115 3096 50  0000 L CNN
+F 1 "C" H 11115 3004 50  0000 L CNN
+F 2 "Capacitors_SMD:C_1206" H 11038 2900 50  0001 C CNN
+F 3 "" H 11000 3050 50  0000 C CNN
+	1    11000 3050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10900 2900 11000 2900
+Wire Wire Line
+	10900 3200 11000 3200
+$Comp
+L ADM4857-RESCUE-db25_bob_v2 U4
+U 1 1 574329E7
+P 1400 2350
+AR Path="/574329E7" Ref="U4"  Part="1" 
+AR Path="/5742FAA4/574329E7" Ref="U4"  Part="1" 
+F 0 "U4" V 1446 3091 50  0000 L CNN
+F 1 "ADM4857" V 1354 3091 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 1400 2350 50  0001 C CIN
+F 3 "" H 1400 2350 50  0000 C CNN
+	1    1400 2350
+	0    1    -1   0   
+$EndComp
+$Comp
+L RJ45 J2
+U 1 1 574329ED
+P 1450 1150
+F 0 "J2" H 1523 1766 50  0000 C CNN
+F 1 "RJ45" H 1523 1674 50  0000 C CNN
+F 2 "rj45_MHRJJ88NFVS:MHRJJ88NFVS" H 1450 1150 50  0001 C CNN
+F 3 "" H 1450 1150 50  0000 C CNN
+	1    1450 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L ADuM1201WT-RESCUE-db25_bob_v2 U5
+U 1 1 574329F3
+P 1400 3500
+AR Path="/574329F3" Ref="U5"  Part="1" 
+AR Path="/5742FAA4/574329F3" Ref="U5"  Part="1" 
+F 0 "U5" V 1492 3880 50  0000 L CNN
+F 1 "ADuM1201WT" V 1400 3880 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" V 1308 3880 50  0001 L CIN
+F 3 "" H 1400 3500 50  0000 C CNN
+	1    1400 3500
+	0    1    -1   0   
+$EndComp
+Text GLabel 2050 1600 2    60   Input ~ 0
+GND1
+Text GLabel 1800 1750 2    60   Input ~ 0
+5V1
+Text GLabel 2150 2050 2    60   Input ~ 0
+GND1
+Text GLabel 2150 2600 2    60   Input ~ 0
+5V1
+Text GLabel 1700 3050 2    60   Input ~ 0
+5V1
+Text GLabel 1100 3050 0    60   Input ~ 0
+GND1
+Wire Wire Line
+	1100 1600 1100 1850
+Wire Wire Line
+	1200 1600 1200 1800
+Wire Wire Line
+	1200 1800 1300 1800
+Wire Wire Line
+	1300 1800 1300 1850
+Wire Wire Line
+	1400 1600 1400 1700
+Wire Wire Line
+	1400 1700 1500 1700
+Wire Wire Line
+	1500 1700 1500 1850
+Wire Wire Line
+	1700 1850 1700 1800
+Wire Wire Line
+	1700 1800 1500 1800
+Wire Wire Line
+	1500 1800 1500 1600
+Wire Wire Line
+	1700 1600 1700 1750
+Wire Wire Line
+	1800 1600 2050 1600
+Connection ~ 2000 1600
+Wire Wire Line
+	2000 1600 2000 800 
+Wire Wire Line
+	1700 1750 1800 1750
+Wire Wire Line
+	1100 3050 1150 3050
+Wire Wire Line
+	1300 3050 1200 3050
+Wire Wire Line
+	1200 3050 1200 2850
+Wire Wire Line
+	1500 3050 1600 3050
+Wire Wire Line
+	1600 3050 1600 2850
+Wire Wire Line
+	1650 3050 1700 3050
+Wire Wire Line
+	2100 2600 2150 2600
+Wire Wire Line
+	2100 2050 2150 2050
+$Comp
+L C-RESCUE-db25_bob_v2 C2
+U 1 1 57432A16
+P 2300 3100
+AR Path="/57432A16" Ref="C2"  Part="1" 
+AR Path="/5742FAA4/57432A16" Ref="C2"  Part="1" 
+F 0 "C2" H 2415 3146 50  0000 L CNN
+F 1 "C" H 2415 3054 50  0000 L CNN
+F 2 "Capacitors_SMD:C_1206" H 2338 2950 50  0001 C CNN
+F 3 "" H 2300 3100 50  0000 C CNN
+	1    2300 3100
+	1    0    0    -1  
+$EndComp
+Text GLabel 2200 2950 0    60   Input ~ 0
+5V1
+Text GLabel 2200 3250 0    60   Input ~ 0
+GND1
+Wire Wire Line
+	2200 2950 2300 2950
+Wire Wire Line
+	2200 3250 2300 3250
+$Comp
+L ADM4857-RESCUE-db25_bob_v2 U8
+U 1 1 57432A20
+P 3150 2350
+AR Path="/57432A20" Ref="U8"  Part="1" 
+AR Path="/5742FAA4/57432A20" Ref="U8"  Part="1" 
+F 0 "U8" V 3196 3091 50  0000 L CNN
+F 1 "ADM4857" V 3104 3091 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 3150 2350 50  0001 C CIN
+F 3 "" H 3150 2350 50  0000 C CNN
+	1    3150 2350
+	0    1    -1   0   
+$EndComp
+$Comp
+L RJ45 J4
+U 1 1 57432A26
+P 3200 1150
+F 0 "J4" H 3273 1766 50  0000 C CNN
+F 1 "RJ45" H 3273 1674 50  0000 C CNN
+F 2 "rj45_MHRJJ88NFVS:MHRJJ88NFVS" H 3200 1150 50  0001 C CNN
+F 3 "" H 3200 1150 50  0000 C CNN
+	1    3200 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L ADuM1201WT-RESCUE-db25_bob_v2 U9
+U 1 1 57432A2C
+P 3150 3500
+AR Path="/57432A2C" Ref="U9"  Part="1" 
+AR Path="/5742FAA4/57432A2C" Ref="U9"  Part="1" 
+F 0 "U9" V 3242 3880 50  0000 L CNN
+F 1 "ADuM1201WT" V 3150 3880 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" V 3058 3880 50  0001 L CIN
+F 3 "" H 3150 3500 50  0000 C CNN
+	1    3150 3500
+	0    1    -1   0   
+$EndComp
+Text GLabel 3800 1600 2    60   Input ~ 0
+GND2
+Text GLabel 3550 1750 2    60   Input ~ 0
+5V2
+Text GLabel 3900 2050 2    60   Input ~ 0
+GND2
+Text GLabel 3900 2600 2    60   Input ~ 0
+5V2
+Text GLabel 3450 3050 2    60   Input ~ 0
+5V2
+Text GLabel 2850 3050 0    60   Input ~ 0
+GND2
+Wire Wire Line
+	2850 1600 2850 1850
+Wire Wire Line
+	2950 1600 2950 1800
+Wire Wire Line
+	2950 1800 3050 1800
+Wire Wire Line
+	3050 1800 3050 1850
+Wire Wire Line
+	3150 1600 3150 1700
+Wire Wire Line
+	3150 1700 3250 1700
+Wire Wire Line
+	3250 1700 3250 1850
+Wire Wire Line
+	3450 1850 3450 1800
+Wire Wire Line
+	3450 1800 3250 1800
+Wire Wire Line
+	3250 1800 3250 1600
+Wire Wire Line
+	3450 1600 3450 1750
+Wire Wire Line
+	3550 1600 3800 1600
+Connection ~ 3750 1600
+Wire Wire Line
+	3750 1600 3750 800 
+Wire Wire Line
+	3450 1750 3550 1750
+Wire Wire Line
+	2850 3050 2900 3050
+Wire Wire Line
+	3050 3050 2950 3050
+Wire Wire Line
+	2950 3050 2950 2850
+Wire Wire Line
+	3250 3050 3350 3050
+Wire Wire Line
+	3350 3050 3350 2850
+Wire Wire Line
+	3400 3050 3450 3050
+Wire Wire Line
+	3850 2600 3900 2600
+Wire Wire Line
+	3850 2050 3900 2050
+$Comp
+L C-RESCUE-db25_bob_v2 C4
+U 1 1 57432A4F
+P 4050 3100
+AR Path="/57432A4F" Ref="C4"  Part="1" 
+AR Path="/5742FAA4/57432A4F" Ref="C4"  Part="1" 
+F 0 "C4" H 4165 3146 50  0000 L CNN
+F 1 "C" H 4165 3054 50  0000 L CNN
+F 2 "Capacitors_SMD:C_1206" H 4088 2950 50  0001 C CNN
+F 3 "" H 4050 3100 50  0000 C CNN
+	1    4050 3100
+	1    0    0    -1  
+$EndComp
+Text GLabel 3950 2950 0    60   Input ~ 0
+5V2
+Text GLabel 3950 3250 0    60   Input ~ 0
+GND2
+Wire Wire Line
+	3950 2950 4050 2950
+Wire Wire Line
+	3950 3250 4050 3250
+$Comp
+L ADM4857-RESCUE-db25_bob_v2 U2
+U 1 1 57432A59
+P 2250 5950
+AR Path="/57432A59" Ref="U2"  Part="1" 
+AR Path="/5742FAA4/57432A59" Ref="U2"  Part="1" 
+F 0 "U2" V 2296 6691 50  0000 L CNN
+F 1 "ADM4857" V 2204 6691 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 2250 5950 50  0001 C CIN
+F 3 "" H 2250 5950 50  0000 C CNN
+	1    2250 5950
+	0    1    -1   0   
+$EndComp
+$Comp
+L RJ45 J1
+U 1 1 57432A5F
+P 2300 4750
+F 0 "J1" H 2373 5366 50  0000 C CNN
+F 1 "RJ45" H 2373 5274 50  0000 C CNN
+F 2 "rj45_MHRJJ88NFVS:MHRJJ88NFVS" H 2300 4750 50  0001 C CNN
+F 3 "" H 2300 4750 50  0000 C CNN
+	1    2300 4750
+	1    0    0    -1  
+$EndComp
+$Comp
+L ADuM1201WT-RESCUE-db25_bob_v2 U3
+U 1 1 57432A65
+P 2250 7000
+AR Path="/57432A65" Ref="U3"  Part="1" 
+AR Path="/5742FAA4/57432A65" Ref="U3"  Part="1" 
+F 0 "U3" V 2342 7380 50  0000 L CNN
+F 1 "ADuM1201WT" V 2250 7380 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" V 2158 7380 50  0001 L CIN
+F 3 "" H 2250 7000 50  0000 C CNN
+	1    2250 7000
+	0    1    -1   0   
+$EndComp
+Text GLabel 2900 5200 2    60   Input ~ 0
+GND7
+Text GLabel 2650 5350 2    60   Input ~ 0
+5V7
+Wire Wire Line
+	1950 5200 1950 5450
+Wire Wire Line
+	2050 5200 2050 5400
+Wire Wire Line
+	2050 5400 2150 5400
+Wire Wire Line
+	2150 5400 2150 5450
+Wire Wire Line
+	2250 5200 2250 5450
+Wire Wire Line
+	2250 5450 2350 5450
+Wire Wire Line
+	2550 5450 2550 5400
+Wire Wire Line
+	2550 5400 2350 5400
+Wire Wire Line
+	2350 5400 2350 5200
+Wire Wire Line
+	2550 5200 2550 5350
+Wire Wire Line
+	2650 5200 2900 5200
+Connection ~ 2850 5200
+Wire Wire Line
+	2850 5200 2850 4300
+Wire Wire Line
+	2550 5350 2650 5350
+Wire Wire Line
+	1950 6550 2000 6550
+Wire Wire Line
+	2150 6550 2050 6550
+Wire Wire Line
+	2050 6550 2050 6450
+Wire Wire Line
+	2350 6550 2450 6550
+Wire Wire Line
+	2450 6550 2450 6450
+Wire Wire Line
+	2500 6550 2550 6550
+Wire Wire Line
+	2950 6200 3000 6200
+Wire Wire Line
+	2950 5650 3000 5650
+$Comp
+L C-RESCUE-db25_bob_v2 C1
+U 1 1 57432A88
+P 3150 6600
+AR Path="/57432A88" Ref="C1"  Part="1" 
+AR Path="/5742FAA4/57432A88" Ref="C1"  Part="1" 
+F 0 "C1" H 3265 6646 50  0000 L CNN
+F 1 "C" H 3265 6554 50  0000 L CNN
+F 2 "Connect:DB25FD" H 3188 6450 50  0001 C CNN
+F 3 "" H 3150 6600 50  0000 C CNN
+	1    3150 6600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3050 6450 3150 6450
+Wire Wire Line
+	3050 6750 3150 6750
+$Comp
+L ADM4857-RESCUE-db25_bob_v2 U6
+U 1 1 57432A92
+P 4000 5950
+AR Path="/57432A92" Ref="U6"  Part="1" 
+AR Path="/5742FAA4/57432A92" Ref="U6"  Part="1" 
+F 0 "U6" V 4046 6691 50  0000 L CNN
+F 1 "ADM4857" V 3954 6691 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 4000 5950 50  0001 C CIN
+F 3 "" H 4000 5950 50  0000 C CNN
+	1    4000 5950
+	0    1    -1   0   
+$EndComp
+$Comp
+L RJ45 J3
+U 1 1 57432A98
+P 4050 4750
+F 0 "J3" H 4123 5366 50  0000 C CNN
+F 1 "RJ45" H 4123 5274 50  0000 C CNN
+F 2 "rj45_MHRJJ88NFVS:MHRJJ88NFVS" H 4050 4750 50  0001 C CNN
+F 3 "" H 4050 4750 50  0000 C CNN
+	1    4050 4750
+	1    0    0    -1  
+$EndComp
+$Comp
+L ADuM1201WT-RESCUE-db25_bob_v2 U7
+U 1 1 57432A9E
+P 4000 7000
+AR Path="/57432A9E" Ref="U7"  Part="1" 
+AR Path="/5742FAA4/57432A9E" Ref="U7"  Part="1" 
+F 0 "U7" V 4092 7380 50  0000 L CNN
+F 1 "ADuM1201WT" V 4000 7380 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" V 3908 7380 50  0001 L CIN
+F 3 "" H 4000 7000 50  0000 C CNN
+	1    4000 7000
+	0    1    -1   0   
+$EndComp
+Text GLabel 4650 5200 2    60   Input ~ 0
+GND8
+Text GLabel 4400 5350 2    60   Input ~ 0
+5V8
+Wire Wire Line
+	3700 5200 3700 5450
+Wire Wire Line
+	3800 5200 3800 5400
+Wire Wire Line
+	3800 5400 3900 5400
+Wire Wire Line
+	3900 5400 3900 5450
+Wire Wire Line
+	4000 5200 4000 5450
+Wire Wire Line
+	4000 5450 4100 5450
+Wire Wire Line
+	4300 5450 4300 5400
+Wire Wire Line
+	4300 5400 4100 5400
+Wire Wire Line
+	4100 5400 4100 5200
+Wire Wire Line
+	4300 5200 4300 5350
+Wire Wire Line
+	4400 5200 4650 5200
+Connection ~ 4600 5200
+Wire Wire Line
+	4600 5200 4600 4300
+Wire Wire Line
+	4300 5350 4400 5350
+Wire Wire Line
+	3700 6550 3750 6550
+Wire Wire Line
+	3900 6550 3800 6550
+Wire Wire Line
+	3800 6550 3800 6450
+Wire Wire Line
+	4100 6550 4200 6550
+Wire Wire Line
+	4200 6550 4200 6450
+Wire Wire Line
+	4250 6550 4300 6550
+Wire Wire Line
+	4700 6200 4750 6200
+Wire Wire Line
+	4700 5650 4750 5650
+$Comp
+L C-RESCUE-db25_bob_v2 C3
+U 1 1 57432AC1
+P 4900 6600
+AR Path="/57432AC1" Ref="C3"  Part="1" 
+AR Path="/5742FAA4/57432AC1" Ref="C3"  Part="1" 
+F 0 "C3" H 5015 6646 50  0000 L CNN
+F 1 "C" H 5015 6554 50  0000 L CNN
+F 2 "Capacitors_SMD:C_1206" H 4938 6450 50  0001 C CNN
+F 3 "" H 4900 6600 50  0000 C CNN
+	1    4900 6600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4800 6450 4900 6450
+Wire Wire Line
+	4800 6750 4900 6750
+Text GLabel 5600 2000 2    60   Input ~ 0
+GND3
+Text GLabel 4550 3000 0    60   Input ~ 0
+GND3
+Text GLabel 5650 3200 0    60   Input ~ 0
+GND3
+Text GLabel 5600 2550 2    60   Input ~ 0
+5V3
+Text GLabel 5150 3000 2    60   Input ~ 0
+5V3
+Text GLabel 5650 2900 0    60   Input ~ 0
+5V3
+Text GLabel 7350 2550 2    60   Input ~ 0
+5V4
+Text GLabel 6900 3000 2    60   Input ~ 0
+5V4
+Text GLabel 7400 2900 0    60   Input ~ 0
+5V4
+Text GLabel 7350 2000 2    60   Input ~ 0
+GND4
+Text GLabel 6300 3000 0    60   Input ~ 0
+GND4
+Text GLabel 7400 3200 0    60   Input ~ 0
+GND4
+Text GLabel 9100 2550 2    60   Input ~ 0
+5V5
+Text GLabel 8650 3000 2    60   Input ~ 0
+5V5
+Text GLabel 9150 2900 0    60   Input ~ 0
+5V5
+Text GLabel 9100 2000 2    60   Input ~ 0
+GND5
+Text GLabel 8050 3000 0    60   Input ~ 0
+GND5
+Text GLabel 9150 3200 0    60   Input ~ 0
+GND5
+Text GLabel 10850 2550 2    60   Input ~ 0
+5V6
+Text GLabel 10400 3000 2    60   Input ~ 0
+5V6
+Text GLabel 10900 2900 0    60   Input ~ 0
+5V6
+Text GLabel 10850 2000 2    60   Input ~ 0
+GND6
+Text GLabel 9800 3000 0    60   Input ~ 0
+GND6
+Text GLabel 10900 3200 0    60   Input ~ 0
+GND6
+Text GLabel 3000 5650 2    60   Input ~ 0
+GND7
+Text GLabel 1950 6550 0    60   Input ~ 0
+GND7
+Text GLabel 3050 6750 0    60   Input ~ 0
+GND7
+Text GLabel 3000 6200 2    60   Input ~ 0
+5V7
+Text GLabel 2550 6550 2    60   Input ~ 0
+5V7
+Text GLabel 3050 6450 0    60   Input ~ 0
+5V7
+Text GLabel 4750 6200 2    60   Input ~ 0
+5V8
+Text GLabel 4300 6550 2    60   Input ~ 0
+5V8
+Text GLabel 4800 6450 0    60   Input ~ 0
+5V8
+Text GLabel 4750 5650 2    60   Input ~ 0
+GND8
+Text GLabel 3700 6550 0    60   Input ~ 0
+GND8
+Text GLabel 4800 6750 0    60   Input ~ 0
+GND8
+$Comp
+L DB25 J9
+U 1 1 57451C85
+P 6800 5950
+F 0 "J9" V 7024 5955 50  0000 C CNN
+F 1 "DB25" V 7115 5955 50  0000 C CNN
+F 2 "Connect:DB25FD" H 6800 5950 50  0001 C CNN
+F 3 "" H 6800 5950 50  0000 C CNN
+	1    6800 5950
+	0    1    1    0   
+$EndComp
+Text GLabel 1300 4000 3    60   Input ~ 0
+IN0
+Text GLabel 1500 4000 3    60   Input ~ 0
+OUT0
+Text GLabel 3050 4000 3    60   Input ~ 0
+IN1
+Text GLabel 4750 3950 3    60   Input ~ 0
+IN2
+Text GLabel 6500 3950 3    60   Input ~ 0
+IN3
+Text GLabel 8250 3950 3    60   Input ~ 0
+IN4
+Text GLabel 10000 3950 3    60   Input ~ 0
+IN5
+Text GLabel 2150 7500 3    60   Input ~ 0
+IN6
+Text GLabel 3900 7500 3    60   Input ~ 0
+IN7
+Text GLabel 3250 4000 3    60   Input ~ 0
+OUT1
+Text GLabel 4950 3950 3    60   Input ~ 0
+OUT2
+Text GLabel 6700 3950 3    60   Input ~ 0
+OUT3
+Text GLabel 8450 3950 3    60   Input ~ 0
+OUT4
+Text GLabel 10200 3950 3    60   Input ~ 0
+OUT5
+Text GLabel 2350 7500 3    60   Input ~ 0
+OUT6
+Text GLabel 4100 7500 3    60   Input ~ 0
+OUT7
+Wire Wire Line
+	1300 4000 1300 3950
+Wire Wire Line
+	1500 4000 1500 3950
+Wire Wire Line
+	3050 4000 3050 3950
+Wire Wire Line
+	3250 4000 3250 3950
+Wire Wire Line
+	4750 3950 4750 3900
+Wire Wire Line
+	4950 3950 4950 3900
+Wire Wire Line
+	6500 3950 6500 3900
+Wire Wire Line
+	6700 3950 6700 3900
+Wire Wire Line
+	8250 3900 8250 3950
+Wire Wire Line
+	8450 3900 8450 3950
+Wire Wire Line
+	10000 3900 10000 3950
+Wire Wire Line
+	10200 3900 10200 3950
+Wire Wire Line
+	2150 7450 2150 7500
+Wire Wire Line
+	2350 7450 2350 7500
+Wire Wire Line
+	3900 7450 3900 7500
+Wire Wire Line
+	4100 7450 4100 7500
+$Comp
+L GNDD #PWR06
+U 1 1 57457747
+P 1150 4000
+F 0 "#PWR06" H 1150 3750 50  0001 C CNN
+F 1 "GNDD" H 1155 3827 50  0000 C CNN
+F 2 "" H 1150 4000 50  0000 C CNN
+F 3 "" H 1150 4000 50  0000 C CNN
+	1    1150 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDD #PWR07
+U 1 1 57457882
+P 2900 4000
+F 0 "#PWR07" H 2900 3750 50  0001 C CNN
+F 1 "GNDD" H 2905 3827 50  0000 C CNN
+F 2 "" H 2900 4000 50  0000 C CNN
+F 3 "" H 2900 4000 50  0000 C CNN
+	1    2900 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDD #PWR08
+U 1 1 57457974
+P 2000 7500
+F 0 "#PWR08" H 2000 7250 50  0001 C CNN
+F 1 "GNDD" H 2005 7327 50  0000 C CNN
+F 2 "" H 2000 7500 50  0000 C CNN
+F 3 "" H 2000 7500 50  0000 C CNN
+	1    2000 7500
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDD #PWR09
+U 1 1 57457B8F
+P 3750 7500
+F 0 "#PWR09" H 3750 7250 50  0001 C CNN
+F 1 "GNDD" H 3755 7327 50  0000 C CNN
+F 2 "" H 3750 7500 50  0000 C CNN
+F 3 "" H 3750 7500 50  0000 C CNN
+	1    3750 7500
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDD #PWR010
+U 1 1 57457CE4
+P 4600 3950
+F 0 "#PWR010" H 4600 3700 50  0001 C CNN
+F 1 "GNDD" H 4605 3777 50  0000 C CNN
+F 2 "" H 4600 3950 50  0000 C CNN
+F 3 "" H 4600 3950 50  0000 C CNN
+	1    4600 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDD #PWR011
+U 1 1 57457E9C
+P 6350 3950
+F 0 "#PWR011" H 6350 3700 50  0001 C CNN
+F 1 "GNDD" H 6355 3777 50  0000 C CNN
+F 2 "" H 6350 3950 50  0000 C CNN
+F 3 "" H 6350 3950 50  0000 C CNN
+	1    6350 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDD #PWR012
+U 1 1 57457FF1
+P 9850 3950
+F 0 "#PWR012" H 9850 3700 50  0001 C CNN
+F 1 "GNDD" H 9855 3777 50  0000 C CNN
+F 2 "" H 9850 3950 50  0000 C CNN
+F 3 "" H 9850 3950 50  0000 C CNN
+	1    9850 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDD #PWR013
+U 1 1 57458125
+P 8100 3950
+F 0 "#PWR013" H 8100 3700 50  0001 C CNN
+F 1 "GNDD" H 8105 3777 50  0000 C CNN
+F 2 "" H 8100 3950 50  0000 C CNN
+F 3 "" H 8100 3950 50  0000 C CNN
+	1    8100 3950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 4000 1150 3950
+Wire Wire Line
+	2900 4000 2900 3950
+Wire Wire Line
+	4600 3950 4600 3900
+Wire Wire Line
+	6350 3950 6350 3900
+Wire Wire Line
+	8100 3950 8100 3900
+Wire Wire Line
+	9850 3950 9850 3900
+Wire Wire Line
+	2000 7500 2000 7450
+Wire Wire Line
+	3750 7500 3750 7450
+$Comp
+L +5VD #PWR014
+U 1 1 5745BF44
+P 1850 3950
+F 0 "#PWR014" H 1850 3800 50  0001 C CNN
+F 1 "+5VD" H 1865 4123 50  0000 C CNN
+F 2 "" H 1850 3950 50  0000 C CNN
+F 3 "" H 1850 3950 50  0000 C CNN
+	1    1850 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5VD #PWR015
+U 1 1 5745C05E
+P 3600 3950
+F 0 "#PWR015" H 3600 3800 50  0001 C CNN
+F 1 "+5VD" H 3615 4123 50  0000 C CNN
+F 2 "" H 3600 3950 50  0000 C CNN
+F 3 "" H 3600 3950 50  0000 C CNN
+	1    3600 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5VD #PWR016
+U 1 1 5745C171
+P 5300 3900
+F 0 "#PWR016" H 5300 3750 50  0001 C CNN
+F 1 "+5VD" H 5315 4073 50  0000 C CNN
+F 2 "" H 5300 3900 50  0000 C CNN
+F 3 "" H 5300 3900 50  0000 C CNN
+	1    5300 3900
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5VD #PWR017
+U 1 1 5745C329
+P 7050 3900
+F 0 "#PWR017" H 7050 3750 50  0001 C CNN
+F 1 "+5VD" H 7065 4073 50  0000 C CNN
+F 2 "" H 7050 3900 50  0000 C CNN
+F 3 "" H 7050 3900 50  0000 C CNN
+	1    7050 3900
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5VD #PWR018
+U 1 1 5745C397
+P 8800 3900
+F 0 "#PWR018" H 8800 3750 50  0001 C CNN
+F 1 "+5VD" H 8815 4073 50  0000 C CNN
+F 2 "" H 8800 3900 50  0000 C CNN
+F 3 "" H 8800 3900 50  0000 C CNN
+	1    8800 3900
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5VD #PWR019
+U 1 1 5745C4CB
+P 10550 3900
+F 0 "#PWR019" H 10550 3750 50  0001 C CNN
+F 1 "+5VD" H 10565 4073 50  0000 C CNN
+F 2 "" H 10550 3900 50  0000 C CNN
+F 3 "" H 10550 3900 50  0000 C CNN
+	1    10550 3900
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5VD #PWR020
+U 1 1 5745C5DE
+P 2700 7450
+F 0 "#PWR020" H 2700 7300 50  0001 C CNN
+F 1 "+5VD" H 2715 7623 50  0000 C CNN
+F 2 "" H 2700 7450 50  0000 C CNN
+F 3 "" H 2700 7450 50  0000 C CNN
+	1    2700 7450
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5VD #PWR021
+U 1 1 5745C6D0
+P 4450 7450
+F 0 "#PWR021" H 4450 7300 50  0001 C CNN
+F 1 "+5VD" H 4465 7623 50  0000 C CNN
+F 2 "" H 4450 7450 50  0000 C CNN
+F 3 "" H 4450 7450 50  0000 C CNN
+	1    4450 7450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4250 7450 4450 7450
+Wire Wire Line
+	2500 7450 2700 7450
+Wire Wire Line
+	1650 3950 1850 3950
+Wire Wire Line
+	3400 3950 3600 3950
+Wire Wire Line
+	5100 3900 5300 3900
+Wire Wire Line
+	6850 3900 7050 3900
+Wire Wire Line
+	8600 3900 8800 3900
+Wire Wire Line
+	10350 3900 10550 3900
+Text GLabel 5600 5450 1    60   Input ~ 0
+IN0
+Text GLabel 5800 5450 1    60   Input ~ 0
+IN1
+Text GLabel 6000 5450 1    60   Input ~ 0
+IN2
+Text GLabel 6200 5450 1    60   Input ~ 0
+IN3
+Text GLabel 6400 5450 1    60   Input ~ 0
+IN4
+Text GLabel 6800 5450 1    60   Input ~ 0
+IN5
+Text GLabel 7200 5450 1    60   Input ~ 0
+IN6
+Text GLabel 7600 5450 1    60   Input ~ 0
+IN7
+Text GLabel 5700 5250 1    60   Input ~ 0
+OUT0
+Text GLabel 5900 5250 1    60   Input ~ 0
+OUT1
+Text GLabel 6100 5250 1    60   Input ~ 0
+OUT2
+Text GLabel 6300 5250 1    60   Input ~ 0
+OUT3
+Text GLabel 6600 5250 1    60   Input ~ 0
+OUT4
+Text GLabel 7000 5250 1    60   Input ~ 0
+OUT5
+Text GLabel 7400 5250 1    60   Input ~ 0
+OUT6
+Text GLabel 7800 5250 1    60   Input ~ 0
+OUT7
+Wire Wire Line
+	6500 5500 6500 5400
+Wire Wire Line
+	6500 5400 7100 5400
+Wire Wire Line
+	7100 5400 7100 5500
+Wire Wire Line
+	6700 5500 6700 5400
+Connection ~ 6700 5400
+Wire Wire Line
+	6900 5500 6900 5400
+Connection ~ 6900 5400
+Wire Wire Line
+	7300 5500 7300 5400
+Wire Wire Line
+	7300 5400 7900 5400
+Wire Wire Line
+	7900 5400 7900 5500
+Wire Wire Line
+	7700 5500 7700 5400
+Connection ~ 7700 5400
+Wire Wire Line
+	7500 5500 7500 5400
+Connection ~ 7500 5400
+Text GLabel 8000 5450 1    60   Input ~ 0
+ESTOP
+Wire Wire Line
+	5600 5450 5600 5500
+Wire Wire Line
+	5700 5500 5700 5250
+Wire Wire Line
+	5800 5450 5800 5500
+Wire Wire Line
+	5900 5500 5900 5250
+Wire Wire Line
+	6000 5450 6000 5500
+Wire Wire Line
+	6100 5500 6100 5250
+Wire Wire Line
+	6200 5450 6200 5500
+Wire Wire Line
+	6300 5500 6300 5250
+Wire Wire Line
+	6400 5450 6400 5500
+Wire Wire Line
+	6600 5500 6600 5250
+Wire Wire Line
+	6800 5450 6800 5500
+Wire Wire Line
+	7000 5500 7000 5250
+Wire Wire Line
+	7200 5450 7200 5500
+Wire Wire Line
+	7400 5500 7400 5250
+Wire Wire Line
+	7600 5450 7600 5500
+Wire Wire Line
+	7800 5500 7800 5250
+Wire Wire Line
+	8000 5450 8000 5500
+$Comp
+L +5VD #PWR022
+U 1 1 57461AE4
+P 7900 5400
+F 0 "#PWR022" H 7900 5250 50  0001 C CNN
+F 1 "+5VD" H 7915 5573 50  0000 C CNN
+F 2 "" H 7900 5400 50  0000 C CNN
+F 3 "" H 7900 5400 50  0000 C CNN
+	1    7900 5400
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDD #PWR023
+U 1 1 57461CFF
+P 7100 5400
+F 0 "#PWR023" H 7100 5150 50  0001 C CNN
+F 1 "GNDD" H 7105 5227 50  0000 C CNN
+F 2 "" H 7100 5400 50  0000 C CNN
+F 3 "" H 7100 5400 50  0000 C CNN
+	1    7100 5400
+	-1   0    0    1   
+$EndComp
+$Comp
+L ADuM1201WT-RESCUE-db25_bob_v2 U28
+U 1 1 574628E5
+P 9700 5650
+AR Path="/574628E5" Ref="U28"  Part="1" 
+AR Path="/5742FAA4/574628E5" Ref="U28"  Part="1" 
+F 0 "U28" V 9792 6030 50  0000 L CNN
+F 1 "ADuM1201WT" V 9700 6030 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" V 9608 6030 50  0001 L CIN
+F 3 "" H 9700 5650 50  0000 C CNN
+	1    9700 5650
+	1    0    0    1   
+$EndComp
+$Comp
+L JUMPER JP1
+U 1 1 57462E4C
+P 8900 5550
+F 0 "JP1" H 8900 5814 50  0000 C CNN
+F 1 "JUMPER" H 8900 5723 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x02" H 8900 5550 50  0001 C CNN
+F 3 "" H 8900 5550 50  0000 C CNN
+	1    8900 5550
+	1    0    0    -1  
+$EndComp
+$Comp
+L JUMPER JP2
+U 1 1 57462F2F
+P 8900 5750
+F 0 "JP2" H 8900 6014 50  0000 C CNN
+F 1 "JUMPER" H 8900 5923 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x02" H 8900 5750 50  0001 C CNN
+F 3 "" H 8900 5750 50  0000 C CNN
+	1    8900 5750
+	1    0    0    -1  
+$EndComp
+Text GLabel 8550 5750 0    60   Input ~ 0
+OUT7
+Text GLabel 8550 5550 0    60   Input ~ 0
+IN7
+Wire Wire Line
+	8550 5550 8600 5550
+Wire Wire Line
+	8550 5750 8600 5750
+Wire Wire Line
+	9200 5550 9250 5550
+Wire Wire Line
+	9200 5750 9250 5750
+$Comp
+L GNDD #PWR024
+U 1 1 57463B77
+P 9150 5400
+F 0 "#PWR024" H 9150 5150 50  0001 C CNN
+F 1 "GNDD" V 9155 5272 50  0000 R CNN
+F 2 "" H 9150 5400 50  0000 C CNN
+F 3 "" H 9150 5400 50  0000 C CNN
+	1    9150 5400
+	0    1    1    0   
+$EndComp
+$Comp
+L +5VD #PWR025
+U 1 1 57463CEA
+P 9150 5900
+F 0 "#PWR025" H 9150 5750 50  0001 C CNN
+F 1 "+5VD" H 9165 6073 50  0000 C CNN
+F 2 "" H 9150 5900 50  0000 C CNN
+F 3 "" H 9150 5900 50  0000 C CNN
+	1    9150 5900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9150 5900 9250 5900
+Wire Wire Line
+	9150 5400 9250 5400
+Text HLabel 10700 5000 2    60   Input ~ 0
+ESTOP
+Text GLabel 10650 5000 0    60   Input ~ 0
+ESTOP
+Text HLabel 10250 5400 2    60   Input ~ 0
+GNDstm
+Text HLabel 10250 5550 2    60   Input ~ 0
+SSerialOUTstm
+Text HLabel 10250 5750 2    60   Input ~ 0
+SSerialINstm
+Text HLabel 10250 5900 2    60   Input ~ 0
+VCCstm
+Wire Wire Line
+	10150 5400 10250 5400
+Wire Wire Line
+	10150 5550 10250 5550
+Wire Wire Line
+	10150 5750 10250 5750
+Wire Wire Line
+	10150 5900 10250 5900
+Wire Wire Line
+	10650 5000 10700 5000
+$EndSCHEMATC
