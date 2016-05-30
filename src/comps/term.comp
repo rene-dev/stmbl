@@ -660,7 +660,7 @@ NRT(
 
       if (cdcacm_is_connected()) {
          PIN(con) = 1.0;
-         //cdcacm_tx(buf,9);
+         cdcacm_tx(buf,9);
       }else{
          PIN(con) = 0.0;
       }
