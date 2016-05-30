@@ -244,7 +244,10 @@ int main(void)
    // 
    
    #include "comps/sim.comp"
+   #include "comps/idq.comp"
+   #include "comps/iclarke.comp"
    #include "comps/hw/f3troller/io.comp"
+   #include "comps/hw/f3troller/pwm.comp"
    #include "comps/term.comp"
    // 
    hal_set_comp_type("net");
@@ -269,9 +272,22 @@ int main(void)
    hal_comp_init();
    
    hal_set_pin("sim0.rt_prio", 1.0);
-   hal_set_pin("term0.rt_prio", 2.0);
-   hal_set_pin("io0.rt_prio", 1.0);
+   hal_set_pin("idq0.rt_prio", 2.0);
+   hal_set_pin("iclarke0.rt_prio", 3.0);
+   hal_set_pin("pwm0.rt_prio", 4.0);
+   hal_set_pin("term0.rt_prio", 10.0);
+   hal_set_pin("io0.rt_prio", 10.0);
    
+   hal_link_pins("sim0.vel", "idq0.pos");
+   hal_link_pins("idq0.a", "iclarke0.a");
+   hal_link_pins("idq0.b", "iclarke0.b");
+   hal_link_pins("iclarke0.u", "pwm0.u");
+   hal_link_pins("iclarke0.v", "pwm0.v");
+   hal_link_pins("iclarke0.w", "pwm0.w");
+   
+   hal_set_pin("idq0.q", 100.0);
+   hal_set_pin("pwm0.enable", 1.0);
+
    
    if(hal.pin_errors + hal.comp_errors == 0){
       hal_start();
