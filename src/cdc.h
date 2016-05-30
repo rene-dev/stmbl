@@ -8,10 +8,10 @@
 #define TX_QUEUE_SIZE  4096
 
 void cdc_init(void);
-void setup_usb(void);
 int cdcacm_tx(void* data, uint32_t len);
 int cdcacm_getline(char *ptr, int len);
 int cdcacm_is_connected();
+void cdc_poll();
 
 usbd_device *usbd_dev;
 int usb_connected;

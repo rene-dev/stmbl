@@ -227,7 +227,7 @@ int main(void)
    //rcc_clock_setup_hsi(&rcc_hsi_8mhz[RCC_CLOCK_48MHZ]);
    rcc_clock_setup_in_hse_8mhz_out_72mhz();
    setup_systick();
-   setup_usb();
+   cdc_init();
    setup_tim();
    rcc_periph_clock_enable(RCC_CRC);
    // Relocate interrupt vectors
@@ -298,7 +298,7 @@ int main(void)
    while(1)//run non realtime stuff
    {
       start = systick_get_value();
-      usbd_poll(usbd_dev);
+      cdc_poll();
       
       if(last_start < start){
         last_start += systick_get_reload();
