@@ -1,0 +1,29 @@
+HAL_COMP(io);
+
+HAL_PIN(led0) = 0.0;
+HAL_PIN(led1) = 0.0;
+HAL_PIN(led2) = 0.0;
+
+INIT(
+   rcc_periph_clock_enable(RCC_GPIOC);
+   gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT,GPIO_PUPD_NONE, GPIO0 | GPIO1 | GPIO2);
+);
+
+RT(
+   if(PIN(led0) > 0)
+      gpio_set(GPIOC, GPIO0);
+   else
+      gpio_clear(GPIOC, GPIO0);
+
+   if(PIN(led1) > 0)
+      gpio_set(GPIOC, GPIO1);
+   else
+      gpio_clear(GPIOC, GPIO1);
+
+   if(PIN(led2) > 0)
+      gpio_set(GPIOC, GPIO2);
+   else
+      gpio_clear(GPIOC, GPIO2);
+);
+
+ENDCOMP;
