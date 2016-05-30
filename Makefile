@@ -23,7 +23,7 @@ SOURCES += src/cdc.c
 SOURCES += src/hal.c
 SOURCES += src/misc.c
 #SOURCES += src/eeprom.c
-SOURCES += src/link.c
+#SOURCES += src/link.c
 SOURCES += src/version.c
 SOURCES += src/syscalls.c
 
