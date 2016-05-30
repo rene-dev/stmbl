@@ -658,7 +658,7 @@ NRT(
       read_pos++;
       read_pos %= TERM_BUF_SIZE;
 
-      if (cdcacm_is_connected()) {
+      if (cdcacm_is_connected() && PIN(send_step) > 0) {
          PIN(con) = 1.0;
          cdcacm_tx(buf,9);
       }else{
