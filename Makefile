@@ -18,7 +18,7 @@ INCDIRS += shared
 
 SOURCES += src/main.c
 SOURCES += src/scanf.c
-SOURCES += src/setup.c
+#SOURCES += src/setup.c
 SOURCES += src/cdc.c
 SOURCES += src/hal.c
 SOURCES += src/misc.c
