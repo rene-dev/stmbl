@@ -551,4 +551,22 @@ Connection ~ 7200 5100
 Connection ~ 7200 5200
 Connection ~ 7200 5300
 Connection ~ 7200 5400
+Text HLabel 1800 2200 0    60   Input ~ 0
+MOSI_out
+Text HLabel 1800 2300 0    60   Input ~ 0
+MISO_out
+Text HLabel 1800 2400 0    60   Input ~ 0
+SCK_out
+Text GLabel 1900 2400 2    60   Input ~ 0
+SCLK
+Text GLabel 1900 2200 2    60   Input ~ 0
+SI1
+Text GLabel 1900 2300 2    60   Input ~ 0
+SO2
+Wire Wire Line
+	1800 2200 1900 2200
+Wire Wire Line
+	1800 2300 1900 2300
+Wire Wire Line
+	1800 2400 1900 2400
 $EndSCHEMATC
