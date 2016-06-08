@@ -203,6 +203,28 @@ void link_pid(){
    hal_link_pins("conf0.cos_offset", "adc0.cos_offset");
 }
 
+int update_mot(){
+   switch((mot_type_t)hal_get_pin("conf0.mot_type")){
+      case ACSYNC:
+         //TODO: copy acsync stuff from link_pid here
+         hal_link_pins("curpid0.uq", "idq0.q");
+         hal_set_pin("hv0.mode", 0.0);
+         break;
+      case ACASYNC:
+         break;
+      case AC2PHASE:
+         break;
+      case DC:
+         //TODO: implement proper dc model
+         hal_link_pins("curpid0.uq", "hv0.a");
+         hal_set_pin("hv0.mode", 1.0);
+         break;
+      default:
+         return -1;
+   }
+   return 0;
+}
+
 int update_fb(){
    hal_set_pin("adc0.rt_prio", -1.0);
    hal_set_pin("enc_fb0.rt_prio", -1.0);
@@ -280,7 +302,7 @@ int update_cmd(){
          //this breaks cmd rev...
          hal_link_pins("vel_int0.pos_out", "net0.cmd");
          hal_link_pins("vel_int0.vel_out", "net0.cmd_d");
-         hal_linkpin("vel_int0.wd", 0.002);//TODO: this depends on linuxcnc servo thread period
+         hal_set_pin("vel_int0.wd", 0.002);//TODO: this depends on linuxcnc servo thread period
          //TODO: handle error of vel_int
          hal_set_pin("sserial0.rt_prio", 2.0);
          hal_set_pin("sserial0.frt_prio", 2.0);

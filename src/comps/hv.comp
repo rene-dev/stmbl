@@ -2,6 +2,7 @@ HAL_COMP(hv);
 
 HAL_PIN(a) = 0.0;
 HAL_PIN(b) = 0.0;
+HAL_PIN(mode) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
@@ -147,6 +148,7 @@ RT(
   if(e > 0.0){
     packet_to_hv.data.a = TOFIXED(a);
     packet_to_hv.data.b = TOFIXED(b);
+    packet_to_hv.data.mode = PIN(mode);
   }
   else{
     packet_to_hv.data.a = 0;

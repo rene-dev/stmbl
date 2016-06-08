@@ -409,44 +409,55 @@ void USART2_IRQHandler(){
 		float ua = TOFLOAT(packet_to_hv.data.a);
 		float ub = TOFLOAT(packet_to_hv.data.b);
 
-		float u = ua; // inverse clarke
-		float v = - ua / 2.0 + ub / 2.0 * SQRT3;
-		float w = - ua / 2.0 - ub / 2.0 * SQRT3;
+      if(packet_to_hv.data.mode == 0){//a,b voltages
+         float u = ua; // inverse clarke
+         float v = - ua / 2.0 + ub / 2.0 * SQRT3;
+         float w = - ua / 2.0 - ub / 2.0 * SQRT3;
 
-		//TODO: clamping
-		u += volt / 2.0;
-		v += volt / 2.0;
-		w += volt / 2.0;
+         //TODO: clamping
+         u += volt / 2.0;
+         v += volt / 2.0;
+         w += volt / 2.0;
 
-		if(u < v){
-			if(u < w){
-				v -= u;
-				w -= u;
-				u = 0.0;
-			}
-			else{
-				u -= w;
-				v -= w;
-				w = 0.0;
-			}
-		}
-		else{
-			if(v < w){
-				u -= v;
-				w -= v;
-				v = 0.0;
-			}
-			else{
-				u -= w;
-				v -= w;
-				w = 0.0;
-			}
-		}
+         if(u < v){
+            if(u < w){
+               v -= u;
+               w -= u;
+               u = 0.0;
+            }
+            else{
+               u -= w;
+               v -= w;
+               w = 0.0;
+            }
+         }
+         else{
+            if(v < w){
+               u -= v;
+               w -= v;
+               v = 0.0;
+            }
+            else{
+               u -= w;
+               v -= w;
+               w = 0.0;
+            }
+         }
 
-		PWM_U = CLAMP(u / volt * PWM_RES, 0, PWM_RES * 0.95);
-		PWM_V = CLAMP(v / volt * PWM_RES, 0, PWM_RES * 0.95);
-		PWM_W = CLAMP(w / volt * PWM_RES, 0, PWM_RES * 0.95);
-
+         PWM_U = CLAMP(u / volt * PWM_RES, 0, PWM_RES * 0.95);
+         PWM_V = CLAMP(v / volt * PWM_RES, 0, PWM_RES * 0.95);
+         PWM_W = CLAMP(w / volt * PWM_RES, 0, PWM_RES * 0.95);
+      }else if(packet_to_hv.data.mode == 1){//DC, a: -dclink ... +dclink
+         ua += volt;
+         PWM_U = CLAMP(ua / (volt*2.0) * PWM_RES, 0, PWM_RES * 0.95);
+         PWM_V = CLAMP((1.0 - (ua / (volt*2.0))) * PWM_RES, 0, PWM_RES * 0.95);
+         PWM_W = 0;
+      }else{
+         PWM_U = 0;
+         PWM_V = 0;
+         PWM_W = 0;
+      }
+      
 		timeout = 0; //reset timeout
 	}
 }

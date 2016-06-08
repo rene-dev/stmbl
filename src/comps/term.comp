@@ -102,6 +102,7 @@ int load(){
    //update cmd/fb links
    update_cmd();
    update_fb();
+   update_mot();
    return 0;
 }
 

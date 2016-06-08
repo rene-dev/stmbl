@@ -32,6 +32,7 @@ typedef struct{
    int16_t dc_cur;
    int16_t dc_volt;
    int16_t hv_temp;
+   uint16_t status;
 #ifdef TROLLER
    int16_t a;
    int16_t b;
@@ -43,6 +44,7 @@ typedef struct{
 typedef struct{
    int16_t a;
    int16_t b;
+   uint16_t mode;
 } to_hv_t;
 
 typedef struct{

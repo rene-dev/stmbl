@@ -19,6 +19,14 @@ typedef enum{
   SSI
 } protocol_t;
 
+typedef enum{
+  ACSYNC = 0,
+  ACASYNC,
+  AC2PHASE,
+  DC
+} mot_type_t;
+
 void link_pid();
 int update_cmd();
 int update_fb();
+int update_mot();
