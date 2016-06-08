@@ -274,11 +274,17 @@ int update_cmd(){
          }
          break;
       case SSERIAL:
-         hal_link_pins("sserial0.pos_cmd", "rev0.in");
+         hal_link_pins("sserial0.pos_cmd", "vel_int0.pos_in");
+         hal_link_pins("sserial0.pos_cmd_d", "vel_int0.vel_in");
+         
          //this breaks cmd rev...
-         //net0.cmd_d <= sserial0.pos_cmd_d
+         hal_link_pins("vel_int0.pos_out", "net0.cmd");
+         hal_link_pins("vel_int0.vel_out", "net0.cmd_d");
+         hal_linkpin("vel_int0.wd", 0.002);//TODO: this depends on linuxcnc servo thread period
+         //TODO: handle error of vel_int
          hal_set_pin("sserial0.rt_prio", 2.0);
          hal_set_pin("sserial0.frt_prio", 2.0);
+         hal_set_pin("vel_int0.rt_prio", 2.1);
          break;
       default:
          return -1;

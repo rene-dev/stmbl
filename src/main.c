@@ -196,6 +196,7 @@ int main(void)
    #include "comps/rev.comp"
    #include "comps/vel.comp"
    #include "comps/vel.comp"
+   #include "comps/vel_int.comp"
    #include "comps/cauto.comp"
    #include "comps/pid.comp"
    #include "comps/pmsm_t2c.comp"
@@ -294,10 +295,8 @@ int main(void)
    rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
    frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
    
-   hal_comp_init();
-
    link_pid();
-
+   hal_comp_init();
 
    if(hal.pin_errors + hal.comp_errors == 0){
       hal_start();
