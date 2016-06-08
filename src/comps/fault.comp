@@ -210,7 +210,7 @@ RT(
 
 
    // saturation
-   if(PIN(sat) >= PIN(max_sat)){ // disable drive, set fault
+   if(PIN(sat) >= PIN(max_sat) && PIN(max_sat) > 0.0){ // disable drive, set fault
       PIN(brake) = 0.0;
       PIN(cur) = 0.0;
       PIN(enable_out) = 0.0;
