@@ -151,15 +151,15 @@ RT(
       // pos -> vel
       velcmd = posp * poserr + PIN(vel_ff) * velextcmd;  // vel = p * pos_error + ff1
       velcmd = velcmd * poslp + (1.0 - poslp) * old_velcmd; // lowpass
-      velsat = SAT2(velcmd, velmin, velmax);
-      velcmd = CLAMP(velcmd, velmin, velmax); // min/max clamping
+      velsat = SAT2(velcmd, velmin * velp * accp, velmax * velp * accp);
+      velcmd = CLAMP(velcmd, velmin * velp * accp, velmax * velp * accp); // min/max clamping
 
       // vel -> acc
       velerr = velcmd - velfb;
       acccmd = velerr / period * velp + PIN(acc_ff) * accextcmd; // acc = p * vel_error / period + ff2
       acccmd = acccmd * vellp + (1.0 - vellp) * old_acccmd; // lowpass
-      accsat = SAT2(acccmd, accmin, accmax);
-      acccmd = CLAMP(acccmd, accmin, accmax); // min/max clamping
+      accsat = SAT2(acccmd, accmin * accp, accmax * accp);
+      acccmd = CLAMP(acccmd, accmin * accp, accmax * accp); // min/max clamping
 
       // acc -> torque
       torquecmd = acccmd * j * accp + PIN(torque_ff) * torqueextcmd; // torque = acc * inertia + ext cmd
