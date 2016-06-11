@@ -15,7 +15,7 @@ RT(
    float psi_m = MAX(PIN(psi), 0.01);
    float torque = PIN(torque);
 
-   PIN(cur) = torque / 3.0 * 2.0 / p / psi_m;
+   PIN(cur) = torque / psi_m;
 );
 
 ENDCOMP;
