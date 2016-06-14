@@ -91,7 +91,7 @@ MEM(int phased) = 0;
 
 RT(
    // reset fault
-   if(PIN(reset) > 0.0){
+   if(PIN(reset) > 0.0 || RISING_EDGE(PIN(enable))){
       state = STATE_RESET;
    }
    else if(state == STATE_RESET){ // reset on falling edge
@@ -272,7 +272,7 @@ RT(
 
    // under voltage
    if(state > 0 && dc_volt < low_dc_volt){
-      state = STATE_DISABLED;
+      state = STATE_OVR_VOLT;
       PIN(phase_start) = 0.0;
       PIN(brake) = 0.0;
       PIN(brake_resistor) = 0.0;
