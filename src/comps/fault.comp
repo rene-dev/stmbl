@@ -64,6 +64,8 @@ HAL_PIN(brake_resistor) = 0.0;
 
 // brake output
 HAL_PIN(brake) = 0.0;
+// set to 1 to force brake release
+HAL_PIN(brake_release) = 0.0;
 
 // fan output
 HAL_PIN(hv_fan) = 0.0;
@@ -289,6 +291,9 @@ RT(
       PIN(brake) = 0.0;
    }
 
+   if(PIN(brake_release) > 0.0){
+      PIN(brake) = 1.0;
+   }
 
    // leds
    switch(state){
