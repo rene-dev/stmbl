@@ -470,7 +470,7 @@ NRT(
       printf("reset cpu: reset\n");
       printf("print help: help\n");
       printf("list all hal pins: list\n");
-      printf("list all conf pins: conf\n");
+      printf("list all conf pins: getconf\n");
       printf("save conf: save\n");
       printf("load conf: load\n");
    }
@@ -509,7 +509,7 @@ NRT(
       else if(!strcmp(s, "load")){
          load_cmd();
       }
-      else if(!strcmp(s, "conf")){
+      else if(!strcmp(s, "getconf")){
          conf();
       }
       else{
