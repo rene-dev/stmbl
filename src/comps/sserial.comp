@@ -156,8 +156,8 @@ typedef struct{
 
 typedef union {
   struct {
-    discovery_rpc_t discovery;
-    uint16_t foo;
+    discovery_rpc_t discovery;//6 bytes
+    uint16_t foo;//padding, so heap is word aligned
     uint8_t heap[MEM_SIZE - sizeof(discovery_rpc_t)];
   };
 
@@ -579,7 +579,7 @@ int32_t scale_in(pd_metadata_t pd, float val) {
 }
 
 
-#define BOOLPIN(pin) (uint8_t)(PIN(pin) != 0.0)
+#define BOOLPIN(pin) (uint8_t)(PIN(pin) > 0.0)
 
 RT (
   // update all hal pins with values from their associated pds

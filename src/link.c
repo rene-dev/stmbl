@@ -298,7 +298,9 @@ int update_cmd(){
       case SSERIAL:
          hal_link_pins("sserial0.pos_cmd", "vel_int0.pos_in");
          hal_link_pins("sserial0.pos_cmd_d", "vel_int0.vel_in");
-         
+         hal_link_pins("sserial0.out0", "net0.enable");
+         hal_link_pins("fault0.fault", "sserial0.in0");
+         hal_link_pins("sserial0.connected", "fault0.cmd_ready");
          //this breaks cmd rev...
          hal_link_pins("vel_int0.pos_out", "net0.cmd");
          hal_link_pins("vel_int0.vel_out", "net0.cmd_d");

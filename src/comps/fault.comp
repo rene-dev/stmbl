@@ -50,6 +50,8 @@ HAL_PIN(ac_cur) = 0.0;
 HAL_PIN(pos_error) = 0.0;
 HAL_PIN(fb_ready) = 0.0;
 HAL_PIN(fb_error) = 0.0;
+HAL_PIN(cmd_ready) = 1.0;
+HAL_PIN(cmd_error) = 0.0;
 HAL_PIN(sat) = 0.0;
 
 // cmd + fb in
@@ -77,6 +79,7 @@ HAL_PIN(fan) = 0.0;
 // enable out, pid
 HAL_PIN(enable_out) = 0.0;
 HAL_PIN(enable_pid) = 0.0;
+HAL_PIN(fault) = 0.0;
 
 // leds  off = disabled, red = error, red + green = autophasing, green = enabled
 HAL_PIN(led_green) = 0.0;
@@ -91,12 +94,13 @@ MEM(int phased) = 0;
 
 RT(
    // reset fault
-   if(PIN(reset) > 0.0 || RISING_EDGE(PIN(enable))){
+   if(PIN(reset) > 0.0 || FALLING_EDGE(PIN(enable))){
       state = STATE_RESET;
    }
    else if(state == STATE_RESET){ // reset on falling edge
       state = STATE_DISABLED;
       phased = 0;
+      PIN(fault) = 0.0;
    }
 
 
@@ -283,7 +287,7 @@ RT(
 
 
    // fb error
-   if(state > 0 && PIN(fb_error) > 0.0){
+   if(state > 0 && (PIN(fb_error) > 0.0 || PIN(cmd_ready) <= 0.0)){
       state = STATE_FB_ERROR;
       PIN(cur) = 0.0;
       PIN(enable_out) = 0.0;
@@ -311,6 +315,7 @@ RT(
       case STATE_OVR_VOLT:
       PIN(led_green) = BLINK(-state);
       PIN(led_red) = 1.0;
+      PIN(fault) = 1.0;
       break;
 
       case STATE_ENABLED:
