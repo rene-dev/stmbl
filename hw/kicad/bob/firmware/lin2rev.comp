@@ -11,7 +11,7 @@ variable double pi = 3.141592654;
 variable double s;
 variable int lastq = 0;
 variable int q = 0;
-variable uint32_t rev = 0;
+variable int rev = 0;
 
 function _;
 license "GPL";
