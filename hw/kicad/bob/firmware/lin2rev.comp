@@ -22,7 +22,7 @@ if(s == 0){
    s = 1;
 }
 
-cmd_out = (cmd_in/scale)*2.0*pi;
+cmd_out = (cmd_in/s)*2.0*pi;
 
 while(cmd_out < -pi){
    cmd_out += 2.0 * pi;
@@ -50,4 +50,4 @@ if(q != 0 && q == 2 && lastq == 3){
 
 lastq = q;
 
-fb_out = ((fb_in+rev*pi*2.0)*scale)/(2.0*pi);
+fb_out = ((fb_in+rev*pi*2.0)*s)/(2.0*pi);
