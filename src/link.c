@@ -301,6 +301,7 @@ int update_cmd(){
          hal_link_pins("sserial0.out0", "net0.enable");
          hal_link_pins("fault0.fault", "sserial0.in0");
          hal_link_pins("sserial0.connected", "fault0.cmd_ready");
+         hal_link_pins("rev1.out", "sserial0.pos_fb");
          //this breaks cmd rev...
          hal_link_pins("vel_int0.pos_out", "net0.cmd");
          hal_link_pins("vel_int0.vel_out", "net0.cmd_d");
