@@ -102,6 +102,7 @@ int load(){
    //update cmd/fb links
    update_cmd();
    update_fb();
+   update_mot();
    return 0;
 }
 
@@ -154,22 +155,22 @@ NRT(
       printf("comp errors %lu\n", hal.comp_errors);
       printf("set errors %lu\n", hal.set_errors);
       printf("get errors %lu\n", hal.get_errors);
-      printf("foo0.bar:  %f\n", get_hal_pin("foo0.bar"));
+      printf("foo0.bar:  %f\n", hal_get_pin("foo0.bar"));
       printf("error_name: %s\n",hal.error_name);
-      float pe = get_hal_pin("net0.rt_period");
-      float ct = get_hal_pin("net0.rt_calc_time");
+      float pe = hal_get_pin("net0.rt_period");
+      float ct = hal_get_pin("net0.rt_calc_time");
       if(pe > 0.0){
          printf("rt time: %f/%fs", ct, pe);
          printf("=%f%%\n",(ct/pe)*100);
       }
-      pe = get_hal_pin("net0.frt_period");
-      ct = get_hal_pin("net0.frt_calc_time");
+      pe = hal_get_pin("net0.frt_period");
+      ct = hal_get_pin("net0.frt_calc_time");
       if(pe > 0.0){
          printf("frt time: %f/%fs", ct, pe);
          printf("=%f%%\n",(ct/pe)*100);
       }
-      pe = get_hal_pin("net0.nrt_period");
-      ct = get_hal_pin("net0.nrt_calc_time");
+      pe = hal_get_pin("net0.nrt_period");
+      ct = hal_get_pin("net0.nrt_calc_time");
       if(pe > 0.0){
          printf("nrt time: %f/%fs", ct, pe);
          printf("=%f%%\n",(ct/pe)*100);
@@ -327,13 +328,13 @@ NRT(
 
    void start(){
       printf("starting hal ... ");
-      start_hal();
+      hal_start();
       printf("done\n");
    }
 
    void stop(){
       printf("stopping hal ... ");
-      stop_hal();
+      hal_stop();
       printf("done\n");
    }
 
@@ -469,7 +470,7 @@ NRT(
       printf("reset cpu: reset\n");
       printf("print help: help\n");
       printf("list all hal pins: list\n");
-      printf("list all conf pins: conf\n");
+      printf("list all conf pins: getconf\n");
       printf("save conf: save\n");
       printf("load conf: load\n");
    }
@@ -508,7 +509,7 @@ NRT(
       else if(!strcmp(s, "load")){
          load_cmd();
       }
-      else if(!strcmp(s, "conf")){
+      else if(!strcmp(s, "getconf")){
          conf();
       }
       else{
@@ -657,7 +658,7 @@ NRT(
 
       buf[8 + 1] = 0;
 
-      if (USB_CDC_is_connected()) {
+      if (USB_CDC_is_connected() && PIN(send_step) > 0) {
          PIN(con) = 1.0;
          USB_VCP_send_string(buf);
       }else{
@@ -682,20 +683,28 @@ NRT(
          i = sscanf_(rx_buf, "%N = %N", sink, source);
       }
       if(i == 2){ // read hal pin
-         if(is_hal_pin(sink)){
-            printf("%s <= %s = %f\n", sink, find_hal_pin(sink)->source->name, get_hal_pin(sink));
+         if(hal_is_pin(sink)){
+            printf("%s <= %s = %f\n", sink, hal_find_pin(sink)->source->name, hal_get_pin(sink));
+         }
+         else if(hal_is_compname(sink)){
+            printf("%s\n",sink);
+            for(int i = 0; i < hal.hal_pin_count; i++){
+              if(!strncmp(hal.hal_pins[i]->name, sink, strlen(sink))){
+                 printf("%s\n",hal.hal_pins[i]->name);
+              }
+            }
          }else{
             cmd(rx_buf);
          }
       }
       else if(i == 5){// link hal pin
-         if(is_hal_pin(source) && is_hal_pin(sink)){
-            link_hal_pins(source, sink);
-            printf("OK %s <= %s = %f\n", sink, source, get_hal_pin(sink));
+         if(hal_is_pin(source) && hal_is_pin(sink)){
+            hal_link_pins(source, sink);
+            printf("OK %s <= %s = %f\n", sink, source, hal_get_pin(sink));
          }
-         else if(is_hal_pin(sink)){// set hal pin
-            set_hal_pin(sink, strtof(source,NULL));
-            printf("OK %s = %f\n", sink, get_hal_pin(sink));
+         else if(hal_is_pin(sink)){// set hal pin
+            hal_set_pin(sink, strtof(source,NULL));
+            printf("OK %s = %f\n", sink, hal_get_pin(sink));
          }
          else{// hal pin not found
             printf("not found: %s\n", sink);

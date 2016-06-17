@@ -40,17 +40,17 @@ GLOBAL_HAL_PIN(frt_period_time);
 void Wait(uint32_t ms);
 
 //hal interface
-void enable_rt(){
+void hal_enable_rt(){
    TIM2->CR1 |= TIM_CR1_CEN;
 }
-void enable_frt(){
+void hal_enable_frt(){
    //TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
    TIM2->DIER |= TIM_IT_UPDATE;
 }
-void disable_rt(){
+void hal_disable_rt(){
    TIM2->CR1 &= (uint16_t)~TIM_CR1_CEN;
 }
-void disable_frt(){
+void hal_disable_frt(){
    //TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
    TIM2->DIER &= (uint16_t)~TIM_IT_UPDATE;
 }
@@ -99,10 +99,7 @@ void TIM2_IRQHandler(void){
    float period = ((float)(last_start - start)) / HAL_RCC_GetHCLKFreq();
    last_start = start;
 
-   for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_func_count; hal.active_frt_func++){//run all fast realtime hal functions
-      hal.frt[hal.active_frt_func](period);
-   }
-   hal.active_frt_func = -1;
+   hal_run_frt(period);
 
    unsigned int end = SysTick->VAL;
    if(start < end){
@@ -151,10 +148,7 @@ void DMA2_Stream0_IRQHandler(void){
    float period = ((float)(last_start - start)) / HAL_RCC_GetHCLKFreq();
    last_start = start;
 
-   for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){//run all realtime hal functions
-      hal.rt[hal.active_rt_func](period);
-   }
-   hal.active_rt_func = -1;
+   hal_run_rt(period);
 
    unsigned int end = SysTick->VAL;
    if(start < end){
@@ -180,9 +174,9 @@ int main(void)
    int end = 0;
 
    setup();
-   init_hal();
+   hal_init();
 
-   set_comp_type("foo"); // default pin for mem errors
+   hal_set_comp_type("foo"); // default pin for mem errors
    HAL_PIN(bar) = 0.0;
 
    //feedback comps
@@ -206,6 +200,7 @@ int main(void)
    #include "comps/rev.comp"
    #include "comps/vel.comp"
    #include "comps/vel.comp"
+   #include "comps/vel_int.comp"
    #include "comps/cauto.comp"
    #include "comps/pid.comp"
    #include "comps/pmsm_t2c.comp"
@@ -222,7 +217,7 @@ int main(void)
    // #include "comps/io.comp"
 
 
-   set_comp_type("net");
+   hal_set_comp_type("net");
    HAL_PIN(enable) = 0.0;
    HAL_PIN(cmd) = 0.0;
    HAL_PIN(fb) = 0.0;
@@ -239,7 +234,7 @@ int main(void)
    HAL_PIN(frt_period) = 0.0;
    HAL_PIN(nrt_period) = 0.0;
 
-   set_comp_type("conf");
+   hal_set_comp_type("conf");
    HAL_PIN(r) = 1.0;
    HAL_PIN(l) = 0.01;
    HAL_PIN(j) = KGCM2(0.26);
@@ -299,20 +294,16 @@ int main(void)
    HAL_PIN(cur_ind) = 0.0;
    HAL_PIN(max_sat) = 0.2;
 
-   rt_time_hal_pin = map_hal_pin("net0.rt_calc_time");
-   frt_time_hal_pin = map_hal_pin("net0.frt_calc_time");
-   rt_period_time_hal_pin = map_hal_pin("net0.rt_period");
-   frt_period_time_hal_pin = map_hal_pin("net0.frt_period");
-
-   for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
-      hal.nrt_init[i]();
-   }
-
+   rt_time_hal_pin = hal_map_pin("net0.rt_calc_time");
+   frt_time_hal_pin = hal_map_pin("net0.frt_calc_time");
+   rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
+   frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
+   
    link_pid();
-
+   hal_comp_init();
 
    if(hal.pin_errors + hal.comp_errors == 0){
-      start_hal();
+      hal_start();
    }
    else{
       hal.hal_state = MEM_ERROR;
@@ -329,10 +320,7 @@ int main(void)
       period = ((float)(last_start - start)) / HAL_RCC_GetHCLKFreq();
       last_start = start;
 
-      for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.nrt_func_count; hal.active_nrt_func++){//run all non realtime hal functions
-         hal.nrt[hal.active_nrt_func](period);
-      }
-      hal.active_nrt_func = -1;
+      hal_run_nrt(period);
 
       end = SysTick->VAL;
       if(start < end){

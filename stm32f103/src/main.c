@@ -64,6 +64,8 @@ volatile uint32_t timeout = 99999;
 volatile uint16_t volt_raw = 0;
 volatile uint16_t amp_raw = 0;
 volatile uint16_t temp_raw = 0;
+volatile uint8_t hv_fault = 0;
+volatile uint8_t hv_enabled = 0;
 
 float volt = 0;
 float amp = 0;
@@ -107,6 +109,28 @@ void RCC_Configuration(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
 }
 
+void hv_enable(){
+#ifdef TROLLER
+		GPIO_SetBits(GPIOB,GPIO_Pin_1);
+		GPIO_SetBits(GPIOB,GPIO_Pin_2);
+		GPIO_SetBits(GPIOB,GPIO_Pin_3);
+#else
+		GPIO_SetBits(GPIOB,GPIO_Pin_6);
+#endif
+      hv_enabled = 1;
+}
+
+void hv_disable(){
+#ifdef TROLLER
+		GPIO_ResetBits(GPIOB,GPIO_Pin_1);
+		GPIO_ResetBits(GPIOB,GPIO_Pin_2);
+		GPIO_ResetBits(GPIOB,GPIO_Pin_3);
+#else
+		GPIO_ResetBits(GPIOB,GPIO_Pin_6);
+#endif
+      hv_enabled = 0;
+}
+
 void GPIO_Configuration(void)
 {
 	//LED init
@@ -119,9 +143,6 @@ void GPIO_Configuration(void)
 	//shutdown pins
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_ResetBits(GPIOB,GPIO_Pin_1);
-	GPIO_ResetBits(GPIOB,GPIO_Pin_2);
-	GPIO_ResetBits(GPIOB,GPIO_Pin_3);
 	//GPIO_ResetBits(GPIOC,GPIO_Pin_2);//green led off
 #else
 	//Enable output
@@ -141,6 +162,7 @@ void GPIO_Configuration(void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 #endif
+   hv_disable();
 }
 
 void tim1_init(){
@@ -345,23 +367,10 @@ void TIM1_UP_IRQHandler(){
 	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);//trigger ADC
 	if(timeout > 30){//disable driver
-#ifdef TROLLER
-		GPIO_ResetBits(GPIOB,GPIO_Pin_1);
-		GPIO_ResetBits(GPIOB,GPIO_Pin_2);
-		GPIO_ResetBits(GPIOB,GPIO_Pin_3);
-#else
-		GPIO_ResetBits(GPIOB,GPIO_Pin_6);
-#endif
+      hv_disable();
 		GPIO_SetBits(GPIOC,GPIO_Pin_1);//yellow led on
 		GPIO_ResetBits(GPIOC,GPIO_Pin_2);//green led off
-	}else{//Enable driver
-#ifdef TROLLER
-		GPIO_SetBits(GPIOB,GPIO_Pin_1);
-		GPIO_SetBits(GPIOB,GPIO_Pin_2);
-		GPIO_SetBits(GPIOB,GPIO_Pin_3);
-#else
-		GPIO_SetBits(GPIOB,GPIO_Pin_6);
-#endif
+	}else{
 		GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
 		GPIO_ResetBits(GPIOC,GPIO_Pin_1);//yellow led off
 		timeout ++;
@@ -378,8 +387,10 @@ void DMA1_Channel1_IRQHandler(){
 #ifndef TROLLER
 	//fault test
 	if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)){
+      hv_fault = 0;
 		GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
 	}else{
+      hv_fault = 1;
 		GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
 	}
 #endif
@@ -405,48 +416,63 @@ void USART2_IRQHandler(){
 	if(datapos == sizeof(packet_to_hv_t)){//all data received
 		datapos = -1;
 		unbuff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
-
+      if(packet_to_hv.data.enable == 1){
+         hv_enable();
+      }else{
+         hv_disable();
+      }
 		float ua = TOFLOAT(packet_to_hv.data.a);
 		float ub = TOFLOAT(packet_to_hv.data.b);
 
-		float u = ua; // inverse clarke
-		float v = - ua / 2.0 + ub / 2.0 * SQRT3;
-		float w = - ua / 2.0 - ub / 2.0 * SQRT3;
+      if(packet_to_hv.data.mode == 0){//a,b voltages
+         float u = ua; // inverse clarke
+         float v = - ua / 2.0 + ub / 2.0 * SQRT3;
+         float w = - ua / 2.0 - ub / 2.0 * SQRT3;
 
-		//TODO: clamping
-		u += volt / 2.0;
-		v += volt / 2.0;
-		w += volt / 2.0;
+         //TODO: clamping
+         u += volt / 2.0;
+         v += volt / 2.0;
+         w += volt / 2.0;
 
-		if(u < v){
-			if(u < w){
-				v -= u;
-				w -= u;
-				u = 0.0;
-			}
-			else{
-				u -= w;
-				v -= w;
-				w = 0.0;
-			}
-		}
-		else{
-			if(v < w){
-				u -= v;
-				w -= v;
-				v = 0.0;
-			}
-			else{
-				u -= w;
-				v -= w;
-				w = 0.0;
-			}
-		}
+         if(u < v){
+            if(u < w){
+               v -= u;
+               w -= u;
+               u = 0.0;
+            }
+            else{
+               u -= w;
+               v -= w;
+               w = 0.0;
+            }
+         }
+         else{
+            if(v < w){
+               u -= v;
+               w -= v;
+               v = 0.0;
+            }
+            else{
+               u -= w;
+               v -= w;
+               w = 0.0;
+            }
+         }
 
-		PWM_U = CLAMP(u / volt * PWM_RES, 0, PWM_RES * 0.95);
-		PWM_V = CLAMP(v / volt * PWM_RES, 0, PWM_RES * 0.95);
-		PWM_W = CLAMP(w / volt * PWM_RES, 0, PWM_RES * 0.95);
-
+         PWM_U = CLAMP(u / volt * PWM_RES, 0, PWM_RES * 0.95);
+         PWM_V = CLAMP(v / volt * PWM_RES, 0, PWM_RES * 0.95);
+         PWM_W = CLAMP(w / volt * PWM_RES, 0, PWM_RES * 0.95);
+      }else if(packet_to_hv.data.mode == 1){//DC, a: -dclink ... +dclink
+         ua += volt;
+         PWM_U = CLAMP(ua / (volt*2.0) * PWM_RES, 0, PWM_RES * 0.95);
+         PWM_V = CLAMP((1.0 - (ua / (volt*2.0))) * PWM_RES, 0, PWM_RES * 0.95);
+         PWM_W = 0;
+      }else{
+         PWM_U = 0;
+         PWM_V = 0;
+         PWM_W = 0;
+      }
+      
 		timeout = 0; //reset timeout
 	}
 }
@@ -483,6 +509,7 @@ int main(void)
 			packet_from_hv.data.dc_volt = TOFIXED(volt);
 			packet_from_hv.data.dc_cur =  TOFIXED(amp);
 			packet_from_hv.data.hv_temp = TOFIXED(temp);
+         packet_from_hv.data.hv_fault = hv_fault == 1 && hv_enabled == 1;
 #ifdef TROLLER
 			packet_from_hv.data.dc_cur =  TOFIXED(0);
 			packet_from_hv.data.hv_temp = TOFIXED(0);
