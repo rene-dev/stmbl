@@ -96,22 +96,22 @@ void TIM2_IRQHandler(void){
    GPIO_SetBits(GPIOB,GPIO_Pin_9);
 
    static unsigned int last_start = 0;
-   unsigned int start = SysTick->VAL;
+   unsigned int start = hal_get_systick_value();
 
    if(last_start < start){
-     last_start += SysTick->LOAD;
+     last_start += hal_get_systick_load();
    }
 
-   float period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
+   float period = ((float)(last_start - start)) / hal_get_systick_freq();
    last_start = start;
 
    hal_run_frt(period);
 
-   unsigned int end = SysTick->VAL;
+   unsigned int end = hal_get_systick_value();
    if(start < end){
-     start += SysTick->LOAD;
+     start += hal_get_systick_load();
    }
-   PIN(frt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+   PIN(frt_time) = ((float)(start - end)) / hal_get_systick_freq();
    PIN(frt_period_time) = period;
 
    hal.frt_state = FRT_SLEEP;
@@ -143,22 +143,22 @@ void DMA2_Stream0_IRQHandler(void){
    GPIO_SetBits(GPIOB,GPIO_Pin_8);
 
    static unsigned int last_start = 0;
-   unsigned int start = SysTick->VAL;
+   unsigned int start = hal_get_systick_value();
 
    if(last_start < start){
-     last_start += SysTick->LOAD;
+     last_start += hal_get_systick_load();
    }
 
-   float period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
+   float period = ((float)(last_start - start)) / hal_get_systick_freq();
    last_start = start;
 
    hal_run_rt(period);
 
-   unsigned int end = SysTick->VAL;
+   unsigned int end = hal_get_systick_value();
    if(start < end){
-     start += SysTick->LOAD;
+     start += hal_get_systick_load();
    }
-   PIN(rt_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+   PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
    PIN(rt_period_time) = period;
 
    hal.rt_state = RT_SLEEP;
@@ -315,22 +315,22 @@ int main(void)
 
    while(1)//run non realtime stuff
    {
-      start = SysTick->VAL;
+      start = hal_get_systick_value();
 
       if(last_start < start){
-        last_start += SysTick->LOAD;
+        last_start += hal_get_systick_load();
       }
 
-      period = ((float)(last_start - start)) / RCC_Clocks.HCLK_Frequency;
+      period = ((float)(last_start - start)) / hal_get_systick_freq();
       last_start = start;
 
       hal_run_nrt(period);
 
-      end = SysTick->VAL;
+      end = hal_get_systick_value();
       if(start < end){
-        start += SysTick->LOAD;
+        start += hal_get_systick_load();
       }
-      PIN(nrt_calc_time) = ((float)(start - end)) / RCC_Clocks.HCLK_Frequency;
+      PIN(nrt_calc_time) = ((float)(start - end)) / hal_get_systick_freq();
       PIN(nrt_period) = period;
       Wait(2);
    }
