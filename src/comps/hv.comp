@@ -12,7 +12,7 @@ HAL_PIN(hv_fault);
 
 HAL_PIN(dc_cur) = 0.0;
 HAL_PIN(dc_volt) = 0.0;
-HAL_PIN(ac_volt) = 0.0;
+HAL_PIN(pwm_volt) = 0.0;
 HAL_PIN(hv_temp) = 0.0;
 HAL_PIN(power) = 0.0;
 HAL_PIN(dc_cur_sim) = 0.0;
@@ -121,14 +121,20 @@ INIT(
 )
 
 RT(
-   float e = PIN(enable);//TODO: enable should disable driver, not set pwm to 0
+   float e = PIN(enable);
 
    if(packet_from_hv.head.start == 255){
       unbuff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
       packet_from_hv.head.start = 0;
       PIN(dc_cur) = TOFLOAT(packet_from_hv.data.dc_cur)*0.5 + PIN(dc_cur)*0.5;
       PIN(dc_volt) = TOFLOAT(packet_from_hv.data.dc_volt);
-      PIN(ac_volt) = PIN(dc_volt) / 2.0 * 0.95 * 1.15;//TODO: ac_volt -> pwm_volt, depends on mode
+      if(PIN(mode) == 0){//AC
+         PIN(pwm_volt) = PIN(dc_volt) / 2.0 * 0.95 * 1.15;
+      }else if(PIN(mode) == 1){//DC
+         PIN(pwm_volt) = PIN(dc_volt) * 0.95;
+      }else{
+         PIN(pwm_volt) = 0.0;
+      }
       PIN(hv_temp) = TOFLOAT(packet_from_hv.data.hv_temp);
       PIN(over_cur) = packet_from_hv.data.over_cur;//hardware cur limit
       PIN(over_temp) = packet_from_hv.data.over_temp;//hardware temp limit
@@ -176,8 +182,8 @@ RT(
   DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
 
   PIN(power) = PIN(dc_cur) * PIN(dc_volt);
-  if(PIN(ac_volt) > 0.0){
-    PIN(dc_cur_sim) = PIN(iq) / PIN(ac_volt) * sqrtf(a*a + b*b)*0.5 + PIN(dc_cur_sim)*0.5;
+  if(PIN(pwm_volt) > 0.0){
+    PIN(dc_cur_sim) = PIN(iq) / PIN(pwm_volt) * sqrtf(a*a + b*b)*0.5 + PIN(dc_cur_sim)*0.5;
   }
 );
 
