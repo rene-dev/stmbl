@@ -98,7 +98,7 @@ typedef struct{
     MEM_ERROR,
     CONFIG_LOAD_ERROR,
     CONFIG_ERROR,
-    HAL2_OK
+    HAL_OK
   } hal_state;
 
   volatile int active_rt_func;
@@ -164,6 +164,9 @@ extern void hal_enable_rt();
 extern void hal_enable_frt();
 extern void hal_disable_rt();
 extern void hal_disable_frt();
+extern uint32_t hal_get_systick_value();
+extern uint32_t hal_get_systick_reload();
+extern uint32_t hal_get_systick_freq();
 
 #define HAL_COMP(type)                  \
 {                                   \
@@ -207,24 +210,24 @@ extern void hal_disable_frt();
 
 #define RT(func)                    \
  self.rt = ({ void function(float period){ \
-   unsigned int __start_time__ = SysTick->VAL; \
+   uint32_t __start_time__ = hal_get_systick_value(); \
    func \
-   unsigned int __end_time__ = SysTick->VAL; \
+   uint32_t __end_time__ = hal_get_systick_value(); \
    if(__start_time__ < __end_time__){ \
-     __start_time__ += SysTick->LOAD; \
+     __start_time__ += hal_get_systick_reload(); \
    } \
-   PIN(rt_calc_time) = ((float)(__start_time__ - __end_time__)) / HAL_RCC_GetHCLKFreq(); \
+   PIN(rt_calc_time) = ((float)(__start_time__ - __end_time__)) / hal_get_systick_freq(); \
    } function;});
 
 #define FRT(func)                    \
  self.frt = ({ void function(float period){ \
-   unsigned int __start_time__ = SysTick->VAL; \
+   uint32_t __start_time__ = hal_get_systick_value(); \
    func \
-   unsigned int __end_time__ = SysTick->VAL; \
+   uint32_t __end_time__ = hal_get_systick_value(); \
    if(__start_time__ < __end_time__){ \
-     __start_time__ += SysTick->LOAD; \
+     __start_time__ += hal_get_systick_reload(); \
    } \
-   PIN(frt_calc_time) = ((float)(__start_time__ - __end_time__)) / HAL_RCC_GetHCLKFreq(); \
+   PIN(frt_calc_time) = ((float)(__start_time__ - __end_time__)) / hal_get_systick_freq(); \
    } function;});
 
 #define NRT(func)                    \
@@ -271,6 +274,11 @@ if(ht_time_count < (time)){ \
 } \
 jump_label_pointer = jump_label_pointer_old;
 
+#define ENDCOMP \
+  self.hal_pin_count = hal.hal_pin_count - self.hal_pin_start_index; \
+  hal_add_comp(&self); \
+}
+
 #define BLINK(N) \
 ({ \
   int t = (systime / 300) % (2 * N + 2); \
@@ -282,11 +290,6 @@ jump_label_pointer = jump_label_pointer_old;
   } \
   t;\
 })
-
-#define ENDCOMP \
-  self.hal_pin_count = hal.hal_pin_count - self.hal_pin_start_index; \
-  hal_add_comp(&self); \
-}
 
 #define RISING_EDGE(sig)\
 ({static float __old_val__ = 0.0; uint8_t ret = (sig) > __old_val__; __old_val__ = (sig); ret;})
