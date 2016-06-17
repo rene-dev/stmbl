@@ -28,11 +28,18 @@ typedef struct{
 } packet_header_t;
 
 //data from f1 to f4
+#pragma pack(1)
 typedef struct{
    int16_t dc_cur;
    int16_t dc_volt;
    int16_t hv_temp;
-   uint16_t status;
+   uint8_t high_volt : 1;//hardware hi limit
+   uint8_t low_volt : 1;//hardware low limit
+   uint8_t over_cur : 1;//hardware cur limit
+   uint8_t over_temp : 1;//hardware temp limit
+   uint8_t hv_fault : 1;//iramx fault
+   uint8_t sys_fault : 1;//sys fault, crc error, clock error, watchdog bit, startup failure...
+   uint8_t padding : 2;
 #ifdef TROLLER
    int16_t a;
    int16_t b;
@@ -41,10 +48,13 @@ typedef struct{
 } from_hv_t;
 
 //data from f4 to f1
+#pragma pack(1)
 typedef struct{
    int16_t a;
    int16_t b;
-   uint16_t mode;
+   uint8_t mode : 4;
+   uint8_t enable : 1;
+   uint8_t padding : 3;
 } to_hv_t;
 
 typedef struct{

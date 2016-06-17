@@ -6,6 +6,9 @@ HAL_PIN(mode) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
+HAL_PIN(over_cur);
+HAL_PIN(over_temp);
+HAL_PIN(hv_fault); 
 
 HAL_PIN(dc_cur) = 0.0;
 HAL_PIN(dc_volt) = 0.0;
@@ -118,21 +121,25 @@ INIT(
 )
 
 RT(
-   float e = PIN(enable);
+   float e = PIN(enable);//TODO: enable should disable driver, not set pwm to 0
 
    if(packet_from_hv.head.start == 255){
       unbuff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
       packet_from_hv.head.start = 0;
       PIN(dc_cur) = TOFLOAT(packet_from_hv.data.dc_cur)*0.5 + PIN(dc_cur)*0.5;
       PIN(dc_volt) = TOFLOAT(packet_from_hv.data.dc_volt);
-      PIN(ac_volt) = PIN(dc_volt) / 2.0 * 0.95 * 1.15;
+      PIN(ac_volt) = PIN(dc_volt) / 2.0 * 0.95 * 1.15;//TODO: ac_volt -> pwm_volt, depends on mode
       PIN(hv_temp) = TOFLOAT(packet_from_hv.data.hv_temp);
+      PIN(over_cur) = packet_from_hv.data.over_cur;//hardware cur limit
+      PIN(over_temp) = packet_from_hv.data.over_temp;//hardware temp limit
+      PIN(hv_fault) = packet_from_hv.data.hv_fault;//iramx fault
+      
       #ifdef TROLLER
       PIN(iu) = TOFLOAT(packet_from_hv.data.a);
       PIN(iv) = TOFLOAT(packet_from_hv.data.b);
       PIN(iw) = TOFLOAT(packet_from_hv.data.c);
       #endif
-      PIN(error) = 0.0;
+      PIN(error) = 0.0;//TODO: link to fault
    }
    else{
       PIN(error) = 1.0;
@@ -141,18 +148,20 @@ RT(
    float a = PIN(a);
    float b = PIN(b);
 
-   if(PIN(rev) > 0.0){
+   if(PIN(rev) > 0.0){//TODO: rev DC
       b *= -1.0;
    }
-
+  
+  packet_to_hv.data.mode = CLAMP(PIN(mode),0,16);
   if(e > 0.0){
     packet_to_hv.data.a = TOFIXED(a);
     packet_to_hv.data.b = TOFIXED(b);
-    packet_to_hv.data.mode = PIN(mode);
+    packet_to_hv.data.enable = 1;
   }
   else{
     packet_to_hv.data.a = 0;
     packet_to_hv.data.b = 0;
+    packet_to_hv.data.enable = 0;
   }
   buff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
 
