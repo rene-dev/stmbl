@@ -18,7 +18,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stm32f4xx_hal_conf.h"
+#include "stm32f4xx_conf.h"
 #include "scanf.h"
 #include "hal.h"
 #include "setup.h"
@@ -29,7 +29,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-//#include "usb_cdc.h"
+#include "usb_cdc.h"
 
 
 GLOBAL_HAL_PIN(rt_time);
@@ -41,19 +41,21 @@ void Wait(uint32_t ms);
 
 //hal interface
 void hal_enable_rt(){
-   TIM2->CR1 |= TIM_CR1_CEN;
+   TIM_Cmd(TIM2, ENABLE);
 }
 void hal_enable_frt(){
-   //TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-   TIM2->DIER |= TIM_IT_UPDATE;
+   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 }
 void hal_disable_rt(){
-   TIM2->CR1 &= (uint16_t)~TIM_CR1_CEN;
+   TIM_Cmd(TIM2, DISABLE);
 }
 void hal_disable_frt(){
-   //TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
-   TIM2->DIER &= (uint16_t)~TIM_IT_UPDATE;
+   TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
 }
+
+extern char _binary_obj_hv_hv_bin_start;
+extern char _binary_obj_hv_hv_bin_size;
+extern char _binary_obj_hv_hv_bin_end;
 
 uint32_t hal_get_systick_value(){
    return(SysTick->VAL);
@@ -64,7 +66,7 @@ uint32_t hal_get_systick_reload(){
 }
 
 uint32_t hal_get_systick_freq(){
-   return(HAL_RCC_GetHCLKFreq());
+   return(RCC_Clocks.HCLK_Frequency);
 }
 
 volatile uint64_t systime = 0;
@@ -76,7 +78,7 @@ void SysTick_Handler(void)
 
 //20kHz
 void TIM2_IRQHandler(void){
-   TIM2->SR = (uint16_t)~TIM_IT_UPDATE;
+   TIM_ClearITPendingBit(TIM2,TIM_IT_Update);
    switch(hal.frt_state){
       case FRT_STOP:
          return;
@@ -95,37 +97,35 @@ void TIM2_IRQHandler(void){
          hal.frt_state = FRT_CALC;
    }
 
-   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+   GPIO_SetBits(GPIOB,GPIO_Pin_9);
 
    static unsigned int last_start = 0;
-   unsigned int start = SysTick->VAL;
+   unsigned int start = hal_get_systick_value();
 
    if(last_start < start){
-     last_start += SysTick->LOAD;
+     last_start += hal_get_systick_reload();
    }
 
-   float period = ((float)(last_start - start)) / HAL_RCC_GetHCLKFreq();
+   float period = ((float)(last_start - start)) / hal_get_systick_freq();
    last_start = start;
 
    hal_run_frt(period);
 
-   unsigned int end = SysTick->VAL;
+   unsigned int end = hal_get_systick_value();
    if(start < end){
-     start += SysTick->LOAD;
+     start += hal_get_systick_reload();
    }
-   PIN(frt_time) = ((float)(start - end)) / HAL_RCC_GetHCLKFreq();
+   PIN(frt_time) = ((float)(start - end)) / hal_get_systick_freq();
    PIN(frt_period_time) = period;
 
    hal.frt_state = FRT_SLEEP;
-   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
+   GPIO_ResetBits(GPIOB,GPIO_Pin_9);
 }
 
 //5 kHz interrupt for hal. at this point all ADCs have been sampled,
 //see setup_res() in setup.c if you are interested in the magic behind this.
 void DMA2_Stream0_IRQHandler(void){
-   //DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
-   //__HAL_DMA_CLEAR_FLAG(hdma, __HAL_DMA_GET_TE_FLAG_INDEX(hdma));
-   DMA2->LIFCR = DMA_LIFCR_CTCIF0;
+   DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
    switch(hal.rt_state){
       case RT_STOP:
          return;
@@ -144,29 +144,29 @@ void DMA2_Stream0_IRQHandler(void){
          hal.rt_state = RT_CALC;
    }
 
-   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+   GPIO_SetBits(GPIOB,GPIO_Pin_8);
 
    static unsigned int last_start = 0;
-   unsigned int start = SysTick->VAL;
+   unsigned int start = hal_get_systick_value();
 
    if(last_start < start){
-     last_start += SysTick->LOAD;
+     last_start += hal_get_systick_reload();
    }
 
-   float period = ((float)(last_start - start)) / HAL_RCC_GetHCLKFreq();
+   float period = ((float)(last_start - start)) / hal_get_systick_freq();
    last_start = start;
 
    hal_run_rt(period);
 
-   unsigned int end = SysTick->VAL;
+   unsigned int end = hal_get_systick_value();
    if(start < end){
-     start += SysTick->LOAD;
+     start += hal_get_systick_reload();
    }
-   PIN(rt_time) = ((float)(start - end)) / HAL_RCC_GetHCLKFreq();
+   PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
    PIN(rt_period_time) = period;
 
    hal.rt_state = RT_SLEEP;
-   //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
+   GPIO_ResetBits(GPIOB,GPIO_Pin_8);
 }
 
 int main(void)
@@ -189,18 +189,18 @@ int main(void)
 
    //feedback comps
    #include "comps/adc.comp"
-   // #include "comps/res.comp"
-  //  #include "comps/enc_fb.comp"
-  //  #include "comps/encm.comp"
-  //  #include "comps/encs.comp"
-  //  #include "comps/yaskawa.comp"
+   #include "comps/res.comp"
+   #include "comps/enc_fb.comp"
+   #include "comps/encm.comp"
+   #include "comps/encs.comp"
+   #include "comps/yaskawa.comp"
    //TODO: hyperface
 
    //command comps
-   // #include "comps/sserial.comp"
+   #include "comps/sserial.comp"
    #include "comps/sim.comp"
-   // #include "comps/enc_cmd.comp"
-   // #include "comps/en.comp"
+   #include "comps/enc_cmd.comp"
+   #include "comps/en.comp"
 
    //PID
    #include "comps/stp.comp"
@@ -217,12 +217,12 @@ int main(void)
    #include "comps/pmsm_limits.comp"
    #include "comps/idq.comp"
    #include "comps/dq.comp"
-   // #include "comps/hv.comp"
+   #include "comps/hv.comp"
 
    //other comps
    #include "comps/fault.comp"
-   // #include "comps/term.comp"
-   // #include "comps/io.comp"
+   #include "comps/term.comp"
+   #include "comps/io.comp"
 
 
    hal_set_comp_type("net");
@@ -319,22 +319,22 @@ int main(void)
 
    while(1)//run non realtime stuff
    {
-      start = SysTick->VAL;
+      start = hal_get_systick_value();
 
       if(last_start < start){
-        last_start += SysTick->LOAD;
+        last_start += hal_get_systick_reload();
       }
 
-      period = ((float)(last_start - start)) / HAL_RCC_GetHCLKFreq();
+      period = ((float)(last_start - start)) / hal_get_systick_freq();
       last_start = start;
 
       hal_run_nrt(period);
 
-      end = SysTick->VAL;
+      end = hal_get_systick_value();
       if(start < end){
-        start += SysTick->LOAD;
+        start += hal_get_systick_reload();
       }
-      PIN(nrt_calc_time) = ((float)(start - end)) / HAL_RCC_GetHCLKFreq();
+      PIN(nrt_calc_time) = ((float)(start - end)) / hal_get_systick_freq();
       PIN(nrt_period) = period;
       Wait(2);
    }

@@ -80,6 +80,7 @@ HAL_PIN(fan) = 0.0;
 HAL_PIN(enable_out) = 0.0;
 HAL_PIN(enable_pid) = 0.0;
 HAL_PIN(fault) = 0.0;
+HAL_PIN(fault_not) = 1.0;
 
 // leds  off = disabled, red = error, red + green = autophasing, green = enabled
 HAL_PIN(led_green) = 0.0;
@@ -101,6 +102,7 @@ RT(
       state = STATE_DISABLED;
       phased = 0;
       PIN(fault) = 0.0;
+      PIN(fault_not) = 1.0;
    }
 
 
@@ -316,6 +318,7 @@ RT(
       PIN(led_green) = BLINK(-state);
       PIN(led_red) = 1.0;
       PIN(fault) = 1.0;
+      PIN(fault_not) = 0.0;
       break;
 
       case STATE_ENABLED:
