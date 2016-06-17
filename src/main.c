@@ -56,6 +56,7 @@ void hal_disable_frt(){
 extern char _binary_obj_hv_hv_bin_start;
 extern char _binary_obj_hv_hv_bin_size;
 extern char _binary_obj_hv_hv_bin_end;
+
 uint32_t hal_get_systick_value(){
    return(SysTick->VAL);
 }
@@ -102,7 +103,7 @@ void TIM2_IRQHandler(void){
    unsigned int start = hal_get_systick_value();
 
    if(last_start < start){
-     last_start += hal_get_systick_load();
+     last_start += hal_get_systick_reload();
    }
 
    float period = ((float)(last_start - start)) / hal_get_systick_freq();
@@ -112,7 +113,7 @@ void TIM2_IRQHandler(void){
 
    unsigned int end = hal_get_systick_value();
    if(start < end){
-     start += hal_get_systick_load();
+     start += hal_get_systick_reload();
    }
    PIN(frt_time) = ((float)(start - end)) / hal_get_systick_freq();
    PIN(frt_period_time) = period;
@@ -149,7 +150,7 @@ void DMA2_Stream0_IRQHandler(void){
    unsigned int start = hal_get_systick_value();
 
    if(last_start < start){
-     last_start += hal_get_systick_load();
+     last_start += hal_get_systick_reload();
    }
 
    float period = ((float)(last_start - start)) / hal_get_systick_freq();
@@ -159,7 +160,7 @@ void DMA2_Stream0_IRQHandler(void){
 
    unsigned int end = hal_get_systick_value();
    if(start < end){
-     start += hal_get_systick_load();
+     start += hal_get_systick_reload();
    }
    PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
    PIN(rt_period_time) = period;
@@ -321,7 +322,7 @@ int main(void)
       start = hal_get_systick_value();
 
       if(last_start < start){
-        last_start += hal_get_systick_load();
+        last_start += hal_get_systick_reload();
       }
 
       period = ((float)(last_start - start)) / hal_get_systick_freq();
@@ -331,7 +332,7 @@ int main(void)
 
       end = hal_get_systick_value();
       if(start < end){
-        start += hal_get_systick_load();
+        start += hal_get_systick_reload();
       }
       PIN(nrt_calc_time) = ((float)(start - end)) / hal_get_systick_freq();
       PIN(nrt_period) = period;
