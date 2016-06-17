@@ -57,7 +57,7 @@ MEM(unsigned int write_pos) = 0;
 MEM(unsigned int send_counter) = 0;
 
 MEM(unsigned int last_fault_sent) = 0; //save last error message
-MEM(uint32_t last_hal_state) = HAL_OK;
+MEM(uint32_t last_hal_state) = HAL2_OK;
 MEM(uint16_t ee_error);
 
 
@@ -198,8 +198,8 @@ NRT(
             break;
       }
       switch(hal.hal_state){
-         case HAL_OK:
-            printf("HAL state:  HAL_OK\n");
+         case HAL2_OK:
+            printf("HAL state:  HAL2_OK\n");
             break;
          case RT_TOO_LONG:
             printf("HAL state:  RT_TOO_LONG\n");
@@ -521,8 +521,8 @@ NRT(
       if(hal.hal_state != last_hal_state){
          last_hal_state = hal.hal_state;
          switch(hal.hal_state){
-            case HAL_OK:
-               printf("HAL state:  HAL_OK\n");
+            case HAL2_OK:
+               printf("HAL state:  HAL2_OK\n");
                break;
             case RT_TOO_LONG:
                printf("HAL state:  RT_TOO_LONG\n");
