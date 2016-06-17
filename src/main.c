@@ -53,9 +53,17 @@ void hal_disable_frt(){
    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
 }
 
-extern char _binary_obj_hv_hv_bin_start;
-extern char _binary_obj_hv_hv_bin_size;
-extern char _binary_obj_hv_hv_bin_end;
+uint32_t hal_get_systick_value(){
+   return(SysTick->VAL);
+}
+
+uint32_t hal_get_systick_reload(){
+   return(SysTick->LOAD);
+}
+
+uint32_t hal_get_systick_freq(){
+   return(RCC_Clocks.HCLK_Frequency);
+}
 
 volatile uint64_t systime = 0;
 
