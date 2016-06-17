@@ -131,7 +131,7 @@ void link_pid(){
    hal_link_pins("cauto0.i_d", "curpid0.id_cmd");
    hal_link_pins("t2c0.cur", "curpid0.iq_cmd");
    hal_link_pins("hv0.dc_volt", "curpid0.dc_volt");
-   hal_link_pins("hv0.ac_volt", "curpid0.ac_volt");
+   hal_link_pins("hv0.pwm_volt", "curpid0.ac_volt");
    hal_link_pins("conf0.r", "curpid0.rd");
    hal_link_pins("conf0.r", "curpid0.rq");
    hal_link_pins("conf0.l", "curpid0.ld");
@@ -162,7 +162,7 @@ void link_pid(){
    hal_link_pins("conf0.l", "pmsm_limits0.lq");
    hal_link_pins("conf0.psi", "pmsm_limits0.psi");
    hal_link_pins("conf0.polecount", "pmsm_limits0.polecount");
-   hal_link_pins("hv0.ac_volt", "pmsm_limits0.ac_volt");
+   hal_link_pins("hv0.pwm_volt", "pmsm_limits0.ac_volt");
    hal_link_pins("pmsm0.indq", "pmsm_limits0.indq");
    hal_link_pins("pmsm0.iq", "pmsm_limits0.iq");
    hal_link_pins("pmsm_limits0.next_max_torque", "pid0.max_torque");
