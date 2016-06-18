@@ -281,7 +281,7 @@ jump_label_pointer = jump_label_pointer_old;
 
 #define BLINK(N) \
 ({ \
-  int t = (systime / 300) % (2 * N + 2); \
+  int t = (hal_get_systime_ms() / 300) % (2 * N + 2); \
   if(t < 2){ \
     t = 0; \
   } \

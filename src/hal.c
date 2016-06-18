@@ -71,19 +71,59 @@ void hal_run_nrt(float period){
 }
 
 void hal_run_rt(float period){
+   switch(hal.rt_state){
+      case RT_STOP:
+         return;
+      case RT_CALC:
+         hal.rt_state = RT_STOP;
+         hal.hal_state = RT_TOO_LONG;
+         hal.frt_state = FRT_STOP;
+         return;
+      case RT_SLEEP:
+         if(hal.active_rt_func > -1){
+            hal.rt_state = RT_STOP;
+            hal.hal_state = MISC_ERROR;
+            hal.frt_state = FRT_STOP;
+            return;
+         }
+         hal.rt_state = RT_CALC;
+   }
+   
    //run all realtime hal functions
    for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){
       hal.rt[hal.active_rt_func](period);
    }
+   
    hal.active_rt_func = -1;
+   hal.rt_state = RT_SLEEP;
 }
 
 void hal_run_frt(float period){
+   switch(hal.frt_state){
+      case FRT_STOP:
+         return;
+      case FRT_CALC:
+         hal.frt_state = FRT_STOP;
+         hal.hal_state = FRT_TOO_LONG;
+         hal.rt_state = RT_STOP;
+         return;
+      case FRT_SLEEP:
+         if(hal.active_frt_func > -1){
+            hal.frt_state = FRT_STOP;
+            hal.hal_state = MISC_ERROR;
+            hal.rt_state = RT_STOP;
+            return;
+         }
+         hal.frt_state = FRT_CALC;
+   }
+
    //run all fast realtime hal functions
    for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_func_count; hal.active_frt_func++){
       hal.frt[hal.active_frt_func](period);
    }
+   
    hal.active_frt_func = -1;
+   hal.frt_state = FRT_SLEEP;
 }
 
 int hal_start_rt(){

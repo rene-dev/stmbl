@@ -18,7 +18,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stm32f4xx_conf.h"
+#include "stm32f4xx_hal_conf.h"
 #include "scanf.h"
 #include "hal.h"
 #include "setup.h"
@@ -29,7 +29,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "usb_cdc.h"
 
 
 GLOBAL_HAL_PIN(rt_time);
@@ -37,20 +36,22 @@ GLOBAL_HAL_PIN(frt_time);
 GLOBAL_HAL_PIN(rt_period_time);
 GLOBAL_HAL_PIN(frt_period_time);
 
+volatile uint64_t systime = 0;
+
 void Wait(uint32_t ms);
 
 //hal interface
 void hal_enable_rt(){
-   TIM_Cmd(TIM2, ENABLE);
+   TIM2->CR1 |= TIM_CR1_CEN;
 }
 void hal_enable_frt(){
-   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+   TIM2->DIER |= TIM_IT_UPDATE;
 }
 void hal_disable_rt(){
-   TIM_Cmd(TIM2, DISABLE);
+   TIM2->CR1 &= (uint16_t)~TIM_CR1_CEN;
 }
 void hal_disable_frt(){
-   TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
+   TIM2->DIER &= (uint16_t)~TIM_IT_UPDATE;
 }
 
 extern char _binary_obj_hv_hv_bin_start;
@@ -66,141 +67,138 @@ uint32_t hal_get_systick_reload(){
 }
 
 uint32_t hal_get_systick_freq(){
-   return(RCC_Clocks.HCLK_Frequency);
+   return(HAL_RCC_GetHCLKFreq());
 }
 
-volatile uint64_t systime = 0;
+uint32_t hal_get_systime_ms(){
+   return(systime);
+}
+
+uint32_t cdc_init(){
+   return(0);
+}
+
+uint32_t cdc_poll(){
+   return(0);
+}
+
+uint32_t cdc_is_connected(){
+   return(0);
+}
+
+uint32_t cdc_getline(char *buf, uint32_t len){
+   return(0);
+}
+
+uint32_t cdc_send(unsigned char *buf, uint32_t len){
+   return(CDC_Transmit_FS(buf, len));
+}
 
 void SysTick_Handler(void)
 {
-  systime++;
+   HAL_IncTick();
+   systime++;
 }
 
-//20kHz
+void rt();
+void frt();
+
+//5kHz
 void TIM2_IRQHandler(void){
-   TIM_ClearITPendingBit(TIM2,TIM_IT_Update);
-   switch(hal.frt_state){
-      case FRT_STOP:
-         return;
-      case FRT_CALC:
-         hal.frt_state = FRT_STOP;
-         hal.hal_state = FRT_TOO_LONG;
-         hal.rt_state = RT_STOP;
-         return;
-      case FRT_SLEEP:
-         if(hal.active_frt_func > -1){
-            hal.frt_state = FRT_STOP;
-            hal.hal_state = MISC_ERROR;
-            hal.rt_state = RT_STOP;
-            return;
-         }
-         hal.frt_state = FRT_CALC;
-   }
+   TIM2->SR = (uint16_t)~TIM_IT_UPDATE;
+   rt();
+}
 
-   GPIO_SetBits(GPIOB,GPIO_Pin_9);
+typedef struct{
+   uint32_t start;
+   uint64_t start_ms;
+   float time;
+   float period;
+} time_ctx_t;
 
-   static unsigned int last_start = 0;
-   unsigned int start = hal_get_systick_value();
+time_ctx_t hal_time_start(time_ctx_t ctx){
+   uint32_t start = hal_get_systick_value();
+   uint64_t start_ms = hal_get_systime_ms();
+   uint32_t diff_ms = start_ms - ctx.start_ms;
+      
+   ctx.period = ((float)(ctx.start - (start - diff_ms * hal_get_systick_reload()))) / hal_get_systick_freq();
+   ctx.start = start;
+   ctx.start_ms = start_ms;
+   
+   return(ctx);
+}
 
-   if(last_start < start){
-     last_start += hal_get_systick_reload();
-   }
+time_ctx_t hal_time_end(time_ctx_t ctx){
+   uint32_t end = hal_get_systick_value();
+   uint64_t end_ms = hal_get_systime_ms();
+   uint32_t diff_ms = end_ms - ctx.start_ms;
+      
+   ctx.time = ((float)(ctx.start - (end - diff_ms * hal_get_systick_reload()))) / hal_get_systick_freq();
 
-   float period = ((float)(last_start - start)) / hal_get_systick_freq();
-   last_start = start;
+   return(ctx);
+}
 
-   hal_run_frt(period);
-
-   unsigned int end = hal_get_systick_value();
-   if(start < end){
-     start += hal_get_systick_reload();
-   }
-   PIN(frt_time) = ((float)(start - end)) / hal_get_systick_freq();
-   PIN(frt_period_time) = period;
-
-   hal.frt_state = FRT_SLEEP;
-   GPIO_ResetBits(GPIOB,GPIO_Pin_9);
+void frt(void){
+   static time_ctx_t ctx;
+   ctx = hal_time_start(ctx);
+   
+   hal_run_frt(ctx.period);
+   
+   ctx = hal_time_end(ctx);
+   
+   PIN(frt_time) = ctx.time;
+   PIN(frt_period_time) = ctx.period;
 }
 
 //5 kHz interrupt for hal. at this point all ADCs have been sampled,
 //see setup_res() in setup.c if you are interested in the magic behind this.
-void DMA2_Stream0_IRQHandler(void){
-   DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
-   switch(hal.rt_state){
-      case RT_STOP:
-         return;
-      case RT_CALC:
-         hal.rt_state = RT_STOP;
-         hal.hal_state = RT_TOO_LONG;
-         hal.frt_state = FRT_STOP;
-         return;
-      case RT_SLEEP:
-         if(hal.active_rt_func > -1){
-            hal.rt_state = RT_STOP;
-            hal.hal_state = MISC_ERROR;
-            hal.frt_state = FRT_STOP;
-            return;
-         }
-         hal.rt_state = RT_CALC;
-   }
-
-   GPIO_SetBits(GPIOB,GPIO_Pin_8);
-
-   static unsigned int last_start = 0;
-   unsigned int start = hal_get_systick_value();
-
-   if(last_start < start){
-     last_start += hal_get_systick_reload();
-   }
-
-   float period = ((float)(last_start - start)) / hal_get_systick_freq();
-   last_start = start;
-
-   hal_run_rt(period);
-
-   unsigned int end = hal_get_systick_value();
-   if(start < end){
-     start += hal_get_systick_reload();
-   }
-   PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
-   PIN(rt_period_time) = period;
-
-   hal.rt_state = RT_SLEEP;
-   GPIO_ResetBits(GPIOB,GPIO_Pin_8);
+void rt(void){
+   //DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
+   //__HAL_DMA_CLEAR_FLAG(hdma, __HAL_DMA_GET_TE_FLAG_INDEX(hdma));
+   //DMA2->LIFCR = DMA_LIFCR_CTCIF0;
+   
+   static time_ctx_t ctx;
+   ctx = hal_time_start(ctx);
+   
+   hal_run_rt(ctx.period);
+   
+   ctx = hal_time_end(ctx);
+   
+   PIN(rt_time) = ctx.time;
+   PIN(rt_period_time) = ctx.period;
 }
 
 int main(void)
 {
    // Relocate interrupt vectors
    //
-   extern void *g_pfnVectors;
-   SCB->VTOR = (uint32_t)&g_pfnVectors;
-
-   float period = 0.0;
-   int last_start = 0;
-   int start = 0;
-   int end = 0;
+   // extern void *g_pfnVectors;
+   // SCB->VTOR = (uint32_t)&g_pfnVectors;
 
    setup();
+   
+   
+   
+   
    hal_init();
 
    hal_set_comp_type("foo"); // default pin for mem errors
    HAL_PIN(bar) = 0.0;
 
    //feedback comps
-   #include "comps/adc.comp"
-   #include "comps/res.comp"
-   #include "comps/enc_fb.comp"
-   #include "comps/encm.comp"
-   #include "comps/encs.comp"
-   #include "comps/yaskawa.comp"
+   // #include "comps/adc.comp"
+   // #include "comps/res.comp"
+   // #include "comps/enc_fb.comp"
+   // #include "comps/encm.comp"
+   // #include "comps/encs.comp"
+   // #include "comps/yaskawa.comp"
    //TODO: hyperface
 
    //command comps
-   #include "comps/sserial.comp"
+   // #include "comps/sserial.comp"
    #include "comps/sim.comp"
-   #include "comps/enc_cmd.comp"
-   #include "comps/en.comp"
+   // #include "comps/enc_cmd.comp"
+   // #include "comps/en.comp"
 
    //PID
    #include "comps/stp.comp"
@@ -217,13 +215,14 @@ int main(void)
    #include "comps/pmsm_limits.comp"
    #include "comps/idq.comp"
    #include "comps/dq.comp"
-   #include "comps/hv.comp"
+   // #include "comps/hv.comp"
 
    //other comps
    #include "comps/fault.comp"
    #include "comps/term.comp"
    #include "comps/io.comp"
 
+   hal_link_pins("sim0.sin", "io0.red");
 
    hal_set_comp_type("net");
    HAL_PIN(enable) = 0.0;
@@ -307,7 +306,7 @@ int main(void)
    rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
    frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
    
-   link_pid();
+   //link_pid();
    hal_comp_init();
 
    if(hal.pin_errors + hal.comp_errors == 0){
@@ -316,32 +315,28 @@ int main(void)
    else{
       hal.hal_state = MEM_ERROR;
    }
-
+   time_ctx_t ctx;
+   ctx.start = hal_get_systick_value();
+   ctx.start_ms = hal_get_systime_ms();
+   
    while(1)//run non realtime stuff
    {
-      start = hal_get_systick_value();
+      ctx = hal_time_start(ctx);
 
-      if(last_start < start){
-        last_start += hal_get_systick_reload();
-      }
+      hal_run_nrt(ctx.period);
 
-      period = ((float)(last_start - start)) / hal_get_systick_freq();
-      last_start = start;
-
-      hal_run_nrt(period);
-
-      end = hal_get_systick_value();
-      if(start < end){
-        start += hal_get_systick_reload();
-      }
-      PIN(nrt_calc_time) = ((float)(start - end)) / hal_get_systick_freq();
-      PIN(nrt_period) = period;
-      Wait(2);
+      ctx = hal_time_end(ctx);
+      
+      PIN(nrt_calc_time) = ctx.time;
+      PIN(nrt_period) = ctx.period;
+      
+      Wait(1000);
+      printf("df\n");
    }
 }
 
 void Wait(uint32_t ms){
-   uint64_t t = systime + ms;
-   while(t >= systime){
+   uint64_t t = hal_get_systime_ms() + ms;
+   while(t >= hal_get_systime_ms()){
    }
 }
