@@ -22,7 +22,11 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f4xx_hal.h"
+#include "stm32f4xx.h"
 #include "stm32f4xx_it.h"
+
+extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
 /** @addtogroup STM32F4_Discovery_Peripheral_Examples
   * @{
@@ -139,6 +143,17 @@ void PendSV_Handler(void)
 //void SysTick_Handler(void)
 //{
 //}
+
+void OTG_FS_IRQHandler(void)
+{
+  /* USER CODE BEGIN OTG_FS_IRQn 0 */
+
+  /* USER CODE END OTG_FS_IRQn 0 */
+  HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
+  /* USER CODE BEGIN OTG_FS_IRQn 1 */
+
+  /* USER CODE END OTG_FS_IRQn 1 */
+}
 
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */

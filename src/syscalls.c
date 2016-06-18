@@ -5,7 +5,8 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include "stm32f4xx.h"
-#include "usb_cdc.h"
+
+extern uint32_t cdc_send(unsigned char *buf, uint32_t len);
 
 //int __errno;
 size_t   __malloc_margin = 256;
@@ -54,36 +55,38 @@ void *_sbrk_r(struct _reent *r, ptrdiff_t incr)
 
 ssize_t _read(int fd, void *ptr, size_t len)
 {
-	(void) fd;
-	while (!usb_rx_buf.len);
-
-	if (len > usb_rx_buf.len)
-		len = usb_rx_buf.len;
-
-	char *c = (char *) ptr;
-	for (uint16_t i = 0; i < len; i++)
-		rb_getc(&usb_rx_buf, c++);
-
-	return len;
+	// (void) fd;
+	// while (!usb_rx_buf.len);
+	// 
+	// if (len > usb_rx_buf.len)
+	// 	len = usb_rx_buf.len;
+	// 
+	// char *c = (char *) ptr;
+	// for (uint16_t i = 0; i < len; i++)
+	// 	rb_getc(&usb_rx_buf, c++);
+	// 
+	// return len;
+	return(0);
 }
 
 
 int _write(int fd, const char *ptr, int len)
 {
-	char *c = (char *) ptr;
-	(void) fd;
-	int sent = 0;
-
-	while (len--) {
-		// send a queued byte - copy to usb stack buffer
-                APP_Rx_Buffer[APP_Rx_ptr_in++] = *c;
-                c++;
-
-                // To avoid buffer overflow
-                if (APP_Rx_ptr_in >= APP_RX_DATA_SIZE) {
-                    APP_Rx_ptr_in = 0;
-                }
-		sent++;
-	}
-	return sent;
+	return(cdc_send((unsigned char*)ptr, len));
+	// char *c = (char *) ptr;
+	// (void) fd;
+	// int sent = 0;
+	// 
+	// while (len--) {
+	// 	// send a queued byte - copy to usb stack buffer
+   //              APP_Rx_Buffer[APP_Rx_ptr_in++] = *c;
+   //              c++;
+	// 
+   //              // To avoid buffer overflow
+   //              if (APP_Rx_ptr_in >= APP_RX_DATA_SIZE) {
+   //                  APP_Rx_ptr_in = 0;
+   //              }
+	// 	sent++;
+	// }
+	// return sent;
 }

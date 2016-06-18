@@ -5,48 +5,68 @@ HAL_PIN(red) = 0.0;
 HAL_PIN(green) = 0.0;
 HAL_PIN(brake) = 0.0;
 
+// leds
+#define LED_R_PIN GPIO_PIN_10
+#define LED_R_PORT GPIOC
+#define LED_R_IO_RCC RCC_AHB1Periph_GPIOC
+
+#define LED_G_PIN GPIO_PIN_11
+#define LED_G_PORT GPIOC
+#define LED_G_IO_RCC RCC_AHB1Periph_GPIOC
+
+// brake
+#define BRAKE_PIN GPIO_PIN_9
+#define BRAKE_PORT GPIOC
+#define BRAKE_IO_RCC RCC_AHB1Periph_GPIOC
+
+// fan
+#define FAN_PIN GPIO_PIN_8
+#define FAN_PORT GPIOC
+#define FAN_IO_RCC RCC_AHB1Periph_GPIOC
+
 INIT(
-   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_InitTypeDef GPIO_InitStruct;
+  
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
    
    //fan
-   GPIO_InitStructure.GPIO_Pin   = FAN_PIN;
-   GPIO_Init(FAN_PORT, &GPIO_InitStructure);
+   GPIO_InitStruct.Pin = FAN_PIN;
+   HAL_GPIO_Init(FAN_PORT, &GPIO_InitStruct);
 
    //led
-   GPIO_InitStructure.GPIO_Pin   = LED_R_PIN;
-   GPIO_Init(LED_R_PORT, &GPIO_InitStructure);
+   GPIO_InitStruct.Pin = LED_R_PIN;
+   HAL_GPIO_Init(LED_R_PORT, &GPIO_InitStruct);
 
-   GPIO_InitStructure.GPIO_Pin   = LED_G_PIN;
-   GPIO_Init(LED_G_PORT, &GPIO_InitStructure);
+   GPIO_InitStruct.Pin = LED_G_PIN;
+   HAL_GPIO_Init(LED_G_PORT, &GPIO_InitStruct);
 
    //brake
-   GPIO_InitStructure.GPIO_Pin   = BRAKE_PIN;
-   GPIO_Init(BRAKE_PORT, &GPIO_InitStructure);
+   GPIO_InitStruct.Pin = BRAKE_PIN;
+   HAL_GPIO_Init(BRAKE_PORT, &GPIO_InitStruct);
 );
 
 NRT(
    if(PIN(fan) > 0)
-      GPIO_SetBits(FAN_PORT, FAN_PIN);
+      HAL_GPIO_WritePin(FAN_PORT, FAN_PIN, GPIO_PIN_SET);
    else
-      GPIO_ResetBits(FAN_PORT, FAN_PIN);
+      HAL_GPIO_WritePin(FAN_PORT, FAN_PIN, GPIO_PIN_RESET);
 
    if(PIN(red) > 0)
-      GPIO_SetBits(LED_R_PORT, LED_R_PIN);
+      HAL_GPIO_WritePin(LED_R_PORT, LED_R_PIN, GPIO_PIN_SET);
    else
-      GPIO_ResetBits(LED_R_PORT, LED_R_PIN);
+      HAL_GPIO_WritePin(LED_R_PORT, LED_R_PIN, GPIO_PIN_RESET);
 
    if(PIN(green) > 0)
-      GPIO_SetBits(LED_G_PORT, LED_G_PIN);
+      HAL_GPIO_WritePin(LED_G_PORT, LED_G_PIN, GPIO_PIN_SET);
    else
-      GPIO_ResetBits(LED_G_PORT, LED_G_PIN);
+      HAL_GPIO_WritePin(LED_G_PORT, LED_G_PIN, GPIO_PIN_RESET);
 
    if(PIN(brake) > 0)
-      GPIO_SetBits(BRAKE_PORT, BRAKE_PIN);
+      HAL_GPIO_WritePin(BRAKE_PORT, BRAKE_PIN, GPIO_PIN_SET);
    else
-      GPIO_ResetBits(BRAKE_PORT, BRAKE_PIN);
+      HAL_GPIO_WritePin(BRAKE_PORT, BRAKE_PIN, GPIO_PIN_RESET);
 );
 
 ENDCOMP;

@@ -18,19 +18,25 @@ INCDIRS += shared
 
 SOURCES += src/main.c
 SOURCES += src/stm32f4xx_it.c
-SOURCES += src/system_stm32f4xx.c
+SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
 SOURCES += src/scanf.c
 SOURCES += src/setup.c
-SOURCES += src/usb_cdc.c
+#SOURCES += src/usb_cdc.c
 SOURCES += src/hal.c
 SOURCES += src/misc.c
-SOURCES += src/eeprom.c
+#SOURCES += src/eeprom.c
 SOURCES += src/link.c
 SOURCES += src/version.c
 SOURCES += src/syscalls.c
 
 SOURCES += shared/crc8.c
 SOURCES += shared/common.c
+SOURCES += src/usb_device.c
+SOURCES += src/usbd_conf.c
+SOURCES += src/usbd_desc.c
+SOURCES += src/usbd_cdc_if.c
+
+
 
 # USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
 #
@@ -63,11 +69,16 @@ CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 #CPPFLAGS += -DUSE_FULL_ASSERT
 
 HAL_DRV_DIR = lib/STM32F4xx_HAL_Driver/
+HAL_USB_DIR = lib/STM32_USB_Device_Library/
 
 INCDIRS += $(HAL_DRV_DIR)/Inc
 INCDIRS += lib/CMSIS/Include
 INCDIRS += lib/CMSIS/Device/ST/STM32F4xx/Include
+INCDIRS += lib/STM32_USB_Device_Library/Core/Inc
+INCDIRS += lib/STM32_USB_Device_Library/Class/CDC/Inc
 
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_cortex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_adc.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_crc.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_dma.c
@@ -76,10 +87,21 @@ SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_gpio.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_pwr.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_rcc.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_tim.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_tim_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_usart.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_pcd.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_hal_pcd_ex.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f4xx_ll_usb.c
+
+SOURCES += $(HAL_USB_DIR)/Core/Src/usbd_core.c
+SOURCES += $(HAL_USB_DIR)/Core/Src/usbd_ctlreq.c
+SOURCES += $(HAL_USB_DIR)/Core/Src/usbd_ioreq.c
+SOURCES += $(HAL_USB_DIR)/Class/CDC/Src/usbd_cdc.c
+
+
 #SOURCES += $(HAL_DRV_DIR)/Src/misc.c
 
-SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
+SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f405xx.s
 
 CPPFLAGS += -DSTM32F407xx
 CPPFLAGS += -DHSE_VALUE=8000000
@@ -87,7 +109,7 @@ LDSCRIPT = stm32_flash.ld
 
 #============================================================================
 OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
-OBJECTS += hv_firmware.o
+#OBJECTS += hv_firmware.o
 CPPFLAGS += $(addprefix -I,$(INCDIRS))
 
 #---------------- Preprocessor Options ----------------

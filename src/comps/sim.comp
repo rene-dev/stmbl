@@ -18,7 +18,7 @@ MEM(float amp) = 0.0;
 MEM(float freq) = 0.0;
 MEM(float vel) = 0.0;
 
-RT(
+NRT(
   amp = PIN(amp) * 0.001 + amp * 0.999;
   freq = PIN(freq) * 0.001 + freq * 0.999;
   float sin;

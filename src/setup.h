@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "stm32f4xx_hal_conf.h"
+#include "stm32f4xx_hal.h"
 #include "misc.h"
 #include "version.h"
 #include "common.h"
@@ -41,7 +41,7 @@
 #define  PID_WAVES 4
 
 void setup(void);
-void setup_res(void);
+void setup_rt_time(void);
 
 volatile uint32_t ADC_DMA_Buffer[ADC_ANZ * PID_WAVES];
 

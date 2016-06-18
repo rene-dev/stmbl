@@ -62,59 +62,59 @@ MEM(uint16_t ee_error);
 
 
 int load(){
-   if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
-      return(-4);
-   }
-   if(ee_error != FLASH_COMPLETE){
-      return -1;
-   }
-   typedef union{
-      float f;
-      uint16_t byte[2];
-   }param_t;
-   param_t param;
-   uint16_t address = 0;
-   uint16_t lo;
-   uint16_t hi;
-   uint16_t elo;
-   uint16_t ehi;
-   for(int i = 0; i < hal.hal_pin_count; i++){
-      if(address >= NB_OF_VAR){
-         return -2;
-      }
-      char name[6];
-      strncpy(name,hal.hal_pins[i]->name,5);
-      name[5] =  '\0';
-      if(!strcmp(name, "conf0")){
-         elo = EE_ReadVariable(address,&lo);
-         ehi = EE_ReadVariable(address+1,&hi);
-         if(elo == 0 && ehi == 0){
-            param.byte[0] = lo;
-            param.byte[1] = hi;
-            hal.hal_pins[i]->value = param.f;
-         }else{
-            return -3;
-         }
-         address+=2;
-         Wait(1);
-      }
-   }
-   //update cmd/fb links
-   update_cmd();
-   update_fb();
-   update_mot();
+//    if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
+//       return(-4);
+//    }
+//    if(ee_error != FLASH_COMPLETE){
+//       return -1;
+//    }
+//    typedef union{
+//       float f;
+//       uint16_t byte[2];
+//    }param_t;
+//    param_t param;
+//    uint16_t address = 0;
+//    uint16_t lo;
+//    uint16_t hi;
+//    uint16_t elo;
+//    uint16_t ehi;
+//    for(int i = 0; i < hal.hal_pin_count; i++){
+//       if(address >= NB_OF_VAR){
+//          return -2;
+//       }
+//       char name[6];
+//       strncpy(name,hal.hal_pins[i]->name,5);
+//       name[5] =  '\0';
+//       if(!strcmp(name, "conf0")){
+//          elo = EE_ReadVariable(address,&lo);
+//          ehi = EE_ReadVariable(address+1,&hi);
+//          if(elo == 0 && ehi == 0){
+//             param.byte[0] = lo;
+//             param.byte[1] = hi;
+//             hal.hal_pins[i]->value = param.f;
+//          }else{
+//             return -3;
+//          }
+//          address+=2;
+//          Wait(1);
+//       }
+//    }
+//    //update cmd/fb links
+//    update_cmd();
+//    update_fb();
+//    update_mot();
    return 0;
 }
 
 
 INIT(
-   FLASH_Unlock();
-   ee_error = EE_Init();
-   FLASH_Lock();
-   int ret = load();
-   if(ret){//flash load error
-      hal.hal_state = CONFIG_LOAD_ERROR;
-   }
+   // FLASH_Unlock();
+   // ee_error = EE_Init();
+   // FLASH_Lock();
+   // int ret = load();
+   // if(ret){//flash load error
+   //    hal.hal_state = CONFIG_LOAD_ERROR;
+   // }
 );
 
 RT(
@@ -300,15 +300,16 @@ NRT(
       printf("GCC        %s\n",__VERSION__);
       printf("newlib     %s\n",_NEWLIB_VERSION);
       printf("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
-      printf("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
+      // printf("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
+      //printf("ST_HAL  %i.%i.%i\n", __STM32F4xx_HAL_VERSION_MAIN, __STM32F4xx_HAL_VERSION_SUB1, __STM32F4xx_HAL_VERSION_SUB2);
       printf("CPU ID     %lx %lx %lx\n",U_ID[0], U_ID[1], U_ID[2]);
-      CRC_ResetDR();
-      uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08010000, version_info.image_size / 4);
-      printf("size: %lu crc:%lx\n", version_info.image_size, version_info.image_crc);
-      if(crc == 0)
-         printf("crc ok!\n");
-      else
-         printf("crc error!:%lx\n", crc);
+      //CRC_ResetDR();
+      //uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08010000, version_info.image_size / 4);
+      // printf("size: %lu crc:%lx\n", version_info.image_size, version_info.image_crc);
+      // if(crc == 0)
+      //    printf("crc ok!\n");
+      // else
+      //    printf("crc error!:%lx\n", crc);
       
       printf("######## Bootloader info ########\n");
       printf(
@@ -353,14 +354,14 @@ NRT(
 
       extern char *__brkval;
 
-      RCC_ClocksTypeDef  RCC_ClocksStatus;
-      RCC_GetClocksFreq(&RCC_ClocksStatus);
+      // RCC_ClocksTypeDef  RCC_ClocksStatus;
+      // RCC_GetClocksFreq(&RCC_ClocksStatus);
 
       printf("HSE_VALUE        = %uHz\n", HSE_VALUE);
-      printf("SYSCLK_Frequency = %luHz\n", RCC_ClocksStatus.SYSCLK_Frequency );
-      printf("HCLK_Frequency   = %luHz\n", RCC_ClocksStatus.HCLK_Frequency   );
-      printf("PCLK1_Frequency  = %luHz\n", RCC_ClocksStatus.PCLK1_Frequency  );
-      printf("PCLK2_Frequency  = %luHz\n", RCC_ClocksStatus.PCLK2_Frequency  );
+      printf("SYSCLK_Frequency = %luHz\n", HAL_RCC_GetSysClockFreq());
+      printf("HCLK_Frequency   = %luHz\n", HAL_RCC_GetHCLKFreq());
+      printf("PCLK1_Frequency  = %luHz\n", HAL_RCC_GetPCLK1Freq());
+      printf("PCLK2_Frequency  = %luHz\n", HAL_RCC_GetPCLK2Freq());
       extern void *g_pfnVectors;
       printf("vtor %lu\n",(uint32_t)&g_pfnVectors);
       //*****************************************************************
@@ -387,42 +388,42 @@ NRT(
    }
 
    void save(){
-      if(ee_error != FLASH_COMPLETE){
-         printf("flash error:%i\n",ee_error);
-         return;
-      }
-      typedef union{
-         float f;
-         uint16_t byte[2];
-      }param_t;
-      param_t param;
-      uint16_t elo;
-      uint16_t ehi;
-      uint16_t address = 0;
-      FLASH_Unlock();
-      for(int i = 0; i < hal.hal_pin_count; i++){
-         if(address >= NB_OF_VAR){
-            printf("NB_OF_VAR too small\n");
-            FLASH_Lock();
-            return;
-         }
-         char name[6];
-         strncpy(name,hal.hal_pins[i]->name,5);
-         name[5] =  '\0';
-         if(!strcmp(name, "conf0")){
-            param.f = hal.hal_pins[i]->source->source->value;
-            //printf("param: %s=%f address:%i\n",hal.hal_pins[i]->name,param.f,address);
-            elo = EE_WriteVariable(address,param.byte[0]);
-            ehi = EE_WriteVariable(address+1,param.byte[1]);
-            if(elo != FLASH_COMPLETE || ehi != FLASH_COMPLETE){
-               printf("error writing to %i: error%i,%i\n",address,elo,ehi);
-               break;
-            }
-            address+=2;
-         }
-      }
-      FLASH_Lock();
-      printf("done\n");
+      // if(ee_error != FLASH_COMPLETE){
+      //    printf("flash error:%i\n",ee_error);
+      //    return;
+      // }
+      // typedef union{
+      //    float f;
+      //    uint16_t byte[2];
+      // }param_t;
+      // param_t param;
+      // uint16_t elo;
+      // uint16_t ehi;
+      // uint16_t address = 0;
+      // FLASH_Unlock();
+      // for(int i = 0; i < hal.hal_pin_count; i++){
+      //    if(address >= NB_OF_VAR){
+      //       printf("NB_OF_VAR too small\n");
+      //       FLASH_Lock();
+      //       return;
+      //    }
+      //    char name[6];
+      //    strncpy(name,hal.hal_pins[i]->name,5);
+      //    name[5] =  '\0';
+      //    if(!strcmp(name, "conf0")){
+      //       param.f = hal.hal_pins[i]->source->source->value;
+      //       //printf("param: %s=%f address:%i\n",hal.hal_pins[i]->name,param.f,address);
+      //       elo = EE_WriteVariable(address,param.byte[0]);
+      //       ehi = EE_WriteVariable(address+1,param.byte[1]);
+      //       if(elo != FLASH_COMPLETE || ehi != FLASH_COMPLETE){
+      //          printf("error writing to %i: error%i,%i\n",address,elo,ehi);
+      //          break;
+      //       }
+      //       address+=2;
+      //    }
+      // }
+      // FLASH_Lock();
+      // printf("done\n");
    }
 
    void conf(){
@@ -658,9 +659,9 @@ NRT(
 
       buf[8 + 1] = 0;
 
-      if (USB_CDC_is_connected() && PIN(send_step) > 0) {
+      if (cdc_is_connected() && PIN(send_step) > 0) {
          PIN(con) = 1.0;
-         USB_VCP_send_string(buf);
+         cdc_send(buf, 9);
       }else{
          PIN(con) = 0.0;
       }
@@ -670,16 +671,16 @@ NRT(
 
 
 
-   if (USB_CDC_is_connected() && systime >= 1000) {
-      char source[APP_TX_BUF_SIZE];
-      char sink[APP_TX_BUF_SIZE];
+   if (cdc_is_connected() && systime >= 1000) {
+      char source[128];
+      char sink[128];
 
       fault_sender();
       hal_error_sender();
 
       int i = -1;
-      char rx_buf[APP_TX_BUF_SIZE];
-      if (USB_VCP_get_string(rx_buf)) {
+      char rx_buf[128];
+      if (cdc_getline(rx_buf, sizeof(rx_buf))) {
          i = sscanf_(rx_buf, "%N = %N", sink, source);
       }
       if(i == 2){ // read hal pin

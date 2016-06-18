@@ -7,130 +7,88 @@
 //
 
 #include "setup.h"
-#include "usb_cdc.h"
+#include "usb_device.h"
 
-void setup(){
-   //Enable clocks
-   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1 | RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_CRC, ENABLE);
-   
-	//messpin
-   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_8 | GPIO_Pin_9;
- 	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-   GPIO_Init(GPIOB, &GPIO_InitStructure);
+/** System Clock Configuration
+*/
+void SystemClock_Config(void)
+{
 
-   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+  RCC_OscInitTypeDef RCC_OscInitStruct;
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
 
-   setup_res();
-   usb_init();
+  __HAL_RCC_PWR_CLK_ENABLE();
 
-	// systick timer
-	RCC_GetClocksFreq(&RCC_Clocks);
-	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
-   //systick prio
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-   NVIC_SetPriority(SysTick_IRQn, 14);
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLN = 168;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 7;
+  HAL_RCC_OscConfig(&RCC_OscInitStruct);
+
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+  HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
+
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+
+  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+
+  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+  /* SysTick_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(SysTick_IRQn);
 }
 
-// Setup Resolver Interface
-// TIM2 triggers ADC1 and 2 at 20kHz
-// TIM2 OC1 generates resolver reference signal at 10kHz
-// DMA2 moves 4 samples to memory, generates transfer complete interrupt at 5kHz
-void setup_res(){
-    //resolver timer
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
-    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStructure.TIM_Period = 420;//20kHz
-    TIM_TimeBaseStructure.TIM_Prescaler = 9;
-    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-    TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-    TIM_ARRPreloadConfig(TIM2,ENABLE);
+void setup(){
+   HAL_Init();
+   SystemClock_Config();
+   
+   __HAL_RCC_GPIOA_CLK_ENABLE();
+   __HAL_RCC_GPIOB_CLK_ENABLE();
+   __HAL_RCC_GPIOC_CLK_ENABLE();
+   __HAL_RCC_GPIOD_CLK_ENABLE();
+   __HAL_RCC_GPIOH_CLK_ENABLE();
+   __HAL_RCC_DMA1_CLK_ENABLE();
+   __HAL_RCC_DMA2_CLK_ENABLE();
+   __HAL_RCC_CRC_CLK_ENABLE();
 
-    TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);//trigger ADC
+   setup_rt_time();
+   MX_USB_DEVICE_Init();
+}
 
-    /* ADC clock enable */
-    RCC_APB2PeriphClockCmd(SIN_ADC_RCC | COS_ADC_RCC, ENABLE);
 
-    //Analog pin configuration
-    GPIO_InitStructure.GPIO_Pin = SIN_PIN;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_Init(SIN_PORT,&GPIO_InitStructure);
+void setup_rt_time(){
+   __HAL_RCC_TIM2_CLK_ENABLE();
+   
+   TIM_HandleTypeDef htim2;
+   TIM_ClockConfigTypeDef sClockSourceConfig;
+   TIM_MasterConfigTypeDef sMasterConfig;
 
-    GPIO_InitStructure.GPIO_Pin = COS_PIN;
-    GPIO_Init(COS_PORT,&GPIO_InitStructure);
+   htim2.Instance = TIM2;
+   htim2.Init.Prescaler = 0;
+   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+   htim2.Init.Period = 16800;
+   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+   HAL_TIM_Base_Init(&htim2);
 
-    //ADC structure configuration
-    ADC_DeInit();
+   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+   HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig);
 
-    ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;//data converted will be shifted to right
-    ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;//Input voltage is converted into a 12bit number giving a maximum value of 4096
-    ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; //the conversion is continuous, the input data is converted more than once
-    ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T2_TRGO;//trigger on rising edge of TIM8
-    ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
-    ADC_InitStructure.ADC_NbrOfConversion = ADC_ANZ;//I think this one is clear :p
-    ADC_InitStructure.ADC_ScanConvMode = ENABLE;//The scan is configured in one channel
-    ADC_Init(SIN_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
-    ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
-    ADC_Init(COS_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
-
-    ADC_CommonInitTypeDef ADC_CommonInitStructure;
-    ADC_CommonInitStructure.ADC_Mode = ADC_DualMode_RegSimult;
-    ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;
-    ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_2;
-    ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
-    ADC_CommonInit(&ADC_CommonInitStructure);
-
-    for(int i = 1;i<=ADC_ANZ;i++){
-        ADC_RegularChannelConfig(SIN_ADC, SIN_ADC_CHAN, i, RES_SampleTime);
-        ADC_RegularChannelConfig(COS_ADC, COS_ADC_CHAN, i, RES_SampleTime);
-    }
-
-    ADC_MultiModeDMARequestAfterLastTransferCmd(ENABLE);
-
-    //Enable ADC conversion
-    ADC_Cmd(SIN_ADC,ENABLE);
-    ADC_Cmd(COS_ADC,ENABLE);
-
-    // DMA-Disable
-    DMA_Cmd(DMA2_Stream0, DISABLE);
-    DMA_DeInit(DMA2_Stream0);
-
-    // DMA2-Config
-    DMA_InitStructure.DMA_Channel = DMA_Channel_0;
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC->CDR;
-    DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ADC_DMA_Buffer;
-    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-    DMA_InitStructure.DMA_BufferSize = ADC_ANZ * PID_WAVES;
-    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
-    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word;
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
-    DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-    DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
-    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-    DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-    DMA_Init(DMA2_Stream0, &DMA_InitStructure);
-
-    NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
-
-    NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream0_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
-
-    DMA_Cmd(DMA2_Stream0, ENABLE);
-
-    DMA_ITConfig(DMA2_Stream0, DMA_IT_TC, ENABLE);
+   sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+   HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig);
+   
+   HAL_NVIC_SetPriority(TIM2_IRQn, 2, 0);
+   HAL_NVIC_EnableIRQ(TIM2_IRQn);
  }
