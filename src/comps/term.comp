@@ -301,7 +301,8 @@ NRT(
       printf("newlib     %s\n",_NEWLIB_VERSION);
       printf("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
       // printf("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
-      //printf("ST_HAL  %i.%i.%i\n", __STM32F4xx_HAL_VERSION_MAIN, __STM32F4xx_HAL_VERSION_SUB1, __STM32F4xx_HAL_VERSION_SUB2);
+      printf("ST_HAL     %i.%i.%i.%i\n", 0xFF & (HAL_GetHalVersion() >> 24), 0xFF & (HAL_GetHalVersion() >> 16), 0xFF & (HAL_GetHalVersion() >> 8), 0xFF & HAL_GetHalVersion());
+      //printf("ST_HAL  %X\n", HAL_GetHalVersion());
       printf("CPU ID     %lx %lx %lx\n",U_ID[0], U_ID[1], U_ID[2]);
       //CRC_ResetDR();
       //uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08010000, version_info.image_size / 4);
@@ -323,8 +324,7 @@ NRT(
       printf("Branch %s\n",bt_version_info->git_branch);
       printf("Compiled %s %s ",bt_version_info->build_date, bt_version_info->build_time);
       printf("by %s on %s\n",bt_version_info->build_user, bt_version_info->build_host);
-
-      printf("start:%p ,size:%p ,end%p \n",&_binary_obj_hv_hv_bin_start,&_binary_obj_hv_hv_bin_size,&_binary_obj_hv_hv_bin_end);
+      //printf("start:%p ,size:%p ,end%p \n",&_binary_obj_hv_hv_bin_start,&_binary_obj_hv_hv_bin_size,&_binary_obj_hv_hv_bin_end);
    }
 
    void start(){
@@ -383,7 +383,7 @@ NRT(
    void listhal(){
       for(int i = 0; i < hal.hal_pin_count; i++){
          printf("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
-         Wait(1);
+         //Wait(1);
       }
    }
 

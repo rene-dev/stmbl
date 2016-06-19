@@ -45,13 +45,13 @@ void hal_enable_rt(){
    TIM2->CR1 |= TIM_CR1_CEN;
 }
 void hal_enable_frt(){
-   TIM2->DIER |= TIM_IT_UPDATE;
+   //TIM2->DIER |= TIM_IT_UPDATE;
 }
 void hal_disable_rt(){
    TIM2->CR1 &= (uint16_t)~TIM_CR1_CEN;
 }
 void hal_disable_frt(){
-   TIM2->DIER &= (uint16_t)~TIM_IT_UPDATE;
+   //TIM2->DIER &= (uint16_t)~TIM_IT_UPDATE;
 }
 
 extern char _binary_obj_hv_hv_bin_start;
@@ -78,21 +78,19 @@ uint32_t cdc_init(){
    return(0);
 }
 
-uint32_t cdc_poll(){
-   return(0);
-}
+// uint32_t cdc_poll(){
+//    return(0);
+// }
+// 
+// uint32_t cdc_is_connected(){
+//    return(0);
+// }
+// 
+// uint32_t cdc_getline(char *buf, uint32_t len);
 
-uint32_t cdc_is_connected(){
-   return(0);
-}
-
-uint32_t cdc_getline(char *buf, uint32_t len){
-   return(0);
-}
-
-uint32_t cdc_send(unsigned char *buf, uint32_t len){
-   return(CDC_Transmit_FS(buf, len));
-}
+// uint32_t cdc_send(unsigned char *buf, uint32_t len){
+//    return(CDC_Transmit_FS(buf, len));
+// }
 
 void SysTick_Handler(void)
 {
@@ -172,8 +170,8 @@ int main(void)
 {
    // Relocate interrupt vectors
    //
-   // extern void *g_pfnVectors;
-   // SCB->VTOR = (uint32_t)&g_pfnVectors;
+   extern void *g_pfnVectors;
+   SCB->VTOR = (uint32_t)&g_pfnVectors;
 
    setup();
    
@@ -321,6 +319,7 @@ int main(void)
    
    while(1)//run non realtime stuff
    {
+      cdc_poll();
       ctx = hal_time_start(ctx);
 
       hal_run_nrt(ctx.period);
@@ -330,8 +329,8 @@ int main(void)
       PIN(nrt_calc_time) = ctx.time;
       PIN(nrt_period) = ctx.period;
       
-      Wait(1000);
-      printf("df\n");
+      // Wait(1);
+      //printf("df\n");
    }
 }
 

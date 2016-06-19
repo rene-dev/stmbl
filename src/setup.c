@@ -45,7 +45,7 @@ void SystemClock_Config(void)
 
   HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
   /* SysTick_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(SysTick_IRQn, 10, 0);
   HAL_NVIC_EnableIRQ(SysTick_IRQn);
 }
 

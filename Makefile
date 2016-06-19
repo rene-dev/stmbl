@@ -258,7 +258,7 @@ btburn: build showsize $(TARGET).dfu
 	dfu-util -a 0 -s 0x08010000:leave -D $(TARGET).dfu
 
 flash: $(TARGET).bin
-	st-flash --reset write $(TARGET).bin 0x08000000
+	st-flash --reset write $(TARGET).bin 0x08010000
 		
 # Create a DFU file from bin file
 %.dfu: %.bin

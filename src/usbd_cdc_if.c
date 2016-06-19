@@ -32,6 +32,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc_if.h"
+#include "ringbuf.h"
 /* USER CODE BEGIN INCLUDE */
 /* USER CODE END INCLUDE */
 
@@ -59,8 +60,8 @@
 /* USER CODE BEGIN PRIVATE_DEFINES */
 /* Define size for the receive and transmit buffer over CDC */
 /* It's up to user to redefine and/or remove those define */
-#define APP_RX_DATA_SIZE  4
-#define APP_TX_DATA_SIZE  4
+#define APP_RX_DATA_SIZE  64
+#define APP_TX_DATA_SIZE  64
 /* USER CODE END PRIVATE_DEFINES */
 /**
   * @}
@@ -86,6 +87,12 @@ uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
 
 /* Send Data over USB CDC are stored in this buffer       */
 uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
+
+#define RX_QUEUE_SIZE  512
+#define TX_QUEUE_SIZE  2048
+
+struct ringbuf rx_buf = { .buf = (char[RX_QUEUE_SIZE]) {0}, .bufsize = RX_QUEUE_SIZE };
+struct ringbuf tx_buf = { .buf = (char[TX_QUEUE_SIZE]) {0}, .bufsize = TX_QUEUE_SIZE };
 
 /* USB handler declaration */
 /* Handle for USB Full Speed IP */
@@ -253,12 +260,98 @@ static int8_t CDC_Control_FS  (uint8_t cmd, uint8_t* pbuf, uint16_t length)
   */
 static int8_t CDC_Receive_FS (uint8_t* Buf, uint32_t *Len)
 {
+   
+   
+   if (hUsbDeviceFS.dev_state != USBD_STATE_CONFIGURED)
+	{
+		return USBD_FAIL;
+	}
+   
+	if (((Buf == NULL) || (Len == NULL)) || (*Len <= 0))
+	{
+		return USBD_FAIL;
+	}
+   // 
+   // 
+	// /* Get data */
+	uint8_t result = USBD_OK;
+   
+   do
+   {
+    result = USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
+   }
+   while(result != USBD_OK);
+
+   do
+   {
+    result = USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+   }
+   while(result != USBD_OK);
+
+   rb_write(&rx_buf, Buf, *Len);
+
+   return (USBD_OK);
+  
+  
+  
   /* USER CODE BEGIN 6 */
-  USBD_CDC_SetRxBuffer(hUsbDevice_0, &Buf[0]);
-  USBD_CDC_ReceivePacket(hUsbDevice_0);
-  return (USBD_OK);
+  // rb_write(&rx_buf, Buf, *Len);
+  // 
+  // USBD_CDC_SetRxBuffer(hUsbDevice_0, &Buf[0]);
+  // USBD_CDC_ReceivePacket(hUsbDevice_0);
+  // return (USBD_OK);
   /* USER CODE END 6 */ 
 }
+
+uint32_t cdc_is_connected(){
+   if (hUsbDeviceFS.dev_state != USBD_STATE_CONFIGURED)
+	{
+		return 0;
+	}
+
+   USBD_CDC_HandleTypeDef *hcdc = (USBD_CDC_HandleTypeDef*)hUsbDevice_0->pClassData;
+   if (hcdc->TxState != 0){
+     return(0);
+   }
+   return(1);
+}
+
+int cdc_getline(char *ptr, int len){
+   int ret = 0;
+   char c;
+   if (rx_buf.len == 0){ 
+		return 0;
+	}
+
+   while(rb_getc(&rx_buf, &c) && ret < len){
+      ret++;
+      *ptr++ = c;
+      if(c == '\n'){
+         *--ptr = '\0';
+         return ret;
+      }
+   }
+	rb_undo(&rx_buf, ret);
+	return 0;
+}
+
+uint32_t cdc_poll(){
+   Wait(1);
+   return(CDC_Transmit_FS("", 0));
+}
+
+uint32_t cdc_send(unsigned char *buf, uint32_t len){
+   if(cdc_is_connected() == 0){
+      return 0;
+   }
+   if(tx_buf.len + len >= tx_buf.bufsize){
+      cdc_poll();
+      Wait(1);
+   }
+   return(rb_write(&tx_buf, buf, len));
+}
+
+
 
 /**
   * @brief  CDC_Transmit_FS
@@ -273,13 +366,21 @@ static int8_t CDC_Receive_FS (uint8_t* Buf, uint32_t *Len)
   */
 uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 {
+   // if(cdc_is_connected() == 0){
+   //    return USBD_BUSY;
+   // }
+   //rb_write(&tx_buf, Buf, Len);
+	
   uint8_t result = USBD_OK;
   /* USER CODE BEGIN 7 */ 
   USBD_CDC_HandleTypeDef *hcdc = (USBD_CDC_HandleTypeDef*)hUsbDevice_0->pClassData;
   if (hcdc->TxState != 0){
     return USBD_BUSY;
   }
-  USBD_CDC_SetTxBuffer(hUsbDevice_0, Buf, Len);
+  if(tx_buf.len > 0){
+     Len = rb_read(&tx_buf, UserTxBufferFS, 64);
+  }
+  USBD_CDC_SetTxBuffer(hUsbDevice_0, UserTxBufferFS, Len);
   result = USBD_CDC_TransmitPacket(hUsbDevice_0);
   /* USER CODE END 7 */ 
   return result;
@@ -297,4 +398,3 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
   */ 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-
