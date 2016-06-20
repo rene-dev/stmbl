@@ -592,7 +592,11 @@ NRT(
          case STATE_PHASING:
            printf("INFO: Phasing \n");
          break;
-
+         
+         case STATE_HV_ERROR:
+            printf("ERROR: HV error. iramx fault, or no communication.\n");
+         break;
+         
          default:
          break;
        }

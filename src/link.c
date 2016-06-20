@@ -85,6 +85,8 @@ void link_pid(){
    hal_link_pins("fault0.start_offset", "cauto0.start_offset");
 
    hal_link_pins("fault0.cur", "curpid0.max_cur");
+   hal_link_pins("hv0.error", "fault0.hv_no_comms");
+   hal_link_pins("hv0.hv_fault", "fault0.hv_error");
 
    hal_link_pins("fault0.brake", "io0.brake");
    hal_link_pins("fault0.hv_fan", "io0.fan");

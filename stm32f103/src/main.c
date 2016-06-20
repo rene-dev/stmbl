@@ -66,6 +66,7 @@ volatile uint16_t amp_raw = 0;
 volatile uint16_t temp_raw = 0;
 volatile uint8_t hv_fault = 0;
 volatile uint8_t hv_enabled = 0;
+volatile int32_t hv_fault_count = 0;
 
 float volt = 0;
 float amp = 0;
@@ -509,7 +510,19 @@ int main(void)
 			packet_from_hv.data.dc_volt = TOFIXED(volt);
 			packet_from_hv.data.dc_cur =  TOFIXED(amp);
 			packet_from_hv.data.hv_temp = TOFIXED(temp);
-         packet_from_hv.data.hv_fault = hv_fault == 1 && hv_enabled == 1;
+         int hv_fault_limit = 10;
+         if(hv_fault == 1 && hv_enabled == 1){
+            if(hv_fault_count < hv_fault_limit){
+               hv_fault_count++;
+            }
+         }else{
+            hv_fault_count = 0;
+         }
+         if(hv_fault_count >= hv_fault_limit){
+            packet_from_hv.data.hv_fault = 1;
+         }else{
+            packet_from_hv.data.hv_fault = 0;
+         }
 #ifdef TROLLER
 			packet_from_hv.data.dc_cur =  TOFIXED(0);
 			packet_from_hv.data.hv_temp = TOFIXED(0);

@@ -52,6 +52,8 @@ HAL_PIN(fb_ready) = 0.0;
 HAL_PIN(fb_error) = 0.0;
 HAL_PIN(cmd_ready) = 1.0;
 HAL_PIN(cmd_error) = 0.0;
+HAL_PIN(hv_no_comms) = 0.0;
+HAL_PIN(hv_error) = 0.0;
 HAL_PIN(sat) = 0.0;
 
 // cmd + fb in
@@ -216,6 +218,13 @@ RT(
       state = STATE_OVR_CURR;
    }
 
+   if(PIN(hv_error) > 0.0 || PIN(hv_no_comms) > 0.0){
+      PIN(brake) = 0.0;
+      PIN(cur) = 0.0;
+      PIN(enable_out) = 0.0;
+      PIN(enable_pid) = 0.0;
+      state = STATE_HV_ERROR;
+   }
 
    // saturation
    if(PIN(sat) >= PIN(max_sat) && PIN(max_sat) > 0.0){ // disable drive, set fault
@@ -315,6 +324,7 @@ RT(
       case STATE_POS_ERROR:
       case STATE_OVR_TEMP:
       case STATE_OVR_VOLT:
+      case STATE_HV_ERROR:
       PIN(led_green) = BLINK(-state);
       PIN(led_red) = 1.0;
       PIN(fault) = 1.0;
