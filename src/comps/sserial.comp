@@ -349,7 +349,7 @@ uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
   mode_descriptor_t mdr;
   mdr.record_type = RECORD_TYPE_MODE_DATA_RECORD;
   mdr.index = index;
-  mdr.type = type;
+  mdr.type = type;//hw = 0, sw = 1
   mdr.unused = 0x00;
 
   memcpy(heap_ptr, &mdr, sizeof(mode_descriptor_t));
@@ -403,11 +403,13 @@ RT_INIT(
   ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, -100, 100));    metadata(&(pd_table.input_pins), last_pd);
   ADD_PROCESS_VAR(("fault", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));               metadata(&(pd_table.fault), last_pd);
   ADD_PROCESS_VAR(("pos_fb", "rad", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -3.2, 3.2));      metadata(&(pd_table.pos_fb), last_pd);
+  //globals and modes are not working. https://github.com/LinuxCNC/linuxcnc/blob/2957cc5ad0a463c39fb35c10a0c14909c09a5fb7/src/hal/drivers/mesa-hostmot2/sserial.c#L1516
+  // - globals need write support
+  // - linuxcnc only supports globals of type DATA_TYPE_NONVOL_UNSIGNED or DATA_TYPE_NONVOL_SIGNED
+  //ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_NONVOL_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
 
-  ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
-
-  ADD_MODE(("foo", 0, 0));
-  ADD_MODE(("io_", 1, 1));
+  //ADD_MODE(("foo", 0, 0));
+  ADD_MODE(("Position mode", 0, 1));
 
   // automatically create padding pds based on the mod remainder of input/output bits
   if (input_bits % 8)  ADD_PROCESS_VAR(("padding", "", 8 -  (input_bits%8), DATA_TYPE_PAD, DATA_DIRECTION_INPUT,  0, 0));
@@ -678,7 +680,7 @@ FRT(
           }else{
              continue;
           }
-      }else if (lbp.ct == CT_RW && lbp.wr == 0){ //read
+      }else if (lbp.ct == CT_RW && lbp.wr == 0){ //read TODO: implement write.
          if(available >= 2){
             if (lbp.as == 1){ //address included in command = cmd+addr+addr+crc
                if (available >= 4) {
@@ -690,6 +692,7 @@ FRT(
             }else{ //address not included in command = cmd+crc
                rxpos += 2;
             }
+            //TODO: check if address is valid
             memcpy((void*)txbuf,&memory.bytes[address],(1<<lbp.ds));
             send((1<<lbp.ds),1);
             if(lbp.ai == 1){//auto increment address by datasize
