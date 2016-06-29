@@ -8,10 +8,11 @@ HAL_PIN(pos) = 0.0;
 HAL_PIN(start) = 0.0;
 HAL_PIN(ready) = 0.0;
 
-HAL_PIN(mag_offset) = 0.0;
-HAL_PIN(start_offset) = 0.0;
-HAL_PIN(mo) = 0.0;
-HAL_PIN(moffset) = 0.0;
+HAL_PIN(mag_offset) = 0.0;//conf0.fb_offset
+HAL_PIN(start_offset) = 0.0;//raus
+HAL_PIN(mo) = 0.0;//live
+
+HAL_PIN(moffset) = 0.0;//out
 
 HAL_PIN(fb_in) = 0.0;
 HAL_PIN(fb_out) = 0.0;
