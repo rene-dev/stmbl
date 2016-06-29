@@ -470,7 +470,7 @@ NRT(
       printf("reset cpu: reset\n");
       printf("print help: help\n");
       printf("list all hal pins: list\n");
-      printf("list all conf pins: conf\n");
+      printf("list all conf pins: getconf\n");
       printf("save conf: save\n");
       printf("load conf: load\n");
    }
@@ -509,7 +509,7 @@ NRT(
       else if(!strcmp(s, "load")){
          load_cmd();
       }
-      else if(!strcmp(s, "conf")){
+      else if(!strcmp(s, "getconf")){
          conf();
       }
       else{
@@ -592,7 +592,11 @@ NRT(
          case STATE_PHASING:
            printf("INFO: Phasing \n");
          break;
-
+         
+         case STATE_HV_ERROR:
+            printf("ERROR: HV error. iramx fault, or no communication.\n");
+         break;
+         
          default:
          break;
        }
@@ -669,6 +673,13 @@ NRT(
    PIN(buf_use) = bc;
 
 
+   void print_pin(hal_pin_t* pin){
+      if(pin == pin->source){//if pin is not linked
+         printf("%s = %f\n", pin->name, pin->source->source->value);
+      }else{//pin is linked
+         printf("%s <= %s = %f\n", pin->name, pin->source->name, pin->source->source->value);
+      }
+   }
 
    if (USB_CDC_is_connected() && systime >= 1000) {
       char source[APP_TX_BUF_SIZE];
@@ -684,13 +695,12 @@ NRT(
       }
       if(i == 2){ // read hal pin
          if(hal_is_pin(sink)){
-            printf("%s <= %s = %f\n", sink, hal_find_pin(sink)->source->name, hal_get_pin(sink));
+            print_pin(hal_find_pin(sink));
          }
          else if(hal_is_compname(sink)){
-            printf("%s\n",sink);
-            for(int i = 0; i < hal.hal_pin_count; i++){
+            for(int i = 0; i < hal.hal_pin_count; i++){//find all pins of this comp
               if(!strncmp(hal.hal_pins[i]->name, sink, strlen(sink))){
-                 printf("%s\n",hal.hal_pins[i]->name);
+                 print_pin(hal.hal_pins[i]);
               }
             }
          }else{

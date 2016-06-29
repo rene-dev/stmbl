@@ -8,6 +8,9 @@ HAL_COMP(enc_cmd);
 
 HAL_PIN(res) = 2048.0;
 HAL_PIN(pos) = 0.0;
+HAL_PIN(index) = 0.0;
+HAL_PIN(a) = 0.0;
+HAL_PIN(b) = 0.0;
 
 MEM(int e_res) = 0.0;
 
@@ -64,6 +67,21 @@ RT_DEINIT(
 RT(
   float p = 0.0;
 
+  if(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_2)){//TODO: setup pin
+     PIN(index) = 0.0;
+  }else{
+     PIN(index) = 1.0;
+  }
+  if(GPIO_ReadInputDataBit(ENC0_A_PORT,ENC0_A_PIN)){//TODO: setup pin
+     PIN(a) = 0.0;
+  }else{
+     PIN(a) = 1.0;
+  }
+  if(GPIO_ReadInputDataBit(ENC0_B_PORT,ENC0_B_PIN)){//TODO: setup pin
+     PIN(b) = 0.0;
+  }else{
+     PIN(b) = 1.0;
+  }
 
   int res = (int)PIN(res);
   if(res < 1){

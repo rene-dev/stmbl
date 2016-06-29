@@ -64,6 +64,9 @@ volatile uint32_t timeout = 99999;
 volatile uint16_t volt_raw = 0;
 volatile uint16_t amp_raw = 0;
 volatile uint16_t temp_raw = 0;
+volatile uint8_t hv_fault = 0;
+volatile uint8_t hv_enabled = 0;
+volatile int32_t hv_fault_count = 0;
 
 float volt = 0;
 float amp = 0;
@@ -107,6 +110,28 @@ void RCC_Configuration(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
 }
 
+void hv_enable(){
+#ifdef TROLLER
+		GPIO_SetBits(GPIOB,GPIO_Pin_1);
+		GPIO_SetBits(GPIOB,GPIO_Pin_2);
+		GPIO_SetBits(GPIOB,GPIO_Pin_3);
+#else
+		GPIO_SetBits(GPIOB,GPIO_Pin_6);
+#endif
+      hv_enabled = 1;
+}
+
+void hv_disable(){
+#ifdef TROLLER
+		GPIO_ResetBits(GPIOB,GPIO_Pin_1);
+		GPIO_ResetBits(GPIOB,GPIO_Pin_2);
+		GPIO_ResetBits(GPIOB,GPIO_Pin_3);
+#else
+		GPIO_ResetBits(GPIOB,GPIO_Pin_6);
+#endif
+      hv_enabled = 0;
+}
+
 void GPIO_Configuration(void)
 {
 	//LED init
@@ -119,9 +144,6 @@ void GPIO_Configuration(void)
 	//shutdown pins
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_ResetBits(GPIOB,GPIO_Pin_1);
-	GPIO_ResetBits(GPIOB,GPIO_Pin_2);
-	GPIO_ResetBits(GPIOB,GPIO_Pin_3);
 	//GPIO_ResetBits(GPIOC,GPIO_Pin_2);//green led off
 #else
 	//Enable output
@@ -141,6 +163,7 @@ void GPIO_Configuration(void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 #endif
+   hv_disable();
 }
 
 void tim1_init(){
@@ -345,23 +368,10 @@ void TIM1_UP_IRQHandler(){
 	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);//trigger ADC
 	if(timeout > 30){//disable driver
-#ifdef TROLLER
-		GPIO_ResetBits(GPIOB,GPIO_Pin_1);
-		GPIO_ResetBits(GPIOB,GPIO_Pin_2);
-		GPIO_ResetBits(GPIOB,GPIO_Pin_3);
-#else
-		GPIO_ResetBits(GPIOB,GPIO_Pin_6);
-#endif
+      hv_disable();
 		GPIO_SetBits(GPIOC,GPIO_Pin_1);//yellow led on
 		GPIO_ResetBits(GPIOC,GPIO_Pin_2);//green led off
-	}else{//Enable driver
-#ifdef TROLLER
-		GPIO_SetBits(GPIOB,GPIO_Pin_1);
-		GPIO_SetBits(GPIOB,GPIO_Pin_2);
-		GPIO_SetBits(GPIOB,GPIO_Pin_3);
-#else
-		GPIO_SetBits(GPIOB,GPIO_Pin_6);
-#endif
+	}else{
 		GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
 		GPIO_ResetBits(GPIOC,GPIO_Pin_1);//yellow led off
 		timeout ++;
@@ -378,8 +388,10 @@ void DMA1_Channel1_IRQHandler(){
 #ifndef TROLLER
 	//fault test
 	if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)){
+      hv_fault = 0;
 		GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
 	}else{
+      hv_fault = 1;
 		GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
 	}
 #endif
@@ -405,7 +417,11 @@ void USART2_IRQHandler(){
 	if(datapos == sizeof(packet_to_hv_t)){//all data received
 		datapos = -1;
 		unbuff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
-
+      if(packet_to_hv.data.enable == 1){
+         hv_enable();
+      }else{
+         hv_disable();
+      }
 		float ua = TOFLOAT(packet_to_hv.data.a);
 		float ub = TOFLOAT(packet_to_hv.data.b);
 
@@ -494,6 +510,19 @@ int main(void)
 			packet_from_hv.data.dc_volt = TOFIXED(volt);
 			packet_from_hv.data.dc_cur =  TOFIXED(amp);
 			packet_from_hv.data.hv_temp = TOFIXED(temp);
+         int hv_fault_limit = 10;
+         if(hv_fault == 1 && hv_enabled == 1){
+            if(hv_fault_count < hv_fault_limit){
+               hv_fault_count++;
+            }
+         }else{
+            hv_fault_count = 0;
+         }
+         if(hv_fault_count >= hv_fault_limit){
+            packet_from_hv.data.hv_fault = 1;
+         }else{
+            packet_from_hv.data.hv_fault = 0;
+         }
 #ifdef TROLLER
 			packet_from_hv.data.dc_cur =  TOFIXED(0);
 			packet_from_hv.data.hv_temp = TOFIXED(0);

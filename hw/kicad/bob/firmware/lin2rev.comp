@@ -1,21 +1,53 @@
 component lin2rev "Calculate motor angle from position in machine units";
-pin in float in;
 pin in float scale;
-pin out float out;
-variable double pi;
+
+pin in float cmd_in;
+pin out float cmd_out;
+
+pin in float fb_in;
+pin out float fb_out;
+
+variable double pi = 3.141592654;
 variable double s;
+variable int lastq = 0;
+variable int q = 0;
+variable int rev = 0;
+
 function _;
 license "GPL";
 ;;
+
 s = scale;
 if(s == 0){
    s = 1;
 }
-pi = 3.141592654;
-out = (in/scale)*2.0*pi;
-while(out < -pi){
-   out += 2.0 * pi;
+
+cmd_out = (cmd_in/s)*2.0*pi;
+
+while(cmd_out < -pi){
+   cmd_out += 2.0 * pi;
 }
-while(out > pi){
-   out -= 2.0 * pi;
+
+while(cmd_out > pi){
+   cmd_out -= 2.0 * pi;
 }
+
+q = 0;
+if(fb_in > pi/2.0){
+   q = 2;
+}
+if(fb_in < -pi/2.0){
+   q = 3;
+}
+
+if(q != 0 && q == 3 && lastq == 2){
+   rev++;
+}
+
+if(q != 0 && q == 2 && lastq == 3){
+   rev--;
+}
+
+lastq = q;
+
+fb_out = ((fb_in+rev*pi*2.0)*s)/(2.0*pi);

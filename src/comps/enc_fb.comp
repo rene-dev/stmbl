@@ -3,6 +3,9 @@ HAL_COMP(enc_fb);
 HAL_PIN(res) = 2048.0;
 HAL_PIN(ires) = 1024.0;
 HAL_PIN(pos) = 0.0;
+HAL_PIN(index) = 0.0;
+HAL_PIN(a) = 0.0;
+HAL_PIN(b) = 0.0;
 HAL_PIN(ipos) = 0.0;
 HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
@@ -157,6 +160,23 @@ RT(
     e_res = r;
     TIM_SetAutoreload(ENC1_TIM, e_res - 1);
   }
+  
+  if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_11)){//TODO: setup pin
+     PIN(index) = 0.0;
+  }else{
+     PIN(index) = 1.0;
+  }
+  if(GPIO_ReadInputDataBit(ENC1_A_PORT,ENC1_A_PIN)){//TODO: setup pin
+     PIN(a) = 0.0;
+  }else{
+     PIN(a) = 1.0;
+  }
+  if(GPIO_ReadInputDataBit(ENC1_B_PORT,ENC1_B_PIN)){//TODO: setup pin
+     PIN(b) = 0.0;
+  }else{
+     PIN(b) = 1.0;
+  }
+  
 );
 
 ENDCOMP;

@@ -76,7 +76,7 @@ typedef union{
 #define RECORD_TYPE_MODE_DATA_RECORD 0xB0
 
 //process data
-#define DATA_TYPE_PAD 0x00
+#define DATA_TYPE_PAD 0x00//dont use, does not create hal pin
 #define DATA_TYPE_BITS 0x01
 #define DATA_TYPE_UNSIGNED 0x02
 #define DATA_TYPE_SIGNED 0x03
@@ -115,17 +115,18 @@ HAL_PIN(timeout) = 100.0;// 20khz / 1khz * 2 reads = 40
 HAL_PIN(pos_cmd) = 0.0;
 HAL_PIN(pos_cmd_d) = 0.0;
 HAL_PIN(pos_fb) = 0.0;
-HAL_PIN(vel_fb) = 0.0;
 
 HAL_PIN(in0) = 0.0;
 HAL_PIN(in1) = 0.0;
 HAL_PIN(in2) = 0.0;
 HAL_PIN(in3) = 0.0;
+HAL_PIN(fault) = 0.0;
 
 HAL_PIN(out0) = 0.0;
 HAL_PIN(out1) = 0.0;
 HAL_PIN(out2) = 0.0;
 HAL_PIN(out3) = 0.0;
+HAL_PIN(enable) = 0.0;
 
 
 typedef struct{
@@ -156,8 +157,8 @@ typedef struct{
 
 typedef union {
   struct {
-    discovery_rpc_t discovery;
-    uint16_t foo;
+    discovery_rpc_t discovery;//6 bytes
+    uint16_t foo;//padding, so heap is word aligned
     uint8_t heap[MEM_SIZE - sizeof(discovery_rpc_t)];
   };
 
@@ -172,11 +173,11 @@ typedef struct {
 
 typedef struct {
   pd_metadata_t pos_cmd;
-  pd_metadata_t scale;
   pd_metadata_t pos_fb;
-  pd_metadata_t vel_fb;
   pd_metadata_t input_pins;
   pd_metadata_t output_pins;
+  pd_metadata_t fault;
+  pd_metadata_t enable;
 } pd_table_t;
 
 
@@ -189,7 +190,10 @@ MEM(uint8_t *heap_ptr);
 MEM(uint32_t timeout);
 MEM(pd_table_t pd_table);
 MEM(float last_pos_cmd);
-
+MEM(lbp_t lbp);
+MEM(char name[]) = LBPCardName;
+MEM(int bufferpos);
+MEM(int available);
 
 //pb13 txen
 //pc12 usart5 tx
@@ -300,34 +304,16 @@ void init_hardware() {
   GPIO_SetBits(GPIOB, GPIO_Pin_13);
 }
 
-process_data_descriptor_t create_pdr(uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, float param_min, float param_max) {
-  process_data_descriptor_t pd;
-
-  pd.record_type    = RECORD_TYPE_PROCESS_DATA_RECORD;
-  pd.data_size    = data_size_in_bits;
-  pd.data_type    = data_type;
-  pd.data_direction   = data_dir;
-  pd.param_min    = param_min;
-  pd.param_max    = param_max;
-
-  return pd;
-}
-
-mode_descriptor_t create_mdr(uint8_t index, uint8_t type) {
-  mode_descriptor_t md;
-
-  md.record_type = RECORD_TYPE_MODE_DATA_RECORD;
-  md.index = index;
-  md.type = type;
-  md.unused = 0x00;
-
-  return md;
-}
-
 uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, float param_min, float param_max) {
-  process_data_descriptor_t pdr = create_pdr(data_size_in_bits, data_type, data_dir, param_min, param_max);
-
-  pdr.data_addr = MEMPTR(*heap_ptr);
+  process_data_descriptor_t pdr;
+  pdr.record_type    = RECORD_TYPE_PROCESS_DATA_RECORD;
+  pdr.data_size      = data_size_in_bits;
+  pdr.data_type      = data_type;
+  pdr.data_direction = data_dir;
+  pdr.param_min      = param_min;
+  pdr.param_max      = param_max;
+  pdr.data_addr      = MEMPTR(*heap_ptr);
+  
   heap_ptr += NUM_BYTES(data_size_in_bits);
   // this aligns the heap pointer to 32bit.  Not doing this causes the floats in the pd to be misaligned, which crashes the arm.
   if((uint32_t)heap_ptr % 4){
@@ -360,7 +346,11 @@ uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits,
 }
 
 uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
-  mode_descriptor_t mdr = create_mdr(index, type);
+  mode_descriptor_t mdr;
+  mdr.record_type = RECORD_TYPE_MODE_DATA_RECORD;
+  mdr.index = index;
+  mdr.type = type;//hw = 0, sw = 1
+  mdr.unused = 0x00;
 
   memcpy(heap_ptr, &mdr, sizeof(mode_descriptor_t));
 
@@ -391,6 +381,7 @@ void metadata(pd_metadata_t *pdm, process_data_descriptor_t *ptr) {
 RT_INIT(
   init_hardware();
   rxpos = 0;
+  timeout = 1000;//make sure we start in timeout
 
   heap_ptr = memory.heap;
 
@@ -401,27 +392,32 @@ RT_INIT(
   uint16_t ptoc[32];
   uint16_t gtoc[32]; 
 
-  uint16_t *ptocp = ptoc; uint16_t *gtocp = gtoc;
+  uint16_t *ptocp = ptoc;
+  uint16_t *gtocp = gtoc;
   process_data_descriptor_t *last_pd;
 
-  ADD_PROCESS_VAR(("output_pins", "none", 2, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
-  ADD_PROCESS_VAR(("pos_cmd", "rad", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -3.2, 3.2));        metadata(&(pd_table.pos_cmd), last_pd);
+  ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
+  ADD_PROCESS_VAR(("enable", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));             metadata(&(pd_table.enable), last_pd);
+  ADD_PROCESS_VAR(("pos_cmd", "rad", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -3.2, 3.2));    metadata(&(pd_table.pos_cmd), last_pd);
   
-  ADD_PROCESS_VAR(("input_pins", "none", 2, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, -100, 100));         metadata(&(pd_table.input_pins), last_pd);
-  ADD_PROCESS_VAR(("pos_fb", "rad", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -3.2, 3.2));          metadata(&(pd_table.pos_fb), last_pd);
-  //ADD_PROCESS_VAR(("input_pins", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));         metadata(&(pd_table.input_pins), last_pd);
+  ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, -100, 100));    metadata(&(pd_table.input_pins), last_pd);
+  ADD_PROCESS_VAR(("fault", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));               metadata(&(pd_table.fault), last_pd);
+  ADD_PROCESS_VAR(("pos_fb", "rad", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -3.2, 3.2));      metadata(&(pd_table.pos_fb), last_pd);
+  //globals and modes are not working. https://github.com/LinuxCNC/linuxcnc/blob/2957cc5ad0a463c39fb35c10a0c14909c09a5fb7/src/hal/drivers/mesa-hostmot2/sserial.c#L1516
+  // - globals need write support
+  // - linuxcnc only supports globals of type DATA_TYPE_NONVOL_UNSIGNED or DATA_TYPE_NONVOL_SIGNED
+  //ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_NONVOL_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
 
-  ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
-
-  ADD_MODE(("foo", 0, 0));
-  ADD_MODE(("io_", 1, 1));
+  //ADD_MODE(("foo", 0, 0));
+  ADD_MODE(("Position mode", 0, 1));
 
   // automatically create padding pds based on the mod remainder of input/output bits
-  if (input_bits % 8)  ADD_PROCESS_VAR(("", "", 8 -  (input_bits%8), DATA_TYPE_PAD, DATA_DIRECTION_INPUT,  0, 0));
-  if (output_bits % 8) ADD_PROCESS_VAR(("", "", 8 - (output_bits%8), DATA_TYPE_PAD, DATA_DIRECTION_OUTPUT, 0, 0));
+  if (input_bits % 8)  ADD_PROCESS_VAR(("padding", "", 8 -  (input_bits%8), DATA_TYPE_PAD, DATA_DIRECTION_INPUT,  0, 0));
+  if (output_bits % 8) ADD_PROCESS_VAR(("padding", "", 8 - (output_bits%8), DATA_TYPE_PAD, DATA_DIRECTION_OUTPUT, 0, 0));
 
   // now that all the toc entries have been added, write out the tocs to memory and set up the toc pointers
 
+  //calculate bytes from bits
   memory.discovery.input = input_bits >> 3;
   memory.discovery.output = output_bits >> 3;
 
@@ -431,7 +427,9 @@ RT_INIT(
     *heap_ptr++ = ptoc[i] & 0x00FF; 
     *heap_ptr++ = (ptoc[i] & 0xFF00) >> 8;
   }
-  *heap_ptr++ = 0x00; *heap_ptr++ = 0x00; // this is the ptoc end marker
+   // this is the ptoc end marker
+  *heap_ptr++ = 0x00;
+  *heap_ptr++ = 0x00;
 
   memory.discovery.gtocp = MEMPTR(*heap_ptr);
 
@@ -439,10 +437,9 @@ RT_INIT(
     *heap_ptr++ = gtoc[i] & 0x00FF; 
     *heap_ptr++ = (gtoc[i] & 0xFF00) >> 8;
   }
-  *heap_ptr++ = 0x00; *heap_ptr++ = 0x00; // this is the gtoc end marker
-
-
-  timeout = 1000;
+  // this is the gtoc end marker
+  *heap_ptr++ = 0x00;
+  *heap_ptr++ = 0x00;
 );
 
 uint8_t crc_reuest(uint8_t len) {
@@ -579,35 +576,32 @@ int32_t scale_in(pd_metadata_t pd, float val) {
 }
 
 
-#define BOOLPIN(pin) (uint8_t)(PIN(pin) != 0.0)
+#define BOOLPIN(pin) (uint8_t)(PIN(pin) > 0.0)
 
 RT (
   // update all hal pins with values from their associated pds
 
 
-   uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
+  uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
   PIN(pos_cmd) = scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
   uint8_t outpins = MEMU8(pd_table.output_pins.ptr->data_addr);
-  PIN(out0) = outpins & 1 ? 1.0 : 0.0;
-  PIN(out1) = outpins & 1 ? 1.0 : 0.0;
-  PIN(out2) = outpins & 1 ? 1.0 : 0.0;
-  PIN(out3) = outpins & 1 ? 1.0 : 0.0;
-
+  PIN(out0) = outpins<<0 & 1 ? 1.0 : 0.0;
+  PIN(out1) = outpins<<1 & 1 ? 1.0 : 0.0;
+  PIN(out2) = outpins<<2 & 1 ? 1.0 : 0.0;
+  PIN(out3) = outpins<<3 & 1 ? 1.0 : 0.0;
+  uint8_t enable = MEMU8(pd_table.enable.ptr->data_addr);
+  PIN(enable) = enable<<0 & 1 ? 1.0 : 0.0;
   // todo: how to handle bidirectional pins properly?
 
   *((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
-
+  
+  MEMU8(pd_table.fault.ptr->data_addr) = BOOLPIN(fault);
   MEMU8(pd_table.input_pins.ptr->data_addr) = BOOLPIN(in0)<<0 | BOOLPIN(in1)<<1 | BOOLPIN(in2)<<2 | BOOLPIN(in3)<<3;
 
 );
 
 
 FRT(
-   lbp_t lbp;
-   
-   char name[] = LBPCardName;
-   int bufferpos;
-   int available;
    for(int j = 0;j<2;j++){
    //next received packet will be written to bufferpos
    bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
@@ -657,12 +651,12 @@ FRT(
          }else{
             continue;
          }
-      }else if(lbp.ct == CT_RPC){//RPC
+      }else if(lbp.ct == CT_RPC){//RPC TODO: check for ct should not required for rpc
           if(lbp.byte == UnitNumberRPC && available >= 2){//unit number, cmd+crc = 2b
-              txbuf[0] = 0x76;
-              txbuf[1] = 0x01;
+              txbuf[0] = 0x00;
+              txbuf[1] = 0x00;
               txbuf[2] = 0x00;
-              txbuf[3] = 0x10;
+              txbuf[3] = 0x00;
               send(4,1);
               rxpos += 2;
           }else if(lbp.byte == DiscoveryRPC && available >= 2){//discovery, cmd+crc = 2b
@@ -686,7 +680,7 @@ FRT(
           }else{
              continue;
           }
-      }else if (lbp.ct == CT_RW && lbp.wr == 0){ //read
+      }else if (lbp.ct == CT_RW && lbp.wr == 0){ //read TODO: implement write.
          if(available >= 2){
             if (lbp.as == 1){ //address included in command = cmd+addr+addr+crc
                if (available >= 4) {
@@ -698,6 +692,7 @@ FRT(
             }else{ //address not included in command = cmd+crc
                rxpos += 2;
             }
+            //TODO: check if address is valid
             memcpy((void*)txbuf,&memory.bytes[address],(1<<lbp.ds));
             send((1<<lbp.ds),1);
             if(lbp.ai == 1){//auto increment address by datasize
