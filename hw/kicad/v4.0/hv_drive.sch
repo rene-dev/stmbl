@@ -1,7 +1,12 @@
 EESchema Schematic File Version 2
 LIBS:transistors
 LIBS:stm32
-LIBS:stmbl_3.4-cache
+LIBS:texas
+LIBS:diode
+LIBS:opto
+LIBS:display
+LIBS:device
+LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -241,20 +246,7 @@ Wire Wire Line
 Wire Wire Line
 	5550 4550 5850 4550
 Wire Wire Line
-	5000 4950 5250 4950
-Wire Wire Line
-	5150 4550 5150 4950
-Wire Wire Line
-	5000 4750 5250 4750
-Connection ~ 5150 4750
-Wire Wire Line
 	3850 4550 5250 4550
-Text HLabel 5000 4750 0    60   Input ~ 0
-CUL
-Text HLabel 5000 4850 0    60   Input ~ 0
-CVL
-Text HLabel 5000 4950 0    60   Input ~ 0
-CWL
 Text HLabel 5700 4650 0    60   Input ~ 0
 CUH
 Text HLabel 5700 4850 0    60   Input ~ 0
@@ -270,10 +262,6 @@ Connection ~ 5700 4750
 Wire Wire Line
 	5700 5050 5700 4950
 Connection ~ 5700 4950
-Wire Wire Line
-	5000 4850 5150 4850
-Connection ~ 5150 4850
-Connection ~ 5150 4950
 $Comp
 L GNDPWR #PWR?
 U 1 1 5668FA38
@@ -430,4 +418,11 @@ Wire Wire Line
 	7800 4550 7900 4550
 Wire Wire Line
 	5450 3050 5450 3150
+Wire Wire Line
+	5150 4550 5150 4950
+Wire Wire Line
+	5150 4950 5250 4950
+Wire Wire Line
+	5250 4750 5150 4750
+Connection ~ 5150 4750
 $EndSCHEMATC

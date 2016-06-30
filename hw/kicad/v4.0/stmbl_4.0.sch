@@ -1,7 +1,12 @@
 EESchema Schematic File Version 2
 LIBS:transistors
 LIBS:stm32
-LIBS:stmbl_3.4-cache
+LIBS:texas
+LIBS:diode
+LIBS:opto
+LIBS:display
+LIBS:device
+LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -99,27 +104,27 @@ F 3 "" H 6350 2300 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6250 2500 6500 2500
+	4950 2500 6500 2500
 Wire Wire Line
-	6250 2600 6500 2600
+	4950 2600 6500 2600
 Wire Wire Line
-	6250 2700 6350 2700
+	5100 2700 6350 2700
 Wire Wire Line
 	6350 2700 6350 2800
 Wire Wire Line
-	6250 2400 6350 2400
+	5100 2400 6350 2400
 Wire Wire Line
 	6350 2400 6350 2300
 Wire Wire Line
 	5100 2300 5100 2400
 Wire Wire Line
-	5100 2400 5200 2400
-Wire Wire Line
-	5200 2700 5100 2700
-Wire Wire Line
 	5100 2700 5100 2800
-Wire Wire Line
-	4950 2500 5200 2500
-Wire Wire Line
-	4950 2600 5200 2600
+Connection ~ 6250 2400
+Connection ~ 5200 2400
+Connection ~ 6250 2500
+Connection ~ 5200 2500
+Connection ~ 6250 2600
+Connection ~ 5200 2600
+Connection ~ 6250 2700
+Connection ~ 5200 2700
 $EndSCHEMATC

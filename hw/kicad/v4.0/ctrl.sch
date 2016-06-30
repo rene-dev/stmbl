@@ -1,7 +1,12 @@
 EESchema Schematic File Version 2
 LIBS:transistors
 LIBS:stm32
-LIBS:stmbl_3.4-cache
+LIBS:texas
+LIBS:diode
+LIBS:opto
+LIBS:display
+LIBS:device
+LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -20,7 +25,7 @@ $Sheet
 S 1100 3900 800  1300
 U 56591916
 F0 "supply" 60
-F1 "lmr.sch" 60
+F1 "supply.sch" 60
 $EndSheet
 $Sheet
 S 4700 800  550  1050

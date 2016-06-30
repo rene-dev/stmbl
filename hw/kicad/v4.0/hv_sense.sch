@@ -1,7 +1,12 @@
 EESchema Schematic File Version 2
 LIBS:transistors
 LIBS:stm32
-LIBS:stmbl_3.4-cache
+LIBS:texas
+LIBS:diode
+LIBS:opto
+LIBS:display
+LIBS:device
+LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -277,8 +282,6 @@ Wire Wire Line
 	4500 4500 4500 4400
 Wire Wire Line
 	4700 3600 4700 3500
-Text HLabel 5300 3100 0    60   Input ~ 0
-HV
 Text HLabel 5100 4000 0    60   Input ~ 0
 HV_
 $Comp
@@ -314,8 +317,6 @@ F 3 "" H 5400 4250 30  0000 C CNN
 	1    5400 4250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5300 3100 5400 3100
 Wire Wire Line
 	5400 3100 5400 3200
 Wire Wire Line
@@ -467,6 +468,17 @@ F 1 "testpoint" H 5700 4350 60  0000 C CNN
 F 2 "" H 5700 4450 60  0000 C CNN
 F 3 "" H 5700 4450 60  0000 C CNN
 	1    5700 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L VPP #PWR?
+U 1 1 5775CE00
+P 5400 3100
+F 0 "#PWR?" H 5400 2950 50  0001 C CNN
+F 1 "VPP" H 5400 3250 50  0000 C CNN
+F 2 "" H 5400 3100 50  0000 C CNN
+F 3 "" H 5400 3100 50  0000 C CNN
+	1    5400 3100
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC

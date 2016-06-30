@@ -1,7 +1,12 @@
 EESchema Schematic File Version 2
 LIBS:transistors
 LIBS:stm32
-LIBS:stmbl_3.4-cache
+LIBS:texas
+LIBS:diode
+LIBS:opto
+LIBS:display
+LIBS:device
+LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr A3 16535 11693
@@ -1572,4 +1577,6 @@ F 3 "" H 9500 8800 50  0000 C CNN
 	1    9500 8800
 	1    0    0    -1  
 $EndComp
+Text Notes 12150 2400 0    60   ~ 0
+Cube: 3.3V 168MHz 75mA
 $EndSCHEMATC

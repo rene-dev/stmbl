@@ -1,7 +1,12 @@
 EESchema Schematic File Version 2
 LIBS:transistors
 LIBS:stm32
-LIBS:stmbl_3.4-cache
+LIBS:texas
+LIBS:diode
+LIBS:opto
+LIBS:display
+LIBS:device
+LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr User 19685 7874
@@ -249,18 +254,14 @@ Text HLabel 12450 5950 0    60   Input ~ 0
 A_V
 Text HLabel 12450 6050 0    60   Input ~ 0
 A_W
-Text HLabel 12450 6350 0    60   Input ~ 0
-A_IU
 Text HLabel 12450 6150 0    60   Input ~ 0
 A_T_HV
-Text HLabel 12450 6250 0    60   Input ~ 0
-A_T_MOT
 Text HLabel 17600 4000 2    60   Input ~ 0
 HV_EN
 Text HLabel 17300 4100 2    60   Input ~ 0
 HV_FLT
 Text HLabel 2300 4100 0    60   Input ~ 0
-BKIN
+adc4_3
 $Comp
 L USBLC6-4SC6 U?
 U 1 1 566A7439
@@ -380,10 +381,6 @@ F 3 "" H 800 1600 60  0000 C CNN
 	1    800  1600
 	0    1    1    0   
 $EndComp
-Text HLabel 12450 6450 0    60   Input ~ 0
-A_IV
-Text HLabel 12450 6550 0    60   Input ~ 0
-A_IW
 $Comp
 L USBLC6-4SC6 U?
 U 1 1 56820F0C
@@ -509,7 +506,7 @@ Wire Wire Line
 	17100 3700 17300 3700
 Connection ~ 2400 1600
 Wire Wire Line
-	18050 600  18050 4100
+	18050 500  18050 4100
 Wire Wire Line
 	1900 1600 2000 1600
 Wire Wire Line
@@ -539,91 +536,6 @@ Wire Wire Line
 Wire Wire Line
 	1700 2400 1800 2400
 $Comp
-L R R?
-U 1 1 5682634B
-P 13750 6100
-F 0 "R?" V 13830 6100 50  0000 C CNN
-F 1 "1k" V 13750 6100 50  0000 C CNN
-F 2 "" V 13680 6100 30  0000 C CNN
-F 3 "" H 13750 6100 30  0000 C CNN
-	1    13750 6100
-	1    0    0    -1  
-$EndComp
-$Comp
-L GNDPWR #PWR?
-U 1 1 568263AB
-P 13750 6450
-F 0 "#PWR?" H 13750 6250 50  0001 C CNN
-F 1 "GNDPWR" H 13750 6320 50  0000 C CNN
-F 2 "" H 13750 6400 60  0000 C CNN
-F 3 "" H 13750 6400 60  0000 C CNN
-	1    13750 6450
-	1    0    0    -1  
-$EndComp
-$Comp
-L R R?
-U 1 1 568264D7
-P 13750 5600
-F 0 "R?" V 13830 5600 50  0000 C CNN
-F 1 "10k" V 13750 5600 50  0000 C CNN
-F 2 "" V 13680 5600 30  0000 C CNN
-F 3 "" H 13750 5600 30  0000 C CNN
-	1    13750 5600
-	1    0    0    -1  
-$EndComp
-$Comp
-L +15V #PWR?
-U 1 1 56826605
-P 13750 5350
-F 0 "#PWR?" H 13750 5200 50  0001 C CNN
-F 1 "+15V" H 13750 5490 50  0000 C CNN
-F 2 "" H 13750 5350 50  0000 C CNN
-F 3 "" H 13750 5350 50  0000 C CNN
-	1    13750 5350
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	13750 5350 13750 5450
-Wire Wire Line
-	13750 5750 13750 5950
-Wire Wire Line
-	13750 6250 13750 6450
-Text HLabel 13650 5850 0    60   Input ~ 0
-A_15V
-Wire Wire Line
-	13650 5850 14050 5850
-Connection ~ 13750 5850
-$Comp
-L C C?
-U 1 1 568272A5
-P 13950 6100
-F 0 "C?" H 13975 6200 50  0000 L CNN
-F 1 "1n" H 13975 6000 50  0000 L CNN
-F 2 "" H 13988 5950 30  0000 C CNN
-F 3 "" H 13950 6100 60  0000 C CNN
-	1    13950 6100
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	13950 5850 13950 5950
-Wire Wire Line
-	13950 6250 13950 6350
-Wire Wire Line
-	13950 6350 13750 6350
-Connection ~ 13750 6350
-$Comp
-L testpoint T?
-U 1 1 56827AA7
-P 14250 5850
-F 0 "T?" H 14250 5950 60  0000 C CNN
-F 1 "testpoint" H 14250 5750 60  0000 C CNN
-F 2 "" H 14250 5850 60  0000 C CNN
-F 3 "" H 14250 5850 60  0000 C CNN
-	1    14250 5850
-	1    0    0    -1  
-$EndComp
-Connection ~ 13950 5850
-$Comp
 L STM32F303CBTx U?
 U 1 1 570DA682
 P 9800 3000
@@ -649,7 +561,7 @@ Wire Wire Line
 	17600 4000 17500 4000
 Connection ~ 1100 2000
 Wire Wire Line
-	2400 1600 2400 600 
+	2400 500  2400 1600
 Wire Wire Line
 	9600 1000 9600 1200
 Wire Wire Line
@@ -692,4 +604,206 @@ Connection ~ 9700 4900
 Wire Wire Line
 	9800 4800 9800 4900
 Connection ~ 9800 4900
+Wire Wire Line
+	2400 500  18050 500 
+Text HLabel 2300 2900 0    60   Input ~ 0
+cur2
+Wire Wire Line
+	2300 2900 2500 2900
+Text HLabel 17300 3000 2    60   Input ~ 0
+cur0
+Wire Wire Line
+	17300 3000 17100 3000
+Text HLabel 17300 3600 2    60   Input ~ 0
+A_IV
+Wire Wire Line
+	17300 3600 17100 3600
+Text HLabel 12450 6550 0    60   Input ~ 0
+A_IW
+Text HLabel 12450 6450 0    60   Input ~ 0
+A_IV
+Text HLabel 12450 6350 0    60   Input ~ 0
+A_IU
+Text HLabel 2300 3100 0    60   Input ~ 0
+adc2_12
+Wire Wire Line
+	2300 3100 2500 3100
+Text HLabel 17300 2900 2    60   Input ~ 0
+adc1_1
+Wire Wire Line
+	17100 2900 17300 2900
+Text HLabel 17300 3200 2    60   Input ~ 0
+adc1_4
+Wire Wire Line
+	17300 3200 17100 3200
+Text HLabel 17300 3400 2    60   Input ~ 0
+adc2_2
+Wire Wire Line
+	17300 3400 17100 3400
+$Comp
+L testpoint T?
+U 1 1 57750CEC
+P 17950 3300
+F 0 "T?" H 17950 3400 60  0000 C CNN
+F 1 "testpoint" H 17950 3200 60  0000 C CNN
+F 2 "" H 17950 3300 60  0000 C CNN
+F 3 "" H 17950 3300 60  0000 C CNN
+	1    17950 3300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	17750 3300 17100 3300
+$Comp
+L testpoint T?
+U 1 1 57751000
+P 17950 3100
+F 0 "T?" H 17950 3200 60  0000 C CNN
+F 1 "testpoint" H 17950 3000 60  0000 C CNN
+F 2 "" H 17950 3100 60  0000 C CNN
+F 3 "" H 17950 3100 60  0000 C CNN
+	1    17950 3100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	17750 3100 17100 3100
+$Comp
+L testpoint T?
+U 1 1 5775117B
+P 17950 3500
+F 0 "T?" H 17950 3600 60  0000 C CNN
+F 1 "testpoint" H 17950 3400 60  0000 C CNN
+F 2 "" H 17950 3500 60  0000 C CNN
+F 3 "" H 17950 3500 60  0000 C CNN
+	1    17950 3500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	17750 3500 17100 3500
+Text HLabel 2300 3700 0    60   Input ~ 0
+BKIN
+$Comp
+L testpoint T?
+U 1 1 57751F4A
+P 1700 3000
+F 0 "T?" H 1700 3100 60  0000 C CNN
+F 1 "testpoint" H 1700 2900 60  0000 C CNN
+F 2 "" H 1700 3000 60  0000 C CNN
+F 3 "" H 1700 3000 60  0000 C CNN
+	1    1700 3000
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	1900 3000 2500 3000
+$Comp
+L CONN_01X04 P?
+U 1 1 5775EB8F
+P 1300 3350
+F 0 "P?" H 1300 3600 50  0000 C CNN
+F 1 "CONN_01X04" V 1400 3350 50  0000 C CNN
+F 2 "" H 1300 3350 60  0000 C CNN
+F 3 "" H 1300 3350 60  0000 C CNN
+	1    1300 3350
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	2500 3200 1500 3200
+Wire Wire Line
+	2500 3300 1500 3300
+Wire Wire Line
+	2500 3400 1500 3400
+$Comp
+L GNDPWR #PWR?
+U 1 1 5775EF72
+P 1550 3550
+F 0 "#PWR?" H 1550 3350 50  0001 C CNN
+F 1 "GNDPWR" H 1550 3420 50  0000 C CNN
+F 2 "" H 1550 3500 60  0000 C CNN
+F 3 "" H 1550 3500 60  0000 C CNN
+	1    1550 3550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1500 3500 1550 3500
+Wire Wire Line
+	1550 3500 1550 3550
+Wire Wire Line
+	2300 3700 2500 3700
+$Comp
+L LED D?
+U 1 1 5776010E
+P 1700 4000
+F 0 "D?" H 1700 4100 50  0000 C CNN
+F 1 "LED" H 1700 3900 50  0000 C CNN
+F 2 "" H 1700 4000 50  0000 C CNN
+F 3 "" H 1700 4000 50  0000 C CNN
+	1    1700 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 57760220
+P 1400 4250
+F 0 "R?" V 1480 4250 50  0000 C CNN
+F 1 "560" V 1400 4250 50  0000 C CNN
+F 2 "" V 1330 4250 30  0000 C CNN
+F 3 "" H 1400 4250 30  0000 C CNN
+	1    1400 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L GNDPWR #PWR?
+U 1 1 5776028E
+P 1300 4500
+F 0 "#PWR?" H 1300 4300 50  0001 C CNN
+F 1 "GNDPWR" H 1300 4370 50  0000 C CNN
+F 2 "" H 1300 4450 60  0000 C CNN
+F 3 "" H 1300 4450 60  0000 C CNN
+	1    1300 4500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1400 4100 1400 4000
+Wire Wire Line
+	1400 4000 1500 4000
+Wire Wire Line
+	1900 4000 2500 4000
+$Comp
+L LED D?
+U 1 1 57760914
+P 2100 3900
+F 0 "D?" H 2100 4000 50  0000 C CNN
+F 1 "LED" H 2100 3800 50  0000 C CNN
+F 2 "" H 2100 3900 50  0000 C CNN
+F 3 "" H 2100 3900 50  0000 C CNN
+	1    2100 3900
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 57760991
+P 1200 4250
+F 0 "R?" V 1280 4250 50  0000 C CNN
+F 1 "560" V 1200 4250 50  0000 C CNN
+F 2 "" V 1130 4250 30  0000 C CNN
+F 3 "" H 1200 4250 30  0000 C CNN
+	1    1200 4250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1200 4100 1200 3900
+Wire Wire Line
+	1200 3900 1900 3900
+Wire Wire Line
+	2300 3900 2500 3900
+Wire Wire Line
+	1200 4400 1200 4450
+Wire Wire Line
+	1200 4450 1400 4450
+Wire Wire Line
+	1300 4500 1300 4450
+Connection ~ 1300 4450
+Wire Wire Line
+	1400 4450 1400 4400
+Text Notes 10350 1100 0    60   ~ 0
+Cube: 3.3V 72MHz 50mA
 $EndSCHEMATC
