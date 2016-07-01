@@ -6,7 +6,7 @@
 *.bin
 *.map
 *.log
-*.net
+#*.net
 *.raw
 *.swp
 .DS_Store
