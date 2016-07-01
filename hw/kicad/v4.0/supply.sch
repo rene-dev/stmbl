@@ -231,22 +231,7 @@ Wire Wire Line
 	2400 2400 2500 2400
 Wire Wire Line
 	2500 2400 2500 2500
-$Comp
-L ZENER D6
-U 1 1 56694BC4
-P 2150 5200
-F 0 "D6" H 2150 5300 50  0000 C CNN
-F 1 "5V" H 2150 5100 50  0000 C CNN
-F 2 "" H 2150 5200 60  0001 C CNN
-F 3 "" H 2150 5200 60  0000 C CNN
-	1    2150 5200
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	2150 5000 2150 4900
 Connection ~ 2150 4900
-Wire Wire Line
-	2150 5400 2150 5500
 $Comp
 L CONN_01X02 P3
 U 1 1 566CDEAC
@@ -319,7 +304,6 @@ Wire Wire Line
 	1900 5550 1900 5500
 Wire Wire Line
 	1900 5500 3500 5500
-Connection ~ 2150 5500
 Connection ~ 2400 5500
 Connection ~ 2900 5500
 Connection ~ 3400 5500
