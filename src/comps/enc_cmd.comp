@@ -12,7 +12,7 @@ HAL_PIN(vel) = 0.0;
 HAL_PIN(index) = 0.0;
 HAL_PIN(a) = 0.0;
 HAL_PIN(b) = 0.0;
-HAL_PIN(vel_time) = 0.01;
+HAL_PIN(vel_time) = 0.001;
 
 MEM(int e_res) = 0.0;
 MEM(float lastpos) = 0.0;

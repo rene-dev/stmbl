@@ -17,7 +17,7 @@ HAL_PIN(error) = 0.0;
 HAL_PIN(amp) = 0.0;
 HAL_PIN(s) = 0.0;
 HAL_PIN(c) = 0.0;
-HAL_PIN(vel_time) = 0.01;
+HAL_PIN(vel_time) = 0.001;
 HAL_PIN(vel) = 0.0;
 
 
