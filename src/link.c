@@ -217,9 +217,19 @@ int update_mot(){
       case AC2PHASE:
          break;
       case DC:
-         //TODO: implement proper dc model
-         hal_link_pins("curpid0.uq", "hv0.a");
          hal_set_pin("hv0.mode", 1.0);
+         
+         //YOLO
+         hal_link_pins("net0.cmd", "ypid0.pos_ext_cmd");
+         hal_link_pins("net0.cmd_d", "ypid0.vel_ext_cmd");
+         hal_link_pins("net0.fb", "ypid0.pos_fb");
+         hal_link_pins("net0.fb_d", "ypid0.vel_fb");
+         hal_link_pins("fault0.enable_pid", "ypid0.enable");
+         hal_link_pins("ypid0.out", "hv0.a");
+         hal_link_pins("conf0.pos_p", "ypid0.pos_p");
+         hal_link_pins("conf0.max_vel", "ypid0.max_vel");
+         hal_link_pins("conf0.max_acc", "ypid0.max_acc");
+         hal_link_pins("hv0.pwm_volt", "ypid0.max_out");
          break;
       default:
          return -1;
