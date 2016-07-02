@@ -8,11 +8,15 @@ HAL_COMP(enc_cmd);
 
 HAL_PIN(res) = 2048.0;
 HAL_PIN(pos) = 0.0;
+HAL_PIN(vel) = 0.0;
 HAL_PIN(index) = 0.0;
 HAL_PIN(a) = 0.0;
 HAL_PIN(b) = 0.0;
+HAL_PIN(vel_time) = 0.01;
 
 MEM(int e_res) = 0.0;
+MEM(float lastpos) = 0.0;
+MEM(float difftime) = 0.0;
 
 RT_INIT(
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -64,8 +68,25 @@ RT_DEINIT(
    GPIO_Init(ENC0_A_PORT, &GPIO_InitStructure);
 );
 
+FRT(
+   float p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res);
+   difftime += period;
+   float vel = minus(p,lastpos) / difftime;
+   PIN(pos) = p;
+   if(EDGE(p)){
+      difftime = 0;
+      PIN(vel) = vel;
+      lastpos = p;
+   }
+  
+   if(difftime > PIN(vel_time)){
+      difftime = PIN(vel_time);
+      lastpos = p;
+      PIN(vel) = 0;
+   }
+);
+
 RT(
-  float p = 0.0;
 
   if(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_2)){//TODO: setup pin
      PIN(index) = 0.0;
@@ -88,8 +109,6 @@ RT(
 	  res = 1;
   }
 
-  p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res);
-  PIN(pos) = p;
   if(e_res != res){
     e_res = res;
     TIM_SetAutoreload(ENC0_TIM, e_res - 1);

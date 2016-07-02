@@ -17,9 +17,13 @@ HAL_PIN(error) = 0.0;
 HAL_PIN(amp) = 0.0;
 HAL_PIN(s) = 0.0;
 HAL_PIN(c) = 0.0;
+HAL_PIN(vel_time) = 0.01;
+HAL_PIN(vel) = 0.0;
 
 
 MEM(int e_res) = 0.0;
+MEM(float lastpos) = 0.0;
+MEM(float difftime) = 0.0;
 
 RT_INIT(
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -76,6 +80,24 @@ RT_DEINIT(
    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
    GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
+);
+
+FRT(
+   float p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res);
+   difftime += period;
+   float vel = minus(p,lastpos) / difftime;
+   PIN(pos) = p;
+   if(EDGE(p)){
+      difftime = 0;
+      PIN(vel) = vel;
+      lastpos = p;
+   }
+  
+   if(difftime > PIN(vel_time)){
+      difftime = PIN(vel_time);
+      lastpos = p;
+      PIN(vel) = 0;
+   }
 );
 
 RT(
@@ -146,7 +168,6 @@ RT(
   PIN(oquad) = q;
   
   p = mod(tim * 2.0f * M_PI / (float)e_res);
-  PIN(pos) = p;
 
   if(a < 0.15){
     PIN(error) = 1.0;

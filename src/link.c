@@ -230,6 +230,7 @@ int update_mot(){
 int update_fb(){
    hal_set_pin("adc0.rt_prio", -1.0);
    hal_set_pin("enc_fb0.rt_prio", -1.0);
+   hal_set_pin("enc_fb0.frt_prio", -1.0);
    hal_set_pin("res0.rt_prio", -1.0);
    hal_set_pin("encm0.rt_prio", -1.0);
    hal_set_pin("encs0.rt_prio", -1.0);
@@ -239,6 +240,8 @@ int update_fb(){
          hal_link_pins("enc_fb0.pos", "rev1.in");
          hal_link_pins("conf0.fb_res", "enc_fb0.res");
          hal_set_pin("enc_fb0.rt_prio", 2.0);
+         hal_set_pin("enc_fb0.frt_prio", 1.0);
+         hal_link_pins("enc_fb0.vel", "net0.fb_d");
          break;
       case RES:
          hal_link_pins("res0.pos", "rev1.in");
@@ -261,6 +264,7 @@ int update_fb(){
          hal_set_pin("enc_fb0.ires", 1024.0);
          hal_set_pin("adc0.rt_prio", 1.0);
          hal_set_pin("enc_fb0.rt_prio", 2.0);
+         hal_set_pin("enc_fb0.frt_prio", 1.0);
          break;
       case MITSU:
          hal_link_pins("encm0.pos", "rev1.in");
@@ -283,6 +287,7 @@ int update_fb(){
 
 int update_cmd(){
    hal_set_pin("enc_cmd0.rt_prio", -1.0);
+   hal_set_pin("enc_cmd0.frt_prio", -1.0);
    hal_set_pin("sserial0.rt_prio", -1.0);
    hal_set_pin("sserial0.frt_prio", -1.0);
    hal_set_pin("en0.rt_prio", -1.0);
@@ -291,6 +296,8 @@ int update_cmd(){
          hal_link_pins("enc_cmd0.pos", "rev0.in");
          hal_link_pins("conf0.cmd_res", "enc_cmd0.res");
          hal_set_pin("enc_cmd0.rt_prio", 2.0);
+         hal_set_pin("enc_cmd0.frt_prio", 1.0);
+         hal_link_pins("enc_cmd0.vel", "net0.cmd_d");
          if(hal_get_pin("conf0.error_out") == 1.0){//error out using rs485
             hal_set_pin("en0.rt_prio", 15.0);
             hal_link_pins("fault0.fault_not", "en0.en");
