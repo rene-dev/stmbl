@@ -1,0 +1,51 @@
+HAL_COMP(pderiv);
+
+HAL_PIN(pos_in) = 0.0;
+HAL_PIN(vel) = 0.0;
+HAL_PIN(min_diff) = 0.015;
+HAL_PIN(diff_time) = 0.0;
+HAL_PIN(diff_pos) = 0.0;
+
+#define vel_buf_size  20
+
+MEM(float buf[vel_buf_size]);
+MEM(unsigned int ptr) = 0;
+MEM(float frt_period) = 0.00005;
+
+INIT(
+   for(int i = 0; i < vel_buf_size; i++){
+      buf[i] = 0;
+   }
+);
+
+FRT(
+   buf[ptr++] = PIN(pos_in);
+   ptr %= vel_buf_size;
+   frt_period = period * 0.01 + frt_period * 0.99;
+);
+
+RT(
+   int p = ptr;
+   float pos = buf[(p - 1 + vel_buf_size) % vel_buf_size];
+   
+   float old_pos = buf[p];
+   float diff_time = frt_period * vel_buf_size;
+   
+   float min_diff = PIN(min_diff);
+   
+   for(int i = 0; i < vel_buf_size; i++){
+      if(ABS(minus(pos, buf[(p + i) % vel_buf_size])) > min_diff){
+         old_pos = buf[(p + i) % vel_buf_size];
+         diff_time = (vel_buf_size - i) * frt_period;
+      }else{
+         break;
+      }
+   }
+   
+   float diff_pos = minus(pos, old_pos);
+   PIN(diff_pos) = diff_pos;
+   PIN(diff_time) = diff_time;
+   PIN(vel) = diff_pos / diff_time;
+);
+
+ENDCOMP;
