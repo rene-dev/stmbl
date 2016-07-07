@@ -44,7 +44,7 @@ float drop(float i, float v){
 
 RT(
    float p = (int)MAX(PIN(polecount), 1.0);
-   float vel_e = PIN(vel);
+   float vel_e = PIN(vel) * p;
    float ld = MAX(PIN(ld), 0.0001);
    float lq = MAX(PIN(lq), 0.0001);
    float ud = PIN(ud);
@@ -63,8 +63,8 @@ RT(
    float dropq = dropv * drop(iq, drope);
    float dropd = dropv * drop(id, drope);
    
-   // uq -= dropq;
-   // ud -= dropd;
+   uq -= dropq;
+   ud -= dropd;
    
    
    id += (ud - r * id + indd) / ld * period / 4.0;
@@ -79,7 +79,7 @@ RT(
    id += (ud - r * id + indd) / ld * period / 4.0;
    iq += (uq - r * iq - indq) / lq * period / 4.0;
 
-   float t = (psi_m * iq + (ld - lq) * id * iq);
+   float t = 3.0 / 2.0 * p * (psi_m * iq + (ld - lq) * id * iq);
 
    PIN(id) = id;
    PIN(iq) = iq;
