@@ -42,7 +42,6 @@ SOURCES += lib/CMSIS/Device/ST/STM32F10x/Source/system_stm32f10x.c
 SOURCES += lib/CMSIS/Device/ST/STM32F10x/Source/startup_stm32f10x_ld.s
 
 CPPFLAGS += -DSTM32F10X_LD
-CPPFLAGS += -DSYSCLK_FREQ_72MHz
 CPPFLAGS += -DHSE_VALUE=8000000
 LDSCRIPT = stm32f103/stm32_flash.ld
 
