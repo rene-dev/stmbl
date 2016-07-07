@@ -15,7 +15,7 @@ module cap(){
 
 module rj45(){
 	difference(){
-		color("silver") cube([16, 15.6, 13.2], false);
+		color("silver") cube([16.5, 15.6, 13.2], false);
 		color([0.2, 0.2, 0.2]) translate([8, 3.9, 13.33/2]) cube([11.5, 8, 7.5], true);
 		color([0.2, 0.2, 0.2]) translate([8, 3.9, 13.33-2]) cube([6, 8, 2], true);
 		color("grey") translate([16-3, 0.45, 13.33-2]) cube([4, 1, 2], true);
@@ -115,7 +115,7 @@ module akl169(l){
     }
 }
 
-module pin2(l){
+module pina2(l){
   for(a = [0:l - 1]){
 		color("gold") translate([2.54 / 2 + a * 2.54, 1.5 + 2.54, -(3 + 1.27) / 2 + 1.27]) cube([0.64, 0.64, 3 + 1.27], true);
     color("gold") translate([2.54 / 2 + a * 2.54, 2.54 + 1.5 + 2.54, -(3 + 1.27 + 2.54) / 2 + 1.27 + 2.54]) cube([0.64, 0.64, 3 + 1.27 + 2.54], true);
@@ -125,6 +125,33 @@ module pin2(l){
     color("gold") translate([2.54 / 2 + a * 2.54, -(6 + 2.54 + 1.5 + 2.54) / 2 + 1.5 + 2.54 + 2.54, 1.27 + 2.54]) cube([0.64, 6 + 2.54 + 1.5 + 2.54, 0.64], true);
 	}
   color([0.2, 0.2, 0.2]) translate([0, 0, 0]) cube([l * 2.54, 2.54, 5.08]);
+}
+
+module pin2(l){
+  for(a = [0:l - 1]){
+		color("gold") translate([2.54 / 2 + a * 2.54, 1.5, (8 + 1.27) / 2 - 2]) cube([0.64, 0.64, 8 + 1.27 + 2], true);
+    color("gold") translate([2.54 / 2 + a * 2.54, 1.5 + 2.54, (8 + 1.27) / 2 - 2]) cube([0.64, 0.64, 8 + 1.27 + 2], true);
+	}
+
+  color([0.2, 0.2, 0.2]) translate([0, 0, 0]) cube([l * 2.54, 5.08, 2.54]);
+}
+
+module soca2(l){
+  for(a = [0:l - 1]){
+		color("gold") translate([2.54 / 2 + a * 2.54, 1.5 + 2.54, -(3 + 1.27) / 2 + 1.27]) cube([0.64, 0.64, 3 + 1.27], true);
+    color("gold") translate([2.54 / 2 + a * 2.54, 2.54 + 1.5 + 2.54, -(3 + 1.27 + 2.54) / 2 + 1.27 + 2.54]) cube([0.64, 0.64, 3 + 1.27 + 2.54], true);
+	}
+  for(a = [0:l - 1]){
+		color("gold") translate([2.54 / 2 + a * 2.54, 4 - (6 + 2.54 + 1.5) / 2 + 1.5 + 2.54, 1.27]) cube([0.64, 6 + 2.54 + 1.5 - 8, 0.64], true);
+    color("gold") translate([2.54 / 2 + a * 2.54, 4 - (6 + 2.54 + 1.5 + 2.54) / 2 + 1.5 + 2.54 + 2.54, 1.27 + 2.54]) cube([0.64, 6 + 2.54 + 1.5 + 2.54 - 8, 0.64], true);
+	}
+  difference(){
+    color([0.2, 0.2, 0.2]) translate([0, -6, 0]) cube([l * 2.54, 2.54 + 6, 5.08]);
+    for(a = [0:l - 1]){
+      color("gold") translate([2.54 / 2 + a * 2.54, -(1 + 6) / 2, 1.27]) cube([0.64, 6, 0.64], true);
+      color("gold") translate([2.54 / 2 + a * 2.54, -(1 + 6) / 2, 1.27 + 2.54]) cube([0.64, 6, 0.64], true);
+	}
+  }
 }
 
 module soc2(l){
@@ -233,33 +260,33 @@ module iram256(){
 
 module f4_pcb(){
 	difference(){
-    translate([0, 1, 0]) color("darkgreen") cube([50, 100, pcb_hight], false);
-    color("darkgreen") translate([41, 93.5, -1]) cube([10, 16, 4], false);
+    translate([0, 1, 0]) color("darkgreen") cube([51, 100, pcb_hight], false);
+    color("darkgreen") translate([41, 89, -1]) cube([10, 13, 4], false);
   }
 }
 
-module f1_pcb(){
+module f3_pcb(){
 	difference(){
     color("darkgreen") translate([0, 7, 0]) cube([46, 88, pcb_hight], false);
     color("darkgreen") translate([32.5, 30, -1]) cylinder(r = 3, h = 3);
     color("darkgreen") translate([32.5, 30 + 56, -1]) cylinder(r = 3, h = 3);
     color("darkgreen") translate([5, 10, -1]) cylinder(r = 1.5, h = 3);
-    color("darkgreen") translate([5, 28, -1]) cylinder(r = 1.5, h = 3);
+    //color("darkgreen") translate([5, 28, -1]) cylinder(r = 1.5, h = 3);
     color("darkgreen") translate([5 + 36, 10, -1]) cylinder(r = 1.5, h = 3);
   }
 }
 
 module cover(){
   difference(){
-    translate([-1, -9, 54]) color("silver") cube([48, 104, 0.95]);
-    translate([6.5, 62, 53.9]) color("silver") cube([8, 23.5, 1.2]);
-    translate([11, 51.5, 53.9]) color("silver") cube([3.5, 8.5, 1.2]);
+    translate([-1, -9, 55]) color("silver") cube([48, 104, 0.95]);
+    translate([6.5, 62, 54.9]) color("silver") cube([8, 23.5, 1.2]);
+    translate([11, 51.5, 54.9]) color("silver") cube([3.5, 8.5, 1.2]);
     //translate([8.5, 52, 53.9]) color("silver") cube([6, 10, 1.2]);
-    translate([8.5, 26, 53.9]) color("silver") cube([6, 23, 1.2]);
-    translate([4, -5, 53.9]) color("silver") cylinder(r = 1.25, h = 1.2);
-    translate([42, -5, 53.9]) color("silver") cylinder(r = 1.25, h = 1.2);
+    translate([8.5, 31, 54.9]) color("silver") cube([6, 18, 1.2]);
+    translate([4, -5, 54.9]) color("silver") cylinder(r = 1.25, h = 1.2);
+    translate([42, -5, 54.9]) color("silver") cylinder(r = 1.25, h = 1.2);
   }
-  translate([40, 0, 55]) color("black") rotate([0, 0, 90]) text("STMBL 4.0", font = "Liberation Sans", size = 13);
+  translate([40, 0, 56]) color("black") rotate([0, 0, 90]) text("STMBL 4.0", font = "Liberation Sans", size = 13);
   //translate([20, 4, 55]) color("black") rotate([0, 0, 90]) text("IO", font = "Liberation Sans", size = 3);
   //translate([15, 10, 55]) color("black") rotate([0, 0, 90]) text("1", font = "Liberation Sans", size = 2);
   //translate([15, 32, 55]) color("black") rotate([0, 0, 90]) text("10", font = "Liberation Sans", size = 2);
@@ -270,11 +297,11 @@ module cover(){
   //translate([19, 38, 55]) color("black") rotate([0, 0, 90]) text("FB1", font = "Liberation Sans", size = 2);
   //translate([17, 38, 55]) color("black") rotate([0, 0, 90]) text("5V 12V", font = "Liberation Sans", size = 2);
   //translate([10, 48, 55]) color("black") rotate([0, 0, 90]) text("USB", font = "Liberation Sans", size = 2);
-  translate([-1, -10, -12]) color("silver") cube([1, 105, 66]);
+  translate([-1, -10, -12]) color("silver") cube([1, 105, 67]);
   difference(){
-    translate([-1, 95, -12]) color("silver") cube([23.8, 0.95, 66]);
+    translate([-1, 95, -12]) color("silver") cube([23.8, 0.95, 67]);
     translate([-2, 94, 1]) color("silver") cube([27, 3, 12]);
-    translate([15, 94, 22.5]) color("silver") cube([9.5, 3, 333]);
+    translate([15, 94, 23.5]) color("silver") cube([9.5, 3, 33]);
     translate([5, 97, -10]) color("silver") rotate([90, 0, 0]) cylinder(r = 1.5, h = 3);
     for(a = [0:3]){
       translate([5 + 5 * a, 97, -5]) color("silver") rotate([90, 0, 0]) cylinder(r = 1.5, h = 3);
@@ -285,15 +312,15 @@ module cover(){
   }
   
   difference(){
-    translate([0, -9.95, -12]) color("silver") cube([15.5, 1, 66]);
+    translate([0, -9.95, -12]) color("silver") cube([15.5, 1, 67]);
     //translate([15.5, -11, 4.5]) color("silver") cube([8, 3, 50]);
     translate([4.5, -11, 0]) color("silver") rotate([-90, 0, 0]) cylinder(r = 1.5, h = 3);
     translate([23, -10, -18.5]) color("silver") rotate([-90, 0, 0]) cylinder(r = 20, h = 1.1);
   }
-  translate([-1 + 46 + 1, -10, -12]) color("silver") cube([1, 105, 66]);
+  translate([-1 + 46 + 1, -10, -12]) color("silver") cube([1, 105, 67]);
   difference(){
-    translate([23, 95, -12]) color("silver") cube([24, 0.95, 66]);
-    translate([37, 94, 1]) color("silver") cube([11, 3, 8]);
+    translate([23, 95, -12]) color("silver") cube([24, 0.95, 67]);
+    //translate([37, 94, 1]) color("silver") cube([11, 3, 8]);
     translate([22, 94, 1]) color("silver") cube([6, 3, 12]);
     //translate([15, 94, 22.5]) color("silver") cube([9.5, 3, 33]);
     translate([5 + 36, 97, -10]) color("silver") rotate([90, 0, 0]) cylinder(r = 1.5, h = 3);
@@ -305,7 +332,7 @@ module cover(){
     }
   }
   difference(){
-    translate([29, -9.95, -12]) color("silver") cube([17, 1, 66]);
+    translate([29, -9.95, -12]) color("silver") cube([17, 1, 67]);
     //translate([21, -11, 0]) color("silver") cube([8, 3, 64]);
     translate([4.5 + 37, -11, 0]) color("silver") rotate([-90, 0, 0]) cylinder(r = 1.5, h = 3);
     translate([23, -10, -18.5]) color("silver") rotate([-90, 0, 0]) cylinder(r = 20, h = 1.1);
@@ -316,38 +343,38 @@ module cover(){
 module f4(){
 	f4_pcb();
 	translate([1, 0, pcb_hight]) rj45();
-	translate([1 + 16, 0, pcb_hight]) rj45();
-	translate([1 + 16 + 16, 0, pcb_hight]) rj45();
+	translate([1 + 16.5, 0, pcb_hight]) rj45();
+	translate([1 + 16.5 + 16.5, 0, pcb_hight]) rj45();
   translate([0, 105 - 11.2 + 1, pcb_hight]) rotate([0, 0, 0]) akl182(6);
   translate([6 * 3.5 + 1.6, 105 - 11.2 + 1, pcb_hight]) rotate([0, 0, 0]) akl182(2);
   translate([11.2 - 1, 95 , 0]) rotate([0, 180, 90]) akl182(6);
   translate([-1, 54 + 8, 0]) rotate([0, 180, -90]) usb();
-  translate([6 - 1, 26 + 10, 0]) rotate([0, 180, -90]) pin2(9);
-  //translate([6 - 1, 63, 0]) rotate([0, 180, -90]) pin2(3);
+  translate([6 - 1, 26 + 10 + 5, 0]) rotate([0, 180, -90]) soca2(7);
+  //translate([6 - 1, 63, 0]) rotate([0, 180, -90]) pina2(3);
   translate([1 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
   translate([1 + 0.25 + 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
   translate([1 + 0.25 + 5 + 0.25, 28, 0]) rotate([180, 0, 90]) soic8();
   translate([1 + 0.25 + 5 + 0.25 + 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
-  translate([17 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
-  translate([17 + 0.25 + 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
-  translate([17 + 0.25 + 5 + 0.25, 28, 0]) rotate([180, 0, 90]) soic8();
-  translate([17 + 0.25 + 5 + 0.25+ 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
-  translate([33 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
-  translate([33 + 0.25 + 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
-  translate([33 + 0.25 + 5 + 0.25, 28, 0]) rotate([180, 0, 90]) soic8();
-  translate([33 + 0.25 + 5 + 0.25+ 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
-  translate([50, 41, 0]) rotate([0, 180, 90]) pin2(2);
+  translate([17.5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
+  translate([17.5 + 0.25 + 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
+  translate([17.5 + 0.25 + 5 + 0.25, 28, 0]) rotate([180, 0, 90]) soic8();
+  translate([17.5 + 0.25 + 5 + 0.25+ 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
+  translate([34 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
+  translate([34 + 0.25 + 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
+  translate([34 + 0.25 + 5 + 0.25, 28, 0]) rotate([180, 0, 90]) soic8();
+  translate([34 + 0.25 + 5 + 0.25+ 5 + 0.25, 18, 0]) rotate([180, 0, 90]) soic8();
+  translate([53, 41, 0]) rotate([0, 180, 90]) pina2(2);
   translate([20, 60, 0]) rotate([180, 0, 0]) lqfp100();
 }
 
-module f1(){
-	f1_pcb();
+module f3(){
+	f3_pcb();
 	translate([32, 45, pcb_hight]) rotate([0, 0, -45]) capp();
 	translate([32, 45 + 26, pcb_hight]) rotate([0, 0, 45]) capp();
 	translate([2, 45, pcb_hight]) cap();
 	translate([0, 96 - 12, pcb_hight]) akl230(3);
 	translate([3 * 5.08 + 1.2, 96 - 12, pcb_hight]) akl230(2);
-  translate([46 - 2 * 3.5 - 1.6, 96 - 11.2, pcb_hight]) akl182(2);
+  //translate([46 - 2 * 3.5 - 1.6, 96 - 11.2, pcb_hight]) akl182(2);
   translate([20, 45, 0]) rotate([180, 0, 0]) lqfp48();
   translate([15, 31, 0]) rotate([180, 0, 0]) soic8();
   //translate([5, 40, 0]) rotate([180, 0, 0]) soic8();
@@ -378,9 +405,9 @@ module io(){
     translate([4, 4, -1]) color("darkgreen") cylinder(r = 1.5, h = 3);
     translate([4 + 38, 4, -1]) color("darkgreen") cylinder(r = 1.5, h = 3);
   }
-  translate([46 / 2 - 16, -1, pcb_hight]) rj45();
+  translate([46 / 2 - 16.5, -1, pcb_hight]) rj45();
   translate([46 / 2, -1, pcb_hight]) rj45();
-  translate([9, 25 + 10, 0]) rotate([180, 0, 90]) soc2(9);
+  translate([9, 25 + 10 + 5, 0]) rotate([180, 0, 90]) pin2(7);
   translate([4, 4, -3]) spacer(3);
   translate([4, 4, pcb_hight]) m3(8);
   translate([4 + 38, 4, -3]) spacer(3);
@@ -388,8 +415,8 @@ module io(){
 }
 
 module stmbl(){
-	rotate([0, 90, 0]) translate([-50 - 2 - 2 - 33 - 8, 0, 15 ]) f4();
-	translate([1, 10, 33 + 8]) f1();
+	rotate([0, 90, 0]) translate([-51 - 2 - 2 - 33 - 8, 0, 15 ]) f4();
+	translate([1, 10, 33 + 8]) f3();
 	rotate([90, 0, 0]) translate([1.5, -41 + 33 + 8, -11]) fan();
 	translate([1, 11, 0]) heatsink();
   translate([5.5, 1, 4]) rotate([90, 0, 0]) m3(15);
@@ -402,7 +429,7 @@ module stmbl(){
   translate([6 + 36, 20, 33 + 8 + pcb_hight]) m3(15);
   translate([22 + 11.4, 27 + 3 + 10, 33 + 5.7]) m3(10);
   translate([22 + 11.4, 27 + 3 + 10 + 56, 33 + 5.7]) m3(10);
-  translate([1, 1, 96 + 3]) io();
+  translate([1, 1, 96 + 4]) io();
   translate([1, 10, 33 + 8]) cover();
   translate([6, 106, 31]) rotate([-90, 0, 0]) m3(5);
   translate([6 + 36, 106, 31]) rotate([-90, 0, 0]) m3(5);
