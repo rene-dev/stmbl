@@ -2,6 +2,75 @@
 #include "hal.h"
 #include "misc.h"
 
+void link_ac(){
+   hal_set_pin("t2c0.rt_prio", 9.0);
+   hal_set_pin("curpid0.rt_prio", 10.0);
+   hal_set_pin("pmsm0.rt_prio", 11.0);
+   hal_set_pin("pmsm_limits0.rt_prio", 12.0);
+   hal_set_pin("idq0.rt_prio", 13.0);
+   hal_set_pin("dq0.rt_prio", 14.1);
+   
+   // t2c
+   hal_link_pins("conf0.polecount", "t2c0.polecount");
+   hal_link_pins("conf0.psi", "t2c0.psi");
+
+   // curpid
+   hal_link_pins("cauto0.i_d", "curpid0.id_cmd");
+   hal_link_pins("t2c0.cur", "curpid0.iq_cmd");
+   hal_link_pins("hv0.dc_volt", "curpid0.dc_volt");
+   hal_link_pins("hv0.pwm_volt", "curpid0.ac_volt");
+   hal_link_pins("conf0.r", "curpid0.rd");
+   hal_link_pins("conf0.r", "curpid0.rq");
+   hal_link_pins("conf0.l", "curpid0.ld");
+   hal_link_pins("conf0.l", "curpid0.lq");
+   hal_link_pins("conf0.cur_ff", "curpid0.ff");
+   hal_link_pins("conf0.cur_p", "curpid0.kp");
+   hal_link_pins("conf0.cur_i", "curpid0.ki");
+   hal_link_pins("conf0.cur_ind", "curpid0.kind");
+
+   // pmsm
+   hal_link_pins("curpid0.ud", "pmsm0.ud");
+   hal_link_pins("curpid0.uq", "pmsm0.uq");
+   hal_link_pins("net0.fb_d", "pmsm0.vel");
+   hal_link_pins("conf0.r", "pmsm0.r");
+   hal_link_pins("conf0.l", "pmsm0.ld");
+   hal_link_pins("conf0.l", "pmsm0.lq");
+   hal_link_pins("conf0.psi", "pmsm0.psi");
+   hal_link_pins("pmsm0.id", "curpid0.id_fb");
+   hal_link_pins("pmsm0.iq", "curpid0.iq_fb");
+   hal_link_pins("pmsm0.indd", "curpid0.indd_fb");
+   hal_link_pins("pmsm0.indq", "curpid0.indq_fb");
+   hal_link_pins("conf0.polecount", "pmsm0.polecount");
+   hal_link_pins("pmsm0.iq", "hv0.iq");
+
+   // pmsm_limits
+   hal_link_pins("conf0.r", "pmsm_limits0.r");
+   hal_link_pins("conf0.l", "pmsm_limits0.ld");
+   hal_link_pins("conf0.l", "pmsm_limits0.lq");
+   hal_link_pins("conf0.psi", "pmsm_limits0.psi");
+   hal_link_pins("conf0.polecount", "pmsm_limits0.polecount");
+   hal_link_pins("hv0.pwm_volt", "pmsm_limits0.ac_volt");
+   hal_link_pins("pmsm0.indq", "pmsm_limits0.indq");
+   hal_link_pins("pmsm0.iq", "pmsm_limits0.iq");
+   hal_link_pins("pmsm_limits0.next_max_torque", "pid0.max_torque");
+   hal_link_pins("pmsm_limits0.next_min_torque", "pid0.min_torque");
+   hal_link_pins("pmsm_limits0.abs_max_vel", "pid0.max_vel");
+
+   //troller only
+#ifdef TROLLER
+   hal_link_pins("conf0.polecount", "dq0.polecount");
+   hal_link_pins("cauto0.pos", "dq0.pos");
+   hal_link_pins("hv0.iu", "dq0.u");
+   hal_link_pins("hv0.iv", "dq0.v");
+   hal_link_pins("hv0.iw", "dq0.w");
+#endif
+   hal_link_pins("curpid0.ud", "idq0.d");
+   hal_link_pins("curpid0.uq", "idq0.q");
+   hal_link_pins("conf0.polecount", "idq0.polecount");
+   hal_link_pins("idq0.a", "hv0.a");
+   hal_link_pins("idq0.b", "hv0.b");
+}
+
 void link_pid(){
    hal_set_pin("fault0.rt_prio", 3.0);
    hal_set_pin("rev0.rt_prio", 4.0);
@@ -11,13 +80,7 @@ void link_pid(){
    hal_set_pin("stp0.rt_prio", 6.0);
    hal_set_pin("cauto0.rt_prio", 7.0);
    hal_set_pin("pid0.rt_prio", 8.0);
-   hal_set_pin("t2c0.rt_prio", 9.0);
-   hal_set_pin("curpid0.rt_prio", 10.0);
-   hal_set_pin("pmsm0.rt_prio", 11.0);
-   hal_set_pin("pmsm_limits0.rt_prio", 12.0);
-   hal_set_pin("idq0.rt_prio", 13.0);
    hal_set_pin("hv0.rt_prio", 14.0);
-   hal_set_pin("dq0.rt_prio", 14.1);
    hal_set_pin("sim0.rt_prio", 15.0);
    hal_set_pin("term0.rt_prio", 15.0);
 
@@ -125,65 +188,6 @@ void link_pid(){
    hal_set_pin("net0.enable", 1.0);
    hal_link_pins("pid0.torque_cor_cmd", "t2c0.torque");
 
-   // t2c
-   hal_link_pins("conf0.polecount", "t2c0.polecount");
-   hal_link_pins("conf0.psi", "t2c0.psi");
-
-   // curpid
-   hal_link_pins("cauto0.i_d", "curpid0.id_cmd");
-   hal_link_pins("t2c0.cur", "curpid0.iq_cmd");
-   hal_link_pins("hv0.dc_volt", "curpid0.dc_volt");
-   hal_link_pins("hv0.pwm_volt", "curpid0.ac_volt");
-   hal_link_pins("conf0.r", "curpid0.rd");
-   hal_link_pins("conf0.r", "curpid0.rq");
-   hal_link_pins("conf0.l", "curpid0.ld");
-   hal_link_pins("conf0.l", "curpid0.lq");
-   hal_link_pins("conf0.cur_ff", "curpid0.ff");
-   hal_link_pins("conf0.cur_p", "curpid0.kp");
-   hal_link_pins("conf0.cur_i", "curpid0.ki");
-   hal_link_pins("conf0.cur_ind", "curpid0.kind");
-
-   // pmsm
-   hal_link_pins("curpid0.ud", "pmsm0.ud");
-   hal_link_pins("curpid0.uq", "pmsm0.uq");
-   hal_link_pins("net0.fb_d", "pmsm0.vel");
-   hal_link_pins("conf0.r", "pmsm0.r");
-   hal_link_pins("conf0.l", "pmsm0.ld");
-   hal_link_pins("conf0.l", "pmsm0.lq");
-   hal_link_pins("conf0.psi", "pmsm0.psi");
-   hal_link_pins("pmsm0.id", "curpid0.id_fb");
-   hal_link_pins("pmsm0.iq", "curpid0.iq_fb");
-   hal_link_pins("pmsm0.indd", "curpid0.indd_fb");
-   hal_link_pins("pmsm0.indq", "curpid0.indq_fb");
-   hal_link_pins("conf0.polecount", "pmsm0.polecount");
-   hal_link_pins("pmsm0.iq", "hv0.iq");
-
-   // pmsm_limits
-   hal_link_pins("conf0.r", "pmsm_limits0.r");
-   hal_link_pins("conf0.l", "pmsm_limits0.ld");
-   hal_link_pins("conf0.l", "pmsm_limits0.lq");
-   hal_link_pins("conf0.psi", "pmsm_limits0.psi");
-   hal_link_pins("conf0.polecount", "pmsm_limits0.polecount");
-   hal_link_pins("hv0.pwm_volt", "pmsm_limits0.ac_volt");
-   hal_link_pins("pmsm0.indq", "pmsm_limits0.indq");
-   hal_link_pins("pmsm0.iq", "pmsm_limits0.iq");
-   hal_link_pins("pmsm_limits0.next_max_torque", "pid0.max_torque");
-   hal_link_pins("pmsm_limits0.next_min_torque", "pid0.min_torque");
-   hal_link_pins("pmsm_limits0.abs_max_vel", "pid0.max_vel");
-
-   //troller only
-   hal_link_pins("conf0.polecount", "dq0.polecount");
-   hal_link_pins("cauto0.pos", "dq0.pos");
-   hal_link_pins("hv0.iu", "dq0.u");
-   hal_link_pins("hv0.iv", "dq0.v");
-   hal_link_pins("hv0.iw", "dq0.w");
-
-   hal_link_pins("curpid0.ud", "idq0.d");
-   hal_link_pins("curpid0.uq", "idq0.q");
-   hal_link_pins("conf0.polecount", "idq0.polecount");
-   hal_link_pins("idq0.a", "hv0.a");
-   hal_link_pins("idq0.b", "hv0.b");
-
    // misc
    hal_link_pins("conf0.out_rev", "hv0.rev");
    hal_link_pins("cauto0.pos", "idq0.pos");
@@ -205,10 +209,26 @@ void link_pid(){
    hal_link_pins("conf0.cos_offset", "adc0.cos_offset");
 }
 
+void link_simplepid(){
+   hal_set_pin("ypid0.rt_prio", 8.0);
+   hal_link_pins("net0.cmd", "ypid0.pos_ext_cmd");
+   hal_link_pins("net0.cmd_d", "ypid0.vel_ext_cmd");
+   hal_link_pins("net0.fb", "ypid0.pos_fb");
+   hal_link_pins("net0.fb_d", "ypid0.vel_fb");
+   hal_link_pins("fault0.enable_pid", "ypid0.enable");
+   hal_link_pins("conf0.pos_p", "ypid0.pos_p");
+   hal_link_pins("conf0.max_vel", "ypid0.max_vel");
+   hal_link_pins("conf0.max_acc", "ypid0.max_acc");
+   hal_link_pins("hv0.pwm_volt", "ypid0.max_out");
+   hal_link_pins("ypid0.saturated", "fault0.sat");
+   hal_link_pins("ypid0.pos_error", "fault0.pos_error");
+}
+
 int update_mot(){
    switch((mot_type_t)hal_get_pin("conf0.mot_type")){
       case ACSYNC:
          //TODO: copy acsync stuff from link_pid here
+         link_ac();
          hal_link_pins("curpid0.uq", "idq0.q");
          hal_set_pin("hv0.mode", 0.0);
          break;
@@ -217,19 +237,9 @@ int update_mot(){
       case AC2PHASE:
          break;
       case DC:
+         link_simplepid();
          hal_set_pin("hv0.mode", 1.0);
-         
-         //YOLO
-         hal_link_pins("net0.cmd", "ypid0.pos_ext_cmd");
-         hal_link_pins("net0.cmd_d", "ypid0.vel_ext_cmd");
-         hal_link_pins("net0.fb", "ypid0.pos_fb");
-         hal_link_pins("net0.fb_d", "ypid0.vel_fb");
-         hal_link_pins("fault0.enable_pid", "ypid0.enable");
          hal_link_pins("ypid0.out", "hv0.a");
-         hal_link_pins("conf0.pos_p", "ypid0.pos_p");
-         hal_link_pins("conf0.max_vel", "ypid0.max_vel");
-         hal_link_pins("conf0.max_acc", "ypid0.max_acc");
-         hal_link_pins("hv0.pwm_volt", "ypid0.max_out");
          break;
       default:
          return -1;
@@ -251,7 +261,8 @@ int update_fb(){
          hal_link_pins("conf0.fb_res", "enc_fb0.res");
          hal_set_pin("enc_fb0.rt_prio", 2.0);
          hal_set_pin("enc_fb0.frt_prio", 1.0);
-         hal_link_pins("enc_fb0.vel", "net0.fb_d");
+         // hal_set_pin("pderiv1.frt_prio", 2.0);
+         // hal_set_pin("pderiv1.rt_prio", 5.0);
          break;
       case RES:
          hal_link_pins("res0.pos", "rev1.in");
@@ -307,7 +318,8 @@ int update_cmd(){
          hal_link_pins("conf0.cmd_res", "enc_cmd0.res");
          hal_set_pin("enc_cmd0.rt_prio", 2.0);
          hal_set_pin("enc_cmd0.frt_prio", 1.0);
-         hal_link_pins("enc_cmd0.vel", "net0.cmd_d");
+         // hal_set_pin("pderiv0.frt_prio", 2.0);
+         // hal_set_pin("pderiv0.rt_prio", 5.0);
          if(hal_get_pin("conf0.error_out") == 1.0){//error out using rs485
             hal_set_pin("en0.rt_prio", 15.0);
             hal_link_pins("fault0.fault_not", "en0.en");

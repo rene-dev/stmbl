@@ -27,6 +27,8 @@ typedef enum{
 } mot_type_t;
 
 void link_pid();
+void link_simplepid();
+void link_ac();
 int update_cmd();
 int update_fb();
 int update_mot();
