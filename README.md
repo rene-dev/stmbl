@@ -68,6 +68,7 @@ https://www.youtube.com/watch?v=seEV_i7o1NI
 * EnDat
 * BiSS
 * SSI
+* Sanyo Denki wire-saving incremental encoder
 
 ####TODO
 * AC Async
