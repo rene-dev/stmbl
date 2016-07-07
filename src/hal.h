@@ -22,7 +22,7 @@
 
 #pragma once
 
-#define MAX_HAL_PINS 600
+#define MAX_HAL_PINS 800
 #define HAL_NAME_LENGTH 32
 #define MAX_COMP_TYPES 64
 #define MAX_COMPS 64
