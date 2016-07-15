@@ -1,7 +1,4 @@
 language: cpp
-cache:
-  directories:
-  - libserialport
 install:
 - git clone git://sigrok.org/libserialport
 - cd libserialport
