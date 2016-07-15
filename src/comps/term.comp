@@ -38,6 +38,8 @@ HAL_PIN(buf_use) = 0.0;
 
 HAL_PIN(fault) = 0.0;
 HAL_PIN(con) = 0.0;
+HAL_PIN(jogvel) = 10.0;
+HAL_PIN(jogpos) = 0.0;
 
 HAL_PIN(tim2_rv) = 420.0;
 
@@ -59,6 +61,8 @@ MEM(unsigned int send_counter) = 0;
 MEM(unsigned int last_fault_sent) = 0; //save last error message
 MEM(uint32_t last_hal_state) = HAL_OK;
 MEM(uint16_t ee_error);
+MEM(volatile float jog_timeout) = 0.0;
+MEM(volatile float jog_en) = 0.0;
 
 
 int load(){
@@ -118,6 +122,11 @@ INIT(
 );
 
 RT(
+   if(jog_timeout < 0.5){
+      jog_timeout += period;
+      PIN(jogpos) += jog_en * PIN(jogvel) * period;
+      PIN(jogpos) = mod(PIN(jogpos));
+   }
    TIM2->ARR = (int)CLAMP(PIN(tim2_rv), 1, 1500);
    if(send_counter++ >= PIN(send_step) - 1){
       w0[write_pos] = PIN(wave0);
@@ -511,6 +520,17 @@ NRT(
       }
       else if(!strcmp(s, "getconf")){
          conf();
+      }
+      else if(!strcmp(s, "jogl")){
+         jog_en = -1.0;
+         jog_timeout = 0.0;
+      }
+      else if(!strcmp(s, "jogr")){
+         jog_en = 1.0;
+         jog_timeout = 0.0;
+      }
+      else if(!strcmp(s, "jogx")){
+         jog_en = 0.0;
       }
       else{
          printf("not found: %s\n",s);
