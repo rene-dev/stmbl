@@ -83,6 +83,7 @@ HAL_PIN(enable_out) = 0.0;
 HAL_PIN(enable_pid) = 0.0;
 HAL_PIN(fault) = 0.0;
 HAL_PIN(fault_not) = 1.0;
+HAL_PIN(scale) = 1.0;
 
 // leds  off = disabled, red = error, red + green = autophasing, green = enabled
 HAL_PIN(led_green) = 0.0;
@@ -106,6 +107,9 @@ RT(
       PIN(fault) = 0.0;
       PIN(fault_not) = 1.0;
    }
+   
+   float scale_v = 1.0;
+   float scale_t = 1.0;
 
 
    // voltage
@@ -120,12 +124,15 @@ RT(
       PIN(cur) = 0.0;
       PIN(enable_out) = 0.0;
       PIN(enable_pid) = 0.0;
+      scale_v = 0.0;
       state = STATE_OVR_VOLT;
    }
    else if(dc_volt >= high_dc_volt){ // enable brake resistor
+      scale_v = (max_dc_volt - dc_volt) / (max_dc_volt - high_dc_volt);
       PIN(brake_resistor) = (dc_volt - high_dc_volt) / (max_dc_volt - high_dc_volt);
    }
    else{ // normal
+      scale_v = 1.0;
       PIN(brake_resistor) = 0.0;
    }
 
@@ -148,12 +155,15 @@ RT(
       PIN(enable_pid) = 0.0;
       PIN(cur) = 0.0;
       PIN(brake) = 0.0;
+      scale_t = 0.0;
       state = STATE_OVR_TEMP;
    }
    else if(hv_temp >= high_hv_temp || motor_temp >= high_motor_temp){ // limit current
+      scale_t = (max_hv_temp - hv_temp) / (max_hv_temp - high_hv_temp);
       PIN(cur) = max_ac_cur * MIN((max_hv_temp - hv_temp) / (max_hv_temp - high_hv_temp), (max_motor_temp - motor_temp) / (max_motor_temp - high_motor_temp));
    }
    else{ // normal
+      scale_t = 1.0;
       PIN(cur) = max_ac_cur;
    }
 
@@ -346,6 +356,7 @@ RT(
       PIN(led_red) = 0.0;
    }
 
+   PIN(scale) = MIN(scale_v, scale_t); 
    PIN(state) = state;
 );
 
