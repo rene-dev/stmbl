@@ -30,6 +30,7 @@ SOURCES += src/version.c
 SOURCES += src/syscalls.c
 
 SOURCES += shared/crc8.c
+SOURCES += shared/crc16.c
 SOURCES += shared/common.c
 
 USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
