@@ -40,6 +40,7 @@ HAL_PIN(fault) = 0.0;
 HAL_PIN(con) = 0.0;
 HAL_PIN(jogvel) = 10.0;
 HAL_PIN(jogpos) = 0.0;
+HAL_PIN(jogging) = 0.0;
 
 HAL_PIN(tim2_rv) = 420.0;
 
@@ -126,6 +127,8 @@ RT(
       jog_timeout += period;
       PIN(jogpos) += jog_en * PIN(jogvel) * period;
       PIN(jogpos) = mod(PIN(jogpos));
+   }else{
+      PIN(jogging) = 0.0;
    }
    TIM2->ARR = (int)CLAMP(PIN(tim2_rv), 1, 1500);
    if(send_counter++ >= PIN(send_step) - 1){
@@ -524,13 +527,16 @@ NRT(
       else if(!strcmp(s, "jogl")){
          jog_en = -1.0;
          jog_timeout = 0.0;
+         PIN(jogging) = 1.0;
       }
       else if(!strcmp(s, "jogr")){
          jog_en = 1.0;
          jog_timeout = 0.0;
+         PIN(jogging) = 1.0;
       }
       else if(!strcmp(s, "jogx")){
          jog_en = 0.0;
+         PIN(jogging) = 0.0;
       }
       else{
          printf("not found: %s\n",s);
