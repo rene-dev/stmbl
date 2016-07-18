@@ -228,6 +228,7 @@ int main(void)
    #include "comps/term.comp"
    #include "comps/io.comp"
    #include "comps/uf.comp"
+   #include "comps/freq_fb.comp"
 
 
    hal_set_comp_type("net");

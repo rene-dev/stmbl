@@ -234,7 +234,21 @@ int update_mot(){
          break;
       case ACASYNC:
          break;
-      case AC2PHASE:
+      case AC2PHASE://precise
+         link_ac();
+         hal_set_pin("uf0.rt_prio", 3.0);
+         hal_link_pins("uf0.pos", "idq0.pos");
+         hal_set_pin("idq0.d", 0.0);
+         hal_link_pins("uf0.volt", "idq0.q");
+         hal_set_pin("hv0.mode", 2.0);
+         hal_link_pins("net0.enable", "hv0.enable");
+         hal_link_pins("fault0.scale", "uf0.scale");
+         
+         hal_set_pin("freq_fb0.rt_prio", 1.0);
+         hal_link_pins("freq_fb0.vel", "uf0.vel_fb");
+         //fb_res = 6
+         //mot_type = 2
+         //polecount = 1
          break;
       case DC:
          link_simplepid();

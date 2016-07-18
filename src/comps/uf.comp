@@ -7,13 +7,13 @@ HAL_PIN(un) = 180;//normal voltage TODO: un is usually rms
 HAL_PIN(lp) = 0.5;
 
 HAL_PIN(max_freq) = 1000;
-HAL_PIN(max_volt) = 180.0;
+HAL_PIN(max_volt) = 180.0 * 1.414;
 
 HAL_PIN(vel_fb) = 0.0;
 HAL_PIN(p) = 2.0;
 HAL_PIN(i) = 10.0;
 
-HAL_PIN(max_slip) = 0.2;
+HAL_PIN(max_slip) = 0.15;
 HAL_PIN(scale) = 1.0;
 
 HAL_PIN(slip) = 0.0;
@@ -44,7 +44,6 @@ RT(
    freq = CLAMP(freq, (PIN(vel_fb) - PIN(scale) * PIN(max_slip) * PIN(fn)), (PIN(vel_fb) + PIN(scale) * PIN(max_slip) * PIN(fn)));
    freq = LIMIT(freq, PIN(max_freq));
    
-
    float volt = CLAMP((c * ABS(freq)) / 2.0, 0, PIN(max_volt)/2.0);
    float volt2 = c * ABS(PIN(vel_fb)) / 2.0;
    PIN(volt) = CLAMP(volt,volt2 * 1.0,volt2 * 1.5 + PIN(un) * PIN(dcbrake) / 2.0);
@@ -56,10 +55,7 @@ RT(
    if(PIN(freq) < 0.1){
       error_sum = 0.0;
    }
-   // if(PIN(freq) == 0.0 && PIN(vel_fb) > 0.1){
-   //    PIN(volt) = PIN(un) * PIN(dcbrake);
-   //    PIN(pos) = 0.0;
-   // }
+
    PIN(freq_out) = freq;
 );
 
