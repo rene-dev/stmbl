@@ -226,6 +226,7 @@ int main(void)
    #include "comps/fault.comp"
    #include "comps/term.comp"
    #include "comps/io.comp"
+   #include "comps/uf.comp"
 
 
    hal_set_comp_type("net");

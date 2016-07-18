@@ -1,0 +1,66 @@
+HAL_COMP(uf);
+
+HAL_PIN(freq) = 0;//freq command
+HAL_PIN(freq_out) = 0;//current freq
+HAL_PIN(fn) = 1000;//normal freq
+HAL_PIN(un) = 180;//normal voltage TODO: un is usually rms
+HAL_PIN(lp) = 0.5;
+
+HAL_PIN(max_freq) = 1000;
+HAL_PIN(max_volt) = 180.0;
+
+HAL_PIN(vel_fb) = 0.0;
+HAL_PIN(p) = 2.0;
+HAL_PIN(i) = 10.0;
+
+HAL_PIN(max_slip) = 0.2;
+HAL_PIN(scale) = 1.0;
+
+HAL_PIN(slip) = 0.0;
+HAL_PIN(dcbrake) = 0.2;
+
+HAL_PIN(pos);//position output
+HAL_PIN(volt);//voltage output
+
+MEM(float freq_cmd) = 0.0;
+MEM(float pos) = 0.0;
+MEM(float error_sum) = 0.0;
+
+RT(
+   float lp = LP_HZ(PIN(lp));
+   float c = PIN(un) * 1.414 / PIN(fn);
+   
+   freq_cmd = PIN(freq) * lp + freq_cmd * (1.0 - lp);
+   
+   float freq = freq_cmd;
+   float vel_error = freq - PIN(vel_fb);
+   error_sum += vel_error;
+   if(PIN(i) > 0.0){
+      error_sum = LIMIT(error_sum, PIN(max_slip) * PIN(fn) / PIN(i) / period);  
+   }else{
+      error_sum = 0.0;
+   }
+   freq += PIN(p) * vel_error + PIN(i) * error_sum * period;
+   freq = CLAMP(freq, (PIN(vel_fb) - PIN(scale) * PIN(max_slip) * PIN(fn)), (PIN(vel_fb) + PIN(scale) * PIN(max_slip) * PIN(fn)));
+   freq = LIMIT(freq, PIN(max_freq));
+   
+
+   float volt = CLAMP((c * ABS(freq)) / 2.0, 0, PIN(max_volt)/2.0);
+   float volt2 = c * ABS(PIN(vel_fb)) / 2.0;
+   PIN(volt) = CLAMP(volt,volt2 * 1.0,volt2 * 1.5 + PIN(un) * PIN(dcbrake) / 2.0);
+
+   freq = CLAMP(freq, 0.0, PIN(max_freq));
+   pos += freq * 2.0 * M_PI * period;
+   pos = mod(pos);
+   PIN(pos) = pos;
+   if(PIN(freq) < 0.1){
+      error_sum = 0.0;
+   }
+   // if(PIN(freq) == 0.0 && PIN(vel_fb) > 0.1){
+   //    PIN(volt) = PIN(un) * PIN(dcbrake);
+   //    PIN(pos) = 0.0;
+   // }
+   PIN(freq_out) = freq;
+);
+
+ENDCOMP;
