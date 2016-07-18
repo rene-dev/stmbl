@@ -132,6 +132,8 @@ RT(
          PIN(pwm_volt) = PIN(dc_volt) / 2.0 * 0.95 * 1.15;
       }else if(PIN(mode) == 1){//DC
          PIN(pwm_volt) = PIN(dc_volt) * 0.95;
+      }else if(PIN(mode) == 2){//2phase ac
+         PIN(pwm_volt) = PIN(dc_volt) * 0.7 * 0.95;
       }else{
          PIN(pwm_volt) = 0.0;
       }
