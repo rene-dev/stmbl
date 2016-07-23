@@ -16,6 +16,7 @@ HAL_PIN(pwm_volt) = 0.0;
 HAL_PIN(hv_temp) = 0.0;
 HAL_PIN(power) = 0.0;
 HAL_PIN(dc_cur_sim) = 0.0;
+HAL_PIN(ac_cur_sim) = 0.0;
 HAL_PIN(iq) = 0.0;
 
 HAL_PIN(rev) = 0.0;
@@ -185,7 +186,10 @@ RT(
 
   PIN(power) = PIN(dc_cur) * PIN(dc_volt);
   if(PIN(pwm_volt) > 0.0){
-    PIN(dc_cur_sim) = PIN(iq) / PIN(pwm_volt) * sqrtf(a*a + b*b)*0.5 + PIN(dc_cur_sim)*0.5;
+    PIN(dc_cur_sim) = ABS(PIN(iq)) / PIN(pwm_volt) * sqrtf(a*a + b*b)*0.5 + PIN(dc_cur_sim)*0.5;
+  }
+  if(ABS(a*b) > 0.01){
+    PIN(ac_cur_sim) = PIN(dc_cur) / sqrtf(a*a+b*b) * PIN(pwm_volt);
   }
 );
 
