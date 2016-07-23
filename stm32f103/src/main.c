@@ -40,6 +40,8 @@
 #define VOLT(a) (a / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
 
 __IO uint16_t ADCConvertedValue[100];//DMA buffer for ADC
+volatile uint8_t rxbuf[50];//dma uart rxbuf
+uint32_t rxpos = 0;
 
 #define SQRT3 1.732050808
 
@@ -260,6 +262,22 @@ void usart_init(){
 	DMA_InitStructuretx.DMA_Mode = DMA_Mode_Normal;
 	DMA_InitStructuretx.DMA_Priority = DMA_Priority_High;
 	DMA_InitStructuretx.DMA_M2M = DMA_M2M_Disable;
+   
+	//RX DMA
+   DMA_DeInit(DMA1_Channel6);
+	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART2->DR;
+	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&rxbuf;
+	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+	DMA_InitStructure.DMA_BufferSize = sizeof(rxbuf);
+	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+   DMA_Init(DMA1_Channel6, &DMA_InitStructure);
+   DMA_Cmd(DMA1_Channel6, ENABLE);
 
 	//USART TX
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
@@ -281,14 +299,8 @@ void usart_init(){
 
 	USART_Init(USART2, &USART_InitStruct);
 	USART_DMACmd(USART2, USART_DMAReq_Tx, ENABLE);
+   USART_DMACmd(USART2, USART_DMAReq_Rx, ENABLE);
 	USART_Cmd(USART2, ENABLE);
-	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);//Enable USART RX not empty interrupt
-
-	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 5;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
 }
 
 // Setup ADC
@@ -412,85 +424,6 @@ void TIM1_UP_IRQHandler(){
 	}
 }
 
-//UART RX not empty interrupt
-//adds data to the struct, until struct is full. Then calculates uvw, and sets pwm
-//TODO: checksum
-void USART2_IRQHandler(){
-	USART_ClearITPendingBit(USART2, USART_IT_RXNE);
-	buf = USART_ReceiveData(USART2);
-	if(buf == 255){ //start condition
-		datapos = 0;
-		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
-		uartsend = 1;
-	}else if(datapos >= 0 && datapos < sizeof(packet_to_hv_t)){
-		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
-	}
-	if(datapos == sizeof(packet_to_hv_t)){//all data received
-		datapos = -1;
-		unbuff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
-      if(packet_to_hv.data.enable == 1){
-         hv_enable();
-      }else{
-         hv_disable();
-      }
-		float ua = TOFLOAT(packet_to_hv.data.a);
-		float ub = TOFLOAT(packet_to_hv.data.b);
-
-      float u = 0.0;
-      float v = 0.0;
-      float w = 0.0;
-
-      if(packet_to_hv.data.mode == 0){//a,b voltages
-         u = ua; // inverse clarke
-         v = - ua / 2.0 + ub / 2.0 * SQRT3;
-         w = - ua / 2.0 - ub / 2.0 * SQRT3;
-      }else if(packet_to_hv.data.mode == 1){//DC, a: -dclink ... +dclink
-         u = ua / 2.0;
-         v = -ua / 2.0;
-         w = 0;
-      }else if(packet_to_hv.data.mode == 2){//2phase, a,b: -dclink/2 ... +dclink/2
-         u = ua;
-         v = 0;
-         w = ub;
-      }
-
-      u += volt / 2.0;
-      v += volt / 2.0;
-      w += volt / 2.0;
-
-      if(u < v){
-         if(u < w){
-            v -= u;
-            w -= u;
-            u = 0.0;
-         }
-         else{
-            u -= w;
-            v -= w;
-            w = 0.0;
-         }
-      }
-      else{
-         if(v < w){
-            u -= v;
-            w -= v;
-            v = 0.0;
-         }
-         else{
-            u -= w;
-            v -= w;
-            w = 0.0;
-         }
-      }
-
-      PWM_U = CLAMP(u / volt * PWM_RES, 0, PWM_RES * 0.95);
-      PWM_V = CLAMP(v / volt * PWM_RES, 0, PWM_RES * 0.95);
-      PWM_W = CLAMP(w / volt * PWM_RES, 0, PWM_RES * 0.95);
-      
-		timeout = 0; //reset timeout
-	}
-}
-
 int main(void)
 {
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
@@ -514,21 +447,104 @@ int main(void)
 	}
 #endif
 	while(1){
+      //next received packet will be written to bufferpos
+      uint32_t bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA1_Channel6);
+      //how many packets we have the the rx buffer for processing
+      uint32_t available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
+      
+      for(int i = 0;i < available;i++){
+      	buf = rxbuf[(rxpos)%sizeof(rxbuf)];
+      	if(buf == 255){ //start condition
+      		datapos = 0;
+      		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
+      		uartsend = 1;
+      	}else if(datapos >= 0 && datapos < sizeof(packet_to_hv_t)){
+      		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
+      	}
+      	if(datapos == sizeof(packet_to_hv_t)){//all data received
+      		datapos = -1;
+      		unbuff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
+            if(packet_to_hv.data.enable == 1){
+               hv_enable();
+            }else{
+               hv_disable();
+            }
+      		float ua = TOFLOAT(packet_to_hv.data.a);
+      		float ub = TOFLOAT(packet_to_hv.data.b);
+
+            float u = 0.0;
+            float v = 0.0;
+            float w = 0.0;
+
+            if(packet_to_hv.data.mode == 0){//a,b voltages
+               u = ua; // inverse clarke
+               v = - ua / 2.0 + ub / 2.0 * SQRT3;
+               w = - ua / 2.0 - ub / 2.0 * SQRT3;
+            }else if(packet_to_hv.data.mode == 1){//DC, a: -dclink ... +dclink
+               u = ua / 2.0;
+               v = -ua / 2.0;
+               w = 0;
+            }else if(packet_to_hv.data.mode == 2){//2phase, a,b: -dclink/2 ... +dclink/2
+               u = ua;
+               v = 0;
+               w = ub;
+            }
+
+            u += volt / 2.0;
+            v += volt / 2.0;
+            w += volt / 2.0;
+
+            if(u < v){
+               if(u < w){
+                  v -= u;
+                  w -= u;
+                  u = 0.0;
+               }
+               else{
+                  u -= w;
+                  v -= w;
+                  w = 0.0;
+               }
+            }
+            else{
+               if(v < w){
+                  u -= v;
+                  w -= v;
+                  v = 0.0;
+               }
+               else{
+                  u -= w;
+                  v -= w;
+                  w = 0.0;
+               }
+            }
+
+            PWM_U = CLAMP(u / volt * PWM_RES, 0, PWM_RES * 0.95);
+            PWM_V = CLAMP(v / volt * PWM_RES, 0, PWM_RES * 0.95);
+            PWM_W = CLAMP(w / volt * PWM_RES, 0, PWM_RES * 0.95);
+      
+      		timeout = 0; //reset timeout
+      	}
+         
+         rxpos++;
+         rxpos = rxpos % sizeof(rxbuf);
+      }
+      
 		if(uartsend == 1){
 			DMA_DeInit(DMA1_Channel7);
 			DMA_Init(DMA1_Channel7, &DMA_InitStructuretx);
 			DMA_Cmd(DMA1_Channel7, ENABLE);
-         int bufferpos;
+         int adcbufferpos;
          uint32_t cur_sum = 0;
          //next received packet will be written to bufferpos
-         bufferpos = sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0]) - DMA_GetCurrDataCounter(DMA1_Channel1);
+         adcbufferpos = sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0]) - DMA_GetCurrDataCounter(DMA1_Channel1);
          //bufferpos-1 .. bufferpos-1-samples
          int samples = 30;
          for(int i = 0; i < samples; i++){
-            if(bufferpos + i >= sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0])){
-               bufferpos = 0;
+            if(adcbufferpos + i >= sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0])){
+               adcbufferpos = 0;
             }
-            cur_sum += ADCConvertedValue[bufferpos+i];
+            cur_sum += ADCConvertedValue[adcbufferpos+i];
          }
          
 			amp = AMP((float)cur_sum / (float)samples);
