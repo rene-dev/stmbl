@@ -26,7 +26,6 @@
 #define R10 10000
 #define R11 180
 
-#define ADC_channels 3
 #define VDIVUP 36000.0//HV div pullup R1,R12
 #define VDIVDOWN 280.0//HV div pulldown R2,R9
 #define PWM_U TIM1->CCR1
@@ -40,7 +39,7 @@
 
 #define VOLT(a) (a / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
 
-__IO uint16_t ADCConvertedValue[ADC_channels];//DMA buffer for ADC
+__IO uint16_t ADCConvertedValue[100];//DMA buffer for ADC
 
 #define SQRT3 1.732050808
 
@@ -61,8 +60,6 @@ float tempb(float i){
 }
 
 volatile uint32_t timeout = 99999;
-volatile uint16_t volt_raw = 0;
-volatile uint16_t amp_raw = 0;
 volatile uint16_t temp_raw = 0;
 volatile uint8_t hv_fault = 0;
 volatile uint8_t hv_enabled = 0;
@@ -164,6 +161,31 @@ void GPIO_Configuration(void)
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 #endif
    hv_disable();
+}
+
+void tim2_init(){
+   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+	TIM_TimeBaseStructure.TIM_Period = 480; // 72000000 / 480 = 150kHz
+	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseStructure.TIM_RepetitionCounter = 1;
+	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+   
+	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+	TIM_OCInitStructure.TIM_Pulse = 240;
+	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+	TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+	TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
+	TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
+
+	TIM_OC2Init(TIM2, &TIM_OCInitStructure);
+
+	TIM_Cmd(TIM2, ENABLE);
+
+   TIM_CtrlPWMOutputs(TIM2, ENABLE);
 }
 
 void tim1_init(){
@@ -273,7 +295,7 @@ void usart_init(){
 void setup_adc(){
 	RCC_ADCCLKConfig(RCC_PCLK2_Div6); // 12MHz
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC2 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 
@@ -304,7 +326,7 @@ void setup_adc(){
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR;
 	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADCConvertedValue;
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
-	DMA_InitStructure.DMA_BufferSize = ADC_channels;
+	DMA_InitStructure.DMA_BufferSize = sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0]);
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -314,37 +336,23 @@ void setup_adc(){
 	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
 	DMA_Init(DMA1_Channel1, &DMA_InitStructure);
 
-	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel1_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-
 	/* Enable DMA1 channel1 */
 	DMA_Cmd(DMA1_Channel1, ENABLE);
-	DMA_ITConfig(DMA1_Channel1, DMA_IT_TC, ENABLE);
 
 	/* ADC1 configuration ------------------------------------------------------*/
 	ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
 	ADC_InitStructure.ADC_ScanConvMode = ENABLE;
 	ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
-	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
+	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T2_CC2;
 	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
-	ADC_InitStructure.ADC_NbrOfChannel = ADC_channels;
+	ADC_InitStructure.ADC_NbrOfChannel = 1;
 	ADC_Init(ADC1, &ADC_InitStructure);
+   
+   ADC_ExternalTrigConvCmd(ADC1, ENABLE);
 
 	ADC_TempSensorVrefintCmd(ENABLE);
 
-#ifdef TROLLER
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_13Cycles5); //volt
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 2, ADC_SampleTime_13Cycles5); //iu
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 3, ADC_SampleTime_13Cycles5); //iv
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 4, ADC_SampleTime_13Cycles5); //iw
-#else
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 1, ADC_SampleTime_13Cycles5); //volt
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 2, ADC_SampleTime_13Cycles5); //amp
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_8 , 3, ADC_SampleTime_13Cycles5); //temp
-#endif
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_13Cycles5); //amp
 
 	/* Enable ADC1 DMA */
 	ADC_DMACmd(ADC1, ENABLE);
@@ -361,12 +369,38 @@ void setup_adc(){
 	ADC_StartCalibration(ADC1);
 	/* Check the end of ADC1 calibration */
 	while(ADC_GetCalibrationStatus(ADC1));
+
+   //ADC2, injected mode for voltage and temperatue
+   ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
+   ADC_InitStructure.ADC_ScanConvMode = ENABLE;
+   ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
+   ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
+   ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+   ADC_InitStructure.ADC_NbrOfChannel = 2;
+   ADC_Init(ADC2, &ADC_InitStructure);
+   
+   ADC_InjectedSequencerLengthConfig(ADC2, 2);
+   /* ADC1 injected channel Configuration */ 
+   ADC_InjectedChannelConfig(ADC2, ADC_Channel_15, 1, ADC_SampleTime_71Cycles5);
+   ADC_InjectedChannelConfig(ADC2, ADC_Channel_8, 2, ADC_SampleTime_71Cycles5);
+   /* ADC1 injected external trigger configuration */
+   ADC_ExternalTrigInjectedConvConfig(ADC2, ADC_ExternalTrigInjecConv_None);
+   ADC_Cmd(ADC2, ENABLE);
+   /* Enable ADC1 reset calibration register */   
+   ADC_ResetCalibration(ADC2);
+   /* Check the end of ADC1 reset calibration register */
+   while(ADC_GetResetCalibrationStatus(ADC2));
+
+   /* Start ADC1 calibration */
+   ADC_StartCalibration(ADC2);
+   /* Check the end of ADC1 calibration */
+   while(ADC_GetCalibrationStatus(ADC2));
+   ADC_SoftwareStartInjectedConvCmd(ADC2, ENABLE);
 }
 
 //TIM1 update interrupt, every PWM cycle
 void TIM1_UP_IRQHandler(){
 	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
-	ADC_SoftwareStartConvCmd(ADC1, ENABLE);//trigger ADC
 	if(timeout > 30){//disable driver
       hv_disable();
 		GPIO_SetBits(GPIOC,GPIO_Pin_1);//yellow led on
@@ -376,29 +410,6 @@ void TIM1_UP_IRQHandler(){
 		GPIO_ResetBits(GPIOC,GPIO_Pin_1);//yellow led off
 		timeout ++;
 	}
-	//GPIO_SetBits(GPIOB,GPIO_Pin_12);
-}
-
-//DMA transfer complete interrupt, every PWM cycle, when ADC conversion is complete
-void DMA1_Channel1_IRQHandler(){
-	DMA_ClearITPendingBit(DMA1_IT_TC1);
-
-	//TODO: hadrware limits for current, temperature and voltage
-
-#ifndef TROLLER
-	//fault test
-	if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7)){
-      hv_fault = 0;
-		GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
-	}else{
-      hv_fault = 1;
-		GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
-	}
-#endif
-
-	volt_raw = ADCConvertedValue[0];
-	amp_raw = ADCConvertedValue[1];
-	temp_raw = ADCConvertedValue[2];
 }
 
 //UART RX not empty interrupt
@@ -488,6 +499,7 @@ int main(void)
 
 	setup_adc();
 	tim1_init();
+   tim2_init();
 	usart_init();
 
 	PWM_U = 0;
@@ -506,8 +518,21 @@ int main(void)
 			DMA_DeInit(DMA1_Channel7);
 			DMA_Init(DMA1_Channel7, &DMA_InitStructuretx);
 			DMA_Cmd(DMA1_Channel7, ENABLE);
-			amp = AMP(amp_raw);
-			volt = VOLT(volt_raw);
+         int bufferpos;
+         uint32_t cur_sum = 0;
+         //next received packet will be written to bufferpos
+         bufferpos = sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0]) - DMA_GetCurrDataCounter(DMA1_Channel1);
+         //bufferpos-1 .. bufferpos-1-samples
+         int samples = 30;
+         for(int i = 0; i < samples; i++){
+            if(bufferpos + i >= sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0])){
+               bufferpos = 0;
+            }
+            cur_sum += ADCConvertedValue[bufferpos+i];
+         }
+         
+			amp = AMP((float)cur_sum / (float)samples);
+			volt = VOLT(ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1));
 
 			packet_from_hv.data.dc_volt = TOFIXED(volt);
 			packet_from_hv.data.dc_cur =  TOFIXED(amp);
@@ -534,9 +559,11 @@ int main(void)
 #endif
 			buff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
 			uartsend = 0;
+         temp_raw = ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_2);
 			if(temp_raw < ARES && temp_raw > 0){
 				temp = tempb(temp_raw);
 			}
+         ADC_SoftwareStartInjectedConvCmd(ADC2, ENABLE);
 		}
 	}
 }
