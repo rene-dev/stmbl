@@ -151,7 +151,7 @@ RT(
   
   p = mod(tim * 2.0f * M_PI / (float)e_res);
 
-  if(a < 0.15){
+  if(a < 0.15 && !EDGE(tim)){
     PIN(error) = 1.0;
   }
   else{
