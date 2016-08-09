@@ -76,7 +76,7 @@ typedef union{
 #define RECORD_TYPE_MODE_DATA_RECORD 0xB0
 
 //process data
-#define DATA_TYPE_PAD 0x00//dont use, does not create hal pin
+#define DATA_TYPE_PAD 0x00//padding, done automaticly at the end
 #define DATA_TYPE_BITS 0x01
 #define DATA_TYPE_UNSIGNED 0x02
 #define DATA_TYPE_SIGNED 0x03

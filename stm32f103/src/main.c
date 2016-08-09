@@ -39,9 +39,9 @@
 
 #define VOLT(a) (a / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
 
-__IO uint16_t ADCConvertedValue[100];//DMA buffer for ADC
-volatile uint8_t rxbuf[50];//dma uart rxbuf
-uint32_t rxpos = 0;
+volatile uint16_t ADCConvertedValue[100];//DMA buffer for ADC
+volatile uint8_t rxbuf[50];//DMA buffer for UART RX
+uint32_t rxpos = 0;//UART rx buffer position
 
 #define SQRT3 1.732050808
 
@@ -75,7 +75,6 @@ volatile unsigned int systime = 0;
 volatile float u,v,w;
 volatile int uartsend = 0;
 
-uint16_t buf = 0x0000;
 packet_to_hv_t packet_to_hv;
 packet_from_hv_t packet_from_hv;
 int32_t datapos = -1;
@@ -453,7 +452,7 @@ int main(void)
       uint32_t available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
       
       for(int i = 0;i < available;i++){
-      	buf = rxbuf[(rxpos)%sizeof(rxbuf)];
+      	uint16_t buf = rxbuf[(rxpos)%sizeof(rxbuf)];
       	if(buf == 255){ //start condition
       		datapos = 0;
       		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
