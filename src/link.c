@@ -9,7 +9,7 @@ void link_ac(){
    hal_set_pin("pmsm_limits0.rt_prio", 12.0);
    hal_set_pin("idq0.rt_prio", 13.0);
    hal_set_pin("dq0.rt_prio", 14.1);
-   
+
    // t2c
    hal_link_pins("conf0.polecount", "t2c0.polecount");
    hal_link_pins("conf0.psi", "t2c0.psi");
@@ -243,7 +243,7 @@ int update_mot(){
          hal_set_pin("hv0.mode", 2.0);
          hal_link_pins("net0.enable", "hv0.enable");
          hal_link_pins("fault0.scale", "uf0.scale");
-         
+
          hal_set_pin("freq_fb0.rt_prio", 1.0);
          hal_link_pins("freq_fb0.vel", "uf0.vel_fb");
          //fb_res = 6
@@ -323,6 +323,8 @@ int update_fb(){
 int update_cmd(){
    hal_set_pin("enc_cmd0.rt_prio", -1.0);
    hal_set_pin("enc_cmd0.frt_prio", -1.0);
+   hal_set_pin("step_cmd0.rt_prio", -1.0);
+   hal_set_pin("step_cmd0.frt_prio", -1.0);
    hal_set_pin("sserial0.rt_prio", -1.0);
    hal_set_pin("sserial0.frt_prio", -1.0);
    hal_set_pin("en0.rt_prio", -1.0);
@@ -340,6 +342,19 @@ int update_cmd(){
             hal_set_pin("en0.txen", 1.0);
          }
          break;
+      case STEPDIR:
+            hal_link_pins("step_cmd0.pos", "rev0.in");
+            hal_link_pins("conf0.cmd_res", "step_cmd0.res");
+            hal_set_pin("step_cmd0.rt_prio", 2.0);
+            hal_set_pin("step_cmd0.frt_prio", 1.0);
+            // hal_set_pin("pderiv0.frt_prio", 2.0);
+            // hal_set_pin("pderiv0.rt_prio", 5.0);
+            if(hal_get_pin("conf0.error_out") == 1.0){//error out using rs485
+               hal_set_pin("en0.rt_prio", 15.0);
+               hal_link_pins("fault0.fault_not", "en0.en");
+               hal_set_pin("en0.txen", 1.0);
+            }
+            break;
       case SSERIAL:
          hal_link_pins("sserial0.pos_cmd", "vel_int0.pos_in");
          hal_link_pins("sserial0.pos_cmd_d", "vel_int0.vel_in");
