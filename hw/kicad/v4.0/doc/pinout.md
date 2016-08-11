@@ -1,7 +1,7 @@
 ## stm32f405vgt
 
 | port | pins | periph (remap) |
-| ---- | -–-- | --–----------- |
+| --- | --- | --- |
 | cmd_d12 | pb4, pa10, pa15 | spi1_miso, usart1_rx, tim2_ch1, (tim3_ch1, tim1_ch3, spi3_miso) |
 | cmd_e12 | pb | |
 | cmd_d36 | pb3, pa8 | spi1_sck, usart1_ck, tim2_ch2, (tim1_ch1, spi3_sck) |
