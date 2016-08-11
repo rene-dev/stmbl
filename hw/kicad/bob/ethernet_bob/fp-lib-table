@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name HR911105_RJ45)(type Legacy)(uri "$(KIPRJMOD)/hr911104/HR911105_RJ45.mod")(options "")(descr ""))
+)
