@@ -2,12 +2,13 @@ EESchema Schematic File Version 2
 LIBS:transistors
 LIBS:stm32
 LIBS:conn
+LIBS:power
 LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 8 14
+Sheet 8 15
 Title ""
 Date ""
 Rev ""
@@ -54,7 +55,7 @@ F8 "L1" I L 4700 2700 60
 F9 "L2" I L 4700 2800 60 
 F10 "A12" I L 4700 2900 60 
 F11 "A35" I L 4700 3000 60 
-F12 "C8" I L 4700 3100 60 
+F12 "Vcc" I L 4700 3100 60 
 $EndSheet
 $Sheet
 S 4700 3350 550  1100
@@ -71,7 +72,7 @@ F8 "L1" I L 4700 4000 60
 F9 "L2" I L 4700 4100 60 
 F10 "A12" I L 4700 4200 60 
 F11 "A35" I L 4700 4300 60 
-F12 "C8" I L 4700 4400 60 
+F12 "Vcc" I L 4700 4400 60 
 $EndSheet
 $Sheet
 S 3100 700  1400 3800
@@ -290,4 +291,59 @@ Wire Wire Line
 	2900 2000 3100 2000
 Wire Wire Line
 	2900 1900 3100 1900
+$Sheet
+S 6650 2250 850  600 
+U 57807AAD
+F0 "fb supply" 60
+F1 "fb_supply.sch" 60
+$EndSheet
+Text HLabel 1650 1800 2    60   Input ~ 0
+TX
+Text HLabel 1650 1700 2    60   Input ~ 0
+RX
+Wire Wire Line
+	1650 1700 1600 1700
+Wire Wire Line
+	1600 1800 1650 1800
+$Comp
+L +3.3V #PWR?
+U 1 1 578427DC
+P 1650 1550
+F 0 "#PWR?" H 1650 1400 50  0001 C CNN
+F 1 "+3.3V" H 1650 1690 50  0000 C CNN
+F 2 "" H 1650 1550 50  0000 C CNN
+F 3 "" H 1650 1550 50  0000 C CNN
+	1    1650 1550
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	1650 1550 1650 1600
+Wire Wire Line
+	1650 1600 1600 1600
+$Comp
+L GND #PWR?
+U 1 1 57848EA2
+P 1650 1950
+F 0 "#PWR?" H 1650 1700 50  0001 C CNN
+F 1 "GND" H 1650 1800 50  0000 C CNN
+F 2 "" H 1650 1950 50  0000 C CNN
+F 3 "" H 1650 1950 50  0000 C CNN
+	1    1650 1950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1600 1900 1650 1900
+Wire Wire Line
+	1650 1900 1650 1950
+$Comp
+L CONN_01X04 P?
+U 1 1 57AEB2FC
+P 1400 1750
+F 0 "P?" H 1400 2000 50  0000 C CNN
+F 1 "CONN_01X04" V 1500 1750 50  0000 C CNN
+F 2 "" H 1400 1750 50  0000 C CNN
+F 3 "" H 1400 1750 50  0000 C CNN
+	1    1400 1750
+	-1   0    0    1   
+$EndComp
 $EndSCHEMATC

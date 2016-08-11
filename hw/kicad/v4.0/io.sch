@@ -2,12 +2,13 @@ EESchema Schematic File Version 2
 LIBS:transistors
 LIBS:stm32
 LIBS:conn
+LIBS:power
 LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 14 14
+Sheet 14 15
 Title ""
 Date ""
 Rev ""
@@ -281,7 +282,9 @@ F 3 "" H 1700 2150 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1600 1900 1800 1900
+	1600 1900 1700 1900
+Wire Wire Line
+	1700 1900 1800 1900
 Wire Wire Line
 	1700 2000 1700 1900
 Connection ~ 1700 1900
@@ -290,7 +293,9 @@ Wire Wire Line
 Wire Wire Line
 	1700 2400 2100 2400
 Wire Wire Line
-	2100 2050 2100 2500
+	2100 2050 2100 2400
+Wire Wire Line
+	2100 2400 2100 2500
 $Comp
 L GND #PWR27
 U 1 1 5700F888
@@ -315,7 +320,9 @@ F 3 "" H 2100 1300 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	2100 1450 2100 1650
+	2100 1450 2100 1550
+Wire Wire Line
+	2100 1550 2100 1650
 $Comp
 L +24V #PWR26
 U 1 1 570101E6
@@ -328,7 +335,9 @@ F 3 "" H 2100 950 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2100 950  2100 1150
+	2100 950  2100 1050
+Wire Wire Line
+	2100 1050 2100 1150
 Wire Wire Line
 	1300 1900 1200 1900
 $Comp
@@ -365,7 +374,9 @@ F 3 "" H 1700 4150 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1600 3900 1800 3900
+	1600 3900 1700 3900
+Wire Wire Line
+	1700 3900 1800 3900
 Wire Wire Line
 	1700 4000 1700 3900
 Connection ~ 1700 3900
@@ -374,7 +385,9 @@ Wire Wire Line
 Wire Wire Line
 	1700 4400 2100 4400
 Wire Wire Line
-	2100 4050 2100 4500
+	2100 4050 2100 4400
+Wire Wire Line
+	2100 4400 2100 4500
 $Comp
 L GND #PWR29
 U 1 1 5701195E
@@ -399,7 +412,9 @@ F 3 "" H 2100 3300 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	2100 3450 2100 3650
+	2100 3450 2100 3550
+Wire Wire Line
+	2100 3550 2100 3650
 $Comp
 L +24V #PWR28
 U 1 1 5701196D
@@ -412,7 +427,9 @@ F 3 "" H 2100 2950 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2100 2950 2100 3150
+	2100 2950 2100 3050
+Wire Wire Line
+	2100 3050 2100 3150
 Wire Wire Line
 	1300 3900 1200 3900
 $Comp
@@ -449,7 +466,9 @@ F 3 "" H 1700 6150 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1600 5900 1800 5900
+	1600 5900 1700 5900
+Wire Wire Line
+	1700 5900 1800 5900
 Wire Wire Line
 	1700 6000 1700 5900
 Connection ~ 1700 5900
@@ -458,7 +477,9 @@ Wire Wire Line
 Wire Wire Line
 	1700 6400 2100 6400
 Wire Wire Line
-	2100 6050 2100 6500
+	2100 6050 2100 6400
+Wire Wire Line
+	2100 6400 2100 6500
 $Comp
 L GND #PWR31
 U 1 1 570122E4
@@ -483,7 +504,9 @@ F 3 "" H 2100 5300 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	2100 5450 2100 5650
+	2100 5450 2100 5550
+Wire Wire Line
+	2100 5550 2100 5650
 $Comp
 L +24V #PWR30
 U 1 1 570122F3
@@ -496,7 +519,9 @@ F 3 "" H 2100 4950 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2100 4950 2100 5150
+	2100 4950 2100 5050
+Wire Wire Line
+	2100 5050 2100 5150
 Wire Wire Line
 	1300 5900 1200 5900
 Wire Wire Line
@@ -575,7 +600,9 @@ F 3 "" H 4400 4150 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4300 3900 4500 3900
+	4300 3900 4400 3900
+Wire Wire Line
+	4400 3900 4500 3900
 Wire Wire Line
 	4400 4000 4400 3900
 Connection ~ 4400 3900
@@ -584,7 +611,9 @@ Wire Wire Line
 Wire Wire Line
 	4400 4400 4800 4400
 Wire Wire Line
-	4800 4050 4800 4500
+	4800 4050 4800 4400
+Wire Wire Line
+	4800 4400 4800 4500
 $Comp
 L GND #PWR80
 U 1 1 57014DAC
@@ -609,20 +638,24 @@ F 3 "" H 4800 3300 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	4800 3450 4800 3650
+	4800 3450 4800 3550
+Wire Wire Line
+	4800 3550 4800 3650
 $Comp
 L +24V #PWR79
 U 1 1 57014DBB
-P 4800 2950
-F 0 "#PWR79" H 4800 2800 50  0001 C CNN
-F 1 "+24V" H 4800 3090 50  0000 C CNN
-F 2 "" H 4800 2950 50  0000 C CNN
-F 3 "" H 4800 2950 50  0000 C CNN
-	1    4800 2950
+P 4800 2650
+F 0 "#PWR79" H 4800 2500 50  0001 C CNN
+F 1 "+24V" H 4800 2790 50  0000 C CNN
+F 2 "" H 4800 2650 50  0000 C CNN
+F 3 "" H 4800 2650 50  0000 C CNN
+	1    4800 2650
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4800 2950 4800 3150
+	4800 2950 4800 3050
+Wire Wire Line
+	4800 3050 4800 3150
 Wire Wire Line
 	4000 3900 3900 3900
 Wire Wire Line
@@ -631,6 +664,8 @@ Wire Wire Line
 	5100 3200 5100 3050
 Wire Wire Line
 	5100 3050 4800 3050
+Wire Wire Line
+	4800 3050 4550 3050
 Connection ~ 4800 3050
 Wire Wire Line
 	5200 3300 5100 3300
@@ -711,7 +746,7 @@ F 3 "" H 10050 2100 60  0000 C CNN
 	1    10050 2100
 	1    0    0    -1  
 $EndComp
-Text HLabel 9650 2600 0    60   Input ~ 0
+Text HLabel 9750 2600 0    60   Input ~ 0
 A_IO1_
 Text HLabel 8950 2100 0    60   Input ~ 0
 A_IO0
@@ -770,7 +805,7 @@ F 3 "" H 9250 2100 60  0000 C CNN
 	1    9250 2100
 	1    0    0    -1  
 $EndComp
-Text HLabel 8850 2600 0    60   Input ~ 0
+Text HLabel 8950 2600 0    60   Input ~ 0
 A_IO0_
 $Comp
 L C C52
@@ -794,30 +829,29 @@ F 3 "" H 10050 2850 60  0000 C CNN
 	1    10050 2850
 	1    0    0    -1  
 $EndComp
-$Comp
-L testpoint T20
-U 1 1 5777ECCC
-P 8750 2800
-F 0 "T20" H 8750 2900 60  0000 C CNN
-F 1 "testpoint" H 8750 2700 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 8750 2800 60  0001 C CNN
-F 3 "" H 8750 2800 60  0000 C CNN
-	1    8750 2800
-	-1   0    0    1   
-$EndComp
 Wire Wire Line
 	9750 2100 9850 2100
 Wire Wire Line
 	9850 2100 9850 2200
 Wire Wire Line
-	9850 2500 9850 2700
+	9850 2500 9850 2600
 Wire Wire Line
-	10050 2500 10050 2700
+	9850 2600 9850 2700
 Wire Wire Line
-	9650 2600 10050 2600
+	10050 2500 10050 2600
+Wire Wire Line
+	10050 2600 10050 2700
+Wire Wire Line
+	9750 2600 9750 2600
+Wire Wire Line
+	9750 2600 9850 2600
+Wire Wire Line
+	9850 2600 10050 2600
 Connection ~ 9850 2600
 Wire Wire Line
-	9850 3000 9850 3200
+	9850 3000 9850 3100
+Wire Wire Line
+	9850 3100 9850 3200
 Wire Wire Line
 	10050 2100 10050 2200
 Wire Wire Line
@@ -825,12 +859,18 @@ Wire Wire Line
 Wire Wire Line
 	9050 2100 9050 2200
 Wire Wire Line
-	9050 2500 9050 2700
+	9050 2500 9050 2600
 Wire Wire Line
-	9250 2500 9250 2700
+	9050 2600 9050 2700
+Wire Wire Line
+	9250 2500 9250 2600
+Wire Wire Line
+	9250 2600 9250 2700
 Connection ~ 9050 2600
 Wire Wire Line
-	9050 3000 9050 3200
+	9050 3000 9050 3100
+Wire Wire Line
+	9050 3100 9050 3200
 Wire Wire Line
 	9250 2100 9250 2200
 Connection ~ 10050 2600
@@ -845,23 +885,47 @@ Wire Wire Line
 Wire Wire Line
 	9250 3100 9050 3100
 Connection ~ 9050 3100
+Wire Wire Line
+	8950 2600 9050 2600
+Wire Wire Line
+	9050 2600 9250 2600
 $Comp
-L testpoint T30
-U 1 1 5777ECEA
-P 9550 2800
-F 0 "T30" H 9550 2900 60  0000 C CNN
-F 1 "testpoint" H 9550 2700 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 9550 2800 60  0001 C CNN
-F 3 "" H 9550 2800 60  0000 C CNN
-	1    9550 2800
-	-1   0    0    1   
+L Jumper_NO_Small JP?
+U 1 1 57AF943B
+P 4550 2850
+F 0 "JP?" H 4550 2930 50  0000 C CNN
+F 1 "Jumper_NO_Small" H 4560 2790 50  0001 C CNN
+F 2 "" H 4550 2850 50  0000 C CNN
+F 3 "" H 4550 2850 50  0000 C CNN
+	1    4550 2850
+	0    1    1    0   
+$EndComp
+$Comp
+L Jumper_NO_Small JP?
+U 1 1 57AF94D3
+P 4800 2850
+F 0 "JP?" H 4800 2930 50  0000 C CNN
+F 1 "Jumper_NO_Small" H 4810 2790 50  0001 C CNN
+F 2 "" H 4800 2850 50  0000 C CNN
+F 3 "" H 4800 2850 50  0000 C CNN
+	1    4800 2850
+	0    1    1    0   
+$EndComp
+$Comp
+L +12V #PWR?
+U 1 1 57AF9557
+P 4550 2650
+F 0 "#PWR?" H 4550 2500 50  0001 C CNN
+F 1 "+12V" H 4550 2790 50  0000 C CNN
+F 2 "" H 4550 2650 50  0000 C CNN
+F 3 "" H 4550 2650 50  0000 C CNN
+	1    4550 2650
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	8850 2600 9250 2600
+	4550 3050 4550 2950
 Wire Wire Line
-	8950 2800 8950 2600
-Connection ~ 8950 2600
+	4550 2650 4550 2750
 Wire Wire Line
-	9750 2600 9750 2800
-Connection ~ 9750 2600
+	4800 2650 4800 2750
 $EndSCHEMATC

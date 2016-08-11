@@ -2,12 +2,13 @@ EESchema Schematic File Version 2
 LIBS:transistors
 LIBS:stm32
 LIBS:conn
+LIBS:power
 LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 5 14
+Sheet 5 15
 Title ""
 Date ""
 Rev ""
@@ -54,41 +55,6 @@ F 3 "" H 2900 4250 30  0000 C CNN
 	1    2900 4250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	2800 3100 2900 3100
-Wire Wire Line
-	2900 3100 2900 3200
-Wire Wire Line
-	2900 3600 2900 3500
-Wire Wire Line
-	2900 3900 2900 4100
-Wire Wire Line
-	2600 4000 3100 4000
-Connection ~ 2900 4000
-$Comp
-L R R30
-U 1 1 56696183
-P 3100 3750
-F 0 "R30" V 3180 3750 50  0000 C CNN
-F 1 "3.9k" V 3100 3750 50  0000 C CNN
-F 2 "Resistors_SMD:R_0603" V 3030 3750 30  0001 C CNN
-F 3 "" H 3100 3750 30  0000 C CNN
-	1    3100 3750
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3100 4000 3100 3900
-$Comp
-L +3.3VP #PWR53
-U 1 1 566961AF
-P 3100 3500
-F 0 "#PWR53" H 3250 3450 50  0001 C CNN
-F 1 "+3.3VP" H 3100 3600 50  0000 C CNN
-F 2 "" H 3100 3500 60  0000 C CNN
-F 3 "" H 3100 3500 60  0000 C CNN
-	1    3100 3500
-	1    0    0    -1  
-$EndComp
 $Comp
 L GNDPWR #PWR46
 U 1 1 566961CF
@@ -100,10 +66,6 @@ F 3 "" H 2900 4450 60  0000 C CNN
 	1    2900 4500
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	2900 4500 2900 4400
-Wire Wire Line
-	3100 3600 3100 3500
 Text HLabel 3600 3100 0    60   Input ~ 0
 V
 Text HLabel 3400 4000 0    60   Input ~ 0
@@ -141,41 +103,6 @@ F 3 "" H 3700 4250 30  0000 C CNN
 	1    3700 4250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3600 3100 3700 3100
-Wire Wire Line
-	3700 3100 3700 3200
-Wire Wire Line
-	3700 3600 3700 3500
-Wire Wire Line
-	3700 3900 3700 4100
-Wire Wire Line
-	3400 4000 3900 4000
-Connection ~ 3700 4000
-$Comp
-L R R35
-U 1 1 566962A5
-P 3900 3750
-F 0 "R35" V 3980 3750 50  0000 C CNN
-F 1 "3.9k" V 3900 3750 50  0000 C CNN
-F 2 "Resistors_SMD:R_0603" V 3830 3750 30  0001 C CNN
-F 3 "" H 3900 3750 30  0000 C CNN
-	1    3900 3750
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3900 4000 3900 3900
-$Comp
-L +3.3VP #PWR61
-U 1 1 566962AC
-P 3900 3500
-F 0 "#PWR61" H 4050 3450 50  0001 C CNN
-F 1 "+3.3VP" H 3900 3600 50  0000 C CNN
-F 2 "" H 3900 3500 60  0000 C CNN
-F 3 "" H 3900 3500 60  0000 C CNN
-	1    3900 3500
-	1    0    0    -1  
-$EndComp
 $Comp
 L GNDPWR #PWR58
 U 1 1 566962B2
@@ -187,10 +114,6 @@ F 3 "" H 3700 4450 60  0000 C CNN
 	1    3700 4500
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3700 4500 3700 4400
-Wire Wire Line
-	3900 3600 3900 3500
 Text HLabel 4400 3100 0    60   Input ~ 0
 W
 Text HLabel 4200 4000 0    60   Input ~ 0
@@ -228,41 +151,6 @@ F 3 "" H 4500 4250 30  0000 C CNN
 	1    4500 4250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	4400 3100 4500 3100
-Wire Wire Line
-	4500 3100 4500 3200
-Wire Wire Line
-	4500 3600 4500 3500
-Wire Wire Line
-	4500 3900 4500 4100
-Wire Wire Line
-	4200 4000 4700 4000
-Connection ~ 4500 4000
-$Comp
-L R R59
-U 1 1 56696350
-P 4700 3750
-F 0 "R59" V 4780 3750 50  0000 C CNN
-F 1 "3.9k" V 4700 3750 50  0000 C CNN
-F 2 "Resistors_SMD:R_0603" V 4630 3750 30  0001 C CNN
-F 3 "" H 4700 3750 30  0000 C CNN
-	1    4700 3750
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	4700 4000 4700 3900
-$Comp
-L +3.3VP #PWR77
-U 1 1 56696357
-P 4700 3500
-F 0 "#PWR77" H 4850 3450 50  0001 C CNN
-F 1 "+3.3VP" H 4700 3600 50  0000 C CNN
-F 2 "" H 4700 3500 60  0000 C CNN
-F 3 "" H 4700 3500 60  0000 C CNN
-	1    4700 3500
-	1    0    0    -1  
-$EndComp
 $Comp
 L GNDPWR #PWR74
 U 1 1 5669635D
@@ -274,10 +162,6 @@ F 3 "" H 4500 4450 60  0000 C CNN
 	1    4500 4500
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	4500 4500 4500 4400
-Wire Wire Line
-	4700 3600 4700 3500
 Text HLabel 5100 4000 0    60   Input ~ 0
 HV_
 $Comp
@@ -313,13 +197,6 @@ F 3 "" H 5400 4250 30  0000 C CNN
 	1    5400 4250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5400 3100 5400 3200
-Wire Wire Line
-	5400 3600 5400 3500
-Wire Wire Line
-	5400 3900 5400 4100
-Connection ~ 5400 4000
 $Comp
 L GNDPWR #PWR94
 U 1 1 566963FC
@@ -331,10 +208,6 @@ F 3 "" H 5400 4450 60  0000 C CNN
 	1    5400 4500
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5400 4500 5400 4400
-Wire Wire Line
-	5100 4000 5400 4000
 $Comp
 L C C11
 U 1 1 5682FF8E
@@ -346,14 +219,6 @@ F 3 "" H 2700 4250 60  0000 C CNN
 	1    2700 4250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	2700 3900 2700 4100
-Connection ~ 2700 4000
-Wire Wire Line
-	2700 4400 2700 4450
-Wire Wire Line
-	2700 4450 2900 4450
-Connection ~ 2900 4450
 $Comp
 L C C20
 U 1 1 5683022A
@@ -387,74 +252,6 @@ F 3 "" H 5200 4250 60  0000 C CNN
 	1    5200 4250
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3500 3900 3500 4100
-Connection ~ 3500 4000
-Wire Wire Line
-	3500 4400 3500 4450
-Wire Wire Line
-	3500 4450 3700 4450
-Connection ~ 3700 4450
-Wire Wire Line
-	4300 3900 4300 4100
-Connection ~ 4300 4000
-Wire Wire Line
-	4300 4400 4300 4450
-Wire Wire Line
-	4300 4450 4500 4450
-Connection ~ 4500 4450
-Wire Wire Line
-	5200 3900 5200 4100
-Connection ~ 5200 4000
-Wire Wire Line
-	5200 4400 5200 4450
-Wire Wire Line
-	5200 4450 5500 4450
-Connection ~ 5400 4450
-$Comp
-L testpoint T7
-U 1 1 56822E3C
-P 2700 3700
-F 0 "T7" H 2700 3800 60  0000 C CNN
-F 1 "testpoint" H 2700 3600 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 2700 3700 60  0001 C CNN
-F 3 "" H 2700 3700 60  0000 C CNN
-	1    2700 3700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L testpoint T10
-U 1 1 56822E9B
-P 3500 3700
-F 0 "T10" H 3500 3800 60  0000 C CNN
-F 1 "testpoint" H 3500 3600 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 3500 3700 60  0001 C CNN
-F 3 "" H 3500 3700 60  0000 C CNN
-	1    3500 3700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L testpoint T13
-U 1 1 56822EF1
-P 4300 3700
-F 0 "T13" H 4300 3800 60  0000 C CNN
-F 1 "testpoint" H 4300 3600 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 4300 3700 60  0001 C CNN
-F 3 "" H 4300 3700 60  0000 C CNN
-	1    4300 3700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L testpoint T16
-U 1 1 56822FD0
-P 5200 3700
-F 0 "T16" H 5200 3800 60  0000 C CNN
-F 1 "testpoint" H 5200 3600 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 5200 3700 60  0001 C CNN
-F 3 "" H 5200 3700 60  0000 C CNN
-	1    5200 3700
-	0    -1   -1   0   
-$EndComp
 $Comp
 L testpoint T19
 U 1 1 568301A4
@@ -477,4 +274,86 @@ F 3 "" H 5400 3100 50  0000 C CNN
 	1    5400 3100
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	2800 3100 2900 3100
+Wire Wire Line
+	2900 3100 2900 3200
+Wire Wire Line
+	2900 3600 2900 3500
+Wire Wire Line
+	2900 3900 2900 4100
+Connection ~ 2900 4000
+Wire Wire Line
+	2900 4500 2900 4400
+Wire Wire Line
+	3600 3100 3700 3100
+Wire Wire Line
+	3700 3100 3700 3200
+Wire Wire Line
+	3700 3600 3700 3500
+Wire Wire Line
+	3700 3900 3700 4100
+Connection ~ 3700 4000
+Wire Wire Line
+	3700 4500 3700 4400
+Wire Wire Line
+	4400 3100 4500 3100
+Wire Wire Line
+	4500 3100 4500 3200
+Wire Wire Line
+	4500 3600 4500 3500
+Wire Wire Line
+	4500 3900 4500 4100
+Connection ~ 4500 4000
+Wire Wire Line
+	4500 4500 4500 4400
+Wire Wire Line
+	5400 3100 5400 3200
+Wire Wire Line
+	5400 3600 5400 3500
+Connection ~ 5400 4000
+Wire Wire Line
+	5400 4500 5400 4400
+Wire Wire Line
+	5100 4000 5400 4000
+Connection ~ 2700 4000
+Wire Wire Line
+	2700 4400 2700 4450
+Wire Wire Line
+	2700 4450 2900 4450
+Connection ~ 2900 4450
+Connection ~ 3500 4000
+Wire Wire Line
+	3500 4400 3500 4450
+Wire Wire Line
+	3500 4450 3700 4450
+Connection ~ 3700 4450
+Connection ~ 4300 4000
+Wire Wire Line
+	4300 4400 4300 4450
+Wire Wire Line
+	4300 4450 4500 4450
+Connection ~ 4500 4450
+Connection ~ 5200 4000
+Wire Wire Line
+	5200 4400 5200 4450
+Wire Wire Line
+	5200 4450 5500 4450
+Connection ~ 5400 4450
+Wire Wire Line
+	2600 4000 2900 4000
+Wire Wire Line
+	5400 3900 5400 4100
+Wire Wire Line
+	4200 4000 4500 4000
+Wire Wire Line
+	3400 4000 3700 4000
+Wire Wire Line
+	2700 4000 2700 4100
+Wire Wire Line
+	3500 4000 3500 4100
+Wire Wire Line
+	4300 4000 4300 4100
+Wire Wire Line
+	5200 4000 5200 4100
 $EndSCHEMATC

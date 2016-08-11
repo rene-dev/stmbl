@@ -1,4 +1,4 @@
-update=Donnerstag, 30. Juni 2016 um 23:59:52
+update=Donnerstag, 11. August 2016 'u59' 03:59:47
 version=1
 last_client=kicad
 [pcbnew]
@@ -42,3 +42,4 @@ LibDir=
 LibName1=transistors
 LibName2=stm32
 LibName3=conn
+LibName4=power

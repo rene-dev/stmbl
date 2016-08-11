@@ -2,12 +2,13 @@ EESchema Schematic File Version 2
 LIBS:transistors
 LIBS:stm32
 LIBS:conn
+LIBS:power
 LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 14
+Sheet 2 15
 Title ""
 Date ""
 Rev ""
@@ -318,8 +319,6 @@ Wire Wire Line
 	5400 1200 5400 1400
 Connection ~ 5400 1800
 Wire Wire Line
-	5400 1300 5850 1300
-Wire Wire Line
 	5750 1200 5750 2100
 Wire Wire Line
 	5600 1200 5600 1300
@@ -371,40 +370,6 @@ Wire Wire Line
 	5250 4550 5250 2400
 Wire Wire Line
 	5250 2400 6000 2400
-$Comp
-L testpoint T21
-U 1 1 56828AEB
-P 6050 1300
-F 0 "T21" H 6050 1400 60  0000 C CNN
-F 1 "testpoint" H 6050 1200 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 6050 1300 60  0001 C CNN
-F 3 "" H 6050 1300 60  0000 C CNN
-	1    6050 1300
-	1    0    0    -1  
-$EndComp
-$Comp
-L testpoint T17
-U 1 1 56829511
-P 5600 1800
-F 0 "T17" H 5600 1900 60  0000 C CNN
-F 1 "testpoint" H 5600 1700 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 5600 1800 60  0001 C CNN
-F 3 "" H 5600 1800 60  0000 C CNN
-	1    5600 1800
-	1    0    0    -1  
-$EndComp
-$Comp
-L testpoint T18
-U 1 1 568296AA
-P 5600 2100
-F 0 "T18" H 5600 2200 60  0000 C CNN
-F 1 "testpoint" H 5600 2000 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 5600 2100 60  0001 C CNN
-F 3 "" H 5600 2100 60  0000 C CNN
-	1    5600 2100
-	1    0    0    -1  
-$EndComp
-Connection ~ 5400 2100
 Wire Wire Line
 	9600 4350 9600 3600
 Wire Wire Line
@@ -441,4 +406,55 @@ Wire Wire Line
 	8800 3500 8200 3500
 Wire Wire Line
 	8200 3600 8800 3600
+Text HLabel 2550 1800 2    60   Input ~ 0
+TX
+Text HLabel 2550 1700 2    60   Input ~ 0
+RX
+Wire Wire Line
+	2550 1700 2500 1700
+Wire Wire Line
+	2500 1800 2550 1800
+$Comp
+L +3.3V #PWR?
+U 1 1 5784C75E
+P 2550 1550
+F 0 "#PWR?" H 2550 1400 50  0001 C CNN
+F 1 "+3.3V" H 2550 1690 50  0000 C CNN
+F 2 "" H 2550 1550 50  0000 C CNN
+F 3 "" H 2550 1550 50  0000 C CNN
+	1    2550 1550
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	2550 1550 2550 1600
+Wire Wire Line
+	2550 1600 2500 1600
+$Comp
+L GND #PWR?
+U 1 1 5784C766
+P 2550 1950
+F 0 "#PWR?" H 2550 1700 50  0001 C CNN
+F 1 "GND" H 2550 1800 50  0000 C CNN
+F 2 "" H 2550 1950 50  0000 C CNN
+F 3 "" H 2550 1950 50  0000 C CNN
+	1    2550 1950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2500 1900 2550 1900
+Wire Wire Line
+	2550 1900 2550 1950
+$Comp
+L CONN_01X04 P?
+U 1 1 57AEC939
+P 2300 1750
+F 0 "P?" H 2300 2000 50  0000 C CNN
+F 1 "CONN_01X04" V 2400 1750 50  0000 C CNN
+F 2 "" H 2300 1750 50  0000 C CNN
+F 3 "" H 2300 1750 50  0000 C CNN
+	1    2300 1750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5400 1300 5750 1300
 $EndSCHEMATC
