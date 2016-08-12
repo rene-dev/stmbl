@@ -222,6 +222,9 @@ void link_simplepid(){
    hal_link_pins("hv0.pwm_volt", "ypid0.max_out");
    hal_link_pins("ypid0.saturated", "fault0.sat");
    hal_link_pins("ypid0.pos_error", "fault0.pos_error");
+   hal_link_pins("conf0.acc_p", "ypid0.vel_p");//TODO: rename config pins?
+   hal_link_pins("conf0.acc_pi", "ypid0.vel_i");//TODO: rename config pins?
+   hal_set_pin("vel1.w" , 2000.0);//TODO: change to velbuf
 }
 
 int update_mot(){
