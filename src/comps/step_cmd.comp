@@ -1,16 +1,9 @@
-#ifdef CMD_RX
-#error you can only have one command component
-#else
-#define CMD_RX
-#endif
-
-HAL_COMP(enc_cmd);
+HAL_COMP(step_cmd);
 
 HAL_PIN(res) = 2048.0;
 HAL_PIN(pos) = 0.0;
-HAL_PIN(index) = 0.0;
-HAL_PIN(a) = 0.0;
-HAL_PIN(b) = 0.0;
+HAL_PIN(step) = 0.0;
+HAL_PIN(dir) = 0.0;
 
 MEM(int e_res) = 0.0;
 
@@ -25,7 +18,7 @@ RT_INIT(
     //Init both IO Ports
     RCC_AHB1PeriphClockCmd(ENC0_A_IO_RCC|ENC0_B_IO_RCC, ENABLE);    //Enable needed Clocks for IOs
     GPIO_InitTypeDef GPIO_InitStruct;
-	GPIO_StructInit(&GPIO_InitStruct);
+		GPIO_StructInit(&GPIO_InitStruct);
     GPIO_InitStruct.GPIO_Pin   = ENC0_A_PIN | ENC0_B_PIN;
     GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_AF;      //Alternative Funktion
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_100MHz;
@@ -87,20 +80,15 @@ RT_DEINIT(
 
 RT(
 
-	if(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_2)){//TODO: setup pin
-		 PIN(index) = 0.0;
-	}else{
-		 PIN(index) = 1.0;
-	}
 	if(GPIO_ReadInputDataBit(ENC0_A_PORT,ENC0_A_PIN)){//TODO: setup pin
-		 PIN(a) = 0.0;
+		 PIN(step) = 0.0;
 	}else{
-		 PIN(a) = 1.0;
+		 PIN(step) = 1.0;
 	}
 	if(GPIO_ReadInputDataBit(ENC0_B_PORT,ENC0_B_PIN)){//TODO: setup pin
-		 PIN(b) = 0.0;
+		 PIN(dir) = 0.0;
 	}else{
-		 PIN(b) = 1.0;
+		 PIN(dir) = 1.0;
 	}
 	float p = 0.0;
 
