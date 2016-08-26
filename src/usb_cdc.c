@@ -71,7 +71,7 @@ uint16_t USB_VCP_get_string(char *ptr)
             *(ptr + akt_pos) = wert;
             akt_pos++;
         }
-    } while ((usb_rx_buf.len != 0) && (wert != 0x0A));
+    } while ((usb_rx_buf.len != 0) && (wert != '\n'));
 
     // Stringende anhängen
     *(ptr + akt_pos) = 0x00;
