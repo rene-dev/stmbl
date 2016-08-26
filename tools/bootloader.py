@@ -11,7 +11,7 @@ import serial.tools.list_ports
 done = False
 
 for port in serial.tools.list_ports.comports():
-   if "USB VID:PID=483:5740" in port[2]:
+   if "483:5740" in port[2]:
       print "Reseting stmbl at " + port[2]
       stmbl = serial.Serial(port[0])
       stmbl.write('bootloader\n')
