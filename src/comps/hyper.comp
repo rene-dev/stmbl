@@ -1,9 +1,3 @@
-#ifdef FB_TX
-#error at the moment you can only have one component using the tx channel of the feeback port(res or encm)
-#else
-#define FB_TX
-#endif
-
 HAL_COMP(hyper);// https://www.youtube.com/watch?v=aoXOdAUD7IM&t=44
 
 HAL_PIN(pos) = 0.0;

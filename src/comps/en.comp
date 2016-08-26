@@ -1,9 +1,3 @@
-#ifdef CMD_TX
-#error at the moment you can only have one component using the tx channel of the command port
-#else
-#define CMD_TX
-#endif
-
 HAL_COMP(en);
 
 HAL_PIN(en) = 0.0;
