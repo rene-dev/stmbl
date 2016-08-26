@@ -10,7 +10,6 @@
 
 #include <stdarg.h>
 
-int scanf_(const char *format, ...);
 int sscanf_(const char* buf, const char *format, ...);
 int vfsscanf_(const char *buf, const char *format, va_list arg);
 int isDecDigit(char c);
