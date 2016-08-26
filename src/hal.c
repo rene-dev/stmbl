@@ -19,8 +19,8 @@
  */
 
 #include <string.h>
+#include <math.h>
 #include "hal.h"
-#include "misc.h"
 
 char* itoa(int i){
   hal.tmp[0] = (i % 10) + '0';

@@ -21,11 +21,11 @@
 #include "stm32f4xx_conf.h"
 #include "scanf.h"
 #include "hal.h"
+#include "hal_term.h"
+#include "hal_conf.h"
 #include "setup.h"
-#include "eeprom.h"
 #include "link.h"
 #include "crc8.h"
-#include "crc16.h"
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
