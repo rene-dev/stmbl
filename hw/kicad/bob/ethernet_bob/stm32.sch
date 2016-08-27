@@ -28,17 +28,16 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:stm32
 LIBS:ksz8081
 LIBS:ESD_Protection
 LIBS:hr911105_rj45
-LIBS:ethernet_bob-cache
+LIBS:stm32
 EELAYER 25 0
 EELAYER END
-$Descr A4 11693 8268
+$Descr A3 16535 11693
 encoding utf-8
-Sheet 3 3
-Title ""
+Sheet 2 3
+Title "STM32 Ethernet BOB"
 Date ""
 Rev ""
 Comp ""
@@ -64,24 +63,12 @@ Wire Wire Line
 	5500 700  6100 700 
 Text HLabel 10400 1900 2    60   Input ~ 0
 STM_RXDV
-Text HLabel 10400 1500 2    60   Input ~ 0
-STM_COL
 Text HLabel 10400 1400 2    60   Input ~ 0
 STM_MDIO
-Text HLabel 10400 3900 2    60   Input ~ 0
-STM_RXER
 Text HLabel 10400 4000 2    60   Input ~ 0
 STM_TXEN
 Text HLabel 10400 4200 2    60   Input ~ 0
 STM_TXD1
-Text HLabel 10400 1200 2    60   Input ~ 0
-STM_CRS
-Text HLabel 10400 2900 2    60   Input ~ 0
-STM_RXD2
-Text HLabel 10400 3000 2    60   Input ~ 0
-STM_RXD3
-Text HLabel 1250 3100 0    60   Input ~ 0
-STM_TXD3
 Text HLabel 10400 5000 2    60   Input ~ 0
 STM_RXD0
 Text HLabel 10400 5100 2    60   Input ~ 0
@@ -112,8 +99,6 @@ Wire Wire Line
 	10300 5000 10400 5000
 Wire Wire Line
 	10300 5100 10400 5100
-Text HLabel 10400 4800 2    60   Input ~ 0
-STM_TXD2
 Wire Wire Line
 	10300 4800 10400 4800
 $Comp
@@ -133,4 +118,306 @@ Text HLabel 10400 4700 2    60   Input ~ 0
 STM_MDC
 Wire Wire Line
 	10300 4700 10400 4700
+$Comp
+L GND #PWR21
+U 1 1 57C09306
+P 5950 6600
+F 0 "#PWR21" H 5950 6350 50  0001 C CNN
+F 1 "GND" H 5955 6427 50  0000 C CNN
+F 2 "" H 5950 6600 50  0000 C CNN
+F 3 "" H 5950 6600 50  0000 C CNN
+	1    5950 6600
+	1    0    0    -1  
+$EndComp
+Connection ~ 5700 6600
+Connection ~ 5800 6600
+Connection ~ 5900 6600
+Connection ~ 5950 6600
+$Comp
+L +3.3V #PWR20
+U 1 1 57C09344
+P 5850 700
+F 0 "#PWR20" H 5850 550 50  0001 C CNN
+F 1 "+3.3V" H 5865 873 50  0000 C CNN
+F 2 "" H 5850 700 50  0000 C CNN
+F 3 "" H 5850 700 50  0000 C CNN
+	1    5850 700 
+	1    0    0    -1  
+$EndComp
+Connection ~ 5600 700 
+Connection ~ 5700 700 
+Connection ~ 5800 700 
+Connection ~ 5850 700 
+Connection ~ 5900 700 
+Connection ~ 6000 700 
+Text GLabel 1700 7350 2    60   Input ~ 0
+USB+
+Text GLabel 1700 7450 2    60   Input ~ 0
+USB-
+Text GLabel 10400 4400 2    60   Input ~ 0
+USB+
+Text GLabel 10400 4300 2    60   Input ~ 0
+USB-
+Wire Wire Line
+	10300 4300 10400 4300
+Wire Wire Line
+	10300 4400 10400 4400
+Wire Wire Line
+	1600 7350 1700 7350
+Wire Wire Line
+	1600 7450 1700 7450
+$Comp
+L GND #PWR16
+U 1 1 57C098F4
+P 1700 7150
+F 0 "#PWR16" H 1700 6900 50  0001 C CNN
+F 1 "GND" V 1705 7022 50  0000 R CNN
+F 2 "" H 1700 7150 50  0000 C CNN
+F 3 "" H 1700 7150 50  0000 C CNN
+	1    1700 7150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1600 7150 1700 7150
+$Comp
+L CRYSTAL_SMD X1
+U 1 1 57C09DA6
+P 900 2650
+F 0 "X1" V 854 2733 50  0000 L CNN
+F 1 "CRYSTAL_SMD" V 945 2733 50  0000 L CNN
+F 2 "Crystals:Crystal_SMD_0603_4Pads" H 900 2650 50  0001 C CNN
+F 3 "" H 900 2650 50  0000 C CNN
+	1    900  2650
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	900  2450 1150 2450
+Wire Wire Line
+	1150 2450 1150 2600
+Wire Wire Line
+	1150 2600 1300 2600
+Wire Wire Line
+	900  2850 1150 2850
+Wire Wire Line
+	1150 2850 1150 2700
+Wire Wire Line
+	1150 2700 1300 2700
+Wire Wire Line
+	600  2650 800  2650
+$Comp
+L GND #PWR14
+U 1 1 57C09ECA
+P 600 2650
+F 0 "#PWR14" H 600 2400 50  0001 C CNN
+F 1 "GND" V 605 2522 50  0000 R CNN
+F 2 "" H 600 2650 50  0000 C CNN
+F 3 "" H 600 2650 50  0000 C CNN
+	1    600  2650
+	0    1    1    0   
+$EndComp
+$Comp
+L C C8
+U 1 1 57C09EFC
+P 750 2450
+F 0 "C8" V 498 2450 50  0000 C CNN
+F 1 "18pF" V 589 2450 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0603" H 788 2300 50  0001 C CNN
+F 3 "" H 750 2450 50  0000 C CNN
+	1    750  2450
+	0    1    1    0   
+$EndComp
+$Comp
+L C C9
+U 1 1 57C09F4D
+P 750 2850
+F 0 "C9" V 600 2850 50  0000 C CNN
+F 1 "18pF" V 900 2850 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0603" H 788 2700 50  0001 C CNN
+F 3 "" H 750 2850 50  0000 C CNN
+	1    750  2850
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	600  2850 600  2450
+Connection ~ 600  2650
+$Comp
+L JUMPER JP1
+U 1 1 57C0A1BB
+P 950 1400
+F 0 "JP1" H 950 1664 50  0000 C CNN
+F 1 "JUMPER" H 950 1573 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0603" H 950 1400 50  0001 C CNN
+F 3 "" H 950 1400 50  0000 C CNN
+	1    950  1400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1250 1400 1300 1400
+$Comp
+L GND #PWR15
+U 1 1 57C0A25C
+P 650 1450
+F 0 "#PWR15" H 650 1200 50  0001 C CNN
+F 1 "GND" H 655 1277 50  0000 C CNN
+F 2 "" H 650 1450 50  0000 C CNN
+F 3 "" H 650 1450 50  0000 C CNN
+	1    650  1450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	650  1100 650  1450
+$Comp
+L C C10
+U 1 1 57C0A450
+P 800 1200
+F 0 "C10" V 548 1200 50  0000 C CNN
+F 1 "C" V 639 1200 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0603" H 838 1050 50  0001 C CNN
+F 3 "" H 800 1200 50  0000 C CNN
+	1    800  1200
+	0    1    1    0   
+$EndComp
+$Comp
+L SW_PUSH SW1
+U 1 1 57C0A4D1
+P 950 1100
+F 0 "SW1" H 950 1355 50  0000 C CNN
+F 1 "SW_PUSH" H 950 1264 50  0000 C CNN
+F 2 "" H 950 1100 50  0001 C CNN
+F 3 "" H 950 1100 50  0000 C CNN
+	1    950  1100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	950  1200 1300 1200
+Wire Wire Line
+	1250 1200 1250 1100
+Connection ~ 1250 1200
+Connection ~ 650  1400
+Connection ~ 650  1200
+Text HLabel 10400 1300 2    60   Input ~ 0
+STM_RXC
+Wire Wire Line
+	10300 1300 10400 1300
+$Comp
+L +5VP #PWR17
+U 1 1 57C0B845
+P 1700 7550
+F 0 "#PWR17" H 1700 7400 50  0001 C CNN
+F 1 "+5VP" V 1715 7678 50  0000 L CNN
+F 2 "" H 1700 7550 50  0000 C CNN
+F 3 "" H 1700 7550 50  0000 C CNN
+	1    1700 7550
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1600 7550 1700 7550
+Text HLabel 10400 2000 2    60   Input ~ 0
+STM_MCO1
+Wire Wire Line
+	10300 2000 10400 2000
+$Comp
+L C C11
+U 1 1 57C0E303
+P 2950 7300
+F 0 "C11" H 2835 7254 50  0000 R CNN
+F 1 "100n" H 2835 7345 50  0000 R CNN
+F 2 "Capacitors_SMD:C_0603" H 2988 7150 50  0001 C CNN
+F 3 "" H 2950 7300 50  0000 C CNN
+	1    2950 7300
+	-1   0    0    1   
+$EndComp
+$Comp
+L C C12
+U 1 1 57C0E5AF
+P 3200 7300
+F 0 "C12" H 3085 7254 50  0000 R CNN
+F 1 "100n" H 3085 7345 50  0000 R CNN
+F 2 "Capacitors_SMD:C_0603" H 3238 7150 50  0001 C CNN
+F 3 "" H 3200 7300 50  0000 C CNN
+	1    3200 7300
+	-1   0    0    1   
+$EndComp
+$Comp
+L C C13
+U 1 1 57C0E5E3
+P 3450 7300
+F 0 "C13" H 3335 7254 50  0000 R CNN
+F 1 "100n" H 3335 7345 50  0000 R CNN
+F 2 "Capacitors_SMD:C_0603" H 3488 7150 50  0001 C CNN
+F 3 "" H 3450 7300 50  0000 C CNN
+	1    3450 7300
+	-1   0    0    1   
+$EndComp
+$Comp
+L C C14
+U 1 1 57C0E61A
+P 3700 7300
+F 0 "C14" H 3585 7254 50  0000 R CNN
+F 1 "100n" H 3585 7345 50  0000 R CNN
+F 2 "Capacitors_SMD:C_0603" H 3738 7150 50  0001 C CNN
+F 3 "" H 3700 7300 50  0000 C CNN
+	1    3700 7300
+	-1   0    0    1   
+$EndComp
+$Comp
+L C C15
+U 1 1 57C0E65C
+P 3950 7300
+F 0 "C15" H 3835 7254 50  0000 R CNN
+F 1 "100n" H 3835 7345 50  0000 R CNN
+F 2 "Capacitors_SMD:C_0603" H 3988 7150 50  0001 C CNN
+F 3 "" H 3950 7300 50  0000 C CNN
+	1    3950 7300
+	-1   0    0    1   
+$EndComp
+$Comp
+L C C16
+U 1 1 57C0E699
+P 4200 7300
+F 0 "C16" H 4085 7254 50  0000 R CNN
+F 1 "100n" H 4085 7345 50  0000 R CNN
+F 2 "Capacitors_SMD:C_0603" H 4238 7150 50  0001 C CNN
+F 3 "" H 4200 7300 50  0000 C CNN
+	1    4200 7300
+	-1   0    0    1   
+$EndComp
+$Comp
+L GND #PWR19
+U 1 1 57C0E6F5
+P 3600 7450
+F 0 "#PWR19" H 3600 7200 50  0001 C CNN
+F 1 "GND" H 3605 7277 50  0000 C CNN
+F 2 "" H 3600 7450 50  0000 C CNN
+F 3 "" H 3600 7450 50  0000 C CNN
+	1    3600 7450
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3.3V #PWR18
+U 1 1 57C0E7E0
+P 3600 7150
+F 0 "#PWR18" H 3600 7000 50  0001 C CNN
+F 1 "+3.3V" H 3615 7323 50  0000 C CNN
+F 2 "" H 3600 7150 50  0000 C CNN
+F 3 "" H 3600 7150 50  0000 C CNN
+	1    3600 7150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2950 7150 4200 7150
+Wire Wire Line
+	2950 7450 4200 7450
+Connection ~ 3200 7150
+Connection ~ 3450 7150
+Connection ~ 3600 7150
+Connection ~ 3700 7150
+Connection ~ 3950 7150
+Connection ~ 3200 7450
+Connection ~ 3450 7450
+Connection ~ 3600 7450
+Connection ~ 3700 7450
+Connection ~ 3950 7450
+Text HLabel 10400 3900 2    60   Input ~ 0
+STM_RXER
 $EndSCHEMATC

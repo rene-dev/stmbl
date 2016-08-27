@@ -1,4 +1,4 @@
-update=Mo 08 Aug 2016 16:09:21 CEST
+update=Fr 26 Aug 2016 20:53:04 CEST
 version=1
 last_client=kicad
 [pcbnew]
@@ -58,7 +58,7 @@ LibName26=opto
 LibName27=atmel
 LibName28=contrib
 LibName29=valves
-LibName30=stm32
-LibName31=ksz8081_lib/ksz8081
-LibName32=ESD_Protection
-LibName33=hr911104/hr911105_rj45
+LibName30=ksz8081_lib/ksz8081
+LibName31=ESD_Protection
+LibName32=hr911104/hr911105_rj45
+LibName33=stm32
