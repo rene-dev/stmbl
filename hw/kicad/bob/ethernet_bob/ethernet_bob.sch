@@ -32,11 +32,12 @@ LIBS:ksz8081
 LIBS:ESD_Protection
 LIBS:hr911105_rj45
 LIBS:stm32
+LIBS:ethernet_bob-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 3
+Sheet 1 4
 Title ""
 Date ""
 Rev ""
@@ -109,4 +110,10 @@ Wire Wire Line
 	7700 4300 8150 4300
 Wire Wire Line
 	7700 4400 8150 4400
+$Sheet
+S 3500 3650 1400 750 
+U 57C1B095
+F0 "psu" 60
+F1 "psu.sch" 60
+$EndSheet
 $EndSCHEMATC
