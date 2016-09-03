@@ -11,12 +11,10 @@
 
 #define DATABAUD 2000000 //baudrate used for communication
 
-//fixed point calculations
+//fixed point calculations signed bit, 9 bit predecimal, 6 bit decimal
 #define TOFIXED(a) ((int16_t)((a) * 64))
 #define TOFLOAT(a) ((float)((a) / 64.0))
 
-#define TOSFLOAT(a) (ABS(a) >= 4.0) ? (((int16_t)((a) * 64)) | 0x4000) : (((int16_t)((a) * 4096.0)) & 0xBFFFF)
-#define TOFLOATS(a) ((a) & 0x4000) ? ((float)(((a) & 0xBFFFF) / 64.0)) : ((float)(((a) & 0xBFFFF) / 4096.0))
 
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 
