@@ -163,8 +163,8 @@ RT(
   
   packet_to_hv.data.mode = CLAMP(PIN(mode),0,16);
   if(e > 0.0){
-    packet_to_hv.data.a = TOFIXED(a);
-    packet_to_hv.data.b = TOFIXED(b);
+    packet_to_hv.data.a = a;
+    packet_to_hv.data.b = b;
     packet_to_hv.data.enable = 1;
   }
   else{

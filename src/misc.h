@@ -32,8 +32,6 @@ extern "C" {
 #define SAT(x, lowhigh)  (((x) > (lowhigh)) ? (1.0) : (((x) < (-lowhigh)) ? (-1.0) : (0.0)))
 #define SAT2(x, low, high)  (((x) > (high)) ? (1.0) : (((x) < (low)) ? (-1.0) : (0.0)))
 #define STEP(from, to, step)  (((from) < (to)) ? (MIN((from) + (step), (to))) : (MAX((from) - (step), (to))))
-#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
-#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 #define DEG(a) ((a) * M_PI / 180.0)
 #define RAD(a) ((a) * 180.0 / M_PI)
 #define SIGN(a) (((a) < 0.0) ? (-1.0) : (((a) > 0.0) ? (1.0) : (0.0)))
