@@ -65,13 +65,13 @@ RT(
       s = 0.5 * si[3] + 0.5 * si[2];// + 0.125 * si[1] - 0.125 * si[0];
       c = 0.5 * co[3] + 0.5 * co[2];
    }
-   if(s>=0){
-      if(c>0)
+   if(si[3]>=0){
+      if(co[3]>0)
         PIN(quad) = 1;
       else
         PIN(quad) = 2;
    }else{
-      if(c>0)
+      if(co[3]>0)
         PIN(quad) = 4;
       else
         PIN(quad) = 3;
