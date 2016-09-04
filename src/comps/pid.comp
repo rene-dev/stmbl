@@ -114,6 +114,7 @@ RT(
    float velmin = MAX(-PIN(max_vel) * p, -PIN(max_usr_vel));//MAX(MAX(velfb + accmin * period, -PIN(max_vel) * p) , -PIN(max_usr_vel));
    float velmax = MIN(PIN(max_vel) * p, PIN(max_usr_vel));//MIN(MIN(velfb + accmax * period, PIN(max_vel) * p), PIN(max_usr_vel));
    float velerr;
+   float velerr_p;
    float velsat;
 
    float posextcmd = PIN(pos_ext_cmd);
@@ -157,10 +158,11 @@ RT(
 
       // vel -> acc
       velerr = velcmd - velfb;
+      velerr_p = velerr;
       if(ABS(velerr) < PIN(vel_min)){
-         velerr = 0;
+         velerr_p = 0;
       }
-      acccmd = velerr / period * velp + PIN(acc_ff) * accextcmd; // acc = p * vel_error / period + ff2
+      acccmd = velerr_p / period * velp + PIN(acc_ff) * accextcmd; // acc = p * vel_error / period + ff2
       acccmd = acccmd * vellp + (1.0 - vellp) * old_acccmd; // lowpass
       accsat = SAT2(acccmd, accmin * accp, accmax * accp);
       acccmd = CLAMP(acccmd, accmin * accp, accmax * accp); // min/max clamping
