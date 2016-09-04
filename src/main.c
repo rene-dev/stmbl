@@ -195,7 +195,7 @@ int main(void)
    #include "comps/encm.comp"
    #include "comps/encs.comp"
    #include "comps/yaskawa.comp"
-   //TODO: hyperface
+   #include "comps/hyper.comp"
 
    //command comps
    #include "comps/sserial.comp"
