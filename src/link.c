@@ -291,6 +291,7 @@ int update_fb(){
          hal_set_pin("adc0.res_en", 1.0);
          hal_set_pin("adc0.rt_prio", 1.0);
          hal_set_pin("res0.rt_prio", 2.0);
+         hal_set_pin("pid0.vel_min", 0.3);//ignore small vel errors for noisy feedback
          break;
       case SINCOS:
          hal_link_pins("adc0.sin3", "enc_fb0.sin");

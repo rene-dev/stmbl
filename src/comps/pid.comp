@@ -28,7 +28,7 @@ HAL_PIN(vel_ext_cmd) = 0.0; // cmd in (rad/s)
 HAL_PIN(vel_fb) = 0.0; // feedback in (rad/s)
 HAL_PIN(vel_cmd) = 0.0; // cmd out (rad/s)
 HAL_PIN(vel_error) = 0.0; // error out (rad/s)
-HAL_PIN(vel_min) = 0.3;// minimum velocity error
+HAL_PIN(vel_min) = 0.0;// minimum velocity error
 
 HAL_PIN(acc_ext_cmd) = 0.0; // cmd in (rad/s^2)
 HAL_PIN(acc_cmd) = 0.0; // cmd out (rad/s^2)
