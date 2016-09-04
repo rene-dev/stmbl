@@ -229,6 +229,7 @@ int main(void)
    #include "comps/io.comp"
    #include "comps/uf.comp"
    #include "comps/freq_fb.comp"
+   #include "comps/psi.comp"
 
 
    hal_set_comp_type("net");
