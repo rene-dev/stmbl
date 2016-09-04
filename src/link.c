@@ -305,6 +305,19 @@ int update_fb(){
          hal_set_pin("enc_fb0.rt_prio", 2.0);
          hal_set_pin("enc_fb0.frt_prio", 1.0);
          break;
+      case HYPER:
+         hal_link_pins("adc0.sin3", "enc_fb0.sin");
+         hal_link_pins("adc0.cos3", "enc_fb0.cos");
+         hal_link_pins("adc0.quad", "enc_fb0.quad");
+         hal_link_pins("enc_fb0.ipos", "rev1.in");
+         hal_link_pins("conf0.fb_res", "enc_fb0.res");
+         hal_link_pins("enc_fb0.error", "net0.fb_error");
+         hal_set_pin("enc_fb0.ires", 1024.0);
+         hal_set_pin("adc0.rt_prio", 1.0);
+         hal_set_pin("enc_fb0.rt_prio", 2.0);
+         hal_set_pin("enc_fb0.frt_prio", 1.0);
+         hal_set_pin("hyper0.rt_prio", 1.0); // TODO: link hyper
+         break;
       case MITSU:
          hal_link_pins("encm0.pos", "rev1.in");
          hal_link_pins("encm0.error", "net0.fb_error");

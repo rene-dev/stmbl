@@ -43,6 +43,17 @@ volatile uint16_t ADCConvertedValue[100];//DMA buffer for ADC
 volatile uint8_t rxbuf[50];//DMA buffer for UART RX
 uint32_t rxpos = 0;//UART rx buffer position
 
+volatile uint32_t u_cmd = 0;
+volatile uint32_t v_cmd = 0;
+volatile uint32_t w_cmd = 0;
+
+uint32_t u_error = 0;
+uint32_t v_error = 0;
+uint32_t w_error = 0;
+
+#define TOFIXEDU32(a) ((uint32_t)((a) * 65536))
+#define TOFLOAT32(a) ((uint32_t)((a) / 65536))
+
 #define SQRT3 1.732050808
 
 #ifndef M_PI
@@ -416,10 +427,36 @@ void TIM1_UP_IRQHandler(){
       hv_disable();
 		GPIO_SetBits(GPIOC,GPIO_Pin_1);//yellow led on
 		GPIO_ResetBits(GPIOC,GPIO_Pin_2);//green led off
+		
+		PWM_U = 0;
+		PWM_V = 0;
+		PWM_W = 0;
+		
+		u_cmd = TOFIXEDU32(0.0);
+		u_error = TOFIXEDU32(0.0);
+		v_cmd = TOFIXEDU32(0.0);
+		v_error = TOFIXEDU32(0.0);
+		w_cmd = TOFIXEDU32(0.0);
+		w_error = TOFIXEDU32(0.0);
 	}else{
 		GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
 		GPIO_ResetBits(GPIOC,GPIO_Pin_1);//yellow led off
 		timeout ++;
+		
+		u_error += u_cmd;
+		uint32_t u = TOFLOAT32(u_error);
+		u_error = MAX(0, u_error - TOFIXEDU32(u));
+		PWM_U = u;
+		
+		v_error += v_cmd;
+		uint32_t v = TOFLOAT32(v_error);
+		v_error = MAX(0, v_error - TOFIXEDU32(v));
+		PWM_V = v;
+		
+		w_error += w_cmd;
+		uint32_t w = TOFLOAT32(w_error);
+		w_error = MAX(0, w_error - TOFIXEDU32(w));
+		PWM_W = w;
 	}
 }
 
@@ -468,8 +505,8 @@ int main(void)
             }else{
                hv_disable();
             }
-      		float ua = TOFLOAT(packet_to_hv.data.a);
-      		float ub = TOFLOAT(packet_to_hv.data.b);
+      		float ua = packet_to_hv.data.a;
+      		float ub = packet_to_hv.data.b;
 
             float u = 0.0;
             float v = 0.0;
@@ -518,10 +555,10 @@ int main(void)
                }
             }
 
-            PWM_U = CLAMP(u / volt * PWM_RES, 0, PWM_RES * 0.95);
-            PWM_V = CLAMP(v / volt * PWM_RES, 0, PWM_RES * 0.95);
-            PWM_W = CLAMP(w / volt * PWM_RES, 0, PWM_RES * 0.95);
-      
+            u_cmd = TOFIXEDU32(CLAMP(u / volt * PWM_RES, 0, PWM_RES * 0.95));
+            v_cmd = TOFIXEDU32(CLAMP(v / volt * PWM_RES, 0, PWM_RES * 0.95));
+            w_cmd = TOFIXEDU32(CLAMP(w / volt * PWM_RES, 0, PWM_RES * 0.95));
+
       		timeout = 0; //reset timeout
       	}
          

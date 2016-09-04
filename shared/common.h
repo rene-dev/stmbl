@@ -9,7 +9,7 @@
 
 #define STATIC_ASSERT(COND, MSG) extern char MSG[(COND)?1:-1]
 
-#define DATABAUD 2000000 //baudrate used for communication
+#define DATABAUD 2250000 //baudrate used for communication
 
 //fixed point calculations signed bit, 9 bit predecimal, 6 bit decimal
 #define TOFIXED(a) ((int16_t)((a) * 64))
@@ -17,6 +17,8 @@
 
 
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
 #define PWM_RES 2400
 
@@ -48,8 +50,8 @@ typedef struct{
 //data from f4 to f1
 #pragma pack(1)
 typedef struct{
-   int16_t a;
-   int16_t b;
+   float a;
+   float b;
    uint8_t mode : 4;
    uint8_t enable : 1;
    uint8_t padding : 3;

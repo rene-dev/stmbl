@@ -74,8 +74,8 @@ RT(
    float ud = CLAMP(ff * rd * idc + kpd * id_error + kpd * kid * id_error_sum + kind * indd, -volt, volt);
    float uq = CLAMP(ff * rq * iqc + kpq * iq_error + kpq * kiq * iq_error_sum + kind * indq, -volt, volt);
 
-   ud = ((int)(ud / volt_res)) * volt_res;
-   uq = ((int)(uq / volt_res)) * volt_res;
+   // ud = ((int)(ud / volt_res)) * volt_res;
+   // uq = ((int)(uq / volt_res)) * volt_res;
 
    PIN(ud) = ud;
    PIN(uq) = uq;
