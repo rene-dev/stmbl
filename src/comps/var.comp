@@ -1,4 +1,4 @@
-COMP(var);
+HAL_COMP(var);
 
 //in
 HAL_PIN(x) = 0.0;
@@ -31,7 +31,7 @@ RT(
    
    mu = x * lp + (1.0 - lp) * mu;
    
-   fload d = mu - x;
+   float d = x - mu;
 
    float v = d * d;
    
@@ -45,10 +45,10 @@ RT(
    var = v * lp + (1.0 - lp) * var;
    
    PIN(var) = var;
-   PIN(sigma) = squrtf(var);
+   PIN(sigma) = sqrtf(var);
    PIN(min) = min;
    PIN(max) = max;
-   PIN(mu) = u;
+   PIN(mu) = mu;
    
    min = (1.0 - lp) * min;
    max = (1.0 - lp) * max;
