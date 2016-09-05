@@ -159,7 +159,7 @@ RT(
       // vel -> acc
       velerr = velcmd - velfb;
       velerr_p = velerr;
-      if(ABS(velerr) < PIN(vel_min)){
+      if(ABS(velerr) < PIN(vel_min)){ // reduce noise
          velerr_p = 0;
       }
       acccmd = velerr_p / period * velp + PIN(acc_ff) * accextcmd; // acc = p * vel_error / period + ff2
