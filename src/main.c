@@ -42,13 +42,13 @@ void Wait(uint32_t ms);
 
 //hal interface
 void hal_enable_rt(){
-   TIM_Cmd(TIM2, ENABLE);
+   TIM_Cmd(TIM8, ENABLE);
 }
 void hal_enable_frt(){
    TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 }
 void hal_disable_rt(){
-   TIM_Cmd(TIM2, DISABLE);
+   TIM_Cmd(TIM8, DISABLE);
 }
 void hal_disable_frt(){
    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
@@ -193,8 +193,8 @@ int main(void)
    #include "comps/res.comp"
    #include "comps/enc_fb.comp"
    #include "comps/encm.comp"
-   #include "comps/encs.comp"
-   #include "comps/yaskawa.comp"
+   //#include "comps/encs.comp"
+   //#include "comps/yaskawa.comp"
    #include "comps/hyper.comp"
 
    //command comps
@@ -230,6 +230,7 @@ int main(void)
    #include "comps/uf.comp"
    #include "comps/freq_fb.comp"
    #include "comps/psi.comp"
+   #include "comps/var.comp"
 
 
    hal_set_comp_type("net");

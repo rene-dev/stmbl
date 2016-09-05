@@ -20,15 +20,16 @@
 #define mag_res 8400
 
 //sample times for F4: 3,15,28,56,84,112,144,480
-#define RES_SampleTime ADC_SampleTime_28Cycles
+#define RES_SampleTime ADC_SampleTime_3Cycles //ADC_SampleTime_28Cycles
 
-#define  ADC_ANZ 16
+#define  ADC_ANZ 60
 #define  PID_WAVES 4
 
 void setup(void);
 void setup_res(void);
 
-volatile uint32_t ADC_DMA_Buffer[ADC_ANZ * PID_WAVES];
+volatile uint32_t ADC_DMA_Buffer0[ADC_ANZ * PID_WAVES];
+volatile uint32_t ADC_DMA_Buffer1[ADC_ANZ * PID_WAVES];
 
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 TIM_OCInitTypeDef TIM_OCInitStructure;

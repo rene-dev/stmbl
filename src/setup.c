@@ -39,19 +39,82 @@ void setup(){
 // TIM2 OC1 generates resolver reference signal at 10kHz
 // DMA2 moves 4 samples to memory, generates transfer complete interrupt at 5kHz
 void setup_res(){
-    //resolver timer
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-
-    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStructure.TIM_Period = 420;//20kHz
-    TIM_TimeBaseStructure.TIM_Prescaler = 9;
-    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-    TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-    TIM_ARRPreloadConfig(TIM2,ENABLE);
-
-    TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);//trigger ADC
-
+   /*
+   tim8 
+      trgo -> adc
+      trgo -> tim2
+      
+   tim2 
+      oc -> res
+      up -> frt
+      
+   adc -> dma
+   
+   dma 
+      tc -> rt
+   
+   */
+   
+   // adc timer (tim8)
+   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
+   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+   TIM_TimeBaseStructure.TIM_Period = 140 - 1;// 700k 168e6/1/140 = 1.2MHz
+   TIM_TimeBaseStructure.TIM_Prescaler = 0;
+   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+   TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
+   TIM_ARRPreloadConfig(TIM8,ENABLE);
+   TIM_SelectOutputTrigger(TIM8, TIM_TRGOSource_Update);// trigger ADC
+   
+   
+   // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+   // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+   // GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+   // GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   // GPIO_Init(GPIOC, &GPIO_InitStructure);
+   // GPIO_PinAFConfig(GPIOC, GPIO_PinSource8, GPIO_AF_TIM8);
+   // 
+   // TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+   // TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+   // TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+   // TIM_OCInitStructure.TIM_Pulse = 10;
+   // TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+   // TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+   // TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
+   // TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
+   // 
+   // TIM_OC3Init(TIM8, &TIM_OCInitStructure);
+   // TIM_OC3PreloadConfig(TIM8, TIM_OCPreload_Enable);
+   // TIM_CtrlPWMOutputs(TIM8, ENABLE);
+      
+   //resolver timer
+   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+   TIM_TimeBaseStructure.TIM_Period = 60 - 1;// 1.2MHz / 60 = 20kHz
+   TIM_TimeBaseStructure.TIM_Prescaler = 0;
+   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+   TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+   TIM_SelectSlaveMode(TIM2, TIM_SlaveMode_External1);
+   TIM_ITRxExternalClockConfig(TIM2, TIM_TS_ITR1);// clk = tim8->trgo
+   TIM_ARRPreloadConfig(TIM2,ENABLE);
+   
+   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
+   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+   TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+   TIM_OCInitStructure.TIM_Pulse = 5;
+   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+   TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+   TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
+   TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
+   
+   TIM_OC3Init(TIM2, &TIM_OCInitStructure);
+   TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);
+   TIM_CtrlPWMOutputs(TIM2, ENABLE);
+   
+   TIM_Cmd(TIM2, ENABLE);
+   
     /* ADC clock enable */
     RCC_APB2PeriphClockCmd(SIN_ADC_RCC | COS_ADC_RCC, ENABLE);
 
@@ -70,9 +133,9 @@ void setup_res(){
     ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;//data converted will be shifted to right
     ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;//Input voltage is converted into a 12bit number giving a maximum value of 4096
     ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; //the conversion is continuous, the input data is converted more than once
-    ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T2_TRGO;//trigger on rising edge of TIM8
+    ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T8_TRGO;//trigger on rising edge of TIM8
     ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
-    ADC_InitStructure.ADC_NbrOfConversion = ADC_ANZ;//I think this one is clear :p
+    ADC_InitStructure.ADC_NbrOfConversion = 1;//ADC_ANZ;//I think this one is clear :p
     ADC_InitStructure.ADC_ScanConvMode = ENABLE;//The scan is configured in one channel
     ADC_Init(SIN_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
     ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
@@ -85,7 +148,7 @@ void setup_res(){
     ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
     ADC_CommonInit(&ADC_CommonInitStructure);
 
-    for(int i = 1;i<=ADC_ANZ;i++){
+    for(int i = 1;i<=1;i++){
         ADC_RegularChannelConfig(SIN_ADC, SIN_ADC_CHAN, i, RES_SampleTime);
         ADC_RegularChannelConfig(COS_ADC, COS_ADC_CHAN, i, RES_SampleTime);
     }
@@ -103,7 +166,7 @@ void setup_res(){
     // DMA2-Config
     DMA_InitStructure.DMA_Channel = DMA_Channel_0;
     DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC->CDR;
-    DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ADC_DMA_Buffer;
+    DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ADC_DMA_Buffer0;
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
     DMA_InitStructure.DMA_BufferSize = ADC_ANZ * PID_WAVES;
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -116,6 +179,8 @@ void setup_res(){
     DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
     DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
     DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+    //DMA_DoubleBufferModeConfig(DMA2_Stream0, (uint32_t)ADC_DMA_Buffer1, DMA_Memory_0);
+    //DMA_DoubleBufferModeCmd(DMA2_Stream0, ENABLE);
     DMA_Init(DMA2_Stream0, &DMA_InitStructure);
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;

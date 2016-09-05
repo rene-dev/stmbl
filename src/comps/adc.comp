@@ -10,7 +10,7 @@ HAL_COMP(adc);
 #define V_REF 5.0
 #define INPUT_REF (V_REF * R21 / (R19 + R21))
 #define INPUT_GAIN (R22 / R15 * R21 / (R19 + R21))
-#define V_DIFF(ADC) ((ADC/ADC_ANZ/ARES*AREF-INPUT_REF)/INPUT_GAIN)
+#define V_DIFF(ADC) (((ADC)/ADC_ANZ/ARES*AREF-INPUT_REF)/INPUT_GAIN)
 
 HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
@@ -27,44 +27,54 @@ HAL_PIN(sin_offset) = 0.0;
 HAL_PIN(cos_offset) = 0.0;
 
 RT(
+   
    float si[PID_WAVES];
    float co[PID_WAVES];
-   uint32_t sc[PID_WAVES];
-
+   uint32_t sii;
+   uint32_t coi;
+   
    float s_o = PIN(sin_offset);
    float c_o = PIN(cos_offset);
    float s_g = PIN(sin_gain);
    float c_g = PIN(cos_gain);
    float s;
    float c;
+   
+   uint32_t *ADC_DMA_Buffer;
 
-   for(int i = 2; i < PID_WAVES; i++){
-      sc[i] = 0.0;
+   // if(DMA_GetCurrentMemoryTarget(DMA2_Stream0) == 0){
+   //    ADC_DMA_Buffer = ADC_DMA_Buffer1;
+   // }
+   // else{
+      ADC_DMA_Buffer = ADC_DMA_Buffer0;
+   // }
+   GPIOB->BSRRH = GPIO_Pin_3;//messpin
+   for(int i = 0; i < PID_WAVES; i++){
+      sii = 0;
+      coi = 0;
       for(int j = 0; j < ADC_ANZ; j++){
          //ADC dual mode puts both channels in one word, right aligned.
-         //ugly hack. this works as long as the maximum sum of each channel fits in 16 bits. (up to 16 samples)
-         sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
+         sii += ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff;
+         coi += ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16;
       }
+      si[i] = s_g * V_DIFF(sii) + s_o;
+      co[i] = c_g * V_DIFF(coi) + c_o;
    }
-   //seperate channels
-   for(int i = 2; i < PID_WAVES; i++){
-      si[i] = 0.0;
-      co[i] = 0.0;
-      si[i] += s_g * V_DIFF((sc[i] & 0x0000ffff)) + s_o;
-      co[i] += c_g * V_DIFF((sc[i] >> 16)) + c_o;
-   }
+   GPIOB->BSRRL = GPIO_Pin_3;//messpin
+   
 
    PIN(sin3) = si[3];
    PIN(cos3) = co[3];
 
    if(PIN(res_en) > 0.0){
-      s = 0.5 * si[3] - 0.5 * si[2];// + 0.125 * si[1] - 0.125 * si[0];
-      c = 0.5 * co[3] - 0.5 * co[2];// + 0.125 * co[1] - 0.125 * co[0];
+      s = (si[3] - si[2] + si[1] - si[0]) / 4.0;
+      c = (co[3] - co[2] + co[1] - co[0]) / 4.0;
    }
    else{
-      s = 0.5 * si[3] + 0.5 * si[2];// + 0.125 * si[1] - 0.125 * si[0];
-      c = 0.5 * co[3] + 0.5 * co[2];
+      s = (si[3] + si[2] + si[1] + si[0]) / 4.0;
+      c = (co[3] + co[2] + co[1] + co[0]) / 4.0;
    }
+   
    if(si[3]>=0){
       if(co[3]>0)
         PIN(quad) = 1;

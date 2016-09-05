@@ -77,7 +77,7 @@ RT(
    }else{
       PIN(jogging) = 0.0;
    }
-   TIM2->ARR = (int)CLAMP(PIN(tim2_rv), 1, 1500);
+   //TIM2->ARR = (int)CLAMP(PIN(tim2_rv), 1, 1500);
    if(send_counter++ >= PIN(send_step) - 1){
       w0[write_pos] = PIN(wave0);
       w1[write_pos] = PIN(wave1);
