@@ -52,11 +52,13 @@ typedef struct{
    uint8_t padding : 3;
 } to_hv_t;
 
+#pragma pack(1)
 typedef struct{
    packet_header_t head;
    to_hv_t data;
 } packet_to_hv_t;
 
+#pragma pack(1)
 typedef struct{
    packet_header_t head;
    from_hv_t data;
