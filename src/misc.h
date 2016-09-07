@@ -42,6 +42,7 @@ extern "C" {
 //#define VKRPM(a, b) ((a)) * 60.0 / (sqrtf(3.0) * 1000.0 * M_PI * 2.0 * (b)))) // Volt/krpm, polecount
 #define LP_HZ(a) (((a) <= 0.0) ? (1.0) : (1.0 / (5000.0 / ((a) * M_PI * 2.0) + 1.0)))
 
+//TODO: raus hier
 float minus(float a, float b);
 float mod(float a);
 

@@ -40,7 +40,7 @@ GLOBAL_HAL_PIN(frt_period_time);
 
 void Wait(uint32_t ms);
 
-//hal interface
+//hal interface TODO: move hal interface to file
 void hal_enable_rt(){
    TIM_Cmd(TIM8, ENABLE);
 }
