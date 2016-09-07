@@ -221,12 +221,12 @@ showsize: build
 
 # Flash the device
 #
-btburn: build showsize $(TARGET).dfu
+btburn: hv build showsize $(TARGET).dfu
 	@tools/bootloader.py
 	@sleep 1
 	@dfu-util -a 0 -s 0x08010000:leave -D $(TARGET).dfu
 
-flash: $(TARGET).bin
+flash: hv $(TARGET).bin
 	st-flash --reset write $(TARGET).bin 0x08010000
 		
 # Create a DFU file from bin file
