@@ -1,5 +1,8 @@
 #pragma once
 
+#define RPM(a) ((a) / 60.0 * M_PI * 2.0)
+#define KGCM2(a) ((a) / 10000.0)
+
 //Do not change order, append new types at the end
 typedef enum{
   ENC = 1,

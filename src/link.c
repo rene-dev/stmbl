@@ -1,6 +1,5 @@
 #include "link.h"
 #include "hal.h"
-#include "misc.h"
 
 void link_ac(){
    hal_set_pin("t2c0.rt_prio", 9.0);

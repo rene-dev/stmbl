@@ -27,7 +27,7 @@ extern "C" {
 
 #define NO 0
 #define YES 1
-#define ABS(a)	   (((a) < 0.0) ? -(a) : (a))
+#define ABS(a)  (((a) < 0.0) ? -(a) : (a))
 #define LIMIT(x, lowhigh)  (((x) > (lowhigh)) ? (lowhigh) : (((x) < (-lowhigh)) ? (-lowhigh) : (x)))
 #define SAT(x, lowhigh)  (((x) > (lowhigh)) ? (1.0) : (((x) < (-lowhigh)) ? (-1.0) : (0.0)))
 #define SAT2(x, low, high)  (((x) > (high)) ? (1.0) : (((x) < (low)) ? (-1.0) : (0.0)))
@@ -35,16 +35,22 @@ extern "C" {
 #define DEG(a) ((a) * M_PI / 180.0)
 #define RAD(a) ((a) * 180.0 / M_PI)
 #define SIGN(a) (((a) < 0.0) ? (-1.0) : (((a) > 0.0) ? (1.0) : (0.0)))
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
-//pid krams
-#define RPM(a) ((a) / 60.0 * M_PI * 2.0)
-#define KGCM2(a) ((a) / 10000.0)
-//#define VKRPM(a, b) ((a)) * 60.0 / (sqrtf(3.0) * 1000.0 * M_PI * 2.0 * (b)))) // Volt/krpm, polecount
+//TODO: change type to typeof()
+#define RISING_EDGE(sig)\
+({static float __old_val__ = 0.0; uint8_t ret = (sig) > __old_val__; __old_val__ = (sig); ret;})
+
+#define FALLING_EDGE(sig)\
+({static float __old_val__ = 0.0; uint8_t ret = (sig) < __old_val__; __old_val__ = (sig); ret;})
+
+#define EDGE(sig)\
+({static float __old_val__ = 0.0; uint8_t ret = (sig) != __old_val__; __old_val__ = (sig); ret;})
+
+//TODO: 5000 are fixed!
 #define LP_HZ(a) (((a) <= 0.0) ? (1.0) : (1.0 / (5000.0 / ((a) * M_PI * 2.0) + 1.0)))
-
-//TODO: raus hier
-float minus(float a, float b);
-float mod(float a);
 
 #ifdef __cplusplus
 }

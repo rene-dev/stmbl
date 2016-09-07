@@ -1,5 +1,6 @@
 #include "stm32f10x_conf.h"
 #include "common.h"
+#include "defines.h"
 #include <math.h>
 
 #define ARES 4096.0// analog resolution, 12 bit
@@ -54,13 +55,6 @@ uint32_t w_error = 0;
 #define TOFIXEDU32(a) ((uint32_t)((a) * 65536))
 #define TOFLOAT32(a) ((uint32_t)((a) / 65536))
 
-#define SQRT3 1.732050808
-
-#ifndef M_PI
-#define M_PI		3.14159265358979323846
-#define M_TWOPI         (M_PI * 2.0)
-#endif
-
 #define TEMP_RES 32
 #define SCALE (TEMP_RES / ARES)
 int16_t temp_buf[TEMP_RES];
@@ -99,7 +93,7 @@ ADC_InitTypeDef ADC_InitStructure;
 DMA_InitTypeDef DMA_InitStructure;
 DMA_InitTypeDef DMA_InitStructuretx;
 
-void Wait(unsigned int ms){
+void Wait(unsigned int ms){//TODO: systick is not used
 	volatile unsigned int t = systime + ms;
 	while(t >= systime){
 	}
@@ -514,8 +508,8 @@ int main(void)
 
             if(packet_to_hv.data.mode == 0){//a,b voltages
                u = ua; // inverse clarke
-               v = - ua / 2.0 + ub / 2.0 * SQRT3;
-               w = - ua / 2.0 - ub / 2.0 * SQRT3;
+               v = - ua / 2.0 + ub / 2.0 * M_SQRT3;
+               w = - ua / 2.0 - ub / 2.0 * M_SQRT3;
             }else if(packet_to_hv.data.mode == 1){//DC, a: -dclink ... +dclink
                u = ua / 2.0;
                v = -ua / 2.0;

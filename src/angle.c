@@ -18,7 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "misc.h"
+#include <math.h>
+#include "angle.h"
+#include "defines.h"
 
 inline float minus(float a, float b){
 	if(ABS(a - b) < M_PI){

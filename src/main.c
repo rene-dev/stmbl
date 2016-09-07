@@ -25,6 +25,8 @@
 #include "hal_conf.h"
 #include "setup.h"
 #include "link.h"
+#include "defines.h"
+#include "angle.h"
 #include "crc8.h"
 #include <math.h>
 #include <string.h>

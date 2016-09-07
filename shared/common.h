@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include "misc.h"
 
 #if __GNUC__ < 5
    #error gcc to old (< 5.0)
@@ -7,18 +8,11 @@
 
 //#define TROLLER
 
-#define STATIC_ASSERT(COND, MSG) extern char MSG[(COND)?1:-1]
-
 #define DATABAUD 2250000 //baudrate used for communication
 
 //fixed point calculations signed bit, 9 bit predecimal, 6 bit decimal
 #define TOFIXED(a) ((int16_t)((a) * 64))
 #define TOFLOAT(a) ((float)((a) / 64.0))
-
-
-#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
-#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
-#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
 #define PWM_RES 2400
 
@@ -35,12 +29,12 @@ typedef struct{
    int16_t dc_volt;
    int16_t hv_temp;
    uint8_t high_volt : 1;//hardware hi limit
-   uint8_t low_volt : 1;//hardware low limit
-   uint8_t over_cur : 1;//hardware cur limit
+   uint8_t low_volt  : 1;//hardware low limit
+   uint8_t over_cur  : 1;//hardware cur limit
    uint8_t over_temp : 1;//hardware temp limit
-   uint8_t hv_fault : 1;//iramx fault
+   uint8_t hv_fault  : 1;//iramx fault
    uint8_t sys_fault : 1;//sys fault, crc error, clock error, watchdog bit, startup failure...
-   uint8_t padding : 2;
+   uint8_t padding   : 2;
 #ifdef TROLLER
    int16_t a;
    int16_t b;
@@ -53,8 +47,8 @@ typedef struct{
 typedef struct{
    float a;
    float b;
-   uint8_t mode : 4;
-   uint8_t enable : 1;
+   uint8_t mode    : 4;//TODO: change to enum
+   uint8_t enable  : 1;
    uint8_t padding : 3;
 } to_hv_t;
 
@@ -72,8 +66,8 @@ void buff_packet(packet_header_t* p, uint8_t size);
 void unbuff_packet(packet_header_t* p, uint8_t size);
 
 //check if structs can be send at 5kHz using DATABAUD
-STATIC_ASSERT(sizeof(to_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, to_hv_struct_to_large);
-STATIC_ASSERT(sizeof(from_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, from_hv_struct_to_large);
+_Static_assert(sizeof(packet_to_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "to_hv struct to large");
+_Static_assert(sizeof(packet_from_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "from_hv struct to large");
 
 
 // struct f1tof4{

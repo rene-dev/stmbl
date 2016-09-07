@@ -290,12 +290,3 @@ jump_label_pointer = jump_label_pointer_old;
   } \
   t;\
 })
-
-#define RISING_EDGE(sig)\
-({static float __old_val__ = 0.0; uint8_t ret = (sig) > __old_val__; __old_val__ = (sig); ret;})
-
-#define FALLING_EDGE(sig)\
-({static float __old_val__ = 0.0; uint8_t ret = (sig) < __old_val__; __old_val__ = (sig); ret;})
-
-#define EDGE(sig)\
-({static float __old_val__ = 0.0; uint8_t ret = (sig) != __old_val__; __old_val__ = (sig); ret;})
