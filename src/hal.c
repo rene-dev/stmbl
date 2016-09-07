@@ -22,6 +22,9 @@
 #include <math.h>
 #include "hal.h"
 
+//global hal struct
+hal_struct_t hal;
+
 char* itoa(int i){
   hal.tmp[0] = (i % 10) + '0';
   hal.tmp[1] = '\0';

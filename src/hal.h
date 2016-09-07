@@ -17,10 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#pragma once
 
 #include <stdint.h>
-
-#pragma once
 
 #define MAX_HAL_PINS 800
 #define HAL_NAME_LENGTH 32
@@ -113,7 +112,7 @@ typedef struct{
   char error_name[HAL_NAME_LENGTH];
 } hal_struct_t;
 
-hal_struct_t hal;
+extern hal_struct_t hal;
 
 void hal_init();
 
