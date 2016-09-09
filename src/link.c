@@ -51,8 +51,8 @@ void link_ac(){
    hal_link_pins("hv0.pwm_volt", "pmsm_limits0.ac_volt");
    hal_link_pins("pmsm0.indq", "pmsm_limits0.indq");
    hal_link_pins("pmsm0.iq", "pmsm_limits0.iq");
-   hal_link_pins("pmsm_limits0.next_max_torque", "pid0.max_torque");
-   hal_link_pins("pmsm_limits0.next_min_torque", "pid0.min_torque");
+   hal_link_pins("pmsm_limits0.max_torque", "pid0.max_torque");
+   hal_link_pins("pmsm_limits0.min_torque", "pid0.min_torque");
    hal_link_pins("pmsm_limits0.abs_max_vel", "pid0.max_vel");
 
    //troller only
