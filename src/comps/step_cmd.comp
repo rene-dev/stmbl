@@ -1,0 +1,110 @@
+HAL_COMP(step_cmd);
+
+HAL_PIN(res) = 2048.0;
+HAL_PIN(pos) = 0.0;
+HAL_PIN(step) = 0.0;
+HAL_PIN(dir) = 0.0;
+
+MEM(int e_res) = 0.0;
+
+RT_INIT(
+
+	//Check if resolution is initialized
+	e_res = (int)PIN(res);
+	if(e_res < 1){
+		e_res = 1;
+	}
+
+    //Init both IO Ports
+    RCC_AHB1PeriphClockCmd(ENC0_A_IO_RCC|ENC0_B_IO_RCC, ENABLE);    //Enable needed Clocks for IOs
+    GPIO_InitTypeDef GPIO_InitStruct;
+		GPIO_StructInit(&GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin   = ENC0_A_PIN | ENC0_B_PIN;
+    GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_AF;      //Alternative Funktion
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;     //Pushpull
+    GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_UP;      //Pullup
+    GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    //Bind pins to Timer
+    GPIO_PinAFConfig(ENC0_A_PORT,ENC0_A_PIN_SOURCE,ENC0_A_AF_SOURCE);
+    GPIO_PinAFConfig(ENC0_B_PORT,ENC0_B_PIN_SOURCE,ENC0_B_AF_SOURCE);
+
+    //Enable Timer clock
+    RCC_APB2PeriphClockCmd(ENC0_TIM_RCC, ENABLE);
+
+    //Init Timebase Unit
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStruct;
+    TIM_TimeBaseStruct.TIM_ClockDivision = TIM_CKD_DIV1;
+    TIM_TimeBaseStruct.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseStruct.TIM_Period = (e_res - 1); 	//Set resolution/revolution per turn
+    TIM_TimeBaseStruct.TIM_Prescaler = 1;
+    TIM_TimeBaseStruct.TIM_RepetitionCounter = 0;
+    TIM_TimeBaseInit(ENC0_TIM,&TIM_TimeBaseStruct);
+
+    //Activate Encoder Interface
+    TIM_EncoderInterfaceConfig (ENC0_TIM,TIM_EncoderMode_TI1,TIM_ICPolarity_Rising,TIM_ICPolarity_Rising);
+        //Attention: This function does not allow to set the polarity to Both edges, but allows us to bit-fucking with hwregisters
+
+    //Reconfigure the Input capture units, to correct the mistake from the Encoder Config function
+    //Channel 1:   PA8      Clock
+    TIM_ICInitTypeDef TIM_ICInitStruct;
+    TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
+    TIM_ICInitStruct.TIM_ICFilter=0x0f;                         //Digital filtering @ 1/32 fDTS
+    TIM_ICInitStruct.TIM_ICPolarity= TIM_ICPolarity_Falling;     //Just trigger at the rising edge, because its the  clock
+    TIM_ICInitStruct.TIM_ICPrescaler= 1;                        //no prescaler, capture is done each time an edge is detected on the capture input
+    TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_DirectTI;//IC1 mapped to TI1
+    TIM_ICInit(ENC0_TIM,&TIM_ICInitStruct);
+    //Channel 2:   PA9      Direction
+    TIM_ICInitStruct.TIM_Channel = TIM_Channel_2;
+    TIM_ICInitStruct.TIM_ICFilter=0x0f;                         //Digital filtering @ 1/32 fDTS
+    TIM_ICInitStruct.TIM_ICPolarity= TIM_ICPolarity_BothEdge;   //Trigger at every edge, because its the direction
+    TIM_ICInitStruct.TIM_ICPrescaler= 1;                        //no prescaler, capture is done each time an edge is detected on the capture input
+    TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI;//IC2 mapped to TI1
+    TIM_ICInit(ENC0_TIM,&TIM_ICInitStruct);
+
+    TIM_Cmd(ENC0_TIM, ENABLE);
+);
+
+RT_DEINIT(
+   TIM_Cmd(ENC0_TIM, DISABLE);
+   TIM_DeInit(ENC0_TIM);
+   RCC_APB2PeriphClockCmd(ENC0_TIM_RCC, DISABLE);
+   GPIO_InitStructure.GPIO_Pin = ENC0_A_PIN | ENC0_B_PIN;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   GPIO_Init(ENC0_A_PORT, &GPIO_InitStructure);
+);
+
+RT(
+
+	if(GPIO_ReadInputDataBit(ENC0_A_PORT,ENC0_A_PIN)){//TODO: setup pin
+		 PIN(step) = 0.0;
+	}else{
+		 PIN(step) = 1.0;
+	}
+	if(GPIO_ReadInputDataBit(ENC0_B_PORT,ENC0_B_PIN)){//TODO: setup pin
+		 PIN(dir) = 0.0;
+	}else{
+		 PIN(dir) = 1.0;
+	}
+	float p = 0.0;
+
+	//Check if resolution has changed
+	int res = (int)PIN(res);
+	if(res < 1){
+		res = 1;
+	}
+	if(e_res != res){
+		e_res = res;
+		TIM_SetAutoreload(ENC0_TIM, e_res - 1);
+	}
+
+	//Calculate angular position
+	p = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res);
+	PIN(pos) = p;
+);
+
+ENDCOMP;

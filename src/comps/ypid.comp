@@ -1,0 +1,125 @@
+/*
+* This file is part of the stmbl project.
+*
+* Copyright (C) 2013-2015 Rene Hopf <renehopf@mac.com>
+* Copyright (C) 2013-2015 Nico Stute <crinq@crinq.de>
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+HAL_COMP(ypid);
+
+HAL_PIN(pos_ext_cmd) = 0.0; // cmd in (rad)
+HAL_PIN(pos_fb) = 0.0; // feedback in (rad)
+HAL_PIN(pos_error) = 0.0; // error out (rad)
+
+HAL_PIN(vel_ext_cmd) = 0.0; // cmd in (rad/s)
+HAL_PIN(vel_fb) = 0.0; // feedback in (rad/s)
+HAL_PIN(vel_cmd) = 0.0; // cmd out (rad/s)
+HAL_PIN(vel_error) = 0.0; // error out (rad/s)
+HAL_PIN(vel_min) = 0.3;// minimum velocity error
+
+HAL_PIN(enable) = 0.0;
+HAL_PIN(out) = 0.0;
+
+HAL_PIN(pos_p) = 10.0;//50
+
+HAL_PIN(vel_p) = 0.5;
+HAL_PIN(vel_i) = 0.05;
+HAL_PIN(vel_ff) = 1.0;
+
+// system limits
+HAL_PIN(max_vel) = 0.0;
+HAL_PIN(max_acc) = 0.0;
+HAL_PIN(max_out) = 0.0;
+
+HAL_PIN(vel_sat) = 0.0;
+HAL_PIN(out_sat) = 0.0;
+HAL_PIN(saturated) = 0.0;
+
+MEM(float sat) = 0.0;
+MEM(float vel_error_sum) = 0.0;
+
+RT(
+   float vel_cmd;
+   float vel_fb = PIN(vel_fb);
+
+   float vel_error;
+   float vel_sat;
+   float out_sat;
+
+   float pos_error = minus(PIN(pos_ext_cmd), PIN(pos_fb));
+
+   float pos_p = MAX(PIN(pos_p), 0.0);
+   float vel_p = MAX(PIN(vel_p), 0.0);
+   float vel_i = MAX(PIN(vel_i), 0.0);
+   
+   float velmin = MAX(-PIN(max_vel), vel_fb - PIN(max_acc) * period);
+   float velmax = MIN(PIN(max_vel), vel_fb + PIN(max_acc) * period);
+   
+   float out;
+
+   if(PIN(enable) > 0.0){
+      
+      // pos -> vel
+      vel_cmd = pos_p * pos_error + PIN(vel_ff) * PIN(vel_ext_cmd);
+      vel_sat = SAT(vel_cmd,PIN(max_vel));
+      vel_cmd = CLAMP(vel_cmd, velmin, velmax); // min/max clamping
+
+      // vel -> out
+      vel_error = vel_cmd - vel_fb;
+      if(ABS(vel_error) < PIN(vel_min)){
+         vel_error = 0;
+      }
+      
+      vel_error_sum += vel_error;
+      out = LIMIT(vel_error * vel_p, PIN(max_out));
+      if(vel_i * vel_p > 0.0f){
+         vel_error_sum = CLAMP(vel_error_sum, (-PIN(max_out) - out)/(vel_i * vel_p), (PIN(max_out) - out) / (vel_i * vel_p));
+      }else{
+         vel_error_sum = 0;
+      }
+      out += vel_error_sum * vel_i * vel_p;
+      out_sat = SAT(out,PIN(max_out) * 0.99);
+      out = LIMIT(out, PIN(max_out));
+      
+      // sat
+      if(ABS(vel_sat) + ABS(out_sat) > 0.0){
+         sat += period;
+      }
+      else{
+         sat = 0.0;
+      }
+   }
+   else{
+      vel_error_sum = 0.0;
+      vel_cmd = 0.0;
+      vel_error = 0.0;
+      vel_sat = 0.0;
+      out_sat = 0.0;
+      sat = 0.0;
+      out = 0.0;
+   }
+
+   PIN(pos_error) = pos_error;
+   PIN(vel_cmd) = vel_cmd;
+   PIN(vel_error) = vel_error;
+   PIN(out) = out;
+
+   PIN(vel_sat) = vel_sat;
+   PIN(out_sat) = out_sat;
+   PIN(saturated) = sat;
+);
+
+ENDCOMP;

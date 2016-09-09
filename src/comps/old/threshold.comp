@@ -1,0 +1,19 @@
+COMP(threshold);
+
+HAL_PIN(in) = 0.0;
+HAL_PIN(tre) = 0.0;
+HAL_PIN(out) = 0.0;
+HAL_PIN(nout) = 0.0;
+
+RT(
+  if(PIN(in) >= PIN(tre)){
+    PIN(out) = 1.0;
+    PIN(nout) = 0.0;
+  }
+  else{
+    PIN(out) = 0.0;
+    PIN(nout) = 1.0;
+  }
+);
+
+ENDCOMP;

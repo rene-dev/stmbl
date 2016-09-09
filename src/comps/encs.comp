@@ -1,0 +1,216 @@
+//using FB_TX
+
+/*
+Sanyo denki absolute encoder, tested with PA035C
+
+10 0010001000000101 10 0001110110110000 10 0011011101001010 11
+
+10001000100000010110000111011011000010001101110100101011
+10....word A......10.....word B.....10......word C....11
+
+2.5mbit
+3 16 bit words
+
+word A:
+constant, alarm/model?
+
+word B:
+16 bit pos, LSB first
+
+word C:
+1. bit: MSB pos bit
+2..15: checksum/multiturn?
+*/
+
+//TODO: error,ready pin, af mapping
+
+#define NUM_OF_SAMPLES_S  400
+#define TIM_FREQ 84.0
+#define TIM_DIV 5.0
+#define SIG_FREQ 2.5
+#define OVER (TIM_FREQ / TIM_DIV / SIG_FREQ)//one bit
+#define OFFSET (OVER / 2.0)//half bit
+#define SIG_POS_START 16
+
+HAL_COMP(encs);
+
+HAL_PIN(en) = 1.0;
+HAL_PIN(start) = 0.0;
+HAL_PIN(offset) = 120.0;
+HAL_PIN(d) = 0.0;
+HAL_PIN(pos) = 0.0;
+HAL_PIN(error) = 0.0;
+HAL_PIN(cc);
+
+MEM(volatile uint32_t reply_buf[NUM_OF_SAMPLES_S + 1]);
+MEM(volatile uint32_t request_buf[24]);
+MEM(DMA_InitTypeDef dma_tx_config);
+MEM(DMA_InitTypeDef dma_rx_config);
+
+RT_INIT(
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  //TX enable
+  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_25MHz;
+  GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_ResetBits(GPIOB,GPIO_Pin_12);
+
+  //TX
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL ;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_ResetBits(GPIOB,GPIO_Pin_10);
+
+  //RX
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
+  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  //TIM8 triggers DMA to sample reply
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
+  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseStructure.TIM_Period = 32;//14MHz
+  TIM_TimeBaseStructure.TIM_Prescaler = 1;
+  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+  TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
+  TIM_ARRPreloadConfig(TIM8,ENABLE);
+  TIM_DMACmd(TIM8, TIM_DMA_Update, ENABLE);
+  TIM_Cmd(TIM8, ENABLE);
+  
+  uint32_t tx_high   = GPIO_BSRR_BS_10;
+  uint32_t tx_low    = GPIO_BSRR_BR_10;
+  uint32_t txen_high = GPIO_BSRR_BS_12;
+  uint32_t txen_low  = GPIO_BSRR_BR_12;
+  int pos = 0;
+  request_buf[pos++] = tx_high | txen_high;
+  request_buf[pos++] = tx_high;
+  request_buf[pos++] = tx_high;
+  request_buf[pos++] = tx_high;
+  
+  request_buf[pos++] = tx_low;//start bit
+  
+  request_buf[pos++] = tx_low; //sync
+  request_buf[pos++] = tx_high;//sync
+  request_buf[pos++] = tx_low; //sync
+  
+  request_buf[pos++] = tx_low; //frame
+  request_buf[pos++] = tx_low; //frame
+  //encoder address
+  request_buf[pos++] = tx_low; //EA
+  request_buf[pos++] = tx_low; //EA
+  request_buf[pos++] = tx_low; //EA
+  //command code = CDF1 = Absolute lower 24-bit data request
+  request_buf[pos++] = tx_high;//CC
+  request_buf[pos++] = tx_low; //CC
+  request_buf[pos++] = tx_low; //CC
+  request_buf[pos++] = tx_low; //CC
+  request_buf[pos++] = tx_low; //CC
+  //crc of 10 bit, frame code to command code
+  request_buf[pos++] = tx_low; //crc
+  request_buf[pos++] = tx_low; //crc
+  request_buf[pos++] = tx_high;//crc
+  
+  request_buf[pos++] = tx_high;//stop bit
+  request_buf[pos++] = tx_high;
+  request_buf[pos++] = tx_high | txen_low;
+  
+  //DMA tx config
+  dma_tx_config.DMA_Channel = DMA_Channel_7; //TIM8 ch1
+  dma_tx_config.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->BSRRL;
+  dma_tx_config.DMA_Memory0BaseAddr = (uint32_t)&request_buf;
+  dma_tx_config.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+  dma_tx_config.DMA_BufferSize = pos;
+  dma_tx_config.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  dma_tx_config.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  dma_tx_config.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
+  dma_tx_config.DMA_MemoryDataSize = DMA_PeripheralDataSize_Word;
+  dma_tx_config.DMA_Mode = DMA_Mode_Normal;
+  dma_tx_config.DMA_Priority = DMA_Priority_VeryHigh;
+  dma_tx_config.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  dma_tx_config.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  dma_tx_config.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  dma_tx_config.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  
+  //DMA rx config
+  dma_rx_config.DMA_Channel = DMA_Channel_7; //TIM8 ch1
+  dma_rx_config.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->IDR;
+  dma_rx_config.DMA_Memory0BaseAddr = (uint32_t)&reply_buf;
+  dma_rx_config.DMA_DIR = DMA_DIR_PeripheralToMemory;
+  dma_rx_config.DMA_BufferSize = NUM_OF_SAMPLES_S;
+  dma_rx_config.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  dma_rx_config.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  dma_rx_config.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
+  dma_rx_config.DMA_MemoryDataSize = DMA_PeripheralDataSize_Word;
+  dma_rx_config.DMA_Mode = DMA_Mode_Normal;
+  dma_rx_config.DMA_Priority = DMA_Priority_High;
+  dma_rx_config.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  dma_rx_config.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  dma_rx_config.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  dma_rx_config.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+);
+
+RT(
+   if(PIN(en) > 0.0){
+      //request
+      TIM8->ARR = 32;//2.545 Mhz
+      DMA_Cmd(DMA2_Stream1, DISABLE);
+      DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
+      DMA_DeInit(DMA2_Stream1);
+      DMA_Init(DMA2_Stream1, &dma_tx_config);
+      DMA_Cmd(DMA2_Stream1, ENABLE);
+      //wait for DMA transfer complete
+      while (DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET);
+      
+      //reply
+      TIM8->ARR = 4;//16.8 Mhz
+      DMA_Cmd(DMA2_Stream1, DISABLE);
+      DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
+      DMA_DeInit(DMA2_Stream1);
+      DMA_Init(DMA2_Stream1, &dma_rx_config);
+      DMA_Cmd(DMA2_Stream1, ENABLE);
+      //wait for DMA transfer complete
+      while (DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET);
+
+      int i = 0;
+      //skip leading ones
+      for(; i < NUM_OF_SAMPLES_S/5; i++){
+         if(!(reply_buf[i] & GPIO_Pin_11)){
+            break;
+         }
+      }
+      //skip zeros
+      for(; i < NUM_OF_SAMPLES_S/5; i++){
+         if(reply_buf[i] & GPIO_Pin_11){
+            break;
+         }
+      }
+      int start = i + OFFSET;//position of first bit
+      int d = 0;
+      int p = 0;
+
+      p = CLAMP((int)((18 + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES_S - 1);
+      d += (reply_buf[p] & GPIO_Pin_11) != 0;
+
+      for(int j = 0; j < 16; j++){
+         p = CLAMP((int)(((15 - j) + SIG_POS_START) * OVER + start + 0.5), 0, NUM_OF_SAMPLES_S - 1);
+         d = d << 1;
+         d += (reply_buf[p] & GPIO_Pin_11) != 0;
+      }
+
+      PIN(d) = d;
+      PIN(start) = start;
+      PIN(pos) = (d * M_PI * 2.0 / 131072.0) - M_PI;
+   }
+
+);
+
+ENDCOMP;

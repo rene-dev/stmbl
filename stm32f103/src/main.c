@@ -1,29 +1,87 @@
 #include "stm32f10x_conf.h"
+#include "common.h"
+#include "defines.h"
 #include <math.h>
 
-#ifndef M_PI
-#define M_PI		3.14159265358979323846
-#define M_TWOPI         (M_PI * 2.0)
+#define ARES 4096.0// analog resolution, 12 bit
+#define AREF 3.3// analog reference voltage
+
+#ifdef TROLLER
+
+#define ADC_channels 4
+#define VDIVUP 1000000.0
+#define VDIVDOWN 4990.0
+#define PWM_U TIM1->CCR3
+#define PWM_V TIM1->CCR2
+#define PWM_W TIM1->CCR1
+#define ACS_VPA 0.066 // ACS712 V/A
+#define ACS_UP 2000.0
+#define ACS_DOWN 3000.0
+#define ACS_OFFSET 2.5
+
+#define AMP(a) ((a * AREF / ARES * (ACS_DOWN + ACS_UP) / ACS_DOWN - ACS_OFFSET) / ACS_VPA)
+
+#else //iramx v3.1-v3.3 hardware
+#define RCUR 0.0181//shunt
+#define TPULLUP 10000//iramx temperature pullup
+#define R10 10000
+#define R11 180
+
+#define VDIVUP 36000.0//HV div pullup R1,R12
+#define VDIVDOWN 280.0//HV div pulldown R2,R9
+#define PWM_U TIM1->CCR1
+#define PWM_V TIM1->CCR2
+#define PWM_W TIM1->CCR3
+
+#define AMP(a) ((a * AREF / ARES - AREF / (R10 + R11) * R11) / (RCUR * R10) * (R10 + R11))
+#define TEMP(a) (log10f(a * AREF / ARES * TPULLUP / (AREF - a * AREF / ARES)) * (-53) + 290)
+
 #endif
 
-#define DATALENGTH 3
-#define DATABAUD 2000000;
+#define VOLT(a) (a / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
+
+volatile uint16_t ADCConvertedValue[100];//DMA buffer for ADC
+volatile uint8_t rxbuf[50];//DMA buffer for UART RX
+uint32_t rxpos = 0;//UART rx buffer position
+
+volatile uint32_t u_cmd = 0;
+volatile uint32_t v_cmd = 0;
+volatile uint32_t w_cmd = 0;
+
+uint32_t u_error = 0;
+uint32_t v_error = 0;
+uint32_t w_error = 0;
+
+#define TOFIXEDU32(a) ((uint32_t)((a) * 65536))
+#define TOFLOAT32(a) ((uint32_t)((a) / 65536))
+
+#define TEMP_RES 32
+#define SCALE (TEMP_RES / ARES)
+int16_t temp_buf[TEMP_RES];
+
+float tempb(float i){
+	unsigned int x = (int)(i * SCALE);
+	float a = TOFLOAT(temp_buf[x]);
+	float b = TOFLOAT(temp_buf[x + 1]);
+	return(a + (b - a) * (i * SCALE - x));
+}
 
 volatile uint32_t timeout = 99999;
+volatile uint16_t temp_raw = 0;
+volatile uint8_t hv_fault = 0;
+volatile uint8_t hv_enabled = 0;
+volatile int32_t hv_fault_count = 0;
 
-typedef union{
-	uint16_t data[DATALENGTH];
-	uint8_t byte[DATALENGTH*2];
-}data_t;
+float volt = 0;
+float amp = 0;
+float temp = 0;
 
 volatile unsigned int systime = 0;
 volatile float u,v,w;
-volatile int send = 0;
 volatile int uartsend = 0;
 
-uint16_t buf = 0x0000;
-data_t data;
-data_t databack;
+packet_to_hv_t packet_to_hv;
+packet_from_hv_t packet_from_hv;
 int32_t datapos = -1;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -31,11 +89,11 @@ TIM_OCInitTypeDef  TIM_OCInitStructure;
 NVIC_InitTypeDef NVIC_InitStructure;
 GPIO_InitTypeDef GPIO_InitStructure;
 USART_InitTypeDef USART_InitStruct;
+ADC_InitTypeDef ADC_InitStructure;
+DMA_InitTypeDef DMA_InitStructure;
+DMA_InitTypeDef DMA_InitStructuretx;
 
-#define ADC_channels 3
-__IO uint16_t ADCConvertedValue[ADC_channels];
-
-void Wait(unsigned int ms){
+void Wait(unsigned int ms){//TODO: systick is not used
 	volatile unsigned int t = systime + ms;
 	while(t >= systime){
 	}
@@ -43,93 +101,140 @@ void Wait(unsigned int ms){
 
 void SysTick_Handler(void)
 {
-  systime++;
-}
-
-//set pll to 24MHz
-void PLL_Configurattion(void){
-	RCC_PLLConfig(RCC_PLLSource_HSI_Div2,RCC_PLLMul_6); // 24MHz
-	RCC_PLLCmd(ENABLE);
-
-	/* Wait till PLL is ready */
-	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET){
-	}
-
-	/* Select PLL as system clock source */
-	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-
-	/* Wait till PLL is used as system clock source */
-	while (RCC_GetSYSCLKSource() != 0x08){
-	}
-
-	SystemCoreClockUpdate();
+	systime++;
 }
 
 void RCC_Configuration(void)
 {
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
+	RCC_ClocksTypeDef RCC_Clocks;
+	RCC_GetClocksFreq(&RCC_Clocks);
+	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000 - 1);
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
+}
+
+void hv_enable(){
+#ifdef TROLLER
+		GPIO_SetBits(GPIOB,GPIO_Pin_1);
+		GPIO_SetBits(GPIOB,GPIO_Pin_2);
+		GPIO_SetBits(GPIOB,GPIO_Pin_3);
+#else
+		GPIO_SetBits(GPIOB,GPIO_Pin_6);
+#endif
+      hv_enabled = 1;
+}
+
+void hv_disable(){
+#ifdef TROLLER
+		GPIO_ResetBits(GPIOB,GPIO_Pin_1);
+		GPIO_ResetBits(GPIOB,GPIO_Pin_2);
+		GPIO_ResetBits(GPIOB,GPIO_Pin_3);
+#else
+		GPIO_ResetBits(GPIOB,GPIO_Pin_6);
+#endif
+      hv_enabled = 0;
 }
 
 void GPIO_Configuration(void)
 {
+	//LED init
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-  //LED init
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+#ifdef TROLLER
+	//shutdown pins
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	//GPIO_ResetBits(GPIOC,GPIO_Pin_2);//green led off
+#else
+	//Enable output
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	//Fault in
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  //Enable output init
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+	//PA5,6,7 sv2
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+#endif
+   hv_disable();
+}
 
+void tim2_init(){
+   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+	TIM_TimeBaseStructure.TIM_Period = 480; // 72000000 / 480 = 150kHz
+	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseStructure.TIM_RepetitionCounter = 1;
+	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+   
+	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+	TIM_OCInitStructure.TIM_Pulse = 240;
+	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+	TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+	TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
+	TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
 
-  //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-  //GPIO_Init(GPIOB, &GPIO_InitStructure);
+	TIM_OC2Init(TIM2, &TIM_OCInitStructure);
 
-  //Analog pin configuration
-  //GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-  //GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-  //GPIO_Init(GPIOA,&GPIO_InitStructure);
+	TIM_Cmd(TIM2, ENABLE);
+
+   TIM_CtrlPWMOutputs(TIM2, ENABLE);
 }
 
 void tim1_init(){
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 
-    //TIM1
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-    //TIM1 N
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
+	//TIM1
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+#ifndef TROLLER
+	//TIM1 N
+	// not needed for troller
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
+#endif
 
 	/* Channel 1, 2 and 3 Configuration in PWM mode */
-	TIM_TimeBaseStructure.TIM_Period = 1200;
-	TIM_TimeBaseStructure.TIM_Prescaler = 1;
+	TIM_TimeBaseStructure.TIM_Period = PWM_RES;
+	TIM_TimeBaseStructure.TIM_Prescaler = 0;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_CenterAligned3;
 	TIM_TimeBaseStructure.TIM_RepetitionCounter = 1;
 	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
 	TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);
-	//TIM_SelectOutputTrigger(TIM1, TIM_TRGOSource_Update);
 
-    /* int NVIC setup */
-    NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+	/* int NVIC setup */
+	NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 
-    NVIC_Init(&NVIC_InitStructure);
+	NVIC_Init(&NVIC_InitStructure);
 
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+#ifdef TROLLER
+	TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+#else
 	TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
+#endif
 	TIM_OCInitStructure.TIM_Pulse = 0;
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 	TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
@@ -147,255 +252,364 @@ void tim1_init(){
 
 void usart_init(){
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
-    //USART TX
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
+	//DMA is configured every tx cycle
+	DMA_InitStructuretx.DMA_PeripheralBaseAddr = (uint32_t)&USART2->DR;
+	DMA_InitStructuretx.DMA_MemoryBaseAddr = (uint32_t)&packet_from_hv;
+	DMA_InitStructuretx.DMA_DIR = DMA_DIR_PeripheralDST;
+	DMA_InitStructuretx.DMA_BufferSize = sizeof(packet_from_hv_t);
+	DMA_InitStructuretx.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+	DMA_InitStructuretx.DMA_MemoryInc = DMA_MemoryInc_Enable;
+	DMA_InitStructuretx.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+	DMA_InitStructuretx.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+	DMA_InitStructuretx.DMA_Mode = DMA_Mode_Normal;
+	DMA_InitStructuretx.DMA_Priority = DMA_Priority_High;
+	DMA_InitStructuretx.DMA_M2M = DMA_M2M_Disable;
+   
+	//RX DMA
+   DMA_DeInit(DMA1_Channel6);
+	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&USART2->DR;
+	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&rxbuf;
+	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+	DMA_InitStructure.DMA_BufferSize = sizeof(rxbuf);
+	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+   DMA_Init(DMA1_Channel6, &DMA_InitStructure);
+   DMA_Cmd(DMA1_Channel6, ENABLE);
 
-    //USART RX
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
+	//USART TX
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    USART_InitStruct.USART_BaudRate = DATABAUD;
-    USART_InitStruct.USART_WordLength = USART_WordLength_9b;
-    USART_InitStruct.USART_StopBits = USART_StopBits_1;
-    USART_InitStruct.USART_Parity = USART_Parity_No;
-    USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-    USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+	//USART RX
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    USART_Init(USART2, &USART_InitStruct);
-    USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
-	//USART_ITConfig(USART2, USART_IT_PE, ENABLE);
-	//USART_ITConfig(USART2, USART_IT_ERR, ENABLE);
+	USART_InitStruct.USART_BaudRate = DATABAUD;
+	USART_InitStruct.USART_WordLength = USART_WordLength_8b;
+	USART_InitStruct.USART_StopBits = USART_StopBits_1;
+	USART_InitStruct.USART_Parity = USART_Parity_No;
+	USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 
-    NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
-
-    /* Enable the USART2 */
-    USART_Cmd(USART2, ENABLE);
+	USART_Init(USART2, &USART_InitStruct);
+	USART_DMACmd(USART2, USART_DMAReq_Tx, ENABLE);
+   USART_DMACmd(USART2, USART_DMAReq_Rx, ENABLE);
+	USART_Cmd(USART2, ENABLE);
 }
 
 // Setup ADC
 void setup_adc(){
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-#define ADC1_DR_Address    ((uint32_t)0x4001244C)
+	RCC_ADCCLKConfig(RCC_PCLK2_Div6); // 12MHz
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC2 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
 
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-ADC_InitTypeDef ADC_InitStructure;
-DMA_InitTypeDef DMA_InitStructure;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 
-#if defined (STM32F10X_LD_VL) || defined (STM32F10X_MD_VL) || defined (STM32F10X_HD_VL)
-  /* ADCCLK = PCLK2/2 */
-  RCC_ADCCLKConfig(RCC_PCLK2_Div2);
+#ifdef TROLLER
+	//PINA0 IN0 DC link
+	//PINA6 IN6 iu
+	//PINA7 IN7 iv
+	//PINB0 IN8 iw
+
+	//PINA5 IN5 uu
+	//PINA4 IN4 uv
+	//PINA1 IN1 uw
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_6 | GPIO_Pin_7;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
 #else
-  /* ADCCLK = PCLK2/4 */
-  RCC_ADCCLKConfig(RCC_PCLK2_Div4);
+	//PINC5 IN15 DC link
+	//PINC4 IN14 AMP
+	//PINB0 IN8 temperature
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+	GPIO_Init(GPIOB, &GPIO_InitStructure);
 #endif
-  /* Enable peripheral clocks ------------------------------------------------*/
-  /* Enable DMA1 clock */
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
-  /* Enable ADC1 and GPIOC clock */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB, ENABLE);
+	DMA_DeInit(DMA1_Channel1);
+	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR;
+	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADCConvertedValue;
+	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+	DMA_InitStructure.DMA_BufferSize = sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0]);
+	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+	DMA_Init(DMA1_Channel1, &DMA_InitStructure);
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+	/* Enable DMA1 channel1 */
+	DMA_Cmd(DMA1_Channel1, ENABLE);
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+	/* ADC1 configuration ------------------------------------------------------*/
+	ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
+	ADC_InitStructure.ADC_ScanConvMode = ENABLE;
+	ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
+	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T2_CC2;
+	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+	ADC_InitStructure.ADC_NbrOfChannel = 1;
+	ADC_Init(ADC1, &ADC_InitStructure);
+   
+   ADC_ExternalTrigConvCmd(ADC1, ENABLE);
 
-  DMA_DeInit(DMA1_Channel1);
-  DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
-  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADCConvertedValue;
-  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
-  DMA_InitStructure.DMA_BufferSize = ADC_channels;
-  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
-  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
-  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
-  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-  DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-  DMA_Init(DMA1_Channel1, &DMA_InitStructure);
+	ADC_TempSensorVrefintCmd(ENABLE);
 
-  NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel1_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_13Cycles5); //amp
 
-  /* Enable DMA1 channel1 */
-  DMA_Cmd(DMA1_Channel1, ENABLE);
-  DMA_ITConfig(DMA1_Channel1, DMA_IT_TC, ENABLE);
+	/* Enable ADC1 DMA */
+	ADC_DMACmd(ADC1, ENABLE);
 
-  /* ADC1 configuration ------------------------------------------------------*/
-  ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
-  ADC_InitStructure.ADC_ScanConvMode = ENABLE;
-  ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
-  ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
-  ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
-  ADC_InitStructure.ADC_NbrOfChannel = ADC_channels;
-  ADC_Init(ADC1, &ADC_InitStructure);
+	/* Enable ADC1 */
+	ADC_Cmd(ADC1, ENABLE);
 
-  ADC_TempSensorVrefintCmd(ENABLE);
-  /* ADC1 regular channel14 configuration */
-  //ADC_channels anpassen!
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_14, 1, ADC_SampleTime_13Cycles5);// amp
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_15, 2, ADC_SampleTime_13Cycles5);// vlt
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 3, ADC_SampleTime_13Cycles5);// iramx temp
- // ADC_RegularChannelConfig(ADC1, ADC_Channel_TempSensor, 3, ADC_SampleTime_13Cycles5);
+	/* Enable ADC1 reset calibration register */
+	ADC_ResetCalibration(ADC1);
+	/* Check the end of ADC1 reset calibration register */
+	while(ADC_GetResetCalibrationStatus(ADC1));
 
+	/* Start ADC1 calibration */
+	ADC_StartCalibration(ADC1);
+	/* Check the end of ADC1 calibration */
+	while(ADC_GetCalibrationStatus(ADC1));
 
-  /* Enable ADC1 DMA */
-  ADC_DMACmd(ADC1, ENABLE);
+   //ADC2, injected mode for voltage and temperatue
+   ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
+   ADC_InitStructure.ADC_ScanConvMode = ENABLE;
+   ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
+   ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
+   ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+   ADC_InitStructure.ADC_NbrOfChannel = 2;
+   ADC_Init(ADC2, &ADC_InitStructure);
+   
+   ADC_InjectedSequencerLengthConfig(ADC2, 2);
+   /* ADC1 injected channel Configuration */ 
+   ADC_InjectedChannelConfig(ADC2, ADC_Channel_15, 1, ADC_SampleTime_71Cycles5);
+   ADC_InjectedChannelConfig(ADC2, ADC_Channel_8, 2, ADC_SampleTime_71Cycles5);
+   /* ADC1 injected external trigger configuration */
+   ADC_ExternalTrigInjectedConvConfig(ADC2, ADC_ExternalTrigInjecConv_None);
+   ADC_Cmd(ADC2, ENABLE);
+   /* Enable ADC1 reset calibration register */   
+   ADC_ResetCalibration(ADC2);
+   /* Check the end of ADC1 reset calibration register */
+   while(ADC_GetResetCalibrationStatus(ADC2));
 
-  /* Enable ADC1 */
-  ADC_Cmd(ADC1, ENABLE);
-
-  /* Enable ADC1 reset calibration register */
-  ADC_ResetCalibration(ADC1);
-  /* Check the end of ADC1 reset calibration register */
-  while(ADC_GetResetCalibrationStatus(ADC1));
-
-  /* Start ADC1 calibration */
-  ADC_StartCalibration(ADC1);
-  /* Check the end of ADC1 calibration */
-  while(ADC_GetCalibrationStatus(ADC1));
-
-  /* Start ADC1 Software Conversion */
-  //ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+   /* Start ADC1 calibration */
+   ADC_StartCalibration(ADC2);
+   /* Check the end of ADC1 calibration */
+   while(ADC_GetCalibrationStatus(ADC2));
+   ADC_SoftwareStartInjectedConvCmd(ADC2, ENABLE);
 }
 
+//TIM1 update interrupt, every PWM cycle
 void TIM1_UP_IRQHandler(){
 	TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
-    ADC_SoftwareStartConvCmd(ADC1, ENABLE);//trigger ADC
-	if(timeout > 30){
-		GPIO_ResetBits(GPIOB,GPIO_Pin_6);//disable driver
+	if(timeout > 30){//disable driver
+      hv_disable();
 		GPIO_SetBits(GPIOC,GPIO_Pin_1);//yellow led on
-		GPIO_ResetBits(GPIOC,GPIO_Pin_2);//greep led off
+		GPIO_ResetBits(GPIOC,GPIO_Pin_2);//green led off
+		
+		PWM_U = 0;
+		PWM_V = 0;
+		PWM_W = 0;
+		
+		u_cmd = TOFIXEDU32(0.0);
+		u_error = TOFIXEDU32(0.0);
+		v_cmd = TOFIXEDU32(0.0);
+		v_error = TOFIXEDU32(0.0);
+		w_cmd = TOFIXEDU32(0.0);
+		w_error = TOFIXEDU32(0.0);
 	}else{
-		GPIO_SetBits(GPIOB,GPIO_Pin_6);//Enable driver
-		//GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
+		GPIO_SetBits(GPIOC,GPIO_Pin_2);//green led on
 		GPIO_ResetBits(GPIOC,GPIO_Pin_1);//yellow led off
 		timeout ++;
+		
+		u_error += u_cmd;
+		uint32_t u = TOFLOAT32(u_error);
+		u_error = MAX(0, u_error - TOFIXEDU32(u));
+		PWM_U = u;
+		
+		v_error += v_cmd;
+		uint32_t v = TOFLOAT32(v_error);
+		v_error = MAX(0, v_error - TOFIXEDU32(v));
+		PWM_V = v;
+		
+		w_error += w_cmd;
+		uint32_t w = TOFLOAT32(w_error);
+		w_error = MAX(0, w_error - TOFIXEDU32(w));
+		PWM_W = w;
 	}
-	//GPIO_SetBits(GPIOB,GPIO_Pin_12);
-}
-
-void DMA1_Channel1_IRQHandler(){
-	DMA_ClearITPendingBit(DMA1_IT_TC1);
-
-	if(ADCConvertedValue[0] > 374){//current limit (371 zero)
-		//GPIO_ResetBits(GPIOB,GPIO_Pin_6);//disable driver
-		GPIO_SetBits(GPIOC,GPIO_Pin_0);//red led on
-	}else{
-		//GPIO_SetBits(GPIOB,GPIO_Pin_6);//Enable driver
-		GPIO_ResetBits(GPIOC,GPIO_Pin_0);//red led off
-	}
-
-    //GPIO_SetBits(GPIOC,GPIO_Pin_0);
-    //while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-	if(send > 10){
-		databack.data[0] = ADCConvertedValue[0];
-		databack.data[1] = ADCConvertedValue[1];
-		databack.data[2] = ADCConvertedValue[2];
-		//uartsend = 1;
-		send = 0;
-	}
-}
-
-void USART2_IRQHandler(){
-	//GPIO_SetBits(GPIOC,GPIO_Pin_0);
-	//USART_GetFlagStatus(USART2,USART_FLAG_FE);
-	//if(USART_GetITStatus(USART2, USART_IT_RXNE) == SET){
-		USART_ClearITPendingBit(USART2, USART_IT_RXNE);
-		buf = USART_ReceiveData(USART2);
-		if(buf == 0x155){//start condition
-			datapos = 0;
-			uartsend = 1;
-			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//grün
-		}else if(datapos >= 0 && datapos < DATALENGTH*2){
-			data.byte[datapos++] = (uint8_t)buf;
-		}
-		if(datapos == DATALENGTH*2){//all data received
-			datapos = -1;
-			TIM1->CCR1 = data.data[0];
-			TIM1->CCR2 = data.data[1];
-			TIM1->CCR3 = data.data[2];
-			timeout = 0;
-			send++;
-			//GPIOC->BSRR = (GPIOC->ODR ^ GPIO_Pin_0) | (GPIO_Pin_0 << 16);//toggle red led
-		}
-		//}
-		/*
-	if(USART_GetITStatus(USART2, USART_IT_FE) == SET){
-		USART_ClearITPendingBit(USART2, USART_IT_FE);
-		buf = USART_ReceiveData(USART2);
-	}
-	if(USART_GetITStatus(USART2, USART_IT_NE) == SET){
-		USART_ClearITPendingBit(USART2, USART_IT_NE);
-		buf = USART_ReceiveData(USART2);
-	}
-	if(USART_GetITStatus(USART2, USART_IT_ORE) == SET){
-		USART_ClearITPendingBit(USART2, USART_IT_ORE);
-		buf = USART_ReceiveData(USART2);
-	}
-	if(USART_GetITStatus(USART2, USART_IT_PE) == SET){
-		USART_ClearITPendingBit(USART2, USART_IT_PE);
-		buf = USART_ReceiveData(USART2);
-	}
-		*/
 }
 
 int main(void)
 {
-	//PLL_Configurattion();
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 	RCC_Configuration();
 	GPIO_Configuration();
 
-	//GPIO_SetBits(GPIOC,GPIO_Pin_0);//rot
-	//GPIO_SetBits(GPIOC,GPIO_Pin_1);//gelb
-	//GPIO_SetBits(GPIOC,GPIO_Pin_2);//grün
-
-	RCC_ClocksTypeDef RCC_Clocks;
-	RCC_GetClocksFreq(&RCC_Clocks);
-	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000 - 1);
-
 	setup_adc();
 	tim1_init();
+   tim2_init();
 	usart_init();
 
-	TIM1->CCR1 = 0;
-	TIM1->CCR2 = 0;
-	TIM1->CCR3 = 0;
+	PWM_U = 0;
+	PWM_V = 0;
+	PWM_W = 0;
 
+	packet_from_hv.head.start = 255;
+	packet_from_hv.head.key = 0;
+#ifndef TROLLER
+	for(int i = 0; i < TEMP_RES; i++){
+		temp_buf[i] = TOFIXED(TEMP(i / SCALE));
+	}
+#endif
 	while(1){
-		if(uartsend == 1){
-			uartsend = 0;
-			while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-			USART_SendData(USART2, 0x154);
-			for(int j = 0;j<6;j++){
-				while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
-    			USART_SendData(USART2, databack.byte[j]);
-			}
-		}
-		//USART_GetFlagStatus(USART2, USART_FLAG_NE);
-		//USART_ReceiveData(USART2);
-		// 	GPIO_SetBits(GPIOC,GPIO_Pin_0);
-		// 	buf = USART_ReceiveData(USART2);
-		// }
-        //GPIOA->BSRR = (GPIOA->ODR ^ GPIO_Pin_2) | (GPIO_Pin_2 << 16);//toggle red led
-        //Wait(1);
+      //next received packet will be written to bufferpos
+      uint32_t bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA1_Channel6);
+      //how many packets we have the the rx buffer for processing
+      uint32_t available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
+      
+      for(int i = 0;i < available;i++){
+      	uint16_t buf = rxbuf[(rxpos)%sizeof(rxbuf)];
+      	if(buf == 255){ //start condition
+      		datapos = 0;
+      		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
+      		uartsend = 1;
+      	}else if(datapos >= 0 && datapos < sizeof(packet_to_hv_t)){
+      		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
+      	}
+      	if(datapos == sizeof(packet_to_hv_t)){//all data received
+      		datapos = -1;
+      		unbuff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
+            if(packet_to_hv.data.enable == 1){
+               hv_enable();
+            }else{
+               hv_disable();
+            }
+      		float ua = packet_to_hv.data.a;
+      		float ub = packet_to_hv.data.b;
 
+            float u = 0.0;
+            float v = 0.0;
+            float w = 0.0;
+
+            if(packet_to_hv.data.mode == 0){//a,b voltages
+               u = ua; // inverse clarke
+               v = - ua / 2.0 + ub / 2.0 * M_SQRT3;
+               w = - ua / 2.0 - ub / 2.0 * M_SQRT3;
+            }else if(packet_to_hv.data.mode == 1){//DC, a: -dclink ... +dclink
+               u = ua / 2.0;
+               v = -ua / 2.0;
+               w = 0;
+            }else if(packet_to_hv.data.mode == 2){//2phase, a,b: -dclink/2 ... +dclink/2
+               u = ua;
+               v = 0;
+               w = ub;
+            }
+
+            u += volt / 2.0;
+            v += volt / 2.0;
+            w += volt / 2.0;
+
+            if(u < v){
+               if(u < w){
+                  v -= u;
+                  w -= u;
+                  u = 0.0;
+               }
+               else{
+                  u -= w;
+                  v -= w;
+                  w = 0.0;
+               }
+            }
+            else{
+               if(v < w){
+                  u -= v;
+                  w -= v;
+                  v = 0.0;
+               }
+               else{
+                  u -= w;
+                  v -= w;
+                  w = 0.0;
+               }
+            }
+
+            u_cmd = TOFIXEDU32(CLAMP(u / volt * PWM_RES, 0, PWM_RES * 0.95));
+            v_cmd = TOFIXEDU32(CLAMP(v / volt * PWM_RES, 0, PWM_RES * 0.95));
+            w_cmd = TOFIXEDU32(CLAMP(w / volt * PWM_RES, 0, PWM_RES * 0.95));
+
+      		timeout = 0; //reset timeout
+      	}
+         
+         rxpos++;
+         rxpos = rxpos % sizeof(rxbuf);
+      }
+      
+		if(uartsend == 1){
+			DMA_DeInit(DMA1_Channel7);
+			DMA_Init(DMA1_Channel7, &DMA_InitStructuretx);
+			DMA_Cmd(DMA1_Channel7, ENABLE);
+         int adcbufferpos;
+         uint32_t cur_sum = 0;
+         //next received packet will be written to bufferpos
+         adcbufferpos = sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0]) - DMA_GetCurrDataCounter(DMA1_Channel1);
+         //bufferpos-1 .. bufferpos-1-samples
+         int samples = 30;
+         for(int i = 0; i < samples; i++){
+            if(adcbufferpos + i >= sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0])){
+               adcbufferpos = 0;
+            }
+            cur_sum += ADCConvertedValue[adcbufferpos+i];
+         }
+         
+			amp = AMP((float)cur_sum / (float)samples);
+			volt = VOLT(ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_1));
+
+			packet_from_hv.data.dc_volt = TOFIXED(volt);
+			packet_from_hv.data.dc_cur =  TOFIXED(amp);
+			packet_from_hv.data.hv_temp = TOFIXED(temp);
+         int hv_fault_limit = 10;
+         if(hv_fault == 1 && hv_enabled == 1){
+            if(hv_fault_count < hv_fault_limit){
+               hv_fault_count++;
+            }
+         }else{
+            hv_fault_count = 0;
+         }
+         if(hv_fault_count >= hv_fault_limit){
+            packet_from_hv.data.hv_fault = 1;
+         }else{
+            packet_from_hv.data.hv_fault = 0;
+         }
+#ifdef TROLLER
+			packet_from_hv.data.dc_cur =  TOFIXED(0);
+			packet_from_hv.data.hv_temp = TOFIXED(0);
+			packet_from_hv.data.a = TOFIXED(AMP(ADCConvertedValue[1]));
+			packet_from_hv.data.b = TOFIXED(AMP(ADCConvertedValue[2]));
+			packet_from_hv.data.c = TOFIXED(AMP(ADCConvertedValue[3]));
+#endif
+			buff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
+			uartsend = 0;
+         temp_raw = ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_2);
+			if(temp_raw < ARES && temp_raw > 0){
+				temp = tempb(temp_raw);
+			}
+         ADC_SoftwareStartInjectedConvCmd(ADC2, ENABLE);
+		}
 	}
 }

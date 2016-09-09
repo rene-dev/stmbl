@@ -1,0 +1,31 @@
+COMP(ramp);
+
+HAL_PIN(in) = 0.0;
+HAL_PIN(vel_max) = 1.0;
+HAL_PIN(acc_max) = 1.0;
+HAL_PIN(out) = 0.0;
+
+MEM(float o) = 0.0;
+MEM(float vel) = 0.0;
+
+RT(
+  float dt = period;//time - last_time;
+  float vm = PIN(vel_max);
+  float am = PIN(acc_max);
+  float i = PIN(in);
+  float e = minus(i, o);
+
+  float vmax = LIMIT(vel + am * dt, vm);
+  float vmin = LIMIT(vel - am * dt, vm);
+
+  e = CLAMP(e, vmin * dt, vmax * dt);
+  vel = e / dt;
+
+  o += e;
+
+  o = mod(o);
+
+  PIN(out) = o;
+);
+
+ENDCOMP;

@@ -1,0 +1,44 @@
+HAL_COMP(dq);
+
+HAL_PIN(u) = 0.0;
+HAL_PIN(v) = 0.0;
+HAL_PIN(w) = 0.0;
+
+HAL_PIN(pos) = 0.0;
+HAL_PIN(polecount) = 1.0;
+
+HAL_PIN(a) = 0.0;
+HAL_PIN(b) = 0.0;
+HAL_PIN(c) = 0.0;
+
+HAL_PIN(d) = 0.0;
+HAL_PIN(q) = 0.0;
+
+RT(
+   float u = PIN(u);
+   float v = PIN(v);
+   float w = PIN(w);
+
+   float p = (int)MAX(PIN(polecount), 1.0);
+   float pos = PIN(pos) * p;
+
+   float co = cosf(pos);
+   float si = sinf(pos);
+   float s3 = sqrtf(3.0);
+
+   float a = u * 2.0 / 3.0 - v / 3.0 - w / 3.0;
+   float b = v / s3 - w / s3;
+   float c = u / 3.0 + v / 3.0 + w / 3.0;
+
+   float d = a * co + b * si;
+   float q = - a * si + b * co;
+
+   PIN(a) = a;
+   PIN(b) = b;
+   PIN(c) = c;
+
+   PIN(d) = d;
+   PIN(q) = q;
+);
+
+ENDCOMP;

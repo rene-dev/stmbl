@@ -6,15 +6,20 @@
 *.bin
 *.map
 *.log
-*.net
+#*.net
 *.raw
+*.swp
 .DS_Store
 term/build
 term/xbuild
+new_term/build
+new_term/xbuild
 term/win32/bin
 .depend
 *.list
 *.out
+*.pyc
+tools/pycrc*
 
 sim/sim
 sim/plot
@@ -27,6 +32,12 @@ stmblx
 *.s#?
 *.b#?
 *.l#?
+*.lck
+
+# kicad bak files
+hw/kicad/*.bak
+hw/kicad/*/*.bak
+hw/kicad/*/*/*.bak
 
 # Eagle project file
 # It contains a serial number and references to the file structure
@@ -57,3 +68,6 @@ eagle.epf
 *.info
 
 *.eps
+obj_app/
+obj_boot/
+obj_hv/

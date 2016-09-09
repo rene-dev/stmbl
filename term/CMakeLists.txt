@@ -19,8 +19,6 @@ set(SRC_LIST
 main.cpp
 mainframe.cpp mainframe.hpp
 basicdrawpane.cpp basicdrawpane.hpp
-dqframe.cpp dqframe.hpp
-dqdraw.cpp dqdraw.hpp
 )
 
 set(wxWidgets_CONFIGURATION mswu)
@@ -28,7 +26,9 @@ find_package(wxWidgets 3.0 COMPONENTS core base REQUIRED)
 include(${wxWidgets_USE_FILE})
 
 if(APPLE)
-add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SRC_LIST})
+#set(MACOSX_BUNDLE_ICON_FILE "stmbl.icns" )
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/resources/stmbl.icns PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SRC_LIST} ${CMAKE_CURRENT_SOURCE_DIR}/resources/stmbl.icns)
 else(APPLE)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 endif(APPLE)

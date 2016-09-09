@@ -1,0 +1,186 @@
+HAL_COMP(hyper);// https://www.youtube.com/watch?v=aoXOdAUD7IM&t=44
+
+HAL_PIN(pos) = 0.0;
+HAL_PIN(error) = 0;
+HAL_PIN(status) = -1;
+HAL_PIN(read_status) = 0;
+
+MEM(volatile uint8_t rxbuf[128]);
+MEM(volatile uint8_t txbuf[20]);
+MEM(volatile int count) = 0;
+
+INIT(
+  GPIO_InitTypeDef GPIO_InitStruct;
+  USART_InitTypeDef USART_InitStruct;
+  
+  //TX enable
+  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+
+  //USART TX
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_USART3);
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  //USART RX
+  GPIO_PinAFConfig(GPIOB, GPIO_PinSource11, GPIO_AF_USART3);
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
+  GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  USART_InitStruct.USART_BaudRate = 9600;
+  USART_InitStruct.USART_WordLength = USART_WordLength_9b;
+  USART_InitStruct.USART_StopBits = USART_StopBits_1;
+  USART_InitStruct.USART_Parity = USART_Parity_Even;
+  USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+  USART_Init(USART3, &USART_InitStruct);
+
+  /* Enable the USART */
+  USART_Cmd(USART3, ENABLE);
+
+  //TX DMA
+
+  DMA_Cmd(DMA1_Stream3, DISABLE);
+  DMA_DeInit(DMA1_Stream3);
+
+  // DMA2-Config
+  DMA_InitStructure.DMA_Channel = DMA_Channel_4;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&txbuf;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+  DMA_InitStructure.DMA_BufferSize = sizeof(txbuf);
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_Mode =  DMA_Priority_Low;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(DMA1_Stream3, &DMA_InitStructure);
+  USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
+
+  //RX DMA
+
+  DMA_Cmd(DMA1_Stream1, DISABLE);
+  DMA_DeInit(DMA1_Stream1);
+
+  // DMA2-Config
+  DMA_InitStructure.DMA_Channel = DMA_Channel_4;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&rxbuf;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+  DMA_InitStructure.DMA_BufferSize = sizeof(rxbuf);
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_Low;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(DMA1_Stream1, &DMA_InitStructure);
+  USART_DMACmd(USART3, USART_DMAReq_Rx, ENABLE);
+);
+
+void start_tx(uint32_t len){
+   DMA_SetCurrDataCounter(DMA1_Stream3,len);
+   DMA_Cmd(DMA1_Stream3, DISABLE);
+   DMA_ClearFlag(DMA1_Stream3, DMA_FLAG_TCIF3);
+   DMA_Cmd(DMA1_Stream3, ENABLE);
+}
+
+void start_rx(){
+   DMA_Cmd(DMA1_Stream1, DISABLE);
+   DMA_ClearFlag(DMA1_Stream1, DMA_FLAG_TCIF1);
+   DMA_Cmd(DMA1_Stream1, ENABLE);
+}
+
+RT(
+   int available;
+   int txlen = 0;
+   uint32_t pos = 0;
+   const float byte_time = 11.0/9600.0;
+
+   HT(
+   GOTO(0);
+   STATE(0){//reset
+      txbuf[0] = 0xff;//broadcast
+      txbuf[1] = 0x53;//reset
+      txbuf[2] = txbuf[0] ^ txbuf[1];//xor checksum
+      GPIO_SetBits(GPIOB, GPIO_Pin_12);//tx enable
+      SLEEP(0.001);
+      start_tx(3);
+      SLEEP(0.004);
+      GPIO_ResetBits(GPIOB, GPIO_Pin_12);//tx disable
+      SLEEP(0.1);
+      GOTO(1);
+   }
+   STATE(1){//get state
+      txbuf[0] = 0xff;//broadcast
+      txbuf[1] = 0x50;//get state
+      txbuf[2] = txbuf[0] ^ txbuf[1];//xor checksum
+      GPIO_SetBits(GPIOB, GPIO_Pin_12);//tx enable
+      SLEEP(0.001);
+      start_tx(3);
+      start_rx();
+      SLEEP(0.004);
+      GPIO_ResetBits(GPIOB, GPIO_Pin_12);//tx disable
+      SLEEP(0.2);
+      available = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA1_Stream1);
+      if(available == 4 && rxbuf[3] == (rxbuf[0] ^ rxbuf[1] ^ rxbuf[2])){//size and checksum ok
+         if(rxbuf[2] == 0){
+            PIN(status) = 0;
+            GOTO(2);
+         }else{
+            PIN(status) = rxbuf[2];
+            GOTO(1);
+         }
+      }else{
+         PIN(status) = -1;
+         GOTO(0);
+      }
+   }
+   STATE(2){//read pos
+      txbuf[0] = 0xff;//broadcast
+      txbuf[1] = 0x42;//read position
+      txbuf[2] = txbuf[0] ^ txbuf[1];//xor checksum
+      GPIO_SetBits(GPIOB, GPIO_Pin_12);//tx enable
+      SLEEP(0.001);
+      start_tx(3);
+      start_rx();
+      SLEEP(0.004);
+      GPIO_ResetBits(GPIOB, GPIO_Pin_12);//tx disable
+      SLEEP(0.02);
+      available = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA1_Stream1);
+      if(available == 7 && rxbuf[1] == 0x42 && rxbuf[6] == (rxbuf[0] ^ rxbuf[1] ^ rxbuf[2] ^ rxbuf[3] ^ rxbuf[4] ^ rxbuf[5])){
+         pos = (rxbuf[2] << 24) + (rxbuf[3] << 16) + (rxbuf[4] << 8) + rxbuf[5];
+         pos = pos % (128 * 32);
+         PIN(pos) = pos * 2.0 * M_PI / (128 * 32) - M_PI;
+         PIN(read_status) = 0;
+      }else if(available == 4 && rxbuf[1] == 0x50 && rxbuf[3] == (rxbuf[0] ^ rxbuf[1] ^ rxbuf[2])){
+         PIN(read_status) = rxbuf[2];
+         GOTO(0);
+      }else{
+         GOTO(0);
+      }
+      SLEEP(0.02);
+   }
+   );
+);
+
+ENDCOMP;

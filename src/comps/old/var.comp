@@ -1,0 +1,57 @@
+COMP(var);
+
+//in
+HAL_PIN(x) = 0.0;
+HAL_PIN(freq) = 0.1;
+HAL_PIN(en) = 1.0;
+
+
+//out 
+HAL_PIN(var) = 0.0;
+HAL_PIN(sigma) = 0.0;
+HAL_PIN(max) = 0.0;
+HAL_PIN(min) = 0.0;
+HAL_PIN(mu) = 0.0;
+
+MEM(float var) = 0.0;
+MEM(float min) = 0.0;
+MEM(float max) = 0.0;
+MEM(float mu) = 0.0;
+
+RT(
+   float lp = LP_HZ(PIN(freq));
+   float x = PIN(x);
+   
+   if(PIN(en) <= 0.0){
+      mu = x;
+      var = 0.0;
+      min = 0.0;
+      max = 0.0;
+   }
+   
+   mu = x * lp + (1.0 - lp) * mu;
+   
+   fload d = mu - x;
+
+   float v = d * d;
+   
+   if(d > max){
+      max = d;
+   }
+   if(d < min){
+      min = d;
+   }
+   
+   var = v * lp + (1.0 - lp) * var;
+   
+   PIN(var) = var;
+   PIN(sigma) = squrtf(var);
+   PIN(min) = min;
+   PIN(max) = max;
+   PIN(mu) = u;
+   
+   min = (1.0 - lp) * min;
+   max = (1.0 - lp) * max;
+);
+
+ENDCOMP;

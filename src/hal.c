@@ -18,8 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
+#include <math.h>
 #include "hal.h"
-#include "misc.h"
+
+//global hal struct
+hal_struct_t hal;
 
 char* itoa(int i){
   hal.tmp[0] = (i % 10) + '0';
@@ -27,46 +31,203 @@ char* itoa(int i){
   return(hal.tmp);
 }
 
-void init_hal(){
+void hal_init(){
   hal.comp_type_count = 0;
   for(int i = 0; i < MAX_COMP_TYPES; i++){
     hal.comp_types_counter[i] = 0;
   }
   hal.hal_pin_count = 0;
-  hal.fast_rt_lock = 0;
-  hal.rt_lock = 0;
-  hal.nrt_lock = 0;
+  hal.comp_count = 0;
 
-  hal.init_func_count = 0;
-  hal.fast_rt_func_count = 0;
-  hal.rt_in_func_count = 0;
-  hal.rt_filter_func_count = 0;
-  hal.rt_pid_func_count = 0;
-  hal.rt_calc_func_count = 0;
-  hal.rt_out_func_count = 0;
+  hal.nrt_init_func_count = 0;
+  hal.rt_func_count = 0;
   hal.nrt_func_count = 0;
+  hal.frt_func_count = 0;
+
+  hal.link_errors = 0;
+  hal.pin_errors = 0;
+  hal.set_errors = 0;
+  hal.get_errors = 0;
+  hal.comp_errors = 0;
+
+  hal.rt_state = RT_STOP;
+  hal.frt_state = FRT_STOP;
+  hal.hal_state = HAL_OK;
+  hal.active_rt_func = -1;
+  hal.active_frt_func = -1;
+  hal.active_nrt_func = -1;
+  strcpy(hal.error_name,"no error");
 }
 
-void init_hal_pin(HPNAME name, struct hal_pin* pin, float value){
-  strncpy(pin->name, hal.comp_types[hal.comp_type], MAX_HPNAME);
-  strncat(pin->name, itoa(hal.comp_types_counter[hal.comp_type]), MAX_HPNAME);
-  strncat(pin->name, ".", MAX_HPNAME);
-  strncat(pin->name, name, MAX_HPNAME);
+void hal_comp_init(){
+   for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
+      hal.nrt_init[i]();
+   }
+}
+
+void hal_run_nrt(float period){
+   //run all non realtime hal functions
+   for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.nrt_func_count; hal.active_nrt_func++){
+      hal.nrt[hal.active_nrt_func](period);
+   }
+   hal.active_nrt_func = -1;
+}
+
+void hal_run_rt(float period){
+   //run all realtime hal functions
+   for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){
+      hal.rt[hal.active_rt_func](period);
+   }
+   hal.active_rt_func = -1;
+}
+
+void hal_run_frt(float period){
+   //run all fast realtime hal functions
+   for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_func_count; hal.active_frt_func++){
+      hal.frt[hal.active_frt_func](period);
+   }
+   hal.active_frt_func = -1;
+}
+
+int hal_start_rt(){
+   if(hal.rt_state == RT_STOP && hal.hal_state == HAL_OK){
+      hal.active_rt_func = -1;
+      hal.rt_state = RT_SLEEP;
+      return(1);
+   }
+   return(0);
+}
+
+void hal_start(){
+   float min = INFINITY;
+   int min_index = -1;
+   float rt_prio = 0.0;
+   float frt_prio = 0.0;
+
+   char added[MAX_COMPS];
+
+   for(int i = 0; i < MAX_COMPS; i++){
+      added[i] = 0;
+   }
+   // add rt func
+   hal.rt_func_count = 0;
+   for(int i = 0; i < hal.comp_count; i++){
+      min = INFINITY;
+      min_index = -1;
+      for(int j = hal.comp_count - 1; j >= 0; j--){
+         rt_prio = hal.hal_pins[hal.hal_comps[j]->hal_pin_start_index + 2]->source->source->value;
+         if(rt_prio <= min && added[j] == 0 && rt_prio >= 0.0 && hal.hal_comps[j]->rt != 0){
+            min = rt_prio;
+            min_index = j;
+         }
+      }
+      if(min_index >= 0){
+         added[min_index] = 1;
+         hal.rt[hal.rt_func_count++] = hal.hal_comps[min_index]->rt;
+      }
+   }
+
+   for(int i = 0; i < hal.comp_count; i++){
+      added[i] = 0;
+   }
+   // add frt func
+   hal.frt_func_count = 0;
+   for(int i = 0; i < hal.comp_count; i++){
+      min = INFINITY;
+      min_index = -1;
+      for(int j = hal.comp_count - 1; j >= 0; j--){
+         frt_prio = hal.hal_pins[hal.hal_comps[j]->hal_pin_start_index + 3]->source->source->value;
+         if(frt_prio <= min && added[j] == 0 && frt_prio >= 0.0 && hal.hal_comps[j]->frt != 0){
+            min = frt_prio;
+            min_index = j;
+         }
+      }
+      if(min_index >= 0){
+         added[min_index] = 1;
+         hal.frt[hal.frt_func_count++] = hal.hal_comps[min_index]->frt;
+      }
+   }
+   // add (de)init func
+   hal.rt_init_func_count = 0;
+   hal.rt_deinit_func_count = 0;
+   for(int i = 0; i < hal.comp_count; i++){
+      rt_prio = hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value;
+      frt_prio = hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 3]->source->source->value;
+
+      if(rt_prio >= 0.0 || frt_prio >= 0.0){
+         if(hal.hal_comps[i]->rt_init != 0){
+            hal.rt_init[hal.rt_init_func_count++] = hal.hal_comps[i]->rt_init;
+         }
+         if(hal.hal_comps[i]->rt_deinit != 0){
+            hal.rt_deinit[hal.rt_deinit_func_count++] = hal.hal_comps[i]->rt_deinit;
+         }
+      }
+   }
+   for(int i = 0; i < hal.rt_init_func_count; i++){
+      hal.rt_init[i]();
+   }
+
+   hal_start_rt();
+
+   if(hal.frt_func_count > 0){
+      hal_start_frt();
+      hal_enable_frt();
+   }
+   hal_enable_rt();
+}
+
+void hal_stop(){
+   hal_stop_frt();
+   hal_stop_rt();
+   hal_disable_frt();
+   hal_disable_rt();
+   for(; hal.rt_deinit_func_count > 0; hal.rt_deinit_func_count--){
+      hal.rt_deinit[hal.rt_deinit_func_count - 1]();
+   }
+}
+
+int hal_start_frt(){
+   if(hal.frt_state == FRT_STOP && hal.hal_state == HAL_OK){
+      hal.active_frt_func = -1;
+      hal.frt_state = FRT_SLEEP;
+      return(1);
+   }
+   return(0);
+}
+
+void hal_stop_rt(){
+   hal.active_rt_func = -1;
+   hal.rt_state = RT_STOP;
+   hal.active_rt_func = -1;
+   hal.rt_state = RT_STOP;
+}
+
+void hal_stop_frt(){
+   hal.active_frt_func = -1;
+   hal.frt_state = FRT_STOP;
+   hal.active_frt_func = -1;
+   hal.frt_state = FRT_STOP;
+}
+
+void hal_init_pin(hal_name_t name, hal_pin_t* pin, float value){
+  strncpy(pin->name, hal.comp_types[hal.comp_type], HAL_NAME_LENGTH);
+  strncat(pin->name, itoa(hal.comp_types_counter[hal.comp_type]), HAL_NAME_LENGTH);
+  strncat(pin->name, ".", HAL_NAME_LENGTH);
+  strncat(pin->name, name, HAL_NAME_LENGTH);
   pin->value = value;
   pin->source = pin;
-  pin->read_callback = 0;
-  register_hal_pin(pin);
+  hal_register_pin(pin);
 }
 
-int register_hal_pin(struct hal_pin* pin){
+int hal_register_pin(hal_pin_t* pin){
   if(hal.hal_pin_count >= MAX_HAL_PINS){
-    printf_("reg hal pin: too many pins: %i\n", hal.hal_pin_count);
+    hal.pin_errors++;
     return(0);
   }
 
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, pin->name)){
-      printf_("reg hal pin: name fault: %s\n", pin->name);
+      hal.pin_errors++;
       return(0);
     }
   }
@@ -77,7 +238,7 @@ int register_hal_pin(struct hal_pin* pin){
   return(1);
 }
 
-int set_hal_pin(HPNAME name, float value){
+int hal_set_pin(hal_name_t name, float value){
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, name)){
       hal.hal_pins[i]->value = value;
@@ -85,10 +246,12 @@ int set_hal_pin(HPNAME name, float value){
       return(1);
     }
   }
+  strcpy(hal.error_name,name);
+  hal.set_errors++;
   return(0);
 }
 
-int is_hal_pin(HPNAME name){
+int hal_is_pin(hal_name_t name){
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, name)){
       return(1);
@@ -97,39 +260,44 @@ int is_hal_pin(HPNAME name){
   return(0);
 }
 
-float get_hal_pin(HPNAME name){
+int hal_is_compname(hal_name_t name){
+  for(int i = 0; i < hal.hal_pin_count; i++){
+    if(!strncmp(hal.hal_pins[i]->name, name, strlen(name))){
+      return(1);
+    }
+  }
+  return(0);
+}
+
+float hal_get_pin(hal_name_t name){
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, name)){
       return(hal.hal_pins[i]->source->source->value);
     }
   }
+  hal.get_errors++;
   return(0.0);
 }
 
-struct hal_pin map_hal_pin(HPNAME name){
+hal_pin_t hal_map_pin(hal_name_t name){
     for(int i = 0; i < hal.hal_pin_count; i++){
       if(!strcmp(hal.hal_pins[i]->name, name)){
 		  return(*hal.hal_pins[i]);
       }
     }
-	struct hal_pin tmp;
-//	tmp.name = "";
-	tmp.value = 0.0;
-	tmp.read_callback = 0;
-	tmp.source = &tmp;
-    return(tmp);
+    return(*hal.hal_pins[0]);
 }
 
-void write_hal_pin(struct hal_pin* pin, float value){
+void hal_write_pin(hal_pin_t* pin, float value){
   pin->value = value;
   pin->source = pin;
 }
 
-float read_hal_pin(struct hal_pin* pin){
+float hal_read_pin(hal_pin_t* pin){
   return(pin->source->source->value);
 }
 
-struct hal_pin* find_hal_pin(HPNAME name){
+hal_pin_t* hal_find_pin(hal_name_t name){
   for(int i = 0; i < hal.hal_pin_count; i++){
     if(!strcmp(hal.hal_pins[i]->name, name)){
       return(hal.hal_pins[i]);
@@ -138,50 +306,23 @@ struct hal_pin* find_hal_pin(HPNAME name){
   return(0);
 }
 
-int link_hal_pins(HPNAME source, HPNAME sink){
-  struct hal_pin* d;
-  struct hal_pin* s;
-  d = find_hal_pin(source);
-  s = find_hal_pin(sink);
+int hal_link_pins(hal_name_t source, hal_name_t sink){
+  hal_pin_t* d;
+  hal_pin_t* s;
+  d = hal_find_pin(source);
+  s = hal_find_pin(sink);
 
   if(d != 0 && s != 0){
     s->value = s->source->source->value;
     s->source = d;
 	return(1);
   }
-  printf_("link not possible %s:%i -> %s:%i\n", source, d, sink, s);
+  strcpy(hal.error_name,source);
+  hal.link_errors++;
   return(0);
 }
 
-float read_float(char* buf){
-  int buffer_pos = 0;
-  float f = 0;
-  float tf = 10;
-  float invert = 1;
-
-  if(buf[buffer_pos] && buf[buffer_pos] == '-'){
-    invert = -1;
-    buffer_pos++;
-  }
-  else if(buf[buffer_pos] && buf[buffer_pos] == '+'){
-    buffer_pos++;
-  }
-  while(buf[buffer_pos] && isDecDigit(buf[buffer_pos])){
-    f *= 10;
-    f += buf[buffer_pos++] - '0';
-  }
-  if(buf[buffer_pos] && buf[buffer_pos] == '.'){
-    buffer_pos++;
-    while(buf[buffer_pos] && isDecDigit(buf[buffer_pos])){
-      f += (buf[buffer_pos++] - '0') / tf;
-      tf *= 10;
-    }
-  }
-  f *= invert;
-  return(f);
-}
-
-int set_comp_type(HPNAME name){
+int hal_set_comp_type(hal_name_t name){
   for(int i = 0; i < hal.comp_type_count; i++){
     if(!strcmp(hal.comp_types[i], name)){
       hal.comp_type = i;
@@ -190,81 +331,26 @@ int set_comp_type(HPNAME name){
   }
 
   if(hal.comp_type_count < MAX_COMP_TYPES){
-    strncpy(hal.comp_types[hal.comp_type_count], name, MAX_HPNAME);
+    strncpy(hal.comp_types[hal.comp_type_count], name, HAL_NAME_LENGTH);
     hal.comp_type = hal.comp_type_count++;
     return(0);
   }
-  printf_("set comp type: too many comps types: %i\n", hal.comp_type_count);
+  hal.comp_errors++;
   return(-1);
 }
 
-void call(void (*func)()){
-  if(func){
-    func();
-  }
-}
-
-
-int addf_init(void (*init)()){
-  if(init != 0 && hal.init_func_count < MAX_COMP_FUNCS){
-    hal.init[hal.init_func_count++] = init;
-    return(hal.init_func_count);
-  }
-  return(-1);
-}
-
-int addf_fast_rt(void (*fast_rt)(float period)){
-  if(fast_rt != 0 && hal.fast_rt_func_count < MAX_COMP_FUNCS){
-    hal.fast_rt[hal.fast_rt_func_count++] = fast_rt;
-    return(hal.fast_rt_func_count);
-  }
-  return(-1);
-}
-
-int addf_rt_in(void (*rt_in)(float period)){
-  if(rt_in != 0 && hal.rt_in_func_count < MAX_COMP_FUNCS){
-    hal.rt_in[hal.rt_in_func_count++] = rt_in;
-    return(hal.rt_in_func_count);
-  }
-  return(-1);
-}
-
-int addf_rt_filter(void (*rt_filter)(float period)){
-  if(rt_filter != 0 && hal.rt_filter_func_count < MAX_COMP_FUNCS){
-    hal.rt_filter[hal.rt_filter_func_count++] = rt_filter;
-    return(hal.rt_filter_func_count);
-  }
-  return(-1);
-}
-
-int addf_rt_pid(void (*rt_pid)(float period)){
-  if(rt_pid != 0 && hal.rt_pid_func_count < MAX_COMP_FUNCS){
-    hal.rt_pid[hal.rt_pid_func_count++] = rt_pid;
-    return(hal.rt_pid_func_count);
-  }
-  return(-1);
-}
-
-int addf_rt_calc(void (*rt_calc)(float period)){
-  if(rt_calc != 0 && hal.rt_calc_func_count < MAX_COMP_FUNCS){
-    hal.rt_calc[hal.rt_calc_func_count++] = rt_calc;
-    return(hal.rt_calc_func_count);
-  }
-  return(-1);
-}
-
-int addf_rt_out(void (*rt_out)(float period)){
-  if(rt_out != 0 && hal.rt_out_func_count < MAX_COMP_FUNCS){
-    hal.rt_out[hal.rt_out_func_count++] = rt_out;
-    return(hal.rt_out_func_count);
-  }
-  return(-1);
-}
-
-int addf_nrt(void (*nrt)(float period)){
-  if(nrt != 0 && hal.nrt_func_count < MAX_COMP_FUNCS){
-    hal.nrt[hal.nrt_func_count++] = nrt;
-    return(hal.nrt_func_count);
-  }
-  return(-1);
+void hal_add_comp(hal_comp_t* comp){
+   if(comp != 0 && hal.comp_count < MAX_COMPS){
+      hal.hal_comps[hal.comp_count++] = comp;
+      comp->instance = hal.comp_types_counter[hal.comp_type];
+      if(comp->nrt_init != 0){
+         hal.nrt_init[hal.nrt_init_func_count++] = comp->nrt_init;
+      }
+      if(comp->nrt != 0 && hal.nrt_func_count < MAX_COMPS){
+         hal.nrt[hal.nrt_func_count++] = comp->nrt;
+      }
+   }
+   else{
+      hal.comp_errors++;
+   }
 }

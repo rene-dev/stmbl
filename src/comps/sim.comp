@@ -1,44 +1,62 @@
-COMP(sim);
+HAL_COMP(sim);
 
-HAL_PIN(amp) = 0.1;
-HAL_PIN(freq) = 0.1591549;
+HAL_PIN(amp) = 3.1;
+HAL_PIN(freq) = 1.0;
 HAL_PIN(sin) = 0.0;
-HAL_PIN(cos) = 0.0;
 HAL_PIN(msin) = 0.0;
-HAL_PIN(mcos) = 0.0;
+HAL_PIN(sin2) = 0.0;
+HAL_PIN(msin2) = 0.0;
+HAL_PIN(sin3) = 0.0;
+HAL_PIN(msin3) = 0.0;
 HAL_PIN(square) = 0.0;
-HAL_PIN(msquare) = 0.0;
 HAL_PIN(vel) = 0.0;
 HAL_PIN(res) = 100000.0;
+HAL_PIN(offset) = 0.0;
 
 MEM(float time) = 0.0;
-MEM(float amp_) = 0.0;
-MEM(float freq_) = 0.0;
+MEM(float amp) = 0.0;
+MEM(float freq) = 0.0;
+MEM(float vel) = 0.0;
 
-RT_IN(
-  amp_ = PIN(amp) * 0.001 + amp_ * 0.999;
-  freq_ = PIN(freq) * 0.001 + freq_ * 0.999;
-  float sin_;
-  float cos_;
-  float r = PIN(res);
-  //float square_;
+RT(
+  amp = PIN(amp) * 0.001 + amp * 0.999;
+  freq = PIN(freq) * 0.001 + freq * 0.999;
+  float sin;
+  float sin2;
+  float sin3;
+  float amp2;
+  float r = MAX(PIN(res), 1);
+  
+  if(ABS(freq) > 0.01){
+     amp2 = 1 / (freq * 2.0 * M_PI);
+  }
+  else{
+     amp2 = 0;
+ }
 
   time += period;
 
-  if(ABS(freq_ * time) >= 2.0 * M_PI){
+  if(ABS(freq * time) >= 1.0){ // TODO
     time = 0.0;
   }
 
-  sin_ = amp_ * sinf(freq_ * time);
-  cos_ = amp_ * cosf(freq_ * time);
+  sin = amp * sinf(freq * time * 2.0 * M_PI);
+  sin2 = sin * amp2;
+  sin3 = sin2 * amp2;
+  
+  float s = sin;
+  float o = PIN(offset);
+  vel += freq * 2.0 * M_PI * period;
+  vel = mod(vel);
 
-  PIN(sin) = ((int)(sin_ * r)) / r;
-  PIN(msin) = mod(((int)(sin_ * r)) / r);
-  PIN(cos) = ((int)(cos_ * r)) / r;
-  PIN(mcos) = mod(((int)(cos_ * r)) / r);
-  PIN(square) = (sin_ > 0.0) ? (amp_) : (-amp_);
-  PIN(msquare) = mod((sin_ > 0.0) ? (amp_) : (-amp_));
-  PIN(vel) = mod(((int)(freq_ * time * r)) / r);
+  PIN(sin) = s + o;
+  PIN(sin2) = sin2 + o;
+  PIN(sin3) = sin3 + o;
+  PIN(msin) = ((int)(mod(s + o) * r)) / r;
+  PIN(msin2) = ((int)(mod(sin2 + o) * r)) / r;
+  PIN(msin3) = ((int)(mod(sin3 + o) * r)) / r;
+  PIN(square) = (sin > 0.0) ? (amp + o) : (-amp + o);
+  PIN(vel) = vel;//mod(((int)(vel * r)) / r + o);
 );
 
 ENDCOMP;

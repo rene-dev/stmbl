@@ -1,91 +1,110 @@
-COMP(res);
+//using FB_TX
+
+HAL_COMP(res);
 
 HAL_PIN(pos) = 0.0;
 HAL_PIN(amp) = 0.0;
-HAL_PIN(s) = 0.0;
-HAL_PIN(c) = 0.0;
+HAL_PIN(quad) = 0.0;
+HAL_PIN(poles) = 1.0;
 
-HAL_PIN(reverse) = 0.0;
+HAL_PIN(sin) = 0.0;
+HAL_PIN(cos) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
+//HAL_PIN(tim2_oc) = 240.0;
+MEM(int lastq) = 0;// last quadrant
+MEM(int abspos) = 0;// multiturn position
 
-MEM(float s_mid) = 4096 / 2 * ADC_ANZ;//50% ADC
-MEM(float c_mid) = 4096 / 2 * ADC_ANZ;
+RT_INIT(
+   //resolver ref signal generation
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_10;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-INIT(
+   GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_TIM2);
 
+   // TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
+   // TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+   // TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
+   // TIM_OCInitStructure.TIM_Pulse = 10;
+   // TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+   // TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+   // TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
+   // TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
+   // 
+   // TIM_OC3Init(TIM2, &TIM_OCInitStructure);
+   // TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);
+   // TIM_CtrlPWMOutputs(TIM2, ENABLE);
+   
+   //txen
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_12;
+   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
+   GPIO_SetBits(GPIOB,GPIO_Pin_12);
 );
 
-FRT(
-	float si[ADC_ANZ];
-	float co[ADC_ANZ];
-	uint32_t sc[ADC_ANZ];
+RT_DEINIT(
+   GPIO_ResetBits(GPIOB,GPIO_Pin_12);//tx disable
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_12;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
+   // TIM_CtrlPWMOutputs(TIM2, DISABLE);
+   // TIM_OCStructInit(&TIM_OCInitStructure);
+   // TIM_OC3Init(TIM2, &TIM_OCInitStructure);
+);
 
-	GPIO_SetBits(GPIOB,GPIO_Pin_3);//messpin
+RT(
+   //TODO: arr can change!
+//   TIM2->CCR3 = (int)CLAMP(PIN(tim2_oc), 0, TIM2->ARR - 1);
+	float s = 0.0;
+	float c = 0.0;
+	float a = 0.0;
 
-	for(int i = 0; i < PID_WAVES; i++){
-		sc[i] = 0.0;
+	s = PIN(sin);
+   c = PIN(cos);
+	a = sqrtf(s * s + c * c);
 
-		for(int j = 0; j < ADC_ANZ; j++){
-			//si[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff);
-			//co[i] += (uint16_t)(ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16);
-			sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
-		}
-	}
+	float p = MAX(1.0, PIN(poles));
 
-	GPIO_ResetBits(GPIOB,GPIO_Pin_3);//messpin
-
-	for(int i = 0; i < PID_WAVES; i++){
-		si[i] = 0.0;
-		co[i] = 0.0;
-
-		si[i] = sc[i] & 0x0000ffff;
-		co[i] = sc[i] >> 16;
-	}
-
-	for(int i = 0; i < PID_WAVES; i++){
-		s_mid = s_mid * 0.99 + si[i] * 0.01;
-		c_mid = c_mid * 0.99 + co[i] * 0.01;
-	}
-
-	for(int i = 0; i < PID_WAVES; i++){
-		if(i % 2){
-			si[i] = si[i] - s_mid;
-			co[i] = co[i] - c_mid;
-		}
-		else{
-			si[i] = s_mid - si[i];
-			co[i] = c_mid - co[i];
-		}
-	}
-
-	float a = si[PID_WAVES - 1] * si[PID_WAVES - 1] + co[PID_WAVES - 1] * co[PID_WAVES - 1]; // nur letzte wave
-
-
-	float s_;
-	float c_;
-
-	if(PIN(reverse) > 0.0){
-		s_ = co[PID_WAVES - 1];
-		c_ = si[PID_WAVES - 1];
-	}
-	else{
-		s_ = si[PID_WAVES - 1];
-		c_ = co[PID_WAVES - 1];
-	}
-
-	if(a < 50000){
+	if(a < 0.25){
 		PIN(error) = 1.0;
 	}
 	else{
 		PIN(error) = 0.0;
-		PIN(pos) = atan2f(s_, c_);
-	}
+      if(p == 1.0f){
+         PIN(pos) = atan2f(s, c);
+      }else{
+         int q = PIN(quad);// current quadrant
 
+         if(lastq == 2 && q == 3)
+            abspos++;
+         if(lastq == 3 && q == 2)
+            abspos--;
+
+			if(abspos >= p){
+				abspos = 0;
+			}
+			if(abspos <= -1){
+				abspos = p - 1;
+			}
+
+         lastq = q;
+         //TODO: clamp abspos
+         float absa = atan2f(s, c) + abspos * M_PI * 2.0f;
+         PIN(pos) = mod(absa/p);
+      }
+	}
 	PIN(amp) = a;
-	PIN(s) = s_;
-	PIN(c) = c_;
 );
 
 

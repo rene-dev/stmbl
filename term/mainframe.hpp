@@ -11,9 +11,9 @@
 #include <wx/arrstr.h>
 #include <wx/button.h>
 #include <wx/config.h>
-#include <wx/slider.h>
 #include <math.h>
 #include <vector>
+#include <queue>
 #include <libserialport.h>
 #include "basicdrawpane.hpp"
 
@@ -21,24 +21,23 @@ class ServoFrame : public wxFrame
 {
 public:
     ServoFrame(const wxString& title);
-    int send(std::string& s,bool h = false);
+    int send(const std::string& s,bool h = false);
 private:
     wxButton *connectbutton;
     wxButton *refresh;
     wxButton *clear;
+    wxButton *reset;
     wxRadioButton *uhu;
     wxRadioButton *stmbl;
     wxTimer * timer;
-    wxConfig *config;
     struct sp_port **ports;
     struct sp_port *port;
     wxChoice *choose_port;
-    std::vector<wxChoice *> channelchoice;
-    std::vector<wxSlider *> channelpos;
-    std::vector<wxSlider *> channelgain;
+    std::vector<wxComboBox *> channelchoice;
     bool connected;
     void OnConnect(wxCommandEvent& WXUNUSED(event));
     void OnRefresh(wxCommandEvent& WXUNUSED(event));
+    void OnReset(wxCommandEvent& WXUNUSED(event));
     void OnClear(wxCommandEvent& WXUNUSED(event));
     void OnInput(wxCommandEvent& event);
     void OnChannelChange(wxCommandEvent& event);
@@ -60,4 +59,5 @@ private:
     int histpos;
     int addr;
     float values[16];
+    std::queue<std::string> txqueue;
 };

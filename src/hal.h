@@ -17,169 +17,220 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-#include "scanf.h"
-#include "printf.h"
-
-
 #pragma once
 
-#define MAX_HAL_PINS 256
-#define MAX_HPNAME 32
-#define MAX_COMP_TYPES 32
-#define MAX_COMP_FUNCS 32
+#include <stdint.h>
 
+#define MAX_HAL_PINS 800
+#define HAL_NAME_LENGTH 32
+#define MAX_COMP_TYPES 64
+#define MAX_COMPS 64
 
-typedef char HPNAME[MAX_HPNAME];
+typedef char hal_name_t[HAL_NAME_LENGTH];
 
-struct hal_pin{
-  HPNAME name;
+typedef struct hal_pin_t{
+  hal_name_t name;
   volatile float value;
-  void (*read_callback)();
-  struct hal_pin* source;
-};
+  struct hal_pin_t* source;
+} hal_pin_t;
 
-struct hal_struct{
-  HPNAME comp_types[MAX_COMP_TYPES];
+typedef struct{
+   hal_name_t name;
+   void (*rt_init)();
+   void (*rt_deinit)();
+   void (*nrt_init)();
+   void (*rt)(float period);
+   void (*frt)(float period);
+   void (*nrt)(float period);
+   int hal_pin_start_index;
+   int hal_pin_count;
+   uint32_t instance;
+} hal_comp_t;
+
+typedef struct{
+  hal_name_t comp_types[MAX_COMP_TYPES];
   int comp_types_counter[MAX_COMP_TYPES];
   int comp_type_count;
   int comp_type;
-  HPNAME tmp;
+  hal_name_t tmp;
 
-  void (*init[MAX_COMP_FUNCS])();
-  int init_func_count;
+  hal_comp_t* hal_comps[MAX_COMPS];
+  int comp_count;
 
-  void (*fast_rt[MAX_COMP_FUNCS])(float period);
-  int fast_rt_func_count;
+  void (*rt_init[MAX_COMPS])();
+  int rt_init_func_count;
 
-  void (*rt_in[MAX_COMP_FUNCS])(float period);
-  int rt_in_func_count;
+  void (*rt_deinit[MAX_COMPS])();
+  int rt_deinit_func_count;
 
-  void (*rt_filter[MAX_COMP_FUNCS])(float period);
-  int rt_filter_func_count;
+  void (*nrt_init[MAX_COMPS])();
+  int nrt_init_func_count;
 
-  void (*rt_pid[MAX_COMP_FUNCS])(float period);
-  int rt_pid_func_count;
+  void (*rt[MAX_COMPS])(float period);
+  int rt_func_count;
 
-  void (*rt_calc[MAX_COMP_FUNCS])(float period);
-  int rt_calc_func_count;
-
-  void (*rt_out[MAX_COMP_FUNCS])(float period);
-  int rt_out_func_count;
-
-  void (*nrt[MAX_COMP_FUNCS])(float period);
+  void (*nrt[MAX_COMPS])(float period);
   int nrt_func_count;
 
-  struct hal_pin* hal_pins[MAX_HAL_PINS];
+  void (*frt[MAX_COMPS])(float period);
+  int frt_func_count;
+
+  hal_pin_t* hal_pins[MAX_HAL_PINS];
   int hal_pin_count;
 
-  int fast_rt_lock;
-  int rt_lock;
-  int nrt_lock;
-} hal;
+  volatile enum{
+    RT_CALC,
+    RT_SLEEP,
+    RT_STOP
+  } rt_state;
 
-void init_hal();
+  volatile enum{
+    FRT_CALC,
+    FRT_SLEEP,
+    FRT_STOP
+  } frt_state;
 
-void init_hal_pin(HPNAME name, struct hal_pin* pin, float value);
+  volatile enum {
+    FRT_TOO_LONG,
+    RT_TOO_LONG,
+    MISC_ERROR,
+    MEM_ERROR,
+    CONFIG_LOAD_ERROR,
+    CONFIG_ERROR,
+    HAL_OK
+  } hal_state;
 
-int register_hal_pin(struct hal_pin* pin);
+  volatile int active_rt_func;
+  volatile int active_frt_func;
+  volatile int active_nrt_func;
 
-int set_comp_type(HPNAME name);
+  uint32_t link_errors;
+  uint32_t pin_errors;
+  uint32_t set_errors;
+  uint32_t get_errors;
+  uint32_t comp_errors;
+  char error_name[HAL_NAME_LENGTH];
+} hal_struct_t;
 
-int set_hal_pin(HPNAME name, float value);
+extern hal_struct_t hal;
 
-int is_hal_pin(HPNAME name);
+void hal_init();
 
-float get_hal_pin(HPNAME name);
+void hal_comp_init();
+void hal_run_rt(float period);
+void hal_run_nrt(float period);
+void hal_run_frt(float period);
 
-struct hal_pin map_hal_pin(HPNAME name);
+void hal_start();
 
-void write_hal_pin(struct hal_pin* pin, float value);
+void hal_stop();
 
-float read_hal_pin(struct hal_pin* pin);
+int hal_start_rt();
 
-struct hal_pin* find_hal_pin(HPNAME name);
+int hal_start_frt();
 
-int link_hal_pins(HPNAME source, HPNAME sink);
+void hal_stop_rt();
 
-float read_float(char* buf);
+void hal_stop_frt();
 
-void call(void (*func)());
+void hal_init_pin(hal_name_t name, hal_pin_t* pin, float value);
 
-int addf_init(void (*init)());
-int addf_fast_rt(void (*fast_rt)(float period));
-int addf_rt_in(void (*rt_in)(float period));
-int addf_rt_filter(void (*rt_filter)(float period));
-int addf_rt_pid(void (*rt_pid)(float period));
-int addf_rt_calc(void (*rt_calc)(float period));
-int addf_rt_out(void (*rt_out)(float period));
-int addf_nrt(void (*nrt)(float period));
+int hal_register_pin(hal_pin_t* pin);
 
+int hal_set_comp_type(hal_name_t name);
 
-#define COMP(type)                  \
+int hal_set_pin(hal_name_t name, float value);
+
+int hal_is_pin(hal_name_t name);
+
+int hal_is_compname(hal_name_t name);
+
+float hal_get_pin(hal_name_t name);
+
+hal_pin_t hal_map_pin(hal_name_t name);
+
+void hal_write_pin(hal_pin_t* pin, float value);
+
+float hal_read_pin(hal_pin_t* pin);
+
+struct hal_pin_t* hal_find_pin(hal_name_t name);
+
+int hal_link_pins(hal_name_t source, hal_name_t sink);
+
+void hal_add_comp(hal_comp_t* comp);
+
+extern void hal_enable_rt();
+extern void hal_enable_frt();
+extern void hal_disable_rt();
+extern void hal_disable_frt();
+extern uint32_t hal_get_systick_value();
+extern uint32_t hal_get_systick_reload();
+extern uint32_t hal_get_systick_freq();
+
+#define HAL_COMP(type)                  \
 {                                   \
-  set_comp_type(#type);             \
-  void (*init)() = 0;               \
-  void (*fast_rt)(float period) = 0;\
-  void (*rt_in)(float period) = 0;     \
-  void (*rt_filter)(float period) = 0;     \
-  void (*rt_pid)(float period) = 0;     \
-  void (*rt_calc)(float period) = 0;     \
-  void (*rt_out)(float period) = 0;     \
-  void (*nrt)(float period) = 0;
+  static hal_comp_t self; \
+  strncpy(self.name, #type, HAL_NAME_LENGTH); \
+  self.nrt_init = 0; \
+  self.rt_init = 0; \
+  self.rt_deinit = 0; \
+  self.rt = 0; \
+  self.frt = 0; \
+  self.nrt = 0; \
+  self.hal_pin_start_index = hal.hal_pin_count; \
+  self.hal_pin_count = 0; \
+  hal_set_comp_type(self.name);             \
+  HAL_PIN(rt_calc_time) = 0.0; \
+  HAL_PIN(frt_calc_time) = 0.0; \
+  HAL_PIN(rt_prio) = -1.0; \
+  HAL_PIN(frt_prio) = -1.0;
 
 #define HAL_PIN(name)               \
-  static struct hal_pin name;       \
-  init_hal_pin(#name, &name, 0.0);  \
-  (name.value)
+  static hal_pin_t name##_hal_pin;       \
+  hal_init_pin(#name, &name##_hal_pin, 0.0);  \
+  (name##_hal_pin.value)
 
 #define GLOBAL_HAL_PIN(name)               \
-  volatile struct hal_pin name;       
+  volatile hal_pin_t name##_hal_pin;
 
 #define MEM(var) static var
 
 #define PIN(name)                       \
-  *({                                   \
-    if(&name != name.source->source){           \
-      call(name.source->source->read_callback); \
-    };                                   \
-    &(name.source->source->value);              \
-  })
+  (name##_hal_pin.source->source->value)
 
 #define INIT(func)                    \
- init = ({ void function(){func} function;});
+ self.nrt_init = ({ void function(){func} function;});
+
+#define RT_INIT(func)                    \
+ self.rt_init = ({ void function(){func} function;});
+
+#define RT_DEINIT(func)                    \
+ self.rt_deinit = ({ void function(){func} function;});
+
+#define RT(func)                    \
+ self.rt = ({ void function(float period){ \
+   uint32_t __start_time__ = hal_get_systick_value(); \
+   func \
+   uint32_t __end_time__ = hal_get_systick_value(); \
+   if(__start_time__ < __end_time__){ \
+     __start_time__ += hal_get_systick_reload(); \
+   } \
+   PIN(rt_calc_time) = ((float)(__start_time__ - __end_time__)) / hal_get_systick_freq(); \
+   } function;});
 
 #define FRT(func)                    \
- fast_rt = ({ void function(float period){func} function;});
-
-#define RT_IN(func)                    \
- rt_in = ({ void function(float period){func} function;});
-
-#define RT_FILTER(func)                    \
- rt_filter = ({ void function(float period){func} function;});
-
-#define RT_PID(func)                    \
- rt_pid = ({ void function(float period){func} function;});
-
-#define RT_CALC(func)                    \
- rt_calc = ({ void function(float period){func} function;});
-
-#define RT_OUT(func)                    \
- rt_out = ({ void function(float period){func} function;});
+ self.frt = ({ void function(float period){ \
+   uint32_t __start_time__ = hal_get_systick_value(); \
+   func \
+   uint32_t __end_time__ = hal_get_systick_value(); \
+   if(__start_time__ < __end_time__){ \
+     __start_time__ += hal_get_systick_reload(); \
+   } \
+   PIN(frt_calc_time) = ((float)(__start_time__ - __end_time__)) / hal_get_systick_freq(); \
+   } function;});
 
 #define NRT(func)                    \
- nrt = ({ void function(float period){func} function;});
-
-#define RC(pin, func)                    \
- pin.read_callback = ({ void function(){func} function;});
-
-#define TRG(func)                    \
-  static struct hal_pin trg;       \
-  init_hal_pin("trg", &trg, 0.0);  \
-  trg.read_callback = ({ void function(){func} function;});
-
-#define LINK_RC(src_pin, dst_pin)                    \
- src_pin.read_callback = dst_pin.read_callback;
+ self.nrt = ({ void function(float period){func} function;});
 
 #define HT(ht_code) \
 { \
@@ -222,14 +273,19 @@ if(ht_time_count < (time)){ \
 } \
 jump_label_pointer = jump_label_pointer_old;
 
-
 #define ENDCOMP \
-  addf_init(init); \
-  addf_fast_rt(fast_rt); \
-  addf_rt_in(rt_in); \
-  addf_rt_filter(rt_filter); \
-  addf_rt_pid(rt_pid); \
-  addf_rt_calc(rt_calc); \
-  addf_rt_out(rt_out); \
-  addf_nrt(nrt); \
+  self.hal_pin_count = hal.hal_pin_count - self.hal_pin_start_index; \
+  hal_add_comp(&self); \
 }
+
+#define BLINK(N) \
+({ \
+  int t = (systime / 300) % (2 * N + 2); \
+  if(t < 2){ \
+    t = 0; \
+  } \
+  else{ \
+    t = t % 2; \
+  } \
+  t;\
+})

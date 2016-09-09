@@ -87,37 +87,74 @@
 #define FAN_PORT GPIOC
 #define FAN_IO_RCC RCC_AHB1Periph_GPIOC
 
-// uart
-#define UART_CMD USART1
-#define UART_CMD_RCC RCC_APB2Periph_USART1
+//states
+
+// state -10 = reset state, -6 = fb error, -5 = sat error, -4 = over current, -3 = pos_error, -2 = over temperature, -1 = over voltage, 0 = disabled, 1 = enabled, 2 = phasing
+#define STATE_RESET -10
+#define STATE_HV_ERROR -7
+#define STATE_FB_ERROR -6
+#define STATE_SAT_ERROR -5
+#define STATE_OVR_CURR -4
+#define STATE_POS_ERROR -3
+#define STATE_OVR_TEMP -2
+#define STATE_OVR_VOLT -1
+#define STATE_DISABLED 0
+#define STATE_ENABLED 1
+#define STATE_PHASING 2
+
+#ifdef TROLLER
+
+#define UART_DRV USART1
+#define UART_DRV_RCC RCC_APB2Periph_USART1
+#define UART_DRV_CLOCK_COMMAND RCC_APB2PeriphClockCmd
+
+#define UART_DRV_RX_DMA DMA2_Stream5
+#define UART_DRV_RX_DMA_RCC RCC_AHB1Periph_DMA2
+#define UART_DRV_RX_DMA_CHAN DMA_Channel_4
+#define UART_DRV_RX_DMA_IRQN DMA1_Stream5_IRQn
+#define UART_DRV_RX_DMA_TCIF DMA_FLAG_TCIF5
+
+#define UART_DRV_IRQ USART1_IRQHandler
+#define UART_DRV_IRQN USART1_IRQn
+
+#define UART_DRV_TX_DMA DMA2_Stream7
+#define UART_DRV_TX_DMA_RCC RCC_AHB1Periph_DMA2
+#define UART_DRV_TX_DMA_CHAN DMA_Channel_4
+#define UART_DRV_TX_DMA_IRQN DMA1_Stream7_IRQn
+#define UART_DRV_TX_DMA_TCIF DMA_FLAG_TCIF7
+
+#define UART_DRV_RX_PIN GPIO_Pin_7
+#define UART_DRV_RX_PORT GPIOB
+#define UART_DRV_RX_IO_RCC RCC_AHB1Periph_GPIOB
+#define UART_DRV_RX_PIN_SOURCE GPIO_PinSource7
+#define UART_DRV_RX_AF_SOURCE GPIO_AF_USART1
+
+#define UART_DRV_TX_PIN GPIO_Pin_6
+#define UART_DRV_TX_PORT GPIOB
+#define UART_DRV_TX_IO_RCC RCC_AHB1Periph_GPIOB
+#define UART_DRV_TX_PIN_SOURCE GPIO_PinSource6
+#define UART_DRV_TX_AF_SOURCE GPIO_AF_USART1
+
+#else
 
 #define UART_DRV USART2
 #define UART_DRV_RCC RCC_APB1Periph_USART2
+#define UART_DRV_CLOCK_COMMAND RCC_APB1PeriphClockCmd
 
-//// dma
 #define UART_DRV_RX_DMA DMA1_Stream5
 #define UART_DRV_RX_DMA_RCC RCC_AHB1Periph_DMA1
 #define UART_DRV_RX_DMA_CHAN DMA_Channel_4
 #define UART_DRV_RX_DMA_IRQN DMA1_Stream5_IRQn
+#define UART_DRV_RX_DMA_TCIF DMA_FLAG_TCIF5
+
+#define UART_DRV_IRQ USART2_IRQHandler
+#define UART_DRV_IRQN USART2_IRQn
 
 #define UART_DRV_TX_DMA DMA1_Stream6
 #define UART_DRV_TX_DMA_RCC RCC_AHB1Periph_DMA1
 #define UART_DRV_TX_DMA_CHAN DMA_Channel_4
 #define UART_DRV_TX_DMA_IRQN DMA1_Stream6_IRQn
 #define UART_DRV_TX_DMA_TCIF DMA_FLAG_TCIF6
-
-//// gpio
-#define UART_CMD_RX_PIN GPIO_Pin_7
-#define UART_CMD_RX_PORT GPIOB
-#define UART_CMD_RX_IO_RCC RCC_AHB1Periph_GPIOB
-#define UART_CMD_RX_PIN_SOURCE GPIO_PinSource7
-#define UART_CMD_RX_AF_SOURCE GPIO_AF_USART1
-
-#define UART_CMD_TX_PIN GPIO_Pin_6
-#define UART_CMD_TX_PORT GPIOB
-#define UART_CMD_TX_IO_RCC RCC_AHB1Periph_GPIOB
-#define UART_CMD_TX_PIN_SOURCE GPIO_PinSource6
-#define UART_CMD_TX_AF_SOURCE GPIO_AF_USART1
 
 #define UART_DRV_RX_PIN GPIO_Pin_3
 #define UART_DRV_RX_PORT GPIOA
@@ -130,6 +167,8 @@
 #define UART_DRV_TX_IO_RCC RCC_AHB1Periph_GPIOA
 #define UART_DRV_TX_PIN_SOURCE GPIO_PinSource2
 #define UART_DRV_TX_AF_SOURCE GPIO_AF_USART2
+
+#endif
 
 // i2c
 #define I2C I2C1

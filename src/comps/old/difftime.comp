@@ -1,0 +1,52 @@
+HAL_COMP(pderiv);
+
+HAL_PIN(pos_in);
+HAL_PIN(pos_out);
+HAL_PIN(vel);
+HAL_PIN(vel_time) = 0.001;
+HAL_PIN(lp) = 0.0;
+
+MEM(float pos) = 0.0;
+MEM(float pos_out) = 0.0;
+MEM(float frt_vel) = 0.0;
+MEM(float frt_lastpos) = 0.0;
+MEM(float rt_lastpos) = 0.0;
+MEM(float difftime) = 0.0;
+MEM(float vel) = 0.0;
+MEM(float v) = 0.0;
+
+FRT(
+   pos = PIN(pos_in);
+   float vel = minus(pos, frt_lastpos) / difftime;
+   if(EDGE(pos)){
+      pos_out = pos;
+      difftime = 0;
+      frt_vel = vel;
+      frt_lastpos = pos;
+   }
+   difftime += period;
+   
+   if(difftime > PIN(vel_time)){
+      difftime = PIN(vel_time);
+      frt_lastpos = pos;
+      frt_vel = vel;
+   }
+);
+
+RT(
+  float lp = LP_HZ(PIN(lp));
+  PIN(pos_out) = pos_out;
+  if(difftime <= period){
+     v = minus(pos, rt_lastpos) / period;
+     //PIN(vel) = vel;
+  }else {
+     v = frt_vel;
+     //PIN(vel) = vel;
+  }
+  vel = v * lp + (1.0 - lp) * vel;
+  PIN(vel) = vel;
+  pos_out += vel * period;
+  rt_lastpos = pos;
+);
+
+ENDCOMP;

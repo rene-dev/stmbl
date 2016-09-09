@@ -1,0 +1,151 @@
+HAL_COMP(enc_cmd);
+
+HAL_PIN(res) = 2048.0;
+HAL_PIN(pos) = 0.0;
+HAL_PIN(index) = 0.0;
+HAL_PIN(a) = 0.0;
+HAL_PIN(b) = 0.0;
+
+MEM(int e_res) = 0.0;
+
+RT_INIT(
+  GPIO_InitTypeDef GPIO_InitStructure;
+  TIM_ICInitTypeDef TIM_ICInitStructure;
+  TIM_ICInitStructure.TIM_Channel = TIM_Channel_1 | TIM_Channel_2;
+  TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_BothEdge;
+  TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
+  TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
+  TIM_ICInitStructure.TIM_ICFilter = 0xF;
+  TIM_ICInit(ENC0_TIM, &TIM_ICInitStructure);
+
+  /***************** port 0, quadrature or step/dir *********************/
+  e_res = (int)PIN(res);
+  if(e_res < 1){
+	  e_res = 1;
+  }
+  // enable clocks
+  RCC_APB2PeriphClockCmd(ENC0_TIM_RCC, ENABLE);
+
+  // pin af -> tim
+  GPIO_PinAFConfig(ENC0_A_PORT, ENC0_A_PIN_SOURCE, ENC0_A_AF_SOURCE);//ch1
+  GPIO_PinAFConfig(ENC0_B_PORT, ENC0_B_PIN_SOURCE, ENC0_B_AF_SOURCE);//ch2
+
+  // enc res / turn
+  TIM_SetAutoreload(ENC0_TIM, e_res - 1);
+
+  // quad
+  TIM_Cmd(ENC0_TIM, DISABLE);
+  TIM1->CR1 |= TIM_CR1_DIR;
+  GPIO_InitStructure.GPIO_Pin = ENC0_A_PIN | ENC0_B_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(ENC0_A_PORT, &GPIO_InitStructure);
+  TIM_EncoderInterfaceConfig(ENC0_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+  TIM_Cmd(ENC0_TIM, ENABLE);
+);
+
+RT_DEINIT(
+   TIM_Cmd(ENC0_TIM, DISABLE);
+   TIM_DeInit(ENC0_TIM);
+   RCC_APB2PeriphClockCmd(ENC0_TIM_RCC, DISABLE);
+   GPIO_InitStructure.GPIO_Pin = ENC0_A_PIN | ENC0_B_PIN;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   GPIO_Init(ENC0_A_PORT, &GPIO_InitStructure);
+);
+
+FRT(
+   PIN(pos) = mod(TIM_GetCounter(ENC0_TIM) * 2.0f * M_PI / (float)e_res);
+);
+
+RT(
+
+  if(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_2)){//TODO: setup pin
+     PIN(index) = 0.0;
+  }else{
+     PIN(index) = 1.0;
+  }
+  if(GPIO_ReadInputDataBit(ENC0_A_PORT,ENC0_A_PIN)){//TODO: setup pin
+     PIN(a) = 0.0;
+  }else{
+     PIN(a) = 1.0;
+  }
+  if(GPIO_ReadInputDataBit(ENC0_B_PORT,ENC0_B_PIN)){//TODO: setup pin
+     PIN(b) = 0.0;
+  }else{
+     PIN(b) = 1.0;
+  }
+
+  int res = (int)PIN(res);
+  if(res < 1){
+	  res = 1;
+  }
+
+  if(e_res != res){
+    e_res = res;
+    TIM_SetAutoreload(ENC0_TIM, e_res - 1);
+  }
+);
+
+ENDCOMP;
+
+//http://stackoverflow.com/questions/32947972/stm32-how-to-make-pulse-count-up-down-with-timer
+// #include "mbed.h"
+// #include "stm32f4xx.h"
+// #include "stm32f4xx_hal_tim_ex.h"
+//
+// TIM_HandleTypeDef timer;
+// TIM_Encoder_InitTypeDef encoder;
+//
+// //direction to PA_9 -- step to PA_8
+//
+// int main(){
+//      GPIO_InitTypeDef GPIO_InitStruct;
+//         __TIM1_CLK_ENABLE();
+//         __GPIOA_CLK_ENABLE();
+//         GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
+//         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+//         GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+//         GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+//         GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
+//         HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+//
+//     timer.Instance = TIM1;
+//     timer.Init.Period = 0xffff;
+//     timer.Init.Prescaler = 1;
+//     timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+//     timer.Init.CounterMode = TIM_COUNTERMODE_UP;
+//
+//
+//     encoder.EncoderMode = TIM_ENCODERMODE_TI1;
+//     encoder.IC1Filter = 0x0f;
+//     encoder.IC1Polarity = TIM_INPUTCHANNELPOLARITY_RISING; //step signal
+//     encoder.IC1Prescaler = TIM_ICPSC_DIV1;
+//     encoder.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+//
+//     encoder.IC2Filter = 0x0f;
+//     encoder.IC2Polarity = TIM_INPUTCHANNELPOLARITY_BOTHEDGE;  //check direction
+//     encoder.IC2Prescaler = TIM_ICPSC_DIV1;
+//     encoder.IC2Selection = TIM_ICSELECTION_INDIRECTTI;
+//
+//     HAL_TIM_Encoder_Init(&timer, &encoder);
+//     HAL_TIM_Encoder_Start(&timer,TIM_CHANNEL_1);
+//
+//
+//     TIM1->EGR = 1;           // Generate an update event
+//     TIM1->CR1 = 1;           // Enable the counter
+//
+//
+//  while (1) {
+//         int16_t count1;
+//         count1=TIM1->CNT;
+//
+//         printf("%d\r\n", count1);
+//         wait(1.0);
+//
+//  };
+// }
