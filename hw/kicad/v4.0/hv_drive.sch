@@ -3,12 +3,85 @@ LIBS:transistors
 LIBS:stm32
 LIBS:conn
 LIBS:power
+LIBS:74xgxx
+LIBS:74xx
+LIBS:ac-dc
+LIBS:actel
+LIBS:adc-dac
+LIBS:Altera
+LIBS:analog_devices
+LIBS:analog_switches
+LIBS:atmel
+LIBS:audio
+LIBS:brooktre
+LIBS:cmos_ieee
+LIBS:cmos4000
+LIBS:contrib
+LIBS:cypress
+LIBS:dc-dc
+LIBS:device
+LIBS:digital-audio
+LIBS:diode
+LIBS:display
+LIBS:dsp
+LIBS:elec-unifil
+LIBS:ESD_Protection
+LIBS:ftdi
+LIBS:gennum
+LIBS:graphic
+LIBS:hc11
+LIBS:intel
+LIBS:interface
+LIBS:ir
+LIBS:Lattice
+LIBS:linear
+LIBS:logo
+LIBS:maxim
+LIBS:memory
+LIBS:microchip_dspic33dsc
+LIBS:microchip_pic10mcu
+LIBS:microchip_pic12mcu
+LIBS:microchip_pic16mcu
+LIBS:microchip_pic18mcu
+LIBS:microchip_pic32mcu
+LIBS:microchip
+LIBS:microcontrollers
+LIBS:motor_drivers
+LIBS:motorola
+LIBS:msp430
+LIBS:nordicsemi
+LIBS:nxp_armmcu
+LIBS:onsemi
+LIBS:opto
+LIBS:Oscillators
+LIBS:philips
+LIBS:Power_Management
+LIBS:powerint
+LIBS:pspice
+LIBS:references
+LIBS:regul
+LIBS:relays
+LIBS:rfcom
+LIBS:sensors
+LIBS:silabs
+LIBS:siliconi
+LIBS:stm8
+LIBS:supertex
+LIBS:switches
+LIBS:texas
+LIBS:transf
+LIBS:ttl_ieee
+LIBS:valves
+LIBS:video
+LIBS:Xicor
+LIBS:xilinx
+LIBS:Zilog
 LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 6 15
+Sheet 6 14
 Title ""
 Date ""
 Rev ""
@@ -124,10 +197,10 @@ en
 Text HLabel 7150 3050 2    60   Input ~ 0
 itirp
 $Comp
-L GNDPWR #PWR127
+L GNDPWR #PWR046
 U 1 1 56697E7C
 P 7550 5150
-F 0 "#PWR127" H 7550 4950 50  0001 C CNN
+F 0 "#PWR046" H 7550 4950 50  0001 C CNN
 F 1 "GNDPWR" H 7550 5020 50  0000 C CNN
 F 2 "" H 7550 5100 60  0000 C CNN
 F 3 "" H 7550 5100 60  0000 C CNN
@@ -135,10 +208,10 @@ F 3 "" H 7550 5100 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +15V #PWR126
+L +15V #PWR047
 U 1 1 56697EBC
 P 7550 4650
-F 0 "#PWR126" H 7550 4500 50  0001 C CNN
+F 0 "#PWR047" H 7550 4500 50  0001 C CNN
 F 1 "+15V" H 7550 4790 50  0000 C CNN
 F 2 "" H 7550 4650 60  0000 C CNN
 F 3 "" H 7550 4650 60  0000 C CNN
@@ -249,10 +322,10 @@ Wire Wire Line
 	5700 5050 5700 4950
 Connection ~ 5700 4950
 $Comp
-L GNDPWR #PWR50
+L GNDPWR #PWR048
 U 1 1 5668FA38
 P 2950 4650
-F 0 "#PWR50" H 2950 4450 50  0001 C CNN
+F 0 "#PWR048" H 2950 4450 50  0001 C CNN
 F 1 "GNDPWR" H 2950 4520 50  0000 C CNN
 F 2 "" H 2950 4600 60  0000 C CNN
 F 3 "" H 2950 4600 60  0000 C CNN
@@ -279,7 +352,7 @@ L C C63
 U 1 1 56690594
 P 7800 4900
 F 0 "C63" H 7825 5000 50  0000 L CNN
-F 1 "2.2µ" H 7825 4800 50  0000 L CNN
+F 1 "100n" H 7825 4800 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0603" H 7838 4750 30  0001 C CNN
 F 3 "" H 7800 4900 60  0000 C CNN
 	1    7800 4900
@@ -310,10 +383,10 @@ F 3 "" H 3900 1950 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L GNDPWR #PWR63
+L GNDPWR #PWR049
 U 1 1 566CF13E
 P 4200 2100
-F 0 "#PWR63" H 4200 1900 50  0001 C CNN
+F 0 "#PWR049" H 4200 1900 50  0001 C CNN
 F 1 "GNDPWR" H 4200 1970 50  0000 C CNN
 F 2 "" H 4200 2050 60  0000 C CNN
 F 3 "" H 4200 2050 60  0000 C CNN
@@ -321,10 +394,10 @@ F 3 "" H 4200 2050 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VPP #PWR62
+L VPP #PWR050
 U 1 1 566CF184
 P 4200 1800
-F 0 "#PWR62" H 4200 1650 50  0001 C CNN
+F 0 "#PWR050" H 4200 1650 50  0001 C CNN
 F 1 "VPP" H 4200 1950 50  0000 C CNN
 F 2 "" H 4200 1800 60  0000 C CNN
 F 3 "" H 4200 1800 60  0000 C CNN
@@ -342,10 +415,10 @@ Wire Wire Line
 Wire Wire Line
 	2950 4250 5850 4250
 $Comp
-L VPP #PWR49
+L VPP #PWR051
 U 1 1 566CF322
 P 2950 4150
-F 0 "#PWR49" H 2950 4000 50  0001 C CNN
+F 0 "#PWR051" H 2950 4000 50  0001 C CNN
 F 1 "VPP" H 2950 4300 50  0000 C CNN
 F 2 "" H 2950 4150 60  0000 C CNN
 F 3 "" H 2950 4150 60  0000 C CNN
@@ -373,10 +446,10 @@ Wire Wire Line
 Wire Wire Line
 	7050 4650 7150 4650
 $Comp
-L +3.3VP #PWR130
+L +3.3VP #PWR052
 U 1 1 566DE47B
 P 7800 4050
-F 0 "#PWR130" H 7950 4000 50  0001 C CNN
+F 0 "#PWR052" H 7950 4000 50  0001 C CNN
 F 1 "+3.3VP" H 7800 4150 50  0000 C CNN
 F 2 "" H 7800 4050 60  0000 C CNN
 F 3 "" H 7800 4050 60  0000 C CNN

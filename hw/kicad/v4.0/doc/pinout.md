@@ -7,8 +7,8 @@
 | cmd_d36 | pb3, pa8 | spi1_sck, usart1_ck, tim2_ch2, (tim1_ch1, spi3_sck) |
 | cmd_e36 | pb | |
 | cmd_d54 | pb5, pa9 | spi1_mosi, usart1_tx, (tim3_ch2, tim1_ch2, spi3_mosi) |
-| cmd_e54 | pb | |
-| cmd_d78 | pb | |
+| cmd_e54 | pb0/pb1 | tim3_ch3/tim3_ch4 |
+| cmd_d78 | pb0/pb1 | tim3_ch3/tim3_ch4 |
 | cmd_e78 | pb | |
 | cmd_l1 | | |
 | cmd_l2 | | |
@@ -19,7 +19,7 @@
 | fb0_e36 | pd | |
 | fb0_ain36 | | |
 | fb0_d54 | pc12, pc6, pd14 | spi3_mosi, usart6_tx, tim4_ch3 (uart5_tx, usart3_ck, tim3_ch1, tim8_ch1) |
-| fb0_e54 | pd | |
+| fb0_e54 | pd15 | tim4_ch4 |
 | fb0_pwm78 | | |
 | fb0_en78 | | |
 | fb0_ain78 | | |
@@ -32,7 +32,7 @@
 | fb1_e36 | pe | |
 | fb1_ain36 | | |
 | fb1_d54 | pb15, pb10, pe13 | spi2_mosi, usart3_tx, tim1_ch3, (tim12_ch2, tim1_ch3n, tim8_ch3n, spi2_ck, tim2_ch3) |
-| fb1_e54 | pe | |
+| fb1_e54 | pe14 | tim1_ch4 |
 | fb1_pwm78 | | |
 | fb1_en78 | | |
 | fb1_ain78 | | |
@@ -47,6 +47,13 @@
 | io_rx | pd6 | uart2_rx |
 | io_swclk | pa14 | sw_clk |
 | io_swdio | pa13 | sw_dio |
+| io_rst | nrst | nrst |
+| io_ain0 | | |
+| io_ain1 | | |
+| io_fan | | |
+| io_brake | | |
+| io_out0 | | |
+| io_out1 | | |
 | hv_tx | pa0 | uart4_tx |
 | hv_rx | pa1 | uart4_rx |
 | usb_dp | pa12 | usb_dp, can1_tx |

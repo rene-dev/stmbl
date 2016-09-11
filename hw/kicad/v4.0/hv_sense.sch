@@ -3,12 +3,85 @@ LIBS:transistors
 LIBS:stm32
 LIBS:conn
 LIBS:power
+LIBS:74xgxx
+LIBS:74xx
+LIBS:ac-dc
+LIBS:actel
+LIBS:adc-dac
+LIBS:Altera
+LIBS:analog_devices
+LIBS:analog_switches
+LIBS:atmel
+LIBS:audio
+LIBS:brooktre
+LIBS:cmos_ieee
+LIBS:cmos4000
+LIBS:contrib
+LIBS:cypress
+LIBS:dc-dc
+LIBS:device
+LIBS:digital-audio
+LIBS:diode
+LIBS:display
+LIBS:dsp
+LIBS:elec-unifil
+LIBS:ESD_Protection
+LIBS:ftdi
+LIBS:gennum
+LIBS:graphic
+LIBS:hc11
+LIBS:intel
+LIBS:interface
+LIBS:ir
+LIBS:Lattice
+LIBS:linear
+LIBS:logo
+LIBS:maxim
+LIBS:memory
+LIBS:microchip_dspic33dsc
+LIBS:microchip_pic10mcu
+LIBS:microchip_pic12mcu
+LIBS:microchip_pic16mcu
+LIBS:microchip_pic18mcu
+LIBS:microchip_pic32mcu
+LIBS:microchip
+LIBS:microcontrollers
+LIBS:motor_drivers
+LIBS:motorola
+LIBS:msp430
+LIBS:nordicsemi
+LIBS:nxp_armmcu
+LIBS:onsemi
+LIBS:opto
+LIBS:Oscillators
+LIBS:philips
+LIBS:Power_Management
+LIBS:powerint
+LIBS:pspice
+LIBS:references
+LIBS:regul
+LIBS:relays
+LIBS:rfcom
+LIBS:sensors
+LIBS:silabs
+LIBS:siliconi
+LIBS:stm8
+LIBS:supertex
+LIBS:switches
+LIBS:texas
+LIBS:transf
+LIBS:ttl_ieee
+LIBS:valves
+LIBS:video
+LIBS:Xicor
+LIBS:xilinx
+LIBS:Zilog
 LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 5 15
+Sheet 5 14
 Title ""
 Date ""
 Rev ""
@@ -56,10 +129,10 @@ F 3 "" H 2900 4250 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDPWR #PWR46
+L GNDPWR #PWR041
 U 1 1 566961CF
 P 2900 4500
-F 0 "#PWR46" H 2900 4300 50  0001 C CNN
+F 0 "#PWR041" H 2900 4300 50  0001 C CNN
 F 1 "GNDPWR" H 2900 4370 50  0000 C CNN
 F 2 "" H 2900 4450 60  0000 C CNN
 F 3 "" H 2900 4450 60  0000 C CNN
@@ -104,10 +177,10 @@ F 3 "" H 3700 4250 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDPWR #PWR58
+L GNDPWR #PWR042
 U 1 1 566962B2
 P 3700 4500
-F 0 "#PWR58" H 3700 4300 50  0001 C CNN
+F 0 "#PWR042" H 3700 4300 50  0001 C CNN
 F 1 "GNDPWR" H 3700 4370 50  0000 C CNN
 F 2 "" H 3700 4450 60  0000 C CNN
 F 3 "" H 3700 4450 60  0000 C CNN
@@ -152,10 +225,10 @@ F 3 "" H 4500 4250 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDPWR #PWR74
+L GNDPWR #PWR043
 U 1 1 5669635D
 P 4500 4500
-F 0 "#PWR74" H 4500 4300 50  0001 C CNN
+F 0 "#PWR043" H 4500 4300 50  0001 C CNN
 F 1 "GNDPWR" H 4500 4370 50  0000 C CNN
 F 2 "" H 4500 4450 60  0000 C CNN
 F 3 "" H 4500 4450 60  0000 C CNN
@@ -198,10 +271,10 @@ F 3 "" H 5400 4250 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDPWR #PWR94
+L GNDPWR #PWR044
 U 1 1 566963FC
 P 5400 4500
-F 0 "#PWR94" H 5400 4300 50  0001 C CNN
+F 0 "#PWR044" H 5400 4300 50  0001 C CNN
 F 1 "GNDPWR" H 5400 4370 50  0000 C CNN
 F 2 "" H 5400 4450 60  0000 C CNN
 F 3 "" H 5400 4450 60  0000 C CNN
@@ -264,10 +337,10 @@ F 3 "" H 5700 4450 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L VPP #PWR91
+L VPP #PWR045
 U 1 1 5775CE00
 P 5400 3100
-F 0 "#PWR91" H 5400 2950 50  0001 C CNN
+F 0 "#PWR045" H 5400 2950 50  0001 C CNN
 F 1 "VPP" H 5400 3250 50  0000 C CNN
 F 2 "" H 5400 3100 50  0000 C CNN
 F 3 "" H 5400 3100 50  0000 C CNN

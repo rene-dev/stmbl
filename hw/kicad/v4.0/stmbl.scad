@@ -288,6 +288,12 @@ module iram256(){
     color([0.2, 0.2, 0.2]) cube([22.3, 62, 5.7]);
     translate([11.4, 3, -1]) color("grey") cylinder(r = 1.7, h = 7);
     translate([11.4, 3 + 56, -1]) color([0.2, 0.2, 0.2]) cylinder(r = 1.7, h = 7);
+    translate([11.4 - 3.4/2, -0.1, -0.1]) color([0.2, 0.2, 0.2]) cube([3.4, 3.1, 6]);
+    translate([11.4 - 3.4/2, 56 + 3, -0.1]) color([0.2, 0.2, 0.2]) cube([3.4, 3.1, 6]);
+    translate([0, 62, 2.9]) rotate([0, 0, 45]) color([0.2, 0.2, 0.2]) cube([5, 5, 6], true);
+    translate([0, 0, 2.9]) rotate([0, 0, 45]) color([0.2, 0.2, 0.2]) cube([5, 5, 6], true);
+    translate([22.3, 62, 2.9]) rotate([0, 0, 45]) color([0.2, 0.2, 0.2]) cube([5, 5, 6], true);
+    translate([22.3, 0, 2.9]) rotate([0, 0, 45]) color([0.2, 0.2, 0.2]) cube([5, 5, 6], true);
   }
   for(a = [0:6]){
     translate([-(16.75 - 11.4) / 2, 62/2 - a * 2.54 - 2.54, 3.2]) color("silver") cube([16.75 - 11.4, 0.6, 0.5], true);
@@ -491,7 +497,7 @@ module stmbl(){
   translate([6 + 36, 20, 33 + 8 + pcb_hight]) m3(15);
   translate([22 + 11.4, 27 + 3 + 10, 33 + 5.7]) m3(10);
   translate([22 + 11.4, 27 + 3 + 10 + 56, 33 + 5.7]) m3(10);
-  translate([1 + 8, 1, 96 + 4]) io();
+  //translate([1 + 8, 1, 96 + 4]) io();
   //translate([1, 10, 33 + 8]) cover();
   translate([6, 106, 31]) rotate([-90, 0, 0]) m3(5);
   translate([6 + 36, 106, 31]) rotate([-90, 0, 0]) m3(5);
