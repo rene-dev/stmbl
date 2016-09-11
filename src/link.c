@@ -54,7 +54,15 @@ void link_ac(){
    hal_link_pins("pmsm_limits0.max_torque", "pid0.max_torque");
    hal_link_pins("pmsm_limits0.min_torque", "pid0.min_torque");
    hal_link_pins("pmsm_limits0.abs_max_vel", "pid0.max_vel");
-
+   
+   // i2t
+   hal_link_pins("conf0.r", "i2t0.mot_res");
+   hal_link_pins("conf0.max_motor_temp", "i2t0.mot_max_temp");
+   hal_link_pins("pmsm0.id", "i2t0.id");
+   hal_link_pins("pmsm0.iq", "i2t0.iq");
+   hal_link_pins("conf0.max_ac_cur", "i2t0.mot_cont_cur");
+   hal_link_pins("i2t0.mot_temp", "fault0.motor_temp");
+   
    //troller only
 #ifdef TROLLER
    hal_link_pins("conf0.polecount", "dq0.polecount");

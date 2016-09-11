@@ -233,6 +233,8 @@ int main(void)
    #include "comps/freq_fb.comp"
    #include "comps/psi.comp"
    #include "comps/var.comp"
+   #include "comps/i2t.comp"
+   
 
 
    hal_set_comp_type("net");
@@ -261,7 +263,7 @@ int main(void)
    HAL_PIN(mot_type) = 0.0;//ac sync,async/dc,2phase
    HAL_PIN(out_rev) = 0.0;
    HAL_PIN(high_motor_temp) = 80.0;
-   HAL_PIN(max_motor_temp) = 100.0;
+   HAL_PIN(max_motor_temp) = 130.0;
    HAL_PIN(phase_time) = 0.5;
    HAL_PIN(phase_cur) = 1.0;
 
