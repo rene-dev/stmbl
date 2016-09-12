@@ -8,6 +8,7 @@ void link_ac(){
    hal_set_pin("pmsm_limits0.rt_prio", 12.0);
    hal_set_pin("idq0.rt_prio", 13.0);
    hal_set_pin("dq0.rt_prio", 14.1);
+   hal_set_pin("i2t0.rt_prio", 15.0);
 
    // t2c
    hal_link_pins("conf0.polecount", "t2c0.polecount");
