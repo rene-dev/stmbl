@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "hal_term.h"
 
-void print_pin(hal_pin_t* pin){
+void hal_term_print_pin(hal_pin_t* pin){
    if(pin == pin->source){//if pin is not linked
       printf("%s = %f\n", pin->name, pin->source->source->value);
    }else{//pin is linked
@@ -9,14 +9,14 @@ void print_pin(hal_pin_t* pin){
    }
 }
 
-void hal_term_listhal(){
+void hal_term_list(){
    for(int i = 0; i < hal.hal_pin_count; i++){
       printf("%s <= %s = %f\n", hal.hal_pins[i]->name, hal.hal_pins[i]->source->name, hal.hal_pins[i]->source->source->value);
       Wait(1);//TODO: remove wait...
    }
 }
 
-void hal_term_conf(){
+void hal_term_getconf(){
    for(int i = 0; i < hal.hal_pin_count; i++){
       char name[6];
       strncpy(name,hal.hal_pins[i]->name,5);
@@ -27,7 +27,7 @@ void hal_term_conf(){
    }
 }
 
-void hal_print_state(){
+void hal_term_print_state(){
    switch(hal.hal_state){
       case HAL_OK:
       printf("HAL state:  HAL_OK\n");
@@ -53,7 +53,7 @@ void hal_print_state(){
    }
 }
 
-void print_hal_info(){
+void hal_term_print_info(){
    printf("######## hal info ########\n");
    printf("#pins %i\n", hal.hal_pin_count);
    printf("#comps %i\n", hal.comp_count);
@@ -104,7 +104,7 @@ void print_hal_info(){
       printf("frt state:  CALC\n");
       break;
    }
-   hal_print_state();
+   hal_term_print_state();
    uint32_t p = 0;
    printf("active rt funcs(%u):\n", hal.rt_func_count);
    for(int i = 0; i < hal.rt_func_count; i++){

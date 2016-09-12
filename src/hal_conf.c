@@ -10,7 +10,7 @@ void hal_conf_init(){
    FLASH_Lock();
 }
 
-void save(){
+void hal_conf_save(){
    // if(ee_error != FLASH_COMPLETE){
    //    printf("flash error:%i\n",ee_error);
    //    return;
@@ -58,7 +58,7 @@ void save(){
    printf("done\n");
 }
 
-int load(){
+int hal_conf_load(){
    if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
       return(-4);
    }

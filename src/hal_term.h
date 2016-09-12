@@ -3,8 +3,8 @@
 #include <string.h>
 #include "hal.h"
 
-void print_pin(hal_pin_t* pin);
-void print_hal_info();
-void hal_term_listhal();
-void hal_term_conf();
-void hal_print_state();
+void hal_term_print_pin(hal_pin_t* pin);
+void hal_term_print_info();
+void hal_term_list();
+void hal_term_getconf();
+void hal_term_print_state();

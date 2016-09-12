@@ -64,7 +64,7 @@ MEM(volatile float jog_en) = 0.0;
 
 INIT(
    hal_conf_init();
-   if(load()){//flash load error
+   if(hal_conf_load()){//flash load error
       hal.hal_state = CONFIG_LOAD_ERROR;
    }
 );
@@ -217,7 +217,7 @@ NRT(
          printf("done\n");
       }
       else if(!strcmp(s, "hal")){
-         print_hal_info();
+         hal_term_print_info();
       }
       else if(!strcmp(s, "about")){
          about();
@@ -229,16 +229,16 @@ NRT(
          NVIC_SystemReset();
       }
       else if(!strcmp(s, "list")){
-         hal_term_listhal();
+         hal_term_list();
       }
       else if(!strcmp(s, "help")){
          help();
       }
       else if(!strcmp(s, "save")){
-         save();
+         hal_conf_save();
       }
       else if(!strcmp(s, "load")){
-         int ret = load();
+         int ret = hal_conf_load();
          if(ret == -1){
             printf("flash error\n");
             return;
@@ -256,7 +256,7 @@ NRT(
          }
       }
       else if(!strcmp(s, "getconf")){
-         hal_term_conf();
+         hal_term_getconf();
       }
       else if(!strcmp(s, "jogl")){
          jog_en = -1.0;
@@ -405,7 +405,7 @@ NRT(
 
       fault_sender();
       if(EDGE(hal.hal_state)){
-         hal_print_state();
+         hal_term_print_state();
       }
 
       int i = -1;
@@ -415,12 +415,12 @@ NRT(
       }
       if(i == 2){ // read hal pin
          if(hal_is_pin(sink)){
-            print_pin(hal_find_pin(sink));
+            hal_term_print_pin(hal_find_pin(sink));
          }
          else if(hal_is_compname(sink)){
             for(int i = 0; i < hal.hal_pin_count; i++){//find all pins of this comp
               if(!strncmp(hal.hal_pins[i]->name, sink, strlen(sink))){
-                 print_pin(hal.hal_pins[i]);
+                 hal_term_print_pin(hal.hal_pins[i]);
               }
             }
          }else{

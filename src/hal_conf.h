@@ -4,6 +4,6 @@
 #include "hal.h"
 #include "hal_conf.h"
 
-void save();
-int load();
+void hal_conf_save();
+int hal_conf_load();
 void hal_conf_init();
