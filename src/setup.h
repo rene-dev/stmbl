@@ -15,10 +15,6 @@
 #include "defines_res.h"
 #define U_ID ((__IO uint32_t *)0x1FFF7A10)
 
-
-//#define mag_res 5250
-#define mag_res 8400
-
 //sample times for F4: 3,15,28,56,84,112,144,480
 #define RES_SampleTime ADC_SampleTime_3Cycles //ADC_SampleTime_28Cycles
 
