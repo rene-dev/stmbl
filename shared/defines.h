@@ -39,6 +39,14 @@ extern "C" {
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
+#define ARRAY_SIZE(arr)     (sizeof(arr) / sizeof((arr)[0]))
+#define FIELD_SIZEOF(t, f)  (sizeof(((t*)0)->f))
+
+#define STATIC_ASSERT(x)    _Static_assert(x, #x)
+
+#define STRINGIFY_(x)       #x
+#define STRINGIFY(x)        STRINGIFY_(x)
+
 //TODO: change type to typeof()
 #define RISING_EDGE(sig)\
 ({static float __old_val__ = 0.0; uint8_t ret = (sig) > __old_val__; __old_val__ = (sig); ret;})

@@ -342,7 +342,7 @@ void setup_adc(){
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR;
 	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADCConvertedValue;
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
-	DMA_InitStructure.DMA_BufferSize = sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0]);
+	DMA_InitStructure.DMA_BufferSize = ARRAY_SIZE(ADCConvertedValue);
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -567,11 +567,11 @@ int main(void)
          int adcbufferpos;
          uint32_t cur_sum = 0;
          //next received packet will be written to bufferpos
-         adcbufferpos = sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0]) - DMA_GetCurrDataCounter(DMA1_Channel1);
+         adcbufferpos = ARRAY_SIZE(ADCConvertedValue) - DMA_GetCurrDataCounter(DMA1_Channel1);
          //bufferpos-1 .. bufferpos-1-samples
          int samples = 30;
          for(int i = 0; i < samples; i++){
-            if(adcbufferpos + i >= sizeof(ADCConvertedValue)/sizeof(ADCConvertedValue[0])){
+            if(adcbufferpos + i >= ARRAY_SIZE(ADCConvertedValue)){
                adcbufferpos = 0;
             }
             cur_sum += ADCConvertedValue[adcbufferpos+i];
