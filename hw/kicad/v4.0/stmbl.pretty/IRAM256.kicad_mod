@@ -46,4 +46,9 @@
   (pad 25 thru_hole oval (at -12.7 16.5 180) (size 1.5 2) (drill 0.9) (layers *.Cu *.Mask B.SilkS))
   (pad 27 thru_hole oval (at -15.24 16.5 180) (size 1.5 2) (drill 0.9) (layers *.Cu *.Mask B.SilkS))
   (pad 29 thru_hole oval (at -17.78 16.5 180) (size 1.5 2) (drill 0.9) (layers *.Cu *.Mask B.SilkS))
+  (model /Users/crinq/Documents/sandbox/stmbl/hw/kicad/v4.0/stmbl.pretty/iram256.wrl
+    (at (xyz -1.220472440944882 -0.4409448818897638 0.3149606299212598))
+    (scale (xyz 0.394 0.394 0.394))
+    (rotate (xyz 0 180 90))
+  )
 )
