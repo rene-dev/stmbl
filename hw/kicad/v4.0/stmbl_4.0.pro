@@ -1,4 +1,4 @@
-update=Sonntag, 11. September 2016 um 01:29:22
+update=Dienstag, 13. September 2016 um 05:06:35
 version=1
 last_client=kicad
 [pcbnew]
@@ -33,8 +33,6 @@ NetFmtName=
 SpiceForceRefPrefix=0
 SpiceUseNetNumbers=0
 LabSize=60
-[general]
-version=1
 [eeschema]
 version=1
 LibDir=
@@ -116,3 +114,5 @@ LibName74=video
 LibName75=Xicor
 LibName76=xilinx
 LibName77=Zilog
+[general]
+version=1
