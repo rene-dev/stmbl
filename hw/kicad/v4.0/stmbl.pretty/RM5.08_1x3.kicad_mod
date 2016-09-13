@@ -12,7 +12,7 @@
   (pad 1 thru_hole oval (at 0 0) (size 2 3) (drill 1.5) (layers *.Cu *.Mask F.SilkS))
   (pad 2 thru_hole oval (at 5.08 0) (size 2 3) (drill 1.5) (layers *.Cu *.Mask F.SilkS))
   (pad 3 thru_hole oval (at 10.16 0) (size 2 3) (drill 1.5) (layers *.Cu *.Mask F.SilkS))
-  (model /Users/crinq/Documents/sandbox/stmbl/hw/kicad/v4.0/stmbl.pretty/akl230_3.wrl
+  (model ${KIPRJMOD}/stmbl.pretty/akl230_3.wrl
     (at (xyz -0.1240157480314961 -0.07874015748031496 0))
     (scale (xyz 0.394 0.394 0.394))
     (rotate (xyz 0 0 0))

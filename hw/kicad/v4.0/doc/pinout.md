@@ -60,3 +60,33 @@
 | usb_dm | pa11 | usb_dm, can1_rx |
 
 ## stm32f303cbt
+
+| port | pins | periph (remap) |
+| hv_tx | pb10 | usart3_tx |
+| hv_rx | pb11 | usart3_rx |
+| led | pa8 | (tim1_ch1) |
+| usb_dp | pa12 | |
+| usb_dm | pa11 | |
+| io_tx | pa9 | usart1_tx, (tim1_ch2, tim2_ch3, i2c2_scl)|
+| io_rx | pa10 | usart1_rx, (tim1_ch3, tim2_ch4, i2c2_sda)|
+| swdio | pa13 ||
+| swclk | pa14 ||
+| nrst | nrst ||
+| hv_en | pa15 | (tim2_ch1) |
+| hv_fault | pb7 | (tim8_bkin) |
+| hv_temp |||
+| hv_u | pb6 | tim8_ch1 |
+| hv_nu | pb3 | tim8_ch1n |
+| hv_v | pb8 | tim8_ch2 |
+| hv_nv | pb4 | tim8_ch2n |
+| hv_w | pb9 | tim8_ch3 |
+| hv_nw | pb5 | tim8_ch3n |
+| mot_temp |||
+| u |||
+| v |||
+| w |||
+| iu |||
+| iv |||
+| iw |||
+| 15v |||
+| hv |||
