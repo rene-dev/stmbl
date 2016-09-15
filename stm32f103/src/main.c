@@ -1,6 +1,7 @@
 #include "stm32f10x_conf.h"
 #include "common.h"
 #include "defines.h"
+#include "version.h"
 #include <math.h>
 
 #define ARES 4096.0// analog resolution, 12 bit

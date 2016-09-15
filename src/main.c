@@ -34,6 +34,8 @@
 #include <stdlib.h>
 #include "usb_cdc.h"
 
+//version info of bootloader
+volatile const struct version_info* bt_version_info = (void*)0x08000188;
 
 GLOBAL_HAL_PIN(rt_time);
 GLOBAL_HAL_PIN(frt_time);

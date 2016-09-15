@@ -17,6 +17,7 @@ INCDIRS += stm32f103/inc
 INCDIRS += shared
 
 SOURCES += stm32f103/src/main.c
+SOURCES += stm32f103/src/version.c
 SOURCES += shared/common.c
 
 # Standard peripheral library
@@ -117,8 +118,8 @@ OBJDUMP  = $(TOOLCHAIN)objdump
 SIZE     = $(TOOLCHAIN)size
 NM       = $(TOOLCHAIN)nm
 MKDIR    = mkdir
-#POSTLD   = tools/add_version_info.py # -q
-POSTLD   = cp
+POSTLD   = tools/add_version_info.py # -q
+
 # Compiler flags to generate dependency files
 #
 GENDEPFLAGS = -MMD -MP
