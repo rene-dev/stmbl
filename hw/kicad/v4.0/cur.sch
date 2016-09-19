@@ -2,6 +2,80 @@ EESchema Schematic File Version 2
 LIBS:transistors
 LIBS:stm32
 LIBS:conn
+LIBS:power
+LIBS:74xgxx
+LIBS:74xx
+LIBS:ac-dc
+LIBS:actel
+LIBS:adc-dac
+LIBS:Altera
+LIBS:analog_devices
+LIBS:analog_switches
+LIBS:atmel
+LIBS:audio
+LIBS:brooktre
+LIBS:cmos_ieee
+LIBS:cmos4000
+LIBS:contrib
+LIBS:cypress
+LIBS:dc-dc
+LIBS:device
+LIBS:digital-audio
+LIBS:diode
+LIBS:display
+LIBS:dsp
+LIBS:elec-unifil
+LIBS:ESD_Protection
+LIBS:ftdi
+LIBS:gennum
+LIBS:graphic
+LIBS:hc11
+LIBS:intel
+LIBS:interface
+LIBS:ir
+LIBS:Lattice
+LIBS:linear
+LIBS:logo
+LIBS:maxim
+LIBS:memory
+LIBS:microchip_dspic33dsc
+LIBS:microchip_pic10mcu
+LIBS:microchip_pic12mcu
+LIBS:microchip_pic16mcu
+LIBS:microchip_pic18mcu
+LIBS:microchip_pic32mcu
+LIBS:microchip
+LIBS:microcontrollers
+LIBS:motor_drivers
+LIBS:motorola
+LIBS:msp430
+LIBS:nordicsemi
+LIBS:nxp_armmcu
+LIBS:onsemi
+LIBS:opto
+LIBS:Oscillators
+LIBS:philips
+LIBS:Power_Management
+LIBS:powerint
+LIBS:pspice
+LIBS:references
+LIBS:regul
+LIBS:relays
+LIBS:rfcom
+LIBS:sensors
+LIBS:silabs
+LIBS:siliconi
+LIBS:stm8
+LIBS:supertex
+LIBS:switches
+LIBS:texas
+LIBS:transf
+LIBS:ttl_ieee
+LIBS:valves
+LIBS:video
+LIBS:Xicor
+LIBS:xilinx
+LIBS:Zilog
 LIBS:stmbl_4.0-cache
 EELAYER 25 0
 EELAYER END
@@ -30,10 +104,10 @@ A_IV
 Text HLabel 7200 3000 2    60   Input ~ 0
 A_IW
 $Comp
-L +3.3VP #PWR76
+L +3.3VP #PWR055
 U 1 1 57747146
 P 4700 2500
-F 0 "#PWR76" H 4850 2450 50  0001 C CNN
+F 0 "#PWR055" H 4850 2450 50  0001 C CNN
 F 1 "+3.3VP" H 4700 2600 50  0000 C CNN
 F 2 "" H 4700 2500 50  0000 C CNN
 F 3 "" H 4700 2500 50  0000 C CNN
@@ -41,10 +115,10 @@ F 3 "" H 4700 2500 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDPWR #PWR78
+L GNDPWR #PWR056
 U 1 1 5774715A
 P 4700 3500
-F 0 "#PWR78" H 4700 3300 50  0001 C CNN
+F 0 "#PWR056" H 4700 3300 50  0001 C CNN
 F 1 "GNDPWR" H 4700 3370 50  0000 C CNN
 F 2 "" H 4700 3450 50  0000 C CNN
 F 3 "" H 4700 3450 50  0000 C CNN
@@ -67,7 +141,7 @@ L C C33
 U 1 1 57747194
 P 4700 3250
 F 0 "C33" H 4725 3350 50  0000 L CNN
-F 1 "1n" H 4725 3150 50  0000 L CNN
+F 1 "18p" H 4725 3150 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0603" H 4738 3100 50  0001 C CNN
 F 3 "" H 4700 3250 50  0000 C CNN
 	1    4700 3250
@@ -96,10 +170,10 @@ Connection ~ 4700 3000
 Wire Wire Line
 	4700 2500 4700 2600
 $Comp
-L +3.3VP #PWR104
+L +3.3VP #PWR057
 U 1 1 57747506
 P 5900 2500
-F 0 "#PWR104" H 6050 2450 50  0001 C CNN
+F 0 "#PWR057" H 6050 2450 50  0001 C CNN
 F 1 "+3.3VP" H 5900 2600 50  0000 C CNN
 F 2 "" H 5900 2500 50  0000 C CNN
 F 3 "" H 5900 2500 50  0000 C CNN
@@ -107,10 +181,10 @@ F 3 "" H 5900 2500 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDPWR #PWR105
+L GNDPWR #PWR058
 U 1 1 5774750C
 P 5900 3500
-F 0 "#PWR105" H 5900 3300 50  0001 C CNN
+F 0 "#PWR058" H 5900 3300 50  0001 C CNN
 F 1 "GNDPWR" H 5900 3370 50  0000 C CNN
 F 2 "" H 5900 3450 50  0000 C CNN
 F 3 "" H 5900 3450 50  0000 C CNN
@@ -133,7 +207,7 @@ L C C45
 U 1 1 57747518
 P 5900 3250
 F 0 "C45" H 5925 3350 50  0000 L CNN
-F 1 "1n" H 5925 3150 50  0000 L CNN
+F 1 "18p" H 5925 3150 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0603" H 5938 3100 50  0001 C CNN
 F 3 "" H 5900 3250 50  0000 C CNN
 	1    5900 3250
@@ -162,10 +236,10 @@ Connection ~ 5900 3000
 Wire Wire Line
 	5900 2500 5900 2600
 $Comp
-L +3.3VP #PWR119
+L +3.3VP #PWR059
 U 1 1 5774767B
 P 7100 2500
-F 0 "#PWR119" H 7250 2450 50  0001 C CNN
+F 0 "#PWR059" H 7250 2450 50  0001 C CNN
 F 1 "+3.3VP" H 7100 2600 50  0000 C CNN
 F 2 "" H 7100 2500 50  0000 C CNN
 F 3 "" H 7100 2500 50  0000 C CNN
@@ -173,10 +247,10 @@ F 3 "" H 7100 2500 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GNDPWR #PWR120
+L GNDPWR #PWR060
 U 1 1 57747681
 P 7100 3500
-F 0 "#PWR120" H 7100 3300 50  0001 C CNN
+F 0 "#PWR060" H 7100 3300 50  0001 C CNN
 F 1 "GNDPWR" H 7100 3370 50  0000 C CNN
 F 2 "" H 7100 3450 50  0000 C CNN
 F 3 "" H 7100 3450 50  0000 C CNN
@@ -199,7 +273,7 @@ L C C57
 U 1 1 5774768D
 P 7100 3250
 F 0 "C57" H 7125 3350 50  0000 L CNN
-F 1 "1n" H 7125 3150 50  0000 L CNN
+F 1 "18p" H 7125 3150 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0603" H 7138 3100 50  0001 C CNN
 F 3 "" H 7100 3250 50  0000 C CNN
 	1    7100 3250
