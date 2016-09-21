@@ -1,0 +1,2554 @@
+#VRML V2.0 utf8
+
+
+Group {
+  children 
+    Group {
+      children [ 
+        Switch {
+          whichChoice 0
+          choice 
+            Group {
+              children [ 
+                Switch {
+                  whichChoice 0
+                  choice 
+                    Group {
+
+                    }
+
+                },
+                  
+                Switch {
+                  whichChoice 0
+                  choice 
+                    Group {
+
+                    }
+
+                } ]
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 0 0 0
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+0 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0.098039217 0.098039217 0.098039217
+                                  shininess 1
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedLineSet {
+                                coord 
+                                DEF _+1 Coordinate {
+                                  point [ 0 0 0,
+                                      0 0 7.8000002,
+                                      0 12 7.8000002,
+                                      0 12 0,
+                                      16.440001 0 0,
+                                      16.440001 0 7.8000002,
+                                      16.440001 12 7.8000002,
+                                      16.440001 12 0,
+                                      0 0 0,
+                                      16.440001 0 0,
+                                      16.440001 0 7.8000002,
+                                      0 0 7.8000002,
+                                      0 12 0,
+                                      16.440001 12 0,
+                                      16.440001 12 7.8000002,
+                                      0 12 7.8000002,
+                                      0 0 0,
+                                      0 12 0,
+                                      16.440001 12 0,
+                                      16.440001 0 0,
+                                      0 0 7.8000002,
+                                      0 12 7.8000002,
+                                      16.440001 12 7.8000002,
+                                      16.440001 0 7.8000002,
+                                      0 0 7.8000002,
+                                      0 0 0,
+                                      0 12 7.8000002,
+                                      0 12 0,
+                                      16.440001 0 7.8000002,
+                                      16.440001 0 0,
+                                      16.440001 12 7.8000002,
+                                      16.440001 12 0 ]
+
+                                }
+                                coordIndex [ 0, 1, -1, 1, 2, -1, 3, 2,
+                                    -1, 0, 3, -1, 4, 5, -1, 5,
+                                    6, -1, 7, 6, -1, 4, 7, -1,
+                                    8, 9, -1, 11, 10, -1, 12, 13,
+                                    -1, 15, 14, -1 ]
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+2 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0 0.50196099 0
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                USE _+1
+                                normal 
+                                DEF _+3 Normal {
+                                  vector [ -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1 ]
+
+                                }
+                                coordIndex [ 3, 1, 2, -1, 0, 1, 3, -1,
+                                    5, 7, 6, -1, 5, 4, 7, -1,
+                                    9, 10, 8, -1, 8, 10, 11, -1,
+                                    14, 13, 12, -1, 14, 12, 15, -1,
+                                    17, 18, 16, -1, 16, 18, 19, -1,
+                                    22, 21, 20, -1, 22, 20, 23, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+4 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+                                coord 
+                                USE _+1
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+2,
+                      
+                    Group {
+                      children [ 
+                        USE _+0,
+                          
+                        USE _+4 ]
+
+                    },
+                      
+                    USE _+4 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 0.60000002 4 1.4
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+5 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0.098039217 0.098039217 0.098039217
+                                  shininess 1
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedLineSet {
+                                coord 
+                                DEF _+6 Coordinate {
+                                  point [ 0 0 0,
+                                      0 0 5,
+                                      0 9 5,
+                                      0 9 0,
+                                      5.0900002 0 0,
+                                      5.0900002 0 5,
+                                      5.0900002 9 5,
+                                      5.0900002 9 0,
+                                      0 0 0,
+                                      5.0900002 0 0,
+                                      5.0900002 0 5,
+                                      0 0 5,
+                                      0 9 0,
+                                      5.0900002 9 0,
+                                      5.0900002 9 5,
+                                      0 9 5,
+                                      0 0 0,
+                                      0 9 0,
+                                      5.0900002 9 0,
+                                      5.0900002 0 0,
+                                      0 0 5,
+                                      0 9 5,
+                                      5.0900002 9 5,
+                                      5.0900002 0 5,
+                                      0 0 5,
+                                      0 0 0,
+                                      0 9 5,
+                                      0 9 0,
+                                      5.0900002 0 5,
+                                      5.0900002 0 0,
+                                      5.0900002 9 5,
+                                      5.0900002 9 0 ]
+
+                                }
+                                coordIndex [ 0, 1, -1, 1, 2, -1, 3, 2,
+                                    -1, 0, 3, -1, 4, 5, -1, 5,
+                                    6, -1, 7, 6, -1, 4, 7, -1,
+                                    8, 9, -1, 11, 10, -1, 12, 13,
+                                    -1, 15, 14, -1 ]
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+7 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0 0.50196099 0
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                USE _+6
+                                normal 
+                                USE _+3
+                                coordIndex [ 3, 0, 2, -1, 0, 1, 2, -1,
+                                    4, 7, 6, -1, 5, 4, 6, -1,
+                                    9, 10, 8, -1, 8, 10, 11, -1,
+                                    14, 13, 12, -1, 14, 12, 15, -1,
+                                    17, 18, 16, -1, 16, 18, 19, -1,
+                                    22, 21, 20, -1, 22, 20, 23, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+8 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+                                coord 
+                                USE _+6
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+7,
+                      
+                    Group {
+                      children [ 
+                        USE _+5,
+                          
+                        USE _+8 ]
+
+                    },
+                      
+                    USE _+8 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 5.6799998 4 1.4
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+9 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0.098039217 0.098039217 0.098039217
+                                  shininess 1
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedLineSet {
+                                coord 
+                                USE _+6
+                                coordIndex [ 0, 1, -1, 1, 2, -1, 3, 2,
+                                    -1, 0, 3, -1, 4, 5, -1, 5,
+                                    6, -1, 7, 6, -1, 4, 7, -1,
+                                    8, 9, -1, 11, 10, -1, 12, 13,
+                                    -1, 15, 14, -1 ]
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+10 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0 0.50196099 0
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                USE _+6
+                                normal 
+                                USE _+3
+                                coordIndex [ 3, 0, 2, -1, 0, 1, 2, -1,
+                                    4, 7, 6, -1, 5, 4, 6, -1,
+                                    9, 10, 8, -1, 8, 10, 11, -1,
+                                    14, 13, 12, -1, 14, 12, 15, -1,
+                                    17, 18, 16, -1, 16, 18, 19, -1,
+                                    22, 21, 20, -1, 22, 20, 23, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+11 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+                                coord 
+                                USE _+6
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+10,
+                      
+                    Group {
+                      children [ 
+                        USE _+9,
+                          
+                        USE _+11 ]
+
+                    },
+                      
+                    USE _+11 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 10.76 4 1.4
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+12 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0.098039217 0.098039217 0.098039217
+                                  shininess 1
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedLineSet {
+                                coord 
+                                USE _+6
+                                coordIndex [ 0, 1, -1, 1, 2, -1, 3, 2,
+                                    -1, 0, 3, -1, 4, 5, -1, 5,
+                                    6, -1, 7, 6, -1, 4, 7, -1,
+                                    8, 9, -1, 11, 10, -1, 12, 13,
+                                    -1, 15, 14, -1 ]
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+13 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0 0.50196099 0
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                USE _+6
+                                normal 
+                                USE _+3
+                                coordIndex [ 3, 0, 2, -1, 0, 1, 2, -1,
+                                    4, 7, 6, -1, 5, 4, 6, -1,
+                                    9, 10, 8, -1, 8, 10, 11, -1,
+                                    14, 13, 12, -1, 14, 12, 15, -1,
+                                    17, 18, 16, -1, 16, 18, 19, -1,
+                                    22, 21, 20, -1, 22, 20, 23, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+14 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+                                coord 
+                                USE _+6
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+13,
+                      
+                    Group {
+                      children [ 
+                        USE _+12,
+                          
+                        USE _+14 ]
+
+                    },
+                      
+                    USE _+14 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 0 0 0
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+15 Group {
+
+                        },
+                          
+                        DEF _+16 Group {
+
+                        },
+                          
+                        DEF _+17 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+16,
+                      
+                    Group {
+                      children [ 
+                        USE _+15,
+                          
+                        USE _+17 ]
+
+                    },
+                      
+                    USE _+17 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 0 0 0
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+18 Group {
+
+                        },
+                          
+                        DEF _+19 Group {
+
+                        },
+                          
+                        DEF _+20 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+19,
+                      
+                    Group {
+                      children [ 
+                        USE _+18,
+                          
+                        USE _+20 ]
+
+                    },
+                      
+                    USE _+20 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 2.6400001 2 3.3
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+21 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0.098039217 0.098039217 0.098039217
+                                  shininess 1
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedLineSet {
+                                coord 
+                                DEF _+22 Coordinate {
+                                  point [ 0 0 0,
+                                      0 0 1,
+                                      0 10 1,
+                                      0 10 0,
+                                      1 0 0,
+                                      1 0 1,
+                                      1 10 1,
+                                      1 10 0,
+                                      0 0 0,
+                                      1 0 0,
+                                      1 0 1,
+                                      0 0 1,
+                                      0 10 0,
+                                      1 10 0,
+                                      1 10 1,
+                                      0 10 1,
+                                      0 0 0,
+                                      0 10 0,
+                                      1 10 0,
+                                      1 0 0,
+                                      0 0 1,
+                                      0 10 1,
+                                      1 10 1,
+                                      1 0 1,
+                                      0 0 1,
+                                      0 0 0,
+                                      0 10 1,
+                                      0 10 0,
+                                      1 0 1,
+                                      1 0 0,
+                                      1 10 1,
+                                      1 10 0 ]
+
+                                }
+                                coordIndex [ 0, 1, -1, 1, 2, -1, 3, 2,
+                                    -1, 0, 3, -1, 4, 5, -1, 5,
+                                    6, -1, 7, 6, -1, 4, 7, -1,
+                                    8, 9, -1, 11, 10, -1, 12, 13,
+                                    -1, 15, 14, -1 ]
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+23 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 1 0.84313703 0
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                USE _+22
+                                normal 
+                                USE _+3
+                                coordIndex [ 3, 1, 2, -1, 0, 1, 3, -1,
+                                    5, 7, 6, -1, 5, 4, 7, -1,
+                                    9, 11, 8, -1, 9, 10, 11, -1,
+                                    15, 13, 12, -1, 14, 13, 15, -1,
+                                    17, 18, 16, -1, 16, 18, 19, -1,
+                                    22, 21, 20, -1, 22, 20, 23, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+24 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+                                coord 
+                                USE _+22
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+23,
+                      
+                    Group {
+                      children [ 
+                        USE _+21,
+                          
+                        USE _+24 ]
+
+                    },
+                      
+                    USE _+24 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 7.7199998 2 3.3
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+25 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0.098039217 0.098039217 0.098039217
+                                  shininess 1
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedLineSet {
+                                coord 
+                                USE _+22
+                                coordIndex [ 0, 1, -1, 1, 2, -1, 3, 2,
+                                    -1, 0, 3, -1, 4, 5, -1, 5,
+                                    6, -1, 7, 6, -1, 4, 7, -1,
+                                    8, 9, -1, 11, 10, -1, 12, 13,
+                                    -1, 15, 14, -1 ]
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+26 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 1 0.84313703 0
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                USE _+22
+                                normal 
+                                USE _+3
+                                coordIndex [ 3, 1, 2, -1, 0, 1, 3, -1,
+                                    5, 7, 6, -1, 5, 4, 7, -1,
+                                    9, 11, 8, -1, 9, 10, 11, -1,
+                                    15, 13, 12, -1, 14, 13, 15, -1,
+                                    17, 18, 16, -1, 16, 18, 19, -1,
+                                    22, 21, 20, -1, 22, 20, 23, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+27 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+                                coord 
+                                USE _+22
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+26,
+                      
+                    Group {
+                      children [ 
+                        USE _+25,
+                          
+                        USE _+27 ]
+
+                    },
+                      
+                    USE _+27 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 12.8 2 3.3
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+28 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0.098039217 0.098039217 0.098039217
+                                  shininess 1
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedLineSet {
+                                coord 
+                                USE _+22
+                                coordIndex [ 0, 1, -1, 1, 2, -1, 3, 2,
+                                    -1, 0, 3, -1, 4, 5, -1, 5,
+                                    6, -1, 7, 6, -1, 4, 7, -1,
+                                    8, 9, -1, 11, 10, -1, 12, 13,
+                                    -1, 15, 14, -1 ]
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+29 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 1 0.84313703 0
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                USE _+22
+                                normal 
+                                USE _+3
+                                coordIndex [ 3, 1, 2, -1, 0, 1, 3, -1,
+                                    5, 7, 6, -1, 5, 4, 7, -1,
+                                    9, 11, 8, -1, 9, 10, 11, -1,
+                                    15, 13, 12, -1, 14, 13, 15, -1,
+                                    17, 18, 16, -1, 16, 18, 19, -1,
+                                    22, 21, 20, -1, 22, 20, 23, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+30 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+                                coord 
+                                USE _+22
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+29,
+                      
+                    Group {
+                      children [ 
+                        USE _+28,
+                          
+                        USE _+30 ]
+
+                    },
+                      
+                    USE _+30 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 0 0 0
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+31 Group {
+
+                        },
+                          
+                        DEF _+32 Group {
+
+                        },
+                          
+                        DEF _+33 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+32,
+                      
+                    Group {
+                      children [ 
+                        USE _+31,
+                          
+                        USE _+33 ]
+
+                    },
+                      
+                    USE _+33 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 2.6400001 1.5 -3.45
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+34 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0.098039217 0.098039217 0.098039217
+                                  shininess 1
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedLineSet {
+                                coord 
+                                DEF _+35 Coordinate {
+                                  point [ 0 0 0,
+                                      0 0 7.25,
+                                      0 1 7.25,
+                                      0 1 0,
+                                      1 0 0,
+                                      1 0 7.25,
+                                      1 1 7.25,
+                                      1 1 0,
+                                      0 0 0,
+                                      1 0 0,
+                                      1 0 7.25,
+                                      0 0 7.25,
+                                      0 1 0,
+                                      1 1 0,
+                                      1 1 7.25,
+                                      0 1 7.25,
+                                      0 0 0,
+                                      0 1 0,
+                                      1 1 0,
+                                      1 0 0,
+                                      0 0 7.25,
+                                      0 1 7.25,
+                                      1 1 7.25,
+                                      1 0 7.25,
+                                      0 0 7.25,
+                                      0 0 0,
+                                      0 1 7.25,
+                                      0 1 0,
+                                      1 0 7.25,
+                                      1 0 0,
+                                      1 1 7.25,
+                                      1 1 0 ]
+
+                                }
+                                coordIndex [ 0, 1, -1, 1, 2, -1, 3, 2,
+                                    -1, 0, 3, -1, 4, 5, -1, 5,
+                                    6, -1, 7, 6, -1, 4, 7, -1,
+                                    8, 9, -1, 11, 10, -1, 12, 13,
+                                    -1, 15, 14, -1 ]
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+36 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 1 0.84313703 0
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                USE _+35
+                                normal 
+                                USE _+3
+                                coordIndex [ 3, 1, 2, -1, 0, 1, 3, -1,
+                                    5, 7, 6, -1, 5, 4, 7, -1,
+                                    9, 10, 8, -1, 8, 10, 11, -1,
+                                    14, 13, 12, -1, 14, 12, 15, -1,
+                                    17, 19, 16, -1, 17, 18, 19, -1,
+                                    23, 21, 20, -1, 22, 21, 23, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+37 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+                                coord 
+                                USE _+35
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+36,
+                      
+                    Group {
+                      children [ 
+                        USE _+34,
+                          
+                        USE _+37 ]
+
+                    },
+                      
+                    USE _+37 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 7.7199998 1.5 -3.45
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+38 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0.098039217 0.098039217 0.098039217
+                                  shininess 1
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedLineSet {
+                                coord 
+                                USE _+35
+                                coordIndex [ 0, 1, -1, 1, 2, -1, 3, 2,
+                                    -1, 0, 3, -1, 4, 5, -1, 5,
+                                    6, -1, 7, 6, -1, 4, 7, -1,
+                                    8, 9, -1, 11, 10, -1, 12, 13,
+                                    -1, 15, 14, -1 ]
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+39 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 1 0.84313703 0
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                USE _+35
+                                normal 
+                                USE _+3
+                                coordIndex [ 3, 1, 2, -1, 0, 1, 3, -1,
+                                    5, 7, 6, -1, 5, 4, 7, -1,
+                                    9, 10, 8, -1, 8, 10, 11, -1,
+                                    14, 13, 12, -1, 14, 12, 15, -1,
+                                    17, 19, 16, -1, 17, 18, 19, -1,
+                                    23, 21, 20, -1, 22, 21, 23, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+40 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+                                coord 
+                                USE _+35
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+39,
+                      
+                    Group {
+                      children [ 
+                        USE _+38,
+                          
+                        USE _+40 ]
+
+                    },
+                      
+                    USE _+40 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 12.8 1.5 -3.45
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+41 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0.098039217 0.098039217 0.098039217
+                                  shininess 1
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedLineSet {
+                                coord 
+                                USE _+35
+                                coordIndex [ 0, 1, -1, 1, 2, -1, 3, 2,
+                                    -1, 0, 3, -1, 4, 5, -1, 5,
+                                    6, -1, 7, 6, -1, 4, 7, -1,
+                                    8, 9, -1, 11, 10, -1, 12, 13,
+                                    -1, 15, 14, -1 ]
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+42 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 1 0.84313703 0
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                USE _+35
+                                normal 
+                                USE _+3
+                                coordIndex [ 3, 1, 2, -1, 0, 1, 3, -1,
+                                    5, 7, 6, -1, 5, 4, 7, -1,
+                                    9, 10, 8, -1, 8, 10, 11, -1,
+                                    14, 13, 12, -1, 14, 12, 15, -1,
+                                    17, 19, 16, -1, 17, 18, 19, -1,
+                                    23, 21, 20, -1, 22, 21, 23, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+43 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+                                coord 
+                                USE _+35
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+42,
+                      
+                    Group {
+                      children [ 
+                        USE _+41,
+                          
+                        USE _+43 ]
+
+                    },
+                      
+                    USE _+43 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 0 0 0
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice -1
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+44 Group {
+
+                        },
+                          
+                        DEF _+45 Group {
+
+                        },
+                          
+                        DEF _+46 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+45,
+                      
+                    Group {
+                      children [ 
+                        USE _+44,
+                          
+                        USE _+46 ]
+
+                    },
+                      
+                    USE _+46 ]
+
+                }
+
+            }
+
+        },
+          
+        Group {
+          children 
+            Transform {
+              translation 0 0 0
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children 
+                Switch {
+                  whichChoice 0
+                  choice [ 
+                    Group {
+                      children [ 
+                        DEF _+47 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0.098039217 0.098039217 0.098039217
+                                  shininess 1
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedLineSet {
+                                coord 
+                                DEF _+48 Coordinate {
+                                  point [ 0 0 0,
+                                      0 0 7.8000002,
+                                      0 12 7.8000002,
+                                      0 12 0,
+                                      0 0 0,
+                                      16.440001 0 0,
+                                      16.440001 0 7.8000002,
+                                      0 0 7.8000002,
+                                      0 0 7.8000002,
+                                      0 12 7.8000002,
+                                      16.440001 12 7.8000002,
+                                      16.440001 0 7.8000002,
+                                      0 12 0,
+                                      16.440001 12 0,
+                                      16.440001 12 7.8000002,
+                                      0 12 7.8000002,
+                                      10.76 12 1.4,
+                                      10.77 12 1.4,
+                                      5.6900001 12 1.4,
+                                      5.6799998 12 1.4,
+                                      0.60000002 12 1.4,
+                                      0.60000002 12 6.4000001,
+                                      5.6799998 12 6.4000001,
+                                      5.6900001 12 6.4000001,
+                                      10.76 12 6.4000001,
+                                      10.77 12 6.4000001,
+                                      15.85 12 6.4000001,
+                                      15.85 12 1.4,
+                                      0 0 0,
+                                      0 12 0,
+                                      16.440001 12 0,
+                                      16.440001 0 0,
+                                      3.6400001 1.5 0,
+                                      3.6400001 2.5 0,
+                                      2.6400001 2.5 0,
+                                      2.6400001 1.5 0,
+                                      8.7200003 1.5 0,
+                                      7.7199998 1.5 0,
+                                      8.7200003 2.5 0,
+                                      7.7199998 2.5 0,
+                                      13.8 2.5 0,
+                                      12.8 2.5 0,
+                                      12.8 1.5 0,
+                                      13.8 1.5 0,
+                                      16.440001 0 0,
+                                      16.440001 0 7.8000002,
+                                      16.440001 12 7.8000002,
+                                      16.440001 12 0,
+                                      10.76 12 1.4,
+                                      10.77 12 1.4,
+                                      10.77 4 1.4,
+                                      10.76 4 1.4,
+                                      5.6900001 12 1.4,
+                                      10.76 12 1.4,
+                                      10.76 4 1.4,
+                                      5.6900001 4 1.4,
+                                      5.6799998 12 1.4,
+                                      5.6900001 12 1.4,
+                                      5.6900001 4 1.4,
+                                      5.6799998 4 1.4,
+                                      0.60000002 12 1.4,
+                                      5.6799998 12 1.4,
+                                      5.6799998 4 1.4,
+                                      0.60000002 4 1.4,
+                                      0.60000002 4 6.4000001,
+                                      0.60000002 12 6.4000001,
+                                      0.60000002 12 1.4,
+                                      0.60000002 4 1.4,
+                                      0.60000002 12 6.4000001,
+                                      5.6799998 12 6.4000001,
+                                      5.6799998 4 6.4000001,
+                                      0.60000002 4 6.4000001,
+                                      5.6799998 12 6.4000001,
+                                      5.6900001 12 6.4000001,
+                                      5.6900001 4 6.4000001,
+                                      5.6799998 4 6.4000001,
+                                      5.6900001 12 6.4000001,
+                                      10.76 12 6.4000001,
+                                      10.76 4 6.4000001,
+                                      5.6900001 4 6.4000001,
+                                      10.76 12 6.4000001,
+                                      10.77 12 6.4000001,
+                                      10.77 4 6.4000001,
+                                      10.76 4 6.4000001,
+                                      10.77 12 6.4000001,
+                                      15.85 12 6.4000001,
+                                      15.85 4 6.4000001,
+                                      10.77 4 6.4000001,
+                                      15.85 4 6.4000001,
+                                      15.85 12 6.4000001,
+                                      15.85 12 1.4,
+                                      15.85 4 1.4,
+                                      10.77 12 1.4,
+                                      15.85 12 1.4,
+                                      15.85 4 1.4,
+                                      10.77 4 1.4,
+                                      3.6400001 1.5 -3.45,
+                                      3.6400001 1.5 0,
+                                      3.6400001 2.5 0,
+                                      3.6400001 2.5 -3.45,
+                                      3.6400001 2.5 -3.45,
+                                      3.6400001 2.5 0,
+                                      2.6400001 2.5 0,
+                                      2.6400001 2.5 -3.45,
+                                      2.6400001 1.5 -3.45,
+                                      2.6400001 1.5 0,
+                                      2.6400001 2.5 0,
+                                      2.6400001 2.5 -3.45,
+                                      3.6400001 1.5 -3.45,
+                                      3.6400001 1.5 0,
+                                      2.6400001 1.5 0,
+                                      2.6400001 1.5 -3.45,
+                                      8.7200003 1.5 -3.45,
+                                      8.7200003 1.5 0,
+                                      7.7199998 1.5 0,
+                                      7.7199998 1.5 -3.45,
+                                      8.7200003 1.5 -3.45,
+                                      8.7200003 1.5 0,
+                                      8.7200003 2.5 0,
+                                      8.7200003 2.5 -3.45,
+                                      8.7200003 2.5 -3.45,
+                                      8.7200003 2.5 0,
+                                      7.7199998 2.5 0,
+                                      7.7199998 2.5 -3.45,
+                                      7.7199998 1.5 -3.45,
+                                      7.7199998 1.5 0,
+                                      7.7199998 2.5 0,
+                                      7.7199998 2.5 -3.45,
+                                      13.8 2.5 -3.45,
+                                      13.8 2.5 0,
+                                      12.8 2.5 0,
+                                      12.8 2.5 -3.45,
+                                      12.8 1.5 -3.45,
+                                      12.8 1.5 0,
+                                      12.8 2.5 0,
+                                      12.8 2.5 -3.45,
+                                      13.8 1.5 -3.45,
+                                      13.8 1.5 0,
+                                      12.8 1.5 0,
+                                      12.8 1.5 -3.45,
+                                      13.8 1.5 -3.45,
+                                      13.8 1.5 0,
+                                      13.8 2.5 0,
+                                      13.8 2.5 -3.45,
+                                      10.76 4 1.4,
+                                      10.77 4 1.4,
+                                      10.77 4 6.4000001,
+                                      10.76 4 6.4000001,
+                                      5.6900001 4 1.4,
+                                      10.76 4 1.4,
+                                      5.6900001 4 6.4000001,
+                                      10.76 4 6.4000001,
+                                      7.7199998 4 4.3000002,
+                                      8.7200003 4 4.3000002,
+                                      8.7200003 4 3.3,
+                                      7.7199998 4 3.3,
+                                      5.6799998 4 1.4,
+                                      5.6900001 4 1.4,
+                                      5.6900001 4 6.4000001,
+                                      5.6799998 4 6.4000001,
+                                      0.60000002 4 1.4,
+                                      5.6799998 4 1.4,
+                                      0.60000002 4 6.4000001,
+                                      5.6799998 4 6.4000001,
+                                      2.6400001 4 4.3000002,
+                                      3.6400001 4 4.3000002,
+                                      3.6400001 4 3.3,
+                                      2.6400001 4 3.3,
+                                      10.77 4 1.4,
+                                      15.85 4 1.4,
+                                      10.77 4 6.4000001,
+                                      15.85 4 6.4000001,
+                                      12.8 4 4.3000002,
+                                      13.8 4 4.3000002,
+                                      13.8 4 3.3,
+                                      12.8 4 3.3,
+                                      2.6400001 1.5 -3.45,
+                                      2.6400001 2.5 -3.45,
+                                      3.6400001 2.5 -3.45,
+                                      3.6400001 1.5 -3.45,
+                                      7.7199998 1.5 -3.45,
+                                      7.7199998 2.5 -3.45,
+                                      8.7200003 2.5 -3.45,
+                                      8.7200003 1.5 -3.45,
+                                      12.8 1.5 -3.45,
+                                      12.8 2.5 -3.45,
+                                      13.8 2.5 -3.45,
+                                      13.8 1.5 -3.45,
+                                      7.7199998 4 4.3000002,
+                                      7.7199998 12 4.3000002,
+                                      8.7200003 12 4.3000002,
+                                      8.7200003 4 4.3000002,
+                                      8.7200003 4 4.3000002,
+                                      8.7200003 12 4.3000002,
+                                      8.7200003 12 3.3,
+                                      8.7200003 4 3.3,
+                                      7.7199998 4 3.3,
+                                      7.7199998 12 3.3,
+                                      8.7200003 12 3.3,
+                                      8.7200003 4 3.3,
+                                      7.7199998 4 4.3000002,
+                                      7.7199998 12 4.3000002,
+                                      7.7199998 12 3.3,
+                                      7.7199998 4 3.3,
+                                      2.6400001 4 4.3000002,
+                                      2.6400001 12 4.3000002,
+                                      3.6400001 12 4.3000002,
+                                      3.6400001 4 4.3000002,
+                                      3.6400001 4 4.3000002,
+                                      3.6400001 12 4.3000002,
+                                      3.6400001 12 3.3,
+                                      3.6400001 4 3.3,
+                                      2.6400001 4 3.3,
+                                      2.6400001 12 3.3,
+                                      3.6400001 12 3.3,
+                                      3.6400001 4 3.3,
+                                      2.6400001 4 4.3000002,
+                                      2.6400001 12 4.3000002,
+                                      2.6400001 12 3.3,
+                                      2.6400001 4 3.3,
+                                      12.8 4 4.3000002,
+                                      12.8 12 4.3000002,
+                                      13.8 12 4.3000002,
+                                      13.8 4 4.3000002,
+                                      13.8 4 4.3000002,
+                                      13.8 12 4.3000002,
+                                      13.8 12 3.3,
+                                      13.8 4 3.3,
+                                      12.8 4 3.3,
+                                      12.8 12 3.3,
+                                      13.8 12 3.3,
+                                      13.8 4 3.3,
+                                      12.8 4 4.3000002,
+                                      12.8 12 4.3000002,
+                                      12.8 12 3.3,
+                                      12.8 4 3.3,
+                                      7.7199998 12 3.3,
+                                      8.7200003 12 3.3,
+                                      8.7200003 12 4.3000002,
+                                      7.7199998 12 4.3000002,
+                                      2.6400001 12 3.3,
+                                      3.6400001 12 3.3,
+                                      3.6400001 12 4.3000002,
+                                      2.6400001 12 4.3000002,
+                                      12.8 12 3.3,
+                                      13.8 12 3.3,
+                                      13.8 12 4.3000002,
+                                      12.8 12 4.3000002,
+                                      0 0 7.8000002,
+                                      0 0 0,
+                                      0 12 7.8000002,
+                                      0 12 0,
+                                      16.440001 0 0,
+                                      16.440001 0 7.8000002,
+                                      16.440001 12 7.8000002,
+                                      16.440001 12 0,
+                                      10.76 12 1.4,
+                                      10.77 12 1.4,
+                                      5.6900001 12 1.4,
+                                      5.6799998 12 1.4,
+                                      0.60000002 12 1.4,
+                                      0.60000002 12 6.4000001,
+                                      5.6799998 12 6.4000001,
+                                      5.6900001 12 6.4000001,
+                                      10.76 12 6.4000001,
+                                      10.77 12 6.4000001,
+                                      15.85 12 6.4000001,
+                                      15.85 12 1.4,
+                                      3.6400001 1.5 0,
+                                      3.6400001 2.5 0,
+                                      2.6400001 2.5 0,
+                                      2.6400001 1.5 0,
+                                      8.7200003 1.5 0,
+                                      7.7199998 1.5 0,
+                                      8.7200003 2.5 0,
+                                      7.7199998 2.5 0,
+                                      13.8 2.5 0,
+                                      12.8 2.5 0,
+                                      12.8 1.5 0,
+                                      13.8 1.5 0,
+                                      10.77 4 1.4,
+                                      10.76 4 1.4,
+                                      5.6900001 4 1.4,
+                                      5.6799998 4 1.4,
+                                      0.60000002 4 1.4,
+                                      0.60000002 4 6.4000001,
+                                      5.6799998 4 6.4000001,
+                                      5.6900001 4 6.4000001,
+                                      10.76 4 6.4000001,
+                                      10.77 4 6.4000001,
+                                      15.85 4 6.4000001,
+                                      15.85 4 1.4,
+                                      3.6400001 1.5 -3.45,
+                                      3.6400001 2.5 -3.45,
+                                      2.6400001 2.5 -3.45,
+                                      2.6400001 1.5 -3.45,
+                                      8.7200003 1.5 -3.45,
+                                      7.7199998 1.5 -3.45,
+                                      8.7200003 2.5 -3.45,
+                                      7.7199998 2.5 -3.45,
+                                      13.8 2.5 -3.45,
+                                      12.8 2.5 -3.45,
+                                      12.8 1.5 -3.45,
+                                      13.8 1.5 -3.45,
+                                      7.7199998 4 4.3000002,
+                                      8.7200003 4 4.3000002,
+                                      8.7200003 4 3.3,
+                                      7.7199998 4 3.3,
+                                      2.6400001 4 4.3000002,
+                                      3.6400001 4 4.3000002,
+                                      3.6400001 4 3.3,
+                                      2.6400001 4 3.3,
+                                      12.8 4 4.3000002,
+                                      13.8 4 4.3000002,
+                                      13.8 4 3.3,
+                                      12.8 4 3.3,
+                                      7.7199998 12 4.3000002,
+                                      8.7200003 12 4.3000002,
+                                      8.7200003 12 3.3,
+                                      7.7199998 12 3.3,
+                                      2.6400001 12 4.3000002,
+                                      3.6400001 12 4.3000002,
+                                      3.6400001 12 3.3,
+                                      2.6400001 12 3.3,
+                                      12.8 12 4.3000002,
+                                      13.8 12 4.3000002,
+                                      13.8 12 3.3,
+                                      12.8 12 3.3 ]
+
+                                }
+                                coordIndex [ 0, 1, -1, 1, 2, -1, 3, 2,
+                                    -1, 0, 3, -1, 4, 5, -1, 5,
+                                    6, -1, 7, 6, -1, 9, 10, -1,
+                                    11, 10, -1, 12, 13, -1, 13, 14,
+                                    -1, 16, 17, -1, 18, 16, -1, 19,
+                                    18, -1, 20, 19, -1, 21, 20, -1,
+                                    21, 22, -1, 22, 23, -1, 23, 24,
+                                    -1, 24, 25, -1, 25, 26, -1, 26,
+                                    27, -1, 17, 27, -1, 31, 30, -1,
+                                    32, 33, -1, 33, 34, -1, 35, 34,
+                                    -1, 32, 35, -1, 36, 37, -1, 36,
+                                    38, -1, 38, 39, -1, 37, 39, -1,
+                                    40, 41, -1, 42, 41, -1, 43, 42,
+                                    -1, 43, 40, -1, 50, 49, -1, 51,
+                                    50, -1, 51, 48, -1, 55, 54, -1,
+                                    55, 52, -1, 59, 58, -1, 59, 56,
+                                    -1, 63, 62, -1, 63, 60, -1, 64,
+                                    65, -1, 67, 64, -1, 70, 69, -1,
+                                    71, 70, -1, 74, 73, -1, 75, 74,
+                                    -1, 78, 77, -1, 79, 78, -1, 82,
+                                    81, -1, 83, 82, -1, 86, 85, -1,
+                                    87, 86, -1, 91, 90, -1, 91, 88,
+                                    -1, 95, 94, -1, 96, 97, -1, 99,
+                                    98, -1, 96, 99, -1, 103, 102, -1,
+                                    103, 100, -1, 104, 105, -1, 104, 107,
+                                    -1, 111, 108, -1, 112, 113, -1, 115,
+                                    114, -1, 115, 112, -1, 119, 118, -1,
+                                    116, 119, -1, 123, 122, -1, 123, 120,
+                                    -1, 124, 127, -1, 128, 129, -1, 131,
+                                    130, -1, 131, 128, -1, 132, 133, -1,
+                                    132, 135, -1, 136, 137, -1, 139, 136,
+                                    -1, 140, 143, -1, 145, 146, -1, 144,
+                                    147, -1, 148, 150, -1, 152, 153, -1,
+                                    153, 154, -1, 155, 154, -1, 152, 155,
+                                    -1, 156, 159, -1, 164, 165, -1, 165,
+                                    166, -1, 167, 166, -1, 164, 167, -1,
+                                    172, 173, -1, 173, 174, -1, 175, 174,
+                                    -1, 172, 175, -1, 188, 189, -1, 189,
+                                    190, -1, 191, 190, -1, 194, 193, -1,
+                                    195, 194, -1, 196, 197, -1, 197, 198,
+                                    -1, 202, 201, -1, 204, 205, -1, 205,
+                                    206, -1, 207, 206, -1, 210, 209, -1,
+                                    211, 210, -1, 212, 213, -1, 213, 214,
+                                    -1, 218, 217, -1, 220, 221, -1, 221,
+                                    222, -1, 223, 222, -1, 226, 225, -1,
+                                    227, 226, -1, 228, 229, -1, 229, 230,
+                                    -1, 234, 233, -1 ]
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+49 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  diffuseColor 0 0.50196099 0
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                USE _+48
+                                normal 
+                                Normal {
+                                  vector [ -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      0 -1 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      0 0 1,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      1 0 0,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      0 0 -1,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      -1 0 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0,
+                                      0 1 0 ]
+
+                                }
+                                color 
+                                Color {
+                                  color [ 0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      0 0.50196099 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0,
+                                      1 0.84313703 0 ]
+
+                                }
+                                colorPerVertex FALSE
+                                coordIndex [ 3, 1, 2, -1, 0, 1, 3, -1,
+                                    5, 6, 4, -1, 4, 6, 7, -1,
+                                    10, 9, 8, -1, 10, 8, 11, -1,
+                                    19, 12, 20, -1, 18, 12, 19, -1,
+                                    15, 21, 20, -1, 15, 20, 12, -1,
+                                    22, 21, 15, -1, 23, 22, 15, -1,
+                                    13, 16, 17, -1, 27, 13, 17, -1,
+                                    14, 25, 24, -1, 14, 26, 25, -1,
+                                    14, 27, 26, -1, 14, 13, 27, -1,
+                                    13, 12, 18, -1, 13, 18, 16, -1,
+                                    15, 14, 24, -1, 15, 24, 23, -1,
+                                    35, 32, 28, -1, 28, 34, 35, -1,
+                                    33, 37, 32, -1, 32, 37, 28, -1,
+                                    33, 39, 37, -1, 34, 29, 33, -1,
+                                    39, 29, 38, -1, 28, 29, 34, -1,
+                                    33, 29, 39, -1, 38, 42, 36, -1,
+                                    38, 41, 42, -1, 36, 31, 37, -1,
+                                    43, 31, 42, -1, 40, 31, 43, -1,
+                                    42, 31, 36, -1, 37, 31, 28, -1,
+                                    41, 30, 40, -1, 40, 30, 31, -1,
+                                    29, 30, 38, -1, 38, 30, 41, -1,
+                                    45, 47, 46, -1, 45, 44, 47, -1,
+                                    49, 51, 50, -1, 49, 48, 51, -1,
+                                    53, 55, 54, -1, 53, 52, 55, -1,
+                                    57, 59, 58, -1, 57, 56, 59, -1,
+                                    61, 63, 62, -1, 61, 60, 63, -1,
+                                    67, 66, 65, -1, 64, 67, 65, -1,
+                                    71, 69, 70, -1, 68, 69, 71, -1,
+                                    75, 73, 74, -1, 72, 73, 75, -1,
+                                    79, 77, 78, -1, 76, 77, 79, -1,
+                                    83, 81, 82, -1, 80, 81, 83, -1,
+                                    87, 85, 86, -1, 84, 85, 87, -1,
+                                    90, 91, 89, -1, 91, 88, 89, -1,
+                                    93, 95, 94, -1, 93, 92, 95, -1,
+                                    97, 99, 98, -1, 97, 96, 99, -1,
+                                    101, 103, 102, -1, 101, 100, 103, -1,
+                                    107, 105, 106, -1, 104, 105, 107, -1,
+                                    111, 109, 110, -1, 108, 109, 111, -1,
+                                    115, 113, 114, -1, 112, 113, 115, -1,
+                                    117, 119, 118, -1, 117, 116, 119, -1,
+                                    121, 123, 122, -1, 121, 120, 123, -1,
+                                    127, 125, 126, -1, 124, 125, 127, -1,
+                                    129, 131, 130, -1, 129, 128, 131, -1,
+                                    135, 133, 134, -1, 132, 133, 135, -1,
+                                    139, 137, 138, -1, 136, 137, 139, -1,
+                                    141, 143, 142, -1, 141, 140, 143, -1,
+                                    146, 145, 144, -1, 146, 144, 147, -1,
+                                    154, 148, 155, -1, 152, 155, 148, -1,
+                                    150, 152, 148, -1, 149, 148, 154, -1,
+                                    153, 152, 150, -1, 153, 149, 154, -1,
+                                    151, 149, 153, -1, 151, 153, 150, -1,
+                                    158, 157, 156, -1, 158, 156, 159, -1,
+                                    166, 160, 167, -1, 164, 167, 160, -1,
+                                    162, 164, 160, -1, 161, 160, 166, -1,
+                                    165, 164, 162, -1, 165, 161, 166, -1,
+                                    163, 161, 165, -1, 163, 165, 162, -1,
+                                    174, 168, 175, -1, 172, 175, 168, -1,
+                                    170, 172, 168, -1, 169, 168, 174, -1,
+                                    173, 172, 170, -1, 173, 169, 174, -1,
+                                    171, 169, 173, -1, 171, 173, 170, -1,
+                                    177, 178, 176, -1, 176, 178, 179, -1,
+                                    181, 182, 180, -1, 180, 182, 183, -1,
+                                    185, 186, 184, -1, 184, 186, 187, -1,
+                                    189, 188, 191, -1, 190, 189, 191, -1,
+                                    195, 194, 193, -1, 192, 195, 193, -1,
+                                    196, 197, 199, -1, 197, 198, 199, -1,
+                                    202, 203, 201, -1, 203, 200, 201, -1,
+                                    205, 204, 207, -1, 206, 205, 207, -1,
+                                    211, 210, 209, -1, 208, 211, 209, -1,
+                                    212, 213, 215, -1, 213, 214, 215, -1,
+                                    218, 219, 217, -1, 219, 216, 217, -1,
+                                    221, 220, 223, -1, 222, 221, 223, -1,
+                                    227, 226, 225, -1, 224, 227, 225, -1,
+                                    228, 229, 231, -1, 229, 230, 231, -1,
+                                    234, 235, 233, -1, 235, 232, 233, -1,
+                                    238, 237, 236, -1, 238, 236, 239, -1,
+                                    242, 241, 240, -1, 242, 240, 243, -1,
+                                    246, 245, 244, -1, 246, 244, 247, -1 ]
+                                colorIndex [ 0, 0, 1, 1, 2, 2, 3, 3,
+                                    3, 3, 3, 3, 3, 3, 3, 3,
+                                    3, 3, 3, 3, 3, 3, 4, 4,
+                                    4, 4, 4, 4, 4, 4, 4, 4,
+                                    4, 4, 4, 4, 4, 4, 4, 4,
+                                    4, 4, 5, 5, 6, 6, 7, 7,
+                                    8, 8, 9, 9, 10, 10, 11, 11,
+                                    12, 12, 13, 13, 14, 14, 15, 15,
+                                    16, 16, 17, 17, 18, 18, 19, 19,
+                                    20, 20, 21, 21, 22, 22, 23, 23,
+                                    24, 24, 25, 25, 26, 26, 27, 27,
+                                    28, 28, 29, 29, 30, 30, 31, 31,
+                                    31, 31, 31, 31, 31, 31, 32, 32,
+                                    33, 33, 33, 33, 33, 33, 33, 33,
+                                    34, 34, 34, 34, 34, 34, 34, 34,
+                                    35, 35, 36, 36, 37, 37, 38, 38,
+                                    39, 39, 40, 40, 41, 41, 42, 42,
+                                    43, 43, 44, 44, 45, 45, 46, 46,
+                                    47, 47, 48, 48, 49, 49, 50, 50,
+                                    51, 51, 52, 52 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF _+50 Group {
+                          children 
+                            Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+                                  emissiveColor 0.098039217 0.098039217 0.098039217
+
+                                }
+
+                              }
+                              geometry 
+                              PointSet {
+                                coord 
+                                USE _+48
+
+                              }
+
+                            }
+
+                        } ]
+
+                    },
+                      
+                    USE _+49,
+                      
+                    Group {
+                      children [ 
+                        USE _+47,
+                          
+                        USE _+50 ]
+
+                    },
+                      
+                    USE _+50 ]
+
+                }
+
+            }
+
+        } ]
+
+    }
+
+}
