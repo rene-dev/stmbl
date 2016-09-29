@@ -1,0 +1,282 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:ksz8081
+LIBS:ESD_Protection
+LIBS:hr911105_rj45
+LIBS:stm32
+LIBS:ethernet_bob-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 4 4
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L LM3578 U3
+U 1 1 57C1A957
+P 6000 3350
+F 0 "U3" H 6000 3915 50  0000 C CNN
+F 1 "LM3578" H 6000 3824 50  0000 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 6000 3350 50  0001 C CNN
+F 3 "" H 6000 3350 50  0000 C CNN
+	1    6000 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L +24V #PWR041
+U 1 1 57C1AA78
+P 7100 2850
+F 0 "#PWR041" H 7100 2700 50  0001 C CNN
+F 1 "+24V" H 7115 3023 50  0000 C CNN
+F 2 "" H 7100 2850 50  0000 C CNN
+F 3 "" H 7100 2850 50  0000 C CNN
+	1    7100 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R9
+U 1 1 57C1AA96
+P 7100 3200
+F 0 "R9" H 7170 3246 50  0000 L CNN
+F 1 "1" H 7170 3155 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" V 7030 3200 50  0001 C CNN
+F 3 "" H 7100 3200 50  0000 C CNN
+	1    7100 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R7
+U 1 1 57C1AB38
+P 4500 2800
+F 0 "R7" H 4570 2846 50  0000 L CNN
+F 1 "R" H 4570 2755 50  0000 L CNN
+F 2 "Resistors_SMD:R_0603" V 4430 2800 50  0001 C CNN
+F 3 "" H 4500 2800 50  0000 C CNN
+	1    4500 2800
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R8
+U 1 1 57C1ABB5
+P 4500 3800
+F 0 "R8" H 4570 3846 50  0000 L CNN
+F 1 "R" H 4570 3755 50  0000 L CNN
+F 2 "Resistors_SMD:R_0603" V 4430 3800 50  0001 C CNN
+F 3 "" H 4500 3800 50  0000 C CNN
+	1    4500 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C18
+U 1 1 57C1ABFF
+P 4900 3200
+F 0 "C18" H 5015 3246 50  0000 L CNN
+F 1 "18pF" H 5015 3155 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0603" H 4938 3050 50  0001 C CNN
+F 3 "" H 4900 3200 50  0000 C CNN
+	1    4900 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C19
+U 1 1 57C1AC8E
+P 4900 3800
+F 0 "C19" H 5015 3846 50  0000 L CNN
+F 1 "1nF" H 5015 3755 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0603" H 4938 3650 50  0001 C CNN
+F 3 "" H 4900 3800 50  0000 C CNN
+	1    4900 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L D_Schottky D1
+U 1 1 57C1ACC6
+P 7100 3800
+F 0 "D1" V 7054 3879 50  0000 L CNN
+F 1 "D_Schottky" V 7145 3879 50  0000 L CNN
+F 2 "Diodes_SMD:SOD-123" H 7100 3800 50  0001 C CNN
+F 3 "" H 7100 3800 50  0000 C CNN
+	1    7100 3800
+	0    1    1    0   
+$EndComp
+$Comp
+L INDUCTOR_SMALL L1
+U 1 1 57C1AE77
+P 7450 3650
+F 0 "L1" H 7450 3865 50  0000 C CNN
+F 1 "INDUCTOR_SMALL" H 7450 3774 50  0000 C CNN
+F 2 "Inductors_NEOSID:Neosid_Inductor_Ms85" H 7450 3650 50  0001 C CNN
+F 3 "" H 7450 3650 50  0000 C CNN
+	1    7450 3650
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C20
+U 1 1 57C1AEF3
+P 7800 3800
+F 0 "C20" H 7915 3846 50  0000 L CNN
+F 1 "220µF" H 7915 3755 50  0000 L CNN
+F 2 "Capacitors_SMD:C_1206" H 7838 3650 50  0001 C CNN
+F 3 "" H 7800 3800 50  0000 C CNN
+	1    7800 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3V3 #PWR042
+U 1 1 57C1AF67
+P 8000 3650
+F 0 "#PWR042" H 8000 3500 50  0001 C CNN
+F 1 "+3V3" H 8015 3823 50  0000 C CNN
+F 2 "" H 8000 3650 50  0000 C CNN
+F 3 "" H 8000 3650 50  0000 C CNN
+	1    8000 3650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4500 3950 8950 3950
+Wire Wire Line
+	4500 2950 4500 3650
+Wire Wire Line
+	4900 3350 4900 3650
+Wire Wire Line
+	4700 3450 5150 3450
+Connection ~ 4900 3450
+Wire Wire Line
+	5150 3650 5150 3950
+Connection ~ 5150 3950
+Wire Wire Line
+	4500 3050 5150 3050
+Wire Wire Line
+	7100 3050 7100 2850
+Wire Wire Line
+	6850 3050 7100 3050
+Wire Wire Line
+	6850 3250 6850 3450
+Wire Wire Line
+	6850 3350 7100 3350
+Connection ~ 6850 3350
+Wire Wire Line
+	6850 3650 7200 3650
+$Comp
+L +3V3 #PWR043
+U 1 1 57C1B37C
+P 4500 2600
+F 0 "#PWR043" H 4500 2450 50  0001 C CNN
+F 1 "+3V3" H 4515 2773 50  0000 C CNN
+F 2 "" H 4500 2600 50  0000 C CNN
+F 3 "" H 4500 2600 50  0000 C CNN
+	1    4500 2600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4500 2650 4500 2600
+Connection ~ 4900 3050
+Connection ~ 4500 3050
+Wire Wire Line
+	7700 3650 8000 3650
+Connection ~ 7800 3650
+Connection ~ 7100 3650
+Connection ~ 7100 3950
+$Comp
+L C C17
+U 1 1 57C1C03B
+P 4700 3200
+F 0 "C17" H 4815 3246 50  0000 L CNN
+F 1 "18pF" H 4815 3155 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0603" H 4738 3050 50  0001 C CNN
+F 3 "" H 4700 3200 50  0000 C CNN
+	1    4700 3200
+	1    0    0    -1  
+$EndComp
+Connection ~ 4700 3350
+Wire Wire Line
+	4700 3350 4700 3450
+Connection ~ 4900 3950
+$Comp
+L GND #PWR044
+U 1 1 57C1B787
+P 6100 3950
+F 0 "#PWR044" H 6100 3700 50  0001 C CNN
+F 1 "GND" H 6105 3777 50  0000 C CNN
+F 2 "" H 6100 3950 50  0000 C CNN
+F 3 "" H 6100 3950 50  0000 C CNN
+	1    6100 3950
+	1    0    0    -1  
+$EndComp
+Connection ~ 6100 3950
+Connection ~ 4700 3050
+$Comp
+L LED D2
+U 1 1 57C1C705
+P 8950 3300
+F 0 "D2" V 8904 3378 50  0000 L CNN
+F 1 "LED" V 8995 3378 50  0000 L CNN
+F 2 "LEDs:LED_0603" H 8950 3300 50  0001 C CNN
+F 3 "" H 8950 3300 50  0000 C CNN
+	1    8950 3300
+	0    1    1    0   
+$EndComp
+$Comp
+L R R11
+U 1 1 57C1C7EF
+P 8950 3800
+F 0 "R11" H 9020 3846 50  0000 L CNN
+F 1 "R" H 9020 3755 50  0000 L CNN
+F 2 "Resistors_SMD:R_0603" V 8880 3800 50  0001 C CNN
+F 3 "" H 8950 3800 50  0000 C CNN
+	1    8950 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3V3 #PWR045
+U 1 1 57C1C979
+P 8950 2950
+F 0 "#PWR045" H 8950 2800 50  0001 C CNN
+F 1 "+3V3" H 8965 3123 50  0000 C CNN
+F 2 "" H 8950 2950 50  0000 C CNN
+F 3 "" H 8950 2950 50  0000 C CNN
+	1    8950 2950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8950 3100 8950 2950
+Wire Wire Line
+	8950 3650 8950 3500
+Connection ~ 7800 3950
+$EndSCHEMATC
