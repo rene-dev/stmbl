@@ -37,7 +37,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
-Sheet 2 4
+Sheet 2 3
 Title "STM32 Ethernet BOB"
 Date ""
 Rev ""
@@ -227,7 +227,7 @@ F 3 "" H 1700 7550 50  0000 C CNN
 	1    1700 7550
 	0    1    1    0   
 $EndComp
-Text HLabel 10400 2000 2    60   Input ~ 0
+Text HLabel 11950 2050 2    60   Input ~ 0
 STM_MCO1
 $Comp
 L C C11
@@ -406,7 +406,7 @@ Wire Wire Line
 Wire Wire Line
 	1600 7550 1700 7550
 Wire Wire Line
-	10300 2000 10400 2000
+	10300 2000 11100 2000
 Wire Wire Line
 	2950 7150 4200 7150
 Wire Wire Line
@@ -1054,8 +1054,6 @@ Text GLabel 10400 5900 2    60   Input ~ 0
 PC13
 Text GLabel 10400 5400 2    60   Input ~ 0
 PC8
-Text GLabel 10400 5500 2    60   Input ~ 0
-PC9
 Text GLabel 10400 5300 2    60   Input ~ 0
 PC7
 Text GLabel 10400 5200 2    60   Input ~ 0
@@ -1079,7 +1077,7 @@ Wire Wire Line
 Wire Wire Line
 	10300 5600 10400 5600
 Wire Wire Line
-	10300 5500 10400 5500
+	10300 5500 11000 5500
 Wire Wire Line
 	10300 5400 10400 5400
 Wire Wire Line
@@ -1256,4 +1254,61 @@ Wire Wire Line
 	10300 3200 10400 3200
 Wire Wire Line
 	10300 3100 10400 3100
+Text HLabel 11000 5500 2    60   Input ~ 0
+STM_MCO1
+Text GLabel 11700 5400 2    60   Input ~ 0
+PC9
+Wire Wire Line
+	10900 5500 10900 5400
+Wire Wire Line
+	10900 5400 11000 5400
+Connection ~ 10900 5500
+$Comp
+L JUMPER JP2
+U 1 1 57ED2072
+P 11300 5400
+F 0 "JP2" H 11300 5664 50  0000 C CNN
+F 1 "JUMPER" H 11300 5573 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0603" H 11300 5400 50  0001 C CNN
+F 3 "" H 11300 5400 50  0000 C CNN
+	1    11300 5400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	11600 5400 11700 5400
+Text GLabel 11950 1950 2    60   Input ~ 0
+PA8
+$Comp
+L JUMPER JP3
+U 1 1 57ED3151
+P 11550 1950
+F 0 "JP3" H 11550 2214 50  0000 C CNN
+F 1 "JUMPER" H 11550 2123 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0603" H 11550 1950 50  0001 C CNN
+F 3 "" H 11550 1950 50  0000 C CNN
+	1    11550 1950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	11100 1950 11100 2050
+Wire Wire Line
+	11100 1950 11250 1950
+Wire Wire Line
+	11100 2050 11250 2050
+Connection ~ 11100 2000
+Wire Wire Line
+	11850 1950 11950 1950
+$Comp
+L JUMPER JP4
+U 1 1 57ED26BC
+P 11550 2050
+F 0 "JP4" H 11550 2314 50  0000 C CNN
+F 1 "JUMPER" H 11550 2223 50  0000 C CNN
+F 2 "Capacitors_SMD:C_0603" H 11550 2050 50  0001 C CNN
+F 3 "" H 11550 2050 50  0000 C CNN
+	1    11550 2050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	11850 2050 11950 2050
 $EndSCHEMATC
