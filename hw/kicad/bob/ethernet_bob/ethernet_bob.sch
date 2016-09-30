@@ -1,7 +1,38 @@
 EESchema Schematic File Version 2
 LIBS:ethernet_bob-rescue
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
 LIBS:ksz8081
+LIBS:ESD_Protection
 LIBS:hr911105_rj45
+LIBS:stm32
 LIBS:ethernet_bob-cache
 EELAYER 25 0
 EELAYER END
@@ -31,9 +62,8 @@ F7 "STM_RXD0" I R 7700 3500 60
 F8 "STM_RXD1" I R 7700 3600 60 
 F9 "STM_TXD0" I R 7700 3150 60 
 F10 "STM_MDC" I R 7700 4200 60 
-F11 "STM_RXDV" I R 7700 3900 60 
-F12 "STM_RXC" I R 7700 3800 60 
-F13 "STM_MCO1" I R 7700 4400 60 
+F11 "STM_RXC" I R 7700 3800 60 
+F12 "STM_MCO1" I R 7700 4400 60 
 $EndSheet
 Wire Wire Line
 	7700 3150 8150 3150
@@ -45,8 +75,6 @@ Wire Wire Line
 	7700 3500 8150 3500
 Wire Wire Line
 	7700 3600 8150 3600
-Wire Wire Line
-	7700 3700 8150 3700
 $Sheet
 S 8150 2900 1500 1850
 U 57A86254
@@ -66,12 +94,9 @@ F12 "PHY_XI" I L 8150 4400 60
 F13 "PHY_X0" I L 8150 4500 60 
 F14 "PHY_INTRP" I L 8150 4650 60 
 F15 "PHY_RXC" I L 8150 3800 60 
-F16 "PHY_RXDV" I L 8150 3900 60 
 $EndSheet
 Wire Wire Line
 	7700 3800 8150 3800
-Wire Wire Line
-	7700 3900 8150 3900
 Wire Wire Line
 	7700 4100 8150 4100
 Wire Wire Line
@@ -80,4 +105,6 @@ Wire Wire Line
 	7700 4300 8150 4300
 Wire Wire Line
 	7700 4400 8150 4400
+Wire Wire Line
+	7700 3700 8150 3700
 $EndSCHEMATC

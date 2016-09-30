@@ -1,7 +1,38 @@
 EESchema Schematic File Version 2
 LIBS:ethernet_bob-rescue
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
 LIBS:ksz8081
+LIBS:ESD_Protection
 LIBS:hr911105_rj45
+LIBS:stm32
 LIBS:ethernet_bob-cache
 EELAYER 25 0
 EELAYER END
@@ -317,8 +348,6 @@ Text HLabel 4800 4400 2    60   Input ~ 0
 PHY_TXD0
 Text HLabel 4800 4500 2    60   Input ~ 0
 PHY_TXEN
-Text HLabel 4800 5000 2    60   Input ~ 0
-PHY_RXER
 Text HLabel 3300 6100 3    60   Input ~ 0
 PHY_RXD0
 Text HLabel 3200 6100 3    60   Input ~ 0
@@ -444,19 +473,6 @@ Wire Wire Line
 Wire Wire Line
 	3300 6050 3300 6100
 $Comp
-L R R17
-U 1 1 57A9C5B8
-P 4600 5000
-F 0 "R17" H 4600 5150 50  0000 L CNN
-F 1 "1k" H 4600 4850 50  0000 L CNN
-F 2 "Resistors_SMD:R_0603" V 4530 5000 50  0001 C CNN
-F 3 "" H 4600 5000 50  0000 C CNN
-	1    4600 5000
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	4750 5000 4800 5000
-$Comp
 L R R15
 U 1 1 57A9CAF8
 P 4600 4500
@@ -545,8 +561,6 @@ PHY_RXC
 Wire Wire Line
 	1750 4200 1900 4200
 Wire Wire Line
-	4400 5000 4450 5000
-Wire Wire Line
 	3600 5750 3600 5700
 Wire Wire Line
 	4400 4300 4450 4300
@@ -564,5 +578,22 @@ F 2 "" H 4450 4100 50  0000 C CNN
 F 3 "" H 4450 4100 50  0000 C CNN
 	1    4450 4100
 	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4400 5000 4450 5000
+Wire Wire Line
+	4750 5000 4800 5000
+Text HLabel 4800 5000 2    60   Input ~ 0
+PHY_RXER
+$Comp
+L R R17
+U 1 1 57A9C5B8
+P 4600 5000
+F 0 "R17" H 4600 5150 50  0000 L CNN
+F 1 "1k" H 4600 4850 50  0000 L CNN
+F 2 "Resistors_SMD:R_0603" V 4530 5000 50  0001 C CNN
+F 3 "" H 4600 5000 50  0000 C CNN
+	1    4600 5000
+	0    1    1    0   
 $EndComp
 $EndSCHEMATC

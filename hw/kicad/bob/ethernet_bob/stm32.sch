@@ -1,7 +1,38 @@
 EESchema Schematic File Version 2
 LIBS:ethernet_bob-rescue
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
 LIBS:ksz8081
+LIBS:ESD_Protection
 LIBS:hr911105_rj45
+LIBS:stm32
 LIBS:ethernet_bob-cache
 EELAYER 25 0
 EELAYER END
@@ -28,8 +59,6 @@ F 3 "" H 5800 3700 50  0000 C CNN
 	1    5800 3700
 	1    0    0    -1  
 $EndComp
-Text HLabel 10400 1900 2    60   Input ~ 0
-STM_RXDV
 Text HLabel 10750 1400 2    60   Input ~ 0
 STM_MDIO
 Text HLabel 11000 4000 2    60   Input ~ 0
@@ -370,7 +399,7 @@ Connection ~ 1250 1200
 Connection ~ 650  1400
 Connection ~ 650  1200
 Wire Wire Line
-	10300 1300 10550 1300
+	10300 1300 10750 1300
 Wire Wire Line
 	1600 7550 1700 7550
 Wire Wire Line
@@ -1526,7 +1555,8 @@ Wire Wire Line
 	14350 7800 14450 7800
 Wire Wire Line
 	14350 7900 14450 7900
-Wire Wire Line
-	10550 1300 10550 1400
-Connection ~ 10550 1400
+Text HLabel 10750 1300 2    60   Input ~ 0
+STM_MCO1
+Text HLabel 10400 1900 2    60   Input ~ 0
+STM_CRS
 $EndSCHEMATC
