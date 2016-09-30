@@ -1,37 +1,7 @@
 EESchema Schematic File Version 2
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
+LIBS:ethernet_bob-rescue
 LIBS:ksz8081
-LIBS:ESD_Protection
 LIBS:hr911105_rj45
-LIBS:stm32
 LIBS:ethernet_bob-cache
 EELAYER 25 0
 EELAYER END
@@ -60,7 +30,7 @@ F 3 "" H 5800 3700 50  0000 C CNN
 $EndComp
 Text HLabel 10400 1900 2    60   Input ~ 0
 STM_RXDV
-Text HLabel 10400 1400 2    60   Input ~ 0
+Text HLabel 10750 1400 2    60   Input ~ 0
 STM_MDIO
 Text HLabel 11000 4000 2    60   Input ~ 0
 STM_TXEN
@@ -214,8 +184,6 @@ F 3 "" H 950 1100 50  0000 C CNN
 	1    950  1100
 	1    0    0    -1  
 $EndComp
-Text HLabel 10400 1300 2    60   Input ~ 0
-STM_RXC
 $Comp
 L +5VP #PWR06
 U 1 1 57C0B845
@@ -326,7 +294,7 @@ Wire Wire Line
 Wire Wire Line
 	10300 1200 10400 1200
 Wire Wire Line
-	10300 1400 10400 1400
+	10300 1400 10750 1400
 Wire Wire Line
 	10300 1500 10400 1500
 Wire Wire Line
@@ -402,7 +370,7 @@ Connection ~ 1250 1200
 Connection ~ 650  1400
 Connection ~ 650  1200
 Wire Wire Line
-	10300 1300 10400 1300
+	10300 1300 10550 1300
 Wire Wire Line
 	1600 7550 1700 7550
 Wire Wire Line
@@ -1364,7 +1332,7 @@ F 3 "" H 1150 1600 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1300 1600 1150 1600
+	1150 1600 1300 1600
 Wire Wire Line
 	1250 1600 1250 1700
 Wire Wire Line
@@ -1558,4 +1526,7 @@ Wire Wire Line
 	14350 7800 14450 7800
 Wire Wire Line
 	14350 7900 14450 7900
+Wire Wire Line
+	10550 1300 10550 1400
+Connection ~ 10550 1400
 $EndSCHEMATC
