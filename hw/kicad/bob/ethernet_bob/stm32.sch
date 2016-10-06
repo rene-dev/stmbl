@@ -224,8 +224,6 @@ F 3 "" H 1700 7550 50  0000 C CNN
 	1    1700 7550
 	0    1    1    0   
 $EndComp
-Text HLabel 11950 2050 2    60   Input ~ 0
-STM_MCO1
 $Comp
 L C C11
 U 1 1 57C0E303
