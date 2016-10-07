@@ -64,7 +64,7 @@ MEM(volatile float jog_en) = 0.0;
 
 INIT(
    hal_conf_init();
-   if(load()){//flash load error
+   if(hal_conf_load()){//flash load error
       hal.hal_state = CONFIG_LOAD_ERROR;
    }
 );
@@ -95,20 +95,35 @@ RT(
 );
 
 NRT(
-
-   void about(){
-      printf("######## software info ########\n");
+   
+   void print_version_info(struct version_info* v){
       printf(
           "%s v%i.%i.%i %s\n",
-          version_info.product_name,
-          version_info.major,
-          version_info.minor,
-          version_info.patch,
-          version_info.git_version
+          v->product_name,
+          v->major,
+          v->minor,
+          v->patch,
+          v->git_version
       );
-      printf("Branch %s\n",version_info.git_branch);
-      printf("Compiled %s %s ",version_info.build_date, version_info.build_time);
-      printf("by %s on %s\n",version_info.build_user, version_info.build_host);
+      printf("Branch %s\n",v->git_branch);
+      printf("Compiled %s %s ",v->build_date, v->build_time);
+      printf("by %s on %s\n",v->build_user, v->build_host);
+   }
+
+   void about(){
+      
+      //hv firmware. defined by the linker script
+      extern const char _binary_obj_hv_hv_bin_start;
+      extern const char _binary_obj_hv_hv_bin_size;
+      extern const char _binary_obj_hv_hv_bin_end;
+
+      //version info of bootloader
+      volatile const struct version_info* bt_version_info = (void*)0x08000188;
+      //version info of embedded hv firmware
+      volatile const struct version_info* hv_version_info = (void*)(&_binary_obj_hv_hv_bin_start + 0x10c);
+      
+      printf("######## software info ########\n");
+      print_version_info(&version_info);
       printf("GCC        %s\n",__VERSION__);
       printf("newlib     %s\n",_NEWLIB_VERSION);
       printf("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
@@ -123,19 +138,11 @@ NRT(
          printf("crc error!:%lx\n", crc);
       
       printf("######## Bootloader info ########\n");
-      printf(
-          "%s v%i.%i.%i %s\n",
-          bt_version_info->product_name,
-          bt_version_info->major,
-          bt_version_info->minor,
-          bt_version_info->patch,
-          bt_version_info->git_version
-      );
-      printf("Branch %s\n",bt_version_info->git_branch);
-      printf("Compiled %s %s ",bt_version_info->build_date, bt_version_info->build_time);
-      printf("by %s on %s\n",bt_version_info->build_user, bt_version_info->build_host);
-
-      printf("start:%p ,size:%p ,end%p \n",&_binary_obj_hv_hv_bin_start,&_binary_obj_hv_hv_bin_size,&_binary_obj_hv_hv_bin_end);
+      print_version_info(bt_version_info);
+      
+      printf("######## HV info ########\n");
+      printf("hv: start:%p ,size:%p ,end%p \n",&_binary_obj_hv_hv_bin_start,&_binary_obj_hv_hv_bin_size,&_binary_obj_hv_hv_bin_end);
+      print_version_info(hv_version_info);
    }
 
    void sysinfo(){
@@ -217,7 +224,7 @@ NRT(
          printf("done\n");
       }
       else if(!strcmp(s, "hal")){
-         print_hal_info();
+         hal_term_print_info();
       }
       else if(!strcmp(s, "about")){
          about();
@@ -229,16 +236,16 @@ NRT(
          NVIC_SystemReset();
       }
       else if(!strcmp(s, "list")){
-         hal_term_listhal();
+         hal_term_list();
       }
       else if(!strcmp(s, "help")){
          help();
       }
       else if(!strcmp(s, "save")){
-         save();
+         hal_conf_save();
       }
       else if(!strcmp(s, "load")){
-         int ret = load();
+         int ret = hal_conf_load();
          if(ret == -1){
             printf("flash error\n");
             return;
@@ -256,7 +263,7 @@ NRT(
          }
       }
       else if(!strcmp(s, "getconf")){
-         hal_term_conf();
+         hal_term_getconf();
       }
       else if(!strcmp(s, "jogl")){
          jog_en = -1.0;
@@ -405,7 +412,7 @@ NRT(
 
       fault_sender();
       if(EDGE(hal.hal_state)){
-         hal_print_state();
+         hal_term_print_state();
       }
 
       int i = -1;
@@ -415,12 +422,12 @@ NRT(
       }
       if(i == 2){ // read hal pin
          if(hal_is_pin(sink)){
-            print_pin(hal_find_pin(sink));
+            hal_term_print_pin(hal_find_pin(sink));
          }
          else if(hal_is_compname(sink)){
             for(int i = 0; i < hal.hal_pin_count; i++){//find all pins of this comp
               if(!strncmp(hal.hal_pins[i]->name, sink, strlen(sink))){
-                 print_pin(hal.hal_pins[i]);
+                 hal_term_print_pin(hal.hal_pins[i]);
               }
             }
          }else{

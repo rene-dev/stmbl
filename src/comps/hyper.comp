@@ -7,7 +7,6 @@ HAL_PIN(read_status) = 0;
 
 MEM(volatile uint8_t rxbuf[128]);
 MEM(volatile uint8_t txbuf[20]);
-MEM(volatile int count) = 0;
 
 INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -112,9 +111,8 @@ void start_rx(){
 
 RT(
    int available;
-   int txlen = 0;
    uint32_t pos = 0;
-   const float byte_time = 11.0/9600.0;
+   //const float byte_time = 11.0/9600.0; //TODO: timeouts/sleep based on this?
 
    HT(
    GOTO(0);

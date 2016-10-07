@@ -98,6 +98,7 @@ int hal_start_rt(){
    return(0);
 }
 
+//TODO: crashes when hal is already running?
 void hal_start(){
    float min = INFINITY;
    int min_index = -1;

@@ -34,7 +34,6 @@
 #include <stdlib.h>
 #include "usb_cdc.h"
 
-
 GLOBAL_HAL_PIN(rt_time);
 GLOBAL_HAL_PIN(frt_time);
 GLOBAL_HAL_PIN(rt_period_time);
@@ -55,10 +54,6 @@ void hal_disable_rt(){
 void hal_disable_frt(){
    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
 }
-
-extern char _binary_obj_hv_hv_bin_start;
-extern char _binary_obj_hv_hv_bin_size;
-extern char _binary_obj_hv_hv_bin_end;
 
 uint32_t hal_get_systick_value(){
    return(SysTick->VAL);

@@ -16,7 +16,7 @@ struct version_info {
     char        build_time[16];
 
     // set at compile-time
-    //
+    //TODO: change to uint32_t
     char        product_name[32];
     int         major;
     int         minor;
@@ -24,4 +24,3 @@ struct version_info {
 };
 
 extern volatile const struct version_info version_info __attribute__((section(".version_info")));
-extern volatile const struct version_info* bt_version_info;

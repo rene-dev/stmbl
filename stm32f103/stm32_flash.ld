@@ -15,7 +15,7 @@
 **
 **  Environment : Atollic TrueSTUDIO(R)
 **
-**  Distribution: The file is distributed “as is,” without any warranty
+**  Distribution: The file is distributed as is, without any warranty
 **                of any kind.
 **
 **  (c)Copyright Atollic AB.
@@ -56,6 +56,15 @@ SECTIONS
   {
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
+    . = ALIGN(4);
+  } >FLASH
+     
+  /* version info needs to have a section, so the bootloader and python script can find it */
+
+  .version_info :
+  {
+    . = ALIGN(4);
+    KEEP(*(.version_info)) 
     . = ALIGN(4);
   } >FLASH
 

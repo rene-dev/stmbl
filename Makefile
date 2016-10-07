@@ -224,11 +224,11 @@ showsize: build
 btburn: hv build showsize $(TARGET).dfu
 	@tools/bootloader.py
 	@sleep 1
-	@dfu-util -a 0 -s 0x08010000:leave -D $(TARGET).dfu
+	@dfu-util -d 0483:df11 -a 0 -s 0x08010000:leave -D $(TARGET).dfu
 
 flash: hv $(TARGET).bin
 	st-flash --reset write $(TARGET).bin 0x08010000
-		
+
 # Create a DFU file from bin file
 %.dfu: %.bin
 	@cp $< $@

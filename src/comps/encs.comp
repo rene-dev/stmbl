@@ -124,7 +124,7 @@ RT_INIT(
   request_buf[pos++] = tx_high | txen_low;
   
   //DMA tx config
-  dma_tx_config.DMA_Channel = DMA_Channel_7; //TIM8 ch1
+  dma_tx_config.DMA_Channel = DMA_Channel_7; //TIM8_UP
   dma_tx_config.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->BSRRL;
   dma_tx_config.DMA_Memory0BaseAddr = (uint32_t)&request_buf;
   dma_tx_config.DMA_DIR = DMA_DIR_MemoryToPeripheral;
@@ -141,7 +141,7 @@ RT_INIT(
   dma_tx_config.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
   
   //DMA rx config
-  dma_rx_config.DMA_Channel = DMA_Channel_7; //TIM8 ch1
+  dma_rx_config.DMA_Channel = DMA_Channel_7; //TIM8_UP
   dma_rx_config.DMA_PeripheralBaseAddr = (uint32_t)&GPIOB->IDR;
   dma_rx_config.DMA_Memory0BaseAddr = (uint32_t)&reply_buf;
   dma_rx_config.DMA_DIR = DMA_DIR_PeripheralToMemory;
