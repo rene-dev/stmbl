@@ -21,9 +21,6 @@ stmbl
 =====
 There is a wiki. https://github.com/rene-dev/stmbl/wiki
 There will be documentation.
-**přečtěte si seznam chyb ve wiki**
-
-**PCBs are now available, let me know if you are interested.**
 
 **IRC: #stmbl on irc.hackint.eu**
 https://webirc.hackint.org/#stmbl
