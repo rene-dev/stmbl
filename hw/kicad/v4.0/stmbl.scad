@@ -1,5 +1,5 @@
 pcb_hight = 1.6;
-$fn = 100;
+$fn = 20;
 
 module capp(){
 	color("grey") cylinder(r = 12.5, h = 50);
