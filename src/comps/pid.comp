@@ -162,7 +162,7 @@ RT(
       vel_cmd = CLAMP(vel_cmd, vel_min * vel_g, vel_max * vel_g); // p clamping
       //old_vel_cmd = vel_cmd;
       vel_cmd += vel_ext_cmd; // ff
-      vel_sat = SAT2(vel_cmd, vel_min, vel_max);
+      vel_sat = SAT2(vel_cmd, vel_min * 0.99, vel_max * 0.99);
       vel_cmd = CLAMP(vel_cmd, vel_min, vel_max); // clamping
 
       // vel -> acc
@@ -172,7 +172,7 @@ RT(
       acc_cmd = CLAMP(acc_cmd, acc_min * acc_g, acc_max * acc_g); // p clamping
       //old_acc_cmd = acc_cmd;
       acc_cmd += acc_ext_cmd; // ff
-      acc_sat = SAT2(acc_cmd, acc_min, acc_max);
+      acc_sat = SAT2(acc_cmd, acc_min * 0.99, acc_max * 0.99);
       acc_cmd = CLAMP(acc_cmd, acc_min, acc_max); // clamping
 
       // acc -> torque
