@@ -58,11 +58,13 @@ void link_ac(){
    
    // i2t
    hal_link_pins("conf0.r", "i2t0.mot_res");
+   hal_link_pins("conf0.psi", "i2t0.mot_psi");
    hal_link_pins("conf0.max_motor_temp", "i2t0.mot_max_temp");
    hal_link_pins("pmsm0.id", "i2t0.id");
    hal_link_pins("pmsm0.iq", "i2t0.iq");
-   hal_link_pins("conf0.max_ac_cur", "i2t0.mot_cont_cur");
+   // hal_link_pins("conf0.max_ac_cur", "i2t0.mot_cont_cur");
    hal_link_pins("i2t0.mot_temp", "fault0.motor_temp");
+   hal_link_pins("fault0.brake", "i2t0.brake");
    
    //troller only
 #ifdef TROLLER
