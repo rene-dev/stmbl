@@ -376,50 +376,6 @@ L1
 Text HLabel 2100 3800 0    60   Input ~ 0
 L2
 $Comp
-L testpoint T29
-U 1 1 5681A9CE
-P 6200 5100
-F 0 "T29" H 6200 5200 60  0000 C CNN
-F 1 "testpoint" H 6200 5000 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 6200 5100 60  0001 C CNN
-F 3 "" H 6200 5100 60  0000 C CNN
-	1    6200 5100
-	0    -1   -1   0   
-$EndComp
-$Comp
-L testpoint T28
-U 1 1 5681AC45
-P 6200 3700
-F 0 "T28" H 6200 3800 60  0000 C CNN
-F 1 "testpoint" H 6200 3600 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 6200 3700 60  0001 C CNN
-F 3 "" H 6200 3700 60  0000 C CNN
-	1    6200 3700
-	0    -1   -1   0   
-$EndComp
-$Comp
-L testpoint T27
-U 1 1 5681AEA1
-P 6200 2300
-F 0 "T27" H 6200 2400 60  0000 C CNN
-F 1 "testpoint" H 6200 2200 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 6200 2300 60  0001 C CNN
-F 3 "" H 6200 2300 60  0000 C CNN
-	1    6200 2300
-	0    -1   -1   0   
-$EndComp
-$Comp
-L testpoint T26
-U 1 1 5681B104
-P 6200 900
-F 0 "T26" H 6200 1000 60  0000 C CNN
-F 1 "testpoint" H 6200 800 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 6200 900 60  0001 C CNN
-F 3 "" H 6200 900 60  0000 C CNN
-	1    6200 900 
-	0    -1   -1   0   
-$EndComp
-$Comp
 L R R62
 U 1 1 56F9D4F8
 P 4900 1000
@@ -851,7 +807,7 @@ Wire Wire Line
 Wire Wire Line
 	2450 3900 2450 3950
 Wire Wire Line
-	2900 4150 3100 4150
+	2700 4150 3100 4150
 Wire Wire Line
 	3100 4150 3100 4200
 Wire Wire Line
@@ -864,17 +820,9 @@ Wire Wire Line
 Wire Wire Line
 	2900 4550 2900 4500
 Connection ~ 3000 4550
-Wire Wire Line
-	6200 1100 6200 1600
 Connection ~ 6200 1200
-Wire Wire Line
-	6200 2500 6200 3000
 Connection ~ 6200 2600
-Wire Wire Line
-	6200 5300 6200 5800
 Connection ~ 6200 5400
-Wire Wire Line
-	6200 3900 6200 4400
 Connection ~ 6200 4000
 Wire Wire Line
 	4900 5350 4900 5450
@@ -1010,4 +958,26 @@ F 3 "" H 8100 850 50  0000 C CNN
 	1    8100 850 
 	1    0    0    -1  
 $EndComp
+$Comp
+L GNDD #PWR093
+U 1 1 57F8452B
+P 2700 4250
+F 0 "#PWR093" H 2700 4000 50  0001 C CNN
+F 1 "GNDD" H 2700 4100 50  0000 C CNN
+F 2 "" H 2700 4250 50  0000 C CNN
+F 3 "" H 2700 4250 50  0000 C CNN
+	1    2700 4250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2700 4250 2700 4150
+Connection ~ 2900 4150
+Wire Wire Line
+	6200 5800 6200 5400
+Wire Wire Line
+	6200 1200 6200 1600
+Wire Wire Line
+	6200 3000 6200 2600
+Wire Wire Line
+	6200 4400 6200 4000
 $EndSCHEMATC
