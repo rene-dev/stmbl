@@ -62,6 +62,7 @@
 ## stm32f303cbt
 
 | port | pins | periph (remap) |
+|---|---|---
 | hv_tx | pb10 | usart3_tx |
 | hv_rx | pb11 | usart3_rx |
 | led | pa8 | (tim1_ch1) |
