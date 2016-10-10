@@ -1,0 +1,31 @@
+types:
+gp: General purpose(quad,input capture,output compare)
+ac: Advacned control(quad,input capture,output compare)
+ba: basic
+
+d: can generate dma request
+b: bits
+
+APB2 DMA2 84 MHz
+TIM1(ac,16b,d) enc_cmd
+TIM8(ac,16b,d) res_master,adc
+TIM9(gp,16b)
+TIM10(gp,16b)
+TIM11(gp,16b)
+USART1 io_header,cmd_rx
+USART6
+
+APB1 DMA1 42 MHz
+TIM2(gp,32b,d) res_slave,res_oc
+TIM3(gp,16b,d) enc_fb
+TIM4(gp,16b,d)
+TIM5(gp,32b,d)
+TIM6(ba,16b,d)
+TIM7(ba,16b,d)
+TIM12(gp,16b)
+TIM13(gp,16b)
+TIM14(gp,16b)
+USART2 f1_hv
+USART3 fb
+UART4
+UART5 cmd
