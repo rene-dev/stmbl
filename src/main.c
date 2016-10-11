@@ -43,13 +43,13 @@ void Wait(uint32_t ms);
 
 //hal interface TODO: move hal interface to file
 void hal_enable_rt(){
-   TIM_Cmd(TIM8, ENABLE);
+   TIM_Cmd(TIM4, ENABLE);
 }
 void hal_enable_frt(){
    TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
 }
 void hal_disable_rt(){
-   TIM_Cmd(TIM8, DISABLE);
+   TIM_Cmd(TIM4, DISABLE);
 }
 void hal_disable_frt(){
    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
