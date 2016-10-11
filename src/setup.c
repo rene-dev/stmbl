@@ -96,7 +96,7 @@ void setup_res(){
    TIM_TimeBaseStructure.TIM_Prescaler = 0;
    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
    TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-   TIM_SelectSlaveMode(TIM2, TIM_SlaveMode_External1);
+   TIM_SelectSlaveMode(TIM2, TIM_SlaveMode_External1);//Rising edges of the selected trigger (TRGI) clock the counter
    TIM_ITRxExternalClockConfig(TIM2, TIM_TS_ITR1);// clk = tim8->trgo
    TIM_ARRPreloadConfig(TIM2,ENABLE);
    
