@@ -1,30 +1,33 @@
-types:
-gp: General purpose(quad,input capture,output compare)
-ac: Advacned control(quad,input capture,output compare)
+timer:
+ac: Advacned control(quad,4x input capture/output compare,brk,deadtime,3x inverted output,itr) 
+gp1: General purpose(quad,4x input capture/output compare,itr)
+gp2: General purpose(2x input capture/output compare,itr)
+gp3: General purpose(1x input capture/output compare)
 ba: basic
-
-d: can generate dma request
+adc: adc trigger via compare/trgo
+itr: internal trigger, ITR0-3
+d: dma request
 b: bits
 
-APB2 DMA2 84 MHz
-TIM1(ac,16b,d) enc_cmd
-TIM8(ac,16b,d) res_master,adc
-TIM9(gp,16b)
-TIM10(gp,16b)
-TIM11(gp,16b)
+APB2 DMA2 168 MHz
+TIM1(ac,16b,d(cc1,cc2,cc3,cc4,trgo,up,com),adc(cc1,cc2,cc3),itr(5,2,3,4)) enc_cmd
+TIM8(ac,16b,d(cc1,cc2,cc3,cc4,up,trgo,com),adc(cc1,trgo),itr(1,2,4,5)) res_master,adc
+TIM9(gp2,16b,itr(2,3,10,11))
+TIM10(gp3,16b)
+TIM11(gp3,16b)
 USART1 io_header,cmd_rx
 USART6
 
-APB1 DMA1 42 MHz
-TIM2(gp,32b,d) res_slave,res_oc
-TIM3(gp,16b,d) enc_fb
-TIM4(gp,16b,d)
-TIM5(gp,32b,d)
-TIM6(ba,16b,d)
-TIM7(ba,16b,d)
-TIM12(gp,16b)
-TIM13(gp,16b)
-TIM14(gp,16b)
+APB1 DMA1 84 MHz
+TIM2(gp1,32b,d(up,cc1,cc2,cc3,cc4),adc(cc2,cc3,cc4,trgo),itr(1,8,3,4)) res_slave,res_oc
+TIM3(gp1,16b,d(cc1,cc2,cc3,cc3,up,trgo),adc(cc1,trgo),itr(1,2,5,4)) enc_fb
+TIM4(gp1,16b,d(cc1,cc2,cc3,up),adc(cc4),itr(1,2,3,8))
+TIM5(gp1,32b,d(cc1,cc2,cc3,cc4,trgo),adc(cc1,cc2,cc3),itr(2,3,4,8))
+TIM6(ba,16b,d(up))
+TIM7(ba,16b,d(up))
+TIM12(gp2,16b,itr(4,5,13,14))
+TIM13(gp3,16b)
+TIM14(gp3,16b)
 USART2 f1_hv
 USART3 fb
 UART4
