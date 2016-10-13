@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source ethernet_bob.sch)
-    (date "Do 13 Okt 2016 14:53:19 CEST")
+    (date "Do 13 Okt 2016 17:50:46 CEST")
     (tool "Eeschema (2016-09-30 revision c9fec4a)-master")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -253,7 +253,7 @@
       (tstamp 57EDA43C))
     (comp (ref P4)
       (value USB_A)
-      (footprint Connect:USB_A)
+      (footprint Connect:USB_A_Vertical)
       (libsource (lib conn) (part USB_A))
       (sheetpath (names /STM32/) (tstamps /57A8F795/))
       (tstamp 57FF3E8B))
