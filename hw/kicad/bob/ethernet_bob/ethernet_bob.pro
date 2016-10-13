@@ -1,4 +1,4 @@
-update=Fr 30 Sep 2016 23:48:39 CEST
+update=Do 13 Okt 2016 14:45:58 CEST
 version=1
 last_client=kicad
 [pcbnew]
@@ -27,7 +27,7 @@ NetIExt=net
 version=1
 [eeschema]
 version=1
-LibDir=ksz8081_lib;/usr/local/share/kicad/kicad-library/library;hr911104
+LibDir=crystal_lib;hr911104;ksz8081_lib
 [eeschema/libraries]
 LibName1=ethernet_bob-rescue
 LibName2=power
@@ -63,3 +63,4 @@ LibName31=ksz8081_lib/ksz8081
 LibName32=ESD_Protection
 LibName33=hr911104/hr911105_rj45
 LibName34=stm32
+LibName35=crystal_lib/crystal_smd
