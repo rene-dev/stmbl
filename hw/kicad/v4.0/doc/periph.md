@@ -30,3 +30,16 @@
 | TIM1 CH1 |  |  |  |
 | TIM1 CH2 |  |  |  |
 | TIM1 CH3 |  |  |  |
+
+### HV ###
+| periph | DMA | stream | channel |
+| --- | --- | --- | --- |
+| USART2 TX | 1 | 6 | 4 |
+| USART2 RX | 1 | 5 | 4 |
+
+### ADC ###
+| periph | DMA | stream | channel |
+| --- | --- | --- | --- |
+| ADC1 | 2 | 4 | 0 |
+| ADC2 | (2) | (3) | (1) |
+| ADC3 | 2 | 0 | 2 |
