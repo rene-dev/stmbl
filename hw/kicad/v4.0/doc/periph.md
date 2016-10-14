@@ -20,7 +20,7 @@
 | TIM4 CH2 |  |  |  |
 | TIM4 CH3 |  |  |  |
 
-### FB0 ###
+### FB1 ###
 | periph | DMA | stream | channel |
 | --- | --- | --- | --- |
 | SPI2 TX | 1 | 4 | 0 |
