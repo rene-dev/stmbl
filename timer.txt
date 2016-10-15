@@ -32,3 +32,18 @@ USART2 f1_hv
 USART3 fb
 UART4
 UART5 cmd
+
+
+DMA mapping:
+DMA1:
+s0 netbob
+s1 encm/encs/hyper
+s3 hyper
+s5 hv rx
+s6 hv tx
+s7 sserial/netbob
+DMA2:
+s0 adc
+s1 yaskawa/probe
+s5 ext rx/sserial
+s7 ext tx
