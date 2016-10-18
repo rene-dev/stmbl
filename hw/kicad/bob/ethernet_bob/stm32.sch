@@ -110,10 +110,8 @@ Text GLabel 1700 7350 2    60   Input ~ 0
 USB+
 Text GLabel 1700 7450 2    60   Input ~ 0
 USB-
-Text GLabel 10400 4400 2    60   Input ~ 0
+Text GLabel 10400 2400 2    60   Input ~ 0
 USB+
-Text GLabel 10400 4300 2    60   Input ~ 0
-USB-
 $Comp
 L GND #PWR023
 U 1 1 57C098F4
@@ -205,12 +203,12 @@ $EndComp
 $Comp
 L +5VP #PWR026
 U 1 1 57C0B845
-P 1700 7550
-F 0 "#PWR026" H 1700 7400 50  0001 C CNN
-F 1 "+5VP" V 1715 7678 50  0000 L CNN
-F 2 "" H 1700 7550 50  0000 C CNN
-F 3 "" H 1700 7550 50  0000 C CNN
-	1    1700 7550
+P 2100 7550
+F 0 "#PWR026" H 2100 7400 50  0001 C CNN
+F 1 "+5VP" V 2115 7678 50  0000 L CNN
+F 2 "" H 2100 7550 50  0000 C CNN
+F 3 "" H 2100 7550 50  0000 C CNN
+	1    2100 7550
 	0    1    1    0   
 $EndComp
 $Comp
@@ -1031,10 +1029,6 @@ Text HLabel 14450 7000 2    60   Input ~ 0
 STM_RXD0
 Text HLabel 14450 6900 2    60   Input ~ 0
 STM_RXD1
-Text GLabel 10400 2300 2    60   Input ~ 0
-PA11
-Text GLabel 10400 2400 2    60   Input ~ 0
-PA12
 $Comp
 L TEST_1P W9
 U 1 1 57EDA436
@@ -1120,10 +1114,6 @@ F 3 "" H 1650 8350 50  0000 C CNN
 	1    1650 8350
 	0    1    1    0   
 $EndComp
-Text GLabel 1650 8150 2    60   Input ~ 0
-USB_OTG+
-Text GLabel 1650 8250 2    60   Input ~ 0
-USB_OTG-
 $Comp
 L CRYSTAL_SMD_4pin X1
 U 1 1 57FF8CD1
@@ -1754,4 +1744,27 @@ Wire Wire Line
 Wire Wire Line
 	10850 2950 10900 2950
 Connection ~ 10900 2950
+$Comp
+L D_Schottky D1
+U 1 1 58044A50
+P 1850 7550
+F 0 "D1" H 1850 7334 50  0000 C CNN
+F 1 "D_Schottky" H 1850 7425 50  0000 C CNN
+F 2 "Diodes_SMD:MiniMELF_Standard" H 1850 7550 50  0001 C CNN
+F 3 "" H 1850 7550 50  0000 C CNN
+	1    1850 7550
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2000 7550 2100 7550
+Text GLabel 1650 8250 2    60   Input ~ 0
+USB_OTG-
+Text GLabel 1650 8150 2    60   Input ~ 0
+USB_OTG+
+Text GLabel 10400 4400 2    60   Input ~ 0
+USB_OTG+
+Text GLabel 10400 4300 2    60   Input ~ 0
+USB_OTG-
+Text GLabel 10400 2300 2    60   Input ~ 0
+USB-
 $EndSCHEMATC
