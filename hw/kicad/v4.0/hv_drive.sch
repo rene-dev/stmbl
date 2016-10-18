@@ -152,7 +152,6 @@ F 3 "" H 5600 3050 60  0000 C CNN
 	1    5600 3050
 	0    -1   -1   0   
 $EndComp
-Connection ~ 5150 4250
 Connection ~ 5150 4550
 Wire Wire Line
 	5850 3050 5750 3050
@@ -487,12 +486,12 @@ Connection ~ 5150 4750
 $Comp
 L C C38
 U 1 1 57779550
-P 5150 4400
-F 0 "C38" H 5175 4500 50  0000 L CNN
-F 1 "150n" H 5175 4300 50  0000 L CNN
-F 2 "stmbl:C_1808" H 5188 4250 30  0001 C CNN
-F 3 "" H 5150 4400 60  0000 C CNN
-	1    5150 4400
+P 4850 4400
+F 0 "C38" H 4875 4500 50  0000 L CNN
+F 1 "150n" H 4875 4300 50  0000 L CNN
+F 2 "stmbl:C_1808" H 4888 4250 30  0001 C CNN
+F 3 "" H 4850 4400 60  0000 C CNN
+	1    4850 4400
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -521,17 +520,6 @@ Connection ~ 3650 4550
 Connection ~ 3950 4550
 Connection ~ 3950 4250
 Connection ~ 3650 4250
-$Comp
-L C C94
-U 1 1 5777B413
-P 4850 4400
-F 0 "C94" H 4875 4500 50  0000 L CNN
-F 1 "150n" H 4875 4300 50  0000 L CNN
-F 2 "stmbl:C_1808" H 4888 4250 30  0001 C CNN
-F 3 "" H 4850 4400 60  0000 C CNN
-	1    4850 4400
-	1    0    0    -1  
-$EndComp
 Connection ~ 4850 4550
 Connection ~ 4850 4250
 $Comp
