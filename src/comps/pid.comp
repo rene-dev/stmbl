@@ -18,7 +18,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-COMP(pid);
+HAL_COMP(pid);
 
 HAL_PIN(pos_ext_cmd) = 0.0; // cmd in (rad)
 HAL_PIN(pos_fb) = 0.0; // feedback in (rad)

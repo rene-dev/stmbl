@@ -1,4 +1,4 @@
-COMP(pmsm);
+HAL_COMP(pmsm);
 
 //in
 HAL_PIN(psi) = 0.01;
@@ -20,9 +20,27 @@ HAL_PIN(iq) = 0.0;
 HAL_PIN(psi_d) = 0.0;
 HAL_PIN(psi_q) = 0.0;
 HAL_PIN(torque) = 0.0;
+HAL_PIN(drop_q) = 0.0;
+HAL_PIN(drop_d) = 0.0;
+HAL_PIN(drop_v) = 0.7;
+HAL_PIN(drop_exp) = 0.04;
+
+
+
 
 MEM(float id) = 0.0;
 MEM(float iq) = 0.0;
+
+// TODO: ifdef Troller, move to curpid
+float drop(float i, float v){
+   if(i < -v){
+      return(-1.0);
+   }
+   if(i > v){
+      return(1.0);
+   }
+   return(i / v);
+}
 
 RT(
    float p = (int)MAX(PIN(polecount), 1.0);
@@ -39,7 +57,16 @@ RT(
 
    float indd = vel_e * psi_q;
    float indq = vel_e * psi_d;
-
+   
+   float dropv = PIN(drop_v);
+   float drope = PIN(drop_exp);
+   float dropq = dropv * drop(iq, drope);
+   float dropd = dropv * drop(id, drope);
+   
+   uq -= dropq;
+   ud -= dropd;
+   
+   
    id += (ud - r * id + indd) / ld * period / 4.0;
    iq += (uq - r * iq - indq) / lq * period / 4.0;
 
@@ -61,6 +88,10 @@ RT(
    PIN(psi_d) = psi_d;
    PIN(psi_q) = psi_q;
    PIN(torque) = t;
+   
+   PIN(drop_q) = dropq;
+   PIN(drop_d) = dropd;
+   
 );
 
 ENDCOMP;

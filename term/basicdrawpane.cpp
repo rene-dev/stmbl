@@ -55,14 +55,13 @@ void BasicDrawPane::paintEvent(wxPaintEvent & evt)
             gc->SetPen(pen[i]);
             x = 0;
             y = h/2;
-            xstep = w/(data[i].size()-1);
+            xstep = (double)w/(double)(data[i].size()-1);
             path.MoveToPoint(x, y);
             for(auto point : data[i]){
                 y = h/2-point*h/2;
                 path.AddLineToPoint(x, y);
                 x += xstep;
             }
-            //path.CloseSubpath();
             gc->StrokePath(path);
         }
 
@@ -73,23 +72,15 @@ void BasicDrawPane::paintEvent(wxPaintEvent & evt)
         path.AddLineToPoint(w, h/2);
         path.CloseSubpath();
         gc->StrokePath(path);
-
         delete gc;
     }
 }
 
 void BasicDrawPane::plotvalue(float values[])
 {
-    //std::cout << "data:" << value << std::endl;
-    //data.at(xpos) += 0.1;
     for (int i = 0; i<channels; i++) {
         data[i].at(xpos) = (float)values[i];
     }
-    xpos = (xpos+1)%data[0].size();
-    //if(wxGetUTCTimeMillis()-time > 50){
-        Refresh();
-    //    time = wxGetUTCTimeMillis();
-    //}
-    //oder
-    //Update();
+    xpos = ((int)xpos+1)%data[0].size();
+    Refresh();
 }

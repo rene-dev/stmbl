@@ -21,6 +21,7 @@
   */ 
 
 /* Define to prevent recursive inclusion -------------------------------------*/
+//TODO: https://my.st.com/public/STe2ecommunities/mcu/Lists/STM32Java/Flat.aspx?RootFolder=%2fpublic%2fSTe2ecommunities%2fmcu%2fLists%2fSTM32Java%2fBug%20%28possible%20data%20loss%29%20in%20STM32F4xx_EEPROM_Emulation%20%28AN3969%29&currentviews=346
 #ifndef __EEPROM_H
 #define __EEPROM_H
 
@@ -69,7 +70,7 @@
 #define PAGE_FULL             ((uint8_t)0x80)
 
 /* Variables' number */
-#define NB_OF_VAR             ((uint8_t)0x03)
+#define NB_OF_VAR             ((uint8_t)150)
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/

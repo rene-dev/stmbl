@@ -1,4 +1,4 @@
-COMP(adc);
+HAL_COMP(adc);
 
 #define AREF 3.3// analog reference voltage
 #define ARES 4096.0// analog resolution, 12 bit
@@ -16,6 +16,7 @@ HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
 HAL_PIN(sin3) = 0.0;
 HAL_PIN(cos3) = 0.0;
+HAL_PIN(quad) = 0.0;
 
 HAL_PIN(res_en) = 0.0;
 
@@ -24,9 +25,6 @@ HAL_PIN(cos_gain) = 1.0;
 
 HAL_PIN(sin_offset) = 0.0;
 HAL_PIN(cos_offset) = 0.0;
-
-HAL_PIN(tim2_oc) = 150.0;
-HAL_PIN(tim2_rv) = 420.0;
 
 RT(
    float si[PID_WAVES];
@@ -37,6 +35,8 @@ RT(
    float c_o = PIN(cos_offset);
    float s_g = PIN(sin_gain);
    float c_g = PIN(cos_gain);
+   float s;
+   float c;
 
    for(int i = 2; i < PID_WAVES; i++){
       sc[i] = 0.0;
@@ -46,9 +46,6 @@ RT(
          sc[i] += ADC_DMA_Buffer[i * ADC_ANZ + j];
       }
    }
-
-   TIM2->ARR = (int)CLAMP(PIN(tim2_rv), 300, 1000);
-   TIM2->CCR3 = (int)CLAMP(PIN(tim2_oc), 0, TIM2->ARR - 1);
    //seperate channels
    for(int i = 2; i < PID_WAVES; i++){
       si[i] = 0.0;
@@ -61,13 +58,26 @@ RT(
    PIN(cos3) = co[3];
 
    if(PIN(res_en) > 0.0){
-      PIN(sin) = 0.5 * si[3] - 0.5 * si[2];// + 0.125 * si[1] - 0.125 * si[0];
-      PIN(cos) = 0.5 * co[3] - 0.5 * co[2];// + 0.125 * co[1] - 0.125 * co[0];
+      s = 0.5 * si[3] - 0.5 * si[2];// + 0.125 * si[1] - 0.125 * si[0];
+      c = 0.5 * co[3] - 0.5 * co[2];// + 0.125 * co[1] - 0.125 * co[0];
    }
    else{
-      PIN(sin) = 0.5 * si[3] + 0.5 * si[2];// + 0.125 * si[1] - 0.125 * si[0];
-      PIN(cos) = 0.5 * co[3] + 0.5 * co[2];
+      s = 0.5 * si[3] + 0.5 * si[2];// + 0.125 * si[1] - 0.125 * si[0];
+      c = 0.5 * co[3] + 0.5 * co[2];
    }
+   if(s>=0){
+      if(c>0)
+        PIN(quad) = 1;
+      else
+        PIN(quad) = 2;
+   }else{
+      if(c>0)
+        PIN(quad) = 4;
+      else
+        PIN(quad) = 3;
+   }
+   PIN(sin) = s;
+   PIN(cos) = c;
 
 );
 

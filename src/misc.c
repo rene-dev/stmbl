@@ -31,7 +31,7 @@ inline float minus(float a, float b){
 		return(a - b + 2.0 * M_PI);
 	}
 }
-
+//TODO: blocks hal with large numbers
 inline float mod(float a){
 	while(a < -M_PI){
 		a += 2.0 * M_PI;
@@ -42,25 +42,3 @@ inline float mod(float a){
 	return(a);
 }
 
-int strcmp(const char* s1, const char* s2){
-  while(*s1 && (*s1 == *s2)){
-  	s1++;
-		s2++;
-	}
-  return(*(const unsigned char*)s1 - *(const unsigned char*)s2);
-}
-
-void strncpy(char* dst, char* src, int n){
-  while (n-- && (*dst++ = *src++));
-}
-
-char* strncat(char *dest, const char *src, int n){
-    char *rdest = dest;
-		dest[n] = '\0';
-    while (n-- && *dest){
-      dest++;
-    }
-		while (n-- && (*dest++ = *src++)){
-		}
-    return rdest;
-}

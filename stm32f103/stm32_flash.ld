@@ -38,7 +38,8 @@ _estack = 0x20002800;    /* end of 4K RAM */
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0;      /* required amount of heap  */
 _Min_Stack_Size = 0x100; /* required amount of stack */
-
+/* STM32F103R6T Low-density performance line 32kb flash 10kb ram */
+/* flash layout: 32x1 */
 /* Specify the memory areas */
 MEMORY
 {

@@ -7,36 +7,36 @@
 //
 
 #include "setup.h"
+#include "usb_cdc.h"
 
 void setup(){
-    //messpin
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_8 | GPIO_Pin_9;
+   //Enable clocks
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1 | RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_CRC, ENABLE);
+   
+	//messpin
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_8 | GPIO_Pin_9;
  	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);//wird in UB_USB_CDC_Init() nochmal gesetzt!
+   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
-    setup_res();
+   setup_res();
+   usb_init();
 
 	// systick timer
-	systime = 0;
-
 	RCC_GetClocksFreq(&RCC_Clocks);
 	SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);
-    //systick prio
+   //systick prio
 
-    NVIC_SetPriority(SysTick_IRQn, 14);
+   NVIC_SetPriority(SysTick_IRQn, 14);
 }
 
 // Setup Resolver Interface
-// TIM8 triggers ADC1 and 2 at 20kHz
-// TIM8 OC1 generates resolver reference signal at 10kHz
+// TIM2 triggers ADC1 and 2 at 20kHz
+// TIM2 OC1 generates resolver reference signal at 10kHz
 // DMA2 moves 4 samples to memory, generates transfer complete interrupt at 5kHz
 void setup_res(){
     //resolver timer
@@ -48,47 +48,12 @@ void setup_res(){
     TIM_TimeBaseStructure.TIM_Prescaler = 9;
     TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-    TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
+    TIM_ARRPreloadConfig(TIM2,ENABLE);
+
     TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);//trigger ADC
 
-    //resolver ref signal generation
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_10;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_TIM2);
-
-    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
-    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
-    TIM_OCInitStructure.TIM_Pulse = 150;
-    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-    TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
-    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
-    TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
-
-    TIM_OC3Init(TIM2, &TIM_OCInitStructure);
-    TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);
-    TIM_CtrlPWMOutputs(TIM2, ENABLE);
-
-    RCC_AHB1PeriphClockCmd(SIN_IO_RCC, ENABLE);
-    RCC_AHB1PeriphClockCmd(COS_IO_RCC, ENABLE);
     /* ADC clock enable */
     RCC_APB2PeriphClockCmd(SIN_ADC_RCC | COS_ADC_RCC, ENABLE);
-
-    //txen
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_12;
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-    GPIO_SetBits(GPIOB,GPIO_Pin_12);
 
     //Analog pin configuration
     GPIO_InitStructure.GPIO_Pin = SIN_PIN;
@@ -97,8 +62,6 @@ void setup_res(){
     GPIO_Init(SIN_PORT,&GPIO_InitStructure);
 
     GPIO_InitStructure.GPIO_Pin = COS_PIN;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_Init(COS_PORT,&GPIO_InitStructure);
 
     //ADC structure configuration
@@ -133,9 +96,6 @@ void setup_res(){
     ADC_Cmd(SIN_ADC,ENABLE);
     ADC_Cmd(COS_ADC,ENABLE);
 
-    // Clock Enable
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
-
     // DMA-Disable
     DMA_Cmd(DMA2_Stream0, DISABLE);
     DMA_DeInit(DMA2_Stream0);
@@ -158,6 +118,12 @@ void setup_res(){
     DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
     DMA_Init(DMA2_Stream0, &DMA_InitStructure);
 
+    NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+
     NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream0_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
@@ -168,8 +134,3 @@ void setup_res(){
 
     DMA_ITConfig(DMA2_Stream0, DMA_IT_TC, ENABLE);
  }
-
-void SysTick_Handler(void)
-{
-  systime++;
-}

@@ -6,13 +6,13 @@ using std::string;
 using std::to_string;
 
 ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
+   ports = 0;
     currentID = wxID_LOWEST;
     addr = -1;
 	connected = false;
 	histpos = 0;
-	config = new wxConfig("Servoterm");
 	wxBoxSizer *mainsizer = new wxBoxSizer(wxHORIZONTAL);
-	wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
+	wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,700),wxSP_LIVE_UPDATE|wxSP_3DSASH);
 	wxImage::AddHandler(new wxGIFHandler);
 
 	mainsplitter->SetSashGravity(0);
@@ -22,7 +22,7 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     timer = new wxTimer(this, wxID_ANY);
     Bind(wxEVT_TIMER,&ServoFrame::OnTimer,this,wxID_ANY);
 
-	//oben
+	//top
 	wxPanel *top = new wxPanel(mainsplitter, wxID_ANY);
 	wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer *leiste = new wxBoxSizer(wxHORIZONTAL);
@@ -30,8 +30,11 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	choose_port = new wxChoice (top, wxID_ANY);
 
 	connectbutton = new wxButton(top, wxID_ANY, wxT("&Connect"));
+    connectbutton->Disable();
 	clear = new wxButton(top, wxID_ANY, wxT("Clear"));
 	refresh = new wxButton(top, wxID_ANY, wxT("&Refresh"));
+	reset = new wxButton(top, wxID_ANY, wxT("Reset Fault"));
+	reset->Disable();
 	uhu = new wxRadioButton(top,wxID_ANY, "UHU");
 	stmbl = new wxRadioButton(top, wxID_ANY,"STMBL");
 	stmbl->SetValue(true);
@@ -39,11 +42,13 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 	refresh->Bind(wxEVT_BUTTON, &ServoFrame::OnRefresh, this, wxID_ANY);
 	connectbutton->Bind(wxEVT_BUTTON, &ServoFrame::OnConnect, this, wxID_ANY);
 	clear->Bind(wxEVT_BUTTON, &ServoFrame::OnClear, this, wxID_ANY);
+	reset->Bind(wxEVT_BUTTON, &ServoFrame::OnReset, this, wxID_ANY);
 	listports();
 	leiste->Add(choose_port, 0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(connectbutton,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(refresh,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(clear,0,wxALIGN_LEFT|wxALL,3);
+	leiste->Add(reset,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(uhu,0,wxALIGN_LEFT|wxALL,3);
 	leiste->Add(stmbl,0,wxALIGN_LEFT|wxALL,3);
 	topsizer->Add(leiste);
@@ -67,29 +72,15 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
         channelchoice.back()->Bind(wxEVT_TEXT_ENTER,&ServoFrame::OnChannelChange, this, currentID);
         channelchoice.back()->Set(waves);
         channelchoice.back()->SetSelection(0);
-        cout << channelchoice.back()->GetId() << endl;
-
-        channelpos.push_back(new wxSlider(top, ++currentID, 0, -100, 100));
-        channelpos.back()->Bind(wxEVT_SLIDER,&ServoFrame::OnChannelChange, this, currentID);
-
-        channelgain.push_back(new wxSlider(top, ++currentID, 10, 1, 100));
-        channelgain.back()->Bind(wxEVT_SLIDER,&ServoFrame::OnChannelChange, this, currentID);
 
         wxPanel *c_panel;
         c_panel = new wxPanel(top, wxID_NEW, wxPoint(150, 20), wxSize(20, 20), wxBORDER_NONE);
         c_panel->SetBackgroundColour(drawpanel->pen[i].GetColour());
-        c_panel->Bind(wxEVT_LEFT_UP, &ServoFrame::OnColorChange, this, wxID_ANY);
 
         wxBoxSizer *sizer1 = new wxBoxSizer(wxHORIZONTAL);
-        wxBoxSizer *sizer2 = new wxBoxSizer(wxHORIZONTAL);
-        wxBoxSizer *sizer3 = new wxBoxSizer(wxHORIZONTAL);
         sizer1->Add(c_panel, 0,wxALIGN_LEFT|wxALL,3);
         sizer1->Add(channelchoice.back(), 1,wxALIGN_LEFT|wxALL,3);
-        sizer2->Add(channelpos.back(), 1,wxALIGN_LEFT|wxALL,3);
-        sizer3->Add(channelgain.back(), 1,wxALIGN_LEFT|wxALL,3);
         channelsizer->Add(sizer1);
-        channelsizer->Add(sizer2);
-        channelsizer->Add(sizer3);
         channelleiste->Add(channelsizer);
     }
 
@@ -97,12 +88,19 @@ ServoFrame::ServoFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
 
     top->SetSizer(topsizer);
 
-	//unten
+	//bottom
 	wxPanel *bottom = new wxPanel(mainsplitter, wxID_ANY);
 	text = new wxTextCtrl((wxFrame*)bottom,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY);
 	textinput = new wxTextCtrl((wxFrame*)bottom,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER);
 	textinput->Bind(wxEVT_TEXT_ENTER, &ServoFrame::OnInput, this, wxID_ANY);
 	textinput->Bind(wxEVT_KEY_DOWN, &ServoFrame::OnKeyDown, this, wxID_ANY);
+
+    //use monospace font
+    wxFont font = textinput->GetFont();
+    font = wxFont(font.GetPointSize(), wxTELETYPE, font.GetStyle(), font.GetWeight(), font.GetUnderlined());
+    textinput->SetFont(font);
+    text->SetFont(font);
+
 	wxBoxSizer *bottomsizer = new wxBoxSizer(wxVERTICAL);
 	bottomsizer->Add(text, 1,wxEXPAND|wxALL,3);
 	bottomsizer->Add(textinput, 0,wxEXPAND|wxALL,3);
@@ -134,37 +132,19 @@ void ServoFrame::OnKeyDown(wxKeyEvent& event){
 	}
 }
 
-void ServoFrame::OnColorChange(wxMouseEvent& event){
-    
-}
-
 void ServoFrame::OnChannelChange(wxCommandEvent& event){
-    int param = (event.GetId()-channelstartID-2)%3;
-    int channel = (int)((event.GetId()-channelstartID-2)/3);
-    string params[] = {"term0.wave","term0.offset","term0.gain"};
-    wxString value;
-    switch (param) {
-        case 0://wave
-            value = event.GetString();
-            break;
-        case 1://offset
-        case 2://gain
-            value = to_string(event.GetSelection()/10.0f);
-            break;
-        default:
-            break;
-    }
-    //cout << "change " << channel << " " << param << " " << value << endl;
-
-    string df = params[param];
+    int channel = (int)((event.GetId()-channelstartID-2));
+    wxString value = event.GetString();
+    string df = "term0.wave";
     df += to_string(channel);
     df += " = ";
     df += value;
     send(df);
 }
 
-int ServoFrame::send(string& s,bool h){
-    cout << s << endl;
+int ServoFrame::send(const string& s,bool h){
+    if(!connected)
+        connect();
     if(connected){
         if(h){//history
             if((history.size()==0 || history.back() != s) && !s.empty()){
@@ -172,16 +152,7 @@ int ServoFrame::send(string& s,bool h){
             }
             histpos = history.size();
         }
-        int ret1 = sp_nonblocking_write(port, s.c_str(), s.length());
-        int ret2 = sp_nonblocking_write(port, "\r", 1);
-        if(ret1 != s.length() || ret2!=1){
-            wxMessageBox( wxT("Fehler beim senden"), wxT("Error"), wxICON_EXCLAMATION);
-            disconnect();
-            return 0;
-        }
-    }else{
-        wxMessageBox( wxT("Nicht verbunden"), wxT("Error"), wxICON_EXCLAMATION);
-        return 0;
+        txqueue.push(s);
     }
     return 1;
 }
@@ -189,6 +160,15 @@ int ServoFrame::send(string& s,bool h){
 void ServoFrame::OnTimer(wxTimerEvent& evt){
 	int ret;
 	if(connected){
+        if(!txqueue.empty()){
+            int ret1 = sp_nonblocking_write(port, txqueue.front().c_str(), txqueue.front().length());
+            int ret2 = sp_nonblocking_write(port, "\n", 1);
+            if(ret1 != txqueue.front().length() || ret2!=1){
+                wxMessageBox( wxT("Error while sending"), wxT("Error"), wxICON_EXCLAMATION);
+                disconnect();
+            }
+            txqueue.pop();
+        }
 		ret = sp_nonblocking_read(port, buf, bufsize);
 		if(ret > 0){
 			buf[ret] = 0;
@@ -201,7 +181,7 @@ void ServoFrame::OnTimer(wxTimerEvent& evt){
                         text->AppendText(wxString::FromAscii(buf[i] & 0x7f));
                     }
                 }
-                
+
             }else if(stmbl->GetValue()){
                 for (int i=0; i<ret; i++){
                     if(addr >= 0){
@@ -217,7 +197,9 @@ void ServoFrame::OnTimer(wxTimerEvent& evt){
                     }
                 }
             }
-		}
+        }else if(ret < 0){//disconnect on failure
+            disconnect();
+        }
 	}
 }
 
@@ -225,19 +207,33 @@ void ServoFrame::OnRefresh(wxCommandEvent& WXUNUSED(event)){
 	listports();
 }
 
+void ServoFrame::OnReset(wxCommandEvent& WXUNUSED(event)){
+    send("fault0.reset = 1");
+    send("fault0.reset = 0");
+}
+
 void ServoFrame::listports(){
-	if (!ports) {
+    int selection = 0;
+    string description;
+	if (ports) {
 		sp_free_port_list(ports);
 	}
 	if(sp_list_ports(&ports) == SP_OK){
 		wxString str;
 		choose_port->Clear();
-		for (int i = 0; ports[i]; i++) {
-			choose_port->Append(sp_get_port_description(ports[i]));
-			if(config->Read("port", &str) && sp_get_port_description(ports[i]) == str){
-				choose_port->SetSelection(i);
-			}
-		}
+        if(ports){
+            for (int i = 0; ports[i]; i++) {
+                description = sp_get_port_description(ports[i]);
+                choose_port->Append(description);
+                if(description.find("STMBL") != std::string::npos){
+                    selection = i;
+                }
+            }
+            choose_port->SetSelection(selection);
+            connectbutton->Enable();
+        }else{
+            connectbutton->Disable();
+        }
 	}
 }
 
@@ -257,11 +253,7 @@ void ServoFrame::connect(){
 	if(choose_port->IsEmpty())
         return;
     port = ports[choose_port->GetSelection()];
-	if(sp_open(port, SP_MODE_READ_WRITE) == SP_OK){//port da und lässt sich öffnen
-		wxString str;
-		str = sp_get_port_description(port);
-		config->Write("port", str);
-		config->Flush();
+	if(sp_open(port, SP_MODE_READ_WRITE) == SP_OK){//port available and can be opened
 		sp_set_baudrate(port,38400);
 		sp_set_bits(port, 8);
 		sp_set_stopbits(port, 1);
@@ -271,13 +263,14 @@ void ServoFrame::connect(){
 		connected = true;
 		connectbutton->SetLabel(wxT("&Disonnect"));
 		refresh->Disable();
+		reset->Enable();
 		choose_port->Disable();
         uhu->Disable();
         stmbl->Disable();
 		textinput->SetFocus();
         timer->Start(50);
 	}else{
-		wxMessageBox( wxT("Fehler beim Öffnen"), wxT("Error"), wxICON_EXCLAMATION);
+		wxMessageBox( wxT("Cannot open port"), wxT("Error"), wxICON_EXCLAMATION);
 		listports();
 	}
 }
@@ -287,11 +280,13 @@ void ServoFrame::disconnect(){
 		connected = false;
 		connectbutton->SetLabel(wxT("&Connect"));
 		refresh->Enable();
+		reset->Disable();
 		choose_port->Enable();
         uhu->Enable();
         stmbl->Enable();
         timer->Stop();
 	}
+    listports();
 }
 
 void ServoFrame::OnInput(wxCommandEvent& event){
