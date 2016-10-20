@@ -1,4 +1,4 @@
-update=Do 13 Okt 2016 17:52:41 CEST
+update=Do 20 Okt 2016 14:51:20 CEST
 version=1
 last_client=kicad
 [pcbnew]
@@ -64,3 +64,4 @@ LibName32=ESD_Protection
 LibName33=hr911104/hr911105_rj45
 LibName34=stm32
 LibName35=crystal_lib/crystal_smd
+LibName36=usblc

@@ -33,12 +33,13 @@ LIBS:ESD_Protection
 LIBS:hr911105_rj45
 LIBS:stm32
 LIBS:crystal_smd
+LIBS:usblc
 LIBS:ethernet_bob-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 5
+Sheet 1 6
 Title ""
 Date ""
 Rev ""
@@ -135,4 +136,10 @@ Wire Wire Line
 	5400 3550 6100 3550
 Wire Wire Line
 	5400 3650 6100 3650
+$Sheet
+S 4300 4300 1000 400 
+U 58076FA4
+F0 "rs485" 60
+F1 "rs485.sch" 60
+$EndSheet
 $EndSCHEMATC
