@@ -226,6 +226,33 @@ void link_simplepid(){
    hal_set_pin("vel1.w" , 2000.0);//TODO: change to velbuf
 }
 
+void link_async_uf(){
+   hal_set_pin("t2c0.rt_prio", -1.0);
+   hal_set_pin("curpid0.rt_prio", -1.0);
+   hal_set_pin("pmsm0.rt_prio", -1.0);
+   hal_set_pin("pmsm_limits0.rt_prio", -1.0);
+   hal_set_pin("dq0.rt_prio", -1.0);
+   // hal_set_pin("rev0.rt_prio", -1.0);
+   // hal_set_pin("rev1.rt_prio", -1.0);
+   // hal_set_pin("vel0.rt_prio", -1.0);
+   // hal_set_pin("vel1.rt_prio", -1.0);
+   // hal_set_pin("stp0.rt_prio", -1.0);
+   hal_set_pin("cauto0.rt_prio", -1.0);
+   hal_set_pin("pid0.rt_prio", -1.0);
+   
+   hal_set_pin("uf0.rt_prio", 3.0);
+   hal_link_pins("uf0.pos", "idq0.pos");
+   hal_set_pin("idq0.d", 0.0);
+   hal_link_pins("uf0.volt", "idq0.q");
+   hal_link_pins("net0.enable", "hv0.enable");//TODO: link via fault
+   hal_link_pins("fault0.scale", "uf0.scale");
+   hal_link_pins("net0.fb_d", "uf0.vel_fb");
+   hal_link_pins("net0.cmd_d", "uf0.freq");
+   
+   //hal_link_pins("uf0.freq_out", "net0.fb_d");
+   hal_link_pins("vel1.pos_out", "net0.fb");//skipt cauto TODO: weg von link_ac
+}
+
 int update_mot(){
    switch((mot_type_t)hal_get_pin("conf0.mot_type")){
       case ACSYNC:
@@ -235,19 +262,19 @@ int update_mot(){
          hal_set_pin("hv0.mode", 0.0);
          break;
       case ACASYNC:
-         break;
-      case AC2PHASE://precise
          link_ac();
-         hal_set_pin("uf0.rt_prio", 3.0);
-         hal_link_pins("uf0.pos", "idq0.pos");
-         hal_set_pin("idq0.d", 0.0);
-         hal_link_pins("uf0.volt", "idq0.q");
+         link_async_uf();
+         hal_set_pin("hv0.mode", 0.0);
+         break;
+      case AC2PHASE:
+         link_ac();
+         link_async_uf();
          hal_set_pin("hv0.mode", 2.0);
-         hal_link_pins("net0.enable", "hv0.enable");
-         hal_link_pins("fault0.scale", "uf0.scale");
-
-         hal_set_pin("freq_fb0.rt_prio", 1.0);
-         hal_link_pins("freq_fb0.vel", "uf0.vel_fb");
+         
+         // hal_link_pins("net0.enable", "hv0.enable");
+         // hal_link_pins("fault0.scale", "uf0.scale");
+         // hal_set_pin("freq_fb0.rt_prio", 1.0);
+         // hal_link_pins("freq_fb0.vel", "uf0.vel_fb");
          //fb_res = 6
          //mot_type = 2
          //polecount = 1
@@ -329,6 +356,12 @@ int update_fb(){
       case SANYO:
          hal_link_pins("encs0.pos", "rev1.in");
          hal_set_pin("encs0.rt_prio", 2.0);
+         break;
+      case FREQ:
+         hal_set_pin("adc0.rt_prio", 1.0);
+         hal_set_pin("freq_fb0.rt_prio", 2.0);
+         hal_link_pins("conf0.fb_res", "freq_fb0.res");
+         hal_link_pins("freq_fb0.vel", "net0.fb_d");
          break;
       default:
          return -1;

@@ -35,3 +35,4 @@ void link_ac();
 int update_cmd();
 int update_fb();
 int update_mot();
+void link_async_uf();
