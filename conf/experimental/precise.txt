@@ -1,0 +1,6 @@
+term0.wave2 = uf0.freq_out
+term0.wave1 = uf0.freq
+term0.wave0 = uf0.vel_fb
+term0.gain0 = 0.150000
+term0.gain1 = 0.150000
+term0.gain2 = 0.150000
