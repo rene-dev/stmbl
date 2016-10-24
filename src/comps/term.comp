@@ -63,7 +63,6 @@ MEM(volatile float jog_timeout) = 0.0;
 MEM(volatile float jog_en) = 0.0;
 
 INIT(
-   hal_conf_init();
    if(hal_conf_load()){//flash load error
       hal.hal_state = CONFIG_LOAD_ERROR;
    }
@@ -255,11 +254,23 @@ NRT(
          }else if(ret == -3){
             printf("flash read error\n");
          }else if(ret == -4){
-            printf("hal running error\n");
+            printf("cannot load while hal is running(run 'stop' command)\n");
          }else if(ret == -5){
             printf("CRC error\n");
          }else{
             printf("done\n");
+         }
+      }
+      else if(!strcmp(s, "initflash")){//TODO: command to format param sectors, init sometimes fails...
+         if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
+            printf("cannot init flash while hal is running(run 'stop' command)\n");
+         }else{
+            uint16_t ret = hal_conf_init();
+            if(ret == FLASH_COMPLETE){
+               printf("flash init OK. now do load or save\n");
+            }else{
+               printf("init error: %i\n",ret);  
+            }
          }
       }
       else if(!strcmp(s, "getconf")){
