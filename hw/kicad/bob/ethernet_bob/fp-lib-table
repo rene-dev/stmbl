@@ -1,3 +1,5 @@
 (fp_lib_table
   (lib (name HR911105_RJ45)(type Legacy)(uri "$(KIPRJMOD)/hr911104/HR911105_RJ45.mod")(options "")(descr ""))
+  (lib (name stmbl)(type KiCad)(uri "$(KIPRJMOD)/stmbl.pretty")(options "")(descr ""))
+  (lib (name aethernet)(type KiCad)(uri "$(KIPRJMOD)/aethernet.pretty")(options "")(descr ""))
 )
