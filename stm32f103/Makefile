@@ -146,7 +146,7 @@ bin: $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 hv_firmware.o:
-	arm-none-eabi-objcopy --rename-section .data=.hv_firmware -I binary obj_hv/hv.bin -B arm -O elf32-littlearm hv_firmware.o
+	$(OBJCOPY) --rename-section .data=.hv_firmware -I binary obj_hv/hv.bin -B arm -O elf32-littlearm hv_firmware.o
 
 # Display compiler version information
 #
