@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.2.0">
+<eagle version="7.7.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -5278,7 +5278,7 @@ design rules under a new name.</description>
 <wire x1="6.155" y1="34.345" x2="5.25" y2="35.25" width="0.2" layer="16"/>
 <wire x1="5.25" y1="35.25" x2="5.5" y2="35.4" width="0.2" layer="16"/>
 </signal>
-<signal name="N$15">
+<signal name="OSC_OUT">
 <contactref element="C44" pad="2"/>
 <contactref element="IC5" pad="6"/>
 <contactref element="Q4" pad="1"/>
@@ -5294,7 +5294,7 @@ design rules under a new name.</description>
 <wire x1="41.5" y1="36.85" x2="41.6" y2="37" width="0.2" layer="16"/>
 <wire x1="41.6" y1="37" x2="40.5" y2="37" width="0.2" layer="16"/>
 </signal>
-<signal name="N$39">
+<signal name="OSC_IN">
 <contactref element="C43" pad="2"/>
 <contactref element="IC5" pad="5"/>
 <contactref element="Q4" pad="3"/>
@@ -6288,14 +6288,14 @@ design rules under a new name.</description>
 <wire x1="52.3" y1="33.15" x2="52.3114" y2="33.15" width="0.4" layer="16"/>
 <wire x1="52.3114" y1="33.15" x2="52.3114" y2="37.5" width="0.4" layer="16"/>
 </signal>
-<signal name="N$13">
+<signal name="VCAP2">
 <contactref element="C58" pad="2"/>
 <contactref element="IC5" pad="47"/>
 <wire x1="24.25" y1="40.65" x2="24.25" y2="39" width="0.2" layer="16"/>
 <wire x1="24.25" y1="39" x2="25.25" y2="38" width="0.2" layer="16"/>
 <wire x1="25.25" y1="38" x2="26" y2="38" width="0.2" layer="16"/>
 </signal>
-<signal name="N$14">
+<signal name="VCAP1">
 <contactref element="IC5" pad="31"/>
 <contactref element="C57" pad="2"/>
 <wire x1="28.5" y1="29" x2="28.5" y2="28.25" width="0.2" layer="16"/>
@@ -6443,7 +6443,7 @@ design rules under a new name.</description>
 <wire x1="9.485" y1="17.75" x2="9.35" y2="17.615" width="0.2" layer="1"/>
 <wire x1="8.235" y1="17.615" x2="7.35" y2="18.5" width="0.2" layer="16"/>
 </signal>
-<signal name="N$46">
+<signal name="VDDA">
 <contactref element="C31" pad="2"/>
 <contactref element="IC5" pad="13"/>
 <contactref element="L1" pad="2"/>
@@ -6528,10 +6528,7 @@ design rules under a new name.</description>
 <wire x1="16" y1="32.75" x2="14.5" y2="32.75" width="0.2" layer="16"/>
 <wire x1="14.5" y1="32.75" x2="11.5" y2="29.75" width="0.2" layer="16"/>
 <wire x1="11.5" y1="29.75" x2="11.5" y2="28.5" width="0.2" layer="16"/>
-<wire x1="4.5" y1="21.5" x2="4.5" y2="16" width="0.2" layer="16"/>
-<wire x1="4.5" y1="16" x2="8.25" y2="16" width="0.2" layer="16"/>
-<wire x1="8.25" y1="16" x2="8.595" y2="16.345" width="0.2" layer="16"/>
-<wire x1="8.595" y1="16.345" x2="11.89" y2="16.345" width="0.2" layer="16"/>
+<wire x1="4.5" y1="21.5" x2="4.5" y2="17.75" width="0.2" layer="16"/>
 <wire x1="4.5" y1="21.5" x2="11.5" y2="28.5" width="0.2" layer="16"/>
 <wire x1="15" y1="12.9" x2="14.85" y2="12.9" width="0.2" layer="16"/>
 <wire x1="14.85" y1="12.9" x2="12" y2="15.75" width="0.2" layer="16"/>
@@ -6539,6 +6536,8 @@ design rules under a new name.</description>
 <wire x1="12" y1="16.235" x2="11.89" y2="16.345" width="0.2" layer="16"/>
 <wire x1="16.65" y1="12.25" x2="16" y2="12.9" width="0.2" layer="16"/>
 <wire x1="16" y1="12.9" x2="15" y2="12.9" width="0.2" layer="16"/>
+<wire x1="4.5" y1="17.75" x2="5.905" y2="16.345" width="0.2" layer="16"/>
+<wire x1="5.905" y1="16.345" x2="11.89" y2="16.345" width="0.2" layer="16"/>
 </signal>
 <signal name="N$50">
 <contactref element="IC13" pad="2"/>
@@ -6567,7 +6566,7 @@ design rules under a new name.</description>
 <wire x1="9.445" y1="20.25" x2="9.35" y2="20.155" width="0.2" layer="16"/>
 <wire x1="12" y1="28.25" x2="7.5" y2="23.75" width="0.2" layer="16"/>
 </signal>
-<signal name="N$22">
+<signal name="USB_DP_">
 <contactref element="R8" pad="2"/>
 <contactref element="IC5" pad="45"/>
 <wire x1="26" y1="37" x2="25.25" y2="37" width="0.2" layer="16"/>
@@ -6581,7 +6580,7 @@ design rules under a new name.</description>
 <wire x1="10.5" y1="48" x2="10.25" y2="48" width="0.2" layer="16"/>
 <wire x1="10.25" y1="48" x2="10.1" y2="48.25" width="0.2" layer="16"/>
 </signal>
-<signal name="N$23">
+<signal name="USB_DM_">
 <contactref element="IC5" pad="44"/>
 <contactref element="R43" pad="2"/>
 <wire x1="26" y1="36.5" x2="25" y2="36.5" width="0.2" layer="16"/>
@@ -6773,7 +6772,7 @@ design rules under a new name.</description>
 <wire x1="18" y1="62.5" x2="18" y2="63.9" width="0.2" layer="16"/>
 <wire x1="18" y1="63.9" x2="17.85" y2="64" width="0.2" layer="16"/>
 </signal>
-<signal name="N$4">
+<signal name="PA5">
 <contactref element="IC2" pad="21"/>
 <contactref element="SV2" pad="4"/>
 <wire x1="67.75" y1="15.5" x2="69.25" y2="15.5" width="0.2" layer="16"/>
@@ -6786,7 +6785,7 @@ design rules under a new name.</description>
 <wire x1="55.25" y1="9.75" x2="54.21" y2="9.75" width="0.2" layer="1"/>
 <wire x1="54.21" y1="9.75" x2="54" y2="9.96" width="0.2" layer="1"/>
 </signal>
-<signal name="N$49">
+<signal name="PA6">
 <contactref element="IC2" pad="22"/>
 <contactref element="SV2" pad="3"/>
 <wire x1="67.75" y1="16" x2="66.5" y2="16" width="0.2" layer="16"/>
@@ -6797,7 +6796,7 @@ design rules under a new name.</description>
 <wire x1="59" y1="15.75" x2="55.75" y2="12.5" width="0.2" layer="1"/>
 <wire x1="55.75" y1="12.5" x2="54" y2="12.5" width="0.2" layer="1"/>
 </signal>
-<signal name="N$51">
+<signal name="PA7">
 <contactref element="IC2" pad="23"/>
 <contactref element="SV2" pad="2"/>
 <wire x1="67.75" y1="16.5" x2="64.75" y2="16.5" width="0.2" layer="16"/>

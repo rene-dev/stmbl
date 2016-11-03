@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.2.0">
+<eagle version="7.7.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -30366,7 +30366,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <junction x="-213.36" y="55.88"/>
 </segment>
 </net>
-<net name="N$15" class="0">
+<net name="OSC_OUT" class="0">
 <segment>
 <pinref part="C44" gate="G$1" pin="2"/>
 <pinref part="IC5" gate="MCU" pin="OSC_OUT"/>
@@ -30376,7 +30376,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <junction x="-185.42" y="-22.86"/>
 </segment>
 </net>
-<net name="N$39" class="0">
+<net name="OSC_IN" class="0">
 <segment>
 <pinref part="C43" gate="G$1" pin="2"/>
 <pinref part="IC5" gate="MCU" pin="OSC_IN"/>
@@ -30965,14 +30965,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="R25" gate="G$1" pin="2"/>
 <pinref part="C56" gate="G$1" pin="2"/>
 <pinref part="P+7" gate="1" pin="+5V"/>
-<pinref part="P+7" gate="1" pin="+5V"/>
 <wire x1="-248.92" y1="-22.86" x2="-254" y2="-22.86" width="0.1524" layer="91"/>
 <junction x="-254" y="-22.86"/>
 </segment>
 <segment>
 <pinref part="R17" gate="G$1" pin="2"/>
 <pinref part="C55" gate="G$1" pin="2"/>
-<pinref part="P+6" gate="1" pin="+5V"/>
 <pinref part="P+6" gate="1" pin="+5V"/>
 <wire x1="-248.92" y1="17.78" x2="-254" y2="17.78" width="0.1524" layer="91"/>
 <junction x="-254" y="17.78"/>
@@ -31241,14 +31239,14 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="P+11" gate="1" pin="+15V"/>
 </segment>
 </net>
-<net name="N$13" class="0">
+<net name="VCAP2" class="0">
 <segment>
 <pinref part="C58" gate="G$1" pin="2"/>
 <pinref part="IC5" gate="MCU" pin="VCAP2"/>
 <wire x1="-190.5" y1="-48.26" x2="-180.34" y2="-48.26" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$14" class="0">
+<net name="VCAP1" class="0">
 <segment>
 <pinref part="IC5" gate="MCU" pin="VCAP1"/>
 <pinref part="C57" gate="G$1" pin="2"/>
@@ -31370,7 +31368,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="TP7" gate="G$1" pin="1"/>
 </segment>
 </net>
-<net name="N$46" class="0">
+<net name="VDDA" class="0">
 <segment>
 <pinref part="C31" gate="G$1" pin="2"/>
 <pinref part="IC5" gate="MCU" pin="VDDA"/>
@@ -31450,13 +31448,13 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <junction x="-284.48" y="33.02"/>
 </segment>
 </net>
-<net name="N$22" class="0">
+<net name="USB_DP_" class="0">
 <segment>
 <pinref part="IC5" gate="MCU" pin="PA12"/>
 <pinref part="R8" gate="G$1" pin="2"/>
 </segment>
 </net>
-<net name="N$23" class="0">
+<net name="USB_DM_" class="0">
 <segment>
 <pinref part="IC5" gate="MCU" pin="PA11"/>
 <pinref part="R43" gate="G$1" pin="2"/>
@@ -31646,21 +31644,21 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <label x="-195.58" y="15.24" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="N$4" class="0">
+<net name="PA5" class="0">
 <segment>
 <pinref part="IC2" gate="MCU" pin="PA5"/>
 <wire x1="68.58" y1="-55.88" x2="88.9" y2="-55.88" width="0.1524" layer="91"/>
 <pinref part="SV2" gate="A" pin="4"/>
 </segment>
 </net>
-<net name="N$49" class="0">
+<net name="PA6" class="0">
 <segment>
 <pinref part="IC2" gate="MCU" pin="PA6"/>
 <wire x1="68.58" y1="-53.34" x2="88.9" y2="-53.34" width="0.1524" layer="91"/>
 <pinref part="SV2" gate="A" pin="3"/>
 </segment>
 </net>
-<net name="N$51" class="0">
+<net name="PA7" class="0">
 <segment>
 <pinref part="IC2" gate="MCU" pin="PA7"/>
 <wire x1="68.58" y1="-50.8" x2="88.9" y2="-50.8" width="0.1524" layer="91"/>
