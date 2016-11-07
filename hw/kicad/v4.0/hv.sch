@@ -549,4 +549,37 @@ Wire Wire Line
 Connection ~ 9100 1650
 Wire Wire Line
 	5400 1800 5400 1900
+$Comp
+L non_plated U24
+U 1 1 58275572
+P 6600 1050
+F 0 "U24" H 6600 700 60  0000 C CNN
+F 1 "non_plated" H 6650 1300 60  0000 C CNN
+F 2 "stmbl:non_plated_3mm" H 6600 1050 60  0001 C CNN
+F 3 "" H 6600 1050 60  0001 C CNN
+	1    6600 1050
+	1    0    0    -1  
+$EndComp
+$Comp
+L non_plated U30
+U 1 1 582756C2
+P 7250 1100
+F 0 "U30" H 7250 750 60  0000 C CNN
+F 1 "non_plated" H 7300 1350 60  0000 C CNN
+F 2 "stmbl:non_plated_3mm" H 7250 1100 60  0001 C CNN
+F 3 "" H 7250 1100 60  0001 C CNN
+	1    7250 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L non_plated U31
+U 1 1 58275820
+P 8000 1100
+F 0 "U31" H 8000 750 60  0000 C CNN
+F 1 "non_plated" H 8050 1350 60  0000 C CNN
+F 2 "stmbl:non_plated_3mm" H 8000 1100 60  0001 C CNN
+F 3 "" H 8000 1100 60  0001 C CNN
+	1    8000 1100
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
