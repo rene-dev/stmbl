@@ -167,9 +167,9 @@ F14 "CUH" I R 8200 3400 60
 F15 "CVH" I R 8200 3500 60 
 F16 "CWH" I R 8200 3600 60 
 $EndSheet
-Text HLabel 3100 2100 0    60   Input ~ 0
-TX
 Text HLabel 3100 1800 0    60   Input ~ 0
+TX
+Text HLabel 3100 2100 0    60   Input ~ 0
 RX
 $Comp
 L GND #PWR01
