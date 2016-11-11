@@ -120,14 +120,14 @@ CAN_RX
 Text HLabel 3900 3900 0    60   Input ~ 0
 IO_FAN
 Text HLabel 1200 1900 0    60   Input ~ 0
-IO_BRAKE
-Text HLabel 1200 3900 0    60   Input ~ 0
-IO_OUT0
+IO_OUT2
 Text HLabel 1200 5900 0    60   Input ~ 0
+IO_OUT0
+Text HLabel 1200 3900 0    60   Input ~ 0
 IO_OUT1
-Text HLabel 6600 1100 2    60   Input ~ 0
-MISO
 Text HLabel 6600 1200 2    60   Input ~ 0
+MISO
+Text HLabel 6600 1100 2    60   Input ~ 0
 MOSI
 Text HLabel 5900 1100 0    60   Input ~ 0
 SCK
