@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:ethernet_bob-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -745,7 +746,7 @@ Text GLabel 10400 1700 2    60   Input ~ 0
 PA5
 Text GLabel 10400 1800 2    60   Input ~ 0
 PA6
-Text GLabel 10400 2100 2    60   Input ~ 0
+Text GLabel 10950 2100 2    60   Input ~ 0
 PA9
 Text GLabel 10400 2200 2    60   Input ~ 0
 PA10
@@ -793,8 +794,6 @@ Text GLabel 1200 3200 0    60   Input ~ 0
 PE3
 Text GLabel 1200 3300 0    60   Input ~ 0
 PE4
-Text GLabel 1200 3400 0    60   Input ~ 0
-PE5
 Text GLabel 1200 3500 0    60   Input ~ 0
 PE6
 Text GLabel 1200 3600 0    60   Input ~ 0
@@ -878,8 +877,6 @@ F 3 "" H 750 2050 50  0000 C CNN
 	1    750  2050
 	-1   0    0    1   
 $EndComp
-Text HLabel 10750 1300 2    60   Input ~ 0
-STM_MCO1
 Text HLabel 10400 1900 2    60   Input ~ 0
 STM_CRS
 $Comp
@@ -1131,7 +1128,7 @@ Wire Wire Line
 Wire Wire Line
 	1200 3300 1300 3300
 Wire Wire Line
-	1200 3400 1300 3400
+	600  3400 1300 3400
 Wire Wire Line
 	1200 3500 1300 3500
 Wire Wire Line
@@ -1411,7 +1408,7 @@ Wire Wire Line
 Wire Wire Line
 	10300 1800 10400 1800
 Wire Wire Line
-	10300 2100 10400 2100
+	10300 2100 10950 2100
 Wire Wire Line
 	10300 2200 10400 2200
 Wire Wire Line
@@ -1702,4 +1699,20 @@ Wire Wire Line
 Connection ~ 1100 2200
 Connection ~ 1200 2200
 Connection ~ 750  2200
+Text GLabel 10950 2000 2    60   Input ~ 0
+RS485_DATA
+Text GLabel 700  3450 3    60   Input ~ 0
+RS485_ENABLE
+Wire Wire Line
+	10850 2100 10850 2000
+Wire Wire Line
+	10850 2000 10950 2000
+Connection ~ 10850 2100
+Text GLabel 600  3450 3    60   Input ~ 0
+PE5
+Wire Wire Line
+	600  3450 600  3400
+Wire Wire Line
+	700  3400 700  3450
+Connection ~ 700  3400
 $EndSCHEMATC
