@@ -498,8 +498,6 @@ Text GLabel 14400 4950 0    60   Input ~ 0
 PE0
 Text GLabel 14400 5050 0    60   Input ~ 0
 PB8
-Text GLabel 14400 5150 0    60   Input ~ 0
-BOOT0
 Text GLabel 14400 5350 0    60   Input ~ 0
 PB4
 $Comp
@@ -1715,4 +1713,6 @@ Wire Wire Line
 Wire Wire Line
 	700  3400 700  3450
 Connection ~ 700  3400
+Text GLabel 14400 5150 0    60   Input ~ 0
+BOOT1
 $EndSCHEMATC
