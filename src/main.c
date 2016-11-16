@@ -298,11 +298,11 @@ int main(void)
    HAL_PIN(fan_core_temp) = 450.0;
    HAL_PIN(fan_motor_temp) = 60.0;
 
-   HAL_PIN(p) = 0.99;
+   HAL_PIN(g) = 0.99;
    HAL_PIN(pos_p) = 100.0;
-   HAL_PIN(vel_p) = 1.0;
-   HAL_PIN(acc_p) = 0.3;
-   HAL_PIN(acc_pi) = 50.0;
+   HAL_PIN(vel_p) = 2000.0;
+   HAL_PIN(vel_i) = 10.0;
+   HAL_PIN(vel_g) = 1.0;
    HAL_PIN(cur_p) = 0.0;
    HAL_PIN(cur_i) = 0.0;
    HAL_PIN(cur_ff) = 1.0;

@@ -49,15 +49,12 @@ HAL_PIN(acc_en) = 1.0;
 HAL_PIN(torque_en) = 1.0;
 
 HAL_PIN(pos_p) = 100.0; // (1/s)
-HAL_PIN(pos_lp) = 5000.0; // (1/s)
 
 HAL_PIN(vel_p) = 2000.0; // (1/s)
 HAL_PIN(vel_i) = 10.0;
 HAL_PIN(vel_g) = 1.0;
-HAL_PIN(vel_lp) = 5000.0; // (1/s)
 
 HAL_PIN(acc_g) = 1.0;
-HAL_PIN(acc_lp) = 5000.0; // (1/s)
 
 HAL_PIN(g) = 0.99; // model limit scaling
 
@@ -82,10 +79,6 @@ HAL_PIN(saturated) = 0.0; // (s)
 
 MEM(float sat) = 0.0;
 MEM(float torque_sum) = 0.0;
-
-MEM(float old_vel_cmd) = 0.0;
-MEM(float old_acc_cmd) = 0.0;
-MEM(float old_torque_cmd) = 0.0;
 
 RT(
    float j = MAX(PIN(j), 0.0);
@@ -116,13 +109,10 @@ RT(
    float pos_error = minus(pos_ext_cmd, pos_fb);
 
    float pos_p = MAX(PIN(pos_p), 0.0);
-   float pos_lp = LP_HZ(PIN(pos_lp));
    float vel_p = MAX(PIN(vel_p), 0.0);
    float vel_i = MAX(PIN(vel_i), 0.0);
    float vel_g = CLAMP(PIN(vel_g), 0.0, 1.0);
-   float vel_lp = LP_HZ(PIN(vel_lp));
    float acc_g = CLAMP(PIN(acc_g), 0.0, 1.0);
-   float acc_lp = LP_HZ(PIN(acc_lp));
 
    
    float pos_en = PIN(pos_en);
@@ -158,9 +148,7 @@ RT(
       // pos -> vel
       vel_cmd = pos_error * pos_p; // p
       //vel_cmd = CLAMP(vel_cmd, vel_fb + acc_min * period, vel_fb + acc_max * period); // adaptive loop clamping
-      //vel_cmd = vel_cmd * pos_lp + (1.0 - pos_lp) * old_vel_cmd; // lowpass
       vel_cmd = CLAMP(vel_cmd, vel_min * vel_g, vel_max * vel_g); // p clamping
-      //old_vel_cmd = vel_cmd;
       vel_cmd += vel_ext_cmd; // ff
       vel_sat = SAT2(vel_cmd, vel_min * 0.99, vel_max * 0.99);
       vel_cmd = CLAMP(vel_cmd, vel_min, vel_max); // clamping
@@ -168,9 +156,7 @@ RT(
       // vel -> acc
       vel_error = vel_cmd - vel_fb;
       acc_cmd = vel_error * vel_p; // p
-      //acc_cmd = acc_cmd * vel_lp + (1.0 - vel_lp) * old_acc_cmd; // lowpass
       acc_cmd = CLAMP(acc_cmd, acc_min * acc_g, acc_max * acc_g); // p clamping
-      //old_acc_cmd = acc_cmd;
       acc_cmd += acc_ext_cmd; // ff
       acc_sat = SAT2(acc_cmd, acc_min * 0.99, acc_max * 0.99);
       acc_cmd = CLAMP(acc_cmd, acc_min, acc_max); // clamping
@@ -181,8 +167,6 @@ RT(
       torque_sum += vel_error * period * vel_i; // i
       torque_sum = CLAMP(torque_sum, torque_min - torque_cmd, torque_max - torque_cmd); // dynamic integral clamping
       torque_cmd += torque_sum;
-      //torque_cmd = torque_cmd * acc_lp + (1.0 - acc_lp) * old_torque_cmd; // lowpass TODO: -ff
-      //old_torque_cmd = torque_cmd;
       torque_sat = SAT2(torque_cmd, torque_min * 0.99, torque_max * 0.99);
       
       

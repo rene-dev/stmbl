@@ -181,20 +181,14 @@ void link_pid(){
 
    // pid
    hal_link_pins("conf0.j", "pid0.j");
-   hal_link_pins("conf0.p", "pid0.p");
+   hal_link_pins("conf0.g", "pid0.g");
    hal_link_pins("conf0.pos_p", "pid0.pos_p");
    hal_link_pins("conf0.vel_p", "pid0.vel_p");
-   hal_link_pins("conf0.acc_p", "pid0.acc_p");
-   hal_link_pins("conf0.acc_pi", "pid0.acc_pi");
+   hal_link_pins("conf0.vel_i", "pid0.vel_i");
+   hal_link_pins("conf0.vel_g", "pid0.vel_g");
    hal_link_pins("conf0.max_vel", "pid0.max_usr_vel");
    hal_link_pins("conf0.max_acc", "pid0.max_usr_acc");
    hal_link_pins("conf0.max_force", "pid0.max_usr_torque");
-   hal_set_pin("pid0.pos_lp", 4000.0);
-   hal_set_pin("pid0.vel_lp", 4000.0);
-   hal_set_pin("pid0.acc_lp", 4000.0);
-   hal_set_pin("pid0.torque_ff", 1.0);
-   hal_set_pin("pid0.vel_ff", 1.0);
-   hal_set_pin("pid0.acc_ff", 1.0);
    hal_set_pin("net0.enable", 1.0);
    hal_link_pins("pid0.torque_cor_cmd", "t2c0.torque");
 
