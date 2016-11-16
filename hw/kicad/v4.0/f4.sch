@@ -579,9 +579,9 @@ Text HLabel 15300 4200 2    60   Input ~ 0
 FB1_36E
 Text HLabel 15300 4400 2    60   Input ~ 0
 FB1_45E
-Text HLabel 5000 6600 0    60   Input ~ 0
-CMD_L1
 Text HLabel 5000 6700 0    60   Input ~ 0
+CMD_L1
+Text HLabel 5000 6600 0    60   Input ~ 0
 CMD_L2
 Text HLabel 15350 5600 2    60   Input ~ 0
 FB0_L1

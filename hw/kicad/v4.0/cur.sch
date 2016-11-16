@@ -302,5 +302,5 @@ Connection ~ 7100 3000
 Wire Wire Line
 	7100 2500 7100 2600
 Text Notes 5400 2050 0    60   ~ 0
-+-30A = 0.04V - 0.16V
++-25A = 0.1V +-0.1V
 $EndSCHEMATC
