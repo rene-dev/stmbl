@@ -1014,10 +1014,6 @@ Wire Wire Line
 Wire Wire Line
 	3850 6550 4400 6550
 Wire Wire Line
-	3850 6650 3950 6650
-Wire Wire Line
-	3850 6450 3950 6450
-Wire Wire Line
 	3050 7050 2950 7050
 Wire Wire Line
 	2650 7050 2550 7050
@@ -1198,10 +1194,6 @@ F 3 "" H 650 6650 30  0000 C CNN
 	1    650  6650
 	1    0    0    -1  
 $EndComp
-Text HLabel 3950 6450 2    60   Input ~ 0
-HV_TX
-Text HLabel 3950 6650 2    60   Input ~ 0
-HV_RX
 $Comp
 L USBLC6-4SC6 U23
 U 1 1 5818ACD1
@@ -1571,4 +1563,6 @@ F 3 "" H 4950 4000 30  0000 C CNN
 $EndComp
 Wire Wire Line
 	5100 4000 5200 4000
+Wire Wire Line
+	5050 4800 5200 4800
 $EndSCHEMATC
