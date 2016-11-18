@@ -698,7 +698,7 @@ F 3 "" H 15100 5150 50  0000 C CNN
 $EndComp
 Text GLabel 11300 3150 2    60   Input ~ 0
 PB4
-Text GLabel 10400 3500 2    60   Input ~ 0
+Text GLabel 11100 3750 2    60   Input ~ 0
 PB6
 Text GLabel 10400 3600 2    60   Input ~ 0
 PB7
@@ -744,7 +744,7 @@ Text GLabel 10400 1700 2    60   Input ~ 0
 PA5
 Text GLabel 10400 1800 2    60   Input ~ 0
 PA6
-Text GLabel 10950 2100 2    60   Input ~ 0
+Text GLabel 10400 2100 2    60   Input ~ 0
 PA9
 Text GLabel 10400 2200 2    60   Input ~ 0
 PA10
@@ -1406,7 +1406,7 @@ Wire Wire Line
 Wire Wire Line
 	10300 1800 10400 1800
 Wire Wire Line
-	10300 2100 10950 2100
+	10300 2100 10400 2100
 Wire Wire Line
 	10300 2200 10400 2200
 Wire Wire Line
@@ -1422,7 +1422,7 @@ Wire Wire Line
 Wire Wire Line
 	10300 3600 10400 3600
 Wire Wire Line
-	10300 3500 10400 3500
+	10300 3500 10750 3500
 Wire Wire Line
 	10300 3400 10850 3400
 Wire Wire Line
@@ -1697,15 +1697,10 @@ Wire Wire Line
 Connection ~ 1100 2200
 Connection ~ 1200 2200
 Connection ~ 750  2200
-Text GLabel 10950 2000 2    60   Input ~ 0
+Text GLabel 11100 3650 2    60   Input ~ 0
 RS485_DATA
 Text GLabel 700  3450 3    60   Input ~ 0
 RS485_ENABLE
-Wire Wire Line
-	10850 2100 10850 2000
-Wire Wire Line
-	10850 2000 10950 2000
-Connection ~ 10850 2100
 Text GLabel 600  3450 3    60   Input ~ 0
 PE5
 Wire Wire Line
@@ -1715,4 +1710,17 @@ Wire Wire Line
 Connection ~ 700  3400
 Text GLabel 14400 5150 0    60   Input ~ 0
 BOOT1
+Wire Wire Line
+	11100 3750 10750 3750
+Wire Wire Line
+	10750 3750 10750 3500
+Wire Wire Line
+	11100 3650 10750 3650
+Connection ~ 10750 3650
+Text HLabel 12450 3800 0    60   Input ~ 0
+STM_CS
+Text GLabel 12550 3800 2    60   Input ~ 0
+PB7
+Wire Wire Line
+	12450 3800 12550 3800
 $EndSCHEMATC
