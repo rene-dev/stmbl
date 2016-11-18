@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /Users/crinq/Documents/sandbox/stmbl/hw/kicad/v4.0/stmbl_4.0.sch)
-    (date "Freitag, 18. November 2016 um 21:28:28")
+    (date "Freitag, 18. November 2016 um 21:45:28")
     (tool "Eeschema (2016-09-11 revision 6dfe58f)-master")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -304,7 +304,7 @@
       (tstamp 566A7FD4))
     (comp (ref U21)
       (value USBLC6-4SC6)
-      (footprint TO_SOT_Packages_SMD:SOT-23-6)
+      (footprint stmbl:SOT-23-6)
       (fields
         (field (name Description) "TRANSIENT VOLTAGE SUPPRESSOR"))
       (libsource (lib stmbl_4.0-cache) (part USBLC6-4SC6))
@@ -378,7 +378,7 @@
       (tstamp 57B30D45))
     (comp (ref U29)
       (value USBLC6-4SC6)
-      (footprint TO_SOT_Packages_SMD:SOT-23-6)
+      (footprint stmbl:SOT-23-6)
       (fields
         (field (name Description) "TRANSIENT VOLTAGE SUPPRESSOR"))
       (libsource (lib stmbl_4.0-cache) (part USBLC6-4SC6))
@@ -2422,7 +2422,7 @@
       (tstamp 56602983))
     (comp (ref U1)
       (value USBLC6-4SC6)
-      (footprint TO_SOT_Packages_SMD:SOT-23-6)
+      (footprint stmbl:SOT-23-6)
       (fields
         (field (name Description) "TRANSIENT VOLTAGE SUPPRESSOR"))
       (libsource (lib stmbl_4.0-cache) (part USBLC6-4SC6))
@@ -2508,7 +2508,7 @@
       (tstamp 56602DEB))
     (comp (ref U23)
       (value USBLC6-4SC6)
-      (footprint TO_SOT_Packages_SMD:SOT-23-6)
+      (footprint stmbl:SOT-23-6)
       (fields
         (field (name Description) "TRANSIENT VOLTAGE SUPPRESSOR"))
       (libsource (lib stmbl_4.0-cache) (part USBLC6-4SC6))
@@ -2516,7 +2516,7 @@
       (tstamp 5818ACD1))
     (comp (ref U20)
       (value USBLC6-4SC6)
-      (footprint TO_SOT_Packages_SMD:SOT-23-6)
+      (footprint stmbl:SOT-23-6)
       (fields
         (field (name Description) "TRANSIENT VOLTAGE SUPPRESSOR"))
       (libsource (lib stmbl_4.0-cache) (part USBLC6-4SC6))
@@ -2524,7 +2524,7 @@
       (tstamp 5818ACD9))
     (comp (ref U22)
       (value USBLC6-4SC6)
-      (footprint TO_SOT_Packages_SMD:SOT-23-6)
+      (footprint stmbl:SOT-23-6)
       (fields
         (field (name Description) "TRANSIENT VOLTAGE SUPPRESSOR"))
       (libsource (lib stmbl_4.0-cache) (part USBLC6-4SC6))
