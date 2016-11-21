@@ -640,8 +640,6 @@ F 3 "" H 7050 1550 50  0000 C CNN
 $EndComp
 Text HLabel 4750 1650 0    60   Input ~ 0
 EN_5V
-Text HLabel 4750 4950 0    60   Input ~ 0
-EN_12V
 $Comp
 L ACT4088 U27
 U 1 1 57AD27CC
@@ -862,8 +860,6 @@ Connection ~ 4100 1500
 Wire Wire Line
 	7250 2300 7250 2200
 Connection ~ 7000 2300
-Wire Wire Line
-	4750 4950 4850 4950
 Wire Wire Line
 	4750 1650 4850 1650
 Wire Wire Line

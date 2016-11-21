@@ -597,11 +597,11 @@ Text HLabel 5100 5200 0    60   Input ~ 0
 FB1_S
 Text HLabel 5100 5500 0    60   Input ~ 0
 FB0_C
-Text HLabel 15350 6900 2    60   Input ~ 0
+Text HLabel 15350 6800 2    60   Input ~ 0
 FB0_V
 Text HLabel 5100 5300 0    60   Input ~ 0
 FB1_C
-Text HLabel 15350 6800 2    60   Input ~ 0
+Text HLabel 15350 6900 2    60   Input ~ 0
 FB1_V
 Text HLabel 15300 3300 2    60   Input ~ 0
 IO_FAN
@@ -865,13 +865,9 @@ Wire Wire Line
 Wire Wire Line
 	5100 5000 5200 5000
 Wire Wire Line
-	4500 3400 4700 3400
+	4500 3400 5200 3400
 Wire Wire Line
-	4700 3400 5200 3400
-Wire Wire Line
-	4500 4000 4700 4000
-Wire Wire Line
-	4700 4000 4800 4000
+	4500 4000 4800 4000
 Wire Wire Line
 	4700 4000 4700 3850
 Connection ~ 4700 4000
@@ -901,49 +897,21 @@ Wire Wire Line
 Wire Wire Line
 	9800 8500 9800 8600
 Wire Wire Line
-	11400 2300 11400 2400
+	11400 2300 11400 2500
 Wire Wire Line
-	11400 2400 11400 2500
+	10900 2300 10900 2500
 Wire Wire Line
-	10900 2300 10900 2400
+	10600 2300 10600 2500
 Wire Wire Line
-	10900 2400 10900 2500
+	10300 2300 10300 2500
 Wire Wire Line
-	10600 2300 10600 2400
+	10000 2300 10000 2500
 Wire Wire Line
-	10600 2400 10600 2500
+	9700 2300 9700 2500
 Wire Wire Line
-	10300 2300 10300 2400
+	9400 2300 9400 2500
 Wire Wire Line
-	10300 2400 10300 2500
-Wire Wire Line
-	10000 2300 10000 2400
-Wire Wire Line
-	10000 2400 10000 2500
-Wire Wire Line
-	9700 2300 9700 2400
-Wire Wire Line
-	9700 2400 9700 2500
-Wire Wire Line
-	9400 2300 9400 2400
-Wire Wire Line
-	9400 2400 9400 2500
-Wire Wire Line
-	9200 2400 9400 2400
-Wire Wire Line
-	9400 2400 9700 2400
-Wire Wire Line
-	9700 2400 10000 2400
-Wire Wire Line
-	10000 2400 10300 2400
-Wire Wire Line
-	10300 2400 10600 2400
-Wire Wire Line
-	10600 2400 10900 2400
-Wire Wire Line
-	10900 2400 11400 2400
-Wire Wire Line
-	11400 2400 11800 2400
+	9200 2400 11800 2400
 Connection ~ 9700 2400
 Connection ~ 9400 2400
 Connection ~ 10000 2400
@@ -966,28 +934,20 @@ Wire Wire Line
 Wire Wire Line
 	9400 2000 9400 1900
 Wire Wire Line
-	8400 2300 8400 2400
-Wire Wire Line
-	8400 2400 8400 2500
+	8400 2300 8400 2500
 Wire Wire Line
 	8400 2000 8400 1900
 Wire Wire Line
 	7900 2500 7900 2400
 Wire Wire Line
-	7900 2400 8100 2400
-Wire Wire Line
-	8100 2400 8400 2400
-Wire Wire Line
-	8400 2400 8600 2400
+	7900 2400 8600 2400
 Connection ~ 8400 2400
 Wire Wire Line
 	11800 2400 11800 2300
 Wire Wire Line
 	4600 2700 4600 2600
 Wire Wire Line
-	4500 3200 4600 3200
-Wire Wire Line
-	4600 3200 5200 3200
+	4500 3200 5200 3200
 Wire Wire Line
 	4600 3200 4600 3000
 Connection ~ 4600 3200
@@ -1004,32 +964,20 @@ Wire Wire Line
 Wire Wire Line
 	7850 8800 7850 8900
 Wire Wire Line
-	7850 9200 7850 9300
+	7850 9200 7850 9400
 Wire Wire Line
-	7850 9300 7850 9400
-Wire Wire Line
-	7850 9700 7850 9800
-Wire Wire Line
-	7850 9800 7850 9900
+	7850 9700 7850 9900
 Wire Wire Line
 	8750 8800 8750 8900
 Wire Wire Line
-	8750 9200 8750 9300
+	8750 9200 8750 9400
 Wire Wire Line
-	8750 9300 8750 9400
+	8750 9700 8750 9900
 Wire Wire Line
-	8750 9700 8750 9800
-Wire Wire Line
-	8750 9800 8750 9900
-Wire Wire Line
-	8650 9300 8750 9300
-Wire Wire Line
-	8750 9300 8950 9300
+	8650 9300 8950 9300
 Connection ~ 8750 9300
 Wire Wire Line
-	7750 9300 7850 9300
-Wire Wire Line
-	7850 9300 8050 9300
+	7750 9300 8050 9300
 Connection ~ 7850 9300
 Wire Wire Line
 	8950 9300 8950 9400
@@ -1050,21 +998,14 @@ Wire Wire Line
 Wire Wire Line
 	4850 2900 4850 3000
 Wire Wire Line
-	4850 3000 5100 3000
-Wire Wire Line
-	5100 3000 5200 3000
+	4850 3000 5200 3000
 Wire Wire Line
 	5100 2900 5100 3000
 Connection ~ 5100 3000
 Wire Wire Line
 	5100 2600 5100 2700
 Wire Wire Line
-	1150 6000 1750 6000
-Wire Wire Line
-	1750 6000 5200 6000
-Wire Wire Line
-	1750 6450 1750 6000
-Connection ~ 1750 6000
+	1150 6000 5200 6000
 Wire Wire Line
 	1650 6550 1750 6550
 Wire Wire Line
@@ -1133,11 +1074,9 @@ F 3 "" H 8100 1900 60  0000 C CNN
 $EndComp
 Text HLabel 15350 7900 2    60   Input ~ 0
 EN_5V
-Text HLabel 15350 8000 2    60   Input ~ 0
-EN_12V
-Text HLabel 5750 10050 2    60   Input ~ 0
-FB0_V
 Text HLabel 3450 10050 0    60   Input ~ 0
+FB0_V
+Text HLabel 5750 10050 2    60   Input ~ 0
 FB1_V
 Text HLabel 5100 7000 0    60   Input ~ 0
 CMD_12
@@ -1177,19 +1116,9 @@ Wire Wire Line
 	15300 6300 15200 6300
 Wire Wire Line
 	15300 4400 15200 4400
-Wire Wire Line
-	1750 6650 1350 6650
-Wire Wire Line
-	1350 6650 1350 6400
-Wire Wire Line
-	1350 6400 1650 6400
-Wire Wire Line
-	1650 6400 1650 5900
 Connection ~ 1650 5900
 Wire Wire Line
-	1150 5900 1650 5900
-Wire Wire Line
-	1650 5900 5200 5900
+	1150 5900 5200 5900
 Text HLabel 15300 3100 2    60   Input ~ 0
 IO_L0
 Text HLabel 15300 3000 2    60   Input ~ 0
@@ -1213,16 +1142,12 @@ F 3 "" H 1400 5800 50  0000 C CNN
 $EndComp
 Connection ~ 750  6500
 Wire Wire Line
-	650  6500 750  6500
-Wire Wire Line
-	750  6500 850  6500
+	650  6500 850  6500
 Connection ~ 750  6800
 Wire Wire Line
 	750  6900 750  6800
 Wire Wire Line
-	650  6800 750  6800
-Wire Wire Line
-	750  6800 850  6800
+	650  6800 850  6800
 $Comp
 L C C1
 U 1 1 56602D8C
@@ -1428,7 +1353,7 @@ Wire Wire Line
 	4750 9000 4750 9100
 Text HLabel 3950 1850 2    60   Input ~ 0
 SWDIO
-Text HLabel 3950 2050 2    60   Input ~ 0
+Text HLabel 1650 2050 0    60   Input ~ 0
 SWCLK
 Text HLabel 3950 2550 2    60   Input ~ 0
 IO_SPI_CK
@@ -1436,7 +1361,7 @@ Text HLabel 1650 2550 0    60   Input ~ 0
 IO_SPI_MOSI
 Text HLabel 1650 2750 0    60   Input ~ 0
 IO_SPI_MISO
-Text HLabel 1650 2050 0    60   Input ~ 0
+Text HLabel 3950 2050 2    60   Input ~ 0
 CAN_RX
 Text HLabel 1650 1850 0    60   Input ~ 0
 CAN_TX
@@ -1546,8 +1471,6 @@ Wire Wire Line
 Wire Wire Line
 	15200 7900 15350 7900
 Wire Wire Line
-	15200 8000 15350 8000
-Wire Wire Line
 	15200 5600 15350 5600
 Wire Wire Line
 	15200 5700 15350 5700
@@ -1631,4 +1554,13 @@ F 3 "" H 8750 8800 50  0000 C CNN
 	1    8750 8800
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	1650 5900 1650 6450
+Wire Wire Line
+	1650 6450 1750 6450
+Wire Wire Line
+	1750 6650 1450 6650
+Wire Wire Line
+	1450 6650 1450 6000
+Connection ~ 1450 6000
 $EndSCHEMATC
