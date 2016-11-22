@@ -438,7 +438,7 @@ U 1 1 57750CEC
 P 17950 3300
 F 0 "T45" H 17950 3400 60  0000 C CNN
 F 1 "testpoint" H 17950 3200 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 17950 3300 60  0001 C CNN
+F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 17950 3300 60  0001 C CNN
 F 3 "" H 17950 3300 60  0000 C CNN
 	1    17950 3300
 	1    0    0    -1  
@@ -449,7 +449,7 @@ U 1 1 57751000
 P 17950 3100
 F 0 "T44" H 17950 3200 60  0000 C CNN
 F 1 "testpoint" H 17950 3000 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 17950 3100 60  0001 C CNN
+F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 17950 3100 60  0001 C CNN
 F 3 "" H 17950 3100 60  0000 C CNN
 	1    17950 3100
 	1    0    0    -1  
@@ -460,7 +460,7 @@ U 1 1 5775117B
 P 17950 3500
 F 0 "T46" H 17950 3600 60  0000 C CNN
 F 1 "testpoint" H 17950 3400 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 17950 3500 60  0001 C CNN
+F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 17950 3500 60  0001 C CNN
 F 3 "" H 17950 3500 60  0000 C CNN
 	1    17950 3500
 	1    0    0    -1  
@@ -471,7 +471,7 @@ U 1 1 57751F4A
 P 1700 3000
 F 0 "T1" H 1700 3100 60  0000 C CNN
 F 1 "testpoint" H 1700 2900 60  0000 C CNN
-F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Small" H 1700 3000 60  0001 C CNN
+F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 1700 3000 60  0001 C CNN
 F 3 "" H 1700 3000 60  0000 C CNN
 	1    1700 3000
 	-1   0    0    1   
