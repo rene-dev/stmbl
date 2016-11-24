@@ -53,7 +53,7 @@
 | USART3 RX | 1 | 3 |
 
 ### IO ###
-| periph | DMA | stream | channel |
+| periph | DMA | channel |
 | --- | --- | --- | --- |
 | USART1 TX | 1 | 4 |
 | USART1 RX | 1 | 5 |
