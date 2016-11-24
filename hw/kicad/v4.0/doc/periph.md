@@ -43,3 +43,26 @@
 | ADC1 | 2 | 4 | 0 |
 | ADC2 | (2) | (3) | (1) |
 | ADC3 | 2 | 0 | 2 |
+
+
+## F3 ##
+### HV ###
+| periph | DMA | channel |
+| --- | --- | --- |
+| USART3 TX | 1 | 2 |
+| USART3 RX | 1 | 3 |
+
+### IO ###
+| periph | DMA | stream | channel |
+| --- | --- | --- | --- |
+| USART1 TX | 1 | 4 |
+| USART1 RX | 1 | 5 |
+
+### ADC ###
+| periph | DMA | channel |
+| --- | --- | --- | --- |
+| ADC1 | 1 | 1 |
+| ADC2 | (2) | (1) |
+| ADC3 | 1 | 5 |
+| ADC4 | (1) | (4) |
+
