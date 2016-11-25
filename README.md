@@ -67,6 +67,12 @@ https://www.youtube.com/watch?v=seEV_i7o1NI
 * SSI
 * Sanyo Denki wire-saving incremental encoder
 
+####Supported Position/Velocity Commands Inputs:
+* Smartserial
+* Quadrature
+* Step/direction
+* RS485
+
 ####TODO
 * AC Async
 
