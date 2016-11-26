@@ -167,9 +167,9 @@ F14 "CUH" I R 8200 3400 60
 F15 "CVH" I R 8200 3500 60 
 F16 "CWH" I R 8200 3600 60 
 $EndSheet
-Text HLabel 3100 2100 0    60   Input ~ 0
-TX
 Text HLabel 3100 1800 0    60   Input ~ 0
+TX
+Text HLabel 3100 2100 0    60   Input ~ 0
 RX
 $Comp
 L GND #PWR01
@@ -271,9 +271,9 @@ F5 "A_IU" I R 9500 3400 60
 F6 "A_IV" I R 9500 3500 60 
 F7 "A_IW" I R 9500 3600 60 
 $EndSheet
-Text HLabel 2550 1800 2    60   Input ~ 0
-TX
 Text HLabel 2550 1700 2    60   Input ~ 0
+TX
+Text HLabel 2550 1800 2    60   Input ~ 0
 RX
 $Comp
 L +3.3V #PWR07
@@ -357,7 +357,7 @@ L R R141
 U 1 1 57DD09BB
 P 9650 1650
 F 0 "R141" V 9730 1650 50  0000 C CNN
-F 1 "15k" V 9650 1650 50  0000 C CNN
+F 1 "51k" V 9650 1650 50  0000 C CNN
 F 2 "stmbl:R_0603" V 9580 1650 30  0001 C CNN
 F 3 "" H 9650 1650 30  0000 C CNN
 	1    9650 1650
@@ -368,7 +368,7 @@ L R R7
 U 1 1 57DD2315
 P 9100 1900
 F 0 "R7" V 9180 1900 50  0000 C CNN
-F 1 "1k" V 9100 1900 50  0000 C CNN
+F 1 "10k" V 9100 1900 50  0000 C CNN
 F 2 "stmbl:R_0603" V 9030 1900 30  0001 C CNN
 F 3 "" H 9100 1900 30  0000 C CNN
 	1    9100 1900
@@ -523,7 +523,7 @@ Wire Wire Line
 Wire Wire Line
 	9100 2050 9100 2150
 Wire Wire Line
-	9100 2150 9900 2150
+	8800 2150 9900 2150
 Connection ~ 9900 2150
 Wire Wire Line
 	9400 2050 9400 2150
@@ -549,4 +549,55 @@ Wire Wire Line
 Connection ~ 9100 1650
 Wire Wire Line
 	5400 1800 5400 1900
+$Comp
+L non_plated U24
+U 1 1 58275572
+P 6600 1050
+F 0 "U24" H 6600 700 60  0000 C CNN
+F 1 "non_plated" H 6650 1300 60  0000 C CNN
+F 2 "stmbl:non_plated_3mm" H 6600 1050 60  0001 C CNN
+F 3 "" H 6600 1050 60  0001 C CNN
+	1    6600 1050
+	1    0    0    -1  
+$EndComp
+$Comp
+L non_plated U30
+U 1 1 582756C2
+P 7250 1100
+F 0 "U30" H 7250 750 60  0000 C CNN
+F 1 "non_plated" H 7300 1350 60  0000 C CNN
+F 2 "stmbl:non_plated_3mm" H 7250 1100 60  0001 C CNN
+F 3 "" H 7250 1100 60  0001 C CNN
+	1    7250 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L non_plated U31
+U 1 1 58275820
+P 8000 1100
+F 0 "U31" H 8000 750 60  0000 C CNN
+F 1 "non_plated" H 8050 1350 60  0000 C CNN
+F 2 "stmbl:non_plated_3mm" H 8000 1100 60  0001 C CNN
+F 3 "" H 8000 1100 60  0001 C CNN
+	1    8000 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C138
+U 1 1 58307AEE
+P 8800 1900
+F 0 "C138" H 8825 2000 50  0000 L CNN
+F 1 "100n" H 8825 1800 50  0000 L CNN
+F 2 "stmbl:C_0603" H 8838 1750 30  0001 C CNN
+F 3 "" H 8800 1900 60  0000 C CNN
+	1    8800 1900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8800 1750 8800 1650
+Connection ~ 8800 1650
+Wire Wire Line
+	8800 2050 8800 2150
+Connection ~ 9100 2150
+NoConn ~ 7400 2800
 $EndSCHEMATC
