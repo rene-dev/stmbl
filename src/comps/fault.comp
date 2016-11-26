@@ -89,7 +89,7 @@ HAL_PIN(scale) = 1.0;
 HAL_PIN(led_green) = 0.0;
 HAL_PIN(led_red) = 0.0;
 
-// state -10 = reset state, -6 = fb error, -5 = sat error, -4 = over current, -3 = pos_error, -2 = over temperature, -1 = over voltage, 0 = disabled, 1 = enabled, 2 = phasing
+// state -10 = reset state, -7 = hv error, -6 = fb error, -5 = sat error, -4 = over current, -3 = pos_error, -2 = over temperature, -1 = over voltage, 0 = disabled, 1 = enabled, 2 = phasing
 HAL_PIN(state) = 0.0;
 
 MEM(int state) = 0;
