@@ -1,0 +1,402 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:vn808
+LIBS:io_base-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 3 4
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L CONN_02X25 P?
+U 1 1 5841CC38
+P 3150 2450
+F 0 "P?" H 3150 3865 50  0000 C CNN
+F 1 "CONN_02X25" H 3150 3774 50  0000 C CNN
+F 2 "" H 3150 1700 50  0000 C CNN
+F 3 "" H 3150 1700 50  0000 C CNN
+	1    3150 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_02X25 P?
+U 1 1 5841CD0D
+P 3150 5350
+F 0 "P?" H 3150 6765 50  0000 C CNN
+F 1 "CONN_02X25" H 3150 6674 50  0000 C CNN
+F 2 "" H 3150 4600 50  0000 C CNN
+F 3 "" H 3150 4600 50  0000 C CNN
+	1    3150 5350
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5841CE73
+P 3500 4150
+F 0 "#PWR?" H 3500 3900 50  0001 C CNN
+F 1 "GND" V 3505 4022 50  0000 R CNN
+F 2 "" H 3500 4150 50  0000 C CNN
+F 3 "" H 3500 4150 50  0000 C CNN
+	1    3500 4150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5841CE91
+P 2800 4150
+F 0 "#PWR?" H 2800 3900 50  0001 C CNN
+F 1 "GND" V 2805 4022 50  0000 R CNN
+F 2 "" H 2800 4150 50  0000 C CNN
+F 3 "" H 2800 4150 50  0000 C CNN
+	1    2800 4150
+	0    1    1    0   
+$EndComp
+$Comp
+L +5V #PWR?
+U 1 1 5841CEAC
+P 3500 4250
+F 0 "#PWR?" H 3500 4100 50  0001 C CNN
+F 1 "+5V" V 3515 4378 50  0000 L CNN
+F 2 "" H 3500 4250 50  0000 C CNN
+F 3 "" H 3500 4250 50  0000 C CNN
+	1    3500 4250
+	0    1    1    0   
+$EndComp
+$Comp
+L +5V #PWR?
+U 1 1 5841CECC
+P 2800 4250
+F 0 "#PWR?" H 2800 4100 50  0001 C CNN
+F 1 "+5V" V 2815 4378 50  0000 L CNN
+F 2 "" H 2800 4250 50  0000 C CNN
+F 3 "" H 2800 4250 50  0000 C CNN
+	1    2800 4250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L +3V3 #PWR?
+U 1 1 5841CEE7
+P 3500 4350
+F 0 "#PWR?" H 3500 4200 50  0001 C CNN
+F 1 "+3V3" V 3515 4478 50  0000 L CNN
+F 2 "" H 3500 4350 50  0000 C CNN
+F 3 "" H 3500 4350 50  0000 C CNN
+	1    3500 4350
+	0    1    1    0   
+$EndComp
+$Comp
+L +3V3 #PWR?
+U 1 1 5841CF01
+P 2800 4350
+F 0 "#PWR?" H 2800 4200 50  0001 C CNN
+F 1 "+3V3" V 2815 4478 50  0000 L CNN
+F 2 "" H 2800 4350 50  0000 C CNN
+F 3 "" H 2800 4350 50  0000 C CNN
+	1    2800 4350
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2800 4150 2900 4150
+Wire Wire Line
+	2800 4250 2900 4250
+Wire Wire Line
+	2800 4350 2900 4350
+Wire Wire Line
+	3400 4350 3500 4350
+Wire Wire Line
+	3400 4250 3500 4250
+Wire Wire Line
+	3400 4150 3500 4150
+$Comp
+L +3V3 #PWR?
+U 1 1 5841CF51
+P 3500 5150
+F 0 "#PWR?" H 3500 5000 50  0001 C CNN
+F 1 "+3V3" V 3515 5278 50  0000 L CNN
+F 2 "" H 3500 5150 50  0000 C CNN
+F 3 "" H 3500 5150 50  0000 C CNN
+	1    3500 5150
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3400 5150 3500 5150
+$Comp
+L GND #PWR?
+U 1 1 5841CFAC
+P 3500 6550
+F 0 "#PWR?" H 3500 6300 50  0001 C CNN
+F 1 "GND" V 3505 6422 50  0000 R CNN
+F 2 "" H 3500 6550 50  0000 C CNN
+F 3 "" H 3500 6550 50  0000 C CNN
+	1    3500 6550
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5841CFED
+P 2800 6550
+F 0 "#PWR?" H 2800 6300 50  0001 C CNN
+F 1 "GND" V 2805 6422 50  0000 R CNN
+F 2 "" H 2800 6550 50  0000 C CNN
+F 3 "" H 2800 6550 50  0000 C CNN
+	1    2800 6550
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2800 6550 2900 6550
+Wire Wire Line
+	3400 6550 3500 6550
+$Comp
+L GND #PWR?
+U 1 1 5841D0A7
+P 3500 3650
+F 0 "#PWR?" H 3500 3400 50  0001 C CNN
+F 1 "GND" V 3505 3522 50  0000 R CNN
+F 2 "" H 3500 3650 50  0000 C CNN
+F 3 "" H 3500 3650 50  0000 C CNN
+	1    3500 3650
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5841D0B8
+P 2800 3650
+F 0 "#PWR?" H 2800 3400 50  0001 C CNN
+F 1 "GND" V 2805 3522 50  0000 R CNN
+F 2 "" H 2800 3650 50  0000 C CNN
+F 3 "" H 2800 3650 50  0000 C CNN
+	1    2800 3650
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2800 3650 2900 3650
+Wire Wire Line
+	3400 3650 3500 3650
+$Comp
+L GND #PWR?
+U 1 1 5841D13C
+P 2800 2350
+F 0 "#PWR?" H 2800 2100 50  0001 C CNN
+F 1 "GND" V 2805 2222 50  0000 R CNN
+F 2 "" H 2800 2350 50  0000 C CNN
+F 3 "" H 2800 2350 50  0000 C CNN
+	1    2800 2350
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2800 2350 2900 2350
+$Comp
+L GND #PWR?
+U 1 1 5841D180
+P 2800 1250
+F 0 "#PWR?" H 2800 1000 50  0001 C CNN
+F 1 "GND" V 2805 1122 50  0000 R CNN
+F 2 "" H 2800 1250 50  0000 C CNN
+F 3 "" H 2800 1250 50  0000 C CNN
+	1    2800 1250
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 5841D191
+P 3500 1250
+F 0 "#PWR?" H 3500 1000 50  0001 C CNN
+F 1 "GND" V 3505 1122 50  0000 R CNN
+F 2 "" H 3500 1250 50  0000 C CNN
+F 3 "" H 3500 1250 50  0000 C CNN
+	1    3500 1250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2800 1250 2900 1250
+Wire Wire Line
+	3400 1250 3500 1250
+$Comp
+L GND #PWR?
+U 1 1 5841D1CD
+P 2800 1450
+F 0 "#PWR?" H 2800 1200 50  0001 C CNN
+F 1 "GND" V 2805 1322 50  0000 R CNN
+F 2 "" H 2800 1450 50  0000 C CNN
+F 3 "" H 2800 1450 50  0000 C CNN
+	1    2800 1450
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2800 1450 2900 1450
+$Comp
+L +3V3 #PWR?
+U 1 1 5841D252
+P 3500 1350
+F 0 "#PWR?" H 3500 1200 50  0001 C CNN
+F 1 "+3V3" V 3515 1478 50  0000 L CNN
+F 2 "" H 3500 1350 50  0000 C CNN
+F 3 "" H 3500 1350 50  0000 C CNN
+	1    3500 1350
+	0    1    1    0   
+$EndComp
+$Comp
+L +3V3 #PWR?
+U 1 1 5841D2C9
+P 2800 1350
+F 0 "#PWR?" H 2800 1200 50  0001 C CNN
+F 1 "+3V3" V 2815 1478 50  0000 L CNN
+F 2 "" H 2800 1350 50  0000 C CNN
+F 3 "" H 2800 1350 50  0000 C CNN
+	1    2800 1350
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2800 1350 2900 1350
+Wire Wire Line
+	3400 1350 3500 1350
+Text GLabel 3500 4850 2    60   Input ~ 0
+IN1
+Text GLabel 3500 2450 2    60   Input ~ 0
+IN2
+Text GLabel 3500 2550 2    60   Input ~ 0
+IN4
+Text GLabel 3500 2650 2    60   Input ~ 0
+IN6
+Text GLabel 3500 2750 2    60   Input ~ 0
+IN8
+Text GLabel 2800 2750 0    60   Input ~ 0
+IN9
+Text GLabel 2800 2450 0    60   Input ~ 0
+IN3
+Text GLabel 2800 2550 0    60   Input ~ 0
+IN5
+Text GLabel 2800 2650 0    60   Input ~ 0
+IN7
+Text GLabel 2800 4750 0    60   Input ~ 0
+IN10
+Text GLabel 2800 2850 0    60   Input ~ 0
+IN11
+Text GLabel 2800 4650 0    60   Input ~ 0
+IN12
+Wire Wire Line
+	3400 3150 3500 3150
+Wire Wire Line
+	3400 3250 3500 3250
+Wire Wire Line
+	2800 3250 2900 3250
+Wire Wire Line
+	3400 5850 3500 5850
+Wire Wire Line
+	3400 5750 3500 5750
+Wire Wire Line
+	3400 5650 3500 5650
+Wire Wire Line
+	3400 5550 3500 5550
+Wire Wire Line
+	2800 5750 2900 5750
+Wire Wire Line
+	2800 5650 2900 5650
+Wire Wire Line
+	2800 5550 2900 5550
+Wire Wire Line
+	2800 5450 2900 5450
+Text GLabel 2800 5750 0    60   Input ~ 0
+OUT2
+Text GLabel 3500 5850 2    60   Input ~ 0
+OUT1
+Text GLabel 3500 5750 2    60   Input ~ 0
+OUT3
+Text GLabel 3500 5650 2    60   Input ~ 0
+OUT5
+Text GLabel 2800 5650 0    60   Input ~ 0
+OUT4
+Text GLabel 3500 5550 2    60   Input ~ 0
+OUT7
+Text GLabel 3500 3150 2    60   Input ~ 0
+OUT9
+Text GLabel 3500 3250 2    60   Input ~ 0
+OUT11
+Text GLabel 3500 3350 2    60   Input ~ 0
+OUT13
+Text GLabel 3500 3450 2    60   Input ~ 0
+OUT15
+Text GLabel 2800 5550 0    60   Input ~ 0
+OUT6
+Text GLabel 2800 5450 0    60   Input ~ 0
+OUT8
+Text GLabel 2800 3250 0    60   Input ~ 0
+OUT10
+Text GLabel 2800 3350 0    60   Input ~ 0
+OUT12
+Text GLabel 2800 3450 0    60   Input ~ 0
+OUT14
+Text GLabel 2800 3550 0    60   Input ~ 0
+OUT16
+Wire Wire Line
+	2800 2450 2900 2450
+Wire Wire Line
+	2800 2550 2900 2550
+Wire Wire Line
+	2800 2650 2900 2650
+Wire Wire Line
+	2800 2750 2900 2750
+Wire Wire Line
+	2800 2850 2900 2850
+Wire Wire Line
+	2800 3350 2900 3350
+Wire Wire Line
+	2800 3450 2900 3450
+Wire Wire Line
+	2800 3550 2900 3550
+Wire Wire Line
+	3400 3450 3500 3450
+Wire Wire Line
+	3400 3350 3500 3350
+Wire Wire Line
+	3400 2450 3500 2450
+Wire Wire Line
+	3400 2550 3500 2550
+Wire Wire Line
+	3400 2650 3500 2650
+Wire Wire Line
+	3400 2750 3500 2750
+Wire Wire Line
+	2800 4650 2900 4650
+Wire Wire Line
+	2800 4750 2900 4750
+Wire Wire Line
+	3400 4850 3500 4850
+$EndSCHEMATC
