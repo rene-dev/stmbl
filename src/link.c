@@ -153,6 +153,7 @@ void link_pid(){
    hal_link_pins("fault0.brake", "io0.brake");
    hal_link_pins("fault0.hv_fan", "io0.fan");
 
+   //TODO: merge enable_out and enable_pid
    hal_link_pins("fault0.enable_out", "hv0.enable");
    hal_link_pins("fault0.enable_pid", "pid0.enable");
 

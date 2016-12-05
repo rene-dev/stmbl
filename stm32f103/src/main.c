@@ -20,7 +20,7 @@
 #define ACS_DOWN 3000.0
 #define ACS_OFFSET 2.5
 
-#define AMP(a) ((a * AREF / ARES * (ACS_DOWN + ACS_UP) / ACS_DOWN - ACS_OFFSET) / ACS_VPA)
+#define AMP(a) (((a) * AREF / ARES * (ACS_DOWN + ACS_UP) / ACS_DOWN - ACS_OFFSET) / ACS_VPA)
 
 #else //iramx v3.1-v3.3 hardware
 #define RCUR 0.0181//shunt
@@ -34,12 +34,12 @@
 #define PWM_V TIM1->CCR2
 #define PWM_W TIM1->CCR3
 
-#define AMP(a) ((a * AREF / ARES - AREF / (R10 + R11) * R11) / (RCUR * R10) * (R10 + R11))
-#define TEMP(a) (log10f(a * AREF / ARES * TPULLUP / (AREF - a * AREF / ARES)) * (-53) + 290)
+#define AMP(a) (((a) * AREF / ARES - AREF / (R10 + R11) * R11) / (RCUR * R10) * (R10 + R11))
+#define TEMP(a) (log10f((a) * AREF / ARES * TPULLUP / (AREF - a * AREF / ARES)) * (-53) + 290)
 
 #endif
 
-#define VOLT(a) (a / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
+#define VOLT(a) ((a) / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
 
 volatile uint16_t ADCConvertedValue[100];//DMA buffer for ADC
 volatile uint8_t rxbuf[50];//DMA buffer for UART RX

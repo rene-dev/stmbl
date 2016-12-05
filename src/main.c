@@ -313,7 +313,7 @@ int main(void)
    frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
    
    link_pid();
-   hal_comp_init();
+   hal_comp_init();//call init function of all comps
 
    if(hal.pin_errors + hal.comp_errors == 0){
       hal_start();
