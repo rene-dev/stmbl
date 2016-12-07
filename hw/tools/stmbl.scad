@@ -67,5 +67,5 @@ translate([-81, 33, 5.7]) spacer(2.3);
 translate([-21, 33, 5.7]) spacer(2.3);
 translate([-52.5, 5, 0]) spacer(8);//translate([1 + 8, 1, 96 + 4]) io();
 //translate([1, 10, 33 + 8]) cover();
-translate([-89, 6, -2]) rotate([0, -90, 0]) m3(5);
-translate([-89, 6 + 36, -2]) rotate([0, -90, 0]) m3(5);
+translate([-89, 5, -2]) rotate([0, -90, 0]) m3(5);
+translate([-89, 5 + 36, -2]) rotate([0, -90, 0]) m3(5);
