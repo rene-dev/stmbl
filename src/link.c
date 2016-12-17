@@ -63,7 +63,7 @@ void link_ac(){
    hal_link_pins("pmsm0.id", "i2t0.id");
    hal_link_pins("pmsm0.iq", "i2t0.iq");
    // hal_link_pins("conf0.max_ac_cur", "i2t0.mot_cont_cur");
-   hal_link_pins("i2t0.mot_temp", "fault0.motor_temp");
+   // hal_link_pins("i2t0.mot_temp", "fault0.motor_temp");
    hal_link_pins("fault0.brake", "i2t0.brake");
    
    //troller only
@@ -382,6 +382,7 @@ int update_cmd(){
          hal_link_pins("sserial0.enable", "net0.enable");
          hal_link_pins("fault0.fault", "sserial0.fault");
          hal_link_pins("sserial0.connected", "fault0.cmd_ready");
+         hal_link_pins("sserial0.out0", "fault0.brake_release");
          hal_link_pins("rev1.out", "sserial0.pos_fb");
          //this breaks cmd rev...
          hal_link_pins("vel_int0.pos_out", "net0.cmd");
