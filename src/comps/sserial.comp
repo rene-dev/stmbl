@@ -611,21 +611,19 @@ FRT(
    if (available >= 1) {
       lbp.byte = rxbuf[rxpos];
 
-      if (lbp.ct == CT_LOCAL && lbp.wr == 0) { //local read, cmd+crc = 2b
+      if (lbp.ct == CT_LOCAL && lbp.wr == 0){ //local read, cmd+crc = 2b
+         timeout = 0;
          if(available >= 2){
             switch(lbp.byte) {
                case LBPCookieCMD:
                  txbuf[0] = LBPCookie;
                  break;
-            
                case LBPStatusCMD: //TODO: return status
                  txbuf[0] = 0x00;
                  break;
-            
                case LBPCardName0Cmd ... LBPCardName3Cmd:
                  txbuf[0] = name[lbp.byte-LBPCardName0Cmd];
                  break;
-
                default: //TODO: handle unknown command condition
                  txbuf[0] = 0x00;
             }
@@ -635,14 +633,13 @@ FRT(
             continue;
          }
       }else if(lbp.ct == CT_LOCAL && lbp.wr == 1){//local write, cmd+data+crc = 3b
+         timeout = 0;
          //0xFF and 0xFC are not followed by crc
          if(rxbuf[rxpos] == 0xFF){
             // reset parser
-            timeout = 0;
             rxpos += 1;
          }else if(rxbuf[rxpos] == 0xFC){
             // todo
-            timeout = 0;
             rxpos += 1;
          }else if(available >= 3){//writes do not expect crc in reply
             txbuf[0] = 0x00;
@@ -652,6 +649,7 @@ FRT(
             continue;
          }
       }else if(lbp.ct == CT_RPC){//RPC TODO: check for ct should not required for rpc
+          timeout = 0;
           if(lbp.byte == UnitNumberRPC && available >= 2){//unit number, cmd+crc = 2b
               txbuf[0] = 0x00;
               txbuf[1] = 0x00;
@@ -681,6 +679,7 @@ FRT(
              continue;
           }
       }else if (lbp.ct == CT_RW && lbp.wr == 0){ //read TODO: implement write.
+         timeout = 0;
          if(available >= 2){
             if (lbp.as == 1){ //address included in command = cmd+addr+addr+crc
                if (available >= 4) {
