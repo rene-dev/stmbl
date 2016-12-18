@@ -1,0 +1,260 @@
+HAL_COMP(fault);
+
+#define SCALE(value, high, max)  MIN(MAX(((max) - (value)) / ((max) - (high)), 0.0), 1.0)
+
+enum state_t{
+   DISABLED = 0,
+   ENABLED,
+   PHASING,
+   SOFT_FAULT,
+   HARD_FAULT
+};
+
+enum fault_t{
+   NO_ERROR = 0,
+   CMD_ERROR,
+   FB0_ERROR,
+   FB1_ERROR,
+   POS_ERROR,
+   SAT_ERROR,
+   HV_ERROR,
+   HV_TEMP_ERROR,
+   HV_VOLT_ERROR,
+   MOT_TEMP_ERROR,
+};
+
+HAL_PIN(en) = 0.0;
+HAL_PIN(state) = 0.0;
+HAL_PIN(fault) = 0.0;
+HAL_PIN(en_out) = 0.0;
+HAL_PIN(en_pid) = 0.0;
+
+HAL_PIN(phase_start) = 0.0;
+HAL_PIN(phase_ready) = 0.0;
+
+HAL_PIN(cmd) = 0.0;
+HAL_PIN(fb) = 0.0;
+HAL_PIN(start_offset) = 0.0;
+
+HAL_PIN(cmd_error) = 0.0;
+HAL_PIN(fb0_error) = 0.0;
+HAL_PIN(fb1_error) = 0.0;
+HAL_PIN(hv_error) = 0.0;
+
+HAL_PIN(cmd_ready) = 1.0;
+HAL_PIN(fb0_ready) = 1.0;
+HAL_PIN(fb1_ready) = 1.0;
+HAL_PIN(hv_ready) = 1.0;
+
+HAL_PIN(hv_temp) = 0.0;
+HAL_PIN(mot_temp) = 0.0;
+HAL_PIN(max_hv_temp) = 90.0;
+HAL_PIN(max_mot_temp) = 100.0;
+HAL_PIN(high_hv_temp) = 70.0;
+HAL_PIN(high_mot_temp) = 80.0;
+HAL_PIN(fan_hv_temp) = 60.0;
+HAL_PIN(fan_mot_temp) = 60.0;
+
+HAL_PIN(scale) = 1.0;
+
+HAL_PIN(hv_volt) = 0.0;
+HAL_PIN(min_hv_volt) = 20.0;
+HAL_PIN(high_hv_volt) = 370.0;
+HAL_PIN(max_hv_volt) = 390.0;
+
+HAL_PIN(dc_cur) = 0.0;
+HAL_PIN(high_dc_cur) = 0.0;
+HAL_PIN(max_dc_cur) = 0.0;
+
+HAL_PIN(pos_error) = 0.0;
+HAL_PIN(max_pos_error) = 0.0;
+
+HAL_PIN(sat) = 0.0;
+HAL_PIN(max_sat) = 0.0;
+
+HAL_PIN(mot_brake) = 0.0;
+HAL_PIN(dc_brake) = 0.0;
+
+HAL_PIN(hv_fan) = 0.0;
+HAL_PIN(mot_fan) = 0.0;
+
+HAL_PIN(phase_with_brake) = 1.0;
+HAL_PIN(phase_on_start) = 1.0;
+
+HAL_PIN(brake_release) = 0.0;
+
+MEM(enum state_t state) = 0;
+
+MEM(enum fault_t fault) = NO_ERROR;
+
+MEM(uint32_t phased) = 0;
+
+RT(
+   if(PIN(phase_on_start) > 0.0){
+      phased = 1;
+   }
+   
+   switch(state){
+      case DISABLED:
+         if(RISING_EDGE(PIN(en)) & (PIN(cmd_ready) > 0.0) & (PIN(fb0_ready) > 0.0) & (PIN(fb1_ready) > 0.0) & (PIN(hv_ready) > 0.0)){
+            if(phased == 0){
+               state = PHASING;
+            }
+            else{
+               state = ENABLED;
+            }
+         }      
+      break;
+      
+      case ENABLED:
+         if(PIN(en) <= 0.0){
+            state = DISABLED;
+         }
+      break;
+         
+      case PHASING:
+         if(RISING_EDGE(PIN(phase_ready))){
+            state = ENABLED;
+         }
+         
+         if(PIN(en) <= 0.0){
+            state = DISABLED;
+         }
+      break;
+         
+      case SOFT_FAULT:
+         if(PIN(en) > 0.0){
+            state = DISABLED;
+         }
+      break;
+      
+      case HARD_FAULT:
+      break;
+   }
+
+   if(PIN(cmd_error) > 0.0){
+      fault = CMD_ERROR;
+      state = SOFT_FAULT;
+   }
+
+   if(PIN(fb0_error) > 0.0){
+      fault = FB0_ERROR;
+      state = SOFT_FAULT;
+      phased = 0;
+   }
+
+   if(PIN(fb1_error) > 0.0){
+      fault = FB1_ERROR;
+      state = SOFT_FAULT;
+      phased = 0;
+   }
+
+   if(PIN(hv_error) > 0.0){
+      fault = HV_ERROR;
+      state = SOFT_FAULT;
+   }
+
+   if(ABS(PIN(pos_error)) > PIN(max_pos_error)){
+      fault = POS_ERROR;
+      state = SOFT_FAULT;
+   }
+   
+   if(PIN(sat) > PIN(max_sat)){
+      fault = SAT_ERROR;
+      state = SOFT_FAULT;
+   }
+
+   if(PIN(hv_temp) > PIN(max_hv_temp)){
+      fault = HV_TEMP_ERROR;
+      state = SOFT_FAULT;
+   }
+
+   if(PIN(hv_volt) > PIN(max_hv_volt)){
+      fault = HV_VOLT_ERROR;
+      state = SOFT_FAULT;
+   }
+   
+   if(PIN(hv_volt) < PIN(min_hv_volt)){
+      fault = HV_VOLT_ERROR;
+      state = SOFT_FAULT;
+   }
+
+   if(PIN(mot_temp) > PIN(max_mot_temp)){
+      fault = MOT_TEMP_ERROR;
+      state = SOFT_FAULT;
+   }
+
+   float scale = 1.0;
+   scale = MIN(scale, SCALE(PIN(hv_temp), PIN(high_hv_temp), PIN(max_hv_temp)));
+   scale = MIN(scale, SCALE(PIN(hv_volt), PIN(high_hv_volt), PIN(max_hv_volt)));
+   scale = MIN(scale, SCALE(PIN(mot_temp), PIN(high_mot_temp), PIN(max_mot_temp)));
+   scale = MIN(scale, SCALE(PIN(dc_cur), PIN(high_dc_cur), PIN(max_dc_cur)));
+
+   PIN(dc_brake) = SCALE(PIN(hv_volt), PIN(max_hv_volt), PIN(high_hv_volt));
+
+   if(PIN(hv_temp) >= PIN(fan_hv_temp)){
+      PIN(hv_fan) = 1.0;
+   }
+
+   if(PIN(hv_temp) < PIN(fan_hv_temp) * 0.9){
+      PIN(hv_fan) = 0.0;
+   }
+
+   if(PIN(mot_temp) >= PIN(fan_mot_temp)){
+      PIN(mot_fan) = 1.0;
+   }
+
+   if(PIN(mot_temp) < PIN(fan_mot_temp) * 0.9){
+      PIN(mot_fan) = 0.0;
+   }
+
+   switch(state){
+      case DISABLED:
+         PIN(phase_start) = 0.0;
+         PIN(mot_brake) = 0.0;
+         fault = NO_ERROR;
+         scale = 0.0;
+      break;
+      
+      case ENABLED:
+         PIN(phase_start) = 0.0;
+         PIN(mot_brake) = 1.0;
+         PIN(en_out) = 1.0;
+         PIN(en_pid) = 1.0;
+         fault = NO_ERROR;
+         phased = 1;
+      break;
+      
+      case PHASING:
+         PIN(phase_start) = 1.0;
+         PIN(mot_brake) = PIN(phase_with_brake);
+         fault = NO_ERROR;
+         PIN(en_out) = 1.0;
+         PIN(start_offset) = minus(PIN(fb), PIN(cmd));
+      break;
+      
+      case SOFT_FAULT:
+         PIN(phase_start) = 0.0;
+         PIN(mot_brake) = 0.0;
+         scale = 0.0;
+      break;
+      
+      case HARD_FAULT:
+         PIN(phase_start) = 0.0;
+         PIN(mot_brake) = 0.0;
+         scale = 0.0;
+      break;
+   }
+
+   PIN(fault) = fault;
+   PIN(state) = state;
+   PIN(scale) = scale;
+   
+   if(PIN(brake_release) > 0.0){
+      PIN(mot_brake) = 1.0;
+   }
+);
+
+ENDCOMP;
+
+//TODO curpid: sqrt(di^2+qi^2) auf max_ac_cur clampen
