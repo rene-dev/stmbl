@@ -278,6 +278,7 @@ int update_fb(){
          hal_link_pins("conf0.fb_res", "enc_fb0.res");
          hal_set_pin("enc_fb0.rt_prio", 2.0);
          hal_set_pin("enc_fb0.frt_prio", 1.0);
+         hal_link_pins("enc_fb0.isabs", "cauto0.isabs");
          // hal_set_pin("pderiv1.frt_prio", 2.0);
          // hal_set_pin("pderiv1.rt_prio", 5.0);
          break;
@@ -379,6 +380,7 @@ int update_cmd(){
          hal_link_pins("fault0.fault", "sserial0.fault");
          hal_link_pins("sserial0.connected", "fault0.cmd_ready");
          hal_link_pins("sserial0.out0", "fault0.brake_release");
+         hal_link_pins("sserial0.out1", "fault0.reset");
          hal_link_pins("rev1.out", "sserial0.pos_fb");
          //this breaks cmd rev...
          hal_link_pins("vel_int0.pos_out", "net0.cmd");
