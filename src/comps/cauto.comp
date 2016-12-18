@@ -40,7 +40,7 @@ RT(
    HT(
       moffset = PIN(mag_offset);
       GOTO(0);
-      STATE(0){
+      STATE(0){ // start
          iq = 0.0;
          id = 0.0;
          pos = minus(fbi, moffset + mo);
@@ -50,7 +50,7 @@ RT(
          }else{
          }
       }
-      STATE(1){
+      STATE(1){ // start phasing
          PIN(ready) = 0.0;
          id = PIN(cur);
          iq = 0.0;
@@ -59,7 +59,7 @@ RT(
          SLEEP(PIN(time));
          GOTO(2);
       }
-      STATE(2){
+      STATE(2){ // readout commutation offset
          PIN(ready) = 0.0;
          moffset = fbi;
          if(PIN(isabs) > 0.0){
@@ -70,7 +70,7 @@ RT(
          SLEEP(PIN(time) / 50.0);
          GOTO(3);
       }
-      STATE(3){
+      STATE(3){ // after phasing
          PIN(ready) = 1.0;
          iq = 0.0;
          id = 0.0;
