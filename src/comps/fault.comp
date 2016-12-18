@@ -98,7 +98,7 @@ MEM(int phased) = 0;
 
 RT(
    // reset fault
-   if(PIN(reset) > 0.0 || FALLING_EDGE(PIN(enable))){
+   if(PIN(reset) > 0.0){
       state = STATE_RESET;
    }
    else if(state == STATE_RESET){ // reset on falling edge
