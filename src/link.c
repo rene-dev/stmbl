@@ -292,7 +292,6 @@ int update_fb(){
          hal_set_pin("adc0.res_en", 1.0);
          hal_set_pin("adc0.rt_prio", 1.0);
          hal_set_pin("res0.rt_prio", 2.0);
-         hal_set_pin("pid0.vel_min", 0.3);//ignore small vel errors for noisy feedback
          break;
       case SINCOS:
          hal_link_pins("adc0.sin3", "enc_fb0.sin");
@@ -346,6 +345,7 @@ int update_cmd(){
    hal_set_pin("sserial0.rt_prio", -1.0);
    hal_set_pin("sserial0.frt_prio", -1.0);
    hal_set_pin("en0.rt_prio", -1.0);
+   hal_link_pins("conf0.fb_res", "reslimit0.res");
    switch((protocol_t)hal_get_pin("conf0.cmd_type")){
       case ENC:
          hal_link_pins("enc_cmd0.pos", "rev0.in");
@@ -382,13 +382,15 @@ int update_cmd(){
          hal_link_pins("sserial0.out0", "fault0.brake_release");
          hal_link_pins("rev1.out", "sserial0.pos_fb");
          //this breaks cmd rev...
-         hal_link_pins("vel_int0.pos_out", "net0.cmd");
+         hal_link_pins("vel_int0.pos_out", "reslimit0.pos_in");
+         hal_link_pins("reslimit0.pos_out", "net0.cmd");
          hal_link_pins("vel_int0.vel_out", "net0.cmd_d");
          hal_set_pin("vel_int0.wd", 0.002);//TODO: this depends on linuxcnc servo thread period
          //TODO: handle error of vel_int
          hal_set_pin("sserial0.rt_prio", 2.0);
          hal_set_pin("sserial0.frt_prio", 2.0);
          hal_set_pin("vel_int0.rt_prio", 2.1);
+         hal_set_pin("reslimit0.rt_prio", 2.2);
          break;
       default:
          return -1;

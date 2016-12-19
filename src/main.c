@@ -229,6 +229,7 @@ int main(void)
    #include "comps/psi.comp"
    #include "comps/var.comp"
    #include "comps/i2t.comp"
+   #include "comps/reslimit.comp"
    
 
 
