@@ -586,12 +586,12 @@ RT (
   PIN(pos_cmd) = scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
   uint8_t outpins = MEMU8(pd_table.output_pins.ptr->data_addr);
   PIN(out0) = outpins<<0 & 1 ? 1.0 : 0.0;
-  PIN(out1) = outpins<<1 & 1 ? 1.0 : 0.0;
+  PIN(out1) = outpins<<1 & 1 ? 1.0 : 0.0;//TODO: out1 not working
   PIN(out2) = outpins<<2 & 1 ? 1.0 : 0.0;
   PIN(out3) = outpins<<3 & 1 ? 1.0 : 0.0;
   uint8_t enable = MEMU8(pd_table.enable.ptr->data_addr);
   PIN(enable) = enable<<0 & 1 ? 1.0 : 0.0;
-  // todo: how to handle bidirectional pins properly?
+  //TODO: how to handle bidirectional pins properly?
 
   *((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
   
