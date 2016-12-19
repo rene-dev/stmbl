@@ -153,7 +153,8 @@ void link_pid(){
    hal_link_pins("rev1.out", "fault0.fb");
    hal_link_pins("fault0.start_offset", "cauto0.start_offset");
 
-   hal_link_pins("fault0.cur", "curpid0.max_cur");
+   hal_link_pins("fault0.scale", "curpid0.scale");
+   hal_link_pins("conf0.max_ac_cur", "curpid0.max_cur");
    hal_link_pins("hv0.error", "fault0.hv_error");
    // hal_link_pins("hv0.hv_fault", "fault0.hv_error"); //TODO
 
@@ -185,7 +186,6 @@ void link_pid(){
    hal_link_pins("conf0.max_vel", "pid0.max_usr_vel");
    hal_link_pins("conf0.max_acc", "pid0.max_usr_acc");
    hal_link_pins("conf0.max_force", "pid0.max_usr_torque");
-   hal_set_pin("net0.enable", 1.0);
    hal_link_pins("pid0.torque_cor_cmd", "t2c0.torque");
 
    // misc
@@ -380,7 +380,6 @@ int update_cmd(){
          hal_link_pins("fault0.fault", "sserial0.fault");
          hal_link_pins("sserial0.connected", "fault0.cmd_ready");
          hal_link_pins("sserial0.out0", "fault0.brake_release");
-         hal_link_pins("sserial0.out1", "fault0.reset");
          hal_link_pins("rev1.out", "sserial0.pos_fb");
          //this breaks cmd rev...
          hal_link_pins("vel_int0.pos_out", "net0.cmd");

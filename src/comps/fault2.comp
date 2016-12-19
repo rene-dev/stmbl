@@ -83,14 +83,14 @@ HAL_PIN(phase_on_start) = 1.0;
 
 HAL_PIN(brake_release) = 0.0;
 
-MEM(enum state_t state) = 0;
+MEM(enum state_t state) = DISABLED;
 
 MEM(enum fault_t fault) = NO_ERROR;
 
 MEM(uint32_t phased) = 0;
 
 RT(
-   if(PIN(phase_on_start) > 0.0){
+   if(PIN(phase_on_start) <= 0.0){
       phased = 1;
    }
    
@@ -102,6 +102,7 @@ RT(
             }
             else{
                state = ENABLED;
+               PIN(start_offset) = minus(PIN(fb), PIN(cmd));
             }
          }      
       break;
@@ -115,6 +116,7 @@ RT(
       case PHASING:
          if(RISING_EDGE(PIN(phase_ready))){
             state = ENABLED;
+            PIN(start_offset) = minus(PIN(fb), PIN(cmd));
          }
          
          if(PIN(en) <= 0.0){
@@ -123,7 +125,7 @@ RT(
       break;
          
       case SOFT_FAULT:
-         if(PIN(en) > 0.0){
+         if(PIN(en) <= 0.0){
             state = DISABLED;
          }
       break;
@@ -188,7 +190,7 @@ RT(
    scale = MIN(scale, SCALE(PIN(hv_temp), PIN(high_hv_temp), PIN(max_hv_temp)));
    scale = MIN(scale, SCALE(PIN(hv_volt), PIN(high_hv_volt), PIN(max_hv_volt)));
    scale = MIN(scale, SCALE(PIN(mot_temp), PIN(high_mot_temp), PIN(max_mot_temp)));
-   scale = MIN(scale, SCALE(PIN(dc_cur), PIN(high_dc_cur), PIN(max_dc_cur)));
+   scale = MIN(scale, SCALE(PIN(dc_cur), PIN(max_dc_cur) * 0.8, PIN(max_dc_cur))); // TODO PIN(high_dc_cur)
 
    PIN(dc_brake) = SCALE(PIN(hv_volt), PIN(max_hv_volt), PIN(high_hv_volt));
 
@@ -212,6 +214,8 @@ RT(
       case DISABLED:
          PIN(phase_start) = 0.0;
          PIN(mot_brake) = 0.0;
+         PIN(en_out) = 0.0;
+         PIN(en_pid) = 0.0;
          fault = NO_ERROR;
          scale = 0.0;
       break;
@@ -229,19 +233,23 @@ RT(
          PIN(phase_start) = 1.0;
          PIN(mot_brake) = PIN(phase_with_brake);
          fault = NO_ERROR;
+         PIN(en_pid) = 0.0;
          PIN(en_out) = 1.0;
-         PIN(start_offset) = minus(PIN(fb), PIN(cmd));
       break;
       
       case SOFT_FAULT:
          PIN(phase_start) = 0.0;
          PIN(mot_brake) = 0.0;
+         PIN(en_out) = 0.0;
+         PIN(en_pid) = 0.0;
          scale = 0.0;
       break;
       
       case HARD_FAULT:
          PIN(phase_start) = 0.0;
          PIN(mot_brake) = 0.0;
+         PIN(en_out) = 0.0;
+         PIN(en_pid) = 0.0;
          scale = 0.0;
       break;
    }

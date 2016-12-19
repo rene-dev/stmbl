@@ -16,6 +16,8 @@ HAL_PIN(ac_volt) = 0.0;
 HAL_PIN(dc_volt) = 0.0;
 HAL_PIN(max_cur) = 0.0;
 
+HAL_PIN(scale) = 0.0;
+
 HAL_PIN(rd) = 0.0;
 HAL_PIN(rq) = 0.0;
 HAL_PIN(ld) = 0.0;
@@ -50,8 +52,8 @@ RT(
    float kiq = rq * PIN(ki) / lq;
    float kind = PIN(kind);
 
-   float idc = LIMIT(PIN(id_cmd), PIN(max_cur));
-   float iqc = LIMIT(PIN(iq_cmd), PIN(max_cur));
+   float idc = LIMIT(PIN(id_cmd), PIN(max_cur) * PIN(scale));
+   float iqc = LIMIT(PIN(iq_cmd), PIN(max_cur) * PIN(scale));
 
    float id = PIN(id_fb);
    float iq = PIN(iq_fb);
