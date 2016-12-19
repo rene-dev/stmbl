@@ -2,27 +2,6 @@ HAL_COMP(fault);
 
 #define SCALE(value, high, max)  MIN(MAX(((max) - (value)) / ((max) - (high)), 0.0), 1.0)
 
-enum state_t{
-   DISABLED = 0,
-   ENABLED,
-   PHASING,
-   SOFT_FAULT,
-   HARD_FAULT
-};
-
-enum fault_t{
-   NO_ERROR = 0,
-   CMD_ERROR,
-   FB0_ERROR,
-   FB1_ERROR,
-   POS_ERROR,
-   SAT_ERROR,
-   HV_ERROR,
-   HV_TEMP_ERROR,
-   HV_VOLT_ERROR,
-   MOT_TEMP_ERROR,
-};
-
 HAL_PIN(en) = 0.0;
 HAL_PIN(state) = 0.0;
 HAL_PIN(fault) = 0.0;

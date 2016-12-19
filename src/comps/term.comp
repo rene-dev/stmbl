@@ -36,6 +36,7 @@ HAL_PIN(send_step) = 10.0;
 
 HAL_PIN(buf_use) = 0.0;
 
+HAL_PIN(state) = 0.0;
 HAL_PIN(fault) = 0.0;
 HAL_PIN(con) = 0.0;
 HAL_PIN(jogvel) = 10.0;
@@ -296,50 +297,67 @@ NRT(
    }
 
    void fault_sender(){
-     if(EDGE(PIN(fault))){
-       switch((int)PIN(fault)){
-         case STATE_DISABLED:
+     if(EDGE(PIN(state))){
+       switch((int)PIN(state)){
+         case DISABLED:
            printf("INFO: Disabled \n");
          break;
 
-         case STATE_RESET:
-           printf("INFO: Reset \n");
-         break;
-
-         case STATE_FB_ERROR:
-           printf("ERROR: Feedback \n");
-         break;
-
-         case STATE_SAT_ERROR:
-           printf("ERROR: Saturation \n");
-         break;
-
-         case STATE_OVR_CURR:
-           printf("ERROR: Overcurrent \n");
-         break;
-
-         case STATE_POS_ERROR:
-           printf("ERROR: Position \n");
-         break;
-
-         case STATE_OVR_TEMP:
-           printf("ERROR: Overtemperture \n");
-         break;
-
-         case STATE_OVR_VOLT:
-           printf("ERROR: Overvoltage \n");
-         break;
-
-         case STATE_ENABLED:
+         case ENABLED:
            printf("INFO: Enabled \n");
          break;
 
-         case STATE_PHASING:
-           printf("INFO: Phasing \n");
+         case PHASING:
+           printf("ERROR: Phasing \n");
          break;
-         
-         case STATE_HV_ERROR:
-            printf("ERROR: HV error. iramx fault, or no communication.\n");
+
+         case SOFT_FAULT:
+           printf("ERROR: Soft fault: ");
+           switch((int)PIN(fault)){
+             case NO_ERROR:
+               printf("no error\n");
+             break;
+             
+             case CMD_ERROR:
+               printf("CMD error\n");
+             break;
+             
+             case FB0_ERROR:
+               printf("FB0 error\n");
+             break;
+             
+             case FB1_ERROR:
+               printf("FB1 error\n");
+             break;
+             
+             case POS_ERROR:
+               printf("position error\n");
+             break;
+            
+             case SAT_ERROR:
+              printf("saturation error\n");
+             break;
+             
+             case HV_ERROR:
+               printf("HV error\n");
+             break;
+             
+             case HV_TEMP_ERROR:
+               printf("HV overtemperture\n");
+             break;
+             
+             case HV_VOLT_ERROR:
+               printf("HV volt error\n");
+             break;
+             
+             case MOT_TEMP_ERROR:
+               printf("Motor overtemperture\n");
+             break;
+          }
+         break;
+
+         case HARD_FAULT:
+           printf("ERROR: Hard fault: \n");
          break;
          
          default:

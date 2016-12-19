@@ -167,8 +167,9 @@ void link_pid(){
    hal_link_pins("net0.enable", "fault0.en");
 
    hal_link_pins("fault0.fault", "io0.fault");
-   hal_link_pins("fault0.state", "io0.led");
+   hal_link_pins("fault0.state", "io0.state");
 
+   hal_link_pins("fault0.state", "term0.state"); //sent state to terminal
    hal_link_pins("fault0.fault", "term0.fault"); //sent fault to terminal
    // cauto
 

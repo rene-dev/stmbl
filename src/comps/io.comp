@@ -1,8 +1,8 @@
 HAL_COMP(io);
 
 HAL_PIN(fan) = 0.0;
-HAL_PIN(red) = 0.0;
-HAL_PIN(green) = 0.0;
+HAL_PIN(state) = 0.0;
+HAL_PIN(fault) = 0.0;
 HAL_PIN(brake) = 0.0;
 
 INIT(
@@ -60,18 +60,47 @@ NRT(
    else
       GPIO_ResetBits(FAN_PORT, FAN_PIN);
 
-   if(PIN(red) > 0)
+   TIM8->CCR4 = (int)CLAMP(PIN(brake) * 8400, 0, TIM8->ARR - 1);
+
+   uint32_t red = 0;
+   uint32_t green = 0;
+   
+   switch((int)PIN(state)){
+      case DISABLED:
+         green = BLINK(1);
+         red = 0;
+      break;
+      
+      case ENABLED:
+         green = 1;
+         red = 0;
+      break;
+      
+      case PHASING:
+         green = 1;
+         red = 1;
+      break;
+      
+      case SOFT_FAULT:
+         green = 0;
+         red = BLINK((int)PIN(fault));
+      break;
+      
+      case HARD_FAULT:
+         red = BLINK((int)PIN(fault));
+         green = BLINK((int)PIN(fault));
+      break;      
+   }
+
+   if(red > 0)
       GPIO_SetBits(LED_R_PORT, LED_R_PIN);
    else
       GPIO_ResetBits(LED_R_PORT, LED_R_PIN);
 
-   if(PIN(green) > 0)
+   if(green > 0)
       GPIO_SetBits(LED_G_PORT, LED_G_PIN);
    else
       GPIO_ResetBits(LED_G_PORT, LED_G_PIN);
-
-   TIM8->CCR4 = (int)CLAMP(PIN(brake) * 8400, 0, TIM8->ARR - 1);
-
 );
 
 ENDCOMP;
