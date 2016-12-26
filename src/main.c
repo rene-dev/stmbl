@@ -222,7 +222,7 @@ int main(void)
    #include "comps/hv.comp"
 
    //other comps
-   #include "comps/fault2.comp"
+   #include "comps/fault.comp"
    #include "comps/term.comp"
    #include "comps/io.comp"
    #include "comps/uf.comp"
