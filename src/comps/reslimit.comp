@@ -6,7 +6,7 @@ HAL_PIN(pos_out) = 0.0;
 HAL_PIN(res) = 0.0;
 
 RT(
-   uint32_t r = ABS(PIN(res));
+   uint32_t r = ABS(PIN(res));//TODO: div by zero
    PIN(pos_out) = ((int)(PIN(pos_in) * r / 2.0 / M_PI + 0.5)) / (float)r * 2.0 * M_PI;
 );
 
