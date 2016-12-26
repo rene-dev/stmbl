@@ -2,6 +2,7 @@
 #include "eeprom.h"
 #include "crc16.h"
 #include "link.h"
+#include "main.h" // for Wait
 #include <stdio.h>
 
 uint16_t hal_conf_init(){
@@ -14,7 +15,7 @@ uint16_t hal_conf_init(){
 void hal_conf_save(){
    if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
       printf("cannot save while hal is running(run 'stop' command)\n");
-      return(-1);
+      return;
    }
    typedef union{
       float f;
@@ -45,7 +46,7 @@ void hal_conf_save(){
          if(elo != FLASH_COMPLETE || ehi != FLASH_COMPLETE){
             FLASH_Lock();
             printf("error writing to address %i: error: %i,%i\n",address,elo,ehi);
-            return -1;
+            return;
          }
          address+=2;
       }
@@ -56,7 +57,7 @@ void hal_conf_save(){
    if(elo != FLASH_COMPLETE){
       printf("error writing crc to address %i: error: %i\n",address,elo);
       FLASH_Lock();
-      return -1;
+      return;
    }
    FLASH_Lock();
    printf("flash save OK\n");

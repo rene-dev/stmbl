@@ -123,12 +123,12 @@ void link_pid(){
 
    // fault
    hal_link_pins("conf0.max_dc_cur", "fault0.max_dc_cur");
-   hal_link_pins("conf0.max_ac_cur", "fault0.max_ac_cur");
-   hal_link_pins("conf0.max_dc_volt", "fault0.max_dc_volt");
+   // hal_link_pins("conf0.max_ac_cur", "fault0.max_ac_cur");
+   hal_link_pins("conf0.max_dc_volt", "fault0.max_hv_volt");
    hal_link_pins("conf0.max_hv_temp", "fault0.max_hv_temp");
    hal_link_pins("conf0.max_motor_temp", "fault0.max_mot_temp");
    hal_link_pins("conf0.max_pos_error", "fault0.max_pos_error");
-   hal_link_pins("conf0.high_dc_volt", "fault0.high_dc_volt");
+   hal_link_pins("conf0.high_dc_volt", "fault0.high_hv_volt");
    hal_link_pins("conf0.high_hv_temp", "fault0.high_hv_temp");
    hal_link_pins("conf0.high_motor_temp", "fault0.high_mot_temp");
    hal_link_pins("conf0.low_dc_volt", "fault0.min_hv_volt");
@@ -169,8 +169,6 @@ void link_pid(){
    hal_link_pins("fault0.fault", "io0.fault");
    hal_link_pins("fault0.state", "io0.state");
 
-   hal_link_pins("fault0.state", "term0.state"); //sent state to terminal
-   hal_link_pins("fault0.fault", "term0.fault"); //sent fault to terminal
    // cauto
 
    hal_link_pins("conf0.fb_offset", "cauto0.mag_offset");
@@ -271,8 +269,8 @@ int update_fb(){
    hal_set_pin("enc_fb0.frt_prio", -1.0);
    hal_set_pin("res0.rt_prio", -1.0);
    hal_set_pin("encm0.rt_prio", -1.0);
-   hal_set_pin("encs0.rt_prio", -1.0);
-   hal_set_pin("yaskawa0.rt_prio", -1.0);
+   // hal_set_pin("encs0.rt_prio", -1.0);
+   // hal_set_pin("yaskawa0.rt_prio", -1.0);
    switch((protocol_t)hal_get_pin("conf0.fb_type")){
       case ENC:
          hal_link_pins("enc_fb0.pos", "rev1.in");
@@ -341,8 +339,8 @@ int update_fb(){
 int update_cmd(){
    hal_set_pin("enc_cmd0.rt_prio", -1.0);
    hal_set_pin("enc_cmd0.frt_prio", -1.0);
-   hal_set_pin("step_cmd0.rt_prio", -1.0);
-   hal_set_pin("step_cmd0.frt_prio", -1.0);
+   // hal_set_pin("step_cmd0.rt_prio", -1.0);
+   // hal_set_pin("step_cmd0.frt_prio", -1.0);
    hal_set_pin("sserial0.rt_prio", -1.0);
    hal_set_pin("sserial0.frt_prio", -1.0);
    hal_set_pin("en0.rt_prio", -1.0);

@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "usb_cdc.h"
+#include "main.h"
 
 GLOBAL_HAL_PIN(rt_time);
 GLOBAL_HAL_PIN(frt_time);
@@ -240,8 +241,6 @@ int main(void)
    HAL_PIN(fb_error) = 0.0;
    HAL_PIN(cmd_d) = 0.0;
    HAL_PIN(fb_d) = 0.0;
-   HAL_PIN(core_temp0) = 0.0;
-   HAL_PIN(core_temp1) = 0.0;
    HAL_PIN(motor_temp) = 0.0;
    HAL_PIN(rt_calc_time) = 0.0;
    HAL_PIN(frt_calc_time) = 0.0;
@@ -280,9 +279,9 @@ int main(void)
    HAL_PIN(cmd_unit) = 0.0;//pos,vel,torque
    HAL_PIN(cmd_rev) = 0.0;
    HAL_PIN(cmd_res) = 2000.0;
-   HAL_PIN(en_condition) = 0.0;
+   HAL_PIN(en_condition) = 0.0;//enable condition
    HAL_PIN(error_out) = 0.0;
-   HAL_PIN(pos_static) = 0.0;//track pos in disabled and error condition
+   HAL_PIN(pos_static) = 0.0;//track pos in disabled and error condition TODO: not implemented
 
    HAL_PIN(sin_offset) = 0.0;
    HAL_PIN(cos_offset) = 0.0;

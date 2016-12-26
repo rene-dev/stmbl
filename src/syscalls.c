@@ -67,9 +67,12 @@ ssize_t _read(int fd, void *ptr, size_t len)
 	return len;
 }
 
-
+//TODO: check if connected?
 int _write(int fd, const char *ptr, int len)
 {
+	if(!USB_CDC_is_connected()){
+	   return 0;
+	}
 	char *c = (char *) ptr;
 	(void) fd;
 	int sent = 0;

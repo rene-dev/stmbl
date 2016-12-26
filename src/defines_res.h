@@ -87,42 +87,6 @@
 #define FAN_PORT GPIOC
 #define FAN_IO_RCC RCC_AHB1Periph_GPIOC
 
-//states
-
-// state -10 = reset state, -6 = fb error, -5 = sat error, -4 = over current, -3 = pos_error, -2 = over temperature, -1 = over voltage, 0 = disabled, 1 = enabled, 2 = phasing
-// #define STATE_RESET -10
-// #define STATE_HV_ERROR -7
-// #define STATE_FB_ERROR -6
-// #define STATE_SAT_ERROR -5
-// #define STATE_OVR_CURR -4
-// #define STATE_POS_ERROR -3
-// #define STATE_OVR_TEMP -2
-// #define STATE_OVR_VOLT -1
-// #define STATE_DISABLED 0
-// #define STATE_ENABLED 1
-// #define STATE_PHASING 2
-
-enum state_t{
-   DISABLED = 0,
-   ENABLED,
-   PHASING,
-   SOFT_FAULT,
-   HARD_FAULT
-};
-
-enum fault_t{
-   NO_ERROR = 0,
-   CMD_ERROR,
-   FB0_ERROR,
-   FB1_ERROR,
-   POS_ERROR,
-   SAT_ERROR,
-   HV_ERROR,
-   HV_TEMP_ERROR,
-   HV_VOLT_ERROR,
-   MOT_TEMP_ERROR,
-};
-
 #ifdef TROLLER
 
 #define UART_DRV USART1
@@ -191,59 +155,59 @@ enum fault_t{
 
 #endif
 
-// i2c
-#define I2C I2C1
-#define I2C_RCC RCC_AHB1Periph_I2C1
-
-//// gpio
-#define I2C_SDA_PIN GPIO_Pin_9
-#define I2C_SDA_PORT GPIOB
-#define I2C_SDA_IO_RCC RCC_AHB1Periph_GPIOB
-#define I2C_SDA_PIN_SOURCE GPIO_PinSource9
-#define I2C_SDA_AF_SOURCE GPIO_AF_I2C1
-
-#define I2C_SCK_PIN GPIO_Pin_8
-#define I2C_SCK_PORT GPIOB
-#define I2C_SCK_IO_RCC RCC_AHB1Periph_GPIOB
-#define I2C_SCK_PIN_SOURCE GPIO_PinSource8
-#define I2C_SCK_AF_SOURCE GPIO_AF_I2C1
-
-// spi
-#define SPI SPI1
-#define SPI_RCC RCC_AHB1Periph_SPI1
-
-//// gpio
-#define SPI_MOSI_PIN GPIO_Pin_5
-#define SPI_MOSI_PORT GPIOB
-#define SPI_MOSI_IO_RCC RCC_AHB1Periph_GPIOB
-#define SPI_MOSI_PIN_SOURCE GPIO_PinSource5
-#define SPI_MOSI_AF_SOURCE GPIO_AF_SPI1
-
-#define SPI_MISO_PIN GPIO_Pin_4
-#define SPI_MISO_PORT GPIOB
-#define SPI_MISO_IO_RCC RCC_AHB1Periph_GPIOB
-#define SPI_MISO_PIN_SOURCE GPIO_PinSource4
-#define SPI_MISO_AF_SOURCE GPIO_AF_SPI1
-
-#define SPI_SCK_PIN GPIO_Pin_3
-#define SPI_SCK_PORT GPIOB
-#define SPI_SCK_IO_RCC RCC_AHB1Periph_GPIOB
-#define SPI_SCK_PIN_SOURCE GPIO_PinSource3
-#define SPI_SCK_AF_SOURCE GPIO_AF_SPI1
-
-// can
-#define CAN CAN1
-#define CAN_RCC RCC_AHB1Periph_CAN1
-
-//// gpio
-#define CAN_RX_PIN GPIO_Pin_8
-#define CAN_RX_PORT GPIOB
-#define CAN_RX_IO_RCC RCC_AHB1Periph_GPIOB
-#define CAN_RX_PIN_SOURCE GPIO_PinSource8
-#define CAN_RX_AF_SOURCE GPIO_AF_CAN1
-
-#define CAN_TX_PIN GPIO_Pin_9
-#define CAN_TX_PORT GPIOB
-#define CAN_TX_IO_RCC RCC_AHB1Periph_GPIOB
-#define CAN_TX_PIN_SOURCE GPIO_PinSource9
-#define CAN_TX_AF_SOURCE GPIO_AF_CAN1
+// // i2c
+// #define I2C I2C1
+// #define I2C_RCC RCC_AHB1Periph_I2C1
+//
+// //// gpio
+// #define I2C_SDA_PIN GPIO_Pin_9
+// #define I2C_SDA_PORT GPIOB
+// #define I2C_SDA_IO_RCC RCC_AHB1Periph_GPIOB
+// #define I2C_SDA_PIN_SOURCE GPIO_PinSource9
+// #define I2C_SDA_AF_SOURCE GPIO_AF_I2C1
+//
+// #define I2C_SCK_PIN GPIO_Pin_8
+// #define I2C_SCK_PORT GPIOB
+// #define I2C_SCK_IO_RCC RCC_AHB1Periph_GPIOB
+// #define I2C_SCK_PIN_SOURCE GPIO_PinSource8
+// #define I2C_SCK_AF_SOURCE GPIO_AF_I2C1
+//
+// // spi
+// #define SPI SPI1
+// #define SPI_RCC RCC_AHB1Periph_SPI1
+//
+// //// gpio
+// #define SPI_MOSI_PIN GPIO_Pin_5
+// #define SPI_MOSI_PORT GPIOB
+// #define SPI_MOSI_IO_RCC RCC_AHB1Periph_GPIOB
+// #define SPI_MOSI_PIN_SOURCE GPIO_PinSource5
+// #define SPI_MOSI_AF_SOURCE GPIO_AF_SPI1
+//
+// #define SPI_MISO_PIN GPIO_Pin_4
+// #define SPI_MISO_PORT GPIOB
+// #define SPI_MISO_IO_RCC RCC_AHB1Periph_GPIOB
+// #define SPI_MISO_PIN_SOURCE GPIO_PinSource4
+// #define SPI_MISO_AF_SOURCE GPIO_AF_SPI1
+//
+// #define SPI_SCK_PIN GPIO_Pin_3
+// #define SPI_SCK_PORT GPIOB
+// #define SPI_SCK_IO_RCC RCC_AHB1Periph_GPIOB
+// #define SPI_SCK_PIN_SOURCE GPIO_PinSource3
+// #define SPI_SCK_AF_SOURCE GPIO_AF_SPI1
+//
+// // can
+// #define CAN CAN1
+// #define CAN_RCC RCC_AHB1Periph_CAN1
+//
+// //// gpio
+// #define CAN_RX_PIN GPIO_Pin_8
+// #define CAN_RX_PORT GPIOB
+// #define CAN_RX_IO_RCC RCC_AHB1Periph_GPIOB
+// #define CAN_RX_PIN_SOURCE GPIO_PinSource8
+// #define CAN_RX_AF_SOURCE GPIO_AF_CAN1
+//
+// #define CAN_TX_PIN GPIO_Pin_9
+// #define CAN_TX_PORT GPIOB
+// #define CAN_TX_IO_RCC RCC_AHB1Periph_GPIOB
+// #define CAN_TX_PIN_SOURCE GPIO_PinSource9
+// #define CAN_TX_AF_SOURCE GPIO_AF_CAN1

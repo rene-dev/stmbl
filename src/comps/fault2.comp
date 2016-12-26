@@ -1,8 +1,7 @@
 HAL_COMP(fault);
 
-#define SCALE(value, high, max)  MIN(MAX(((max) - (value)) / ((max) - (high)), 0.0), 1.0)
-
 HAL_PIN(en) = 0.0;
+HAL_PIN(reset) = 0.0;
 HAL_PIN(state) = 0.0;
 HAL_PIN(fault) = 0.0;
 HAL_PIN(en_out) = 0.0;
@@ -60,11 +59,13 @@ HAL_PIN(mot_fan) = 0.0;
 HAL_PIN(phase_with_brake) = 1.0;
 HAL_PIN(phase_on_start) = 1.0;
 
+HAL_PIN(print) = 0.0;
+
 HAL_PIN(brake_release) = 0.0;
 
-MEM(enum state_t state) = DISABLED;
+MEM(state_t state) = DISABLED;
 
-MEM(enum fault_t fault) = NO_ERROR;
+MEM(fault_t fault) = NO_ERROR;
 
 MEM(uint32_t phased) = 0;
 
@@ -106,6 +107,10 @@ RT(
       case SOFT_FAULT:
          if(PIN(en) <= 0.0){
             state = DISABLED;
+         }else if(FALLING_EDGE(PIN(reset)) & (PIN(cmd_ready) > 0.0) & (PIN(fb0_ready) > 0.0) & (PIN(fb1_ready) > 0.0) & (PIN(hv_ready) > 0.0)){
+            //TODO: phasing
+            state = ENABLED;
+            PIN(start_offset) = minus(PIN(fb), PIN(cmd));
          }
       break;
       
@@ -241,7 +246,74 @@ RT(
       PIN(mot_brake) = 1.0;
    }
 );
+NRT(
+if(EDGE(state) || PIN(print) > 0.0){
+   PIN(print) = 0.0;
+   switch((state_t)state){
+      case DISABLED:
+      printf("INFO: Disabled \n");
+      break;
 
+      case ENABLED:
+      printf("INFO: Enabled \n");
+      break;
+
+      case PHASING:
+      printf("INFO: Phasing \n");
+      break;
+
+      case SOFT_FAULT:
+      printf("ERROR: Soft fault: ");
+      switch((fault_t)fault){
+         case NO_ERROR:
+         printf("no error\n");
+         break;
+        
+         case CMD_ERROR:
+         printf("CMD error\n");
+         break;
+        
+         case FB0_ERROR:
+         printf("FB0 error\n");
+         break;
+        
+         case FB1_ERROR:
+         printf("FB1 error\n");
+         break;
+        
+         case POS_ERROR:
+         printf("position error\n");
+         break;
+       
+         case SAT_ERROR:
+         printf("saturation error\n");
+         break;
+        
+         case HV_ERROR:
+         printf("HV error\n");
+         break;
+        
+         case HV_TEMP_ERROR:
+         printf("HV overtemperture\n");
+         break;
+        
+         case HV_VOLT_ERROR:
+         printf("HV volt error\n");
+         break;
+        
+         case MOT_TEMP_ERROR:
+         printf("Motor overtemperture\n");
+         break;
+      }
+      break;
+
+      case HARD_FAULT:
+      printf("ERROR: Hard fault: \n");
+      break;
+    
+      default:
+      break;
+   }
+}
+);
 ENDCOMP;
-
-//TODO curpid: sqrt(di^2+qi^2) auf max_ac_cur clampen

@@ -65,7 +65,7 @@ NRT(
    uint32_t red = 0;
    uint32_t green = 0;
    
-   switch((int)PIN(state)){
+   switch((state_t)PIN(state)){
       case DISABLED:
          green = BLINK(1);
          red = 0;
