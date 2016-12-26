@@ -2,19 +2,21 @@
 #include "eeprom.h"
 #include "crc16.h"
 #include "link.h"
+#include "main.h" // for Wait
 #include <stdio.h>
 
-void hal_conf_init(){
+uint16_t hal_conf_init(){
    FLASH_Unlock();
-   EE_Init();
+   uint16_t ret = EE_Init();
    FLASH_Lock();
+   return ret;
 }
 
 void hal_conf_save(){
-   // if(ee_error != FLASH_COMPLETE){
-   //    printf("flash error:%i\n",ee_error);
-   //    return;
-   // }
+   if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
+      printf("cannot save while hal is running(run 'stop' command)\n");
+      return;
+   }
    typedef union{
       float f;
       uint16_t byte[2];
@@ -42,8 +44,9 @@ void hal_conf_save(){
          elo = EE_WriteVariable(address,param.byte[0]);
          ehi = EE_WriteVariable(address+1,param.byte[1]);
          if(elo != FLASH_COMPLETE || ehi != FLASH_COMPLETE){
-            printf("error writing to %i: error%i,%i\n",address,elo,ehi);
-            break;
+            FLASH_Lock();
+            printf("error writing to address %i: error: %i,%i\n",address,elo,ehi);
+            return;
          }
          address+=2;
       }
@@ -52,19 +55,19 @@ void hal_conf_save(){
    crc = crc16_finalize(crc);
    elo = EE_WriteVariable(address, crc);
    if(elo != FLASH_COMPLETE){
-      printf("error writing crc to %i: error%i\n",address,elo);
+      printf("error writing crc to address %i: error: %i\n",address,elo);
+      FLASH_Lock();
+      return;
    }
    FLASH_Lock();
-   printf("done\n");
+   printf("flash save OK\n");
 }
 
 int hal_conf_load(){
    if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
       return(-4);
    }
-   // if(ee_error != FLASH_COMPLETE){
-   //    return -1;
-   // }
+
    typedef union{
       float f;
       uint16_t byte[2];
@@ -93,6 +96,7 @@ int hal_conf_load(){
             param.byte[1] = hi;
             hal.hal_pins[i]->value = param.f;
          }else{
+            printf("error reading address %i: %i,%i\n",address,elo,ehi);
             return -3;
          }
          address+=2;
@@ -101,6 +105,7 @@ int hal_conf_load(){
    }
    elo = EE_ReadVariable(address,&lo);
    if(elo != 0){
+      printf("error reading crc from address %i: %i\n",address,elo);
       return -3;
    }
    crc = crc16_finalize(crc);

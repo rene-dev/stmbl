@@ -25,7 +25,8 @@
 //global hal struct
 hal_struct_t hal;
 
-char* itoa(int i){
+//TODO: only works for single positive digit
+char* hal_itoa(int i){
   hal.tmp[0] = (i % 10) + '0';
   hal.tmp[1] = '\0';
   return(hal.tmp);
@@ -210,9 +211,10 @@ void hal_stop_frt(){
    hal.frt_state = FRT_STOP;
 }
 
+//TODO: calculate and reduce name length...
 void hal_init_pin(hal_name_t name, hal_pin_t* pin, float value){
   strncpy(pin->name, hal.comp_types[hal.comp_type], HAL_NAME_LENGTH);
-  strncat(pin->name, itoa(hal.comp_types_counter[hal.comp_type]), HAL_NAME_LENGTH);
+  strncat(pin->name, hal_itoa(hal.comp_types_counter[hal.comp_type]), HAL_NAME_LENGTH);
   strncat(pin->name, ".", HAL_NAME_LENGTH);
   strncat(pin->name, name, HAL_NAME_LENGTH);
   pin->value = value;

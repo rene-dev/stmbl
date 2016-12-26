@@ -36,6 +36,7 @@ extern "C" {
 #define RAD(a) ((a) * 180.0 / M_PI)
 #define SIGN(a) (((a) < 0.0) ? (-1.0) : (((a) > 0.0) ? (1.0) : (0.0)))
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+#define SCALE(value, high, max)  MIN(MAX(((max) - (value)) / ((max) - (high)), 0.0), 1.0)
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
@@ -49,6 +50,7 @@ extern "C" {
 
 //TODO: change type to typeof()
 //TODO: change __old_val__ to something more useful 
+
 #define RISING_EDGE(sig)\
 ({static float __old_val__ = 0.0; uint8_t ret = (sig) > __old_val__; __old_val__ = (sig); ret;})
 

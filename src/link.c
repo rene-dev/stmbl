@@ -8,6 +8,7 @@ void link_ac(){
    hal_set_pin("pmsm_limits0.rt_prio", 12.0);
    hal_set_pin("idq0.rt_prio", 13.0);
    hal_set_pin("dq0.rt_prio", 14.1);
+   hal_set_pin("i2t0.rt_prio", 15.0);
 
    // t2c
    hal_link_pins("conf0.polecount", "t2c0.polecount");
@@ -51,10 +52,20 @@ void link_ac(){
    hal_link_pins("hv0.pwm_volt", "pmsm_limits0.ac_volt");
    hal_link_pins("pmsm0.indq", "pmsm_limits0.indq");
    hal_link_pins("pmsm0.iq", "pmsm_limits0.iq");
-   hal_link_pins("pmsm_limits0.next_max_torque", "pid0.max_torque");
-   hal_link_pins("pmsm_limits0.next_min_torque", "pid0.min_torque");
+   hal_link_pins("pmsm_limits0.max_torque", "pid0.max_torque");
+   hal_link_pins("pmsm_limits0.min_torque", "pid0.min_torque");
    hal_link_pins("pmsm_limits0.abs_max_vel", "pid0.max_vel");
-
+   
+   // i2t
+   hal_link_pins("conf0.r", "i2t0.mot_res");
+   hal_link_pins("conf0.psi", "i2t0.mot_psi");
+   hal_link_pins("conf0.max_motor_temp", "i2t0.mot_max_temp");
+   hal_link_pins("pmsm0.id", "i2t0.id");
+   hal_link_pins("pmsm0.iq", "i2t0.iq");
+   // hal_link_pins("conf0.max_ac_cur", "i2t0.mot_cont_cur");
+   // hal_link_pins("i2t0.mot_temp", "fault0.motor_temp");
+   hal_link_pins("fault0.mot_brake", "i2t0.brake");
+   
    //troller only
 #ifdef TROLLER
    hal_link_pins("conf0.polecount", "dq0.polecount");
@@ -89,7 +100,7 @@ void link_pid(){
    hal_link_pins("conf0.max_vel", "stp0.max_vel");
    hal_link_pins("conf0.max_acc", "stp0.max_acc");
    hal_link_pins("rev0.out", "vel0.pos_in");
-   hal_link_pins("fault0.enable_pid", "vel0.en");
+   hal_link_pins("fault0.en_pid", "vel0.en");
    hal_link_pins("vel0.vel", "net0.cmd_d");
    hal_set_pin("vel0.w", 500.0);
    hal_link_pins("net0.cmd","pid0.pos_ext_cmd");
@@ -99,7 +110,7 @@ void link_pid(){
    hal_link_pins("conf0.fb_rev", "rev1.rev");
 
    hal_link_pins("rev1.out", "vel1.pos_in");
-   hal_link_pins("fault0.enable_pid", "vel1.en");
+   hal_link_pins("fault0.en_pid", "vel1.en");
    hal_link_pins("vel1.pos_out", "cauto0.fb_in");
 
    hal_link_pins("conf0.j", "vel1.j");
@@ -112,57 +123,52 @@ void link_pid(){
 
    // fault
    hal_link_pins("conf0.max_dc_cur", "fault0.max_dc_cur");
-   hal_link_pins("conf0.max_ac_cur", "fault0.max_ac_cur");
-   hal_link_pins("conf0.max_dc_volt", "fault0.max_dc_volt");
+   // hal_link_pins("conf0.max_ac_cur", "fault0.max_ac_cur");
+   hal_link_pins("conf0.max_dc_volt", "fault0.max_hv_volt");
    hal_link_pins("conf0.max_hv_temp", "fault0.max_hv_temp");
-   hal_link_pins("conf0.max_core_temp", "fault0.max_core_temp");
-   hal_link_pins("conf0.max_motor_temp", "fault0.max_motor_temp");
+   hal_link_pins("conf0.max_motor_temp", "fault0.max_mot_temp");
    hal_link_pins("conf0.max_pos_error", "fault0.max_pos_error");
-   hal_link_pins("conf0.high_dc_volt", "fault0.high_dc_volt");
+   hal_link_pins("conf0.high_dc_volt", "fault0.high_hv_volt");
    hal_link_pins("conf0.high_hv_temp", "fault0.high_hv_temp");
-   hal_link_pins("conf0.high_motor_temp", "fault0.high_motor_temp");
-   hal_link_pins("conf0.low_dc_volt", "fault0.low_dc_volt");
+   hal_link_pins("conf0.high_motor_temp", "fault0.high_mot_temp");
+   hal_link_pins("conf0.low_dc_volt", "fault0.min_hv_volt");
    hal_link_pins("conf0.fan_hv_temp", "fault0.fan_hv_temp");
-   hal_link_pins("conf0.fan_core_temp", "fault0.fan_core_temp");
-   hal_link_pins("conf0.fan_motor_temp", "fault0.fan_motor_temp");
+   hal_link_pins("conf0.fan_motor_temp", "fault0.fan_mot_temp");
    hal_link_pins("conf0.autophase", "fault0.phase_on_start");
    hal_link_pins("conf0.max_sat", "fault0.max_sat");
 
-   hal_set_pin("fault0.reset", 0.0);
 
    hal_link_pins("fault0.phase_start", "cauto0.start");
    hal_link_pins("cauto0.ready", "fault0.phase_ready");
 
    hal_link_pins("pid0.pos_error", "fault0.pos_error");
    hal_link_pins("pid0.saturated", "fault0.sat");
-   hal_link_pins("hv0.dc_volt", "fault0.dc_volt");
+   hal_link_pins("hv0.dc_volt", "fault0.hv_volt");
    hal_link_pins("hv0.hv_temp", "fault0.hv_temp");
-   hal_link_pins("net0.core_temp0", "fault0.core_temp0");
-   hal_link_pins("net0.core_temp1", "fault0.core_temp1");
-   hal_link_pins("net0.motor_temp", "fault0.motor_temp");
+   hal_link_pins("net0.motor_temp", "fault0.mot_temp");
    hal_link_pins("hv0.dc_cur", "fault0.dc_cur");
-   hal_link_pins("net0.fb_error", "fault0.fb_error");
+   hal_link_pins("net0.fb_error", "fault0.fb0_error");
+   hal_link_pins("net0.fb_error", "fault0.fb1_error");
    hal_link_pins("net0.cmd", "fault0.cmd");
    hal_link_pins("rev1.out", "fault0.fb");
    hal_link_pins("fault0.start_offset", "cauto0.start_offset");
 
-   hal_link_pins("fault0.cur", "curpid0.max_cur");
-   hal_link_pins("hv0.error", "fault0.hv_no_comms");
-   hal_link_pins("hv0.hv_fault", "fault0.hv_error");
+   hal_link_pins("fault0.scale", "curpid0.scale");
+   hal_link_pins("conf0.max_ac_cur", "curpid0.max_cur");
+   hal_link_pins("hv0.error", "fault0.hv_error");
+   // hal_link_pins("hv0.hv_fault", "fault0.hv_error"); //TODO
 
-   hal_link_pins("fault0.brake", "io0.brake");
+   hal_link_pins("fault0.mot_brake", "io0.brake");
    hal_link_pins("fault0.hv_fan", "io0.fan");
 
-   //TODO: merge enable_out and enable_pid
-   hal_link_pins("fault0.enable_out", "hv0.enable");
-   hal_link_pins("fault0.enable_pid", "pid0.enable");
+   hal_link_pins("fault0.en_out", "hv0.enable");
+   hal_link_pins("fault0.en_pid", "pid0.enable");
 
-   hal_link_pins("net0.enable", "fault0.enable");
+   hal_link_pins("net0.enable", "fault0.en");
 
-   hal_link_pins("fault0.led_green", "io0.green");
-   hal_link_pins("fault0.led_red", "io0.red");
+   hal_link_pins("fault0.fault", "io0.fault");
+   hal_link_pins("fault0.state", "io0.state");
 
-   hal_link_pins("fault0.state", "term0.fault"); //sent fault to terminal
    // cauto
 
    hal_link_pins("conf0.fb_offset", "cauto0.mag_offset");
@@ -171,21 +177,14 @@ void link_pid(){
 
    // pid
    hal_link_pins("conf0.j", "pid0.j");
-   hal_link_pins("conf0.p", "pid0.p");
+   hal_link_pins("conf0.g", "pid0.g");
    hal_link_pins("conf0.pos_p", "pid0.pos_p");
    hal_link_pins("conf0.vel_p", "pid0.vel_p");
-   hal_link_pins("conf0.acc_p", "pid0.acc_p");
-   hal_link_pins("conf0.acc_pi", "pid0.acc_pi");
+   hal_link_pins("conf0.vel_i", "pid0.vel_i");
+   hal_link_pins("conf0.vel_g", "pid0.vel_g");
    hal_link_pins("conf0.max_vel", "pid0.max_usr_vel");
    hal_link_pins("conf0.max_acc", "pid0.max_usr_acc");
    hal_link_pins("conf0.max_force", "pid0.max_usr_torque");
-   hal_set_pin("pid0.pos_lp", 4000.0);
-   hal_set_pin("pid0.vel_lp", 4000.0);
-   hal_set_pin("pid0.acc_lp", 4000.0);
-   hal_set_pin("pid0.torque_ff", 1.0);
-   hal_set_pin("pid0.vel_ff", 1.0);
-   hal_set_pin("pid0.acc_ff", 1.0);
-   hal_set_pin("net0.enable", 1.0);
    hal_link_pins("pid0.torque_cor_cmd", "t2c0.torque");
 
    // misc
@@ -215,7 +214,7 @@ void link_simplepid(){
    hal_link_pins("net0.cmd_d", "ypid0.vel_ext_cmd");
    hal_link_pins("net0.fb", "ypid0.pos_fb");
    hal_link_pins("net0.fb_d", "ypid0.vel_fb");
-   hal_link_pins("fault0.enable_pid", "ypid0.enable");
+   hal_link_pins("fault0.en_pid", "ypid0.enable");
    hal_link_pins("conf0.pos_p", "ypid0.pos_p");
    hal_link_pins("conf0.max_vel", "ypid0.max_vel");
    hal_link_pins("conf0.max_acc", "ypid0.max_acc");
@@ -270,14 +269,15 @@ int update_fb(){
    hal_set_pin("enc_fb0.frt_prio", -1.0);
    hal_set_pin("res0.rt_prio", -1.0);
    hal_set_pin("encm0.rt_prio", -1.0);
-   hal_set_pin("encs0.rt_prio", -1.0);
-   hal_set_pin("yaskawa0.rt_prio", -1.0);
+   // hal_set_pin("encs0.rt_prio", -1.0);
+   // hal_set_pin("yaskawa0.rt_prio", -1.0);
    switch((protocol_t)hal_get_pin("conf0.fb_type")){
       case ENC:
          hal_link_pins("enc_fb0.pos", "rev1.in");
          hal_link_pins("conf0.fb_res", "enc_fb0.res");
          hal_set_pin("enc_fb0.rt_prio", 2.0);
          hal_set_pin("enc_fb0.frt_prio", 1.0);
+         hal_link_pins("enc_fb0.isabs", "cauto0.isabs");
          // hal_set_pin("pderiv1.frt_prio", 2.0);
          // hal_set_pin("pderiv1.rt_prio", 5.0);
          break;
@@ -291,7 +291,6 @@ int update_fb(){
          hal_set_pin("adc0.res_en", 1.0);
          hal_set_pin("adc0.rt_prio", 1.0);
          hal_set_pin("res0.rt_prio", 2.0);
-         hal_set_pin("pid0.vel_min", 0.3);//ignore small vel errors for noisy feedback
          break;
       case SINCOS:
          hal_link_pins("adc0.sin3", "enc_fb0.sin");
@@ -340,11 +339,12 @@ int update_fb(){
 int update_cmd(){
    hal_set_pin("enc_cmd0.rt_prio", -1.0);
    hal_set_pin("enc_cmd0.frt_prio", -1.0);
-   hal_set_pin("step_cmd0.rt_prio", -1.0);
-   hal_set_pin("step_cmd0.frt_prio", -1.0);
+   // hal_set_pin("step_cmd0.rt_prio", -1.0);
+   // hal_set_pin("step_cmd0.frt_prio", -1.0);
    hal_set_pin("sserial0.rt_prio", -1.0);
    hal_set_pin("sserial0.frt_prio", -1.0);
    hal_set_pin("en0.rt_prio", -1.0);
+   hal_link_pins("conf0.fb_res", "reslimit0.res");
    switch((protocol_t)hal_get_pin("conf0.cmd_type")){
       case ENC:
          hal_link_pins("enc_cmd0.pos", "rev0.in");
@@ -378,15 +378,18 @@ int update_cmd(){
          hal_link_pins("sserial0.enable", "net0.enable");
          hal_link_pins("fault0.fault", "sserial0.fault");
          hal_link_pins("sserial0.connected", "fault0.cmd_ready");
+         hal_link_pins("sserial0.out0", "fault0.brake_release");
          hal_link_pins("rev1.out", "sserial0.pos_fb");
          //this breaks cmd rev...
-         hal_link_pins("vel_int0.pos_out", "net0.cmd");
+         hal_link_pins("vel_int0.pos_out", "reslimit0.pos_in");
+         hal_link_pins("reslimit0.pos_out", "net0.cmd");
          hal_link_pins("vel_int0.vel_out", "net0.cmd_d");
          hal_set_pin("vel_int0.wd", 0.002);//TODO: this depends on linuxcnc servo thread period
          //TODO: handle error of vel_int
          hal_set_pin("sserial0.rt_prio", 2.0);
          hal_set_pin("sserial0.frt_prio", 2.0);
          hal_set_pin("vel_int0.rt_prio", 2.1);
+         hal_set_pin("reslimit0.rt_prio", 2.2);
          break;
       default:
          return -1;

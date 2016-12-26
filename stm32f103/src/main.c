@@ -57,14 +57,14 @@ uint32_t w_error = 0;
 #define TOFLOAT32(a) ((uint32_t)((a) / 65536))
 
 #define TEMP_RES 32
-#define SCALE (TEMP_RES / ARES)
+#define TEMP_SCALE (TEMP_RES / ARES)
 int16_t temp_buf[TEMP_RES];
 
 float tempb(float i){
-	unsigned int x = (int)(i * SCALE);
+	unsigned int x = (int)(i * TEMP_SCALE);
 	float a = TOFLOAT(temp_buf[x]);
 	float b = TOFLOAT(temp_buf[x + 1]);
-	return(a + (b - a) * (i * SCALE - x));
+	return(a + (b - a) * (i * TEMP_SCALE - x));
 }
 
 volatile uint32_t timeout = 99999;
@@ -474,7 +474,7 @@ int main(void)
 	packet_from_hv.head.key = 0;
 #ifndef TROLLER
 	for(int i = 0; i < TEMP_RES; i++){
-		temp_buf[i] = TOFIXED(TEMP(i / SCALE));
+		temp_buf[i] = TOFIXED(TEMP(i / TEMP_SCALE));
 	}
 #endif
 	while(1){

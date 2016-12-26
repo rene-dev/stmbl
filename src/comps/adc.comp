@@ -40,7 +40,7 @@ RT(
    float s;
    float c;
    
-   uint32_t *ADC_DMA_Buffer;
+   volatile uint32_t *ADC_DMA_Buffer;
 
    // if(DMA_GetCurrentMemoryTarget(DMA2_Stream0) == 0){
    //    ADC_DMA_Buffer = ADC_DMA_Buffer1;

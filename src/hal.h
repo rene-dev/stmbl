@@ -167,6 +167,8 @@ extern uint32_t hal_get_systick_value();
 extern uint32_t hal_get_systick_reload();
 extern uint32_t hal_get_systick_freq();
 
+char* hal_itoa(int i);
+
 #define HAL_COMP(type)                  \
 {                                   \
   static hal_comp_t self; \
@@ -190,6 +192,16 @@ extern uint32_t hal_get_systick_freq();
   hal_init_pin(#name, &name##_hal_pin, 0.0);  \
   (name##_hal_pin.value)
 
+//TODO: clamp loads of stuff, like count... check length...
+#define HAL_PIN_ARRAY(name,count) \
+  static hal_pin_t name##_hal_pin[count]; \
+  for(uint32_t i = 0; i < count; i++){ \
+    char pinname[HAL_NAME_LENGTH]; \
+    strncpy(pinname,#name,HAL_NAME_LENGTH); \
+    strncat(pinname,hal_itoa(i),HAL_NAME_LENGTH); \
+    hal_init_pin(pinname, &name##_hal_pin[i], 0.0); \
+  }
+
 #define GLOBAL_HAL_PIN(name)               \
   volatile hal_pin_t name##_hal_pin;
 
@@ -197,6 +209,9 @@ extern uint32_t hal_get_systick_freq();
 
 #define PIN(name)                       \
   (name##_hal_pin.source->source->value)
+
+#define PIN_ARRAY(name,index)                       \
+  (name##_hal_pin[index].source->source->value)
 
 #define INIT(func)                    \
  self.nrt_init = ({ void function(){func} function;});
@@ -273,6 +288,7 @@ if(ht_time_count < (time)){ \
 } \
 jump_label_pointer = jump_label_pointer_old;
 
+  //TODO: rename HAL_ENDCOMP
 #define ENDCOMP \
   self.hal_pin_count = hal.hal_pin_count - self.hal_pin_start_index; \
   hal_add_comp(&self); \

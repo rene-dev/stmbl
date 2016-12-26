@@ -98,7 +98,7 @@ MEM(int phased) = 0;
 
 RT(
    // reset fault
-   if(PIN(reset) > 0.0 || FALLING_EDGE(PIN(enable))){
+   if(PIN(reset) > 0.0){
       state = STATE_RESET;
    }
    else if(state == STATE_RESET){ // reset on falling edge
@@ -145,8 +145,8 @@ RT(
 
    float max_hv_temp = MAX(PIN(max_hv_temp), 1.0);
    float high_hv_temp = MIN(PIN(high_hv_temp), max_hv_temp - 0.1);
-   float max_core_temp = MIN(PIN(max_core_temp), 1.0);
-   float max_motor_temp = MIN(PIN(max_motor_temp), 1.0);
+   float max_core_temp = MAX(PIN(max_core_temp), 1.0);
+   float max_motor_temp = MAX(PIN(max_motor_temp), 1.0);
    float high_motor_temp = MIN(PIN(high_motor_temp), max_motor_temp - 0.1);
 
    float max_ac_cur = PIN(max_ac_cur);

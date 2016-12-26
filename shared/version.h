@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-struct version_info {
+struct version_info {//TODO: typedef
     // set at link-time by add-version-info.py
     //
     uint32_t    image_crc;

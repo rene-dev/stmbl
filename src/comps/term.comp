@@ -1,59 +1,23 @@
 HAL_COMP(term);
 
-HAL_PIN(wave0) = 0.0;
-HAL_PIN(gain0) = 10.0;
-HAL_PIN(offset0) = 0.0;
+#define TERM_NUM_WAVES 8
 
-HAL_PIN(wave1) = 0.0;
-HAL_PIN(gain1) = 10.0;
-HAL_PIN(offset1) = 0.0;
-
-HAL_PIN(wave2) = 0.0;
-HAL_PIN(gain2) = 10.0;
-HAL_PIN(offset2) = 0.0;
-
-HAL_PIN(wave3) = 0.0;
-HAL_PIN(gain3) = 10.0;
-HAL_PIN(offset3) = 0.0;
-
-HAL_PIN(wave4) = 0.0;
-HAL_PIN(gain4) = 10.0;
-HAL_PIN(offset4) = 0.0;
-
-HAL_PIN(wave5) = 0.0;
-HAL_PIN(gain5) = 10.0;
-HAL_PIN(offset5) = 0.0;
-
-HAL_PIN(wave6) = 0.0;
-HAL_PIN(gain6) = 10.0;
-HAL_PIN(offset6) = 0.0;
-
-HAL_PIN(wave7) = 0.0;
-HAL_PIN(gain7) = 10.0;
-HAL_PIN(offset7) = 0.0;
+HAL_PIN_ARRAY(wave, TERM_NUM_WAVES);
+HAL_PIN_ARRAY(gain, TERM_NUM_WAVES);
+HAL_PIN_ARRAY(offset, TERM_NUM_WAVES);
 
 HAL_PIN(send_step) = 10.0;
 
 HAL_PIN(buf_use) = 0.0;
 
-HAL_PIN(fault) = 0.0;
 HAL_PIN(con) = 0.0;
 HAL_PIN(jogvel) = 10.0;
 HAL_PIN(jogpos) = 0.0;
 HAL_PIN(jogging) = 0.0;
 
-HAL_PIN(tim2_rv) = 420.0;
-
 #define TERM_BUF_SIZE 24
 
-MEM(float w0[TERM_BUF_SIZE]);
-MEM(float w1[TERM_BUF_SIZE]);
-MEM(float w2[TERM_BUF_SIZE]);
-MEM(float w3[TERM_BUF_SIZE]);
-MEM(float w4[TERM_BUF_SIZE]);
-MEM(float w5[TERM_BUF_SIZE]);
-MEM(float w6[TERM_BUF_SIZE]);
-MEM(float w7[TERM_BUF_SIZE]);
+MEM(float wave_buf[TERM_BUF_SIZE][TERM_NUM_WAVES]);
 
 MEM(unsigned int read_pos) = 0;
 MEM(unsigned int write_pos) = 0;
@@ -63,7 +27,6 @@ MEM(volatile float jog_timeout) = 0.0;
 MEM(volatile float jog_en) = 0.0;
 
 INIT(
-   hal_conf_init();
    if(hal_conf_load()){//flash load error
       hal.hal_state = CONFIG_LOAD_ERROR;
    }
@@ -77,16 +40,11 @@ RT(
    }else{
       PIN(jogging) = 0.0;
    }
-   //TIM2->ARR = (int)CLAMP(PIN(tim2_rv), 1, 1500);
+
    if(send_counter++ >= PIN(send_step) - 1){
-      w0[write_pos] = PIN(wave0);
-      w1[write_pos] = PIN(wave1);
-      w2[write_pos] = PIN(wave2);
-      w3[write_pos] = PIN(wave3);
-      w4[write_pos] = PIN(wave4);
-      w5[write_pos] = PIN(wave5);
-      w6[write_pos] = PIN(wave6);
-      w7[write_pos] = PIN(wave7);
+      for(int i = 0; i < TERM_NUM_WAVES; i++){
+         wave_buf[write_pos][i] = PIN_ARRAY(wave,i);
+      }
 
       write_pos++;
       write_pos %= TERM_BUF_SIZE;
@@ -96,7 +54,7 @@ RT(
 
 NRT(
    
-   void print_version_info(struct version_info* v){
+   void print_version_info(const volatile struct version_info* v){
       printf(
           "%s v%i.%i.%i %s\n",
           v->product_name,
@@ -255,11 +213,23 @@ NRT(
          }else if(ret == -3){
             printf("flash read error\n");
          }else if(ret == -4){
-            printf("hal running error\n");
+            printf("cannot load while hal is running(run 'stop' command)\n");
          }else if(ret == -5){
             printf("CRC error\n");
          }else{
             printf("done\n");
+         }
+      }
+      else if(!strcmp(s, "initflash")){//TODO: command to format param sectors, init sometimes fails...
+         if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
+            printf("cannot init flash while hal is running(run 'stop' command)\n");
+         }else{
+            uint16_t ret = hal_conf_init();
+            if(ret == FLASH_COMPLETE){
+               printf("flash init OK. now do load or save\n");
+            }else{
+               printf("init error: %i\n",ret);  
+            }
          }
       }
       else if(!strcmp(s, "getconf")){
@@ -284,112 +254,22 @@ NRT(
       }
    }
 
-   void fault_sender(){
-     if(EDGE(PIN(fault))){
-       switch((int)PIN(fault)){
-         case STATE_DISABLED:
-           printf("INFO: Disabled \n");
-         break;
-
-         case STATE_RESET:
-           printf("INFO: Reset \n");
-         break;
-
-         case STATE_FB_ERROR:
-           printf("ERROR: Feedback \n");
-         break;
-
-         case STATE_SAT_ERROR:
-           printf("ERROR: Saturation \n");
-         break;
-
-         case STATE_OVR_CURR:
-           printf("ERROR: Overcurrent \n");
-         break;
-
-         case STATE_POS_ERROR:
-           printf("ERROR: Position \n");
-         break;
-
-         case STATE_OVR_TEMP:
-           printf("ERROR: Overtemperture \n");
-         break;
-
-         case STATE_OVR_VOLT:
-           printf("ERROR: Overvoltage \n");
-         break;
-
-         case STATE_ENABLED:
-           printf("INFO: Enabled \n");
-         break;
-
-         case STATE_PHASING:
-           printf("INFO: Phasing \n");
-         break;
-         
-         case STATE_HV_ERROR:
-            printf("ERROR: HV error. iramx fault, or no communication.\n");
-         break;
-         
-         default:
-         break;
-       }
-     }
-   }
-
-
-   int e = 0;
+   int tmp = 0;
    unsigned char buf[8 + 2];
 
    buf[0] = 255;
    buf[8 + 1] = 0;
-
-   float o0 = PIN(offset0);
-   float o1 = PIN(offset1);
-   float o2 = PIN(offset2);
-   float o3 = PIN(offset3);
-   float o4 = PIN(offset4);
-   float o5 = PIN(offset5);
-   float o6 = PIN(offset6);
-   float o7 = PIN(offset7);
-   float g0 = PIN(gain0);
-   float g1 = PIN(gain1);
-   float g2 = PIN(gain2);
-   float g3 = PIN(gain3);
-   float g4 = PIN(gain4);
-   float g5 = PIN(gain5);
-   float g6 = PIN(gain6);
-   float g7 = PIN(gain7);
-
 
    unsigned int wp = write_pos;
    unsigned int bc = 0;
 
    while(read_pos != wp){
       bc++;
-      e = (w0[read_pos] + o0) * g0 + 128;
-      buf[1] = CLAMP(e,1,254);
-
-      e = (w1[read_pos] + o1) * g1 + 128;
-      buf[2] = CLAMP(e,1,254);
-
-      e = (w2[read_pos] + o2) * g2 + 128;
-      buf[3] = CLAMP(e,1,254);
-
-      e = (w3[read_pos] + o3) * g3 + 128;
-      buf[4] = CLAMP(e,1,254);
-
-      e = (w4[read_pos] + o4) * g4 + 128;
-      buf[5] = CLAMP(e,1,254);
-
-      e = (w5[read_pos] + o5) * g5 + 128;
-      buf[6] = CLAMP(e,1,254);
-
-      e = (w6[read_pos] + o6) * g6 + 128;
-      buf[7] = CLAMP(e,1,254);
-
-      e = (w7[read_pos] + o7) * g7 + 128;
-      buf[8] = CLAMP(e,1,254);
+      
+      for(int i = 0; i < TERM_NUM_WAVES; i++){
+         tmp = (wave_buf[read_pos][i] + PIN_ARRAY(offset,i)) * PIN_ARRAY(gain,i) + 128;
+         buf[i+1] = CLAMP(tmp,1,254);
+      }
 
       read_pos++;
       read_pos %= TERM_BUF_SIZE;
@@ -410,7 +290,6 @@ NRT(
       char source[APP_TX_BUF_SIZE];
       char sink[APP_TX_BUF_SIZE];
 
-      fault_sender();
       if(EDGE(hal.hal_state)){
          hal_term_print_state();
       }
@@ -418,7 +297,7 @@ NRT(
       int i = -1;
       char rx_buf[APP_TX_BUF_SIZE];
       if (USB_VCP_get_string(rx_buf)) {
-         i = sscanf_(rx_buf, "%N = %N", sink, source);
+         i = sscanf_(rx_buf, "%N = %N", sink, source);//TODO: change to lib sscanf
       }
       if(i == 2){ // read hal pin
          if(hal_is_pin(sink)){

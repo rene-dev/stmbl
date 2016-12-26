@@ -1,0 +1,6 @@
+sim0.amp = 0
+sim0.freq = 0.5
+stp0.max_vel = 5
+stp0.max_acc = 50
+stp0.target = sim0.square
+rev0.in = stp0.pos_out

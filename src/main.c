@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "usb_cdc.h"
+#include "main.h"
 
 GLOBAL_HAL_PIN(rt_time);
 GLOBAL_HAL_PIN(frt_time);
@@ -221,13 +222,16 @@ int main(void)
    #include "comps/hv.comp"
 
    //other comps
-   #include "comps/fault.comp"
+   #include "comps/fault2.comp"
    #include "comps/term.comp"
    #include "comps/io.comp"
    #include "comps/uf.comp"
    #include "comps/freq_fb.comp"
    #include "comps/psi.comp"
    #include "comps/var.comp"
+   #include "comps/i2t.comp"
+   #include "comps/reslimit.comp"
+   
 
 
    hal_set_comp_type("net");
@@ -237,8 +241,6 @@ int main(void)
    HAL_PIN(fb_error) = 0.0;
    HAL_PIN(cmd_d) = 0.0;
    HAL_PIN(fb_d) = 0.0;
-   HAL_PIN(core_temp0) = 0.0;
-   HAL_PIN(core_temp1) = 0.0;
    HAL_PIN(motor_temp) = 0.0;
    HAL_PIN(rt_calc_time) = 0.0;
    HAL_PIN(frt_calc_time) = 0.0;
@@ -256,7 +258,7 @@ int main(void)
    HAL_PIN(mot_type) = 0.0;//ac sync,async/dc,2phase
    HAL_PIN(out_rev) = 0.0;
    HAL_PIN(high_motor_temp) = 80.0;
-   HAL_PIN(max_motor_temp) = 100.0;
+   HAL_PIN(max_motor_temp) = 130.0;
    HAL_PIN(phase_time) = 0.5;
    HAL_PIN(phase_cur) = 1.0;
 
@@ -277,9 +279,9 @@ int main(void)
    HAL_PIN(cmd_unit) = 0.0;//pos,vel,torque
    HAL_PIN(cmd_rev) = 0.0;
    HAL_PIN(cmd_res) = 2000.0;
-   HAL_PIN(en_condition) = 0.0;
+   HAL_PIN(en_condition) = 0.0;//enable condition
    HAL_PIN(error_out) = 0.0;
-   HAL_PIN(pos_static) = 0.0;//track pos in disabled and error condition
+   HAL_PIN(pos_static) = 0.0;//track pos in disabled and error condition TODO: not implemented
 
    HAL_PIN(sin_offset) = 0.0;
    HAL_PIN(cos_offset) = 0.0;
@@ -296,11 +298,11 @@ int main(void)
    HAL_PIN(fan_core_temp) = 450.0;
    HAL_PIN(fan_motor_temp) = 60.0;
 
-   HAL_PIN(p) = 0.99;
+   HAL_PIN(g) = 0.99;
    HAL_PIN(pos_p) = 100.0;
-   HAL_PIN(vel_p) = 1.0;
-   HAL_PIN(acc_p) = 0.3;
-   HAL_PIN(acc_pi) = 50.0;
+   HAL_PIN(vel_p) = 2000.0;
+   HAL_PIN(vel_i) = 10.0;
+   HAL_PIN(vel_g) = 1.0;
    HAL_PIN(cur_p) = 0.0;
    HAL_PIN(cur_i) = 0.0;
    HAL_PIN(cur_ff) = 1.0;

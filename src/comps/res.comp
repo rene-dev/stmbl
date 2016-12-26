@@ -7,6 +7,8 @@ HAL_PIN(amp) = 0.0;
 HAL_PIN(quad) = 0.0;
 HAL_PIN(poles) = 1.0;
 
+HAL_PIN(vel) = 0.0; // TODO: vel rev, fb,cmd -> vel0,1 -> rev
+
 HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;
 
@@ -75,6 +77,9 @@ RT(
 	a = sqrtf(s * s + c * c);
 
 	float p = MAX(1.0, PIN(poles));
+   
+   float pos = atan2f(s, c);
+   float dpos = PIN(vel) * period / 2.0;
 
 	if(a < 0.25){
 		PIN(error) = 1.0;
@@ -82,7 +87,7 @@ RT(
 	else{
 		PIN(error) = 0.0;
       if(p == 1.0f){
-         PIN(pos) = atan2f(s, c);
+         PIN(pos) = mod(pos + dpos);
       }else{
          int q = PIN(quad);// current quadrant
 
@@ -100,8 +105,8 @@ RT(
 
          lastq = q;
          //TODO: clamp abspos
-         float absa = atan2f(s, c) + abspos * M_PI * 2.0f;
-         PIN(pos) = mod(absa/p);
+         float absa = pos + abspos * M_PI * 2.0f;
+         PIN(pos) = mod(absa/p + dpos);
       }
 	}
 	PIN(amp) = a;
