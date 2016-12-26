@@ -24,6 +24,6 @@
   (model TO_SOT_Packages_SMD.3dshapes/SOT-223.wrl
     (at (xyz 0 0 0))
     (scale (xyz 0.4 0.4 0.4))
-    (rotate (xyz 0 0 0))
+    (rotate (xyz 0 0 90))
   )
 )
