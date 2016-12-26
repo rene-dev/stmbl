@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP ADM4857
+D 10Mbps RS485/RS422 transceiver, full duplex, receiver/driver enable, low power shutdown
+K RS485 RS422 transceiver full duplex
+F http://www.intersil.com/content/dam/Intersil/documents/isl8/isl83483-85-88-90-91.pdf
+$ENDCMP
+#
+#End Doc Library
