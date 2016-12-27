@@ -44,6 +44,11 @@
 | io_rst | nrst | nrst |
 | io_ain0 | pc0 | adc3_in10 |
 | io_ain1 | pc1 | adc3_in11 |
+| io_ain_led0 | pe0 | |
+| io_ain_led1 | pe1 | |
+| io_led_red | pd3 | |
+| io_led_yellow | pd4 | |
+| io_led_green | pd5 | |
 | io_fan | pe3 | |
 | io_out0 | pe4 | |
 | io_out1 | pe5 | tim9_ch1 |
