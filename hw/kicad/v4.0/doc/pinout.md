@@ -74,19 +74,22 @@
 | nrst | nrst ||
 | hv_en | pa15 | (tim2_ch1) |
 | hv_fault | pb7 | (tim8_bkin) |
-| hv_temp |||
+| hv_temp | pb14 | adc4_in4 |
 | hv_u | pb6 | tim8_ch1 |
 | hv_nu | pb3 | tim8_ch1n |
 | hv_v | pb8 | tim8_ch2 |
 | hv_nv | pb4 | tim8_ch2n |
 | hv_w | pb9 | tim8_ch3 |
 | hv_nw | pb5 | tim8_ch3n |
-| mot_temp |||
-| u |||
-| v |||
-| w |||
-| iu |||
-| iv |||
-| iw |||
-| 15v |||
-| hv |||
+| mot_temp | pb15 | adc4_in5 |
+| u | pb13 | adc3_in5 |
+| v | pa5 | adc2_in2 |
+| w | pa3 | adc1_in4 |
+| iu | pa7 | opamp2_in+, comp2_in+, (adc2_in4)|
+| iv | pb0| opamp3_in+, comp4_in+, (adc3_in12), (opamp3_out = pb1 = adc3_in1)|
+| iw | pa1 | opamp1_in+, comp1_in+, (adc1_in1), (opamp1_out = pa2 = adc1_in3)|
+| iu_out | pa6 | opamp2_out, adc2_in3 |
+| iv_out | pb1 | opamp3_out, adc3_in1 |
+| iw_out | pa2 | opamp1_out, adc1_in3 |
+| i_ref | pa4 | dac_out1 |
+| hv | pb12 | adc4_in3 |
