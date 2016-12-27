@@ -96,8 +96,6 @@ void TIM2_IRQHandler(void){
          hal.frt_state = FRT_CALC;
    }
 
-   GPIO_SetBits(GPIOB,GPIO_Pin_9);
-
    static unsigned int last_start = 0;
    unsigned int start = hal_get_systick_value();
 
@@ -118,7 +116,6 @@ void TIM2_IRQHandler(void){
    PIN(frt_period_time) = period;
 
    hal.frt_state = FRT_SLEEP;
-   GPIO_ResetBits(GPIOB,GPIO_Pin_9);
 }
 
 //5 kHz interrupt for hal. at this point all ADCs have been sampled,
@@ -143,8 +140,6 @@ void DMA2_Stream0_IRQHandler(void){
          hal.rt_state = RT_CALC;
    }
 
-   GPIO_SetBits(GPIOB,GPIO_Pin_8);
-
    static unsigned int last_start = 0;
    unsigned int start = hal_get_systick_value();
 
@@ -165,7 +160,6 @@ void DMA2_Stream0_IRQHandler(void){
    PIN(rt_period_time) = period;
 
    hal.rt_state = RT_SLEEP;
-   GPIO_ResetBits(GPIOB,GPIO_Pin_8);
 }
 
 int main(void)
