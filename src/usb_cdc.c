@@ -55,7 +55,7 @@ static uint16_t VCP_DataRx(uint8_t *buf, uint32_t len)
 uint16_t USB_VCP_get_string(char *ptr)
 {
     uint16_t akt_pos = 0;
-    char wert;
+    char wert = '\0';
 
     // test ob eine Endekennung empfangen wurde
     if (cr_count == 0) return 0;
@@ -74,7 +74,7 @@ uint16_t USB_VCP_get_string(char *ptr)
     } while ((usb_rx_buf.len != 0) && (wert != '\n'));
 
     // Stringende anhängen
-    *(ptr + akt_pos) = 0x00;
+    *(ptr + akt_pos) = '\0';
 
     // eine Endekennung wurde bearbeitet
     cr_count--;

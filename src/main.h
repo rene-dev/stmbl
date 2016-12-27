@@ -1,3 +1,5 @@
+#pragma once
+
 //fault state
 typedef enum{
    DISABLED = 0,
