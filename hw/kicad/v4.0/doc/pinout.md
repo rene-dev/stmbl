@@ -87,7 +87,7 @@
 | w | pa3 | adc1_in4 |
 | iu | pa7 | opamp2_in+, comp2_in+, (adc2_in4) |
 | iv | pb0| opamp3_in+, comp4_in+, (adc3_in12) |
-| iw | pa1 | opamp1_in+, comp1_in+, (adc1_in1) |
+| iw | pa1 | opamp1_in+, comp1_in+, (adc1_in2) |
 | iu_out | pa6 | opamp2_out, adc2_in3 |
 | iv_out | pb1 | opamp3_out, adc3_in1 |
 | iw_out | pa2 | opamp1_out, adc1_in3 |
