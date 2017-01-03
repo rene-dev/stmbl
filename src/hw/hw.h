@@ -1,0 +1,169 @@
+#pragma once
+
+#define V4
+
+#ifdef V3
+
+#define SIN_ADC ADC1
+#define SIN_ADC_RCC RCC_APB2Periph_ADC1
+#define SIN_ADC_CHAN ADC_Channel_14
+#define SIN_PIN GPIO_Pin_4
+#define SIN_PORT GPIOC
+
+#define COS_ADC ADC2
+#define COS_ADC_RCC RCC_APB2Periph_ADC2
+#define COS_ADC_CHAN ADC_Channel_15
+#define COS_PIN GPIO_Pin_5
+#define COS_PORT GPIOC
+
+#define ADC_REF 3.3//analog reference voltage
+#define ADC_RES 4096.0//analog resolution, 12 bit
+
+#define OP_R_INPUT 1000.0//opamp input
+#define OP_R_FEEDBACK 3900.0//opamp feedback
+#define OP_R_OUT_LOW 180.0//opamp out low
+#define OP_R_OUT_HIGH 470.0//opamp out high
+#define OP_REF 5.0//opamp reference voltage
+
+#define UART_DRV USART2
+#define UART_DRV_RCC RCC_APB1Periph_USART2
+#define UART_DRV_CLOCK_COMMAND RCC_APB1PeriphClockCmd
+
+#define UART_DRV_RX_DMA DMA1_Stream5
+#define UART_DRV_RX_DMA_CHAN DMA_Channel_4
+#define UART_DRV_RX_DMA_TCIF DMA_FLAG_TCIF5
+
+#define UART_DRV_TX_DMA DMA1_Stream6
+#define UART_DRV_TX_DMA_CHAN DMA_Channel_4
+#define UART_DRV_TX_DMA_TCIF DMA_FLAG_TCIF6
+
+#define UART_DRV_RX_PIN GPIO_Pin_3
+#define UART_DRV_RX_PORT GPIOA
+#define UART_DRV_RX_PIN_SOURCE GPIO_PinSource3
+#define UART_DRV_RX_AF_SOURCE GPIO_AF_USART2
+
+#define UART_DRV_TX_PIN GPIO_Pin_2
+#define UART_DRV_TX_PORT GPIOA
+#define UART_DRV_TX_PIN_SOURCE GPIO_PinSource2
+#define UART_DRV_TX_AF_SOURCE GPIO_AF_USART2
+
+#define FB0_A_PIN GPIO_Pin_6
+#define FB0_A_PIN_SOURCE GPIO_PinSource6
+#define FB0_A_PORT GPIOC
+
+#define FB0_B_PIN GPIO_Pin_7
+#define FB0_B_PIN_SOURCE GPIO_PinSource7
+#define FB0_B_PORT GPIOC
+//TODO: PB10 Z TX, resolver out
+#define FB0_Z_PIN GPIO_Pin_11
+#define FB0_Z_PIN_SOURCE GPIO_PinSource11
+#define FB0_Z_PORT GPIOB
+
+#define FB0_Z_TXEN_PIN GPIO_Pin_12
+#define FB0_Z_TXEN_PORT GPIOB
+
+#define FB0_ENC_TIM TIM3
+#define FB0_ENC_TIM_AF GPIO_AF_TIM3
+#define FB0_ENC_TIM_RCC RCC_APB1Periph_TIM3
+
+#define FB0_RES_TIM TIM2
+#define FB0_RES_TIM_AF GPIO_AF_TIM2 //sync to slave timer for resolver
+#define FB0_RES_TIM_RCC RCC_APB1Periph_TIM2
+
+#define TIM_MASTER TIM4
+#define TIM_MASTER_RCC RCC_APB1Periph_TIM4
+#define TIM_MASTER_ADC_OC_INIT TIM_OC4Init
+#define TIM_MASTER_ADC_OC_PRELOAD TIM_OC4PreloadConfig
+#define TIM_MASTER_ADC ADC_ExternalTrigConv_T4_CC4
+
+#define TIM_SLAVE TIM2
+#define TIM_SLAVE_RCC RCC_APB1Periph_TIM2
+#define TIM_SLAVE_ITR TIM_TS_ITR3
+#define TIM_SLAVE_IRQ TIM2_IRQn
+#define TIM_SLAVE_HANDLER TIM2_IRQHandler
+
+#elif defined V4
+
+#define SIN_ADC ADC1
+#define SIN_ADC_RCC RCC_APB2Periph_ADC1
+#define SIN_ADC_CHAN ADC_Channel_6
+#define SIN_PIN GPIO_Pin_6
+#define SIN_PORT GPIOA
+
+#define COS_ADC ADC2
+#define COS_ADC_RCC RCC_APB2Periph_ADC2
+#define COS_ADC_CHAN ADC_Channel_7
+#define COS_PIN GPIO_Pin_7
+#define COS_PORT GPIOA
+
+#define ADC_REF 3.3//analog reference voltage
+#define ADC_RES 4096.0//analog resolution, 12 bit
+
+#define OP_R_INPUT 10000.0//opamp input
+#define OP_R_FEEDBACK 15000.0//opamp feedback
+#define OP_R_OUT_LOW 470.0//opamp out low
+#define OP_R_OUT_HIGH 22.0//opamp out high
+#define OP_REF 1.83//opamp reference voltage
+
+#define UART_DRV USART2
+#define UART_DRV_RCC RCC_APB1Periph_USART2
+#define UART_DRV_CLOCK_COMMAND RCC_APB1PeriphClockCmd
+
+#define UART_DRV_RX_DMA DMA1_Stream5
+#define UART_DRV_RX_DMA_CHAN DMA_Channel_4
+#define UART_DRV_RX_DMA_TCIF DMA_FLAG_TCIF5
+
+#define UART_DRV_TX_DMA DMA1_Stream6
+#define UART_DRV_TX_DMA_CHAN DMA_Channel_4
+#define UART_DRV_TX_DMA_TCIF DMA_FLAG_TCIF6
+
+#define UART_DRV_RX_PIN GPIO_Pin_3
+#define UART_DRV_RX_PORT GPIOA
+#define UART_DRV_RX_PIN_SOURCE GPIO_PinSource3
+#define UART_DRV_RX_AF_SOURCE GPIO_AF_USART2
+
+#define UART_DRV_TX_PIN GPIO_Pin_2
+#define UART_DRV_TX_PORT GPIOA
+#define UART_DRV_TX_PIN_SOURCE GPIO_PinSource2
+#define UART_DRV_TX_AF_SOURCE GPIO_AF_USART2
+
+#define FB0_A_PIN GPIO_Pin_12
+#define FB0_A_PIN_SOURCE GPIO_PinSource12
+#define FB0_A_PORT GPIOD
+
+#define FB0_B_PIN GPIO_Pin_13
+#define FB0_B_PIN_SOURCE GPIO_PinSource13
+#define FB0_B_PORT GPIOD
+
+#define FB0_Z_PIN GPIO_Pin_14
+#define FB0_Z_PIN_SOURCE GPIO_PinSource14
+#define FB0_Z_PORT GPIOD
+
+#define FB0_Z_TXEN_PIN GPIO_Pin_15
+#define FB0_Z_TXEN_PORT GPIOD
+
+#define FB0_ENC_TIM TIM4
+#define FB0_ENC_TIM_AF GPIO_AF_TIM4
+#define FB0_ENC_TIM_RCC RCC_APB1Periph_TIM4
+
+#define FB0_RES_TIM TIM4
+#define FB0_RES_TIM_AF GPIO_AF_TIM4 //sync to slave timer for resolver
+#define FB0_RES_TIM_RCC RCC_APB1Periph_TIM4
+
+#define TIM_MASTER TIM3
+#define TIM_MASTER_RCC RCC_APB1Periph_TIM3
+#define TIM_MASTER_ADC_OC_INIT TIM_OC1Init
+#define TIM_MASTER_ADC_OC_PRELOAD TIM_OC1PreloadConfig
+#define TIM_MASTER_ADC ADC_ExternalTrigConv_T3_CC1
+
+#define TIM_SLAVE TIM5
+#define TIM_SLAVE_RCC RCC_APB1Periph_TIM5
+#define TIM_SLAVE_ITR TIM_TS_ITR1
+#define TIM_SLAVE_IRQ TIM5_IRQn
+#define TIM_SLAVE_HANDLER TIM5_IRQHandler
+
+#else
+
+#error "No hardware version defined"
+
+#endif

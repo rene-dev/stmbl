@@ -12,7 +12,7 @@
 #include "misc.h"
 #include "version.h"
 #include "common.h"
-#include "defines_res.h"
+#include "hw/hw.h"
 #define U_ID ((__IO uint32_t *)0x1FFF7A10)
 
 //sample times for F4: 3,15,28,56,84,112,144,480

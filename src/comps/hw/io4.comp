@@ -1,0 +1,168 @@
+HAL_COMP(io);
+
+HAL_PIN(fan) = 0.0;
+
+HAL_PIN(state) = 0.0;
+HAL_PIN(fault) = 0.0;
+HAL_PIN(brake) = 0.0;
+
+HAL_PIN(red) = 0.0;
+HAL_PIN(yellow) = 0.0;
+HAL_PIN(green) = 0.0;
+
+HAL_PIN(out0) = 0.0;
+HAL_PIN(out1) = 0.0;
+HAL_PIN(out2) = 0.0;
+
+HAL_PIN(in0) = 0.0;
+HAL_PIN(in1) = 0.0;
+
+HAL_PIN(fb0g) = 0.0;
+HAL_PIN(fb0y) = 0.0;
+
+HAL_PIN(fb1g) = 0.0;
+HAL_PIN(fb1y) = 0.0;
+
+HAL_PIN(cmdg) = 0.0;
+HAL_PIN(cmdy) = 0.0;
+
+INIT(
+   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   
+   //fan
+   //GPIO_InitStructure.GPIO_Pin   = FAN_PIN;
+   //GPIO_Init(FAN_PORT, &GPIO_InitStructure);
+
+   //red
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3;
+   GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+   //yellow
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_4;
+   GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+   //green
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_5;
+   GPIO_Init(GPIOD, &GPIO_InitStructure);
+   
+   //in1
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_0;
+   GPIO_Init(GPIOE, &GPIO_InitStructure);
+   
+   //in0
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_1;
+   GPIO_Init(GPIOE, &GPIO_InitStructure);
+   
+   //out0
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_4;
+   GPIO_Init(GPIOE, &GPIO_InitStructure);
+
+   //out1
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_5;
+   GPIO_Init(GPIOE, &GPIO_InitStructure);
+   
+   //out2
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_6;
+   GPIO_Init(GPIOE, &GPIO_InitStructure);
+   
+   //fb0 green
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_8;
+   GPIO_Init(GPIOD, &GPIO_InitStructure);
+   
+   //fb0 yellow
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_9;
+   GPIO_Init(GPIOD, &GPIO_InitStructure);
+   
+   //fb1 green
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_7;
+   GPIO_Init(GPIOE, &GPIO_InitStructure);
+   
+   //fb1 yellow
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_8;
+   GPIO_Init(GPIOE, &GPIO_InitStructure);
+   
+   //cmd yellow
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_6;
+   GPIO_Init(GPIOD, &GPIO_InitStructure);
+   
+   //cmd green
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_7;
+   GPIO_Init(GPIOD, &GPIO_InitStructure);
+);
+
+NRT(
+   if(PIN(red) > 0)
+      GPIO_SetBits(GPIOD, GPIO_Pin_3);
+   else
+      GPIO_ResetBits(GPIOD, GPIO_Pin_3);
+
+   if(PIN(yellow) > 0)
+      GPIO_SetBits(GPIOD, GPIO_Pin_4);
+   else
+      GPIO_ResetBits(GPIOD, GPIO_Pin_4);
+
+   if(PIN(green) > 0)
+      GPIO_SetBits(GPIOD, GPIO_Pin_5);
+   else
+      GPIO_ResetBits(GPIOD, GPIO_Pin_5);
+
+   if(PIN(out0) > 0)
+      GPIO_SetBits(GPIOE, GPIO_Pin_4);
+   else
+      GPIO_ResetBits(GPIOE, GPIO_Pin_4);
+
+   if(PIN(out1) > 0)
+      GPIO_SetBits(GPIOE, GPIO_Pin_5);
+   else
+      GPIO_ResetBits(GPIOE, GPIO_Pin_5);
+
+   if(PIN(out2) > 0)
+      GPIO_SetBits(GPIOE, GPIO_Pin_6);
+   else
+      GPIO_ResetBits(GPIOE, GPIO_Pin_6);
+   
+   if(PIN(in0) > 0)
+      GPIO_SetBits(GPIOE, GPIO_Pin_1);
+   else
+      GPIO_ResetBits(GPIOE, GPIO_Pin_1);
+   
+   if(PIN(in1) > 0)
+      GPIO_SetBits(GPIOE, GPIO_Pin_0);
+   else
+      GPIO_ResetBits(GPIOE, GPIO_Pin_0);
+   
+   if(PIN(fb0g) > 0)
+      GPIO_SetBits(GPIOD, GPIO_Pin_8);
+   else
+      GPIO_ResetBits(GPIOD, GPIO_Pin_8);
+   
+   if(PIN(fb0y) > 0)
+      GPIO_SetBits(GPIOD, GPIO_Pin_9);
+   else
+      GPIO_ResetBits(GPIOD, GPIO_Pin_9);
+   
+   if(PIN(fb1g) > 0)
+      GPIO_SetBits(GPIOE, GPIO_Pin_7);
+   else
+      GPIO_ResetBits(GPIOE, GPIO_Pin_7);
+   
+   if(PIN(fb1y) > 0)
+      GPIO_SetBits(GPIOE, GPIO_Pin_8);
+   else
+      GPIO_ResetBits(GPIOE, GPIO_Pin_8);
+   
+   if(PIN(cmdy) > 0)
+      GPIO_SetBits(GPIOD, GPIO_Pin_6);
+   else
+      GPIO_ResetBits(GPIOD, GPIO_Pin_6);
+   
+   if(PIN(cmdg) > 0)
+      GPIO_SetBits(GPIOD, GPIO_Pin_7);
+   else
+      GPIO_ResetBits(GPIOD, GPIO_Pin_7);
+);
+
+ENDCOMP;

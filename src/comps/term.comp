@@ -255,7 +255,7 @@ NRT(
    }
 
    int tmp = 0;
-   unsigned char buf[8 + 2];
+   unsigned char buf[8 + 2];//TODO: TERM_NUM_WAVES...
 
    buf[0] = 255;
    buf[8 + 1] = 0;

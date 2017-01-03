@@ -42,16 +42,16 @@ GLOBAL_HAL_PIN(frt_period_time);
 
 //hal interface TODO: move hal interface to file
 void hal_enable_rt(){
-   TIM_Cmd(TIM4, ENABLE);
+   TIM_Cmd(TIM_MASTER, ENABLE);
 }
 void hal_enable_frt(){
-   TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+   TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, ENABLE);
 }
 void hal_disable_rt(){
-   TIM_Cmd(TIM4, DISABLE);
+   TIM_Cmd(TIM_MASTER, DISABLE);
 }
 void hal_disable_frt(){
-   TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
+   TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, DISABLE);
 }
 
 uint32_t hal_get_systick_value(){
@@ -74,8 +74,8 @@ void SysTick_Handler(void)
 }
 
 //20kHz
-void TIM2_IRQHandler(void){
-   TIM_ClearITPendingBit(TIM2,TIM_IT_Update);
+void TIM_SLAVE_HANDLER(void){
+   TIM_ClearITPendingBit(TIM_SLAVE,TIM_IT_Update);
    switch(hal.frt_state){
       case FRT_STOP:
          return;
@@ -180,18 +180,18 @@ int main(void)
 
    //feedback comps
    #include "comps/adc.comp"
-   #include "comps/res.comp"
+   #include "comps/res.comp" //TODO: not working in v4 and v3... ref pin needs fixing
    #include "comps/enc_fb.comp"
-   #include "comps/encm.comp"
-   //#include "comps/encs.comp"
-   //#include "comps/yaskawa.comp"
-   #include "comps/hyper.comp"
+   // #include "comps/encm.comp" //TODO: not working in v4
+   //#include "comps/encs.comp" //TODO: not working in v4
+   //#include "comps/yaskawa.comp" //TODO: not working in v4
+   // #include "comps/hyper.comp" //TODO: not working in v4
 
    //command comps
-   #include "comps/sserial.comp"
+   // #include "comps/sserial.comp" //TODO: not working in v4
    #include "comps/sim.comp"
-   #include "comps/enc_cmd.comp"
-   #include "comps/en.comp"
+   // #include "comps/enc_cmd.comp" //TODO: not working in v4
+   // #include "comps/en.comp" //TODO: not working in v4
 
    //PID
    #include "comps/stp.comp"
@@ -216,14 +216,18 @@ int main(void)
    //other comps
    #include "comps/fault.comp"
    #include "comps/term.comp"
-   #include "comps/io.comp"
    #include "comps/uf.comp"
    #include "comps/freq_fb.comp"
    #include "comps/psi.comp"
    #include "comps/var.comp"
    #include "comps/i2t.comp"
    #include "comps/reslimit.comp"
-   
+
+#ifdef V3
+   #include "comps/hw/io3.comp"
+#elif defined V4
+   #include "comps/hw/io4.comp"
+#endif   
 
 
    hal_set_comp_type("net");

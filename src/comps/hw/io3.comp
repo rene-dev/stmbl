@@ -12,15 +12,8 @@ INIT(
    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
    
    //fan
-   GPIO_InitStructure.GPIO_Pin   = FAN_PIN;
-   GPIO_Init(FAN_PORT, &GPIO_InitStructure);
-
-   //led
-   GPIO_InitStructure.GPIO_Pin   = LED_R_PIN;
-   GPIO_Init(LED_R_PORT, &GPIO_InitStructure);
-
-   GPIO_InitStructure.GPIO_Pin   = LED_G_PIN;
-   GPIO_Init(LED_G_PORT, &GPIO_InitStructure);
+   GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_8 | GPIO_Pin_10 | GPIO_Pin_11;
+   GPIO_Init(GPIOC, &GPIO_InitStructure);
 
    //brake
    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
@@ -56,9 +49,9 @@ INIT(
 
 NRT(
    if(PIN(fan) > 0)
-      GPIO_SetBits(FAN_PORT, FAN_PIN);
+      GPIO_SetBits(GPIOC, GPIO_Pin_8);
    else
-      GPIO_ResetBits(FAN_PORT, FAN_PIN);
+      GPIO_ResetBits(GPIOC, GPIO_Pin_8);
 
    TIM8->CCR4 = (int)CLAMP(PIN(brake) * 8400, 0, TIM8->ARR - 1);
 
@@ -93,14 +86,14 @@ NRT(
    }
 
    if(red > 0)
-      GPIO_SetBits(LED_R_PORT, LED_R_PIN);
+      GPIO_SetBits(GPIOC, GPIO_Pin_10);
    else
-      GPIO_ResetBits(LED_R_PORT, LED_R_PIN);
+      GPIO_ResetBits(GPIOC, GPIO_Pin_10);
 
    if(green > 0)
-      GPIO_SetBits(LED_G_PORT, LED_G_PIN);
+      GPIO_SetBits(GPIOC, GPIO_Pin_11);
    else
-      GPIO_ResetBits(LED_G_PORT, LED_G_PIN);
+      GPIO_ResetBits(GPIOC, GPIO_Pin_11);
 );
 
 ENDCOMP;

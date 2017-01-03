@@ -1,16 +1,8 @@
 HAL_COMP(adc);
 
-#define AREF 3.3// analog reference voltage
-#define ARES 4096.0// analog resolution, 12 bit
-
-#define R15 1000.0
-#define R22 3900.0
-#define R21 180.0
-#define R19 470.0
-#define V_REF 5.0
-#define INPUT_REF (V_REF * R21 / (R19 + R21))
-#define INPUT_GAIN (R22 / R15 * R21 / (R19 + R21))
-#define V_DIFF(ADC) (((ADC)/ADC_ANZ/ARES*AREF-INPUT_REF)/INPUT_GAIN)
+#define INPUT_REF (OP_REF * OP_R_OUT_LOW / (OP_R_OUT_HIGH + OP_R_OUT_LOW))
+#define INPUT_GAIN (OP_R_FEEDBACK / OP_R_INPUT * OP_R_OUT_LOW / (OP_R_OUT_HIGH + OP_R_OUT_LOW))
+#define V_DIFF(ADC) (((ADC) / ADC_ANZ / ADC_RES * ADC_REF - INPUT_REF) / INPUT_GAIN)
 
 HAL_PIN(sin) = 0.0;
 HAL_PIN(cos) = 0.0;

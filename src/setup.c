@@ -11,7 +11,8 @@
 
 void setup(){
    //Enable clocks
-   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1 | RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_CRC, ENABLE);
+   //TODO: small f4 does not have GPIOE
+   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_DMA1 | RCC_AHB1Periph_DMA2 | RCC_AHB1Periph_CRC, ENABLE);
 
    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
@@ -27,70 +28,46 @@ void setup(){
 }
 
 // Setup Resolver Interface
-// TIM4 triggers ADC1,ADC2(OC4) and TIM2(TRGO) at 1.2MHz
-// TIM2 OC1 generates resolver reference signal at 10kHz
-// DMA2 moves 60 samples to memory, generates transfer complete interrupt at 5kHz
+// master timer triggers ADC1,ADC2 via OC, and slave timer via TRGO at 1.2MHz
+// slave timer OC generates resolver reference signal at 10kHz, phase can be adjusted by oc value
+// DMA2 moves ADC_ANZ samples to memory, generates transfer complete interrupt at 5kHz
 void setup_res(){
    //master timer
-   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+   RCC_APB1PeriphClockCmd(TIM_MASTER_RCC, ENABLE);
    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
    TIM_TimeBaseStructure.TIM_Period = 70 - 1;// 84e6 / 70 = 1.2MHz
    TIM_TimeBaseStructure.TIM_Prescaler = 0;
    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-   TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
-   TIM_ARRPreloadConfig(TIM4,ENABLE);
-   TIM_SelectOutputTrigger(TIM4, TIM_TRGOSource_Update);// trigger ADC
-   
-   // debug tim4
-   // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-   // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-   // GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-   // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-   // GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-   // GPIO_Init(GPIOB, &GPIO_InitStructure);
-   // GPIO_PinAFConfig(GPIOB, GPIO_PinSource9, GPIO_AF_TIM4);
+   TIM_TimeBaseInit(TIM_MASTER, &TIM_TimeBaseStructure);
+   TIM_ARRPreloadConfig(TIM_MASTER,ENABLE);
+   TIM_SelectOutputTrigger(TIM_MASTER, TIM_TRGOSource_Update);// trigger ADC
 
-   //oc4 for adc trigger
+   //oc for adc trigger
    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
    TIM_OCInitStructure.TIM_Pulse = 1;
    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
-
-   TIM_OC4Init(TIM4, &TIM_OCInitStructure);
-   TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable);
-   TIM_CtrlPWMOutputs(TIM4, ENABLE);
+   //ADC trigger OC depends on timer
+   TIM_MASTER_ADC_OC_INIT(TIM_MASTER, &TIM_OCInitStructure);
+   TIM_MASTER_ADC_OC_PRELOAD(TIM_MASTER, TIM_OCPreload_Enable);
+   TIM_CtrlPWMOutputs(TIM_MASTER, ENABLE);
       
    //slave timer
-   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+   RCC_APB1PeriphClockCmd(TIM_SLAVE_RCC, ENABLE);
    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
    TIM_TimeBaseStructure.TIM_Period = 60 - 1;// 1.2e6 / 60 = 20kHz
    TIM_TimeBaseStructure.TIM_Prescaler = 0;
    TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-   TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-   TIM_SelectSlaveMode(TIM2, TIM_SlaveMode_External1);//Rising edges of the selected trigger (TRGI) clock the counter
-   TIM_ITRxExternalClockConfig(TIM2, TIM_TS_ITR3);// clk = TIM4 trigger out
-   TIM_ARRPreloadConfig(TIM2,ENABLE);
+   TIM_TimeBaseInit(TIM_SLAVE, &TIM_TimeBaseStructure);
+   TIM_SelectSlaveMode(TIM_SLAVE, TIM_SlaveMode_External1);//Rising edges of the selected trigger (TRGI) clock the counter
+   TIM_ITRxExternalClockConfig(TIM_SLAVE, TIM_SLAVE_ITR);// clk = TIM_MASTER trigger out
+   TIM_ARRPreloadConfig(TIM_SLAVE,ENABLE);
    
-   // resolver reference signal
-   //TODO: move to res.comp
-   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
-   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-   TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
-   TIM_OCInitStructure.TIM_Pulse = 5;
-   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-   TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
-   TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
-   TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
-   
-   TIM_OC3Init(TIM2, &TIM_OCInitStructure);
-   TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);
-   TIM_CtrlPWMOutputs(TIM2, ENABLE);
-   
-   TIM_Cmd(TIM2, ENABLE);
+   TIM_Cmd(TIM_SLAVE, ENABLE);
    
     /* ADC clock enable */
     RCC_APB2PeriphClockCmd(SIN_ADC_RCC | COS_ADC_RCC, ENABLE);
@@ -110,7 +87,7 @@ void setup_res(){
     ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;//data converted will be shifted to right
     ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;//Input voltage is converted into a 12bit number giving a maximum value of 4096
     ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; //the conversion is continuous, the input data is converted more than once
-    ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T4_CC4;//trigger on rising edge of TIM4 cc4
+    ADC_InitStructure.ADC_ExternalTrigConv = TIM_MASTER_ADC;//trigger on rising edge of TIM_MASTER oc
     ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
     ADC_InitStructure.ADC_NbrOfConversion = 1;//ADC_ANZ;//I think this one is clear :p
     ADC_InitStructure.ADC_ScanConvMode = ENABLE;//The scan is configured in one channel
@@ -162,7 +139,7 @@ void setup_res(){
     DMA_Init(DMA2_Stream0, &DMA_InitStructure);
 
     //HAL Fast realtime irq 20kHz
-    NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannel = TIM_SLAVE_IRQ;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;

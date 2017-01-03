@@ -46,7 +46,7 @@ MEMORY
   BOOT   (rx)     : ORIGIN = 0x08000000, LENGTH = 32K/* sector 0-1 */
   PARAM0 (rx)     : ORIGIN = 0x08008000, LENGTH = 16K/* sector 2 */
   PARAM1 (rx)     : ORIGIN = 0x0800C000, LENGTH = 16K/* sector 3 */
-  FLASH  (rx)     : ORIGIN = 0x08010000, LENGTH = 960K/* sector 4-11 */
+  FLASH  (rx)     : ORIGIN = 0x08010000, LENGTH = 448K/* sector 4-11 */
   CCM (xrw)       : ORIGIN = 0x10000000, LENGTH = 64k
   RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 112K/*SRAM1*/
   RAM2(xrw)       : ORIGIN = 0x2001C000, LENGTH = 16K/*SRAM2*/

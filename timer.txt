@@ -10,28 +10,28 @@ d: dma request
 b: bits
 
 APB2 DMA2 168 MHz
-TIM1(ac,16b,d(cc1,cc2,cc3,cc4,up,trgo,com),adc(cc1,cc2,cc3),itr(5,2,3,4)) enc_cmd
-TIM8(ac,16b,d(cc1,cc2,cc3,cc4,up,trgo,com),adc(cc1,trgo),   itr(1,2,4,5)) brake/fan pwm
+TIM1(ac,16b,d(cc1,cc2,cc3,cc4,up,trgo,com),adc(cc1,cc2,cc3),itr(5,2,3,4)) enc_fb1,ch3->d54                        enc_cmd
+TIM8(ac,16b,d(cc1,cc2,cc3,cc4,up,trgo,com),adc(cc1,trgo),   itr(1,2,4,5))                                brake/fan pwm
 TIM9(gp2,16b,itr(2,3,10,11))
 TIM10(gp3,16b)
 TIM11(gp3,16b)
-USART1 io_header,cmd_rx
-USART6
+USART1                                                                     cmd 422/485                             io_header,cmd_rx
+USART6                                                                     fb0
 
 APB1 DMA1 84 MHz
-TIM2(gp1,32b,d(up,cc1,cc2,cc3,cc4),     adc(cc2,cc3,cc4,trgo),itr(1,8,3,4)) res_slave,res_oc
-TIM3(gp1,16b,d(cc1,cc2,cc3,cc3,up,trgo),adc(cc1,trgo),        itr(1,2,5,4)) enc_fb
-TIM4(gp1,16b,d(cc1,cc2,cc3,up),         adc(cc4),             itr(1,2,3,8)) res_master,adc
-TIM5(gp1,32b,d(cc1,cc2,cc3,cc4,trgo),   adc(cc1,cc2,cc3),     itr(2,3,4,8))
+TIM2(gp1,32b,d(up,cc1,cc2,cc3,cc4),     adc(cc2,cc3,cc4,trgo),itr(1,8,3,4)) enc_cmd                     res_slave,res_oc
+TIM3(gp1,16b,d(cc1,cc2,cc3,cc3,up,trgo),adc(cc1,trgo),        itr(1,2,5,4)) adc master (cmd, pair foo)             enc_fb
+TIM4(gp1,16b,d(cc1,cc2,cc3,up),         adc(cc4),             itr(1,2,3,8)) enc_fb0,ch3->d54                     res_master,adc
+TIM5(gp1,32b,d(cc1,cc2,cc3,cc4,trgo),   adc(cc1,cc2,cc3),     itr(2,3,4,8)) adc slave/frt
 TIM6(ba,16b,d(up))
 TIM7(ba,16b,d(up))
 TIM12(gp2,16b,                                                itr(4,5,13,14))
 TIM13(gp3,16b)
 TIM14(gp3,16b)
-USART2 f1_hv
-USART3 fb
-UART4
-UART5 cmd
+USART2                                                                      hv                            f1_hv
+USART3                                                                      fb1                             fb
+UART4                                                                       (fb0)
+UART5                                                                       (fb0)                             cmd
 
 
 DMA mapping:
@@ -47,3 +47,8 @@ s0 adc
 s1 yaskawa/probe
 s5 ext rx/sserial
 s7 ext tx
+
+
+f3 hv
+bemf+dclink 181.5 adc cycles = 2.5us sampling time
+temp 61.5 cycles = 0.85us sampling time

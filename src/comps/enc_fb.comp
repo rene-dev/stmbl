@@ -32,57 +32,55 @@ RT_INIT(
   TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
   TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
   TIM_ICInitStructure.TIM_ICFilter = 0xF;
-  TIM_ICInit(ENC1_TIM, &TIM_ICInitStructure);
+  TIM_ICInit(FB0_ENC_TIM, &TIM_ICInitStructure);
 
   /***************** port 1, quadrature , sin/cos or resolver *********************/
   e_res = (int)PIN(res);
   if(e_res < 1){
-	  e_res = 1;
+       e_res = 1;
   }
   // enable clocks
-  RCC_APB1PeriphClockCmd(ENC1_TIM_RCC, ENABLE);
+  RCC_APB1PeriphClockCmd(FB0_ENC_TIM_RCC, ENABLE);
 
   // pin mode: af
-  GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
+  GPIO_InitStructure.GPIO_Pin = FB0_A_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
+  GPIO_Init(FB0_A_PORT, &GPIO_InitStructure);
+  
+  GPIO_InitStructure.GPIO_Pin = FB0_B_PIN;
+  GPIO_Init(FB0_B_PORT, &GPIO_InitStructure);
 
   // pin af -> tim
-  GPIO_PinAFConfig(ENC1_A_PORT, ENC1_A_PIN_SOURCE, ENC1_A_AF_SOURCE);
-  GPIO_PinAFConfig(ENC1_B_PORT, ENC1_B_PIN_SOURCE, ENC1_B_AF_SOURCE);
+  GPIO_PinAFConfig(FB0_A_PORT, FB0_A_PIN_SOURCE, FB0_ENC_TIM_AF);
+  GPIO_PinAFConfig(FB0_B_PORT, FB0_B_PIN_SOURCE, FB0_ENC_TIM_AF);
 
   // enc res / turn
-  TIM_SetAutoreload(ENC1_TIM, e_res - 1);
+  TIM_SetAutoreload(FB0_ENC_TIM, e_res - 1);
 
   // quad
-  TIM_Cmd(ENC1_TIM, DISABLE);
-  GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
-  TIM_EncoderInterfaceConfig(ENC1_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
-  TIM_Cmd(ENC1_TIM, ENABLE);
+  TIM_Cmd(FB0_ENC_TIM, DISABLE);
+  TIM_EncoderInterfaceConfig(FB0_ENC_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+  TIM_Cmd(FB0_ENC_TIM, ENABLE);
 );
 
 RT_DEINIT(
-   TIM_Cmd(ENC1_TIM, DISABLE);
-   TIM_DeInit(ENC1_TIM);
-   RCC_APB2PeriphClockCmd(ENC1_TIM_RCC, DISABLE);
-   GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
-   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-   GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
+   //TODO:
+   // TIM_Cmd(FB0_ENC_TIM, DISABLE);
+   // TIM_DeInit(FB0_ENC_TIM);
+   // RCC_APB2PeriphClockCmd(FB0_ENC_TIM_RCC, DISABLE);
+   // GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
+   // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   // GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   // GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   // GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
 );
 
 FRT(
-   float p = mod(TIM_GetCounter(ENC1_TIM) * 2.0f * M_PI / (float)e_res);
+   float p = mod(TIM_GetCounter(FB0_ENC_TIM) * 2.0f * M_PI / (float)e_res);
    PIN(pos) = p;
    if(RISING_EDGE(!GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_11)) && PIN(isabs) != 1.0){
       absoffset = -p;
@@ -92,18 +90,18 @@ FRT(
 );
 
 RT(
-  int32_t tim = TIM_GetCounter(ENC1_TIM);//TODO: interrupt here?
-  uint32_t scgpio = GPIOC->IDR;
+  int32_t tim = TIM_GetCounter(FB0_ENC_TIM);//TODO: interrupt here?
+  uint32_t scgpio = FB0_A_PORT->IDR;//TODO: ENC PORT
 
   float p = 0.0;
   int r = (int)PIN(res);
   if(r < 1){
-	  r = 1;
+       r = 1;
   }
 
   float ir = PIN(ires);
   if(ir < 1){
-	  ir = 1;
+       ir = 1;
   }
 
   float s = PIN(sin);
@@ -112,16 +110,16 @@ RT(
 
   PIN(amp) = a;
   int q;
-  
-  if(!(scgpio & GPIO_Pin_6)){
-    if(scgpio & GPIO_Pin_7){
+
+  if(!(scgpio & FB0_A_PIN)){//TODO: check A/B mapping, hw3 has A -> cos, B -> sin
+    if(scgpio & FB0_B_PIN){
       q = 1;
     }
     else{
       q = 2;
     }
   }else{
-    if(scgpio & GPIO_Pin_7){
+    if(scgpio & FB0_B_PIN){
       q = 4;
     }
     else{
@@ -130,7 +128,7 @@ RT(
   }
   //TODO: sincos stuff at speed
   int qdiff = PIN(quad)-q;
-  
+
   switch(qdiff){
      case 1:
      case -3:
@@ -143,21 +141,21 @@ RT(
      default:
      break;
   }
-  
+
   if(tim >= e_res){
      tim = 0;
   }
   else if(tim < 0){
      tim = e_res - 1;
   }
-  
+
   PIN(qdiff) = qdiff;
-  
-  PIN(s) = (scgpio & GPIO_Pin_6)?0:1;
-  PIN(c) = (scgpio & GPIO_Pin_7)?1:0;
-  
+
+  PIN(s) = (scgpio & FB0_A_PIN)?0:1;
+  PIN(c) = (scgpio & FB0_B_PIN)?1:0;
+
   PIN(oquad) = q;
-  
+
   p = mod(tim * 2.0f * M_PI / (float)e_res);
 
   if(a < 0.15 && !EDGE(tim)){
@@ -170,20 +168,20 @@ RT(
 
   if(e_res != r){
     e_res = r;
-    TIM_SetAutoreload(ENC1_TIM, e_res - 1);
+    TIM_SetAutoreload(FB0_ENC_TIM, e_res - 1);
   }
   
-  if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_11)){//TODO: setup pin
+  if(GPIO_ReadInputDataBit(FB0_Z_PORT,FB0_Z_PIN)){//TODO: setup pin
      PIN(index) = 0.0;
   }else{
      PIN(index) = 1.0;
   }
-  if(GPIO_ReadInputDataBit(ENC1_A_PORT,ENC1_A_PIN)){//TODO: setup pin
+  if(GPIO_ReadInputDataBit(FB0_A_PORT,FB0_A_PIN)){//TODO: setup pin
      PIN(a) = 0.0;
   }else{
      PIN(a) = 1.0;
   }
-  if(GPIO_ReadInputDataBit(ENC1_B_PORT,ENC1_B_PIN)){//TODO: setup pin
+  if(GPIO_ReadInputDataBit(FB0_B_PORT,FB0_B_PIN)){//TODO: setup pin
      PIN(b) = 0.0;
   }else{
      PIN(b) = 1.0;
