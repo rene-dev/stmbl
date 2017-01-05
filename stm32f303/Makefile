@@ -31,6 +31,9 @@ SOURCES += stm32f303/src/usbd_desc.c
 #INCDIRS += shared
 #SOURCES += shared/crc8.c
 #SOURCES += shared/common.c
+#SOURCES += shared/angle.c
+#SOURCES += shared/hal.c
+#SOURCES += shared/hal_term.c
 
 #USB Driver
 USB_DEVICE_DIR = lib/STM32_USB_Device_Library-2.4.2
@@ -187,13 +190,13 @@ showsize: build
 
 # Flash the device
 #
-btburn: hv build showsize $(TARGET).dfu
+btburn: build showsize $(TARGET).dfu
 	@tools/bootloader.py
 	@sleep 1
 	@dfu-util -d 0483:df11 -a 0 -s 0x08010000:leave -D $(TARGET).dfu
 
-flash: hv $(TARGET).bin
-	st-flash --reset write $(TARGET).bin 0x08010000
+flash: $(TARGET).bin
+	st-flash --reset write $(TARGET).bin 0x08000000
 
 # Create a DFU file from bin file
 %.dfu: %.bin
