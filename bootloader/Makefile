@@ -109,15 +109,6 @@ LDFLAGS += -T$(LDSCRIPT)
 
 #============================================================================
 
-# Define programs and commands
-#
-TOOLCHAIN = arm-none-eabi-
-CC       = $(TOOLCHAIN)gcc
-OBJCOPY  = $(TOOLCHAIN)objcopy
-OBJDUMP  = $(TOOLCHAIN)objdump
-SIZE     = $(TOOLCHAIN)size
-NM       = $(TOOLCHAIN)nm
-MKDIR    = mkdir
 POSTLD   = tools/add_version_info.py # -q
 
 # Compiler flags to generate dependency files
@@ -178,6 +169,7 @@ clean:
 # Include the base rules
 #
 include base.mak
+include toolchain.mak
 
 # Include the dependency files
 #
