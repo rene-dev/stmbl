@@ -1,6 +1,5 @@
 #pragma once
 #include <stdint.h>
-#include "misc.h"
 
 #if __GNUC__ < 5
    #error gcc to old (< 5.0)

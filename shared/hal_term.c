@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "hal_term.h"
-#include "main.h" // for Wait
 
 void hal_term_print_pin(hal_pin_t* pin){
    if(pin == pin->source){//if pin is not linked

@@ -22,10 +22,7 @@ SOURCES += src/system_stm32f4xx.c
 SOURCES += src/scanf.c
 SOURCES += src/setup.c
 SOURCES += src/usb_cdc.c
-SOURCES += src/hal.c
-SOURCES += src/hal_term.c
 SOURCES += src/hal_conf.c
-SOURCES += src/angle.c
 SOURCES += src/eeprom.c
 SOURCES += src/link.c
 SOURCES += src/version.c
@@ -34,6 +31,9 @@ SOURCES += src/syscalls.c
 SOURCES += shared/crc8.c
 SOURCES += shared/crc16.c
 SOURCES += shared/common.c
+SOURCES += shared/angle.c
+SOURCES += shared/hal.c
+SOURCES += shared/hal_term.c
 
 USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
 
