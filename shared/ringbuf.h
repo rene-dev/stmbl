@@ -13,6 +13,7 @@ struct ringbuf {
     volatile unsigned len;   ///< Length of data in buffer
 };
 
+#define RINGBUF(size) { .buf = (char[(size)]) {0}, .bufsize = (size) }
 
 /**
  * Read a single byte from a buffer

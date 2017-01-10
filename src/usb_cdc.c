@@ -7,8 +7,6 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_conf.h"
 
-
-
 #define RX_QUEUE_SIZE  512
 
 struct ringbuf usb_rx_buf = { .buf = (char[RX_QUEUE_SIZE]) {0}, .bufsize = RX_QUEUE_SIZE };
@@ -226,4 +224,11 @@ USBD_Usr_cb_TypeDef USR_cb =
 uint8_t USB_CDC_is_connected(void)
 {
     return usb_cdc_status;
-}
+ }
+
+//TODO: implement new term API
+void cdc_init(void){}
+int cdc_tx(void* data, uint32_t len){}
+int cdc_getline(char *ptr, int len){}
+int cdc_is_connected(){}
+void cdc_poll(){}

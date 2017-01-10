@@ -52,13 +52,47 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
-
+#include <math.h>
+#include "defines.h"
+#include "hal.h"
+#include "scanf.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+
+GLOBAL_HAL_PIN(rt_time);
+GLOBAL_HAL_PIN(frt_time);
+GLOBAL_HAL_PIN(rt_period_time);
+GLOBAL_HAL_PIN(frt_period_time);
+
+//hal interface TODO: move hal interface to file
+void hal_enable_rt(){
+   // TIM_Cmd(TIM4, ENABLE);
+}
+void hal_enable_frt(){
+   // TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+}
+void hal_disable_rt(){
+   // TIM_Cmd(TIM4, DISABLE);
+}
+void hal_disable_frt(){
+   // TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
+}
+
+uint32_t hal_get_systick_value(){
+   return(SysTick->VAL);
+}
+
+uint32_t hal_get_systick_reload(){
+   return(SysTick->LOAD);
+}
+
+uint32_t hal_get_systick_freq(){
+   return(HAL_RCC_GetHCLKFreq());
+}
 
 /* USER CODE END PV */
 
@@ -72,9 +106,6 @@ void Error_Handler(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-int _write(int file, char *ptr, int len){
-	CDC_Transmit_FS(ptr, len);
-}
 
 #define ARES 4096.0// analog resolution, 12 bit
 #define AREF 3.338// analog reference voltage
@@ -150,6 +181,28 @@ int main(void)
 	Error_Handler();
   }
 
+  hal_init();
+
+  hal_set_comp_type("foo"); // default pin for mem errors
+  HAL_PIN(bar) = 0.0;
+  
+  #include "../src/comps/sim.comp"
+  #include "../src/comps/term.comp"
+
+  rt_time_hal_pin = hal_map_pin("net0.rt_calc_time");
+     frt_time_hal_pin = hal_map_pin("net0.frt_calc_time");
+     rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
+     frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
+hal_comp_init();//call init function of all comps
+
+if(hal.pin_errors + hal.comp_errors == 0){
+      hal_start();
+   }
+   else{
+      hal.hal_state = MEM_ERROR;
+   }
+   
+   
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -159,8 +212,12 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
+     
+     hal_run_nrt(0.1);
+     cdc_poll();
+     HAL_Delay(2);
+     /*
 	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
-	  HAL_Delay(10);
 
 	  uint32_t adc1 = 0;
 	  uint32_t adc2 = 0;
@@ -229,11 +286,12 @@ int main(void)
 	  adc3 = HAL_ADC_GetValue(&hadc3);
 	  adc4 = HAL_ADC_GetValue(&hadc4);
 
-	  //printf("iw: %i iu: %i iv:%i mt: %i\n", adc1, adc2, adc3, adc4);
+     printf("iw: %i iu: %i iv:%i mt: %i\n", adc1, adc2, adc3, adc4);
 
 	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
 	  buf[9] = 0;
-	  CDC_Transmit_FS(buf, 10);
+	  //CDC_Transmit_FS(buf, 10);
+     */
 
   }
   /* USER CODE END 3 */
@@ -304,6 +362,11 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+//Delay implementation for hal_term.c
+void Wait(uint32_t ms){
+   HAL_Delay(ms);
+}
 
 /* USER CODE END 4 */
 

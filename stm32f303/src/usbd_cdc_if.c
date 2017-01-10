@@ -44,6 +44,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc_if.h"
 /* USER CODE BEGIN INCLUDE */
+#include "ringbuf.h"
+#define RX_QUEUE_SIZE  1024
+#define TX_QUEUE_SIZE  4096
 /* USER CODE END INCLUDE */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -59,6 +62,8 @@
   * @{
   */ 
 /* USER CODE BEGIN PRIVATE_TYPES */
+struct ringbuf rx_buf = RINGBUF(RX_QUEUE_SIZE);
+struct ringbuf tx_buf = RINGBUF(TX_QUEUE_SIZE);
 /* USER CODE END PRIVATE_TYPES */ 
 /**
   * @}
@@ -70,8 +75,8 @@
 /* USER CODE BEGIN PRIVATE_DEFINES */
 /* Define size for the receive and transmit buffer over CDC */
 /* It's up to user to redefine and/or remove those define */
-#define APP_RX_DATA_SIZE  4
-#define APP_TX_DATA_SIZE  4
+#define APP_RX_DATA_SIZE  64 //TODO: more for FS transfers
+#define APP_TX_DATA_SIZE  64
 /* USER CODE END PRIVATE_DEFINES */
 /**
   * @}
@@ -261,6 +266,7 @@ static int8_t CDC_Control_FS  (uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS (uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
+  rb_write(&rx_buf, Buf, *Len);
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
   return (USBD_OK);
@@ -293,6 +299,40 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 }
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
+void cdc_usbtx(){
+   USBD_CDC_HandleTypeDef *hcdc = (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.pClassData;
+   if (hcdc->TxState != 0){
+     return; //busy
+   }
+   int len = rb_read(&tx_buf,UserTxBufferFS,sizeof(UserTxBufferFS));
+   USBD_CDC_SetTxBuffer(&hUsbDeviceFS, UserTxBufferFS, len);
+   USBD_CDC_TransmitPacket(&hUsbDeviceFS);
+}
+
+int cdc_tx(void* data, uint32_t len){
+   int ret;
+   ret = rb_write(&tx_buf, data, len);
+   cdc_usbtx();
+   return ret;
+}
+
+void cdc_poll(){
+   cdc_usbtx();
+}
+
+int cdc_is_connected(){
+   //return (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.dev_connection_status; not implemented
+   //hUsbDeviceFS.dev_state != USBD_STATE_CONFIGURED probably this
+   return 1;
+}
+
+int cdc_getline(char *ptr, int len){
+   return rb_getline(&rx_buf, ptr, len);
+}
+
+int _write(int file, char *ptr, int len){
+	return cdc_tx(ptr, len);
+}
 /* USER CODE END PRIVATE_FUNCTIONS_IMPLEMENTATION */
 
 /**

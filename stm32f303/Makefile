@@ -28,12 +28,14 @@ SOURCES += stm32f303/src/usbd_cdc_if.c
 SOURCES += stm32f303/src/usbd_conf.c
 SOURCES += stm32f303/src/usbd_desc.c
 
-#INCDIRS += shared
-#SOURCES += shared/crc8.c
-#SOURCES += shared/common.c
-#SOURCES += shared/angle.c
-#SOURCES += shared/hal.c
-#SOURCES += shared/hal_term.c
+INCDIRS += shared
+SOURCES += shared/ringbuf.c
+SOURCES += shared/crc8.c
+SOURCES += shared/common.c
+SOURCES += shared/angle.c
+SOURCES += shared/scanf.c
+SOURCES += shared/hal.c
+SOURCES += shared/hal_term.c
 
 #USB Driver
 USB_DEVICE_DIR = lib/STM32_USB_Device_Library-2.4.2
@@ -145,6 +147,7 @@ LDFLAGS += -Wl,-Map=$(TARGET).map,--cref
 LDFLAGS += -Wl,--gc-sections
 
 # LDFLAGS += -specs=nano.specs -u _printf_float -u _scanf_float
+LDFLAGS += -lc -specs=nosys.specs #fixes sbrk missing? present in eclipse?
 LDFLAGS += -T$(LDSCRIPT)
 
 #============================================================================
