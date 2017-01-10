@@ -120,6 +120,50 @@ void Error_Handler(void);
 
 /* USER CODE END 0 */
 
+void TIM8_UP_IRQHandler(){
+   __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
+   // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+   switch(hal.rt_state){
+      case RT_STOP:
+         return;
+      case RT_CALC:
+         hal.rt_state = RT_STOP;
+         hal.hal_state = RT_TOO_LONG;
+         hal.frt_state = FRT_STOP;
+         return;
+      case RT_SLEEP:
+         if(hal.active_rt_func > -1){
+            hal.rt_state = RT_STOP;
+            hal.hal_state = MISC_ERROR;
+            hal.frt_state = FRT_STOP;
+            return;
+         }
+         hal.rt_state = RT_CALC;
+   }
+
+   // static unsigned int last_start = 0;
+   // unsigned int start = hal_get_systick_value();
+   //
+   // if(last_start < start){
+   //   last_start += hal_get_systick_reload();
+   // }
+   //
+   // float period = ((float)(last_start - start)) / hal_get_systick_freq();
+   // last_start = start;
+
+   hal_run_rt(0.000066);
+
+   // unsigned int end = hal_get_systick_value();
+   // if(start < end){
+   //   start += hal_get_systick_reload();
+   // }
+   // PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
+   // PIN(rt_period_time) = period;
+
+   hal.rt_state = RT_SLEEP;
+   // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
+}
+
 int main(void)
 {
 
@@ -137,48 +181,67 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_ADC1_Init();
-  MX_ADC2_Init();
-  MX_ADC3_Init();
-  MX_ADC4_Init();
-  MX_DAC_Init();
-  MX_OPAMP1_Init();
-  MX_OPAMP2_Init();
-  MX_OPAMP3_Init();
-  //MX_TIM8_Init();
-  MX_USART1_UART_Init();
-  MX_USART3_UART_Init();
+  // MX_ADC1_Init();
+  // MX_ADC2_Init();
+  // MX_ADC3_Init();
+  // MX_ADC4_Init();
+  // MX_DAC_Init();
+  // MX_OPAMP1_Init();
+  // MX_OPAMP2_Init();
+  // MX_OPAMP3_Init();
+  MX_TIM8_Init();
+  // MX_USART1_UART_Init();
+  // MX_USART3_UART_Init();
   MX_USB_DEVICE_Init();
 
   /* USER CODE BEGIN 2 */
-  HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
-
-  GPIO_InitTypeDef GPIO_InitStruct;
-  GPIO_InitStruct.Pin = GPIO_PIN_9;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  // HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+  // HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+  // HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+  // HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
 
   //USB EN IO board: PB15
-  GPIO_InitStruct.Pin = GPIO_PIN_15;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+  // GPIO_InitStruct.Pin = GPIO_PIN_15;
+  // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  // GPIO_InitStruct.Pull = GPIO_NOPULL;
+  // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  // HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
 
-  if (HAL_OPAMP_Start(&hopamp1) != HAL_OK){
-    Error_Handler();
+   //   if (HAL_OPAMP_Start(&hopamp1) != HAL_OK){
+   //     Error_Handler();
+   //   }
+   //   if (HAL_OPAMP_Start(&hopamp2) != HAL_OK){
+   // Error_Handler();
+   //   }
+   //   if (HAL_OPAMP_Start(&hopamp3) != HAL_OK){
+   // Error_Handler();
+   //   }
+
+  htim8.Instance->CCR1 = 0;
+  htim8.Instance->CCR2 = 0;
+  htim8.Instance->CCR3 = 0;
+  
+  if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
+ 	Error_Handler();
   }
-  if (HAL_OPAMP_Start(&hopamp2) != HAL_OK){
+  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
 	Error_Handler();
   }
-  if (HAL_OPAMP_Start(&hopamp3) != HAL_OK){
+  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
+  	Error_Handler();
+  }
+  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
+  	Error_Handler();
+  }
+  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
 	Error_Handler();
+  }
+  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
+  	Error_Handler();
+  }
+  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
+  	Error_Handler();
   }
 
   hal_init();
@@ -188,21 +251,27 @@ int main(void)
   
   #include "../src/comps/sim.comp"
   #include "../src/comps/term.comp"
+  #include "comps/io.comp"
 
   rt_time_hal_pin = hal_map_pin("net0.rt_calc_time");
-     frt_time_hal_pin = hal_map_pin("net0.frt_calc_time");
-     rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
-     frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
-hal_comp_init();//call init function of all comps
+  frt_time_hal_pin = hal_map_pin("net0.frt_calc_time");
+  rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
+  frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
+  
+  //hal_set_pin("io0.rt_prio", 1.0);
+  hal_set_pin("sim0.rt_prio", 15.0);
+  hal_set_pin("term0.rt_prio", 15.0);
+  hal_set_pin("term0.send_step", 0.0);
+  hal_set_pin("term0.gain0", 20.0);
+  
+  hal_comp_init();//call init function of all comps
 
-if(hal.pin_errors + hal.comp_errors == 0){
-      hal_start();
-   }
-   else{
-      hal.hal_state = MEM_ERROR;
-   }
-   
-   
+  if(hal.pin_errors + hal.comp_errors == 0){
+     hal_start();
+  }
+  else{
+     hal.hal_state = MEM_ERROR;
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -212,87 +281,9 @@ if(hal.pin_errors + hal.comp_errors == 0){
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-     
      hal_run_nrt(0.1);
      cdc_poll();
      HAL_Delay(2);
-     /*
-	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
-
-	  uint32_t adc1 = 0;
-	  uint32_t adc2 = 0;
-	  uint32_t adc3 = 0;
-	  uint32_t adc4 = 0;
-
-	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
-	  HAL_ADC_Start(&hadc1);
-	  HAL_ADC_Start(&hadc2);
-	  HAL_ADC_Start(&hadc3);
-	  HAL_ADC_Start(&hadc4);
-
-	  HAL_ADC_PollForConversion(&hadc1, 100);
-	  HAL_ADC_PollForConversion(&hadc2, 100);
-	  HAL_ADC_PollForConversion(&hadc3, 100);
-	  HAL_ADC_PollForConversion(&hadc4, 100);
-
-	  adc1 = HAL_ADC_GetValue(&hadc1);
-	  adc2 = HAL_ADC_GetValue(&hadc2);
-	  adc3 = HAL_ADC_GetValue(&hadc3);
-	  adc4 = HAL_ADC_GetValue(&hadc4);
-
-	  char buf[16];
-	  buf[0] = 255;
-	  buf[1] = adc1 / 16 + 1;
-	  buf[2] = adc2 / 16 + 1;
-	  buf[3] = adc3 / 16 + 1;
-	  buf[4] = adc4 / 16 + 1;
-
-	  //printf("iwo: %i iuo: %i ivo:%i hvt: %i\n", adc1, adc2, adc3, adc4);
-
-	  HAL_ADC_Start(&hadc1);
-	  HAL_ADC_Start(&hadc2);
-	  HAL_ADC_Start(&hadc3);
-	  HAL_ADC_Start(&hadc4);
-
-	  HAL_ADC_PollForConversion(&hadc1, 100);
-	  HAL_ADC_PollForConversion(&hadc2, 100);
-	  HAL_ADC_PollForConversion(&hadc3, 100);
-	  HAL_ADC_PollForConversion(&hadc4, 100);
-
-	  adc1 = HAL_ADC_GetValue(&hadc1);
-	  adc2 = HAL_ADC_GetValue(&hadc2);
-	  adc3 = HAL_ADC_GetValue(&hadc3);
-	  adc4 = HAL_ADC_GetValue(&hadc4);
-
-	  buf[5] = adc1 / 16 + 1;
-	  buf[6] = adc2 / 16 + 1;
-	  buf[7] = adc3 / 16 + 1;
-	  buf[8] = adc4 / 16 + 1;
-
-	  //printf("uw: %i uv: %i uu:%i hv: %i\n", adc1, adc2, adc3, adc4);
-
-	  HAL_ADC_Start(&hadc1);
-	  HAL_ADC_Start(&hadc2);
-	  HAL_ADC_Start(&hadc3);
-	  HAL_ADC_Start(&hadc4);
-
-	  HAL_ADC_PollForConversion(&hadc1, 100);
-	  HAL_ADC_PollForConversion(&hadc2, 100);
-	  HAL_ADC_PollForConversion(&hadc3, 100);
-	  HAL_ADC_PollForConversion(&hadc4, 100);
-
-	  adc1 = HAL_ADC_GetValue(&hadc1);
-	  adc2 = HAL_ADC_GetValue(&hadc2);
-	  adc3 = HAL_ADC_GetValue(&hadc3);
-	  adc4 = HAL_ADC_GetValue(&hadc4);
-
-     printf("iw: %i iu: %i iv:%i mt: %i\n", adc1, adc2, adc3, adc4);
-
-	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
-	  buf[9] = 0;
-	  //CDC_Transmit_FS(buf, 10);
-     */
-
   }
   /* USER CODE END 3 */
 
