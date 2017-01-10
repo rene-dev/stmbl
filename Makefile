@@ -19,7 +19,6 @@ INCDIRS += shared
 SOURCES += src/main.c
 SOURCES += src/stm32f4xx_it.c
 SOURCES += src/system_stm32f4xx.c
-SOURCES += src/scanf.c
 SOURCES += src/setup.c
 SOURCES += src/usb_cdc.c
 SOURCES += src/hal_conf.c
@@ -34,6 +33,8 @@ SOURCES += shared/common.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/hal_term.c
+SOURCES += shared/scanf.c
+SOURCES += shared/ringbuf.c
 
 USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
 
