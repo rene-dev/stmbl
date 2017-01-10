@@ -53,7 +53,7 @@ void hal_init(){
 
   hal.rt_state = RT_STOP;
   hal.frt_state = FRT_STOP;
-  hal.hal_state = HAL_OK;
+  hal.hal_state = HAL2_OK;
   hal.active_rt_func = -1;
   hal.active_frt_func = -1;
   hal.active_nrt_func = -1;
@@ -91,7 +91,7 @@ void hal_run_frt(float period){
 }
 
 int hal_start_rt(){
-   if(hal.rt_state == RT_STOP && hal.hal_state == HAL_OK){
+   if(hal.rt_state == RT_STOP && hal.hal_state == HAL2_OK){
       hal.active_rt_func = -1;
       hal.rt_state = RT_SLEEP;
       return(1);
@@ -189,7 +189,7 @@ void hal_stop(){
 }
 
 int hal_start_frt(){
-   if(hal.frt_state == FRT_STOP && hal.hal_state == HAL_OK){
+   if(hal.frt_state == FRT_STOP && hal.hal_state == HAL2_OK){
       hal.active_frt_func = -1;
       hal.frt_state = FRT_SLEEP;
       return(1);

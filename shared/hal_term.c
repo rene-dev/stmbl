@@ -29,8 +29,8 @@ void hal_term_getconf(){
 
 void hal_term_print_state(){
    switch(hal.hal_state){
-      case HAL_OK:
-      printf("HAL state:  HAL_OK\n");
+      case HAL2_OK:
+      printf("HAL state:  HAL2_OK\n");
       break;
       case RT_TOO_LONG:
       printf("HAL state:  RT_TOO_LONG\n");
