@@ -310,20 +310,28 @@ void cdc_usbtx(){
 }
 
 int cdc_tx(void* data, uint32_t len){
-   int ret;
-   ret = rb_write(&tx_buf, data, len);
-   cdc_usbtx();
-   return ret;
+   if(cdc_is_connected()){
+      int ret;
+      ret = rb_write(&tx_buf, data, len);
+      cdc_usbtx();
+      return ret;
+   }else{
+      return 0;
+   }
 }
 
 void cdc_poll(){
-   cdc_usbtx();
+   if(cdc_is_connected()){
+      cdc_usbtx();
+   }
 }
 
 int cdc_is_connected(){
-   //return (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.dev_connection_status; not implemented
-   //hUsbDeviceFS.dev_state != USBD_STATE_CONFIGURED probably this
-   return 1;
+   if((USBD_CDC_HandleTypeDef*)hUsbDeviceFS.dev_state != USBD_STATE_CONFIGURED){
+      return 0;
+   }else{
+      return 1;
+   }
 }
 
 int cdc_getline(char *ptr, int len){

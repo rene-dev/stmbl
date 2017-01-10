@@ -10,12 +10,15 @@ HAL_PIN(fault) = 0.0;
 HAL_PIN(led) = 0.0;
 
 
-RT(
-   htim8.Instance->CCR3 = 4800 - PIN(u);
-   htim8.Instance->CCR2 = 4800 - PIN(v);
-   htim8.Instance->CCR1 = 4800 - PIN(w);
-   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+NRT(
    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+);
+
+RT(
+   htim8.Instance->CCR3 = PIN(u) + 2400;
+   htim8.Instance->CCR2 = PIN(v) + 2400;
+   htim8.Instance->CCR1 = PIN(w) + 2400;
+   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
 );
 
 ENDCOMP;

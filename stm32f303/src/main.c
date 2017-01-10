@@ -55,7 +55,11 @@
 #include <math.h>
 #include "defines.h"
 #include "hal.h"
+#include "hal_term.h"
+#include "angle.h"
 #include "scanf.h"
+#include "usbd_cdc_if.h"
+
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -251,6 +255,8 @@ int main(void)
   
   #include "../src/comps/sim.comp"
   #include "../src/comps/term.comp"
+  #include "../src/comps/idq.comp"
+  #include "../src/comps/iclarke.comp"
   #include "comps/io.comp"
 
   rt_time_hal_pin = hal_map_pin("net0.rt_calc_time");
@@ -258,11 +264,30 @@ int main(void)
   rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
   frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
   
-  //hal_set_pin("io0.rt_prio", 1.0);
-  hal_set_pin("sim0.rt_prio", 15.0);
+  hal_set_pin("sim0.rt_prio", 1.0);
+  hal_set_pin("idq0.rt_prio", 2.0);
+  hal_set_pin("iclarke0.rt_prio", 3.0);
+  hal_set_pin("io0.rt_prio", 4.0);
+  
   hal_set_pin("term0.rt_prio", 15.0);
-  hal_set_pin("term0.send_step", 0.0);
+  hal_set_pin("term0.send_step", 50.0);
   hal_set_pin("term0.gain0", 20.0);
+  hal_set_pin("term0.gain1", 20.0);
+  hal_set_pin("term0.gain2", 20.0);
+  hal_set_pin("term0.gain3", 20.0);
+  hal_set_pin("term0.gain4", 20.0);
+  hal_set_pin("term0.gain5", 20.0);
+  hal_set_pin("term0.gain6", 20.0);
+  hal_set_pin("term0.gain7", 20.0);
+  
+  hal_link_pins("sim0.vel", "idq0.pos");
+  hal_link_pins("idq0.a", "iclarke0.a");
+  hal_link_pins("idq0.b", "iclarke0.b");
+  hal_link_pins("iclarke0.u", "io0.u");
+  hal_link_pins("iclarke0.v", "io0.v");
+  hal_link_pins("iclarke0.w", "io0.w");
+  
+  hal_link_pins("term0.con", "io0.led");
   
   hal_comp_init();//call init function of all comps
 
@@ -283,7 +308,7 @@ int main(void)
   /* USER CODE BEGIN 3 */
      hal_run_nrt(0.1);
      cdc_poll();
-     HAL_Delay(2);
+     HAL_Delay(1);
   }
   /* USER CODE END 3 */
 
