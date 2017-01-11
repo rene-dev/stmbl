@@ -126,7 +126,7 @@ void Error_Handler(void);
 
 void TIM8_UP_IRQHandler(){
    __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
-   // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
    switch(hal.rt_state){
       case RT_STOP:
          return;
@@ -165,7 +165,7 @@ void TIM8_UP_IRQHandler(){
    // PIN(rt_period_time) = period;
 
    hal.rt_state = RT_SLEEP;
-   // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
+   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
 }
 
 int main(void)
@@ -185,14 +185,14 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  // MX_ADC1_Init();
-  // MX_ADC2_Init();
-  // MX_ADC3_Init();
-  // MX_ADC4_Init();
+  MX_ADC1_Init();
+  MX_ADC2_Init();
+  MX_ADC3_Init();
+  MX_ADC4_Init();
   // MX_DAC_Init();
-  // MX_OPAMP1_Init();
-  // MX_OPAMP2_Init();
-  // MX_OPAMP3_Init();
+  MX_OPAMP1_Init();
+  MX_OPAMP2_Init();
+  MX_OPAMP3_Init();
   MX_TIM8_Init();
   // MX_USART1_UART_Init();
   // MX_USART3_UART_Init();
@@ -211,16 +211,24 @@ int main(void)
   // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   // HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
   // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+  
+  //IO pins
+  GPIO_InitTypeDef GPIO_InitStruct;
+  GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-   //   if (HAL_OPAMP_Start(&hopamp1) != HAL_OK){
-   //     Error_Handler();
-   //   }
-   //   if (HAL_OPAMP_Start(&hopamp2) != HAL_OK){
-   // Error_Handler();
-   //   }
-   //   if (HAL_OPAMP_Start(&hopamp3) != HAL_OK){
-   // Error_Handler();
-   //   }
+     if (HAL_OPAMP_Start(&hopamp1) != HAL_OK){
+       Error_Handler();
+     }
+     if (HAL_OPAMP_Start(&hopamp2) != HAL_OK){
+       Error_Handler();
+     }
+     if (HAL_OPAMP_Start(&hopamp3) != HAL_OK){
+       Error_Handler();
+     }
 
   htim8.Instance->CCR1 = 0;
   htim8.Instance->CCR2 = 0;
@@ -229,6 +237,7 @@ int main(void)
   if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
  	Error_Handler();
   }
+  TIM8->RCR = 1;//uptate event foo
   if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
 	Error_Handler();
   }
