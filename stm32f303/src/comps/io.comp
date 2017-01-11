@@ -9,6 +9,10 @@ HAL_PIN(fault) = 0.0;
 
 HAL_PIN(led) = 0.0;
 
+HAL_PIN(a1);
+HAL_PIN(a2);
+HAL_PIN(a3);
+HAL_PIN(a4);
 
 NRT(
    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
@@ -19,6 +23,14 @@ RT(
    htim8.Instance->CCR2 = PIN(v) + 2400;
    htim8.Instance->CCR1 = PIN(w) + 2400;
    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+  HAL_ADC_PollForConversion(&hadc1, 100);
+  HAL_ADC_PollForConversion(&hadc2, 100);
+  HAL_ADC_PollForConversion(&hadc3, 100);
+  HAL_ADC_PollForConversion(&hadc4, 100);
+  PIN(a1) = HAL_ADC_GetValue(&hadc1);
+  PIN(a2) = HAL_ADC_GetValue(&hadc2);
+  PIN(a3) = HAL_ADC_GetValue(&hadc3);
+  PIN(a4) = HAL_ADC_GetValue(&hadc4);   
 );
 
 ENDCOMP;

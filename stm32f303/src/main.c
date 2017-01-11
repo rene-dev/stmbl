@@ -126,6 +126,11 @@ void Error_Handler(void);
 
 void TIM8_UP_IRQHandler(){
    __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
+   //TODO: hw trigger and dma for ADC
+   HAL_ADC_Start(&hadc1);
+   HAL_ADC_Start(&hadc2);
+   HAL_ADC_Start(&hadc3);
+   HAL_ADC_Start(&hadc4);
    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
    switch(hal.rt_state){
       case RT_STOP:
@@ -199,10 +204,10 @@ int main(void)
   MX_USB_DEVICE_Init();
 
   /* USER CODE BEGIN 2 */
-  // HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-  // HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-  // HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
-  // HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
 
   //USB EN IO board: PB15
   // GPIO_InitStruct.Pin = GPIO_PIN_15;
@@ -273,7 +278,7 @@ int main(void)
   rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
   frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
   
-  hal_set_pin("sim0.rt_prio", 1.0);
+  // hal_set_pin("sim0.rt_prio", 1.0);
   hal_set_pin("idq0.rt_prio", 2.0);
   hal_set_pin("iclarke0.rt_prio", 3.0);
   hal_set_pin("io0.rt_prio", 4.0);
@@ -288,6 +293,17 @@ int main(void)
   hal_set_pin("term0.gain5", 20.0);
   hal_set_pin("term0.gain6", 20.0);
   hal_set_pin("term0.gain7", 20.0);
+  
+  //ADC TEST
+  hal_set_pin("term0.gain0", 0.1);
+  hal_set_pin("term0.gain1", 0.1);
+  hal_set_pin("term0.gain2", 0.1);
+  hal_set_pin("term0.offset0", -1846.0);
+  hal_set_pin("term0.offset1", -1846.0);
+  hal_set_pin("term0.offset2", -1846.0);
+  hal_link_pins("io0.a1", "term0.wave0");
+  hal_link_pins("io0.a2", "term0.wave1");
+  hal_link_pins("io0.a3", "term0.wave2");
   
   hal_link_pins("sim0.vel", "idq0.pos");
   hal_link_pins("idq0.a", "iclarke0.a");
