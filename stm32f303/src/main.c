@@ -71,6 +71,7 @@ GLOBAL_HAL_PIN(rt_time);
 GLOBAL_HAL_PIN(frt_time);
 GLOBAL_HAL_PIN(rt_period_time);
 GLOBAL_HAL_PIN(frt_period_time);
+uint32_t systick_freq;
 
 //hal interface TODO: move hal interface to file
 void hal_enable_rt(){
@@ -95,7 +96,7 @@ uint32_t hal_get_systick_reload(){
 }
 
 uint32_t hal_get_systick_freq(){
-   return(HAL_RCC_GetHCLKFreq());
+   return(systick_freq);
 }
 
 /* USER CODE END PV */
@@ -187,7 +188,7 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
-
+  systick_freq = HAL_RCC_GetHCLKFreq();
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_ADC1_Init();
@@ -272,6 +273,23 @@ int main(void)
   #include "../src/comps/idq.comp"
   #include "../src/comps/iclarke.comp"
   #include "comps/io.comp"
+  
+  hal_set_comp_type("net");
+  HAL_PIN(enable) = 0.0;
+  HAL_PIN(cmd) = 0.0;
+  HAL_PIN(fb) = 0.0;
+  HAL_PIN(fb_error) = 0.0;
+  HAL_PIN(cmd_d) = 0.0;
+  HAL_PIN(fb_d) = 0.0;
+  HAL_PIN(core_temp0) = 0.0;
+  HAL_PIN(core_temp1) = 0.0;
+  HAL_PIN(motor_temp) = 0.0;
+  HAL_PIN(rt_calc_time) = 0.0;
+  HAL_PIN(frt_calc_time) = 0.0;
+  HAL_PIN(nrt_calc_time) = 0.0;
+  HAL_PIN(rt_period) = 0.0;
+  HAL_PIN(frt_period) = 0.0;
+  HAL_PIN(nrt_period) = 0.0;
 
   rt_time_hal_pin = hal_map_pin("net0.rt_calc_time");
   frt_time_hal_pin = hal_map_pin("net0.frt_calc_time");
