@@ -269,7 +269,7 @@ int main(void)
   HAL_PIN(bar) = 0.0;
   
   #include "../src/comps/sim.comp"
-  #include "../src/comps/term.comp"
+  #include "comps/term.comp"
   #include "../src/comps/idq.comp"
   #include "../src/comps/iclarke.comp"
   #include "comps/io.comp"
