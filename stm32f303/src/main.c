@@ -128,10 +128,10 @@ void Error_Handler(void);
 void TIM8_UP_IRQHandler(){
    __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
    //TODO: hw trigger and dma for ADC
-   HAL_ADC_Start(&hadc1);
-   HAL_ADC_Start(&hadc2);
-   HAL_ADC_Start(&hadc3);
-   HAL_ADC_Start(&hadc4);
+   // HAL_ADC_Start(&hadc1);
+   // HAL_ADC_Start(&hadc2);
+   // HAL_ADC_Start(&hadc3);
+   // HAL_ADC_Start(&hadc4);
    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
    switch(hal.rt_state){
       case RT_STOP:
@@ -191,6 +191,7 @@ int main(void)
   systick_freq = HAL_RCC_GetHCLKFreq();
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM8_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
   MX_ADC3_Init();
@@ -199,7 +200,6 @@ int main(void)
   MX_OPAMP1_Init();
   MX_OPAMP2_Init();
   MX_OPAMP3_Init();
-  MX_TIM8_Init();
   // MX_USART1_UART_Init();
   // MX_USART3_UART_Init();
   MX_USB_DEVICE_Init();
@@ -240,6 +240,10 @@ int main(void)
   htim8.Instance->CCR2 = 0;
   htim8.Instance->CCR3 = 0;
   
+  HAL_ADC_Start(&hadc1);
+  HAL_ADC_Start(&hadc2);
+  HAL_ADC_Start(&hadc3);
+  HAL_ADC_Start(&hadc4);
   if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
  	Error_Handler();
   }
