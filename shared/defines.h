@@ -39,6 +39,8 @@ extern "C" {
 #define SCALE(value, high, max)  MIN(MAX(((max) - (value)) / ((max) - (high)), 0.0), 1.0)
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
+#define MIN3(a, b, c) MIN(a, MIN(b, c))
+#define MAX3(a, b, c) MAX(a, MAX(b, c))
 
 #define ARRAY_SIZE(arr)     (sizeof(arr) / sizeof((arr)[0]))
 #define FIELD_SIZEOF(t, f)  (sizeof(((t*)0)->f))

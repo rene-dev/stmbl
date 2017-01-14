@@ -1,0 +1,39 @@
+HAL_COMP(hv);
+
+HAL_PIN(u) = 0.0;
+HAL_PIN(v) = 0.0;
+HAL_PIN(w) = 0.0;
+HAL_PIN(udc) = 0.0;
+
+HAL_PIN(en) = 0.0;
+HAL_PIN(enu) = 1.0;
+HAL_PIN(env) = 1.0;
+HAL_PIN(enw) = 1.0;
+
+HAL_PIN(fault) = 0.0;
+
+HAL_PIN(min_on) = 0.00000035; // in on time [s]
+
+RT(
+   float udc = MAX(PIN(udc), 0.1);
+   uint32_t u = CLAMP(PIN(u), 0.0, udc) / udc * 4800;
+   uint32_t v = CLAMP(PIN(v), 0.0, udc) / udc * 4800;
+   uint32_t w = CLAMP(PIN(w), 0.0, udc) / udc * 4800;
+   
+   uint32_t min_on = 4800 * 15000 * PIN(min_on) + 0.5;
+   
+   if(u > 0 && u < min_on || v > 0 && v < min_on || w > 0 && w < min_on){
+      u += min_on;
+      v += min_on;
+      w += min_on;
+   }
+
+   htim8.Instance->CCR3 = u;
+   htim8.Instance->CCR2 = v;
+   htim8.Instance->CCR1 = w;
+   
+   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+   PIN(fault) = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_7);
+);
+
+ENDCOMP;

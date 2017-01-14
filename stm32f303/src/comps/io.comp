@@ -1,36 +1,47 @@
 HAL_COMP(io);
 
-HAL_PIN(u) = 0.0;
-HAL_PIN(v) = 0.0;
-HAL_PIN(w) = 0.0;
-
-HAL_PIN(en) = 0.0;
-HAL_PIN(fault) = 0.0;
-
 HAL_PIN(led) = 0.0;
 
-HAL_PIN(a1);
-HAL_PIN(a2);
-HAL_PIN(a3);
-HAL_PIN(a4);
+HAL_PIN(iu);
+HAL_PIN(iv);
+HAL_PIN(iw);
+HAL_PIN(udc);
+HAL_PIN(status1);
+HAL_PIN(status2);
+HAL_PIN(status12);
+
+MEM(float u_offset) = 0;
+MEM(float v_offset) = 0;
+MEM(float w_offset) = 0;
 
 NRT(
    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
 );
 
 RT(
-   htim8.Instance->CCR3 = PIN(u) + 2400;
-   htim8.Instance->CCR2 = PIN(v) + 2400;
-   htim8.Instance->CCR1 = PIN(w) + 2400;
-   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
   HAL_ADC_PollForConversion(&hadc1, 100);
-  HAL_ADC_PollForConversion(&hadc2, 100);
+  //HAL_ADC_PollForConversion(&hadc2, 100);
   HAL_ADC_PollForConversion(&hadc3, 100);
-  HAL_ADC_PollForConversion(&hadc4, 100);
-  PIN(a1) = HAL_ADC_GetValue(&hadc1);
-  PIN(a2) = HAL_ADC_GetValue(&hadc2);
-  PIN(a3) = HAL_ADC_GetValue(&hadc3);
-  PIN(a4) = HAL_ADC_GetValue(&hadc4);   
+  //HAL_ADC_PollForConversion(&hadc4, 100);
+
+  
+  uint32_t a12 = HAL_ADCEx_MultiModeGetValue(&hadc1);
+  uint32_t a34 = HAL_ADCEx_MultiModeGetValue(&hadc3);
+  if(u_offset == 0){
+     u_offset = AMP(a12 & 0xFFFF, SHUNT_GAIN);
+     v_offset = AMP(a12 >> 16, SHUNT_GAIN);
+     w_offset = AMP(a34 & 0xFFFF, SHUNT_GAIN);
+  }
+  
+  PIN(iu) = AMP(a12 & 0xFFFF, SHUNT_GAIN) - u_offset;
+  PIN(iv) = AMP(a12 >> 16, SHUNT_GAIN) - v_offset;
+  PIN(iw) = AMP(a34 & 0xFFFF, SHUNT_GAIN) - w_offset;
+  PIN(udc) = VOLT(a34 >> 16) * 0.05 + PIN(udc) * 0.95;
+  PIN(status1) = hadc1.Instance->ISR;
+  PIN(status2) = hadc2.Instance->ISR;
+  PIN(status12) = ADC_COMMON_REGISTER(&hadc1)->CSR;
+  
+  
 );
 
 ENDCOMP;

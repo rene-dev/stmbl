@@ -1,0 +1,49 @@
+HAL_COMP(svm);
+
+HAL_PIN(u) = 0;
+HAL_PIN(v) = 0;
+HAL_PIN(w) = 0;
+HAL_PIN(udc) = 0;
+
+HAL_PIN(su);
+HAL_PIN(sv);
+HAL_PIN(sw);
+
+HAL_PIN(cmode) = 0.0;
+HAL_PIN(mode) = 2.0;
+
+HAL_PIN(enu) = 1.0;
+HAL_PIN(env) = 1.0;
+HAL_PIN(enw) = 1.0;
+
+RT(
+   float offset = 0;
+   float udc = PIN(udc);
+   
+   float u = PIN(u);
+   float v = PIN(v);
+   float w = PIN(w);
+   
+   switch((int)PIN(mode)){
+      case 0: // std
+         offset = (u + v + w) / 3.0 - udc / 2.0;
+         break;
+      
+      case 1: // svm
+         offset = (MIN3(u, v, w) + MAX3(u, v, w)) / 2.0 - udc / 2.0;
+         break;
+         
+      case 2: // fb svm
+         offset = MIN3(u, v, w);
+         break;
+      
+      default:
+         offset = 0.0;
+   }
+   
+   PIN(su) = u - offset;
+   PIN(sv) = v - offset;
+   PIN(sw) = w - offset;
+);
+
+ENDCOMP;

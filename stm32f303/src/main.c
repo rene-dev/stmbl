@@ -118,10 +118,16 @@ void Error_Handler(void);
 #define VDIVUP 249000.0 * 2.0//HV div pullup R1,R12
 #define VDIVDOWN 3900.0//HV div pulldown R2,R9
 
-#define TPULLUP 10000.0//iramx temperature pullup
-
 #define VOLT(a) ((a) / (ARES) * (AREF) / (VDIVDOWN) * ((VDIVUP) + (VDIVDOWN)))
 //#define TEMP(a) (log10f((a) * (AREF) / (ARES) * (TPULLUP) / ((AREF) - (a) * (AREF) / (ARES))) * (-53.0) + 290.0)
+
+#define SHUNT 0.003//shunt
+#define SHUNT_PULLUP 15000
+#define SHUNT_SERIE 470
+#define SHUNT_GAIN 16
+
+#define AMP(a, gain) (((a) * AREF / ARES / (gain) - AREF / (SHUNT_PULLUP + SHUNT_SERIE) * SHUNT_SERIE) / (SHUNT * SHUNT_PULLUP) * (SHUNT_PULLUP + SHUNT_SERIE))
+
 
 /* USER CODE END 0 */
 
@@ -210,6 +216,10 @@ int main(void)
   HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
 
+  HAL_OPAMP_SelfCalibrate(&hopamp1);
+  HAL_OPAMP_SelfCalibrate(&hopamp2);
+  HAL_OPAMP_SelfCalibrate(&hopamp3);
+  
   //USB EN IO board: PB15
   // GPIO_InitStruct.Pin = GPIO_PIN_15;
   // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -276,7 +286,10 @@ int main(void)
   #include "comps/term.comp"
   #include "../src/comps/idq.comp"
   #include "../src/comps/iclarke.comp"
+  #include "comps/clarke.comp"
   #include "comps/io.comp"
+  #include "comps/svm.comp"
+  #include "comps/hv.comp"
   
   hal_set_comp_type("net");
   HAL_PIN(enable) = 0.0;
@@ -303,37 +316,43 @@ int main(void)
   // hal_set_pin("sim0.rt_prio", 1.0);
   hal_set_pin("idq0.rt_prio", 2.0);
   hal_set_pin("iclarke0.rt_prio", 3.0);
+  hal_set_pin("clarke0.rt_prio", 3.1);
   hal_set_pin("io0.rt_prio", 4.0);
+  hal_set_pin("svm0.rt_prio", 4.1);
+  hal_set_pin("hv0.rt_prio", 4.2);
   
   hal_set_pin("term0.rt_prio", 15.0);
   hal_set_pin("term0.send_step", 50.0);
-  hal_set_pin("term0.gain0", 20.0);
-  hal_set_pin("term0.gain1", 20.0);
-  hal_set_pin("term0.gain2", 20.0);
-  hal_set_pin("term0.gain3", 20.0);
+  hal_set_pin("term0.gain0", 10.0);
+  hal_set_pin("term0.gain1", 10.0);
+  hal_set_pin("term0.gain2", 10.0);
+  hal_set_pin("term0.gain3", 1.0);
   hal_set_pin("term0.gain4", 20.0);
   hal_set_pin("term0.gain5", 20.0);
   hal_set_pin("term0.gain6", 20.0);
   hal_set_pin("term0.gain7", 20.0);
   
   //ADC TEST
-  hal_set_pin("term0.gain0", 0.1);
-  hal_set_pin("term0.gain1", 0.1);
-  hal_set_pin("term0.gain2", 0.1);
-  hal_set_pin("term0.offset0", -1846.0);
-  hal_set_pin("term0.offset1", -1846.0);
-  hal_set_pin("term0.offset2", -1846.0);
-  hal_link_pins("io0.a1", "term0.wave0");
-  hal_link_pins("io0.a2", "term0.wave1");
-  hal_link_pins("io0.a3", "term0.wave2");
+  hal_link_pins("io0.udc", "term0.wave3");
+  hal_link_pins("io0.udc", "hv0.udc");
+  hal_link_pins("io0.iu", "clarke0.u");
+  hal_link_pins("io0.iv", "clarke0.v");
+  hal_link_pins("io0.iw", "clarke0.w");
+  hal_link_pins("clarke0.a", "term0.wave0");
+  hal_link_pins("clarke0.b", "term0.wave1");
+  hal_link_pins("clarke0.y", "term0.wave2");
   
   hal_link_pins("sim0.vel", "idq0.pos");
   hal_link_pins("idq0.a", "iclarke0.a");
   hal_link_pins("idq0.b", "iclarke0.b");
-  hal_link_pins("iclarke0.u", "io0.u");
-  hal_link_pins("iclarke0.v", "io0.v");
-  hal_link_pins("iclarke0.w", "io0.w");
-  
+  hal_link_pins("iclarke0.u", "svm0.u");
+  hal_link_pins("iclarke0.v", "svm0.v");
+  hal_link_pins("iclarke0.w", "svm0.w");
+  hal_link_pins("svm0.su", "hv0.u");
+  hal_link_pins("svm0.sv", "hv0.v");
+  hal_link_pins("svm0.sw", "hv0.w");
+  hal_link_pins("io0.udc", "svm0.udc");
+
   hal_link_pins("term0.con", "io0.led");
   
   hal_comp_init();//call init function of all comps

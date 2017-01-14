@@ -59,7 +59,6 @@ ADC_HandleTypeDef hadc4;
 /* ADC1 init function */
 void MX_ADC1_Init(void)
 {
-  ADC_MultiModeTypeDef multimode;
   ADC_ChannelConfTypeDef sConfig;
 
     /**Common config 
@@ -83,16 +82,6 @@ void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
-
-//    /**Configure the ADC multi-mode
-//    */
-//  multimode.Mode = ADC_DUALMODE_REGSIMULT;
-//  multimode.DMAAccessMode = ADC_DMAACCESSMODE_DISABLED;
-//  multimode.TwoSamplingDelay = ADC_TWOSAMPLINGDELAY_1CYCLE;
-//  if (HAL_ADCEx_MultiModeConfigChannel(&hadc3, &multimode) != HAL_OK)
-//  {
-//    Error_Handler();
-//  }
 
     /**Configure Regular Channel 
     */
@@ -132,6 +121,7 @@ void MX_ADC1_Init(void)
 void MX_ADC2_Init(void)
 {
   ADC_ChannelConfTypeDef sConfig;
+  ADC_MultiModeTypeDef multimode;
 
     /**Common config 
     */
@@ -187,12 +177,19 @@ void MX_ADC2_Init(void)
   // {
   //   Error_Handler();
   // }
-
+  //    /**Configure the ADC multi-mode
+  //    */
+   // multimode.Mode = ADC_DUALMODE_REGSIMULT;
+   // multimode.DMAAccessMode = ADC_DMAACCESSMODE_12_10_BITS;
+   // multimode.TwoSamplingDelay = ADC_TWOSAMPLINGDELAY_1CYCLE;
+   // if (HAL_ADCEx_MultiModeConfigChannel(&hadc1, &multimode) != HAL_OK)
+   // {
+   //   Error_Handler();
+   // }
 }
 /* ADC3 init function */
 void MX_ADC3_Init(void)
 {
-  ADC_MultiModeTypeDef multimode;
   ADC_ChannelConfTypeDef sConfig;
 
     /**Common config 
@@ -217,15 +214,7 @@ void MX_ADC3_Init(void)
     Error_Handler();
   }
 
-    /**Configure the ADC multi-mode 
-    */
-//  multimode.Mode = ADC_DUALMODE_REGSIMULT;
-//  multimode.DMAAccessMode = ADC_DMAACCESSMODE_DISABLED;
-//  multimode.TwoSamplingDelay = ADC_TWOSAMPLINGDELAY_1CYCLE;
-//  if (HAL_ADCEx_MultiModeConfigChannel(&hadc3, &multimode) != HAL_OK)
-//  {
-//    Error_Handler();
-//  }
+
 
     /**Configure Regular Channel 
     */
@@ -265,6 +254,7 @@ void MX_ADC3_Init(void)
 void MX_ADC4_Init(void)
 {
   ADC_ChannelConfTypeDef sConfig;
+  ADC_MultiModeTypeDef multimode;
 
     /**Common config 
     */
@@ -321,6 +311,15 @@ void MX_ADC4_Init(void)
   //   Error_Handler();
   // }
 
+  /**Configure the ADC multi-mode 
+  */
+// multimode.Mode = ADC_DUALMODE_REGSIMULT;
+// multimode.DMAAccessMode = ADC_DMAACCESSMODE_12_10_BITS;
+// multimode.TwoSamplingDelay = ADC_TWOSAMPLINGDELAY_1CYCLE;
+// if (HAL_ADCEx_MultiModeConfigChannel(&hadc3, &multimode) != HAL_OK)
+// {
+//  Error_Handler();
+// }
 }
 
 static uint32_t HAL_RCC_ADC12_CLK_ENABLED=0;
