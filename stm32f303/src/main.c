@@ -157,24 +157,24 @@ void TIM8_UP_IRQHandler(){
          hal.rt_state = RT_CALC;
    }
 
-   // static unsigned int last_start = 0;
-   // unsigned int start = hal_get_systick_value();
-   //
-   // if(last_start < start){
-   //   last_start += hal_get_systick_reload();
-   // }
-   //
-   // float period = ((float)(last_start - start)) / hal_get_systick_freq();
-   // last_start = start;
+   static unsigned int last_start = 0;
+   unsigned int start = hal_get_systick_value();
+   
+   if(last_start < start){
+     last_start += hal_get_systick_reload();
+   }
+   
+   float period = ((float)(last_start - start)) / hal_get_systick_freq();
+   last_start = start;
 
    hal_run_rt(0.000066);
 
-   // unsigned int end = hal_get_systick_value();
-   // if(start < end){
-   //   start += hal_get_systick_reload();
-   // }
-   // PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
-   // PIN(rt_period_time) = period;
+   unsigned int end = hal_get_systick_value();
+   if(start < end){
+     start += hal_get_systick_reload();
+   }
+   PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
+   PIN(rt_period_time) = period;
 
    hal.rt_state = RT_SLEEP;
    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);

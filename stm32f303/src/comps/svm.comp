@@ -33,8 +33,12 @@ RT(
          offset = (MIN3(u, v, w) + MAX3(u, v, w)) / 2.0 - udc / 2.0;
          break;
          
-      case 2: // fb svm
+      case 2: // flat bottom svm
          offset = MIN3(u, v, w);
+         break;
+         
+      case 3: // flat top svm
+         offset = MAX3(u, v, w) - udc;
          break;
       
       default:

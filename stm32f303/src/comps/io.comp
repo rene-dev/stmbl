@@ -19,10 +19,12 @@ NRT(
 );
 
 RT(
-  HAL_ADC_PollForConversion(&hadc1, 100);
+  //HAL_ADC_PollForConversion(&hadc1, 100);
   //HAL_ADC_PollForConversion(&hadc2, 100);
-  HAL_ADC_PollForConversion(&hadc3, 100);
+  //HAL_ADC_PollForConversion(&hadc3, 100);
   //HAL_ADC_PollForConversion(&hadc4, 100);
+  while(HAL_IS_BIT_CLR(hadc1.Instance->ISR, ADC_FLAG_EOS)){}
+  while(HAL_IS_BIT_CLR(hadc3.Instance->ISR, ADC_FLAG_EOS)){}
 
   
   uint32_t a12 = HAL_ADCEx_MultiModeGetValue(&hadc1);

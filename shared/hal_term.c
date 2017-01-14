@@ -106,12 +106,14 @@ void hal_term_print_info(){
    }
    hal_term_print_state();
    uint32_t p = 0;
+   char str[HAL_NAME_LENGTH];
    printf("active rt funcs(%u):\n", hal.rt_func_count);
    for(int i = 0; i < hal.rt_func_count; i++){
       p = (uint32_t)hal.rt[i];
       for(int i = 0; i < hal.comp_count; i++){
          if(p == (uint32_t)hal.hal_comps[i]->rt){
-            printf("   %s%lu.rt(%f)\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance,  hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value);
+            sprintf(str, "%s%lu.rt_calc_time", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
+            printf("   %s%lu.rt(%f) %fs\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance,  hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value, hal_get_pin(str));
             break;
          }
       }
