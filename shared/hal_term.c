@@ -113,7 +113,7 @@ void hal_term_print_info(){
       for(int i = 0; i < hal.comp_count; i++){
          if(p == (uint32_t)hal.hal_comps[i]->rt){
             sprintf(str, "%s%lu.rt_calc_time", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
-            printf("   %s%lu.rt(%f) %fs\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance,  hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value, hal_get_pin(str));
+            printf("   %s%lu.rt(%f) %fus\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance,  hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value, hal_get_pin(str) * 1000000.0f);
             break;
          }
       }
