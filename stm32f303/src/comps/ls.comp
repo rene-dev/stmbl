@@ -1,0 +1,139 @@
+HAL_COMP(ls);
+
+//to HV
+HAL_PIN(a) = 0.0;
+HAL_PIN(b) = 0.0;
+HAL_PIN(mode) = 0.0;
+HAL_PIN(enable) = 0.0;
+HAL_PIN(pos);
+
+//from HV
+HAL_PIN(error) = 0.0;
+// HAL_PIN(over_cur);
+// HAL_PIN(over_temp);
+HAL_PIN(hv_fault); 
+
+//HAL_PIN(dc_cur) = 0.0;
+HAL_PIN(dc_volt) = 0.0;
+HAL_PIN(pwm_volt) = 0.0;
+HAL_PIN(hv_temp) = 0.0;
+
+HAL_PIN(ia) = 0.0;
+HAL_PIN(ib) = 0.0;
+
+
+MEM(packet_to_hv_t packet_to_hv);
+MEM(packet_from_hv_t packet_from_hv);
+MEM(uint32_t timeout) = 99999;
+
+MEM(volatile uint8_t rxbuf[128]);
+MEM(volatile uint8_t txbuf[20]);
+MEM(uint32_t rxpos) = 0;//UART rx buffer position
+MEM(int32_t datapos) = -1;
+
+RT_INIT(
+   UART_HandleTypeDef huart3;
+   huart3.Instance = USART3;
+   huart3.Init.BaudRate = DATABAUD;
+   huart3.Init.WordLength = UART_WORDLENGTH_8B;
+   huart3.Init.StopBits = UART_STOPBITS_1;
+   huart3.Init.Parity = UART_PARITY_NONE;
+   huart3.Init.Mode = UART_MODE_TX_RX;
+   huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+   huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+   huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+   huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+   HAL_UART_Init(&huart3);
+   USART3->CR3 |= USART_CR3_DMAT | USART_CR3_DMAR;
+   /* Peripheral clock enable */
+   __HAL_RCC_USART3_CLK_ENABLE();
+ 
+   /**USART3 GPIO Configuration    
+   PB10     ------> USART3_TX
+   PB11     ------> USART3_RX 
+   */
+   GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11;
+   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+   GPIO_InitStruct.Pull = GPIO_PULLUP;
+   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+   GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
+   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+   
+   //__HAL_RCC_DMA1_CLK_ENABLE();
+   __HAL_RCC_DMA2_CLK_ENABLE();
+  
+   //TX DMA
+   DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
+   DMA1_Channel2->CPAR = &(USART3->TDR);
+   DMA1_Channel2->CMAR = &packet_from_hv;
+   DMA1_Channel2->CNDTR = sizeof(packet_from_hv);
+   DMA1_Channel2->CCR = DMA_CCR_MINC | DMA_CCR_DIR;// | DMA_CCR_PL_0 | DMA_CCR_PL_1
+   DMA1->IFCR = DMA_IFCR_CTCIF2 | DMA_IFCR_CHTIF2 | DMA_IFCR_CGIF2;
+   
+   //RX DMA
+   DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
+   DMA1_Channel3->CPAR = &(USART3->RDR);
+   DMA1_Channel3->CMAR = rxbuf;
+   DMA1_Channel3->CNDTR = sizeof(rxbuf);
+   DMA1_Channel3->CCR = DMA_CCR_MINC | DMA_CCR_CIRC;// | DMA_CCR_PL_0 | DMA_CCR_PL_1
+   DMA1->IFCR = DMA_IFCR_CTCIF3 | DMA_IFCR_CHTIF3 | DMA_IFCR_CGIF3;
+);
+
+NRT(
+//    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+// if(PIN(fo) > 0){
+//    printf("ISR: %x\n",DMA1->ISR);
+//    printf("CPAR:%x\n",DMA1_Channel2->CPAR);
+//    printf("CMAR:%x\n",DMA1_Channel2->CMAR);
+//    printf("CMAR:%c\n",*((char *)((DMA1_Channel2->CMAR))));
+//
+//    PIN(fo) = 0;
+// }
+);
+
+RT(
+   //next received packet will be written to bufferpos
+   uint32_t rxbufferpos = sizeof(rxbuf) - DMA1_Channel2->CNDTR;
+   //how many packets we have the the rx buffer for processing
+   uint32_t rxavailable = (rxbufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
+   
+   DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
+   DMA1_Channel3->CNDTR = sizeof(rxbuf);
+   DMA1_Channel2->CCR |= DMA_CCR_EN;
+   
+   for(int i = 0;i < rxavailable;i++){
+   	uint8_t buf = rxbuf[(rxpos)%sizeof(rxbuf)];
+   	if(buf == 255){ //start condition
+   		datapos = 0;
+   		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
+         //TODO: send stuff here!
+         // DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
+         // DMA1_Channel2->CNDTR = 6;
+         // DMA1_Channel2->CCR |= DMA_CCR_EN;
+   	}else if(datapos >= 0 && datapos < sizeof(packet_to_hv_t)){
+   		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
+   	}
+   	if(datapos == sizeof(packet_to_hv_t)){//all data received
+   		datapos = -1;
+   		unbuff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
+         // packet_to_hv.data.enable
+         // packet_to_hv.data.a
+         // packet_to_hv.data.b
+         // packet_to_hv.data.mode
+
+   		timeout = 0; //reset timeout
+   	}
+      
+      rxpos++;
+      rxpos = rxpos % sizeof(rxbuf);
+   }
+   
+	if(timeout > 30){//disable driver
+      //TODO: disable
+	}else{
+		timeout ++;
+      //TODO: ok, do stuff
+	}
+);
+
+ENDCOMP;
