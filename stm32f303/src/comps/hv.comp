@@ -5,6 +5,10 @@ HAL_PIN(v) = 0.0;
 HAL_PIN(w) = 0.0;
 HAL_PIN(udc) = 0.0;
 
+HAL_PIN(ru) = 0.0;
+HAL_PIN(rv) = 0.0;
+HAL_PIN(rw) = 0.0;
+
 HAL_PIN(hv_temp) = 0.0;
 
 HAL_PIN(en) = 0.0;
@@ -19,25 +23,29 @@ HAL_PIN(min_off) = 0.000005; // min off time [s]
 
 RT(
    float udc = MAX(PIN(udc), 0.1);
-   uint32_t u = CLAMP(PIN(u), 0.0, udc) / udc * 4800;
-   uint32_t v = CLAMP(PIN(v), 0.0, udc) / udc * 4800;
-   uint32_t w = CLAMP(PIN(w), 0.0, udc) / udc * 4800;
+   int32_t u = CLAMP(PIN(u), 0.0, udc) / udc * 4800.0;
+   int32_t v = CLAMP(PIN(v), 0.0, udc) / udc * 4800.0;
+   int32_t w = CLAMP(PIN(w), 0.0, udc) / udc * 4800.0;
    
-   uint32_t min_on = 4800 * 15000 * PIN(min_on) + 0.5;
-   uint32_t min_off = 4800 * 15000 * PIN(min_off) + 0.5;
+   int32_t min_on = 4800.0 * 15000.0 * PIN(min_on) + 0.5;
+   int32_t min_off = 4800.0 * 15000.0 * PIN(min_off) + 0.5;
    
-   if(u > 0 && u < min_on || v > 0 && v < min_on || w > 0 && w < min_on){
+   if((u > 0 && u < min_on) || (v > 0 && v < min_on) || (w > 0 && w < min_on)){
       u += min_on;
       v += min_on;
       w += min_on;
    }
    
-   if(u > 4800 - min_off || v > 4800 - min_off || w > 4800 - min_off){
+   if((u > 4800 - min_off) || (v > 4800 - min_off) || (w > 4800 - min_off)){
       u -= min_off;
       v -= min_off;
       w -= min_off;
    }
 
+   // PIN(ru) = CLAMP(u, 0, 4800 - min_off) * udc / 4800.0;
+   // PIN(rv) = CLAMP(v, 0, 4800 - min_off) * udc / 4800.0;
+   // PIN(rw) = CLAMP(w, 0, 4800 - min_off) * udc / 4800.0;
+   
    htim8.Instance->CCR3 = CLAMP(u, 0, 4800 - min_off);
    htim8.Instance->CCR2 = CLAMP(v, 0, 4800 - min_off);
    htim8.Instance->CCR1 = CLAMP(w, 0, 4800 - min_off);

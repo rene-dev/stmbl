@@ -19,8 +19,8 @@ HAL_PIN(ld) = 0.01;
 HAL_PIN(lq) = 0.01;
 
 HAL_PIN(ff) = 0.0;
-HAL_PIN(kp) = 0.05;
-HAL_PIN(ki) = 0.0;
+HAL_PIN(kp) = 0.1;
+HAL_PIN(ki) = 0.005;
 
 HAL_PIN(id_error) = 0.0;
 HAL_PIN(iq_error) = 0.0;
