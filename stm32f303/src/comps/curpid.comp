@@ -1,0 +1,73 @@
+HAL_COMP(curpid);
+
+HAL_PIN(id_cmd) = 0.0;
+HAL_PIN(iq_cmd) = 0.0;
+
+HAL_PIN(id_fb) = 0.0;
+HAL_PIN(iq_fb) = 0.0;
+
+HAL_PIN(ud) = 0.0;
+HAL_PIN(uq) = 0.0;
+
+HAL_PIN(max_cur) = 0.0;
+
+HAL_PIN(scale) = 1.0;
+
+HAL_PIN(rd) = 0.5;
+HAL_PIN(rq) = 0.5;
+HAL_PIN(ld) = 0.01;
+HAL_PIN(lq) = 0.01;
+
+HAL_PIN(ff) = 0.0;
+HAL_PIN(kp) = 0.05;
+HAL_PIN(ki) = 0.0;
+
+HAL_PIN(id_error) = 0.0;
+HAL_PIN(iq_error) = 0.0;
+
+MEM(float id_error_sum) = 0.0;
+MEM(float iq_error_sum) = 0.0;
+
+RT(
+   float rd = MAX(PIN(rd), 0.1);
+   float rq = MAX(PIN(rq), 0.1);
+   float ld = MAX(PIN(ld), 0.001);
+   float lq = MAX(PIN(lq), 0.001);
+
+   float ff = PIN(ff);
+   float kpd = ld * PIN(kp) / period;
+   float kpq = lq * PIN(kp) / period;
+   float kid = rd * PIN(ki) / ld;
+   float kiq = rq * PIN(ki) / lq;
+
+   //TODO curpid: sqrt(di^2+qi^2) auf max_ac_cur clampen
+   float max_cur = PIN(max_cur) * PIN(scale);
+   float idc = LIMIT(PIN(id_cmd), max_cur);
+   float iqc = LIMIT(PIN(iq_cmd), max_cur);
+
+   float id = PIN(id_fb);
+   float iq = PIN(iq_fb);
+
+   float id_error = (idc - id);
+   float iq_error = (iqc - iq);
+
+   if(kpd * kid > 0.0 && kpq * kiq > 0.0 ){
+      id_error_sum = LIMIT(id_error_sum + id_error, max_cur);
+      iq_error_sum = LIMIT(iq_error_sum + iq_error, max_cur);
+   }
+   else{
+      id_error_sum = 0.0;
+      iq_error_sum = 0.0;
+   }
+
+   float ud = ff * rd * idc + kpd * id_error + kpd * kid * id_error_sum;
+   float uq = ff * rq * iqc + kpq * iq_error + kpq * kiq * iq_error_sum;
+
+   PIN(ud) = ud;
+   PIN(uq) = uq;
+
+   PIN(id_error) = id_error;
+   PIN(iq_error) = iq_error;
+);
+
+ENDCOMP;

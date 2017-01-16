@@ -66,14 +66,14 @@ void MX_ADC1_Init(void)
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
-  hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.NbrOfDiscConversion = 1;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
   hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T8_TRGO;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.NbrOfConversion = 6;
   hadc1.Init.DMAContinuousRequests = DISABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   hadc1.Init.LowPowerAutoWait = DISABLE;
@@ -83,12 +83,10 @@ void MX_ADC1_Init(void)
     Error_Handler();
   }
 
-    /**Configure Regular Channel 
-    */
   sConfig.Channel = ADC_CHANNEL_3; // pa2 = opamp1_out = iw (3)
   sConfig.Rank = 1;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  sConfig.SamplingTime = ADC_SAMPLETIME_61CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_19CYCLES_5;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -96,18 +94,38 @@ void MX_ADC1_Init(void)
     Error_Handler();
   }
 
-//    /**Configure Regular Channel
-//    */
-  // sConfig.Channel = ADC_CHANNEL_4; // pa3 = uw
-  // sConfig.Rank = 2;
-  // sConfig.SamplingTime = ADC_SAMPLETIME_181CYCLES_5;
-  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
-//
-//    /**Configure Regular Channel
-//    */
+  sConfig.Rank = 2;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 3;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 4;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 5;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Channel = ADC_CHANNEL_4; // pa3 = uw
+  sConfig.Rank = 6;
+  sConfig.SamplingTime = ADC_SAMPLETIME_181CYCLES_5;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   // sConfig.Channel = ADC_CHANNEL_2; // pa1 = opamp1_in = iw
   // sConfig.Rank = 3;
   // sConfig.SamplingTime = ADC_SAMPLETIME_61CYCLES_5;
@@ -128,14 +146,14 @@ void MX_ADC2_Init(void)
    hadc2.Instance = ADC2;
    hadc2.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
    hadc2.Init.Resolution = ADC_RESOLUTION_12B;
-   hadc2.Init.ScanConvMode = ADC_SCAN_DISABLE;
+   hadc2.Init.ScanConvMode = ADC_SCAN_ENABLE;
    hadc2.Init.ContinuousConvMode = DISABLE;
    hadc2.Init.DiscontinuousConvMode = DISABLE;
    hadc2.Init.NbrOfDiscConversion = 1;
    hadc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
    hadc2.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T8_TRGO;
    hadc2.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-   hadc2.Init.NbrOfConversion = 1;
+   hadc2.Init.NbrOfConversion = 6;
    hadc2.Init.DMAContinuousRequests = DISABLE;
    hadc2.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
    hadc2.Init.LowPowerAutoWait = DISABLE;
@@ -145,31 +163,49 @@ void MX_ADC2_Init(void)
     Error_Handler();
   }
 
-    /**Configure Regular Channel 
-    */
   sConfig.Channel = ADC_CHANNEL_3; // pa6 = opamp2_out = iu (3)
   sConfig.Rank = 1;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  sConfig.SamplingTime = ADC_SAMPLETIME_61CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_19CYCLES_5;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
   if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
   {
     Error_Handler();
   }
+  
+  sConfig.Rank = 2;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 3;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 4;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 5;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
-  //   /**Configure Regular Channel
-  //   */
-  // sConfig.Channel = ADC_CHANNEL_2; // pa5 = uv
-  // sConfig.Rank = 2;
-  // sConfig.SamplingTime = ADC_SAMPLETIME_181CYCLES_5;
-  // if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
-  //
-  //   /**Configure Regular Channel
-  //   */
+  sConfig.Channel = ADC_CHANNEL_2; // pa5 = uv
+  sConfig.Rank = 6;
+  sConfig.SamplingTime = ADC_SAMPLETIME_181CYCLES_5;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   // sConfig.Channel = ADC_CHANNEL_4; // pa7 = opamp2_in = iu
   // sConfig.Rank = 3;
   // sConfig.SamplingTime = ADC_SAMPLETIME_61CYCLES_5;
@@ -177,15 +213,6 @@ void MX_ADC2_Init(void)
   // {
   //   Error_Handler();
   // }
-  //    /**Configure the ADC multi-mode
-  //    */
-   // multimode.Mode = ADC_DUALMODE_REGSIMULT;
-   // multimode.DMAAccessMode = ADC_DMAACCESSMODE_12_10_BITS;
-   // multimode.TwoSamplingDelay = ADC_TWOSAMPLINGDELAY_1CYCLE;
-   // if (HAL_ADCEx_MultiModeConfigChannel(&hadc1, &multimode) != HAL_OK)
-   // {
-   //   Error_Handler();
-   // }
 }
 /* ADC3 init function */
 void MX_ADC3_Init(void)
@@ -197,14 +224,14 @@ void MX_ADC3_Init(void)
    hadc3.Instance = ADC3;
    hadc3.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
    hadc3.Init.Resolution = ADC_RESOLUTION_12B;
-   hadc3.Init.ScanConvMode = ADC_SCAN_DISABLE;
+   hadc3.Init.ScanConvMode = ADC_SCAN_ENABLE;
    hadc3.Init.ContinuousConvMode = DISABLE;
    hadc3.Init.DiscontinuousConvMode = DISABLE;
    hadc3.Init.NbrOfDiscConversion = 1;
    hadc3.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
    hadc3.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T8_TRGO;
    hadc3.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-   hadc3.Init.NbrOfConversion = 1;
+   hadc3.Init.NbrOfConversion = 6;
    hadc3.Init.DMAContinuousRequests = DISABLE;
    hadc3.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
    hadc3.Init.LowPowerAutoWait = DISABLE;
@@ -214,14 +241,12 @@ void MX_ADC3_Init(void)
     Error_Handler();
   }
 
-
-
     /**Configure Regular Channel 
     */
   sConfig.Channel = ADC_CHANNEL_1; // pb1 = opamp3_out = iv (1)
   sConfig.Rank = 1;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  sConfig.SamplingTime = ADC_SAMPLETIME_61CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_19CYCLES_5;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
   if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
@@ -229,15 +254,37 @@ void MX_ADC3_Init(void)
     Error_Handler();
   }
 
-  //   /**Configure Regular Channel
-  //   */
-  // sConfig.Channel = ADC_CHANNEL_5; // pb13 = uu
-  // sConfig.Rank = 2;
-  // sConfig.SamplingTime = ADC_SAMPLETIME_181CYCLES_5;
-  // if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
+  sConfig.Rank = 2;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 3;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 4;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 5;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Channel = ADC_CHANNEL_5; // pb13 = uu
+  sConfig.Rank = 6;
+  sConfig.SamplingTime = ADC_SAMPLETIME_181CYCLES_5;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
   //
   //   /**Configure Regular Channel
   //   */
@@ -261,14 +308,14 @@ void MX_ADC4_Init(void)
    hadc4.Instance = ADC4;
    hadc4.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
    hadc4.Init.Resolution = ADC_RESOLUTION_12B;
-   hadc4.Init.ScanConvMode = ADC_SCAN_DISABLE;
+   hadc4.Init.ScanConvMode = ADC_SCAN_ENABLE;
    hadc4.Init.ContinuousConvMode = DISABLE;
    hadc4.Init.DiscontinuousConvMode = DISABLE;
    hadc4.Init.NbrOfDiscConversion = 1;
    hadc4.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
    hadc4.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T8_TRGO;
    hadc4.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-   hadc4.Init.NbrOfConversion = 1;
+   hadc4.Init.NbrOfConversion = 6;
    hadc4.Init.DMAContinuousRequests = DISABLE;
    hadc4.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
    hadc4.Init.LowPowerAutoWait = DISABLE;
@@ -278,48 +325,49 @@ void MX_ADC4_Init(void)
     Error_Handler();
   }
 
-    /**Configure Regular Channel 
-    */
-  // sConfig.Channel = ADC_CHANNEL_4; // pb14 = hv_temp
-  // sConfig.Rank = 1;
-  // sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  // sConfig.SamplingTime = ADC_SAMPLETIME_61CYCLES_5;
-  // sConfig.OffsetNumber = ADC_OFFSET_NONE;
-  // sConfig.Offset = 0;
-  // if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
-
-    /**Configure Regular Channel
-    */
-  sConfig.Channel = ADC_CHANNEL_3; // pb12 = hv
+  sConfig.Channel = ADC_CHANNEL_4; // pb14 = hv_temp
   sConfig.Rank = 1;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  sConfig.SamplingTime = ADC_SAMPLETIME_19CYCLES_5;
+  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  sConfig.Offset = 0;
+  if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 2;
+  if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 3;
+  if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Channel = ADC_CHANNEL_5; // pb15 = mot_temp
+  sConfig.Rank = 4;
+  if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  sConfig.Rank = 5;
+  if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  sConfig.Channel = ADC_CHANNEL_3; // pb12 = hv
+  sConfig.Rank = 6;
   sConfig.SamplingTime = ADC_SAMPLETIME_181CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
   {
     Error_Handler();
   }
-  //
-  //   /**Configure Regular Channel
-  //   */
-  // sConfig.Channel = ADC_CHANNEL_5; // pb15 = mot_temp
-  // sConfig.Rank = 3;
-  // sConfig.SamplingTime = ADC_SAMPLETIME_61CYCLES_5;
-  // if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
-
-  /**Configure the ADC multi-mode 
-  */
-// multimode.Mode = ADC_DUALMODE_REGSIMULT;
-// multimode.DMAAccessMode = ADC_DMAACCESSMODE_12_10_BITS;
-// multimode.TwoSamplingDelay = ADC_TWOSAMPLINGDELAY_1CYCLE;
-// if (HAL_ADCEx_MultiModeConfigChannel(&hadc3, &multimode) != HAL_OK)
-// {
-//  Error_Handler();
-// }
 }
 
 static uint32_t HAL_RCC_ADC12_CLK_ENABLED=0;

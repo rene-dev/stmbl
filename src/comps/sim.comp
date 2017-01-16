@@ -39,8 +39,12 @@ RT(
   if(ABS(freq * time) >= 1.0){ // TODO
     time = 0.0;
   }
-
-  sin = amp * sinf(freq * time * 2.0 * M_PI);
+  
+  float co = 0.0;
+  float si = 0.0;
+  sincos_fast(freq * time * 2.0 * M_PI, &si, &co);
+  
+  sin = amp * si;
   sin2 = sin * amp2;
   sin3 = sin2 * amp2;
   

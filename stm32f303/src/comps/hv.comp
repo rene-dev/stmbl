@@ -5,6 +5,8 @@ HAL_PIN(v) = 0.0;
 HAL_PIN(w) = 0.0;
 HAL_PIN(udc) = 0.0;
 
+HAL_PIN(hv_temp) = 0.0;
+
 HAL_PIN(en) = 0.0;
 HAL_PIN(enu) = 1.0;
 HAL_PIN(env) = 1.0;
@@ -36,11 +38,16 @@ RT(
       w -= min_off;
    }
 
-   htim8.Instance->CCR3 = u;
-   htim8.Instance->CCR2 = v;
-   htim8.Instance->CCR1 = w;
+   htim8.Instance->CCR3 = CLAMP(u, 0, 4800 - min_off);
+   htim8.Instance->CCR2 = CLAMP(v, 0, 4800 - min_off);
+   htim8.Instance->CCR1 = CLAMP(w, 0, 4800 - min_off);
    
-   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+   if(PIN(hv_temp) < 85.0){
+      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+   }
+   else{
+      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
+   }
    PIN(fault) = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_7);
 );
 

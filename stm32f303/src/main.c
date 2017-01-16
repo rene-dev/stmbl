@@ -128,7 +128,6 @@ void Error_Handler(void);
 
 #define AMP(a, gain) (((a) * AREF / ARES / (gain) - AREF / (SHUNT_PULLUP + SHUNT_SERIE) * SHUNT_SERIE) / (SHUNT * SHUNT_PULLUP) * (SHUNT_PULLUP + SHUNT_SERIE))
 
-
 /* USER CODE END 0 */
 
 void TIM8_UP_IRQHandler(){
@@ -209,6 +208,8 @@ int main(void)
   // MX_USART1_UART_Init();
   // MX_USART3_UART_Init();
   MX_USB_DEVICE_Init();
+  __HAL_RCC_DMA1_CLK_ENABLE();
+  __HAL_RCC_DMA2_CLK_ENABLE();
 
   /* USER CODE BEGIN 2 */
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
@@ -285,7 +286,9 @@ int main(void)
   #include "../src/comps/sim.comp"
   #include "comps/term.comp"
   #include "../src/comps/idq.comp"
+  #include "../src/comps/dq.comp"
   #include "../src/comps/iclarke.comp"
+  #include "comps/curpid.comp"
   #include "comps/clarke.comp"
   #include "comps/io.comp"
   #include "comps/svm.comp"
@@ -314,51 +317,66 @@ int main(void)
   frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
   
   // hal_set_pin("sim0.rt_prio", 1.0);
-  hal_set_pin("idq0.rt_prio", 2.0);
-  hal_set_pin("iclarke0.rt_prio", 3.0);
-  hal_set_pin("clarke0.rt_prio", 3.1);
-  hal_set_pin("io0.rt_prio", 4.0);
-  hal_set_pin("svm0.rt_prio", 4.1);
-  hal_set_pin("hv0.rt_prio", 4.2);
+  //hal_set_pin("iclarke0.rt_prio", 3.0);
+  //hal_set_pin("clarke0.rt_prio", 3.1);
+  hal_set_pin("term0.rt_prio", 0.1);
+  hal_set_pin("sim0.rt_prio", 0.5);
+  hal_set_pin("io0.rt_prio", 1.0);
+  hal_set_pin("dq0.rt_prio", 2.0);
+  hal_set_pin("curpid0.rt_prio", 3.0);
+  hal_set_pin("idq0.rt_prio", 4.0);
+  hal_set_pin("svm0.rt_prio", 5.0);
+  hal_set_pin("hv0.rt_prio", 6.0);
   
-  hal_set_pin("term0.rt_prio", 15.0);
   hal_set_pin("term0.send_step", 50.0);
   hal_set_pin("term0.gain0", 10.0);
   hal_set_pin("term0.gain1", 10.0);
   hal_set_pin("term0.gain2", 10.0);
-  hal_set_pin("term0.gain3", 1.0);
-  hal_set_pin("term0.gain4", 20.0);
-  hal_set_pin("term0.gain5", 20.0);
-  hal_set_pin("term0.gain6", 20.0);
-  hal_set_pin("term0.gain7", 20.0);
+  hal_set_pin("term0.gain3", 10.0);
+  hal_set_pin("term0.gain4", 1.0);
+  hal_set_pin("term0.gain5", 10.0);
+  hal_set_pin("term0.gain6", 10.0);
+  hal_set_pin("term0.gain7", 10.0);
+  hal_set_pin("curpid0.max_cur", 25.0);
   
   //ADC TEST
   hal_link_pins("io0.udc", "term0.wave3");
   hal_link_pins("io0.udc", "hv0.udc");
-  hal_link_pins("io0.iu", "clarke0.u");
-  hal_link_pins("io0.iv", "clarke0.v");
-  hal_link_pins("io0.iw", "clarke0.w");
-  hal_link_pins("clarke0.a", "term0.wave0");
-  hal_link_pins("clarke0.b", "term0.wave1");
-  hal_link_pins("clarke0.y", "term0.wave2");
+  hal_link_pins("io0.iu", "dq0.u");
+  hal_link_pins("io0.iv", "dq0.v");
+  hal_link_pins("io0.iw", "dq0.w");
+  hal_link_pins("clarke0.y", "term0.wave4");
   
   hal_link_pins("sim0.vel", "idq0.pos");
-  hal_link_pins("idq0.a", "iclarke0.a");
-  hal_link_pins("idq0.b", "iclarke0.b");
-  hal_link_pins("iclarke0.u", "svm0.u");
-  hal_link_pins("iclarke0.v", "svm0.v");
-  hal_link_pins("iclarke0.w", "svm0.w");
+  hal_link_pins("sim0.vel", "dq0.pos");
+  
+  hal_link_pins("idq0.u", "svm0.u");
+  hal_link_pins("idq0.v", "svm0.v");
+  hal_link_pins("idq0.w", "svm0.w");
   hal_link_pins("svm0.su", "hv0.u");
   hal_link_pins("svm0.sv", "hv0.v");
   hal_link_pins("svm0.sw", "hv0.w");
   hal_link_pins("io0.udc", "svm0.udc");
+  hal_link_pins("io0.hv_temp", "hv0.hv_temp");
+  
+  hal_link_pins("dq0.d", "curpid0.id_fb");
+  hal_link_pins("dq0.q", "curpid0.iq_fb");
+  
+  hal_link_pins("curpid0.ud", "idq0.d");
+  hal_link_pins("curpid0.uq", "idq0.q");
+  
+  hal_link_pins("curpid0.id_cmd", "term0.wave0");
+  hal_link_pins("curpid0.iq_cmd", "term0.wave1");
 
+  hal_link_pins("curpid0.id_fb", "term0.wave2");
+  hal_link_pins("curpid0.iq_fb", "term0.wave3");
+  
   hal_link_pins("term0.con", "io0.led");
   
   hal_comp_init();//call init function of all comps
 
   if(hal.pin_errors + hal.comp_errors == 0){
-     hal_start();
+     //hal_start();
   }
   else{
      hal.hal_state = MEM_ERROR;

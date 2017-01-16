@@ -25,6 +25,7 @@ RT(
    float w = PIN(w);
    
    switch((int)PIN(mode)){
+      default:
       case 0: // std
          offset = (u + v + w) / 3.0 - udc / 2.0;
          break;
@@ -40,9 +41,27 @@ RT(
       case 3: // flat top svm
          offset = MAX3(u, v, w) - udc;
          break;
-      
-      default:
-         offset = 0.0;
+   }
+   
+   PIN(enu) = 1.0;
+   PIN(env) = 1.0;
+   PIN(enw) = 1.0;
+   
+   switch((int)PIN(cmode)){
+      case 1: // block 
+         if(u > v && u < w){
+            PIN(enu) = 0.0;
+         }
+         if(v > u && v < w){
+            PIN(env) = 0.0;
+         }
+         if(w > u && w < v){
+            PIN(enw) = 0.0;
+         }
+         break;
+         
+      default: // sine
+         break;
    }
    
    PIN(su) = u - offset;

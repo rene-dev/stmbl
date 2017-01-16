@@ -58,7 +58,7 @@ const float sintab[257] = {
     1.000000
 };
 
-inline void sincos_fast(float x, float *sin, float *cos){
+void sincos_fast(float x, float *sin, float *cos){
     extern const float sintab[257];
 
     x = x * 256 / (M_PI/2);
@@ -103,4 +103,3 @@ inline float mod(float a){
 	}
 	return(a);
 }
-
