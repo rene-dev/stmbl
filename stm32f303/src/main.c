@@ -60,6 +60,7 @@
 #include "scanf.h"
 #include "usbd_cdc_if.h"
 #include "version.h"
+#include "common.h"
 
 /* USER CODE END Includes */
 
@@ -133,11 +134,6 @@ void Error_Handler(void);
 
 void TIM8_UP_IRQHandler(){
    __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
-   //TODO: hw trigger and dma for ADC
-   // HAL_ADC_Start(&hadc1);
-   // HAL_ADC_Start(&hadc2);
-   // HAL_ADC_Start(&hadc3);
-   // HAL_ADC_Start(&hadc4);
    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
    switch(hal.rt_state){
       case RT_STOP:
@@ -295,6 +291,7 @@ int main(void)
   #include "comps/io.comp"
   #include "comps/svm.comp"
   #include "comps/hv.comp"
+  #include "comps/ls.comp"
   
   hal_set_comp_type("net");
   HAL_PIN(enable) = 0.0;
@@ -323,6 +320,7 @@ int main(void)
   //hal_set_pin("clarke0.rt_prio", 3.1);
   hal_set_pin("term0.rt_prio", 0.1);
   hal_set_pin("sim0.rt_prio", 0.5);
+  hal_set_pin("ls0.rt_prio", 0.6);
   hal_set_pin("io0.rt_prio", 1.0);
   hal_set_pin("dq0.rt_prio", 2.0);
   hal_set_pin("curpid0.rt_prio", 3.0);
@@ -340,6 +338,15 @@ int main(void)
   hal_set_pin("term0.gain6", 10.0);
   hal_set_pin("term0.gain7", 10.0);
   hal_set_pin("curpid0.max_cur", 25.0);
+  
+  //link LS
+  hal_link_pins("io0.udc", "ls0.dc_volt");
+  hal_link_pins("io0.hv_temp", "ls0.hv_temp");
+  hal_link_pins("ls0.d", "curpid0.id_cmd");
+  hal_link_pins("ls0.q", "curpid0.iq_cmd");
+  hal_link_pins("ls0.pos", "idq0.pos");
+  hal_link_pins("ls0.b", "dq0.pos");
+  hal_link_pins("ls0.en", "hv0.en");
   
   //ADC TEST
   hal_link_pins("io0.udc", "term0.wave3");

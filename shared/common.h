@@ -44,8 +44,9 @@ typedef struct{
 //data from f4 to f1
 #pragma pack(1)
 typedef struct{
-   float a;
-   float b;
+   float d;
+   float q;
+   float pos;
    uint8_t mode    : 4;//TODO: change to enum
    uint8_t enable  : 1;
    uint8_t padding : 3;

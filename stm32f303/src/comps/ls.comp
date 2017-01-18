@@ -1,11 +1,11 @@
 HAL_COMP(ls);
 
 //to HV
-HAL_PIN(a) = 0.0;
-HAL_PIN(b) = 0.0;
+HAL_PIN(d) = 0.0;
+HAL_PIN(q) = 0.0;
+HAL_PIN(pos) = 0.0;
 HAL_PIN(mode) = 0.0;
-HAL_PIN(enable) = 0.0;
-HAL_PIN(pos);
+HAL_PIN(en) = 0.0;
 
 //from HV
 HAL_PIN(error) = 0.0;
@@ -59,8 +59,8 @@ RT_INIT(
    GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
    
-   //__HAL_RCC_DMA1_CLK_ENABLE();
-   __HAL_RCC_DMA2_CLK_ENABLE();
+   __HAL_RCC_DMA1_CLK_ENABLE();
+   // __HAL_RCC_DMA2_CLK_ENABLE();
   
    //TX DMA
    DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
@@ -69,6 +69,9 @@ RT_INIT(
    DMA1_Channel2->CNDTR = sizeof(packet_from_hv);
    DMA1_Channel2->CCR = DMA_CCR_MINC | DMA_CCR_DIR;// | DMA_CCR_PL_0 | DMA_CCR_PL_1
    DMA1->IFCR = DMA_IFCR_CTCIF2 | DMA_IFCR_CHTIF2 | DMA_IFCR_CGIF2;
+	
+   packet_from_hv.head.start = 255;
+	packet_from_hv.head.key = 0;
    
    //RX DMA
    DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
@@ -77,6 +80,7 @@ RT_INIT(
    DMA1_Channel3->CNDTR = sizeof(rxbuf);
    DMA1_Channel3->CCR = DMA_CCR_MINC | DMA_CCR_CIRC;// | DMA_CCR_PL_0 | DMA_CCR_PL_1
    DMA1->IFCR = DMA_IFCR_CTCIF3 | DMA_IFCR_CHTIF3 | DMA_IFCR_CGIF3;
+   DMA1_Channel3->CCR |= DMA_CCR_EN;
 );
 
 NRT(
@@ -93,34 +97,33 @@ NRT(
 
 RT(
    //next received packet will be written to bufferpos
-   uint32_t rxbufferpos = sizeof(rxbuf) - DMA1_Channel2->CNDTR;
+   uint32_t rxbufferpos = sizeof(rxbuf) - DMA1_Channel3->CNDTR;
    //how many packets we have the the rx buffer for processing
    uint32_t rxavailable = (rxbufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
-   
-   DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
-   DMA1_Channel3->CNDTR = sizeof(rxbuf);
-   DMA1_Channel2->CCR |= DMA_CCR_EN;
-   
+      
    for(int i = 0;i < rxavailable;i++){
    	uint8_t buf = rxbuf[(rxpos)%sizeof(rxbuf)];
    	if(buf == 255){ //start condition
    		datapos = 0;
    		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
-         //TODO: send stuff here!
-         // DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
-         // DMA1_Channel2->CNDTR = 6;
-         // DMA1_Channel2->CCR |= DMA_CCR_EN;
+			packet_from_hv.data.dc_volt = TOFIXED(PIN(dc_volt));
+			packet_from_hv.data.dc_cur =  TOFIXED(0.0f);
+			packet_from_hv.data.hv_temp = TOFIXED(PIN(hv_temp));
+         buff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
+         DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
+         DMA1_Channel2->CNDTR = sizeof(packet_from_hv);
+         DMA1_Channel2->CCR |= DMA_CCR_EN;
    	}else if(datapos >= 0 && datapos < sizeof(packet_to_hv_t)){
    		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
    	}
    	if(datapos == sizeof(packet_to_hv_t)){//all data received
    		datapos = -1;
    		unbuff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
-         // packet_to_hv.data.enable
-         // packet_to_hv.data.a
-         // packet_to_hv.data.b
+         PIN(en) = packet_to_hv.data.enable;
+         PIN(d) = packet_to_hv.data.d;
+         PIN(q) = packet_to_hv.data.q;
+         PIN(pos) = packet_to_hv.data.pos;
          // packet_to_hv.data.mode
-
    		timeout = 0; //reset timeout
    	}
       
