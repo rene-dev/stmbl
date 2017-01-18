@@ -293,11 +293,14 @@ NRT(
       buf[8 + 1] = 0;
 
       if (cdc_is_connected() && PIN(send_step) > 0) {
-         PIN(con) = 1.0;
          cdc_tx(buf,9);
-      }else{
-         PIN(con) = 0.0;
       }
+   }
+   
+   if (cdc_is_connected()) {
+      PIN(con) = 1.0;
+   }else{
+      PIN(con) = 0.0;
    }
 
    PIN(buf_use) = bc;
