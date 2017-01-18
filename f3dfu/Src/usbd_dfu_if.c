@@ -44,6 +44,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_dfu_if.h"
 /* USER CODE BEGIN INCLUDE */
+#define FLASH_ERASE_TIME    (uint16_t)50
+#define FLASH_PROGRAM_TIME  (uint16_t)50
+#define USBD_DFU_APP_END_ADD         0x08020000
 /* USER CODE END INCLUDE */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -66,7 +69,12 @@
 /** @defgroup USBD_DFU_Private_Defines
   * @{
   */ 
-#define FLASH_DESC_STR      "@Internal Flash   /0x08000000/03*016Ka,01*016Kg,01*064Kg,07*128Kg,04*016Kg,01*064Kg,07*128Kg"  
+//#define FLASH_DESC_STR      "@Internal Flash   /0x08000000/03*016Ka,01*016Kg,01*064Kg,07*128Kg,04*016Kg,01*064Kg,07*128Kg"
+#define FLASH_DESC_STR      "@Internal Flash  /0x08004000/112*0002Kg"
+//USBD_DFU_MEDIA Interface USBD_DFU_MEDIA Parameter Description: The description of the flash (used by PC tool DFuSe) Each Alternate setting string descriptor must follow this memory mapping so that the PC Host Software can decode the right mapping for the selected device: ● @: To detect that this is a special mapping descriptor (to avoid decoding standard descriptor) ● /: for separator between zones ● Maximum 8 digits per address starting by “0x” ● /: for separator between zones ● Maximum of 2 digits for the number of sectors ● *: For separator between number of sectors and sector size ● Maximum 3 digits for sector size between 0 and 999 ● 1 digit for the sector size multiplier. Valid entries are: B (byte), K (Kilo), M (Mega) ● 1 digit for the sector type as follows: – a (0x41): Readable – b (0x42): Erasable – c (0x43): Readable and Erasabled (0x44): Writeable – e (0x45): Readable and Writeable – f (0x46): Erasable and Writeable – g (0x47): Readable, Erasable and Writeable Note: If the target memory is not contiguous, the user can add the new sectors to be decoded just after a slash"/" as shown in the following example: "@Flash /0xF000/1*4Ka/0xE000/1*4Kg/0x8000/2*24Kg"
+//int:  Found DFU: [0483:df11] ver=2200, devnum=6, cfg=1, intf=0, path="20-1", alt=0, name="@Internal Flash  /0x08000000/128*0002Kg", serial="2060374D2033"
+//this: Found DFU: [0483:df11] ver=0200, devnum=5, cfg=1, intf=0, path="20-1", alt=0, name="@Internal Flash   /0x08000000/03*016Ka,01*016Kg,01*064Kg,07*128Kg,04*016Kg,01*064Kg,07*128Kg", serial="00000000001A"
+//int: 2048 transfer size!
 /* USER CODE BEGIN PRIVATE_DEFINES */
 /* USER CODE END PRIVATE_DEFINES */
   
@@ -146,6 +154,8 @@ __ALIGN_BEGIN USBD_DFU_MediaTypeDef USBD_DFU_fops_FS __ALIGN_END =
 uint16_t MEM_If_Init_FS(void)
 { 
   /* USER CODE BEGIN 0 */ 
+  /* Unlock the internal flash */
+  HAL_FLASH_Unlock();
   return (USBD_OK);
   /* USER CODE END 0 */ 
 }
@@ -158,7 +168,9 @@ uint16_t MEM_If_Init_FS(void)
   */
 uint16_t MEM_If_DeInit_FS(void)
 { 
-  /* USER CODE BEGIN 1 */ 
+  /* USER CODE BEGIN 1 */
+  /* Lock the internal flash */
+  HAL_FLASH_Lock();
   return (USBD_OK);
   /* USER CODE END 1 */ 
 }
@@ -172,7 +184,26 @@ uint16_t MEM_If_DeInit_FS(void)
 uint16_t MEM_If_Erase_FS(uint32_t Add)
 {
   /* USER CODE BEGIN 2 */ 
-  return (USBD_OK);
+  uint32_t NbOfPages = 0;
+  uint32_t PageError = 0;
+  /* Variable contains Flash operation status */
+  HAL_StatusTypeDef status;
+  FLASH_EraseInitTypeDef eraseinitstruct;
+
+  /* Get the number of sector to erase from 1st sector*/
+  //NbOfPages = (USBD_DFU_APP_END_ADD - USBD_DFU_APP_DEFAULT_ADD) / FLASH_PAGE_SIZE;
+  NbOfPages = 1;
+  eraseinitstruct.TypeErase = FLASH_TYPEERASE_PAGES;
+  //eraseinitstruct.PageAddress = USBD_DFU_APP_DEFAULT_ADD;
+  eraseinitstruct.PageAddress = Add;
+  eraseinitstruct.NbPages = NbOfPages;
+  status = HAL_FLASHEx_Erase(&eraseinitstruct, &PageError);
+
+  if (status != HAL_OK)
+  {
+    return 1;
+  }
+  return 0;
   /* USER CODE END 2 */ 
 }
 
@@ -187,7 +218,28 @@ uint16_t MEM_If_Erase_FS(uint32_t Add)
 uint16_t MEM_If_Write_FS(uint8_t *src, uint8_t *dest, uint32_t Len)
 {
   /* USER CODE BEGIN 3 */ 
-  return (USBD_OK);
+	  uint32_t i = 0;
+
+	  for(i = 0; i < Len; i+=4)
+	  {
+	    /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
+	       be done by byte */
+	    if(HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, (uint32_t)(dest+i), *(uint32_t*)(src+i)) == HAL_OK)
+	    {
+	     /* Check the written value */
+	      if(*(uint32_t *)(src + i) != *(uint32_t*)(dest+i))
+	      {
+	        /* Flash content doesn't match SRAM content */
+	        return 2;
+	      }
+	    }
+	    else
+	    {
+	      /* Error occurred while writing data in Flash memory */
+	      return 1;
+	    }
+	  }
+	  return 0;
   /* USER CODE END 3 */ 
 }
 
@@ -203,7 +255,15 @@ uint8_t *MEM_If_Read_FS (uint8_t *src, uint8_t *dest, uint32_t Len)
 {
   /* Return a valid address to avoid HardFault */
   /* USER CODE BEGIN 4 */ 
-  return (uint8_t*)(USBD_OK);
+  uint32_t i = 0;
+  uint8_t *psrc = src;
+
+  for(i = 0; i < Len; i++)
+  {
+    dest[i] = *psrc++;
+  }
+  /* Return a valid address to avoid HardFault */
+  return (uint8_t*)(dest);
   /* USER CODE END 4 */ 
 }
 
@@ -221,12 +281,16 @@ uint16_t MEM_If_GetStatus_FS (uint32_t Add, uint8_t Cmd, uint8_t *buffer)
   switch (Cmd)
   {
   case DFU_MEDIA_PROGRAM:
-
+    buffer[1] = (uint8_t)FLASH_PROGRAM_TIME;
+    buffer[2] = (uint8_t)(FLASH_PROGRAM_TIME << 8);
+    buffer[3] = 0;
     break;
     
   case DFU_MEDIA_ERASE:
   default:
-
+    buffer[1] = (uint8_t)FLASH_ERASE_TIME;
+    buffer[2] = (uint8_t)(FLASH_ERASE_TIME << 8);
+    buffer[3] = 0;
     break;
   }                             
   return  (USBD_OK);

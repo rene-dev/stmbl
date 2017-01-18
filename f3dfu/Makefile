@@ -1,7 +1,8 @@
 # Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
 #
-OPT = -O1 -flto
+#OPT = -O2 -flto
+OPT = -O2
 # OPT = -O1         # for debugging
 
 # Object files directory
@@ -23,7 +24,7 @@ SOURCES += f3dfu/src/usbd_conf.c
 SOURCES += f3dfu/src/usbd_desc.c
 SOURCES += f3dfu/src/usbd_dfu_if.c
 
-#INCDIRS += shared
+INCDIRS += shared
 #SOURCES += shared/crc8.c
 #SOURCES += shared/common.c
 #SOURCES += shared/angle.c
@@ -55,29 +56,32 @@ HAL_DRV_DIR = lib/STM32F3xx_HAL_Driver/
 
 INCDIRS += $(HAL_DRV_DIR)/Inc
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_adc.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_adc_ex.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_adc.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_adc_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_cortex.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac_ex.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dma.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac_ex.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dma.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_gpio.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c_ex.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_opamp.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_opamp_ex.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c_ex.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_opamp.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_opamp_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pcd.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pcd_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pwr.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pwr_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_rcc.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_rcc_ex.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_tim.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_tim_ex.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_uart.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_uart_ex.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_tim.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_tim_ex.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_uart.c
+#SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_uart_ex.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_crc.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_crc_ex.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_rtc.c
 
 LDSCRIPT = f3dfu/STM32F303CBTx_FLASH.ld
 
