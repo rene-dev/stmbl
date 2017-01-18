@@ -189,7 +189,7 @@ uint16_t MEM_If_Erase_FS(uint32_t Add)
   /* Variable contains Flash operation status */
   HAL_StatusTypeDef status;
   FLASH_EraseInitTypeDef eraseinitstruct;
-
+  //TODO: only erase APP pages
   /* Get the number of sector to erase from 1st sector*/
   //NbOfPages = (USBD_DFU_APP_END_ADD - USBD_DFU_APP_DEFAULT_ADD) / FLASH_PAGE_SIZE;
   NbOfPages = 1;
@@ -218,28 +218,27 @@ uint16_t MEM_If_Erase_FS(uint32_t Add)
 uint16_t MEM_If_Write_FS(uint8_t *src, uint8_t *dest, uint32_t Len)
 {
   /* USER CODE BEGIN 3 */ 
-	  uint32_t i = 0;
+  uint32_t i = 0;
 
-	  for(i = 0; i < Len; i+=4)
-	  {
-	    /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
-	       be done by byte */
-	    if(HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, (uint32_t)(dest+i), *(uint32_t*)(src+i)) == HAL_OK)
-	    {
-	     /* Check the written value */
-	      if(*(uint32_t *)(src + i) != *(uint32_t*)(dest+i))
-	      {
-	        /* Flash content doesn't match SRAM content */
-	        return 2;
-	      }
-	    }
-	    else
-	    {
-	      /* Error occurred while writing data in Flash memory */
-	      return 1;
-	    }
-	  }
-	  return 0;
+  for(i = 0; i < Len; i+=4)
+  {
+    /* Device voltage range supposed to be [2.7V to 3.6V], the operation will be done by byte */
+    if(HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, (uint32_t)(dest+i), *(uint32_t*)(src+i)) == HAL_OK)
+    {
+      /* Check the written value */
+      if(*(uint32_t *)(src + i) != *(uint32_t*)(dest+i))
+      {
+        /* Flash content doesn't match SRAM content */
+        return 2;
+      }
+    }
+    else
+    {
+      /* Error occurred while writing data in Flash memory */
+      return 1;
+    }
+  }
+  return 0;
   /* USER CODE END 3 */ 
 }
 
