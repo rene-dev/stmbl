@@ -91,7 +91,7 @@ LDSCRIPT = stm32_flash.ld
 
 #============================================================================
 OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
-OBJECTS += hv_firmware.o
+# OBJECTS += hv_firmware.o
 CPPFLAGS += $(addprefix -I,$(INCDIRS))
 
 #---------------- Preprocessor Options ----------------
@@ -171,7 +171,7 @@ LDFLAGS  += $(CPU)
 
 # Default target
 #
-all: hv gccversion boot build showsize
+all:  gccversion boot build showsize
 
 build: elf hex bin lss sym
 
@@ -213,12 +213,12 @@ showsize: build
 
 # Flash the device
 #
-btburn: hv build showsize $(TARGET).dfu
+btburn: build showsize $(TARGET).dfu
 	@tools/bootloader.py
 	@sleep 1
 	@dfu-util -d 0483:df11 -a 0 -s 0x08010000:leave -D $(TARGET).dfu
 
-flash: hv $(TARGET).bin
+flash: $(TARGET).bin
 	st-flash --reset write $(TARGET).bin 0x08010000
 
 # Create a DFU file from bin file
@@ -230,7 +230,7 @@ flash: hv $(TARGET).bin
 #
 clean:
 	@echo Cleaning project:
-	rm -rf hv_firmware.o
+	# rm -rf hv_firmware.o
 	rm -rf $(OBJDIR)
 	@$(MAKE) -f bootloader/Makefile clean
 	@$(MAKE) -f stm32f103/Makefile clean

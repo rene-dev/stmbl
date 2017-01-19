@@ -281,7 +281,7 @@ int main(void)
   hal_set_comp_type("foo"); // default pin for mem errors
   HAL_PIN(bar) = 0.0;
   
-  #include "../src/comps/sim.comp"
+  // #include "../src/comps/sim.comp"
   #include "comps/term.comp"
   #include "../src/comps/idq.comp"
   #include "../src/comps/dq.comp"
@@ -319,7 +319,7 @@ int main(void)
   //hal_set_pin("iclarke0.rt_prio", 3.0);
   //hal_set_pin("clarke0.rt_prio", 3.1);
   hal_set_pin("term0.rt_prio", 0.1);
-  hal_set_pin("sim0.rt_prio", 0.5);
+  // hal_set_pin("sim0.rt_prio", 0.5);
   hal_set_pin("ls0.rt_prio", 0.6);
   hal_set_pin("io0.rt_prio", 1.0);
   hal_set_pin("dq0.rt_prio", 2.0);
@@ -345,7 +345,7 @@ int main(void)
   hal_link_pins("ls0.d", "curpid0.id_cmd");
   hal_link_pins("ls0.q", "curpid0.iq_cmd");
   hal_link_pins("ls0.pos", "idq0.pos");
-  hal_link_pins("ls0.b", "dq0.pos");
+  hal_link_pins("ls0.pos", "dq0.pos");
   hal_link_pins("ls0.en", "hv0.en");
   
   //ADC TEST
@@ -354,10 +354,10 @@ int main(void)
   hal_link_pins("io0.iu", "dq0.u");
   hal_link_pins("io0.iv", "dq0.v");
   hal_link_pins("io0.iw", "dq0.w");
-  hal_link_pins("clarke0.y", "term0.wave4");
+  // hal_link_pins("clarke0.y", "term0.wave4");
   
-  hal_link_pins("sim0.vel", "idq0.pos");
-  hal_link_pins("sim0.vel", "dq0.pos");
+  // hal_link_pins("sim0.vel", "idq0.pos");
+  // hal_link_pins("sim0.vel", "dq0.pos");
   
   hal_link_pins("idq0.u", "svm0.u");
   hal_link_pins("idq0.v", "svm0.v");
@@ -370,6 +370,9 @@ int main(void)
   
   hal_link_pins("dq0.d", "curpid0.id_fb");
   hal_link_pins("dq0.q", "curpid0.iq_fb");
+  
+  hal_link_pins("dq0.d", "ls0.id");
+  hal_link_pins("dq0.q", "ls0.iq");
   
   hal_link_pins("curpid0.ud", "idq0.d");
   hal_link_pins("curpid0.uq", "idq0.q");
@@ -385,7 +388,7 @@ int main(void)
   hal_comp_init();//call init function of all comps
 
   if(hal.pin_errors + hal.comp_errors == 0){
-     //hal_start();
+     hal_start();
   }
   else{
      hal.hal_state = MEM_ERROR;

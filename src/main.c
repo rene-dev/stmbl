@@ -206,11 +206,11 @@ int main(void)
    #include "comps/ypid.comp"
    #include "comps/pid.comp"
    #include "comps/pmsm_t2c.comp"
-   #include "comps/curpid.comp"
-   #include "comps/pmsm.comp"
+   //#include "comps/curpid.comp"
+   //#include "comps/pmsm.comp"
    #include "comps/pmsm_limits.comp"
-   #include "comps/idq.comp"
-   #include "comps/dq.comp"
+   //#include "comps/idq.comp"
+   //#include "comps/dq.comp"
    #include "comps/hv.comp"
 
    //other comps

@@ -18,16 +18,15 @@ HAL_PIN(dc_volt) = 0.0;
 HAL_PIN(pwm_volt) = 0.0;
 HAL_PIN(hv_temp) = 0.0;
 
-HAL_PIN(ia) = 0.0;
-HAL_PIN(ib) = 0.0;
+HAL_PIN(id) = 0.0;
+HAL_PIN(iq) = 0.0;
 
 
 MEM(packet_to_hv_t packet_to_hv);
 MEM(packet_from_hv_t packet_from_hv);
 MEM(uint32_t timeout) = 99999;
 
-MEM(volatile uint8_t rxbuf[128]);
-MEM(volatile uint8_t txbuf[20]);
+MEM(volatile uint8_t rxbuf[sizeof(packet_to_hv) * 2]);
 MEM(uint32_t rxpos) = 0;//UART rx buffer position
 MEM(int32_t datapos) = -1;
 
@@ -106,9 +105,10 @@ RT(
    	if(buf == 255){ //start condition
    		datapos = 0;
    		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
-			packet_from_hv.data.dc_volt = TOFIXED(PIN(dc_volt));
-			packet_from_hv.data.dc_cur =  TOFIXED(0.0f);
-			packet_from_hv.data.hv_temp = TOFIXED(PIN(hv_temp));
+			packet_from_hv.data.dc_volt = PIN(dc_volt);
+			packet_from_hv.data.id =  PIN(id);
+         packet_from_hv.data.iq =  PIN(iq);
+			packet_from_hv.data.hv_temp = PIN(hv_temp);
          buff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
          DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
          DMA1_Channel2->CNDTR = sizeof(packet_from_hv);

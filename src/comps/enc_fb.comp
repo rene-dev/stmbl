@@ -84,8 +84,9 @@ FRT(
    PIN(pos) = p;
    //TODO: this gets triggered by wire saving abs encoders. add timeout?
    if(RISING_EDGE(!GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_11)) && PIN(isabs) != 1.0){
-      absoffset = -p;
-      PIN(isabs) = 1.0;
+      // TODO: fix
+      //absoffset = -p;
+      //PIN(isabs) = 1.0;
    }
    PIN(abspos) = mod(p + absoffset);
 );

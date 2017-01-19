@@ -24,9 +24,10 @@ typedef struct{
 //data from f1 to f4
 #pragma pack(1)
 typedef struct{
-   int16_t dc_cur;
-   int16_t dc_volt;
-   int16_t hv_temp;
+   float id;
+   float iq;
+   float dc_volt;
+   float hv_temp;
    uint8_t high_volt : 1;//hardware hi limit
    uint8_t low_volt  : 1;//hardware low limit
    uint8_t over_cur  : 1;//hardware cur limit

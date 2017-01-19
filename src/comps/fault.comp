@@ -58,6 +58,7 @@ HAL_PIN(mot_fan) = 0.0;
 
 HAL_PIN(phase_with_brake) = 1.0;
 HAL_PIN(phase_on_start) = 1.0;
+HAL_PIN(rephase) = 0.0;
 
 HAL_PIN(print) = 0.0;
 
@@ -77,6 +78,9 @@ RT(
    switch(state){
       case DISABLED:
          if(RISING_EDGE(PIN(en)) & (PIN(cmd_ready) > 0.0) & (PIN(fb0_ready) > 0.0) & (PIN(fb1_ready) > 0.0) & (PIN(hv_ready) > 0.0)){
+            if(PIN(rephase) > 0.0){ // TODO: check phase_on_start
+               phased = 0;
+            }
             if(phased == 0){
                state = PHASING;
             }

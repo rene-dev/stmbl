@@ -3,45 +3,51 @@
 
 void link_ac(){
    hal_set_pin("t2c0.rt_prio", 9.0);
-   hal_set_pin("curpid0.rt_prio", 10.0);
-   hal_set_pin("pmsm0.rt_prio", 11.0);
+   // hal_set_pin("curpid0.rt_prio", 10.0);
+   // hal_set_pin("pmsm0.rt_prio", 11.0);
    hal_set_pin("pmsm_limits0.rt_prio", 12.0);
-   hal_set_pin("idq0.rt_prio", 13.0);
-   hal_set_pin("dq0.rt_prio", 14.1);
+   // hal_set_pin("idq0.rt_prio", 13.0);
+   // hal_set_pin("dq0.rt_prio", 14.1);
    hal_set_pin("i2t0.rt_prio", 15.0);
 
    // t2c
    hal_link_pins("conf0.polecount", "t2c0.polecount");
    hal_link_pins("conf0.psi", "t2c0.psi");
+   
+   hal_link_pins("t2c0.cur", "hv0.q");
+   hal_link_pins("cauto0.i_d", "hv0.d");
+   hal_link_pins("cauto0.pos", "hv0.pos");
+   hal_link_pins("conf0.polecount", "hv0.polecount");
+   hal_link_pins("pid0.torque_cor_cmd", "vel1.torque");
 
    // curpid
-   hal_link_pins("cauto0.i_d", "curpid0.id_cmd");
-   hal_link_pins("t2c0.cur", "curpid0.iq_cmd");
-   hal_link_pins("hv0.dc_volt", "curpid0.dc_volt");
-   hal_link_pins("hv0.pwm_volt", "curpid0.ac_volt");
-   hal_link_pins("conf0.r", "curpid0.rd");
-   hal_link_pins("conf0.r", "curpid0.rq");
-   hal_link_pins("conf0.l", "curpid0.ld");
-   hal_link_pins("conf0.l", "curpid0.lq");
-   hal_link_pins("conf0.cur_ff", "curpid0.ff");
-   hal_link_pins("conf0.cur_p", "curpid0.kp");
-   hal_link_pins("conf0.cur_i", "curpid0.ki");
-   hal_link_pins("conf0.cur_ind", "curpid0.kind");
+   // hal_link_pins("cauto0.i_d", "curpid0.id_cmd");
+   // hal_link_pins("t2c0.cur", "curpid0.iq_cmd");
+   // hal_link_pins("hv0.dc_volt", "curpid0.dc_volt");
+   // hal_link_pins("hv0.pwm_volt", "curpid0.ac_volt");
+   // hal_link_pins("conf0.r", "curpid0.rd");
+   // hal_link_pins("conf0.r", "curpid0.rq");
+   // hal_link_pins("conf0.l", "curpid0.ld");
+   // hal_link_pins("conf0.l", "curpid0.lq");
+   // hal_link_pins("conf0.cur_ff", "curpid0.ff");
+   // hal_link_pins("conf0.cur_p", "curpid0.kp");
+   // hal_link_pins("conf0.cur_i", "curpid0.ki");
+   // hal_link_pins("conf0.cur_ind", "curpid0.kind");
 
    // pmsm
-   hal_link_pins("curpid0.ud", "pmsm0.ud");
-   hal_link_pins("curpid0.uq", "pmsm0.uq");
-   hal_link_pins("net0.fb_d", "pmsm0.vel");
-   hal_link_pins("conf0.r", "pmsm0.r");
-   hal_link_pins("conf0.l", "pmsm0.ld");
-   hal_link_pins("conf0.l", "pmsm0.lq");
-   hal_link_pins("conf0.psi", "pmsm0.psi");
-   hal_link_pins("pmsm0.id", "curpid0.id_fb");
-   hal_link_pins("pmsm0.iq", "curpid0.iq_fb");
-   hal_link_pins("pmsm0.indd", "curpid0.indd_fb");
-   hal_link_pins("pmsm0.indq", "curpid0.indq_fb");
-   hal_link_pins("conf0.polecount", "pmsm0.polecount");
-   hal_link_pins("pmsm0.iq", "hv0.iq");
+   // hal_link_pins("curpid0.ud", "pmsm0.ud");
+   // hal_link_pins("curpid0.uq", "pmsm0.uq");
+   // hal_link_pins("net0.fb_d", "pmsm0.vel");
+   // hal_link_pins("conf0.r", "pmsm0.r");
+   // hal_link_pins("conf0.l", "pmsm0.ld");
+   // hal_link_pins("conf0.l", "pmsm0.lq");
+   // hal_link_pins("conf0.psi", "pmsm0.psi");
+   // hal_link_pins("pmsm0.id", "curpid0.id_fb");
+   // hal_link_pins("pmsm0.iq", "curpid0.iq_fb");
+   // hal_link_pins("pmsm0.indd", "curpid0.indd_fb");
+   // hal_link_pins("pmsm0.indq", "curpid0.indq_fb");
+   // hal_link_pins("conf0.polecount", "pmsm0.polecount");
+   // hal_link_pins("pmsm0.iq", "hv0.iq");
 
    // pmsm_limits
    hal_link_pins("conf0.r", "pmsm_limits0.r");
@@ -189,7 +195,7 @@ void link_pid(){
 
    // misc
    hal_link_pins("conf0.out_rev", "hv0.rev");
-   hal_link_pins("cauto0.pos", "idq0.pos");
+   // hal_link_pins("cauto0.pos", "idq0.pos");
    hal_link_pins("conf0.cmd_res", "sim0.res");
 
    // term
