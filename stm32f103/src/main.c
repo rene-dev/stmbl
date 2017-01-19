@@ -7,22 +7,7 @@
 #define ARES 4096.0// analog resolution, 12 bit
 #define AREF 3.3// analog reference voltage
 
-#ifdef TROLLER
-
-#define ADC_channels 4
-#define VDIVUP 1000000.0
-#define VDIVDOWN 4990.0
-#define PWM_U TIM1->CCR3
-#define PWM_V TIM1->CCR2
-#define PWM_W TIM1->CCR1
-#define ACS_VPA 0.066 // ACS712 V/A
-#define ACS_UP 2000.0
-#define ACS_DOWN 3000.0
-#define ACS_OFFSET 2.5
-
-#define AMP(a) (((a) * AREF / ARES * (ACS_DOWN + ACS_UP) / ACS_DOWN - ACS_OFFSET) / ACS_VPA)
-
-#else //iramx v3.1-v3.3 hardware
+//iramx v3.1-v3.3 hardware
 #define RCUR 0.0181//shunt
 #define TPULLUP 10000//iramx temperature pullup
 #define R10 10000
@@ -36,8 +21,6 @@
 
 #define AMP(a) (((a) * AREF / ARES - AREF / (R10 + R11) * R11) / (RCUR * R10) * (R10 + R11))
 #define TEMP(a) (log10f((a) * AREF / ARES * TPULLUP / (AREF - a * AREF / ARES)) * (-53) + 290)
-
-#endif
 
 #define VOLT(a) ((a) / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
 
@@ -115,24 +98,12 @@ void RCC_Configuration(void)
 }
 
 void hv_enable(){
-#ifdef TROLLER
-		GPIO_SetBits(GPIOB,GPIO_Pin_1);
-		GPIO_SetBits(GPIOB,GPIO_Pin_2);
-		GPIO_SetBits(GPIOB,GPIO_Pin_3);
-#else
 		GPIO_SetBits(GPIOB,GPIO_Pin_6);
-#endif
       hv_enabled = 1;
 }
 
 void hv_disable(){
-#ifdef TROLLER
-		GPIO_ResetBits(GPIOB,GPIO_Pin_1);
-		GPIO_ResetBits(GPIOB,GPIO_Pin_2);
-		GPIO_ResetBits(GPIOB,GPIO_Pin_3);
-#else
 		GPIO_ResetBits(GPIOB,GPIO_Pin_6);
-#endif
       hv_enabled = 0;
 }
 
@@ -144,12 +115,6 @@ void GPIO_Configuration(void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 
-#ifdef TROLLER
-	//shutdown pins
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	//GPIO_ResetBits(GPIOC,GPIO_Pin_2);//green led off
-#else
 	//Enable output
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -166,7 +131,6 @@ void GPIO_Configuration(void)
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-#endif
    hv_disable();
 }
 
@@ -203,14 +167,11 @@ void tim1_init(){
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-#ifndef TROLLER
-	//TIM1 N
-	// not needed for troller
+	//TIM1N
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-#endif
 
 	/* Channel 1, 2 and 3 Configuration in PWM mode */
 	TIM_TimeBaseStructure.TIM_Period = PWM_RES;
@@ -231,11 +192,7 @@ void tim1_init(){
 
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-#ifdef TROLLER
-	TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
-#else
 	TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
-#endif
 	TIM_OCInitStructure.TIM_Pulse = 0;
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 	TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
@@ -316,20 +273,6 @@ void setup_adc(){
 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 
-#ifdef TROLLER
-	//PINA0 IN0 DC link
-	//PINA6 IN6 iu
-	//PINA7 IN7 iv
-	//PINB0 IN8 iw
-
-	//PINA5 IN5 uu
-	//PINA4 IN4 uv
-	//PINA1 IN1 uw
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_6 | GPIO_Pin_7;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-#else
 	//PINC5 IN15 DC link
 	//PINC4 IN14 AMP
 	//PINB0 IN8 temperature
@@ -337,7 +280,6 @@ void setup_adc(){
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-#endif
 
 	DMA_DeInit(DMA1_Channel1);
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR;
@@ -472,11 +414,11 @@ int main(void)
 
 	packet_from_hv.head.start = 255;
 	packet_from_hv.head.key = 0;
-#ifndef TROLLER
+
 	for(int i = 0; i < TEMP_RES; i++){
 		temp_buf[i] = TOFIXED(TEMP(i / TEMP_SCALE));
 	}
-#endif
+
 	while(1){
       //next received packet will be written to bufferpos
       uint32_t bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA1_Channel6);
@@ -597,13 +539,7 @@ int main(void)
          }else{
             packet_from_hv.data.hv_fault = 0;
          }
-#ifdef TROLLER
-			packet_from_hv.data.dc_cur =  TOFIXED(0);
-			packet_from_hv.data.hv_temp = TOFIXED(0);
-			packet_from_hv.data.a = TOFIXED(AMP(ADCConvertedValue[1]));
-			packet_from_hv.data.b = TOFIXED(AMP(ADCConvertedValue[2]));
-			packet_from_hv.data.c = TOFIXED(AMP(ADCConvertedValue[3]));
-#endif
+
 			buff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
 			uartsend = 0;
          temp_raw = ADC_GetInjectedConversionValue(ADC2, ADC_InjectedChannel_2);

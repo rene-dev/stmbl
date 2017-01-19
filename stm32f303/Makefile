@@ -66,22 +66,22 @@ SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_adc.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_adc_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_cortex.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac_ex.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dma.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash_ex.c
+# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac.c
+# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac_ex.c
+# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dma.c
+# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash.c
+# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_gpio.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c_ex.c
+# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c.c
+# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_opamp.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_opamp_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pcd.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pcd_ex.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pwr.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pwr_ex.c
+# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pwr.c
+# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pwr_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_rcc.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_rcc_ex.c
+# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_rcc_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_tim.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_tim_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_uart.c
@@ -99,7 +99,7 @@ CPPFLAGS += $(addprefix -I,$(INCDIRS))
 #  -save-temps    preserve .s and .i-files
 #
 CPPFLAGS += -fsingle-precision-constant
-CPPFLAGS += -g
+# CPPFLAGS += -g
 # CPPFLAGS += -save-temps=obj
 
 #---------------- C Compiler Options ----------------

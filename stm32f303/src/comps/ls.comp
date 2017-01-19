@@ -8,16 +8,15 @@ HAL_PIN(mode) = 0.0;
 HAL_PIN(en) = 0.0;
 
 //from HV
-HAL_PIN(error) = 0.0;
+// HAL_PIN(error) = 0.0;
 // HAL_PIN(over_cur);
 // HAL_PIN(over_temp);
-HAL_PIN(hv_fault); 
+// HAL_PIN(hv_fault); 
+// HAL_PIN(dc_cur) = 0.0;
+// HAL_PIN(pwm_volt) = 0.0;
 
-//HAL_PIN(dc_cur) = 0.0;
 HAL_PIN(dc_volt) = 0.0;
-HAL_PIN(pwm_volt) = 0.0;
 HAL_PIN(hv_temp) = 0.0;
-
 HAL_PIN(id) = 0.0;
 HAL_PIN(iq) = 0.0;
 
@@ -59,7 +58,6 @@ RT_INIT(
    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
    
    __HAL_RCC_DMA1_CLK_ENABLE();
-   // __HAL_RCC_DMA2_CLK_ENABLE();
   
    //TX DMA
    DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
@@ -82,20 +80,8 @@ RT_INIT(
    DMA1_Channel3->CCR |= DMA_CCR_EN;
 );
 
-NRT(
-//    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
-// if(PIN(fo) > 0){
-//    printf("ISR: %x\n",DMA1->ISR);
-//    printf("CPAR:%x\n",DMA1_Channel2->CPAR);
-//    printf("CMAR:%x\n",DMA1_Channel2->CMAR);
-//    printf("CMAR:%c\n",*((char *)((DMA1_Channel2->CMAR))));
-//
-//    PIN(fo) = 0;
-// }
-);
-
 RT(
-   //next received packet will be written to bufferpos
+   //next received packet will be written to rxbufferpos
    uint32_t rxbufferpos = sizeof(rxbuf) - DMA1_Channel3->CNDTR;
    //how many packets we have the the rx buffer for processing
    uint32_t rxavailable = (rxbufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
@@ -113,7 +99,7 @@ RT(
          DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
          DMA1_Channel2->CNDTR = sizeof(packet_from_hv);
          DMA1_Channel2->CCR |= DMA_CCR_EN;
-   	}else if(datapos >= 0 && datapos < sizeof(packet_to_hv_t)){
+   	}else if(datapos >= 0 && datapos < sizeof(packet_to_hv_t)){//append data
    		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
    	}
    	if(datapos == sizeof(packet_to_hv_t)){//all data received
@@ -123,7 +109,6 @@ RT(
          PIN(d) = packet_to_hv.data.d;
          PIN(q) = packet_to_hv.data.q;
          PIN(pos) = packet_to_hv.data.pos;
-         // packet_to_hv.data.mode
    		timeout = 0; //reset timeout
    	}
       

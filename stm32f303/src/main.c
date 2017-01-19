@@ -285,24 +285,13 @@ int main(void)
   #include "comps/term.comp"
   #include "../src/comps/idq.comp"
   #include "../src/comps/dq.comp"
-  //#include "../src/comps/iclarke.comp"
   #include "comps/curpid.comp"
-  //#include "comps/clarke.comp"
   #include "comps/io.comp"
   #include "comps/svm.comp"
   #include "comps/hv.comp"
   #include "comps/ls.comp"
   
   hal_set_comp_type("net");
-  HAL_PIN(enable) = 0.0;
-  HAL_PIN(cmd) = 0.0;
-  HAL_PIN(fb) = 0.0;
-  HAL_PIN(fb_error) = 0.0;
-  HAL_PIN(cmd_d) = 0.0;
-  HAL_PIN(fb_d) = 0.0;
-  HAL_PIN(core_temp0) = 0.0;
-  HAL_PIN(core_temp1) = 0.0;
-  HAL_PIN(motor_temp) = 0.0;
   HAL_PIN(rt_calc_time) = 0.0;
   HAL_PIN(frt_calc_time) = 0.0;
   HAL_PIN(nrt_calc_time) = 0.0;
@@ -316,8 +305,6 @@ int main(void)
   frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
   
   // hal_set_pin("sim0.rt_prio", 1.0);
-  //hal_set_pin("iclarke0.rt_prio", 3.0);
-  //hal_set_pin("clarke0.rt_prio", 3.1);
   hal_set_pin("term0.rt_prio", 0.1);
   // hal_set_pin("sim0.rt_prio", 0.5);
   hal_set_pin("ls0.rt_prio", 0.6);
@@ -354,7 +341,6 @@ int main(void)
   hal_link_pins("io0.iu", "dq0.u");
   hal_link_pins("io0.iv", "dq0.v");
   hal_link_pins("io0.iw", "dq0.w");
-  // hal_link_pins("clarke0.y", "term0.wave4");
   
   // hal_link_pins("sim0.vel", "idq0.pos");
   // hal_link_pins("sim0.vel", "dq0.pos");
