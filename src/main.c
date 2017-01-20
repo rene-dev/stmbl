@@ -182,7 +182,7 @@ int main(void)
    #include "comps/adc.comp"
    #include "comps/res.comp" //TODO: not working in v4 and v3... ref pin needs fixing
    #include "comps/enc_fb.comp"
-   // #include "comps/encm.comp" //TODO: not working in v4
+   #include "comps/encm.comp"
    //#include "comps/encs.comp" //TODO: not working in v4
    //#include "comps/yaskawa.comp" //TODO: not working in v4
    // #include "comps/hyper.comp" //TODO: not working in v4

@@ -5,37 +5,39 @@ HAL_COMP(encm);
 HAL_PIN(pos) = 0.0;
 
 HAL_PIN(error) = 0;
+HAL_PIN(dma) = 0;//dma transfers left
 
 MEM(uint32_t error_) = 0.0;
-MEM(uint8_t menc_buf[10]);
+MEM(uint8_t rxbuf[15]);
+// HAL_PIN_ARRAY(d,ARRAY_SIZE(rxbuf));//byte output
 
 RT_INIT(
   GPIO_InitTypeDef GPIO_InitStruct;
   USART_InitTypeDef USART_InitStruct;
 
   //TX enable
-  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
+  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_15;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);
 
   //USART TX
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_USART3);
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+  GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_USART6);
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
-  GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   //USART RX
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource11, GPIO_AF_USART3);
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
-  GPIO_Init(GPIOB, &GPIO_InitStruct);
+  // GPIO_PinAFConfig(GPIOB, GPIO_PinSource11, GPIO_AF_USART6);
+  // GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
+  // GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   USART_InitStruct.USART_BaudRate = 2500000;
   USART_InitStruct.USART_WordLength = USART_WordLength_8b;
@@ -43,22 +45,22 @@ RT_INIT(
   USART_InitStruct.USART_Parity = USART_Parity_No;
   USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  USART_Init(USART3, &USART_InitStruct);
-
+  USART_Init(USART6, &USART_InitStruct);
+  
   /* Enable the USART */
-  USART_Cmd(USART3, ENABLE);
-
+  USART_Cmd(USART6, ENABLE);
+  USART_HalfDuplexCmd(USART6,ENABLE);
 
   // DMA-Disable
-  DMA_Cmd(DMA1_Stream1, DISABLE);
-  DMA_DeInit(DMA1_Stream1);
+  DMA_Cmd(DMA2_Stream1, DISABLE);
+  DMA_DeInit(DMA2_Stream1);
 
   // DMA2-Config
-  DMA_InitStructure.DMA_Channel = DMA_Channel_4;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
-  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&menc_buf;
+  DMA_InitStructure.DMA_Channel = DMA_Channel_5;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART6->DR);
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&rxbuf;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-  DMA_InitStructure.DMA_BufferSize = 9;
+  DMA_InitStructure.DMA_BufferSize = ARRAY_SIZE(rxbuf);
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
@@ -69,47 +71,74 @@ RT_INIT(
   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  DMA_Init(DMA1_Stream1, &DMA_InitStructure);
+  DMA_Init(DMA2_Stream1, &DMA_InitStructure);
 
-  USART_DMACmd(USART3, USART_DMAReq_Rx, ENABLE);
+  USART_DMACmd(USART6, USART_DMAReq_Rx, ENABLE);
 );
 
 RT_DEINIT(
-   GPIO_ResetBits(GPIOB,GPIO_Pin_12);//tx disable
-   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12;
-   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-   GPIO_Init(GPIOB, &GPIO_InitStructure);
-   USART_DMACmd(USART3, USART_DMAReq_Rx, DISABLE);
-   DMA_Cmd(DMA1_Stream1, DISABLE);
-   DMA_DeInit(DMA1_Stream1);
-   USART_Cmd(USART3, DISABLE);
-   USART_DeInit(USART3);
-   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, DISABLE);
+   // GPIO_ResetBits(GPIOB,GPIO_Pin_12);//tx disable
+   // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12;
+   // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   // GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   // GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   // GPIO_Init(GPIOB, &GPIO_InitStructure);
+   // USART_DMACmd(USART6, USART_DMAReq_Rx, DISABLE);
+   // DMA_Cmd(DMA2_Stream1, DISABLE);
+   // DMA_DeInit(DMA2_Stream1);
+   // USART_Cmd(USART6, DISABLE);
+   // USART_DeInit(USART6);
+   // RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART6, DISABLE);
 );
 
 RT(
-   uint32_t tpos;
+   PIN(dma) = DMA_GetCurrDataCounter(DMA2_Stream1);
+   // for(int i = 0; i < ARRAY_SIZE(rxbuf); i++){
+   //    PIN_ARRAY(d,i) = rxbuf[i];
+   // }
+   //position request: 0x32
+   //reply:
+   //0: request
+   //1: unknown
+   //2: low 1 bit
+   //3: mid 8 bit
+   //4: hi 8 bit
+   //5: 8 bit full turns
+   //6: 255 turns... how many bits?
+   //7: unknown
+   //8: checksum: xor byte 0-8 = 0
+   if((sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream1)) > 7){
+      int offset = -1;
+      for(int i = 0; i < 3; i++){
+         if(rxbuf[i] == 0x32){
+            offset = i;
+            break;
+         }
+      }
 
-   if(menc_buf[0] == 0x32 && ((menc_buf[0] ^ menc_buf[1] ^ menc_buf[2] ^ menc_buf[3] ^ menc_buf[4] ^ menc_buf[5] ^ menc_buf[6] ^ menc_buf[7] ^ menc_buf[8]) == 0)){
-      tpos = ((menc_buf[2] & 0x80) >> 7) + menc_buf[3]*2 + menc_buf[4]*512;
-      menc_buf[0] = 0; // clear buffer to catch fb error
-      PIN(pos) = (tpos * M_PI * 2.0 / 131072.0) - M_PI;
-      PIN(error) = 0.0;
+      if(offset >= 0 && rxbuf[0 + offset] == 0x32 && ((rxbuf[0 + offset] ^ rxbuf[1 + offset] ^ rxbuf[2 + offset] ^ rxbuf[3 + offset] ^ rxbuf[4 + offset] ^ rxbuf[5 + offset] ^ rxbuf[6 + offset] ^ rxbuf[7 + offset] ^ rxbuf[8 + offset]) == 0)){
+         uint32_t tpos = ((rxbuf[2 + offset] & 0x80) >> 7) + rxbuf[3 + offset]*2 + rxbuf[4 + offset]*512;// 17 bit single turn position
+         PIN(pos) = (tpos * M_PI * 2.0 / 131072.0) - M_PI;// convert to +-PI
+         PIN(error) = 0.0;
+      }else{
+         error_++;//TODO: overflow...
+         PIN(error) = error_;
+      }
    }else{
-      error_++;
+      error_++;//TODO: overflow...
       PIN(error) = error_;
    }
 
-   GPIO_SetBits(GPIOB,GPIO_Pin_12);//tx enable
-   USART_SendData(USART3, 0x32);
-   while (USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET);
-   GPIO_ResetBits(GPIOB,GPIO_Pin_12);//tx disable
-   DMA_Cmd(DMA1_Stream1, DISABLE);
-   DMA_ClearFlag(DMA1_Stream1, DMA_FLAG_TCIF1);
-   DMA_Cmd(DMA1_Stream1, ENABLE);
+   //TODO: irq here will cause problems
+   GPIO_SetBits(GPIOD,GPIO_Pin_15);//tx enable
+   USART_SendData(USART6, 0x32);
+   while (USART_GetFlagStatus(USART6, USART_FLAG_TC) == RESET);
+   GPIO_ResetBits(GPIOD,GPIO_Pin_15);//tx disable
+   //start rx dma
+   DMA_Cmd(DMA2_Stream1, DISABLE);
+   DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
+   DMA_Cmd(DMA2_Stream1, ENABLE);
 );
 
 ENDCOMP;
