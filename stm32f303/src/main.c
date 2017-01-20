@@ -329,8 +329,8 @@ int main(void)
   //link LS
   hal_link_pins("io0.udc", "ls0.dc_volt");
   hal_link_pins("io0.hv_temp", "ls0.hv_temp");
-  hal_link_pins("ls0.d", "curpid0.id_cmd");
-  hal_link_pins("ls0.q", "curpid0.iq_cmd");
+  hal_link_pins("ls0.d_cmd", "curpid0.id_cmd");
+  hal_link_pins("ls0.q_cmd", "curpid0.iq_cmd");
   hal_link_pins("ls0.pos", "idq0.pos");
   hal_link_pins("ls0.pos", "dq0.pos");
   hal_link_pins("ls0.en", "hv0.en");
@@ -357,8 +357,8 @@ int main(void)
   hal_link_pins("dq0.d", "curpid0.id_fb");
   hal_link_pins("dq0.q", "curpid0.iq_fb");
   
-  hal_link_pins("dq0.d", "ls0.id");
-  hal_link_pins("dq0.q", "ls0.iq");
+  hal_link_pins("dq0.d", "ls0.d_fb");
+  hal_link_pins("dq0.q", "ls0.q_fb");
   
   hal_link_pins("curpid0.ud", "idq0.d");
   hal_link_pins("curpid0.uq", "idq0.q");
@@ -374,7 +374,7 @@ int main(void)
   hal_comp_init();//call init function of all comps
 
   if(hal.pin_errors + hal.comp_errors == 0){
-     hal_start();
+     //hal_start();
   }
   else{
      hal.hal_state = MEM_ERROR;

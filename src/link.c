@@ -14,11 +14,20 @@ void link_ac(){
    hal_link_pins("conf0.polecount", "t2c0.polecount");
    hal_link_pins("conf0.psi", "t2c0.psi");
    
-   hal_link_pins("t2c0.cur", "hv0.q");
-   hal_link_pins("cauto0.i_d", "hv0.d");
+   hal_link_pins("t2c0.cur", "hv0.q_cmd");
+   hal_link_pins("cauto0.i_d", "hv0.d_cmd");
    hal_link_pins("cauto0.pos", "hv0.pos");
    hal_link_pins("conf0.polecount", "hv0.polecount");
    hal_link_pins("pid0.torque_cor_cmd", "vel1.torque");
+
+   hal_link_pins("conf0.r", "hv0.r");
+   hal_link_pins("conf0.l", "hv0.l");
+   hal_link_pins("conf0.psi", "hv0.psi");
+   hal_link_pins("conf0.cur_p", "hv0.cur_p");
+   hal_link_pins("conf0.cur_i", "hv0.cur_i");
+   hal_link_pins("conf0.cur_ff", "hv0.cur_ff");
+   hal_link_pins("conf0.cur_ind", "hv0.cur_ind");
+   hal_set_pin("hv0.max_y", 1.0);
 
    // curpid
    // hal_link_pins("cauto0.i_d", "curpid0.id_cmd");
@@ -161,13 +170,13 @@ void link_pid(){
 
    hal_link_pins("fault0.scale", "curpid0.scale");
    hal_link_pins("conf0.max_ac_cur", "curpid0.max_cur");
-   hal_link_pins("hv0.error", "fault0.hv_error");
+   hal_link_pins("hv0.com_error", "fault0.hv_error");
    // hal_link_pins("hv0.hv_fault", "fault0.hv_error"); //TODO
 
    hal_link_pins("fault0.mot_brake", "io0.brake");
    hal_link_pins("fault0.hv_fan", "io0.fan");
 
-   hal_link_pins("fault0.en_out", "hv0.enable");
+   hal_link_pins("fault0.en_out", "hv0.en");
    hal_link_pins("fault0.en_pid", "pid0.enable");
 
    hal_link_pins("net0.enable", "fault0.en");
@@ -249,7 +258,7 @@ int update_mot(){
          hal_set_pin("idq0.d", 0.0);
          hal_link_pins("uf0.volt", "idq0.q");
          hal_set_pin("hv0.mode", 2.0);
-         hal_link_pins("net0.enable", "hv0.enable");
+         hal_link_pins("net0.enable", "hv0.en");
          hal_link_pins("fault0.scale", "uf0.scale");
 
          hal_set_pin("freq_fb0.rt_prio", 1.0);
@@ -261,7 +270,7 @@ int update_mot(){
       case DC:
          link_simplepid();
          hal_set_pin("hv0.mode", 1.0);
-         hal_link_pins("ypid0.out", "hv0.a");
+         hal_link_pins("ypid0.out", "hv0.q_cmd");
          break;
       default:
          return -1;

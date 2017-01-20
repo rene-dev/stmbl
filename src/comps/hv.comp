@@ -1,38 +1,46 @@
 HAL_COMP(hv);
 
-HAL_PIN(d) = 0.0;
-HAL_PIN(q) = 0.0;
+//process data from LS 
+HAL_PIN(d_cmd) = 0.0;
+HAL_PIN(q_cmd) = 0.0;
 HAL_PIN(pos) = 0.0;
+HAL_PIN(en) = 0.0;
+
+// config data from LS
 HAL_PIN(mode) = 0.0;
+HAL_PIN(r) = 0.0;
+HAL_PIN(l) = 0.0;
+HAL_PIN(psi) = 0.0;
+HAL_PIN(cur_p) = 0.0;
+HAL_PIN(cur_i) = 0.0;
+HAL_PIN(cur_ff) = 0.0;
+HAL_PIN(cur_ind) = 0.0;
+HAL_PIN(max_y) = 0.0;
 
-HAL_PIN(id) = 0.0;
-HAL_PIN(iq) = 0.0;
-
-HAL_PIN(enable) = 0.0;
-HAL_PIN(error) = 0.0;
-HAL_PIN(over_cur);
-HAL_PIN(over_temp);
-HAL_PIN(hv_fault); 
-
+// process data to LS
 HAL_PIN(dc_volt) = 0.0;
-HAL_PIN(pwm_volt) = 0.0;
+HAL_PIN(d_fb) = 0.0;
+HAL_PIN(q_fb) = 0.0;
+
+// state data to LS
 HAL_PIN(hv_temp) = 0.0;
-HAL_PIN(power) = 0.0;
+HAL_PIN(mot_temp) = 0.0;
+HAL_PIN(core_temp) = 0.0;
+HAL_PIN(fault) = 0.0;
+HAL_PIN(y) = 0.0;
 
+// misc
 HAL_PIN(polecount) = 1.0;
-
 HAL_PIN(rev) = 0.0;
-
-
-#ifdef TROLLER
-HAL_PIN(iu) = 0.0;
-HAL_PIN(iv) = 0.0;
-HAL_PIN(iw) = 0.0;
-#endif
+HAL_PIN(com_error) = 0.0;
+HAL_PIN(pwm_volt) = 0.0;
 
 MEM(volatile packet_to_hv_t packet_to_hv);
 MEM(volatile packet_from_hv_t packet_from_hv);
 
+MEM(f3_config_data_t config);
+MEM(f3_state_data_t state);
+MEM(uint8_t addr) = 0;
 
 INIT(
    //setup uart to f1. uses DMA to transfer to_hv struct.
@@ -124,15 +132,25 @@ INIT(
 )
 
 RT(
-   float e = PIN(enable);
+   float e = PIN(en);
    float p = (int)MAX(PIN(polecount), 1.0);
    float pos = mod(PIN(pos) * p);
+   
+   config.pins.mode = PIN(mode);
+   config.pins.r = PIN(r);
+   config.pins.l = PIN(l);
+   config.pins.psi = PIN(psi);
+   config.pins.cur_p = PIN(cur_p);
+   config.pins.cur_i = PIN(cur_i);
+   config.pins.cur_ff = PIN(cur_ff);
+   config.pins.cur_ind = PIN(cur_ind);
+   config.pins.max_y = PIN(max_y);
 
    if(packet_from_hv.head.start == 255){
       unbuff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
       packet_from_hv.head.start = 0;
-      PIN(id) = packet_from_hv.data.id;
-      PIN(iq) = packet_from_hv.data.iq;
+      PIN(d_fb) = packet_from_hv.data.d_fb;
+      PIN(q_fb) = packet_from_hv.data.q_fb;
       PIN(dc_volt) = packet_from_hv.data.dc_volt;
       if(PIN(mode) == 0){//AC
          PIN(pwm_volt) = PIN(dc_volt) / 2.0 * 0.95 * 1.15;
@@ -143,42 +161,45 @@ RT(
       }else{
          PIN(pwm_volt) = 0.0;
       }
-      PIN(hv_temp) = packet_from_hv.data.hv_temp;
-      PIN(over_cur) = packet_from_hv.data.over_cur;//hardware cur limit
-      PIN(over_temp) = packet_from_hv.data.over_temp;//hardware temp limit
-      PIN(hv_fault) = packet_from_hv.data.hv_fault;//iramx fault
       
-      #ifdef TROLLER
-      PIN(iu) = TOFLOAT(packet_from_hv.data.a);
-      PIN(iv) = TOFLOAT(packet_from_hv.data.b);
-      PIN(iw) = TOFLOAT(packet_from_hv.data.c);
-      #endif
-      PIN(error) = 0.0;//TODO: link to fault
+      uint8_t a = packet_from_hv.data.addr;
+      a = CLAMP(a, 0, sizeof(state) / 4);
+      state.data[a] = packet_from_hv.data.value;
+      
+      PIN(hv_temp) = state.pins.hv_temp;
+      PIN(mot_temp) = state.pins.mot_temp;
+      PIN(core_temp) = state.pins.core_temp;
+      PIN(fault) = state.pins.fault;
+      PIN(y) = state.pins.y;
+      
+      PIN(com_error) = 0.0;//TODO: link to fault
    }
    else{
-      PIN(error) = 1.0;
+      PIN(com_error) = 1.0;
    }
 
-   float d = PIN(d);
-   float q = PIN(q);
+   float d_cmd = PIN(d_cmd);
+   float q_cmd = PIN(q_cmd);
 
    if(PIN(rev) > 0.0){//TODO: rev DC
-      q *= -1.0;
+      q_cmd *= -1.0;
    }
   
-  packet_to_hv.data.mode = CLAMP(PIN(mode),0,16);
   if(e > 0.0){
-    packet_to_hv.data.d = d;
-    packet_to_hv.data.q = q;
-    packet_to_hv.data.pos = pos;
+    packet_to_hv.data.d_cmd = d_cmd;
+    packet_to_hv.data.q_cmd = q_cmd;
     packet_to_hv.data.enable = 1;
   }
   else{
-    packet_to_hv.data.d = 0.0;
-    packet_to_hv.data.q = 0.0;
-    packet_to_hv.data.pos = pos;
+    packet_to_hv.data.d_cmd = 0.0;
+    packet_to_hv.data.q_cmd = 0.0;
     packet_to_hv.data.enable = 0;
   }
+  packet_to_hv.data.pos = pos;
+  packet_to_hv.data.addr = addr;
+  packet_to_hv.data.value = config.data[addr++];
+  addr %= sizeof(config) / 4;
+
   buff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
 
   //start DMA TX transfer

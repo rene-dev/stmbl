@@ -5,15 +5,13 @@
    #error gcc to old (< 5.0)
 #endif
 
-//#define TROLLER
-
 #define DATABAUD 2250000 //baudrate used for communication
 
 //fixed point calculations signed bit, 9 bit predecimal, 6 bit decimal
 #define TOFIXED(a) ((int16_t)((a) * 64))
 #define TOFLOAT(a) ((float)((a) / 64.0))
 
-#define PWM_RES 2400
+#define PWM_RES 4800
 
 //TODO: CRC
 typedef struct{
@@ -24,34 +22,53 @@ typedef struct{
 //data from f1 to f4
 #pragma pack(1)
 typedef struct{
-   float id;
-   float iq;
+   float d_fb;
+   float q_fb;
    float dc_volt;
-   float hv_temp;
-   uint8_t high_volt : 1;//hardware hi limit
-   uint8_t low_volt  : 1;//hardware low limit
-   uint8_t over_cur  : 1;//hardware cur limit
-   uint8_t over_temp : 1;//hardware temp limit
-   uint8_t hv_fault  : 1;//iramx fault
-   uint8_t sys_fault : 1;//sys fault, crc error, clock error, watchdog bit, startup failure...
-   uint8_t padding   : 2;
-#ifdef TROLLER
-   int16_t a;
-   int16_t b;
-   int16_t c;
-#endif
+   float value;
+   uint8_t addr    : 7;
+   uint8_t fault : 1;
 } from_hv_t;
 
 //data from f4 to f1
 #pragma pack(1)
 typedef struct{
-   float d;
-   float q;
+   float d_cmd;
+   float q_cmd;
    float pos;
-   uint8_t mode    : 4;//TODO: change to enum
+   float value;
+   uint8_t addr    : 7;
    uint8_t enable  : 1;
-   uint8_t padding : 3;
 } to_hv_t;
+
+#pragma pack(1)
+typedef union {
+   struct f3_config_data_temp{
+      float mode;
+      float r;
+      float l;
+      float psi;
+      float cur_p;
+      float cur_i;
+      float cur_ff;
+      float cur_ind;
+      float max_y;
+   } pins;
+   float data[sizeof(struct f3_config_data_temp) / 4];
+} f3_config_data_t;
+
+#pragma pack(1)
+typedef union {
+   struct f3_state_data_temp{
+      float hv_temp;
+      float mot_temp;
+      float core_temp;
+      float fault;
+      float y;
+   } pins;
+   float data[sizeof(struct f3_state_data_temp) / 4];
+} f3_state_data_t;
+
 
 #pragma pack(1)
 typedef struct{
