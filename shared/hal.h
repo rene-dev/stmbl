@@ -193,7 +193,9 @@ char* hal_itoa(int i);
   (name##_hal_pin.value)
 
 //TODO: clamp loads of stuff, like count... check length...
+//TODO: more than 10 pins requires fixing hal_itoa
 #define HAL_PIN_ARRAY(name,count) \
+  STATIC_ASSERT(count <= 10); \
   static hal_pin_t name##_hal_pin[count]; \
   for(uint32_t i = 0; i < count; i++){ \
     char pinname[HAL_NAME_LENGTH]; \
