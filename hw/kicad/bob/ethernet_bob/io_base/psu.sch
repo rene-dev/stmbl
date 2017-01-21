@@ -91,7 +91,7 @@ EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 4
+Sheet 4 4
 Title ""
 Date ""
 Rev ""
@@ -101,22 +101,4 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Sheet
-S 6500 3600 1050 750 
-U 5831C42A
-F0 "opto_in" 60
-F1 "opto_in.sch" 60
-$EndSheet
-$Sheet
-S 8400 3650 1200 700 
-U 5841CC2D
-F0 "plug" 60
-F1 "plug.sch" 60
-$EndSheet
-$Sheet
-S 4200 4900 1050 450 
-U 58443F4E
-F0 "supply" 60
-F1 "supply.sch" 60
-$EndSheet
 $EndSCHEMATC
