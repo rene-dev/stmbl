@@ -17,6 +17,8 @@ void link_ac(){
    hal_link_pins("t2c0.cur", "hv0.q_cmd");
    hal_link_pins("cauto0.i_d", "hv0.d_cmd");
    hal_link_pins("cauto0.pos", "hv0.pos");
+   hal_link_pins("net0.fb_d", "hv0.vel");
+   hal_link_pins("conf0.max_ac_cur", "hv0.max_cur");
    hal_link_pins("conf0.polecount", "hv0.polecount");
    hal_link_pins("pid0.torque_cor_cmd", "vel1.torque");
 
@@ -247,7 +249,7 @@ int update_mot(){
          //TODO: copy acsync stuff from link_pid here
          link_ac();
          hal_link_pins("curpid0.uq", "idq0.q");
-         hal_set_pin("hv0.mode", 0.0);
+         hal_set_pin("hv0.mode", 1.0);
          break;
       case ACASYNC:
          break;
@@ -257,7 +259,7 @@ int update_mot(){
          hal_link_pins("uf0.pos", "idq0.pos");
          hal_set_pin("idq0.d", 0.0);
          hal_link_pins("uf0.volt", "idq0.q");
-         hal_set_pin("hv0.mode", 2.0);
+         hal_set_pin("hv0.mode", 0.0);
          hal_link_pins("net0.enable", "hv0.en");
          hal_link_pins("fault0.scale", "uf0.scale");
 
@@ -269,7 +271,7 @@ int update_mot(){
          break;
       case DC:
          link_simplepid();
-         hal_set_pin("hv0.mode", 1.0);
+         hal_set_pin("hv0.mode", 2.0);
          hal_link_pins("ypid0.out", "hv0.q_cmd");
          break;
       default:

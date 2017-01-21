@@ -10,17 +10,20 @@ HAL_PIN(ud) = 0.0;
 HAL_PIN(uq) = 0.0;
 
 HAL_PIN(max_cur) = 0.0;
-
-HAL_PIN(scale) = 1.0;
+HAL_PIN(pwm_volt) = 0.0;
 
 HAL_PIN(rd) = 0.5;
 HAL_PIN(rq) = 0.5;
 HAL_PIN(ld) = 0.01;
 HAL_PIN(lq) = 0.01;
+HAL_PIN(psi) = 0.05;
 
 HAL_PIN(ff) = 0.0;
 HAL_PIN(kp) = 0.1;
 HAL_PIN(ki) = 0.005;
+HAL_PIN(kind) = 0.0;
+
+HAL_PIN(vel) = 0.0;
 
 HAL_PIN(id_error) = 0.0;
 HAL_PIN(iq_error) = 0.0;
@@ -35,33 +38,45 @@ RT(
    float lq = MAX(PIN(lq), 0.001);
 
    float ff = PIN(ff);
+   float kind = PIN(kind);
    float kpd = ld * PIN(kp) / period;
-   float kpq = lq * PIN(kp) / period;
    float kid = rd * PIN(ki) / ld;
+   float kpq = lq * PIN(kp) / period;
    float kiq = rq * PIN(ki) / lq;
-
+   
    //TODO curpid: sqrt(di^2+qi^2) auf max_ac_cur clampen
-   float max_cur = PIN(max_cur) * PIN(scale);
+   float max_cur = MIN(PIN(max_cur), 28.0);
    float idc = LIMIT(PIN(id_cmd), max_cur);
    float iqc = LIMIT(PIN(iq_cmd), max_cur);
+   
+   float max_volt = PIN(pwm_volt);
 
    float id = PIN(id_fb);
    float iq = PIN(iq_fb);
+   
+   float vel = PIN(vel);
+   float psi_d = ld * id + PIN(psi);
+   float psi_q = lq * iq;
+   float indd = vel * psi_q;
+   float indq = vel * psi_d;
 
-   float id_error = (idc - id);
-   float iq_error = (iqc - iq);
+   float id_error = idc - id;
+   float iq_error = iqc - iq;
 
-   if(kpd * kid > 0.0 && kpq * kiq > 0.0 ){
-      id_error_sum = LIMIT(id_error_sum + id_error, max_cur);
-      iq_error_sum = LIMIT(iq_error_sum + iq_error, max_cur);
+   float ud = LIMIT(ff * rd * idc - kind * indd + kpd * id_error, max_volt);
+   float uq = LIMIT(ff * rq * iqc + kind * indq + kpq * iq_error, max_volt);
+
+   if(kpd * kid > 0.0 && kpq * kiq > 0.0){
+      id_error_sum = LIMIT(id_error_sum + kpd * kid * id_error, max_volt - ud);
+      iq_error_sum = LIMIT(iq_error_sum + kpq * kiq * iq_error, max_volt - uq);
    }
    else{
       id_error_sum = 0.0;
       iq_error_sum = 0.0;
    }
 
-   float ud = ff * rd * idc + kpd * id_error + kpd * kid * id_error_sum;
-   float uq = ff * rq * iqc + kpq * iq_error + kpq * kiq * iq_error_sum;
+   ud += id_error_sum;
+   uq += iq_error_sum;
 
    PIN(ud) = ud;
    PIN(uq) = uq;

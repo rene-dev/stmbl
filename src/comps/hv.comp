@@ -4,10 +4,11 @@ HAL_COMP(hv);
 HAL_PIN(d_cmd) = 0.0;
 HAL_PIN(q_cmd) = 0.0;
 HAL_PIN(pos) = 0.0;
+HAL_PIN(vel) = 0.0;
 HAL_PIN(en) = 0.0;
 
 // config data from LS
-HAL_PIN(mode) = 0.0;
+HAL_PIN(mode) = 1.0;
 HAL_PIN(r) = 0.0;
 HAL_PIN(l) = 0.0;
 HAL_PIN(psi) = 0.0;
@@ -16,6 +17,7 @@ HAL_PIN(cur_i) = 0.0;
 HAL_PIN(cur_ff) = 0.0;
 HAL_PIN(cur_ind) = 0.0;
 HAL_PIN(max_y) = 0.0;
+HAL_PIN(max_cur) = 0.0;
 
 // process data to LS
 HAL_PIN(dc_volt) = 0.0;
@@ -28,6 +30,9 @@ HAL_PIN(mot_temp) = 0.0;
 HAL_PIN(core_temp) = 0.0;
 HAL_PIN(fault) = 0.0;
 HAL_PIN(y) = 0.0;
+HAL_PIN(u_fb) = 0.0;
+HAL_PIN(v_fb) = 0.0;
+HAL_PIN(w_fb) = 0.0;
 
 // misc
 HAL_PIN(polecount) = 1.0;
@@ -136,6 +141,7 @@ RT(
    float e = PIN(en);
    float p = (int)MAX(PIN(polecount), 1.0);
    float pos = mod(PIN(pos) * p);
+   float vel = PIN(vel) * p;
    
    config.pins.mode = PIN(mode);
    config.pins.r = PIN(r);
@@ -146,6 +152,7 @@ RT(
    config.pins.cur_ff = PIN(cur_ff);
    config.pins.cur_ind = PIN(cur_ind);
    config.pins.max_y = PIN(max_y);
+   config.pins.max_cur = PIN(max_cur);
 
    if(packet_from_hv.head.start == 255){
       unbuff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
@@ -153,20 +160,15 @@ RT(
       PIN(d_fb) = packet_from_hv.data.d_fb;
       PIN(q_fb) = packet_from_hv.data.q_fb;
       PIN(dc_volt) = packet_from_hv.data.dc_volt;
-      if(PIN(mode) == 0){//AC
-         PIN(pwm_volt) = PIN(dc_volt) / 2.0 * 0.95 * 1.15;
-      }else if(PIN(mode) == 1){//DC
-         PIN(pwm_volt) = PIN(dc_volt) * 0.95;
-      }else if(PIN(mode) == 2){//2phase ac
-         PIN(pwm_volt) = PIN(dc_volt) * 0.7 * 0.95;
-      }else{
-         PIN(pwm_volt) = 0.0;
-      }
+      PIN(pwm_volt) = packet_from_hv.data.pwm_volt;
       
       uint8_t a = packet_from_hv.data.addr;
       a = CLAMP(a, 0, sizeof(state) / 4);
       state.data[a] = packet_from_hv.data.value;
       
+      PIN(u_fb) = state.pins.u_fb;
+      PIN(v_fb) = state.pins.v_fb;
+      PIN(w_fb) = state.pins.w_fb;
       PIN(hv_temp) = state.pins.hv_temp;
       PIN(mot_temp) = state.pins.mot_temp;
       PIN(core_temp) = state.pins.core_temp;
@@ -197,6 +199,7 @@ RT(
     packet_to_hv.data.enable = 0;
   }
   packet_to_hv.data.pos = pos;
+  packet_to_hv.data.vel = vel;
   packet_to_hv.data.addr = addr;
   packet_to_hv.data.value = config.data[addr++];
   addr %= sizeof(config) / 4;

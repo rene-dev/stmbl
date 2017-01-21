@@ -360,6 +360,10 @@ int main(void)
   hal_link_pins("dq0.d", "ls0.d_fb");
   hal_link_pins("dq0.q", "ls0.q_fb");
   
+  hal_link_pins("io0.u", "ls0.u_fb");
+  hal_link_pins("io0.v", "ls0.v_fb");
+  hal_link_pins("io0.w", "ls0.w_fb");
+  
   hal_link_pins("curpid0.ud", "idq0.d");
   hal_link_pins("curpid0.uq", "idq0.q");
   
@@ -379,6 +383,10 @@ int main(void)
   hal_link_pins("ls0.cur_p", "curpid0.kp");
   hal_link_pins("ls0.cur_i", "curpid0.ki");
   hal_link_pins("ls0.cur_ff", "curpid0.ff");
+  hal_link_pins("ls0.cur_ind", "curpid0.kind");
+  hal_link_pins("ls0.max_cur", "curpid0.max_cur");
+  hal_link_pins("ls0.pwm_volt", "curpid0.pwm_volt");
+  hal_link_pins("ls0.vel", "curpid0.vel");
   
   
   hal_comp_init();//call init function of all comps

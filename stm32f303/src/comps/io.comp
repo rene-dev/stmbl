@@ -116,9 +116,9 @@ RT(
   PIN(iw) = -AMP((a12 & 0xFFFF) / 5.0, SHUNT_GAIN) + w_offset;
   PIN(iu) = -AMP((a12 >> 16) / 5.0, SHUNT_GAIN) + u_offset;
   PIN(iv) = -AMP((a34 & 0xFFFF) / 5.0, SHUNT_GAIN) + v_offset;
-  PIN(w) = VOLT(adc_12_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
+  PIN(w) = VOLT(adc_12_buf[5] & 0xFFFF) * 0.05 + PIN(w) * 0.95;
   PIN(v) = VOLT(adc_12_buf[5] >> 16) * 0.05 + PIN(v) * 0.95;
-  PIN(u) = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(w) * 0.95;
+  PIN(u) = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
   PIN(udc) = VOLT(adc_34_buf[5] >> 16) * 0.05 + PIN(udc) * 0.95;
   
   PIN(hv_temp) = r2temp(HV_R(ADC(adc_34_buf[0] >> 16))) * 0.01 + PIN(hv_temp) * 0.99;

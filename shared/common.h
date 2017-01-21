@@ -25,6 +25,7 @@ typedef struct{
    float d_fb;
    float q_fb;
    float dc_volt;
+   float pwm_volt;
    float value;
    uint8_t addr    : 7;
    uint8_t fault : 1;
@@ -36,6 +37,7 @@ typedef struct{
    float d_cmd;
    float q_cmd;
    float pos;
+   float vel;
    float value;
    uint8_t addr    : 7;
    uint8_t enable  : 1;
@@ -53,6 +55,7 @@ typedef union {
       float cur_ff;
       float cur_ind;
       float max_y;
+      float max_cur;
    } pins;
    float data[sizeof(struct f3_config_data_temp) / 4];
 } f3_config_data_t;
@@ -60,6 +63,9 @@ typedef union {
 #pragma pack(1)
 typedef union {
    struct f3_state_data_temp{
+      float u_fb;
+      float v_fb;
+      float w_fb;
       float hv_temp;
       float mot_temp;
       float core_temp;

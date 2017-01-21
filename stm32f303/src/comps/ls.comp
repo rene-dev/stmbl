@@ -4,6 +4,7 @@ HAL_COMP(ls);
 HAL_PIN(d_cmd) = 0.0;
 HAL_PIN(q_cmd) = 0.0;
 HAL_PIN(pos) = 0.0;
+HAL_PIN(vel) = 0.0;
 HAL_PIN(en) = 0.0;
 
 // config data from LS
@@ -16,6 +17,7 @@ HAL_PIN(cur_i) = 0.0;
 HAL_PIN(cur_ff) = 0.0;
 HAL_PIN(cur_ind) = 0.0;
 HAL_PIN(max_y) = 0.0;
+HAL_PIN(max_cur) = 0.0;
 
 // process data to LS
 HAL_PIN(dc_volt) = 0.0;
@@ -28,6 +30,12 @@ HAL_PIN(mot_temp) = 0.0;
 HAL_PIN(core_temp) = 0.0;
 HAL_PIN(fault) = 0.0;
 HAL_PIN(y) = 0.0;
+HAL_PIN(u_fb) = 0.0;
+HAL_PIN(v_fb) = 0.0;
+HAL_PIN(w_fb) = 0.0;
+
+// misc
+HAL_PIN(pwm_volt) = 0.0;
 
 
 MEM(packet_to_hv_t packet_to_hv);
@@ -101,6 +109,7 @@ RT_INIT(
    config.pins.cur_ff = 0.0;
    config.pins.cur_ind = 0.0;
    config.pins.max_y = 0.0;
+   config.pins.max_cur = 0.0;
 );
 
 RT(
@@ -109,6 +118,21 @@ RT(
    //how many packets we have the the rx buffer for processing
    uint32_t rxavailable = (rxbufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
    
+   // TODO: sin = 0.5
+   if(config.pins.mode == 0){// 90°
+      packet_from_hv.data.pwm_volt = PIN(dc_volt) / sqrtf(2.0) * 0.95;
+   }else if(config.pins.mode == 1){// 120°
+      packet_from_hv.data.pwm_volt = PIN(dc_volt) / sqrtf(3.0) * 0.95;
+   }else if(config.pins.mode == 2){// 180°
+      packet_from_hv.data.pwm_volt = PIN(dc_volt) * 0.95;
+   }else{
+      packet_from_hv.data.pwm_volt = 0.0;
+   }
+   PIN(pwm_volt) = packet_from_hv.data.pwm_volt;
+   
+   state.pins.u_fb = PIN(u_fb);
+   state.pins.v_fb = PIN(v_fb);
+   state.pins.w_fb = PIN(w_fb);
    state.pins.hv_temp = PIN(hv_temp);
    state.pins.mot_temp = PIN(mot_temp);
    state.pins.core_temp = PIN(core_temp);
@@ -141,6 +165,7 @@ RT(
          PIN(d_cmd) = packet_to_hv.data.d_cmd;
          PIN(q_cmd) = packet_to_hv.data.q_cmd;
          PIN(pos) = packet_to_hv.data.pos;
+         PIN(vel) = packet_to_hv.data.vel;
          uint8_t a = packet_to_hv.data.addr;
          a = CLAMP(a, 0, sizeof(config) / 4);
          config.data[a] = packet_to_hv.data.value; // TODO: first enable after complete update
@@ -160,6 +185,7 @@ RT(
    PIN(cur_ff) = config.pins.cur_ff;
    PIN(cur_ind) = config.pins.cur_ind;
    PIN(max_y) = config.pins.max_y;
+   PIN(max_cur) = config.pins.max_cur;
    
 	if(timeout > 10){//disable driver
       PIN(en) = 0.0;
