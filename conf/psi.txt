@@ -1,5 +1,8 @@
 psi0.rt_prio = 10
 psi0.dc_volt = hv0.dc_volt
+psi0.u = hv0.u_fb
+psi0.v = hv0.v_fb
+psi0.w = hv0.w_fb
 psi0.vel = net0.fb_d
 psi0.polecount = conf0.polecount
 net0.enable = 0

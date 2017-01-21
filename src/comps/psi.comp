@@ -2,6 +2,9 @@ HAL_COMP(psi);
 
 HAL_PIN(vel) = 0.0;
 HAL_PIN(dc_volt) = 0.0;
+HAL_PIN(u) = 0.0;
+HAL_PIN(v) = 0.0;
+HAL_PIN(w) = 0.0;
 HAL_PIN(polecount) = 1.0;
 HAL_PIN(drop) = 0.8;
 HAL_PIN(psi) = 0.0;
@@ -12,7 +15,9 @@ MEM(float max_f) = 0.0;
 
 RT(
    float f = ABS(PIN(vel)) / 2.0 / M_PI * PIN(polecount);
-   float u = PIN(dc_volt) / sqrtf(3.0) + PIN(drop);
+   float u = PIN(dc_volt) + PIN(drop);
+   float u2 = MAX3(PIN(u), PIN(v), PIN(w)) - MIN3(PIN(u), PIN(v), PIN(w));
+   u = MIN(u, u2) / sqrtf(3.0); // TODO: fix
    if(f > 1.0){
       PIN(psi) = u / f / 2.0 / M_PI;
       if(max_f < f){
