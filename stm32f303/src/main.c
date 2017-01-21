@@ -370,6 +370,16 @@ int main(void)
   hal_link_pins("curpid0.iq_fb", "term0.wave3");
   
   hal_link_pins("term0.con", "io0.led");
+
+  hal_link_pins("ls0.r", "curpid0.rd");
+  hal_link_pins("ls0.r", "curpid0.rq");
+  hal_link_pins("ls0.l", "curpid0.ld");
+  hal_link_pins("ls0.l", "curpid0.lq");
+  hal_link_pins("ls0.psi", "curpid0.psi");
+  hal_link_pins("ls0.cur_p", "curpid0.kp");
+  hal_link_pins("ls0.cur_i", "curpid0.ki");
+  hal_link_pins("ls0.cur_ff", "curpid0.ff");
+  
   
   hal_comp_init();//call init function of all comps
 

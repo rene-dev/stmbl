@@ -34,6 +34,7 @@ HAL_PIN(polecount) = 1.0;
 HAL_PIN(rev) = 0.0;
 HAL_PIN(com_error) = 0.0;
 HAL_PIN(pwm_volt) = 0.0;
+HAL_PIN(uart_sr) = 0.0;
 
 MEM(volatile packet_to_hv_t packet_to_hv);
 MEM(volatile packet_from_hv_t packet_from_hv);
@@ -211,6 +212,8 @@ RT(
   DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
   DMA_ClearFlag(UART_DRV_RX_DMA, UART_DRV_RX_DMA_TCIF);
   DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
+
+  PIN(uart_sr) = UART_DRV->SR;
 
   // PIN(power) = PIN(dc_cur) * PIN(dc_volt);
   // if(PIN(pwm_volt) > 0.0){
