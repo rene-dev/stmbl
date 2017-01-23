@@ -82,8 +82,8 @@ RT_INIT(
   
    //TX DMA
    DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
-   DMA1_Channel2->CPAR = &(USART3->TDR);
-   DMA1_Channel2->CMAR = &packet_from_hv;
+   DMA1_Channel2->CPAR = (uint32_t)&(USART3->TDR);
+   DMA1_Channel2->CMAR = (uint32_t)&packet_from_hv;
    DMA1_Channel2->CNDTR = sizeof(packet_from_hv);
    DMA1_Channel2->CCR = DMA_CCR_MINC | DMA_CCR_DIR;// | DMA_CCR_PL_0 | DMA_CCR_PL_1
    DMA1->IFCR = DMA_IFCR_CTCIF2 | DMA_IFCR_CHTIF2 | DMA_IFCR_CGIF2;
@@ -93,8 +93,8 @@ RT_INIT(
    
    //RX DMA
    DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
-   DMA1_Channel3->CPAR = &(USART3->RDR);
-   DMA1_Channel3->CMAR = rxbuf;
+   DMA1_Channel3->CPAR = (uint32_t)&(USART3->RDR);
+   DMA1_Channel3->CMAR = (uint32_t)rxbuf;
    DMA1_Channel3->CNDTR = sizeof(rxbuf);
    DMA1_Channel3->CCR = DMA_CCR_MINC | DMA_CCR_CIRC;// | DMA_CCR_PL_0 | DMA_CCR_PL_1
    DMA1->IFCR = DMA_IFCR_CTCIF3 | DMA_IFCR_CHTIF3 | DMA_IFCR_CGIF3;
@@ -120,9 +120,9 @@ RT(
    
    // TODO: sin = 0.5
    if(config.pins.mode == 0){// 90°
-      packet_from_hv.data.pwm_volt = PIN(dc_volt) / sqrtf(2.0) * 0.95;
+      packet_from_hv.data.pwm_volt = PIN(dc_volt) / M_SQRT3 * 0.95;
    }else if(config.pins.mode == 1){// 120°
-      packet_from_hv.data.pwm_volt = PIN(dc_volt) / sqrtf(3.0) * 0.95;
+      packet_from_hv.data.pwm_volt = PIN(dc_volt) / M_SQRT3 * 0.95;
    }else if(config.pins.mode == 2){// 180°
       packet_from_hv.data.pwm_volt = PIN(dc_volt) * 0.95;
    }else{

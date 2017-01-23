@@ -14,15 +14,6 @@ HAL_PIN(udc);
 HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
 
-HAL_PIN(iu0);
-HAL_PIN(iu1);
-HAL_PIN(iu2);
-HAL_PIN(iu3);
-HAL_PIN(iu4);
-HAL_PIN(iu5);
-HAL_PIN(iu6);
-
-
 MEM(float u_offset) = 0;
 MEM(float v_offset) = 0;
 MEM(float w_offset) = 0;
@@ -60,8 +51,8 @@ float r2temp(float r){
 
 INIT(
    DMA1_Channel1->CCR &= (uint16_t)(~DMA_CCR_EN);
-   DMA1_Channel1->CPAR = &(ADC12_COMMON->CDR);
-   DMA1_Channel1->CMAR = adc_12_buf;
+   DMA1_Channel1->CPAR = (uint32_t)&(ADC12_COMMON->CDR);
+   DMA1_Channel1->CMAR = (uint32_t)adc_12_buf;
    DMA1_Channel1->CNDTR = 6;
    DMA1_Channel1->CCR = DMA_CCR_MINC | DMA_CCR_PL_0 | DMA_CCR_MSIZE_1 | DMA_CCR_PSIZE_1 | DMA_CCR_CIRC;
    ADC1->CFGR |= ADC_CFGR_DMAEN | ADC_CFGR_DMACFG;
@@ -70,8 +61,8 @@ INIT(
 //   ADC12_COMMON->CCR |= ADC12_CCR_MDMA_1;
 
    DMA2_Channel5->CCR &= (uint16_t)(~DMA_CCR_EN);
-   DMA2_Channel5->CPAR = &(ADC34_COMMON->CDR);
-   DMA2_Channel5->CMAR = adc_34_buf;
+   DMA2_Channel5->CPAR = (uint32_t)&(ADC34_COMMON->CDR);
+   DMA2_Channel5->CMAR = (uint32_t)adc_34_buf;
    DMA2_Channel5->CNDTR = 6;
    DMA2_Channel5->CCR = DMA_CCR_MINC | DMA_CCR_PL_0 | DMA_CCR_MSIZE_1 | DMA_CCR_PSIZE_1 | DMA_CCR_CIRC;
    ADC3->CFGR |= ADC_CFGR_DMAEN | ADC_CFGR_DMACFG;
@@ -85,25 +76,12 @@ NRT(
 );
 
 RT(
-  //HAL_ADC_PollForConversion(&hadc1, 100);
-  //HAL_ADC_PollForConversion(&hadc2, 100);
-  //HAL_ADC_PollForConversion(&hadc3, 100);
-  //HAL_ADC_PollForConversion(&hadc4, 100);
-  // while(HAL_IS_BIT_CLR(hadc1.Instance->ISR, ADC_FLAG_EOS)){}
-  // while(HAL_IS_BIT_CLR(hadc3.Instance->ISR, ADC_FLAG_EOS)){}
   while(!(DMA1->ISR & DMA_ISR_TCIF1)){}
   while(!(DMA2->ISR & DMA_ISR_TCIF5)){}
   
   DMA1->IFCR = DMA_IFCR_CTCIF1;
   DMA2->IFCR = DMA_IFCR_CTCIF5;
-  
-  // PIN(iu0) = AMP(adc_12_buf[0] & 0xFFFF, SHUNT_GAIN);
-  // PIN(iu1) = AMP(adc_12_buf[1] & 0xFFFF, SHUNT_GAIN);
-  // PIN(iu2) = AMP(adc_12_buf[2] & 0xFFFF, SHUNT_GAIN);
-  // PIN(iu3) = AMP(adc_12_buf[3] & 0xFFFF, SHUNT_GAIN);
-  // PIN(iu4) = AMP(adc_12_buf[4] & 0xFFFF, SHUNT_GAIN);
-  // PIN(iu5) = VOLT(adc_12_buf[5] & 0xFFFF);
-   
+
   uint32_t a12 = adc_12_buf[0] + adc_12_buf[1] + adc_12_buf[2] + adc_12_buf[3] + adc_12_buf[4];
   uint32_t a34 = adc_34_buf[0] + adc_34_buf[1] + adc_34_buf[2] + adc_34_buf[3] + adc_34_buf[4];
   
@@ -123,7 +101,6 @@ RT(
   
   PIN(hv_temp) = r2temp(HV_R(ADC(adc_34_buf[0] >> 16))) * 0.01 + PIN(hv_temp) * 0.99;
   PIN(mot_temp) = MOT_R(MOT_REF(ADC(adc_34_buf[5] >> 16)));
-  PIN(iu6) = ADC(adc_34_buf[5] >> 16);
 );
 
 ENDCOMP;

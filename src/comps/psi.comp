@@ -17,7 +17,7 @@ RT(
    float f = ABS(PIN(vel)) / 2.0 / M_PI * PIN(polecount);
    float u = PIN(dc_volt) + PIN(drop);
    float u2 = MAX3(PIN(u), PIN(v), PIN(w)) - MIN3(PIN(u), PIN(v), PIN(w));
-   u = MIN(u, u2) / sqrtf(3.0); // TODO: fix
+   u = MIN(u, u2) / M_SQRT3; // TODO: fix
    if(f > 1.0){
       PIN(psi) = u / f / 2.0 / M_PI;
       if(max_f < f){

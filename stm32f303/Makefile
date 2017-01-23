@@ -115,6 +115,7 @@ CFLAGS += -Wall
 CFLAGS += -fno-builtin ## from old
 CFLAGS += -nostartfiles
 CFLAGS += -Wfatal-errors
+CFLAGS += -Wno-pointer-sign #for usb lib...
 #CFLAGS += -Wstrict-prototypes
 #CFLAGS += -Wextra
 #CFLAGS += -Wpointer-arith

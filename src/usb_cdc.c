@@ -228,7 +228,7 @@ uint8_t USB_CDC_is_connected(void)
 
 //TODO: implement new term API
 void cdc_init(void){}
-int cdc_tx(void* data, uint32_t len){}
-int cdc_getline(char *ptr, int len){}
-int cdc_is_connected(){}
+int cdc_tx(void* data, uint32_t len){return 0;}
+int cdc_getline(char *ptr, int len){return 0;}
+int cdc_is_connected(){return 0;}
 void cdc_poll(){}

@@ -1,17 +1,25 @@
 HAL_COMP(svm);
 
+//U V W inputs
 HAL_PIN(u) = 0;
 HAL_PIN(v) = 0;
 HAL_PIN(w) = 0;
+
+//dclink input
 HAL_PIN(udc) = 0;
 
+//U V W outputs
 HAL_PIN(su);
 HAL_PIN(sv);
 HAL_PIN(sw);
 
+//commutation mode
 HAL_PIN(cmode) = 0.0;
+
+//modulation mode
 HAL_PIN(mode) = 2.0;
 
+//half bridge enable out
 HAL_PIN(enu) = 1.0;
 HAL_PIN(env) = 1.0;
 HAL_PIN(enw) = 1.0;
@@ -26,19 +34,19 @@ RT(
    
    switch((int)PIN(mode)){
       default:
-      case 0: // std
+      case 0: // sine modulation
          offset = (u + v + w) / 3.0 - udc / 2.0;
          break;
       
-      case 1: // svm
+      case 1: // space vector modulation
          offset = (MIN3(u, v, w) + MAX3(u, v, w)) / 2.0 - udc / 2.0;
          break;
          
-      case 2: // flat bottom svm
+      case 2: // flat bottom space vector modulation
          offset = MIN3(u, v, w);
          break;
          
-      case 3: // flat top svm
+      case 3: // flat top space vector modulation
          offset = MAX3(u, v, w) - udc;
          break;
    }
