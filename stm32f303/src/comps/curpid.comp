@@ -1,37 +1,38 @@
 HAL_COMP(curpid);
 
-//current command
+// current command
 HAL_PIN(id_cmd) = 0.0;
 HAL_PIN(iq_cmd) = 0.0;
 
-//current feedback
+// current feedback
 HAL_PIN(id_fb) = 0.0;
 HAL_PIN(iq_fb) = 0.0;
 
-//voltage output
+// voltage output
 HAL_PIN(ud) = 0.0;
 HAL_PIN(uq) = 0.0;
 
-//maximum output current and voltage
+// maximum output current and voltage
 HAL_PIN(max_cur) = 0.0;
 HAL_PIN(pwm_volt) = 0.0;
 
-//r,q resistance and inductance
+// d, q resistance and inductance
 HAL_PIN(rd) = 0.5;
 HAL_PIN(rq) = 0.5;
 HAL_PIN(ld) = 0.01;
 HAL_PIN(lq) = 0.01;
 
+// torque constant
 HAL_PIN(psi) = 0.05;
 
-HAL_PIN(ff) = 0.0;//r feed forward
+HAL_PIN(ff) = 0.0; // r feed forward
 HAL_PIN(kp) = 0.1;
 HAL_PIN(ki) = 0.005;
-HAL_PIN(kind) = 0.0;
+HAL_PIN(kind) = 0.0; // bemf feed forward
 
-HAL_PIN(vel) = 0.0;//velocity input
+HAL_PIN(vel) = 0.0; // velocity input
 
-//current error outputs
+// current error outputs
 HAL_PIN(id_error) = 0.0;
 HAL_PIN(iq_error) = 0.0;
 
