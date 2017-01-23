@@ -139,7 +139,7 @@ void MX_ADC1_Init(void)
 void MX_ADC2_Init(void)
 {
   ADC_ChannelConfTypeDef sConfig;
-  ADC_MultiModeTypeDef multimode;
+  // ADC_MultiModeTypeDef multimode;
 
     /**Common config 
     */
@@ -301,7 +301,7 @@ void MX_ADC3_Init(void)
 void MX_ADC4_Init(void)
 {
   ADC_ChannelConfTypeDef sConfig;
-  ADC_MultiModeTypeDef multimode;
+  // ADC_MultiModeTypeDef multimode;
 
     /**Common config 
     */

@@ -327,7 +327,7 @@ void cdc_poll(){
 }
 
 int cdc_is_connected(){
-   if((USBD_CDC_HandleTypeDef*)hUsbDeviceFS.dev_state != USBD_STATE_CONFIGURED){
+   if(hUsbDeviceFS.dev_state != USBD_STATE_CONFIGURED){
       return 0;
    }else{
       return 1;

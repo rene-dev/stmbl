@@ -203,7 +203,6 @@ int main(void)
   MX_OPAMP2_Init();
   MX_OPAMP3_Init();
   // MX_USART1_UART_Init();
-  // MX_USART3_UART_Init();
   MX_USB_DEVICE_Init();
   __HAL_RCC_DMA1_CLK_ENABLE();
   __HAL_RCC_DMA2_CLK_ENABLE();
