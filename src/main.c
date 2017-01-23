@@ -180,15 +180,15 @@ int main(void)
 
    //feedback comps
    #include "comps/adc.comp"
-   #include "comps/res.comp" //TODO: not working in v4 and v3... ref pin needs fixing
+   #include "comps/res.comp" //TODO: backport to v3... timer needs fixing
    #include "comps/enc_fb.comp"
-   #include "comps/encm.comp"
+   #include "comps/encm.comp" //TODO: backport to v3
    //#include "comps/encs.comp" //TODO: not working in v4
    //#include "comps/yaskawa.comp" //TODO: not working in v4
    // #include "comps/hyper.comp" //TODO: not working in v4
 
    //command comps
-   #include "comps/sserial.comp"
+   #include "comps/sserial.comp" //TODO: backport to v3
    #include "comps/sim.comp"
    // #include "comps/enc_cmd.comp" //TODO: not working in v4
    // #include "comps/en.comp" //TODO: not working in v4

@@ -14,25 +14,37 @@ HAL_PIN(cos) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
-HAL_PIN(tim_oc) = 5.0;
+HAL_PIN(tim_oc) = 0.0;
 MEM(int lastq) = 0;// last quadrant
 MEM(int abspos) = 0;// multiturn position
 
 RT_INIT(
+   //timer init for v4, v3 uses slave timer
+   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+   TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+   TIM_TimeBaseStructure.TIM_Period = 60 - 1;// 1.2e6 / 60 = 20kHz
+   TIM_TimeBaseStructure.TIM_Prescaler = 0;
+   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+   TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+   TIM_SelectSlaveMode(TIM4, TIM_SlaveMode_External1);// Rising edges of the selected trigger (TRGI) clock the counter
+   TIM_ITRxExternalClockConfig(TIM4, TIM_TS_ITR2);// clk = TIM_MASTER(TIM2) trigger out
+   TIM_ARRPreloadConfig(TIM4,ENABLE);
+   TIM_Cmd(TIM4, ENABLE);
+   
    // resolver reference signal OC
-   //TODO: timer init!
    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
-   TIM_OCInitStructure.TIM_Pulse = 5;
+   TIM_OCInitStructure.TIM_Pulse = 0;
    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
    TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
    TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
    //ref is always OC3
-   TIM_OC3Init(TIM_SLAVE, &TIM_OCInitStructure);
-   TIM_OC3PreloadConfig(TIM_SLAVE, TIM_OCPreload_Enable);
-   TIM_CtrlPWMOutputs(TIM_SLAVE, ENABLE);
+   TIM_OC3Init(TIM4, &TIM_OCInitStructure);
+   TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable);
+   TIM_CtrlPWMOutputs(TIM4, ENABLE);
    
    //resolver ref signal generation
    GPIO_InitStructure.GPIO_Pin   = FB0_Z_PIN;
@@ -41,8 +53,7 @@ RT_INIT(
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
    GPIO_Init(FB0_Z_PORT, &GPIO_InitStructure);
-
-   GPIO_PinAFConfig(FB0_Z_PORT, FB0_Z_PIN_SOURCE, FB0_RES_TIM_AF);
+   GPIO_PinAFConfig(FB0_Z_PORT, FB0_Z_PIN_SOURCE, GPIO_AF_TIM4);
 
    // TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
    // TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
@@ -82,7 +93,7 @@ RT_DEINIT(
 
 RT(
    //TODO: arr can change!
-  FB0_RES_TIM->CCR3 = (int)CLAMP(PIN(tim_oc), 0, FB0_RES_TIM->ARR - 1);
+   TIM4->CCR3 = (int)CLAMP(PIN(tim_oc), 0, TIM4->ARR - 1);
    
 	float s = 0.0;
 	float c = 0.0;

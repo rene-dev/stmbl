@@ -323,7 +323,7 @@ void init_hardware() {
   USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
   
   //tx enable
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_7;
+  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_7 | GPIO_Pin_9;
   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -331,6 +331,7 @@ void init_hardware() {
   GPIO_Init(GPIOB, &GPIO_InitStructure);
    
   GPIO_SetBits(GPIOB, GPIO_Pin_7);
+  GPIO_SetBits(GPIOB, GPIO_Pin_9);
 }
 
 uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, float param_min, float param_max) {
