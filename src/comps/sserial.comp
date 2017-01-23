@@ -195,9 +195,49 @@ MEM(char name[]) = LBPCardName;
 MEM(int bufferpos);
 MEM(int available);
 
+uint8_t crc_reuest(uint8_t len) {
+   uint8_t crc = crc8_init();
+   for(int i = rxpos; i < rxpos+len; i++){
+      crc = crc8_update(crc, (void*)&(rxbuf[i%sizeof(rxbuf)]), 1);  
+   }
+   crc8_finalize(crc);
+   return crc == rxbuf[(rxpos+len)%sizeof(rxbuf)];
+}
+
+uint8_t crc8( uint8_t *addr, uint8_t len) {
+   uint8_t crc = crc8_init();
+   crc = crc8_update(crc, addr, len);
+   return crc8_finalize(crc);
+}
+
+void send(uint8_t len, uint8_t docrc){
+   timeout = 0;
+   if(docrc){
+      txbuf[len] = crc8((uint8_t *)txbuf,len);
+      DMA_SetCurrDataCounter(DMA1_Stream7,len+1);
+   }else{
+      DMA_SetCurrDataCounter(DMA1_Stream7,len);
+   }
+   DMA_Cmd(DMA1_Stream7, DISABLE);
+   DMA_ClearFlag(DMA1_Stream7, DMA_FLAG_TCIF7);
+   DMA_Cmd(DMA1_Stream7, ENABLE);
+}
+
+//v3
 //pb13 txen
 //pc12 usart5 tx
 //pa9 usart1 tx as rx
+//USART5 TX DMA1 stream7 channel4
+//USART1 RX DMA2 stream5 channel4
+
+//v4
+//normal enable: pb9
+//mesa pinout enable: pb7(requires jumper)
+//pa10 usart1 rx
+//pa9 usart1 tx
+//USART1 TX	DMA2 stream7 channel4
+//USART1 RX	DMA2 stream5 channel4
+
 void init_hardware() {
   GPIO_InitTypeDef GPIO_InitStruct;
   USART_InitTypeDef USART_InitStruct;
@@ -441,34 +481,6 @@ RT_INIT(
   *heap_ptr++ = 0x00;
   *heap_ptr++ = 0x00;
 );
-
-uint8_t crc_reuest(uint8_t len) {
-   uint8_t crc = crc8_init();
-   for(int i = rxpos; i < rxpos+len; i++){
-      crc = crc8_update(crc, (void*)&(rxbuf[i%sizeof(rxbuf)]), 1);  
-   }
-   crc8_finalize(crc);
-   return crc == rxbuf[(rxpos+len)%sizeof(rxbuf)];
-}
-
-uint8_t crc8( uint8_t *addr, uint8_t len) {
-   uint8_t crc = crc8_init();
-   crc = crc8_update(crc, addr, len);
-   return crc8_finalize(crc);
-}
-
-void send(uint8_t len, uint8_t docrc){
-   timeout = 0;
-   if(docrc){
-      txbuf[len] = crc8((uint8_t *)txbuf,len);
-      DMA_SetCurrDataCounter(DMA1_Stream7,len+1);
-   }else{
-      DMA_SetCurrDataCounter(DMA1_Stream7,len);
-   }
-   DMA_Cmd(DMA1_Stream7, DISABLE);
-   DMA_ClearFlag(DMA1_Stream7, DMA_FLAG_TCIF7);
-   DMA_Cmd(DMA1_Stream7, ENABLE);
-}
 
 #define BITSLEFT(ptr) (8-ptr)
 
