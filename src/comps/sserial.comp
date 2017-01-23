@@ -19,9 +19,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//using CMD_TX
-//using CMD_RX
-
 HAL_COMP(sserial);
 
 //dump:
@@ -214,13 +211,13 @@ void send(uint8_t len, uint8_t docrc){
    timeout = 0;
    if(docrc){
       txbuf[len] = crc8((uint8_t *)txbuf,len);
-      DMA_SetCurrDataCounter(DMA1_Stream7,len+1);
+      DMA_SetCurrDataCounter(DMA2_Stream7,len+1);
    }else{
-      DMA_SetCurrDataCounter(DMA1_Stream7,len);
+      DMA_SetCurrDataCounter(DMA2_Stream7,len);
    }
-   DMA_Cmd(DMA1_Stream7, DISABLE);
-   DMA_ClearFlag(DMA1_Stream7, DMA_FLAG_TCIF7);
-   DMA_Cmd(DMA1_Stream7, ENABLE);
+   DMA_Cmd(DMA2_Stream7, DISABLE);
+   DMA_ClearFlag(DMA2_Stream7, DMA_FLAG_TCIF7);
+   DMA_Cmd(DMA2_Stream7, ENABLE);
 }
 
 //v3
@@ -242,26 +239,18 @@ void init_hardware() {
   GPIO_InitTypeDef GPIO_InitStruct;
   USART_InitTypeDef USART_InitStruct;
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
   //USART TX
-  GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_UART5);
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_12;
+  GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_USART1);
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
-  GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   //USART RX
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_USART1);
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
+  GPIO_PinAFConfig(GPIOA, GPIO_PinSource10, GPIO_AF_USART1);
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
   GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   USART_InitStruct.USART_BaudRate = 2500000;
@@ -269,15 +258,15 @@ void init_hardware() {
   USART_InitStruct.USART_StopBits = USART_StopBits_1;
   USART_InitStruct.USART_Parity = USART_Parity_No;
   USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStruct.USART_Mode = USART_Mode_Rx;
+  USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
   USART_Init(USART1, &USART_InitStruct);
-  USART_HalfDuplexCmd(USART1,ENABLE);
+  //USART_HalfDuplexCmd(USART1,ENABLE);
 
-  USART_InitStruct.USART_Mode = USART_Mode_Tx;
-  USART_Init(UART5, &USART_InitStruct);
+  //USART_InitStruct.USART_Mode = USART_Mode_Tx;
+  //USART_Init(USART1, &USART_InitStruct);
 
+  //USART_Cmd(USART1, ENABLE);
   USART_Cmd(USART1, ENABLE);
-  USART_Cmd(UART5, ENABLE);
 
   //RX DMA
 
@@ -308,12 +297,12 @@ void init_hardware() {
 
   //TX DMA
 
-  DMA_Cmd(DMA1_Stream7, DISABLE);
-  DMA_DeInit(DMA1_Stream7);
+  DMA_Cmd(DMA2_Stream7, DISABLE);
+  DMA_DeInit(DMA2_Stream7);
 
   // DMA2-Config
   DMA_InitStructure.DMA_Channel = DMA_Channel_4;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART5->DR);
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART1->DR);
   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&txbuf;
   DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
   DMA_InitStructure.DMA_BufferSize = sizeof(txbuf);
@@ -327,21 +316,21 @@ void init_hardware() {
   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  DMA_Init(DMA1_Stream7, &DMA_InitStructure);
+  DMA_Init(DMA2_Stream7, &DMA_InitStructure);
 
   //DMA_Cmd(DMA1_Stream7, ENABLE);
 
-  USART_DMACmd(UART5, USART_DMAReq_Tx, ENABLE);
+  USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
   
   //tx enable
+  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_7;
   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
    
-  GPIO_SetBits(GPIOB, GPIO_Pin_13);
+  GPIO_SetBits(GPIOB, GPIO_Pin_7);
 }
 
 uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, float param_min, float param_max) {

@@ -188,7 +188,7 @@ int main(void)
    // #include "comps/hyper.comp" //TODO: not working in v4
 
    //command comps
-   // #include "comps/sserial.comp" //TODO: not working in v4
+   #include "comps/sserial.comp"
    #include "comps/sim.comp"
    // #include "comps/enc_cmd.comp" //TODO: not working in v4
    // #include "comps/en.comp" //TODO: not working in v4
