@@ -120,7 +120,7 @@ RT(
    
    // TODO: sin = 0.5
    if(config.pins.mode == 0){// 90°
-      packet_from_hv.data.pwm_volt = PIN(dc_volt) / M_SQRT3 * 0.95;
+      packet_from_hv.data.pwm_volt = PIN(dc_volt) / M_SQRT2 * 0.95;
    }else if(config.pins.mode == 1){// 120°
       packet_from_hv.data.pwm_volt = PIN(dc_volt) / M_SQRT3 * 0.95;
    }else if(config.pins.mode == 2){// 180°
