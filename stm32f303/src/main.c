@@ -47,7 +47,6 @@
 #include "dac.h"
 #include "opamp.h"
 #include "tim.h"
-#include "usart.h"
 #include "usb_device.h"
 #include "gpio.h"
 
@@ -391,7 +390,7 @@ int main(void)
   hal_comp_init();//call init function of all comps
 
   if(hal.pin_errors + hal.comp_errors == 0){
-     //hal_start();
+     hal_start();
   }
   else{
      hal.hal_state = MEM_ERROR;

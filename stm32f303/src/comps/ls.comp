@@ -51,6 +51,9 @@ MEM(f3_state_data_t state);
 MEM(uint8_t addr) = 0;
 
 RT_INIT(
+   /* Peripheral clock enable */
+   __HAL_RCC_USART3_CLK_ENABLE();
+   
    UART_HandleTypeDef huart3;
    huart3.Instance = USART3;
    huart3.Init.BaudRate = DATABAUD;
@@ -64,8 +67,6 @@ RT_INIT(
    huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
    HAL_UART_Init(&huart3);
    USART3->CR3 |= USART_CR3_DMAT | USART_CR3_DMAR;
-   /* Peripheral clock enable */
-   __HAL_RCC_USART3_CLK_ENABLE();
  
    /**USART3 GPIO Configuration    
    PB10     ------> USART3_TX

@@ -22,7 +22,6 @@ SOURCES += stm32f303/src/opamp.c
 SOURCES += stm32f303/src/stm32f3xx_hal_msp.c
 SOURCES += stm32f303/src/tim.c
 SOURCES += stm32f303/src/stm32f3xx_it.c
-SOURCES += stm32f303/src/usart.c
 SOURCES += stm32f303/src/usb_device.c
 SOURCES += stm32f303/src/usbd_cdc_if.c
 SOURCES += stm32f303/src/usbd_conf.c
