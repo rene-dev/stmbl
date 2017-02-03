@@ -31,6 +31,7 @@ SOURCES += stm32f303/src/version.c
 INCDIRS += shared
 SOURCES += shared/ringbuf.c
 SOURCES += shared/crc8.c
+SOURCES += shared/crc16.c
 SOURCES += shared/common.c
 SOURCES += shared/angle.c
 SOURCES += shared/scanf.c

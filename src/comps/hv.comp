@@ -40,6 +40,7 @@ HAL_PIN(rev) = 0.0;
 HAL_PIN(com_error) = 0.0;
 HAL_PIN(pwm_volt) = 0.0;
 HAL_PIN(uart_sr) = 0.0;
+HAL_PIN(crc_error) = 0.0;
 
 MEM(volatile packet_to_hv_t packet_to_hv);
 MEM(volatile packet_from_hv_t packet_from_hv);
@@ -155,27 +156,30 @@ RT(
    config.pins.max_cur = PIN(max_cur);
 
    if(packet_from_hv.head.start == 255){
-      unbuff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t));
-      packet_from_hv.head.start = 0;
-      PIN(d_fb) = packet_from_hv.data.d_fb;
-      PIN(q_fb) = packet_from_hv.data.q_fb;
-      PIN(dc_volt) = packet_from_hv.data.dc_volt;
-      PIN(pwm_volt) = packet_from_hv.data.pwm_volt;
+      if(unbuff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t))){
+         packet_from_hv.head.start = 0;
+         PIN(d_fb) = packet_from_hv.data.d_fb;
+         PIN(q_fb) = packet_from_hv.data.q_fb;
+         PIN(dc_volt) = packet_from_hv.data.dc_volt;
+         PIN(pwm_volt) = packet_from_hv.data.pwm_volt;
       
-      uint8_t a = packet_from_hv.data.addr;
-      a = CLAMP(a, 0, sizeof(state) / 4);
-      state.data[a] = packet_from_hv.data.value;
+         uint8_t a = packet_from_hv.data.addr;
+         a = CLAMP(a, 0, sizeof(state) / 4);
+         state.data[a] = packet_from_hv.data.value;
       
-      PIN(u_fb) = state.pins.u_fb;
-      PIN(v_fb) = state.pins.v_fb;
-      PIN(w_fb) = state.pins.w_fb;
-      PIN(hv_temp) = state.pins.hv_temp;
-      PIN(mot_temp) = state.pins.mot_temp;
-      PIN(core_temp) = state.pins.core_temp;
-      PIN(fault) = state.pins.fault;
-      PIN(y) = state.pins.y;
+         PIN(u_fb) = state.pins.u_fb;
+         PIN(v_fb) = state.pins.v_fb;
+         PIN(w_fb) = state.pins.w_fb;
+         PIN(hv_temp) = state.pins.hv_temp;
+         PIN(mot_temp) = state.pins.mot_temp;
+         PIN(core_temp) = state.pins.core_temp;
+         PIN(fault) = state.pins.fault;
+         PIN(y) = state.pins.y;
       
-      PIN(com_error) = 0.0;//TODO: link to fault
+         PIN(com_error) = 0.0;//TODO: link to fault  
+      }else{
+         PIN(crc_error)++;
+      }
    }
    else{
       PIN(com_error) = 1.0;

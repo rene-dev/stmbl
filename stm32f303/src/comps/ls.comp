@@ -36,6 +36,7 @@ HAL_PIN(w_fb) = 0.0;
 
 // misc
 HAL_PIN(pwm_volt) = 0.0;
+HAL_PIN(crc_error) = 0.0;
 
 
 MEM(packet_to_hv_t packet_to_hv);
@@ -161,16 +162,20 @@ RT(
    	}
    	if(datapos == sizeof(packet_to_hv_t)){//all data received
    		datapos = -1;
-   		unbuff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t));
-         PIN(en) = packet_to_hv.data.enable;
-         PIN(d_cmd) = packet_to_hv.data.d_cmd;
-         PIN(q_cmd) = packet_to_hv.data.q_cmd;
-         PIN(pos) = packet_to_hv.data.pos;
-         PIN(vel) = packet_to_hv.data.vel;
-         uint8_t a = packet_to_hv.data.addr;
-         a = CLAMP(a, 0, sizeof(config) / 4);
-         config.data[a] = packet_to_hv.data.value; // TODO: first enable after complete update
-   		timeout = 0; //reset timeout
+   		if(unbuff_packet((packet_header_t*)&packet_to_hv, sizeof(to_hv_t))){
+            PIN(en) = packet_to_hv.data.enable;
+            PIN(d_cmd) = packet_to_hv.data.d_cmd;
+            PIN(q_cmd) = packet_to_hv.data.q_cmd;
+            PIN(pos) = packet_to_hv.data.pos;
+            PIN(vel) = packet_to_hv.data.vel;
+            uint8_t a = packet_to_hv.data.addr;
+            a = CLAMP(a, 0, sizeof(config) / 4);
+            config.data[a] = packet_to_hv.data.value; // TODO: first enable after complete update
+      		timeout = 0; //reset timeout
+   		}else{
+   		   PIN(crc_error)++;
+   		}
+
    	}
       
       rxpos++;

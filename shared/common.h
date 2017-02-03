@@ -13,10 +13,11 @@
 
 #define PWM_RES 4800
 
-//TODO: CRC
+#pragma pack(1)
 typedef struct{
    uint8_t start; // 255
    uint8_t key;
+   uint16_t crc;
 } packet_header_t;
 
 //data from f1 to f4
@@ -89,7 +90,7 @@ typedef struct{
 } packet_from_hv_t;
 
 void buff_packet(packet_header_t* p, uint8_t size);
-void unbuff_packet(packet_header_t* p, uint8_t size);
+int unbuff_packet(packet_header_t* p, uint8_t size);
 
 //check if structs can be send at 5kHz using DATABAUD
 _Static_assert(sizeof(packet_to_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "to_hv struct to large");
