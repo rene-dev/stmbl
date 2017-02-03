@@ -5,9 +5,9 @@ HAL_PIN(freq) = 1.0;
 HAL_PIN(sin) = 0.0;
 HAL_PIN(msin) = 0.0;
 HAL_PIN(sin2) = 0.0;
-HAL_PIN(msin2) = 0.0;
+HAL_PIN(msin2) = 0.0;//const vel, const max vel = amp
 HAL_PIN(sin3) = 0.0;
-HAL_PIN(msin3) = 0.0;
+HAL_PIN(msin3) = 0.0;//const max acc = amp
 HAL_PIN(square) = 0.0;
 HAL_PIN(vel) = 0.0;
 HAL_PIN(res) = 100000.0;

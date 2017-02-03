@@ -83,14 +83,6 @@ void link_ac(){
    // hal_link_pins("i2t0.mot_temp", "fault0.motor_temp");
    hal_link_pins("fault0.mot_brake", "i2t0.brake");
    
-   //troller only
-#ifdef TROLLER
-   hal_link_pins("conf0.polecount", "dq0.polecount");
-   hal_link_pins("cauto0.pos", "dq0.pos");
-   hal_link_pins("hv0.iu", "dq0.u");
-   hal_link_pins("hv0.iv", "dq0.v");
-   hal_link_pins("hv0.iw", "dq0.w");
-#endif
    hal_link_pins("curpid0.ud", "idq0.d");
    hal_link_pins("curpid0.uq", "idq0.q");
    hal_link_pins("conf0.polecount", "idq0.polecount");
