@@ -1,4 +1,5 @@
 include <pcb.scad>
+include <v4_bracket.scad>
 
 module pin(){
    for(a = [0:3]){
@@ -69,3 +70,5 @@ translate([-52.5, 5, 0]) spacer(8);//translate([1 + 8, 1, 96 + 4]) io();
 //translate([1, 10, 33 + 8]) cover();
 translate([-89, 5, -2]) rotate([0, -90, 0]) m3(5);
 translate([-89, 5 + 36, -2]) rotate([0, -90, 0]) m3(5);
+translate([-70.5 + 27 + 6, 32, 42]) rotate([0, 0, 180]) bracket2();
+translate([-52.5, 7.5 - 1.6, 42]) rotate([90, 0, 0]) m3(6);
