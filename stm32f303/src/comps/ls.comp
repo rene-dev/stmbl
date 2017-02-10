@@ -122,16 +122,15 @@ RT(
    
    // TODO: sin = 0.5
    if(config.pins.mode == 0){// 90°
-      packet_from_hv.data.pwm_volt = PIN(dc_volt) / M_SQRT2 * 0.95;
+      PIN(pwm_volt) = PIN(dc_volt) / M_SQRT2 * 0.95;
    }else if(config.pins.mode == 1){// 120°
-      packet_from_hv.data.pwm_volt = PIN(dc_volt) / M_SQRT3 * 0.95;
+      PIN(pwm_volt) = PIN(dc_volt) / M_SQRT3 * 0.95;
    }else if(config.pins.mode == 2){// 180°
-      packet_from_hv.data.pwm_volt = PIN(dc_volt) * 0.95;
+      PIN(pwm_volt) = PIN(dc_volt) * 0.95;
    }else{
-      packet_from_hv.data.pwm_volt = 0.0;
+      PIN(pwm_volt) = 0.0;
    }
-   PIN(pwm_volt) = packet_from_hv.data.pwm_volt;
-   
+      
    state.pins.u_fb = PIN(u_fb);
    state.pins.v_fb = PIN(v_fb);
    state.pins.w_fb = PIN(w_fb);
@@ -147,6 +146,7 @@ RT(
    		datapos = 0;
    		((uint8_t*)&packet_to_hv)[datapos++] = (uint8_t)buf;
 			packet_from_hv.data.dc_volt = PIN(dc_volt);
+         packet_from_hv.data.pwm_volt = PIN(pwm_volt);
 			packet_from_hv.data.d_fb =  PIN(d_fb);
          packet_from_hv.data.q_fb =  PIN(q_fb);
 			packet_from_hv.data.addr = addr;

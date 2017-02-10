@@ -18,6 +18,8 @@ HAL_PIN(tim_oc) = 0.0;
 MEM(int lastq) = 0;// last quadrant
 MEM(int abspos) = 0;// multiturn position
 
+// TODO: in hal stop, reset adc dma
+
 RT_INIT(
    //timer init for v4, v3 uses slave timer
    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);

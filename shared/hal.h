@@ -97,6 +97,7 @@ typedef struct{
     MEM_ERROR,
     CONFIG_LOAD_ERROR,
     CONFIG_ERROR,
+    NAN_ERROR,
     HAL2_OK
   } hal_state;
 

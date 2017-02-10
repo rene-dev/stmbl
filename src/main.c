@@ -157,7 +157,12 @@ void DMA2_Stream0_IRQHandler(void){
    PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
    PIN(rt_period_time) = period;
 
-   hal.rt_state = RT_SLEEP;
+   if(hal.hal_state != HAL2_OK){
+      hal.rt_state = RT_STOP;
+   }
+   else{
+      hal.rt_state = RT_SLEEP;
+   }
 }
 
 int main(void)

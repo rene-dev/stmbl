@@ -189,10 +189,10 @@ showsize: build
 
 # Flash the device
 #
-btburn: build showsize $(TARGET).dfu
+btburn: $(TARGET).dfu
 	@tools/bootloader.py
 	@sleep 1
-	@dfu-util -d 0483:df11 -a 0 -s 0x08010000:leave -D $(TARGET).dfu
+	@dfu-util -d 0483:df11 -a 0 -s 0x08000000:leave -D $(TARGET).dfu
 
 flash: $(TARGET).bin
 	st-flash --reset write $(TARGET).bin 0x08000000

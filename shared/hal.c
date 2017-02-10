@@ -183,6 +183,7 @@ void hal_stop(){
    hal_stop_rt();
    hal_disable_frt();
    hal_disable_rt();
+   hal.hal_state = HAL2_OK;
    for(; hal.rt_deinit_func_count > 0; hal.rt_deinit_func_count--){
       hal.rt_deinit[hal.rt_deinit_func_count - 1]();
    }

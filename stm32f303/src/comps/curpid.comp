@@ -47,9 +47,9 @@ RT(
 
    float ff = PIN(ff);
    float kind = PIN(kind);
-   float kpd = ld * PIN(kp) / period;
+   float kpd = ld * PIN(kp) / period / 2.0;
    float kid = rd * PIN(ki) / ld;
-   float kpq = lq * PIN(kp) / period;
+   float kpq = lq * PIN(kp) / period / 2.0;
    float kiq = rq * PIN(ki) / lq;
    
    //TODO curpid: sqrt(di^2+qi^2) auf max_ac_cur clampen
