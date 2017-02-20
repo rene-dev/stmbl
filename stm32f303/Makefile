@@ -13,7 +13,7 @@ OBJDIR = obj_hvf3
 TARGET = $(OBJDIR)/hvf3
 
 # Define all C source files (dependencies are generated automatically)
-INCDIRS += stm32f303/Inc
+INCDIRS += stm32f303/inc
 SOURCES += stm32f303/src/main.c
 SOURCES += stm32f303/src/adc.c
 SOURCES += stm32f303/src/dac.c
