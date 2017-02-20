@@ -50,6 +50,11 @@ void hal_term_print_state(){
       case CONFIG_ERROR:
       printf("HAL state:  CONFIG_ERROR\n");
       break;
+      case NAN_ERROR:
+      printf("HAL state:  NAN_ERROR\n");
+      break;
+      default:
+      printf("HAL state:  unkonwn error\n");
    }
 }
 

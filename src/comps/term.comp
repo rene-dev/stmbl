@@ -15,6 +15,8 @@ HAL_PIN(jogvel) = 10.0;
 HAL_PIN(jogpos) = 0.0;
 HAL_PIN(jogging) = 0.0;
 
+HAL_PIN(test) = 0.0;
+
 #define TERM_BUF_SIZE 24
 
 MEM(float wave_buf[TERM_BUF_SIZE][TERM_NUM_WAVES]);
@@ -142,6 +144,23 @@ NRT(
       printf("_estack  = %p\n", &_estack );
 
       printf("heap avail       = %luB\n", (uint32_t)((char*)__get_MSP() - __brkval));
+      uint32_t fpscr = get_fpscr();
+      printf("FPU fpscr = %x\n", fpscr);
+      printf(" IDC: %i IXC: %i UFC: %i OFC: %i DZC: %i IOC %i\n", (fpscr & (1 << 7)) > 0, (fpscr & (1 << 4)) > 0, (fpscr & (1 << 3)) > 0, (fpscr & (1 << 2)) > 0, (fpscr & (1 << 1)) > 0, fpscr & (1 << 0));
+      fpscr &= (uint32_t)~0x9F; // Clear all exception flags
+      set_fpscr(fpscr);
+   }
+   void hal_term_nan(){
+      PIN(test) = sqrtf(-1.0);
+   }
+   void hal_term_over(){ // TODO
+      PIN(test) = INFINITY + 1.0;
+   }
+   void hal_term_under(){ // TODO
+      PIN(test) = 1.0 / INFINITY;
+   }
+   void hal_term_zero(){
+      PIN(test) = 1.0 / 0.0;
    }
 
    void help(){
@@ -180,6 +199,18 @@ NRT(
          printf("stopping hal ... ");
          hal_stop();
          printf("done\n");
+      }
+      else if(!strcmp(s, "test_nan")){
+         hal_term_nan();
+      }
+      else if(!strcmp(s, "test_overflow")){
+         hal_term_over();
+      }
+      else if(!strcmp(s, "test_underflow")){
+         hal_term_under();
+      }
+      else if(!strcmp(s, "test_div_zero")){
+         hal_term_zero();
       }
       else if(!strcmp(s, "hal")){
          hal_term_print_info();

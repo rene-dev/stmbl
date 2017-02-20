@@ -20,6 +20,8 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdio.h>
+
 
 #define MAX_HAL_PINS 800
 #define HAL_NAME_LENGTH 32
@@ -116,6 +118,8 @@ typedef struct{
 extern hal_struct_t hal;
 
 void hal_init();
+uint32_t get_fpscr();
+void set_fpscr(uint32_t fpscr);
 
 void hal_comp_init();
 void hal_run_rt(float period);

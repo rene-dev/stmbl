@@ -74,10 +74,32 @@ void hal_run_nrt(float period){
    hal.active_nrt_func = -1;
 }
 
+uint32_t get_fpscr(){
+   uint32_t result;
+   /* Empty asm statement works as a scheduling barrier */
+   __asm volatile ("");
+   __asm volatile ("VMRS %0, fpscr" : "=r" (result) );
+   __asm volatile ("");
+   return(result);
+}
+
+void set_fpscr(uint32_t fpscr){
+  /* Empty asm statement works as a scheduling barrier */
+  __asm volatile ("");
+  __asm volatile ("VMSR fpscr, %0" : : "r" (fpscr) : "vfpcc");
+  __asm volatile ("");
+}
+
 void hal_run_rt(float period){
    //run all realtime hal functions
    for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){
       hal.rt[hal.active_rt_func](period);
+      uint32_t fpscr = get_fpscr();
+      if(fpscr & (1 << 0)){
+         hal_stop();
+         printf("FPU invalid operation in rt func: %i\n", hal.active_rt_func);
+         return;
+      }
    }
    hal.active_rt_func = -1;
 }
@@ -86,6 +108,12 @@ void hal_run_frt(float period){
    //run all fast realtime hal functions
    for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_func_count; hal.active_frt_func++){
       hal.frt[hal.active_frt_func](period);
+      uint32_t fpscr = get_fpscr();
+      if(fpscr & (1 << 0)){
+         hal_stop();
+         printf("FPU invalid operation in frt func: %i\n", hal.active_frt_func);
+         return;
+      }
    }
    hal.active_frt_func = -1;
 }
@@ -101,6 +129,10 @@ int hal_start_rt(){
 
 //TODO: crashes when hal is already running?
 void hal_start(){
+   uint32_t fpscr = get_fpscr();
+   fpscr &= (uint32_t)~0x9F; // Clear all exception flags
+   set_fpscr(fpscr);
+   
    float min = INFINITY;
    int min_index = -1;
    float rt_prio = 0.0;
