@@ -96,8 +96,8 @@ void hal_run_rt(float period){
       hal.rt[hal.active_rt_func](period);
       uint32_t fpscr = get_fpscr();
       if(fpscr & (1 << 0)){
-         hal_stop();
          printf("FPU invalid operation in rt func: %i\n", hal.active_rt_func);
+         hal_stop();
          return;
       }
    }
@@ -110,8 +110,8 @@ void hal_run_frt(float period){
       hal.frt[hal.active_frt_func](period);
       uint32_t fpscr = get_fpscr();
       if(fpscr & (1 << 0)){
-         hal_stop();
          printf("FPU invalid operation in frt func: %i\n", hal.active_frt_func);
+         hal_stop();
          return;
       }
    }
