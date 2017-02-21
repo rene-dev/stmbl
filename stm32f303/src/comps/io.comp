@@ -2,17 +2,17 @@ HAL_COMP(io);
 
 HAL_PIN(led) = 0.0;
 
-HAL_PIN(iu);
-HAL_PIN(iv);
-HAL_PIN(iw);
+HAL_PIN(iu) = 0.0;
+HAL_PIN(iv) = 0.0;
+HAL_PIN(iw) = 0.0;
 
-HAL_PIN(u);
-HAL_PIN(v);
-HAL_PIN(w);
-HAL_PIN(udc);
+HAL_PIN(u) = 0.0;
+HAL_PIN(v) = 0.0;
+HAL_PIN(w) = 0.0;
+HAL_PIN(udc) = 0.0;
 
-HAL_PIN(hv_temp);
-HAL_PIN(mot_temp);
+HAL_PIN(hv_temp) = 0.0;
+HAL_PIN(mot_temp) = 0.0;
 
 MEM(float u_offset) = 0;
 MEM(float v_offset) = 0;
