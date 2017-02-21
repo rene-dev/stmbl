@@ -6,10 +6,6 @@ HAL_PIN(state) = 0.0;
 HAL_PIN(fault) = 0.0;
 HAL_PIN(brake) = 0.0;
 
-HAL_PIN(red) = 0.0;
-HAL_PIN(yellow) = 0.0;
-HAL_PIN(green) = 0.0;
-
 HAL_PIN(out0) = 0.0;
 HAL_PIN(out1) = 0.0;
 HAL_PIN(out2) = 0.0;
@@ -33,8 +29,8 @@ INIT(
    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
    
    //fan
-   //GPIO_InitStructure.GPIO_Pin   = FAN_PIN;
-   //GPIO_Init(FAN_PORT, &GPIO_InitStructure);
+   // GPIO_InitStructure.GPIO_Pin   = FAN_PIN;
+   // GPIO_Init(FAN_PORT, &GPIO_InitStructure);
 
    //red
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3;
@@ -94,17 +90,54 @@ INIT(
 );
 
 NRT(
-   if(PIN(red) > 0)
+
+   uint32_t red    = 0;
+   uint32_t green  = 0;
+   uint32_t yellow = 0;
+
+   switch((state_t)PIN(state)){
+      case DISABLED:
+         red    = 0;
+         green  = 0;
+         yellow = 1;
+      break;
+   
+      case ENABLED:
+         red    = 0;
+         green  = 1;
+         yellow = 0;
+      break;
+   
+      case PHASING:
+         red    = 0;
+         green  = 1;
+         yellow = 1;
+      break;
+   
+      case SOFT_FAULT:
+         red    = BLINK((int)PIN(fault));
+         green  = 0;
+         yellow = 0;
+      break;
+   
+      case HARD_FAULT:
+         red    = BLINK((int)PIN(fault));
+         green  = BLINK((int)PIN(fault));
+         yellow = BLINK((int)PIN(fault));
+      break;      
+   }
+
+   if(red > 0)
       GPIO_SetBits(GPIOD, GPIO_Pin_3);
    else
       GPIO_ResetBits(GPIOD, GPIO_Pin_3);
 
-   if(PIN(yellow) > 0)
+   if(yellow > 0)
       GPIO_SetBits(GPIOD, GPIO_Pin_4);
    else
       GPIO_ResetBits(GPIOD, GPIO_Pin_4);
 
-   if(PIN(green) > 0)
+   if(green > 0)
       GPIO_SetBits(GPIOD, GPIO_Pin_5);
    else
       GPIO_ResetBits(GPIOD, GPIO_Pin_5);
