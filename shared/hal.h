@@ -164,6 +164,8 @@ int hal_link_pins(hal_name_t source, hal_name_t sink);
 
 void hal_add_comp(hal_comp_t* comp);
 
+int32_t find_comp_by_func(uint32_t p);
+
 extern void hal_enable_rt();
 extern void hal_enable_frt();
 extern void hal_disable_rt();

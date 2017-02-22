@@ -72,14 +72,14 @@ void hal_term_print_info(){
    float pe = hal_get_pin("net0.rt_period");
    float ct = hal_get_pin("net0.rt_calc_time");
    if(pe > 0.0){
-      printf("rt time: %f/%fs", ct, pe);
-      printf("=%f%%\n",(ct/pe)*100);
+      printf("rt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
+      //printf("=%f%%\n",(ct/pe)*100);
    }
    pe = hal_get_pin("net0.frt_period");
    ct = hal_get_pin("net0.frt_calc_time");
    if(pe > 0.0){
-      printf("frt time: %f/%fs", ct, pe);
-      printf("=%f%%\n",(ct/pe)*100);
+      printf("frt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
+      //printf("=%f%%\n",(ct/pe)*100);
    }
    pe = hal_get_pin("net0.nrt_period");
    ct = hal_get_pin("net0.nrt_calc_time");
@@ -113,64 +113,65 @@ void hal_term_print_info(){
    uint32_t p = 0;
    char str[HAL_NAME_LENGTH];
    printf("active rt funcs(%u):\n", hal.rt_func_count);
+   pe = hal_get_pin("net0.rt_period");
    for(int i = 0; i < hal.rt_func_count; i++){
       p = (uint32_t)hal.rt[i];
-      for(int i = 0; i < hal.comp_count; i++){
-         if(p == (uint32_t)hal.hal_comps[i]->rt){
-            sprintf(str, "%s%lu.rt_calc_time", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
-            printf("   %s%lu.rt(%f) %fus\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance,  hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value, hal_get_pin(str) * 1000000.0f);
-            break;
+      i = find_comp_by_func(p);
+      if(i >= 0){
+         sprintf(str, "%s%lu.rt_calc_time", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
+         ct = hal_get_pin(str);
+         printf("-%s%lu.rt(%f) %fus", hal.hal_comps[i]->name, hal.hal_comps[i]->instance,  hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value, ct * 1000000.0f);
+         if(ct > 0.0){
+            printf(" = %f%%", (ct / pe) * 100.0);
          }
+         printf("\n");
       }
    }
+   int32_t i = -1;
    printf("\nactive frt funcs(%u):\n", hal.frt_func_count);
-   for(int i = 0; i < hal.frt_func_count; i++){
-      p = (uint32_t)hal.frt[i];
-      for(int i = 0; i < hal.comp_count; i++){
-         if(p == (uint32_t)hal.hal_comps[i]->frt){
-            printf("   %s%lu.frt(%f)\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance, hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 3]->source->source->value);
-            break;
+   pe = hal_get_pin("net0.frt_period");
+   for(int j = 0; j < hal.frt_func_count; j++){
+      p = (uint32_t)hal.frt[j];
+      i = find_comp_by_func(p);
+      if(i >= 0){
+         ct = hal_get_pin(str);
+         printf("-%s%lu.frt(%f) %fus", hal.hal_comps[i]->name, hal.hal_comps[i]->instance,  hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 3]->source->source->value, ct * 1000000.0f);
+         if(ct > 0.0){
+            printf(" = %f%%", (ct / pe) * 100.0);
          }
+         printf("\n");
       }
    }
    printf("\nactive rt_init funcs(%u):\n", hal.rt_init_func_count);
-   for(int i = 0; i < hal.rt_init_func_count; i++){
-      p = (uint32_t)hal.rt_init[i];
-      for(int i = 0; i < hal.comp_count; i++){
-         if(p == (uint32_t)hal.hal_comps[i]->rt_init){
-            printf("   %s%lu.rt_init\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
-            break;
-         }
+   for(int j = 0; j < hal.rt_init_func_count; j++){
+      p = (uint32_t)hal.rt_init[j];
+      i = find_comp_by_func(p);
+      if(i >= 0){
+         printf("-%s%lu.rt_init\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
       }
    }
    printf("\nactive rt_deinit funcs(%u):\n", hal.rt_deinit_func_count);
-   for(int i = 0; i < hal.rt_deinit_func_count; i++){
-      p = (uint32_t)hal.rt_deinit[i];
-      for(int i = 0; i < hal.comp_count; i++){
-         if(p == (uint32_t)hal.hal_comps[i]->rt_deinit){
-            printf("   %s%lu.rt_deinit\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
-            break;
-         }
+   for(int j = 0; j < hal.rt_deinit_func_count; j++){
+      p = (uint32_t)hal.rt_deinit[j];
+      i = find_comp_by_func(p);
+      if(i >= 0){
+         printf("-%s%lu.rt_deinit\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
       }
    }
    printf("\nactive nrt_init funcs(%u):\n", hal.nrt_init_func_count);
-   for(int i = 0; i < hal.nrt_init_func_count; i++){
-      p = (uint32_t)hal.nrt_init[i];
-      for(int i = 0; i < hal.comp_count; i++){
-         if(p == (uint32_t)hal.hal_comps[i]->nrt_init){
-            printf("   %s%lu.nrt_init\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
-            break;
-         }
+   for(int j = 0; j < hal.nrt_init_func_count; j++){
+      p = (uint32_t)hal.nrt_init[j];
+      i = find_comp_by_func(p);
+      if(i >= 0){
+         printf("-%s%lu.nrt_init\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
       }
    }
    printf("\nactive nrt funcs(%u):\n", hal.nrt_func_count);
-   for(int i = 0; i < hal.nrt_func_count; i++){
-      p = (uint32_t)hal.nrt[i];
-      for(int i = 0; i < hal.comp_count; i++){
-         if(p == (uint32_t)hal.hal_comps[i]->nrt){
-            printf("   %s%lu.nrt\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
-            break;
-         }
+   for(int j = 0; j < hal.nrt_func_count; j++){
+      p = (uint32_t)hal.nrt[j];
+      i = find_comp_by_func(p);
+      if(i >= 0){
+         printf("-%s%lu.nrt\n", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
       }
    }
    printf("\n");

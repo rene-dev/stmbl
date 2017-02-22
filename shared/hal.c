@@ -66,7 +66,7 @@ void hal_comp_init(){
    }
 }
 
-void hal_run_nrt(float period){
+inline void hal_run_nrt(float period){ // TODO NAN trap?
    //run all non realtime hal functions
    for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.nrt_func_count; hal.active_nrt_func++){
       hal.nrt[hal.active_nrt_func](period);
@@ -96,7 +96,7 @@ void hal_run_rt(float period){
       hal.rt[hal.active_rt_func](period);
       uint32_t fpscr = get_fpscr();
       if(fpscr & (1 << 0)){
-         printf("FPU invalid operation in rt func: %i\n", hal.active_rt_func);
+         printf("FPU invalid operation in rt func: %s\n", hal.hal_comps[find_comp_by_func(hal.active_frt_func)]->name);
          hal_stop();
          return;
       }
@@ -110,7 +110,7 @@ void hal_run_frt(float period){
       hal.frt[hal.active_frt_func](period);
       uint32_t fpscr = get_fpscr();
       if(fpscr & (1 << 0)){
-         printf("FPU invalid operation in frt func: %i\n", hal.active_frt_func);
+         printf("FPU invalid operation in frt func: %s\n", hal.hal_comps[find_comp_by_func(hal.active_frt_func)]->name);
          hal_stop();
          return;
       }
@@ -389,4 +389,31 @@ void hal_add_comp(hal_comp_t* comp){
    else{
       hal.comp_errors++;
    }
+}
+
+int32_t find_comp_by_func(uint32_t p){
+   for(int i = 0; i < hal.comp_count; i++){
+      if(p == (uint32_t)hal.hal_comps[i]->rt){
+         return(i);
+      }
+      if(p == (uint32_t)hal.hal_comps[i]->frt){
+         return(i);
+      }
+      if(p == (uint32_t)hal.hal_comps[i]->nrt){
+         return(i);
+      }
+      if(p == (uint32_t)hal.hal_comps[i]->frt){
+         return(i);
+      }
+      if(p == (uint32_t)hal.hal_comps[i]->rt_init){
+         return(i);
+      }
+      if(p == (uint32_t)hal.hal_comps[i]->rt_deinit){
+         return(i);
+      }
+      if(p == (uint32_t)hal.hal_comps[i]->nrt_init){
+         return(i);
+      }
+   }
+   return(-1);
 }
