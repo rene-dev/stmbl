@@ -111,11 +111,12 @@ void hal_term_print_info(){
    }
    hal_term_print_state();
    uint32_t p = 0;
+   int32_t i = -1;
    char str[HAL_NAME_LENGTH];
    printf("active rt funcs(%u):\n", hal.rt_func_count);
    pe = hal_get_pin("net0.rt_period");
-   for(int i = 0; i < hal.rt_func_count; i++){
-      p = (uint32_t)hal.rt[i];
+   for(int j = 0; j < hal.rt_func_count; j++){
+      p = (uint32_t)hal.rt[j];
       i = find_comp_by_func(p);
       if(i >= 0){
          sprintf(str, "%s%lu.rt_calc_time", hal.hal_comps[i]->name, hal.hal_comps[i]->instance);
@@ -127,7 +128,6 @@ void hal_term_print_info(){
          printf("\n");
       }
    }
-   int32_t i = -1;
    printf("\nactive frt funcs(%u):\n", hal.frt_func_count);
    pe = hal_get_pin("net0.frt_period");
    for(int j = 0; j < hal.frt_func_count; j++){

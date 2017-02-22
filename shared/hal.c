@@ -95,8 +95,14 @@ void hal_run_rt(float period){
    for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){
       hal.rt[hal.active_rt_func](period);
       uint32_t fpscr = get_fpscr();
-      if(fpscr & (1 << 0)){
-         printf("FPU invalid operation in rt func: %s\n", hal.hal_comps[find_comp_by_func(hal.active_frt_func)]->name);
+      if(fpscr & 3){ // TODO div zero not working
+         if(fpscr & 1){
+            printf("FPU invalid operation (NaN) ");
+         }
+         else{
+            printf("FPU div by zero ");
+         }
+         printf("in func: %s%u.rt\n", hal.hal_comps[find_comp_by_func(hal.rt[hal.active_rt_func])]->name, hal.hal_comps[find_comp_by_func(hal.rt[hal.active_rt_func])]->instance);
          hal_stop();
          return;
       }
@@ -109,8 +115,14 @@ void hal_run_frt(float period){
    for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_func_count; hal.active_frt_func++){
       hal.frt[hal.active_frt_func](period);
       uint32_t fpscr = get_fpscr();
-      if(fpscr & (1 << 0)){
-         printf("FPU invalid operation in frt func: %s\n", hal.hal_comps[find_comp_by_func(hal.active_frt_func)]->name);
+      if(fpscr & 0x3){
+         if(fpscr & 1){
+            printf("FPU invalid operation (NaN) ");
+         }
+         else{
+            printf("FPU div by zero ");
+         }
+         printf("in func: %s%u.frt\n", hal.hal_comps[find_comp_by_func(hal.frt[hal.active_frt_func])]->name, hal.hal_comps[find_comp_by_func(hal.frt[hal.active_frt_func])]->instance);
          hal_stop();
          return;
       }
