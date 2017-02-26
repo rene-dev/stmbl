@@ -28,6 +28,10 @@ SOURCES += stm32f303/src/usbd_conf.c
 SOURCES += stm32f303/src/usbd_desc.c
 SOURCES += stm32f303/src/version.c
 
+SOURCES += stm32f303/src/hal_tbl.c
+SOURCES += stm32f303/src/hal2.c
+SOURCES += stm32f303/src/comps/test.c
+
 INCDIRS += shared
 SOURCES += shared/ringbuf.c
 SOURCES += shared/crc8.c
