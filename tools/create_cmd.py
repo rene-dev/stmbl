@@ -8,7 +8,7 @@ cmd = []
 for infile in sys.argv[1:]:
     with open(infile) as f:
         for line in f:
-            match = re.search('COMMAND\("(\w*)",(\w*)\);', line)
+            match = re.search('COMMAND\("(\w*)", *(\w*)\);', line)
             if match:
                 cmd.append(match.groups())
 
@@ -19,5 +19,5 @@ for name,ptr in cmd:
 
 print "cmd_t cmd[] = {"
 for name,ptr in cmd:
-    print "\"" + name + "\", " + ptr + ","
+    print "   {\"" + name + "\", " + ptr + "},"
 print "};"

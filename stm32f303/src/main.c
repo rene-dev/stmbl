@@ -162,7 +162,7 @@ void TIM8_UP_IRQHandler(){
    float period = ((float)(last_start - start)) / hal_get_systick_freq();
    last_start = start;
 
-   hal_run_rt(0.000066);
+   hal_run_rt(period);
 
    unsigned int end = hal_get_systick_value();
    if(start < end){
