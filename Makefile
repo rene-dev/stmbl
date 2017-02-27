@@ -240,7 +240,7 @@ clean:
 	@echo Cleaning project:
 	# rm -rf hv_firmware.o
 	rm -rf $(OBJDIR)
-   rm -rf inc/commandslist.h
+	rm -rf inc/commandslist.h
 	@$(MAKE) -f bootloader/Makefile clean
 	@$(MAKE) -f stm32f103/Makefile clean
 
