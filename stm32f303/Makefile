@@ -178,7 +178,7 @@ LDFLAGS  += $(CPU)
 #
 all: gccversion build showsize
 
-build: elf hex bin lss sym
+build: tbl elf hex bin lss sym
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
@@ -188,6 +188,15 @@ sym: $(TARGET).sym
 
 # Display compiler version information
 #
+
+stm32f303/inc/commandslist.h: tbl
+stm32f303/inc/hal_tbl.h: tbl
+stm32f303/src/hal_tbl.c: tbl
+
+tbl:
+	tools/create_hal_tbl.py stm32f303/ stm32f303/src/comps/*.c
+	tools/create_cmd.py stm32f303/src/comps/*.c > stm32f303/inc/commandslist.h
+
 gccversion:
 	@$(CC) --version
 
@@ -217,6 +226,9 @@ flash: $(TARGET).bin
 clean:
 	@echo Cleaning project:
 	rm -rf $(OBJDIR)
+	rm -rf stm32f303/inc/commandslist.h
+	rm -rf stm32f303/inc/hal_tbl.h
+	rm -rf stm32f303/src/hal_tbl.c
 
 # Include the base rules
 #
@@ -232,4 +244,4 @@ include toolchain.mak
 .PHONY: all build flash clean \
         boot boot_clean boot_flash btburn boot_btflash boot_flash\
         elf lss sym \
-        showsize gccversion
+        showsize gccversion tbl

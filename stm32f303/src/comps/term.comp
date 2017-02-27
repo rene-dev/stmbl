@@ -1,3 +1,6 @@
+#include "commands.h"
+#include "commandslist.h"
+
 HAL_COMP(term);
 
 #define TERM_NUM_WAVES 8
@@ -166,8 +169,21 @@ NRT(
       printf("load conf: load\n");
    }
 
+   uint32_t call_cmd(char * s, char * args){
+      for(uint32_t i = 0; i < sizeof(cmd) / sizeof(cmd_t); i++){
+         if(!strcmp(cmd[i].name, s)){
+            cmd[i].ptr(args);
+            return(1);
+         }
+      }
+      return(0);
+   }
+
    void cmd(char * s){
-      if(!strcmp(s, "bootloader")){//reset and jump to bootloader
+      if(call_cmd(s, "")){
+            
+      }
+      else if(!strcmp(s, "bootloader")){//reset and jump to bootloader
          RTC->BKP0R = 0xDEADBEEF;//set bootloader trigger
          // GPIO_InitTypeDef GPIO_InitStruct;
          // GPIO_InitStruct.Pin = GPIO_PIN_12;

@@ -173,13 +173,21 @@ LDFLAGS  += $(CPU)
 #
 all:  gccversion boot build showsize
 
-build: elf hex bin lss sym
+build: tbl elf hex bin lss sym
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
 bin: $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
+
+stm32f303/inc/commandslist.h: tbl
+#stm32f303/inc/hal_tbl.h: tbl
+#stm32f303/src/hal_tbl.c: tbl
+
+tbl:
+#	tools/create_hal_tbl.py stm32f303/ stm32f303/src/comps/*.c
+	tools/create_cmd.py src/comps/*.comp > inc/commandslist.h
 
 boot:
 	$(MAKE) -f bootloader/Makefile
@@ -232,6 +240,7 @@ clean:
 	@echo Cleaning project:
 	# rm -rf hv_firmware.o
 	rm -rf $(OBJDIR)
+   rm -rf inc/commandslist.h
 	@$(MAKE) -f bootloader/Makefile clean
 	@$(MAKE) -f stm32f103/Makefile clean
 
@@ -249,4 +258,4 @@ include toolchain.mak
 .PHONY: all build flash clean \
         boot boot_clean boot_flash btburn boot_btflash boot_flash\
         elf lss sym \
-        showsize gccversion
+        showsize gccversion tbl
