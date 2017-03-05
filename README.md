@@ -38,13 +38,14 @@ https://github.com/rene-dev/stmbl/wiki/PCB
 ![bot](http://rene-dev.github.io/IMG_2017-03-05 22:07:44.jpg)
 
 ##### Driving a Bosch Turboscara
-https://www.youtube.com/watch?v=Ue98HE76paI
-
 https://www.youtube.com/watch?v=d6NH1W7DUnQ
+
+##### Driving a Manutec Robot
+https://www.youtube.com/watch?v=gwgnAeGjZrA
+https://www.youtube.com/watch?v=wXLcAZwjlzE
+
 ##### Drivetest
-https://www.youtube.com/watch?v=sMeV4SCu4TA
-##### Drivetest with asymmetrical load
-https://www.youtube.com/watch?v=seEV_i7o1NI
+https://www.youtube.com/watch?v=-E1o_5cFyto
 
 ####Supported Motors
 * Synchronous AC Servos
