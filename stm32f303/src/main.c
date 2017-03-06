@@ -44,7 +44,6 @@
 #include "main.h"
 #include "stm32f3xx_hal.h"
 #include "adc.h"
-#include "dac.h"
 #include "opamp.h"
 #include "tim.h"
 #include "usb_device.h"
@@ -113,27 +112,10 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN 0 */
 
-#define ARES 4096.0// analog resolution, 12 bit
-#define AREF 3.338// analog reference voltage
-
-#define VDIVUP 249000.0 * 2.0//HV div pullup R1,R12
-#define VDIVDOWN 3900.0//HV div pulldown R2,R9
-
-#define VOLT(a) ((a) / (ARES) * (AREF) / (VDIVDOWN) * ((VDIVUP) + (VDIVDOWN)))
-//#define TEMP(a) (log10f((a) * (AREF) / (ARES) * (TPULLUP) / ((AREF) - (a) * (AREF) / (ARES))) * (-53.0) + 290.0)
-
-#define SHUNT 0.003//shunt
-#define SHUNT_PULLUP 15000
-#define SHUNT_SERIE 470
-#define SHUNT_GAIN 16
-
-#define AMP(a, gain) (((a) * AREF / ARES / (gain) - AREF / (SHUNT_PULLUP + SHUNT_SERIE) * SHUNT_SERIE) / (SHUNT * SHUNT_PULLUP) * (SHUNT_PULLUP + SHUNT_SERIE))
-
-/* USER CODE END 0 */
 
 void TIM8_UP_IRQHandler(){
+   GPIOB->ODR |= GPIO_PIN_9;
    __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
-   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
    switch(hal.rt_state){
       case RT_STOP:
          return;
@@ -162,7 +144,9 @@ void TIM8_UP_IRQHandler(){
    float period = ((float)(last_start - start)) / hal_get_systick_freq();
    last_start = start;
 
+   GPIOB->ODR |= GPIO_PIN_8;
    hal_run_rt(period);
+   GPIOB->BRR = GPIO_PIN_8;
 
    unsigned int end = hal_get_systick_value();
    if(start < end){
@@ -172,7 +156,7 @@ void TIM8_UP_IRQHandler(){
    PIN(rt_period_time) = period;
 
    hal.rt_state = RT_SLEEP;
-   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+   GPIOB->BRR = GPIO_PIN_9;
 }
 
 int main(void)
@@ -195,53 +179,34 @@ int main(void)
   MX_TIM8_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
-  MX_ADC3_Init();
-  MX_ADC4_Init();
+
   // MX_DAC_Init();
-  MX_OPAMP1_Init();
   MX_OPAMP2_Init();
-  MX_OPAMP3_Init();
   // MX_USART1_UART_Init();
+  // MX_USART3_UART_Init();
   MX_USB_DEVICE_Init();
   __HAL_RCC_DMA1_CLK_ENABLE();
-  __HAL_RCC_DMA2_CLK_ENABLE();
+  // __HAL_RCC_DMA2_CLK_ENABLE();
   __HAL_RCC_RTC_ENABLE();
 
   /* USER CODE BEGIN 2 */
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
 
-  HAL_OPAMP_SelfCalibrate(&hopamp1);
   HAL_OPAMP_SelfCalibrate(&hopamp2);
-  HAL_OPAMP_SelfCalibrate(&hopamp3);
   
   //USB EN IO board: PB15
-  // GPIO_InitStruct.Pin = GPIO_PIN_15;
-  // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  // GPIO_InitStruct.Pull = GPIO_NOPULL;
-  // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  // HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-  // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
-  
-  //IO pins
   GPIO_InitTypeDef GPIO_InitStruct;
-  GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
+  GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
 
-     if (HAL_OPAMP_Start(&hopamp1) != HAL_OK){
-       Error_Handler();
-     }
-     if (HAL_OPAMP_Start(&hopamp2) != HAL_OK){
-       Error_Handler();
-     }
-     if (HAL_OPAMP_Start(&hopamp3) != HAL_OK){
-       Error_Handler();
-     }
+  if (HAL_OPAMP_Start(&hopamp2) != HAL_OK){
+    Error_Handler();
+  }
 
   htim8.Instance->CCR1 = 0;
   htim8.Instance->CCR2 = 0;
@@ -249,29 +214,9 @@ int main(void)
   
   HAL_ADC_Start(&hadc1);
   HAL_ADC_Start(&hadc2);
-  HAL_ADC_Start(&hadc3);
-  HAL_ADC_Start(&hadc4);
+
   if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
  	Error_Handler();
-  }
-  TIM8->RCR = 1;//uptate event foo
-  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
-	Error_Handler();
-  }
-  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
-  	Error_Handler();
-  }
-  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
-  	Error_Handler();
-  }
-  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
-	Error_Handler();
-  }
-  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
-  	Error_Handler();
-  }
-  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
-  	Error_Handler();
   }
 
   hal_init();
@@ -280,14 +225,8 @@ int main(void)
   HAL_PIN(bar) = 0.0;
   
   // #include "../src/comps/sim.comp"
-  #include "comps/term.comp"
-  #include "../src/comps/idq.comp"
-  #include "../src/comps/dq.comp"
-  #include "comps/curpid.comp"
-  #include "comps/io.comp"
-  #include "comps/svm.comp"
-  #include "comps/hv.comp"
-  #include "comps/ls.comp"
+  // #include "comps/term.comp"
+  // #include "comps/io.comp"
   
   hal_set_comp_type("net");
   HAL_PIN(rt_calc_time) = 0.0;
@@ -302,90 +241,18 @@ int main(void)
   rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
   frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
   
-  // hal_set_pin("sim0.rt_prio", 1.0);
   hal_set_pin("term0.rt_prio", 0.1);
-  // hal_set_pin("sim0.rt_prio", 0.5);
-  hal_set_pin("ls0.rt_prio", 0.6);
   hal_set_pin("io0.rt_prio", 1.0);
-  hal_set_pin("dq0.rt_prio", 2.0);
-  hal_set_pin("curpid0.rt_prio", 3.0);
-  hal_set_pin("idq0.rt_prio", 4.0);
-  hal_set_pin("svm0.rt_prio", 5.0);
-  hal_set_pin("hv0.rt_prio", 6.0);
   
   hal_set_pin("term0.send_step", 50.0);
   hal_set_pin("term0.gain0", 10.0);
   hal_set_pin("term0.gain1", 10.0);
   hal_set_pin("term0.gain2", 10.0);
   hal_set_pin("term0.gain3", 10.0);
-  hal_set_pin("term0.gain4", 1.0);
+  hal_set_pin("term0.gain4", 10.0);
   hal_set_pin("term0.gain5", 10.0);
   hal_set_pin("term0.gain6", 10.0);
   hal_set_pin("term0.gain7", 10.0);
-  hal_set_pin("curpid0.max_cur", 25.0);
-  
-  //link LS
-  hal_link_pins("io0.udc", "ls0.dc_volt");
-  hal_link_pins("io0.hv_temp", "ls0.hv_temp");
-  hal_link_pins("ls0.d_cmd", "curpid0.id_cmd");
-  hal_link_pins("ls0.q_cmd", "curpid0.iq_cmd");
-  hal_link_pins("ls0.pos", "idq0.pos");
-  hal_link_pins("ls0.pos", "dq0.pos");
-  hal_link_pins("ls0.en", "hv0.en");
-  
-  //ADC TEST
-  hal_link_pins("io0.udc", "term0.wave3");
-  hal_link_pins("io0.udc", "hv0.udc");
-  hal_link_pins("io0.iu", "dq0.u");
-  hal_link_pins("io0.iv", "dq0.v");
-  hal_link_pins("io0.iw", "dq0.w");
-  
-  // hal_link_pins("sim0.vel", "idq0.pos");
-  // hal_link_pins("sim0.vel", "dq0.pos");
-  
-  hal_link_pins("idq0.u", "svm0.u");
-  hal_link_pins("idq0.v", "svm0.v");
-  hal_link_pins("idq0.w", "svm0.w");
-  hal_link_pins("svm0.su", "hv0.u");
-  hal_link_pins("svm0.sv", "hv0.v");
-  hal_link_pins("svm0.sw", "hv0.w");
-  hal_link_pins("io0.udc", "svm0.udc");
-  hal_link_pins("io0.hv_temp", "hv0.hv_temp");
-  
-  hal_link_pins("dq0.d", "curpid0.id_fb");
-  hal_link_pins("dq0.q", "curpid0.iq_fb");
-  
-  hal_link_pins("dq0.d", "ls0.d_fb");
-  hal_link_pins("dq0.q", "ls0.q_fb");
-  
-  hal_link_pins("io0.u", "ls0.u_fb");
-  hal_link_pins("io0.v", "ls0.v_fb");
-  hal_link_pins("io0.w", "ls0.w_fb");
-  
-  hal_link_pins("curpid0.ud", "idq0.d");
-  hal_link_pins("curpid0.uq", "idq0.q");
-  
-  hal_link_pins("curpid0.id_cmd", "term0.wave0");
-  hal_link_pins("curpid0.iq_cmd", "term0.wave1");
-
-  hal_link_pins("curpid0.id_fb", "term0.wave2");
-  hal_link_pins("curpid0.iq_fb", "term0.wave3");
-  
-  hal_link_pins("term0.con", "io0.led");
-
-  hal_link_pins("ls0.r", "curpid0.rd");
-  hal_link_pins("ls0.r", "curpid0.rq");
-  hal_link_pins("ls0.l", "curpid0.ld");
-  hal_link_pins("ls0.l", "curpid0.lq");
-  hal_link_pins("ls0.psi", "curpid0.psi");
-  hal_link_pins("ls0.cur_p", "curpid0.kp");
-  hal_link_pins("ls0.cur_i", "curpid0.ki");
-  hal_link_pins("ls0.cur_ff", "curpid0.ff");
-  hal_link_pins("ls0.cur_ind", "curpid0.kind");
-  hal_link_pins("ls0.max_cur", "curpid0.max_cur");
-  hal_link_pins("ls0.pwm_volt", "curpid0.pwm_volt");
-  hal_link_pins("ls0.vel", "curpid0.vel");
-  
   
   hal_comp_init();//call init function of all comps
 
@@ -399,12 +266,14 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  load_comp(comp_by_name("term"));
   while (1)
   {
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-     hal_run_nrt(0.1);
+     //hal_run_nrt(0.1);
+     run_nrt(0.1);
      cdc_poll();
      HAL_Delay(1);
   }

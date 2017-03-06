@@ -31,6 +31,7 @@ SOURCES += stm32f303/src/version.c
 SOURCES += stm32f303/src/hal_tbl.c
 SOURCES += stm32f303/src/hal2.c
 SOURCES += stm32f303/src/comps/test.c
+SOURCES += stm32f303/src/comps/term.c
 
 INCDIRS += shared
 SOURCES += shared/ringbuf.c
