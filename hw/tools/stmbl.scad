@@ -60,7 +60,7 @@ module corner2(r, l){
 
 module cover(){
   $fn = 40;
-  wall_t = 0.9;
+  wall_t = 1.3;
   space = 0.5;
   fan_t = 10.5;
   fan_h = 12;
