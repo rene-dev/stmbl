@@ -279,7 +279,7 @@ module Socket_Strip_Angled_2x06(){
 
 module fan(){
 	difference(){
-		color([0.2, 0.2, 0.2]) cube([45, 45, 10], false);
+		color([0.2, 0.2, 0.2]) cube([45, 45, 10.5], false);
 		color([0.2, 0.2, 0.2]) translate([22.5, 22.5, -1]) cylinder(r = 20, h = 12);
     color([0.2, 0.2, 0.2]) translate([4, 4, -1]) cylinder(r = 1.5, h = 12);
     color([0.2, 0.2, 0.2]) translate([4 + 37, 4, -1]) cylinder(r = 1.5, h = 12);
