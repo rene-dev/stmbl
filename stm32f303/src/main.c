@@ -171,7 +171,9 @@ void TIM8_UP_IRQHandler(){
    PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
    PIN(rt_period_time) = period;
 
-   hal.rt_state = RT_SLEEP;
+   if(hal.rt_state == RT_CALC){
+      hal.rt_state = RT_SLEEP;
+   }
    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
 }
 
