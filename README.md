@@ -34,8 +34,8 @@ https://github.com/rene-dev/stmbl/wiki/Pinouts
 https://github.com/rene-dev/stmbl/wiki/PCB
 
 ##### Hardware version 4.0
-![top](http://rene-dev.github.io/IMG_2017-03-05 22:08:03.jpg)
-![bot](http://rene-dev.github.io/IMG_2017-03-05 22:07:44.jpg)
+![top](http://rene-dev.github.io/IMG_2017-03-05%2022:08:03.jpg)
+![bot](http://rene-dev.github.io/IMG_2017-03-05%2022:07:44.jpg)
 
 ##### Driving a Bosch Turboscara
 https://www.youtube.com/watch?v=d6NH1W7DUnQ
