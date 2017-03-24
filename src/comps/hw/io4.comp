@@ -29,8 +29,8 @@ INIT(
    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
    
    //fan
-   // GPIO_InitStructure.GPIO_Pin   = FAN_PIN;
-   // GPIO_Init(FAN_PORT, &GPIO_InitStructure);
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
+   GPIO_Init(GPIOE, &GPIO_InitStructure);
 
    //red
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_3;
@@ -196,6 +196,11 @@ NRT(
       GPIO_SetBits(GPIOD, GPIO_Pin_7);
    else
       GPIO_ResetBits(GPIOD, GPIO_Pin_7);
+
+   if(PIN(fan) > 0)
+      GPIO_SetBits(GPIOE, GPIO_Pin_3);
+   else
+      GPIO_ResetBits(GPIOE, GPIO_Pin_3);
 );
 
 ENDCOMP;
