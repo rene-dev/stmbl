@@ -69,6 +69,7 @@ INIT(
    GPIO_InitStruct.GPIO_Pin = UART_DRV_RX_PIN;
    GPIO_Init(UART_DRV_RX_PORT, &GPIO_InitStruct);
 
+   USART_OverSampling8Cmd(UART_DRV,ENABLE);
    USART_InitStruct.USART_BaudRate = DATABAUD;
    USART_InitStruct.USART_WordLength = USART_WordLength_8b;
    USART_InitStruct.USART_StopBits = USART_StopBits_1;

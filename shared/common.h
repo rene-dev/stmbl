@@ -5,7 +5,7 @@
    #error gcc to old (< 5.0)
 #endif
 
-#define DATABAUD 2250000 //baudrate used for communication
+#define DATABAUD 3000000 //baudrate used for communication
 
 //fixed point calculations signed bit, 9 bit predecimal, 6 bit decimal
 #define TOFIXED(a) ((int16_t)((a) * 64))
