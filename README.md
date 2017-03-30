@@ -47,13 +47,13 @@ https://www.youtube.com/watch?v=wXLcAZwjlzE
 ##### Drivetest
 https://www.youtube.com/watch?v=-E1o_5cFyto
 
-####Supported Motors
+#### Supported Motors
 * Synchronous AC Servos
 * DC Servos
 * 2 Phase HF spindle motors
 * IRAMX Hardware testet up to 320V
 
-####Supported Feedback systems
+#### Supported Feedback systems
 * Resolvers
 * Incremental encoders
 * sin/cos encoder interpolation
@@ -62,25 +62,24 @@ https://www.youtube.com/watch?v=-E1o_5cFyto
 * Yaskawa absolute encoders
 * Sick HIPERFACE®
 
-#####Planned:
+##### Planned:
 * EnDat
 * BiSS
 * SSI
 * Sanyo Denki wire-saving incremental encoder
 
-####Supported Position/Velocity Commands Inputs:
+#### Supported Position/Velocity Commands Inputs:
 * Smartserial
 * Quadrature
 * Step/direction
 * RS485
 
-####TODO
+#### TODO
 * AC Async
 
-####Directories
+#### Directories
 * hw/eagle/ Eagle board files and schematics
 * hw/spice/ Spice simulation for resolver interface
 * src/ STM32F4 code, command, feedback and control loop
 * stm32f103/ STM32F1 code, running on the HV side, generating PWM
 * bootloader/ bootloader for the f4
-* term/ Terminal with scope and local history. Supports UHU servo and stmbl.
