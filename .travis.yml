@@ -1,29 +1,11 @@
 language: cpp
-install:
-- git clone git://sigrok.org/libserialport
-- cd libserialport
-- "./autogen.sh && ./configure --prefix=/usr && make && sudo make install"
-- cd ..
 before_install:
 - sudo add-apt-repository -y ppa:team-gcc-arm-embedded/ppa
-- sudo add-apt-repository -y ppa:kalakris/cmake
 - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 - sudo apt-get -qq update
-- sudo apt-get install -qq cmake pkg-config libwxgtk3.0-dev libudev-dev
-- sudo apt-get install -qq libstdc++-4.8-dev
-- sudo apt-get install -qq g++-4.8
-- export CXX="g++-4.8" CC="gcc-4.8"
 - sudo apt-get install gcc-arm-embedded
 script:
 - make
-- cd term/
-- mkdir build/
-- cd build/
-- cmake ../
-- make VERBOSE=1
-- cd ..
-- cd ..
-- ls
 
 notifications:
   irc:
