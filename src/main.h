@@ -6,7 +6,8 @@ typedef enum{
    ENABLED,
    PHASING,
    SOFT_FAULT,
-   HARD_FAULT
+   HARD_FAULT,
+   LED_TEST,
 } state_t;
 
 //fault errors

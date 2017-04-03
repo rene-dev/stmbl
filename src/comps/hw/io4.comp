@@ -44,11 +44,11 @@ INIT(
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_5;
    GPIO_Init(GPIOD, &GPIO_InitStructure);
    
-   //in1
+   //in1 led
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_0;
    GPIO_Init(GPIOE, &GPIO_InitStructure);
    
-   //in0
+   //in0 led
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_1;
    GPIO_Init(GPIOE, &GPIO_InitStructure);
    
@@ -124,7 +124,13 @@ NRT(
          red    = BLINK((int)PIN(fault));
          green  = BLINK((int)PIN(fault));
          yellow = BLINK((int)PIN(fault));
-      break;      
+      break;
+
+      case LED_TEST:
+         red    = 1;
+         green  = 1;
+         yellow = 1;
+      break;
    }
 
    if(red > 0)
