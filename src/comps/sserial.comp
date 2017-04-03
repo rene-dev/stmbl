@@ -125,6 +125,11 @@ HAL_PIN(out2) = 0.0;
 HAL_PIN(out3) = 0.0;
 HAL_PIN(enable) = 0.0;
 
+#pragma pack(1)
+typedef union {
+  uint8_t byte[4];
+  uint32_t unit;
+} unit_no_t;
 
 typedef struct{
    uint8_t record_type;//0xa0
@@ -191,6 +196,7 @@ MEM(lbp_t lbp);
 MEM(char name[]) = LBPCardName;
 MEM(int bufferpos);
 MEM(int available);
+MEM(unit_no_t unit);
 
 uint8_t crc_reuest(uint8_t len) {
    uint8_t crc = crc8_init();
@@ -338,6 +344,9 @@ void init_hardware() {
   GPIO_Init(GPIOB, &GPIO_InitStructure);
    
   GPIO_SetBits(GPIOB, GPIO_Pin_7);
+  
+  //generate unit number from 96bit unique chip ID
+  unit.unit = U_ID[0] ^ U_ID[1] ^ U_ID[2];
 }
 
 uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, float param_min, float param_max) {
@@ -659,10 +668,10 @@ FRT(
       }else if(lbp.ct == CT_RPC){//RPC TODO: check for ct should not required for rpc
           timeout = 0;
           if(lbp.byte == UnitNumberRPC && available >= 2){//unit number, cmd+crc = 2b
-              txbuf[0] = 0x00;
-              txbuf[1] = 0x00;
-              txbuf[2] = 0x00;
-              txbuf[3] = 0x00;
+              txbuf[0] = unit.byte[0];
+              txbuf[1] = unit.byte[1];
+              txbuf[2] = unit.byte[2];
+              txbuf[3] = unit.byte[3];
               send(4,1);
               rxpos += 2;
           }else if(lbp.byte == DiscoveryRPC && available >= 2){//discovery, cmd+crc = 2b
