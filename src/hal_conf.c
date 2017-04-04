@@ -118,3 +118,44 @@ int hal_conf_load(){
    update_mot();
    return 0;
 }
+
+void hal_conf_diff(){
+   typedef union{
+      float f;
+      uint16_t byte[2];
+   }param_t;
+   param_t param;
+   uint16_t address = 0;
+   uint16_t lo;
+   uint16_t hi;
+   uint16_t elo;
+   uint16_t ehi;
+   crc16_t crc = crc16_init();
+   for(int i = 0; i < hal.hal_pin_count; i++){
+      if(address >= NB_OF_VAR){
+         printf("NB_OF_VAR too small\n");
+         return;
+      }
+      char name[6];
+      strncpy(name,hal.hal_pins[i]->name,5);
+      name[5] =  '\0';
+      if(!strcmp(name, "conf0")){
+         elo = EE_ReadVariable(address,&lo);
+         ehi = EE_ReadVariable(address+1,&hi);
+         crc = crc16_update(crc, (void*)&lo, 2);
+         crc = crc16_update(crc, (void*)&hi, 2);
+         if(elo == 0 && ehi == 0){
+            param.byte[0] = lo;
+            param.byte[1] = hi;
+            if(hal.hal_pins[i]->value != param.f){
+               hal_term_print_pin(hal.hal_pins[i]);
+            }
+         }else{
+            printf("error reading address %i: %i,%i\n",address,elo,ehi);
+            return;
+         }
+         address+=2;
+         Wait(1);//TODO: remove wait?
+      }
+   }
+}

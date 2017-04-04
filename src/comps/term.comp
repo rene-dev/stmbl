@@ -234,6 +234,9 @@ NRT(
       else if(!strcmp(s, "save")){
          hal_conf_save();
       }
+      else if(!strcmp(s, "confdiff")){
+         hal_conf_diff();
+      }
       else if(!strcmp(s, "load")){
          int ret = hal_conf_load();
          if(ret == -1){
