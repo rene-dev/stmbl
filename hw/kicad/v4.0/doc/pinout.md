@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | cmd_d12 | pb4, pa10, pa15 | spi1_miso, usart1_rx, tim2_ch1, (tim3_ch1, tim1_ch3, spi3_miso) |
 | cmd_e12 | pb6 | |
-| cmd_d36 | pb3, pa8 | spi1_sck, usart1_ck, tim2_ch2, (tim1_ch1, spi3_sck) |
+| cmd_d36 | pb3, pa8, pa0 | spi1_sck, usart1_ck, tim2_ch2, uart4_tx (tim1_ch1, spi3_sck, tim5_ch1) |
 | cmd_e36 | pb7 | |
 | cmd_d54 | pb5, pa9 | spi1_mosi, usart1_tx, (tim3_ch2, tim1_ch2, spi3_mosi) |
 | cmd_e54 | pb9 | tim11_ch1 |
@@ -57,7 +57,7 @@
 | hv_rx | pa3 | uart2_rx |
 | usb_dp | pa12 | usb_dp, can1_tx |
 | usb_dm | pa11 | usb_dm, can1_rx |
-| 24V | pa0 |  |
+| 24V | pb1 |  |
 | 5V | pa1 |  |
 
 ## stm32f303cbt
