@@ -327,6 +327,7 @@ int main(void)
   hal_set_pin("curpid0.max_cur", 25.0);
   
   //link LS
+  hal_link_pins("io0.mot_temp", "ls0.mot_temp");
   hal_link_pins("io0.udc", "ls0.dc_volt");
   hal_link_pins("io0.hv_temp", "ls0.hv_temp");
   hal_link_pins("ls0.d_cmd", "curpid0.id_cmd");
