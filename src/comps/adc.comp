@@ -18,11 +18,6 @@ HAL_PIN(cos_gain) = 1.0;
 HAL_PIN(sin_offset) = 0.0;
 HAL_PIN(cos_offset) = 0.0;
 
-HAL_PIN(io0);
-HAL_PIN(io1);
-HAL_PIN(fb0);
-HAL_PIN(fb1);
-
 RT(
    
    float si[PID_WAVES];
@@ -82,15 +77,6 @@ RT(
    }
    PIN(sin) = s;
    PIN(cos) = c;
-   
-   //TODO: only for version 4
-   //TODO: unit conversion
-   //TODO: check if adc sample complete?
-   PIN(io0) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_1);
-   PIN(io1) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_2);
-   PIN(fb0) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_3);
-   PIN(fb1) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_4);
-   ADC_SoftwareStartInjectedConv(ADC3);
 );
 
 ENDCOMP;

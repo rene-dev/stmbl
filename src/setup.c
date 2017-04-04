@@ -95,26 +95,6 @@ void setup_res(){
     ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
     ADC_Init(COS_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
     
-    //**** ADC3 for analog input and fb temperature
-    //TODO: only for version 4
-    //TODO: ADC calibration?
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOC, &GPIO_InitStructure);
-    
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC3, ENABLE);
-    ADC_Init(ADC3, &ADC_InitStructure);
-    ADC_InjectedSequencerLengthConfig(ADC3, 4);
-    ADC_InjectedChannelConfig(ADC3, ADC_Channel_10, 1, ADC_SampleTime_144Cycles);
-    ADC_InjectedChannelConfig(ADC3, ADC_Channel_11, 2, ADC_SampleTime_144Cycles);
-    ADC_InjectedChannelConfig(ADC3, ADC_Channel_12, 3, ADC_SampleTime_144Cycles);
-    ADC_InjectedChannelConfig(ADC3, ADC_Channel_13, 4, ADC_SampleTime_144Cycles);
-    ADC_Cmd(ADC3, ENABLE);
-    ADC_SoftwareStartInjectedConv(ADC3);
-    //**** ADC3 end
-    
     ADC_CommonInitTypeDef ADC_CommonInitStructure;
     ADC_CommonInitStructure.ADC_Mode = ADC_DualMode_RegSimult;
     ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;

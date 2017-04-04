@@ -22,7 +22,32 @@ HAL_PIN(fb1y) = 0.0;
 HAL_PIN(cmdg) = 0.0;
 HAL_PIN(cmdy) = 0.0;
 
+HAL_PIN(io0);
+HAL_PIN(io1);
+HAL_PIN(fb0);
+HAL_PIN(fb1);
+
 INIT(
+   
+   //**** ADC3 for analog input and fb temperature
+   //TODO: ADC calibration?
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+   GPIO_Init(GPIOC, &GPIO_InitStructure);
+   
+   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC3, ENABLE);
+   ADC_Init(ADC3, &ADC_InitStructure);
+   ADC_InjectedSequencerLengthConfig(ADC3, 4);
+   ADC_InjectedChannelConfig(ADC3, ADC_Channel_10, 1, ADC_SampleTime_144Cycles);
+   ADC_InjectedChannelConfig(ADC3, ADC_Channel_11, 2, ADC_SampleTime_144Cycles);
+   ADC_InjectedChannelConfig(ADC3, ADC_Channel_12, 3, ADC_SampleTime_144Cycles);
+   ADC_InjectedChannelConfig(ADC3, ADC_Channel_13, 4, ADC_SampleTime_144Cycles);
+   ADC_Cmd(ADC3, ENABLE);
+   ADC_SoftwareStartInjectedConv(ADC3);
+   //**** ADC3 end
+   
    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -89,8 +114,17 @@ INIT(
    GPIO_Init(GPIOD, &GPIO_InitStructure);
 );
 
-NRT(
+RT(
+   //TODO: unit conversion
+   //TODO: check if adc sample complete?
+   PIN(io0) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_1);
+   PIN(io1) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_2);
+   PIN(fb0) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_3);
+   PIN(fb1) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_4);
+   ADC_SoftwareStartInjectedConv(ADC3);
+);
 
+NRT(
    uint32_t red    = 0;
    uint32_t green  = 0;
    uint32_t yellow = 0;
