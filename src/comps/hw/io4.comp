@@ -114,13 +114,17 @@ INIT(
    GPIO_Init(GPIOD, &GPIO_InitStructure);
 );
 
+#include "../shared/hw_math.h"
+#define ARES 4096.0
+#define AREF 3.3
+
 RT(
    //TODO: unit conversion
    //TODO: check if adc sample complete?
-   PIN(io0) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_1);
-   PIN(io1) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_2);
-   PIN(fb0) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_3);
-   PIN(fb1) = ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_4);
+   PIN(io0) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_1)), 3.3, 1000.0, 10000.0, 1000.0);
+   PIN(io1) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_2)), 3.3, 1000.0, 10000.0, 1000.0);
+   PIN(fb0) = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_3)), 10000.0, 1000.0);
+   PIN(fb1) = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_4)), 10000.0, 1000.0);
    ADC_SoftwareStartInjectedConv(ADC3);
 );
 
