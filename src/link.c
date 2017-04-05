@@ -13,6 +13,7 @@ void link_ac(){
    // t2c
    hal_link_pins("conf0.polecount", "t2c0.polecount");
    hal_link_pins("conf0.psi", "t2c0.psi");
+   hal_link_pins("cauto0.pos", "t2c0.pos");
    
    hal_link_pins("t2c0.cur", "hv0.q_cmd");
    hal_link_pins("cauto0.i_d", "hv0.d_cmd");
