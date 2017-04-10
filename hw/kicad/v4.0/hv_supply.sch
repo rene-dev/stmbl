@@ -567,12 +567,7 @@ $EndComp
 Wire Wire Line
 	4150 3100 6000 3100
 Wire Wire Line
-	5900 3100 5900 3250
-Connection ~ 5900 3100
-Wire Wire Line
 	6300 3100 6400 3100
-Wire Wire Line
-	6150 3500 7200 3500
 Wire Wire Line
 	6700 3100 6800 3100
 Wire Wire Line
@@ -730,41 +725,8 @@ Connection ~ 8450 4550
 Wire Wire Line
 	8450 4100 8450 4000
 Connection ~ 8450 4000
-$Comp
-L C C146
-U 1 1 58E730DF
-P 6150 3750
-F 0 "C146" H 6175 3850 50  0000 L CNN
-F 1 "10µ" H 6175 3650 50  0000 L CNN
-F 2 "stmbl:C_0805" H 6188 3600 30  0001 C CNN
-F 3 "" H 6150 3750 60  0000 C CNN
-F 4 "25V" H 6150 3750 60  0001 C CNN "Voltage"
-	1    6150 3750
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6150 3900 6150 4000
-Connection ~ 6150 4000
-Wire Wire Line
-	6150 3600 6150 3500
-Connection ~ 6400 3500
-$Comp
-L C C145
-U 1 1 58E72400
-P 6350 3250
-F 0 "C145" H 6375 3350 50  0000 L CNN
-F 1 "18p" H 6375 3150 50  0000 L CNN
-F 2 "stmbl:C_0603" H 6388 3100 30  0001 C CNN
-F 3 "" H 6350 3250 60  0000 C CNN
-F 4 "25V" H 6350 3250 60  0001 C CNN "Voltage"
-	1    6350 3250
-	0    1    1    0   
-$EndComp
 Connection ~ 5600 4000
 Connection ~ 5600 3100
-Wire Wire Line
-	6500 3250 6800 3250
-Connection ~ 6800 3250
 Wire Wire Line
 	5600 3100 5600 3200
 Wire Wire Line
@@ -772,5 +734,5 @@ Wire Wire Line
 Wire Wire Line
 	5600 4000 5600 3900
 Wire Wire Line
-	5900 3250 6200 3250
+	6400 3500 7200 3500
 $EndSCHEMATC
