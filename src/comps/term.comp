@@ -92,6 +92,7 @@ NRT(
       printf("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
       printf("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
       printf("CPU ID     %lx %lx %lx\n",U_ID[0], U_ID[1], U_ID[2]);
+      printf("Unit no    %lx\n",U_ID[0] ^ U_ID[1] ^ U_ID[2]);
       CRC_ResetDR();
       uint32_t crc = CRC_CalcBlockCRC((uint32_t *) 0x08010000, version_info.image_size / 4);
       printf("size: %lu crc:%lx\n", version_info.image_size, version_info.image_crc);
@@ -248,6 +249,9 @@ NRT(
       }
       else if(!strcmp(s, "save")){
          hal_conf_save();
+      }
+      else if(!strcmp(s, "confdiff")){
+         hal_conf_diff();
       }
       else if(!strcmp(s, "load")){
          int ret = hal_conf_load();

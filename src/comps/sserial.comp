@@ -125,6 +125,11 @@ HAL_PIN(out2) = 0.0;
 HAL_PIN(out3) = 0.0;
 HAL_PIN(enable) = 0.0;
 
+#pragma pack(1)
+typedef union {
+  uint8_t byte[4];
+  uint32_t unit;
+} unit_no_t;
 
 typedef struct{
    uint8_t record_type;//0xa0
@@ -191,6 +196,7 @@ MEM(lbp_t lbp);
 MEM(char name[]) = LBPCardName;
 MEM(int bufferpos);
 MEM(int available);
+MEM(unit_no_t unit);
 
 uint8_t crc_reuest(uint8_t len) {
    uint8_t crc = crc8_init();
@@ -211,13 +217,13 @@ void send(uint8_t len, uint8_t docrc){
    timeout = 0;
    if(docrc){
       txbuf[len] = crc8((uint8_t *)txbuf,len);
-      DMA_SetCurrDataCounter(DMA2_Stream7,len+1);
+      DMA_SetCurrDataCounter(DMA1_Stream4,len+1);
    }else{
-      DMA_SetCurrDataCounter(DMA2_Stream7,len);
+      DMA_SetCurrDataCounter(DMA1_Stream4,len);
    }
-   DMA_Cmd(DMA2_Stream7, DISABLE);
-   DMA_ClearFlag(DMA2_Stream7, DMA_FLAG_TCIF7);
-   DMA_Cmd(DMA2_Stream7, ENABLE);
+   DMA_Cmd(DMA1_Stream4, DISABLE);
+   DMA_ClearFlag(DMA1_Stream4, DMA_FLAG_TCIF4);
+   DMA_Cmd(DMA1_Stream4, ENABLE);
 }
 
 //v3
@@ -234,18 +240,24 @@ void send(uint8_t len, uint8_t docrc){
 //pa9 usart1 tx
 //USART1 TX	DMA2 stream7 channel4
 //USART1 RX	DMA2 stream5 channel4
+//v4.1
+//pa0 usart4 tx DMA1 stream4 channel4
+//pa10 usart1 rx DMA2 stream5 channel4
+
+//TODO: lbp command 0xe6 to set mode
 
 void init_hardware() {
   GPIO_InitTypeDef GPIO_InitStruct;
   USART_InitTypeDef USART_InitStruct;
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4, ENABLE);
   //USART TX
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource9, GPIO_AF_USART1);
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
+  GPIO_PinAFConfig(GPIOA, GPIO_PinSource0, GPIO_AF_UART4);
+  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_0;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
+  GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   //USART RX
@@ -258,8 +270,10 @@ void init_hardware() {
   USART_InitStruct.USART_StopBits = USART_StopBits_1;
   USART_InitStruct.USART_Parity = USART_Parity_No;
   USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+  USART_InitStruct.USART_Mode = USART_Mode_Rx;
   USART_Init(USART1, &USART_InitStruct);
+  USART_InitStruct.USART_Mode = USART_Mode_Tx;
+  USART_Init(UART4, &USART_InitStruct);
   //USART_HalfDuplexCmd(USART1,ENABLE);
 
   //USART_InitStruct.USART_Mode = USART_Mode_Tx;
@@ -267,6 +281,7 @@ void init_hardware() {
 
   //USART_Cmd(USART1, ENABLE);
   USART_Cmd(USART1, ENABLE);
+  USART_Cmd(UART4, ENABLE);
 
   //RX DMA
 
@@ -297,12 +312,12 @@ void init_hardware() {
 
   //TX DMA
 
-  DMA_Cmd(DMA2_Stream7, DISABLE);
-  DMA_DeInit(DMA2_Stream7);
+  DMA_Cmd(DMA1_Stream4, DISABLE);
+  DMA_DeInit(DMA1_Stream4);
 
   // DMA2-Config
   DMA_InitStructure.DMA_Channel = DMA_Channel_4;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART1->DR);
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART4->DR);
   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&txbuf;
   DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
   DMA_InitStructure.DMA_BufferSize = sizeof(txbuf);
@@ -316,14 +331,14 @@ void init_hardware() {
   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  DMA_Init(DMA2_Stream7, &DMA_InitStructure);
+  DMA_Init(DMA1_Stream4, &DMA_InitStructure);
 
   //DMA_Cmd(DMA1_Stream7, ENABLE);
 
-  USART_DMACmd(USART1, USART_DMAReq_Tx, ENABLE);
+  USART_DMACmd(UART4, USART_DMAReq_Tx, ENABLE);
   
   //tx enable
-  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_7 | GPIO_Pin_9;
+  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_7;
   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -331,7 +346,9 @@ void init_hardware() {
   GPIO_Init(GPIOB, &GPIO_InitStructure);
    
   GPIO_SetBits(GPIOB, GPIO_Pin_7);
-  GPIO_SetBits(GPIOB, GPIO_Pin_9);
+  
+  //generate unit number from 96bit unique chip ID
+  unit.unit = U_ID[0] ^ U_ID[1] ^ U_ID[2];
 }
 
 uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, float param_min, float param_max) {
@@ -568,11 +585,11 @@ void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *
   }
 }
 
-
+//TODO: div by zero
 float scale_out(pd_metadata_t pd, int32_t val) {
   return val * pd.range / (float)pd.bitmax;
 } 
-
+//TODO: div by zero
 int32_t scale_in(pd_metadata_t pd, float val) {
   return CLAMP(val, pd.ptr->param_min, pd.ptr->param_max) * pd.bitmax / pd.range;
 }
@@ -653,10 +670,10 @@ FRT(
       }else if(lbp.ct == CT_RPC){//RPC TODO: check for ct should not required for rpc
           timeout = 0;
           if(lbp.byte == UnitNumberRPC && available >= 2){//unit number, cmd+crc = 2b
-              txbuf[0] = 0x00;
-              txbuf[1] = 0x00;
-              txbuf[2] = 0x00;
-              txbuf[3] = 0x00;
+              txbuf[0] = unit.byte[0];
+              txbuf[1] = unit.byte[1];
+              txbuf[2] = unit.byte[2];
+              txbuf[3] = unit.byte[3];
               send(4,1);
               rxpos += 2;
           }else if(lbp.byte == DiscoveryRPC && available >= 2){//discovery, cmd+crc = 2b

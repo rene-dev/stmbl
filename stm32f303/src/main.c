@@ -114,7 +114,6 @@ void Error_Handler(void);
 
 
 void TIM8_UP_IRQHandler(){
-   GPIOB->ODR |= GPIO_PIN_9;
    __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
    switch(hal.rt_state){
       case RT_STOP:
@@ -144,9 +143,7 @@ void TIM8_UP_IRQHandler(){
    float period = ((float)(last_start - start)) / hal_get_systick_freq();
    last_start = start;
 
-   GPIOB->ODR |= GPIO_PIN_8;
    hal_run_rt(period);
-   GPIOB->BRR = GPIO_PIN_8;
 
    unsigned int end = hal_get_systick_value();
    if(start < end){
@@ -155,8 +152,9 @@ void TIM8_UP_IRQHandler(){
    PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
    PIN(rt_period_time) = period;
 
-   hal.rt_state = RT_SLEEP;
-   GPIOB->BRR = GPIO_PIN_9;
+   if(hal.rt_state == RT_CALC){
+      hal.rt_state = RT_SLEEP;
+   }
 }
 
 int main(void)

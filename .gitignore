@@ -10,11 +10,6 @@
 *.raw
 *.swp
 .DS_Store
-term/build
-term/xbuild
-new_term/build
-new_term/xbuild
-term/win32/bin
 .depend
 *.list
 *.out

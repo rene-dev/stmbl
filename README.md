@@ -32,26 +32,27 @@ https://github.com/rene-dev/stmbl/wiki/Pinouts
 
 https://github.com/rene-dev/stmbl/wiki/PCB
 
-##### Hardware version 3.2
-![top](http://rene-dev.github.io/iramx32top.jpg)
-![bot](http://rene-dev.github.io/iramx32bot.jpg)
+##### Hardware version 4.0
+![top](http://rene-dev.github.io/IMG_2017-03-05%2022:08:03.jpg)
+![bot](http://rene-dev.github.io/IMG_2017-03-05%2022:07:44.jpg)
 
 ##### Driving a Bosch Turboscara
-https://www.youtube.com/watch?v=Ue98HE76paI
-
 https://www.youtube.com/watch?v=d6NH1W7DUnQ
-##### Drivetest
-https://www.youtube.com/watch?v=sMeV4SCu4TA
-##### Drivetest with asymmetrical load
-https://www.youtube.com/watch?v=seEV_i7o1NI
 
-####Supported Motors
+##### Driving a Manutec Robot
+https://www.youtube.com/watch?v=gwgnAeGjZrA  
+https://www.youtube.com/watch?v=wXLcAZwjlzE
+
+##### Drivetest
+https://www.youtube.com/watch?v=-E1o_5cFyto
+
+#### Supported Motors
 * Synchronous AC Servos
 * DC Servos
 * 2 Phase HF spindle motors
 * IRAMX Hardware testet up to 320V
 
-####Supported Feedback systems
+#### Supported Feedback systems
 * Resolvers
 * Incremental encoders
 * sin/cos encoder interpolation
@@ -60,25 +61,24 @@ https://www.youtube.com/watch?v=seEV_i7o1NI
 * Yaskawa absolute encoders
 * Sick HIPERFACE®
 
-#####Planned:
+##### Planned:
 * EnDat
 * BiSS
 * SSI
 * Sanyo Denki wire-saving incremental encoder
 
-####Supported Position/Velocity Commands Inputs:
+#### Supported Position/Velocity Commands Inputs:
 * Smartserial
 * Quadrature
 * Step/direction
 * RS485
 
-####TODO
+#### TODO
 * AC Async
 
-####Directories
+#### Directories
 * hw/eagle/ Eagle board files and schematics
 * hw/spice/ Spice simulation for resolver interface
 * src/ STM32F4 code, command, feedback and control loop
 * stm32f103/ STM32F1 code, running on the HV side, generating PWM
 * bootloader/ bootloader for the f4
-* term/ Terminal with scope and local history. Supports UHU servo and stmbl.

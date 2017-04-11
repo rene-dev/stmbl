@@ -6,4 +6,5 @@
 
 void hal_conf_save();
 int hal_conf_load();
+void hal_conf_diff();
 uint16_t hal_conf_init();

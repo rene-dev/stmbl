@@ -643,4 +643,6 @@ Wire Wire Line
 	8700 2600 8600 2600
 Wire Wire Line
 	8300 2600 8200 2600
+Text Notes 2350 1500 1    60   ~ 0
+<- do not populate
 $EndSCHEMATC

@@ -77,7 +77,6 @@ RT(
    }
    PIN(sin) = s;
    PIN(cos) = c;
-
 );
 
 ENDCOMP;

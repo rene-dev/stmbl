@@ -94,7 +94,7 @@ void setup_res(){
     ADC_Init(SIN_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
     ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
     ADC_Init(COS_ADC, &ADC_InitStructure);//Initialize ADC with the previous configuration
-
+    
     ADC_CommonInitTypeDef ADC_CommonInitStructure;
     ADC_CommonInitStructure.ADC_Mode = ADC_DualMode_RegSimult;
     ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;

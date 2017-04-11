@@ -1,0 +1,12 @@
+io0.state = 5
+io0.out0 = 1
+io0.out1 = 1
+io0.out2 = 1
+io0.in0 = 1
+io0.in1 = 1
+io0.fb0g = 1
+io0.fb0y = 1
+io0.fb1g = 1
+io0.fb1y = 1
+io0.cmdg = 1
+io0.cmdy = 1
