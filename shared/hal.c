@@ -102,7 +102,7 @@ void hal_run_rt(float period){
          else{
             printf("FPU div by zero ");
          }
-         printf("in func: %s%u.rt\n", hal.hal_comps[find_comp_by_func(hal.rt[hal.active_rt_func])]->name, hal.hal_comps[find_comp_by_func(hal.rt[hal.active_rt_func])]->instance);
+         printf("in func: %s%lu.rt\n", hal.hal_comps[find_comp_by_func((uint32_t)hal.rt[hal.active_rt_func])]->name, hal.hal_comps[find_comp_by_func((uint32_t)hal.rt[hal.active_rt_func])]->instance);
          hal_stop();
          return;
       }
@@ -122,7 +122,7 @@ void hal_run_frt(float period){
          else{
             printf("FPU div by zero ");
          }
-         printf("in func: %s%u.frt\n", hal.hal_comps[find_comp_by_func(hal.frt[hal.active_frt_func])]->name, hal.hal_comps[find_comp_by_func(hal.frt[hal.active_frt_func])]->instance);
+         printf("in func: %s%lu.frt\n", hal.hal_comps[find_comp_by_func((uint32_t)hal.frt[hal.active_frt_func])]->name, hal.hal_comps[find_comp_by_func((uint32_t)hal.frt[hal.active_frt_func])]->instance);
          hal_stop();
          return;
       }
