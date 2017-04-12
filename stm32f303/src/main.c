@@ -53,39 +53,27 @@
 #include <math.h>
 #include "defines.h"
 #include "hal.h"
-#include "hal_term.h"
 #include "angle.h"
 #include "scanf.h"
 #include "usbd_cdc_if.h"
 #include "version.h"
 #include "common.h"
 
-/* USER CODE END Includes */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
-/* Private variables ---------------------------------------------------------*/
-
-GLOBAL_HAL_PIN(rt_time);
-GLOBAL_HAL_PIN(frt_time);
-GLOBAL_HAL_PIN(rt_period_time);
-GLOBAL_HAL_PIN(frt_period_time);
 uint32_t systick_freq;
 
-//hal interface TODO: move hal interface to file
-void hal_enable_rt(){
-   // TIM_Cmd(TIM4, ENABLE);
-}
-void hal_enable_frt(){
-   // TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-}
-void hal_disable_rt(){
-   // TIM_Cmd(TIM4, DISABLE);
-}
-void hal_disable_frt(){
-   // TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
-}
+// //hal interface TODO: move hal interface to file
+// void hal_enable_rt(){
+//    // TIM_Cmd(TIM4, ENABLE);
+// }
+// void hal_enable_frt(){
+//    // TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+// }
+// void hal_disable_rt(){
+//    // TIM_Cmd(TIM4, DISABLE);
+// }
+// void hal_disable_frt(){
+//    // TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
+// }
 
 uint32_t hal_get_systick_value(){
    return(SysTick->VAL);
@@ -115,46 +103,7 @@ void Error_Handler(void);
 
 void TIM8_UP_IRQHandler(){
    __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
-   switch(hal.rt_state){
-      case RT_STOP:
-         return;
-      case RT_CALC:
-         hal.rt_state = RT_STOP;
-         hal.hal_state = RT_TOO_LONG;
-         hal.frt_state = FRT_STOP;
-         return;
-      case RT_SLEEP:
-         if(hal.active_rt_func > -1){
-            hal.rt_state = RT_STOP;
-            hal.hal_state = MISC_ERROR;
-            hal.frt_state = FRT_STOP;
-            return;
-         }
-         hal.rt_state = RT_CALC;
-   }
-
-   static unsigned int last_start = 0;
-   unsigned int start = hal_get_systick_value();
-   
-   if(last_start < start){
-     last_start += hal_get_systick_reload();
-   }
-   
-   float period = ((float)(last_start - start)) / hal_get_systick_freq();
-   last_start = start;
-
-   hal_run_rt(period);
-
-   unsigned int end = hal_get_systick_value();
-   if(start < end){
-     start += hal_get_systick_reload();
-   }
-   PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
-   PIN(rt_period_time) = period;
-
-   if(hal.rt_state == RT_CALC){
-      hal.rt_state = RT_SLEEP;
-   }
+   hal_run_rt();
 }
 
 int main(void)
@@ -187,7 +136,6 @@ int main(void)
   // __HAL_RCC_DMA2_CLK_ENABLE();
   __HAL_RCC_RTC_ENABLE();
 
-  /* USER CODE BEGIN 2 */
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
 
@@ -218,64 +166,23 @@ int main(void)
   }
 
   hal_init();
-
-  hal_set_comp_type("foo"); // default pin for mem errors
-  HAL_PIN(bar) = 0.0;
-  
-  // #include "../src/comps/sim.comp"
-  // #include "comps/term.comp"
-  // #include "comps/io.comp"
-  
-  hal_set_comp_type("net");
-  HAL_PIN(rt_calc_time) = 0.0;
-  HAL_PIN(frt_calc_time) = 0.0;
-  HAL_PIN(nrt_calc_time) = 0.0;
-  HAL_PIN(rt_period) = 0.0;
-  HAL_PIN(frt_period) = 0.0;
-  HAL_PIN(nrt_period) = 0.0;
-
-  rt_time_hal_pin = hal_map_pin("net0.rt_calc_time");
-  frt_time_hal_pin = hal_map_pin("net0.frt_calc_time");
-  rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
-  frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
-  
-  hal_set_pin("term0.rt_prio", 0.1);
-  hal_set_pin("io0.rt_prio", 1.0);
-  
-  hal_set_pin("term0.send_step", 50.0);
-  hal_set_pin("term0.gain0", 10.0);
-  hal_set_pin("term0.gain1", 10.0);
-  hal_set_pin("term0.gain2", 10.0);
-  hal_set_pin("term0.gain3", 10.0);
-  hal_set_pin("term0.gain4", 10.0);
-  hal_set_pin("term0.gain5", 10.0);
-  hal_set_pin("term0.gain6", 10.0);
-  hal_set_pin("term0.gain7", 10.0);
-  
-  hal_comp_init();//call init function of all comps
-
-  if(hal.pin_errors + hal.comp_errors == 0){
-     hal_start();
-  }
-  else{
-     hal.hal_state = MEM_ERROR;
-  }
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+  // hal load comps
   load_comp(comp_by_name("term"));
+  load_comp(comp_by_name("test"));
+  load_comp(comp_by_name("sim"));
+  hal_parse("term0.rt_prio = 1");  
+  hal_parse("sim0.rt_prio = 2");  
+  // hal parse config
+  hal_init_nrt();
+  // error foo
+  hal_start();
+  
   while (1)
   {
-  /* USER CODE END WHILE */
-
-  /* USER CODE BEGIN 3 */
-     //hal_run_nrt(0.1);
-     run_nrt(0.1);
+     hal_run_nrt();
      cdc_poll();
      HAL_Delay(1);
   }
-  /* USER CODE END 3 */
 
 }
 

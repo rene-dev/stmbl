@@ -29,9 +29,10 @@ SOURCES += stm32f303/src/usbd_desc.c
 SOURCES += stm32f303/src/version.c
 
 SOURCES += stm32f303/src/hal_tbl.c
-SOURCES += stm32f303/src/hal2.c
+SOURCES += stm32f303/src/hal.c
 SOURCES += stm32f303/src/comps/test.c
 SOURCES += stm32f303/src/comps/term.c
+SOURCES += stm32f303/src/comps/sim.c
 
 INCDIRS += shared
 SOURCES += shared/ringbuf.c
@@ -40,8 +41,8 @@ SOURCES += shared/crc16.c
 SOURCES += shared/common.c
 SOURCES += shared/angle.c
 SOURCES += shared/scanf.c
-SOURCES += shared/hal.c
-SOURCES += shared/hal_term.c
+#SOURCES += shared/hal.c
+#SOURCES += shared/hal_term.c
 
 #USB Driver
 USB_DEVICE_DIR = lib/STM32_USB_Device_Library-2.4.2
