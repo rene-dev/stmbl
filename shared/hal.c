@@ -1,431 +1,506 @@
-/*
- * This file is part of the stmbl project.
- *
- * Copyright (C) 2013-2015 Rene Hopf <renehopf@mac.com>
- * Copyright (C) 2013-2015 Nico Stute <crinq@crinq.de>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-#include <string.h>
-#include <math.h>
 #include "hal.h"
+#include <string.h>
+#include <stdio.h>
+#include <math.h>
 
-//global hal struct
-hal_struct_t hal;
+// hal_comp_inst_t comp_insts[HAL_MAX_COMPS];
+// hal_pin_inst_t pin_insts[HAL_MAX_PINS];
+// uint8_t ctxs[HAL_MAX_CTX];
 
-//TODO: only works for single positive digit
-char* hal_itoa(int i){
-  hal.tmp[0] = (i % 10) + '0';
-  hal.tmp[1] = '\0';
-  return(hal.tmp);
-}
+// uint32_t comp_inst_count;
+// uint32_t pin_inst_count;
+// uint32_t ctx_count;
+volatile hal_t hal;
 
-void hal_init(){
-  hal.comp_type_count = 0;
-  for(int i = 0; i < MAX_COMP_TYPES; i++){
-    hal.comp_types_counter[i] = 0;
-  }
-  hal.hal_pin_count = 0;
-  hal.comp_count = 0;
-
-  hal.nrt_init_func_count = 0;
-  hal.rt_func_count = 0;
-  hal.nrt_func_count = 0;
-  hal.frt_func_count = 0;
-
-  hal.link_errors = 0;
-  hal.pin_errors = 0;
-  hal.set_errors = 0;
-  hal.get_errors = 0;
-  hal.comp_errors = 0;
-
-  hal.rt_state = RT_STOP;
-  hal.frt_state = FRT_STOP;
-  hal.hal_state = HAL2_OK;
-  hal.active_rt_func = -1;
-  hal.active_frt_func = -1;
-  hal.active_nrt_func = -1;
-  strcpy(hal.error_name,"no error");
-}
-
-void hal_comp_init(){
-   for(int i = 0; i < hal.nrt_init_func_count; i++){ // run nrt init
-      hal.nrt_init[i]();
-   }
-}
-
-inline void hal_run_nrt(float period){ // TODO NAN trap?
-   //run all non realtime hal functions
-   for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.nrt_func_count; hal.active_nrt_func++){
-      hal.nrt[hal.active_nrt_func](period);
-   }
-   hal.active_nrt_func = -1;
-}
-
-uint32_t get_fpscr(){
-   uint32_t result;
-   /* Empty asm statement works as a scheduling barrier */
-   __asm volatile ("");
-   __asm volatile ("VMRS %0, fpscr" : "=r" (result) );
-   __asm volatile ("");
-   return(result);
-}
-
-void set_fpscr(uint32_t fpscr){
-  /* Empty asm statement works as a scheduling barrier */
-  __asm volatile ("");
-  __asm volatile ("VMSR fpscr, %0" : : "r" (fpscr) : "vfpcc");
-  __asm volatile ("");
-}
-
-void hal_run_rt(float period){
-   //run all realtime hal functions
-   for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_func_count; hal.active_rt_func++){
-      hal.rt[hal.active_rt_func](period);
-      uint32_t fpscr = get_fpscr();
-      if(fpscr & 3){ // TODO div zero not working
-         if(fpscr & 1){
-            printf("FPU invalid operation (NaN) ");
-         }
-         else{
-            printf("FPU div by zero ");
-         }
-         printf("in func: %s%u.rt\n", hal.hal_comps[find_comp_by_func((uint32_t)hal.rt[hal.active_rt_func])]->name, (unsigned int)hal.hal_comps[find_comp_by_func((uint32_t)hal.rt[hal.active_rt_func])]->instance);
-         hal_stop();
-         return;
+hal_comp_t * comp_by_name(NAME name){
+   for(int i = 0; i < comp_count; i++){
+      if(!strncmp(name, comps[i]->name, sizeof(NAME))){
+         return(comps[i]);
       }
-   }
-   hal.active_rt_func = -1;
-}
-
-void hal_run_frt(float period){
-   //run all fast realtime hal functions
-   for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_func_count; hal.active_frt_func++){
-      hal.frt[hal.active_frt_func](period);
-      uint32_t fpscr = get_fpscr();
-      if(fpscr & 0x3){
-         if(fpscr & 1){
-            printf("FPU invalid operation (NaN) ");
-         }
-         else{
-            printf("FPU div by zero ");
-         }
-         printf("in func: %s%u.frt\n", hal.hal_comps[find_comp_by_func((uint32_t)hal.frt[hal.active_frt_func])]->name, (unsigned int)hal.hal_comps[find_comp_by_func((uint32_t)hal.frt[hal.active_frt_func])]->instance);
-         hal_stop();
-         return;
-      }
-   }
-   hal.active_frt_func = -1;
-}
-
-int hal_start_rt(){
-   if(hal.rt_state == RT_STOP && hal.hal_state == HAL2_OK){
-      hal.active_rt_func = -1;
-      hal.rt_state = RT_SLEEP;
-      return(1);
    }
    return(0);
 }
 
-//TODO: crashes when hal is already running?
-void hal_start(){
-   uint32_t fpscr = get_fpscr();
-   fpscr &= (uint32_t)~0x9F; // Clear all exception flags
-   set_fpscr(fpscr);
+volatile hal_comp_inst_t * comp_inst_by_name(NAME name, uint32_t instance){
+   hal_comp_t * comp = comp_by_name(name);
+   if(comp){
+      for(int i = 0; i < hal.comp_inst_count; i++){
+         if(hal.comp_insts[i].comp == comp && instance == hal.comp_insts[i].instance){
+            return(&hal.comp_insts[i]);
+         }
+      }
+   }
+   return(0);
+}
+
+pin_t * pin_by_name(NAME comp_name, NAME pin_name){
+   uint32_t offset = 0;
+   for(int i = 0; i < comp_count; i++){
+      if(!strncmp(comp_name, comps[i]->name, sizeof(NAME))){
+         for(int j = 0; j < comps[i]->pin_count; j++){
+            if(!strncmp(pin_name, pins[j + offset], sizeof(NAME))){
+               return(&pins[j + offset]);
+            }
+         }
+      }
+   }
+   return(0);
+}
+
+volatile hal_pin_inst_t * pin_inst_by_name(NAME comp_name, uint32_t instance, NAME pin_name){
+   volatile hal_comp_inst_t * comp = comp_inst_by_name(comp_name, instance);
+   if(comp){
+      for(int i = 0; i < comp->comp->pin_count; i++){
+         if(!strncmp(pin_name, comp->pins[i], sizeof(NAME))){
+            return(&comp->pin_insts[i]);
+         }
+      }
+   }
+   return(0);
+}
+
+pin_t * pin_by_pin_inst(volatile hal_pin_inst_t * p){
+   for(int i = 0; i < hal.comp_inst_count; i++){
+      for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
+         if(&(hal.comp_insts[i].pin_insts[j]) == p){
+            return(&hal.comp_insts[i].pins[j]);
+         }
+      }
+   }
+   return(0);
+}
+
+volatile hal_comp_inst_t * comp_inst_by_pin_inst(volatile hal_pin_inst_t * p){
+   for(int i = 0; i < hal.comp_inst_count; i++){
+      for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
+         if(&(hal.comp_insts[i].pin_insts[j]) == p){
+            return(&hal.comp_insts[i]);
+         }
+      }
+   }
+   return(0);
+}
+
+uint32_t load_comp(hal_comp_t * comp){
+   if(!comp){
+      printf("load_comp: null ptr\n");
+      return(0);
+   }
+   if(hal.comp_inst_count >= HAL_MAX_COMPS - 1){
+      printf("load_comp: not enough space to load comp: %s\n", comp->name);
+      return(0);
+   }
+   if(hal.pin_inst_count + comp->pin_count >= HAL_MAX_PINS - 1){
+      printf("load_comp: not enough space to load comp pins: %s\n", comp->name);
+      return(0);
+   }
+   if(hal.ctx_count + comp->ctx_size >= HAL_MAX_CTX - 1){
+      printf("load_comp: not enough space to load comp ctx: %s\n", comp->name);
+      return(0);
+   }
    
+   // load comp
+   hal.comp_insts[hal.comp_inst_count].comp = comp;
+   hal.comp_insts[hal.comp_inst_count].ctx = &hal.ctxs[hal.ctx_count];
+   hal.comp_insts[hal.comp_inst_count].pin_insts = &hal.pin_insts[hal.pin_inst_count];
+   uint32_t offset = 0;
+   for(int i = 0; i < comp_count; i++){
+      if(comps[i] == comp){
+         hal.comp_insts[hal.comp_inst_count].pins = &pins[offset];
+      }
+      offset += comps[i]->pin_count;
+   }
+   hal.comp_insts[hal.comp_inst_count].instance = 0;
+   for(int i = 0; i < hal.comp_inst_count; i++){
+      if(hal.comp_insts[i].comp == comp){
+         hal.comp_insts[hal.comp_inst_count].instance++;
+      }
+   }
+   hal.comp_inst_count++;
+   
+   // load pins 
+   for(int i = hal.pin_inst_count; i <  hal.pin_inst_count + comp->pin_count; i++){
+      hal.pin_insts[i].value = 0.0;
+      hal.pin_insts[i].source = &hal.pin_insts[i];
+   }
+   hal.pin_inst_count += comp->pin_count;
+   
+   // load ctx
+   for(int i = hal.ctx_count; i <  hal.ctx_count + comp->ctx_size; i++){
+      hal.ctxs[i] = 0;
+   }
+   hal.ctx_count += comp->ctx_size;
+   
+   return(1);
+}
+
+void hal_run_rt(){
+   static unsigned int last_start = 0;
+   unsigned int start = hal_get_systick_value();
+   
+   if(last_start < start){
+     last_start += hal_get_systick_reload();
+   }
+   
+   float period = ((float)(last_start - start)) / hal_get_systick_freq();
+   last_start = start;
+   
+   switch(hal.rt_state){
+      case RT_STOP:
+         return;
+      case RT_CALC: // call stop
+         hal.rt_state = RT_STOP;
+         hal.hal_state = RT_TOO_LONG;
+         hal.frt_state = FRT_STOP;
+         return;
+      case RT_SLEEP:
+         if(hal.active_rt_func > -1){ // call stop
+            hal.rt_state = RT_STOP;
+            hal.hal_state = MISC_ERROR;
+            hal.frt_state = FRT_STOP;
+            return;
+         }
+         hal.rt_state = RT_CALC;
+   }
+   
+   for(hal.active_rt_func = 0; hal.active_rt_func < HAL_MAX_COMPS; hal.active_rt_func++){
+      if(hal.rt_comps[hal.active_rt_func] != 0){
+         hal.rt_comps[hal.active_rt_func]->comp->rt(period, hal.rt_comps[hal.active_rt_func]->ctx, hal.rt_comps[hal.active_rt_func]->pin_insts);
+      }
+      else{
+         break;
+      }
+   }
+   hal.active_rt_func = -1;
+   
+   if(hal.rt_state == RT_CALC){
+      hal.rt_state = RT_SLEEP;
+   }
+   
+   unsigned int end = hal_get_systick_value();
+   if(start < end){
+     start += hal_get_systick_reload();
+   }
+   
+   hal.rt_calc_time = ((float)(start - end)) / hal_get_systick_freq();
+   hal.rt_period = period;
+}
+
+void hal_run_frt(){
+   static unsigned int last_start = 0;
+   unsigned int start = hal_get_systick_value();
+   
+   if(last_start < start){
+     last_start += hal_get_systick_reload();
+   }
+   
+   float period = ((float)(last_start - start)) / hal_get_systick_freq();
+   last_start = start;
+   
+   switch(hal.frt_state){
+      case FRT_STOP:
+         return;
+      case FRT_CALC:
+         hal.rt_state = RT_STOP;
+         hal.hal_state = FRT_TOO_LONG;
+         hal.frt_state = FRT_STOP;
+         return;
+      case FRT_SLEEP:
+         if(hal.active_frt_func > -1){
+            hal.rt_state = RT_STOP;
+            hal.hal_state = MISC_ERROR;
+            hal.frt_state = FRT_STOP;
+            return;
+         }
+         hal.frt_state = FRT_CALC;
+   }
+   
+   for(hal.active_frt_func = 0; hal.active_frt_func < HAL_MAX_COMPS; hal.active_frt_func++){
+      if(hal.frt_comps[hal.active_frt_func] != 0){
+         hal.frt_comps[hal.active_frt_func]->comp->frt(period, hal.frt_comps[hal.active_frt_func]->ctx, hal.frt_comps[hal.active_frt_func]->pin_insts);
+      }
+      else{
+         break;
+      }
+   }
+   hal.active_frt_func = -1;
+   
+   if(hal.frt_state == FRT_CALC){
+      hal.frt_state = FRT_SLEEP;
+   }
+   
+   unsigned int end = hal_get_systick_value();
+   hal.frt_calc_time = ((float)(start - end)) / hal_get_systick_freq();
+   hal.frt_period = period;
+}
+
+void hal_run_nrt(){
+   static unsigned int last_start = 0;
+   unsigned int start = hal_get_systick_value();
+   
+   if(last_start < start){
+     last_start += hal_get_systick_reload();
+   }
+   
+   float period = ((float)(last_start - start)) / hal_get_systick_freq();
+   last_start = start;
+   
+   for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.comp_inst_count; hal.active_nrt_func++){
+      if(hal.comp_insts[hal.active_nrt_func].comp->nrt != 0){
+         hal.comp_insts[hal.active_nrt_func].comp->nrt(period, hal.comp_insts[hal.active_nrt_func].ctx, hal.comp_insts[hal.active_nrt_func].pin_insts);
+      }
+   }
+   hal.active_nrt_func = -1;
+   
+   unsigned int end = hal_get_systick_value();
+   hal.nrt_calc_time = ((float)(start - end)) / hal_get_systick_freq();
+   hal.nrt_period = period;
+}
+
+void hal_init_nrt(){
+   for(int i = 0; i < hal.comp_inst_count; i++){
+      if(hal.comp_insts[i].comp->nrt_init != 0){
+         hal.comp_insts[i].comp->nrt_init(hal.comp_insts[i].ctx, hal.comp_insts[i].pin_insts);
+      }
+      else{
+         break;
+      }
+   }
+}
+
+void sort_rt(){
    float min = INFINITY;
    int min_index = -1;
    float rt_prio = 0.0;
-   float frt_prio = 0.0;
+   char added[HAL_MAX_COMPS];
 
-   char added[MAX_COMPS];
-
-   for(int i = 0; i < MAX_COMPS; i++){
+   for(int i = 0; i < hal.comp_inst_count; i++){
       added[i] = 0;
    }
-   // add rt func
-   hal.rt_func_count = 0;
-   for(int i = 0; i < hal.comp_count; i++){
+
+   hal.rt_comp_count = 0;
+   for(int i = 0; i < hal.comp_inst_count; i++){
       min = INFINITY;
       min_index = -1;
-      for(int j = hal.comp_count - 1; j >= 0; j--){
-         rt_prio = hal.hal_pins[hal.hal_comps[j]->hal_pin_start_index + 2]->source->source->value;
-         if(rt_prio <= min && added[j] == 0 && rt_prio >= 0.0 && hal.hal_comps[j]->rt != 0){
+      for(int j = hal.comp_inst_count - 1; j >= 0; j--){
+         rt_prio = hal.comp_insts[j].pin_insts[hal.comp_insts[j].comp->pin_count - 5].source->source->value;
+         if(rt_prio <= min && added[j] == 0 && rt_prio >= 0.0 && hal.comp_insts[j].comp->rt != 0){
             min = rt_prio;
             min_index = j;
          }
       }
       if(min_index >= 0){
          added[min_index] = 1;
-         hal.rt[hal.rt_func_count++] = hal.hal_comps[min_index]->rt;
+         hal.rt_comps[hal.rt_comp_count++] = &hal.comp_insts[min_index];
       }
    }
+}
 
-   for(int i = 0; i < hal.comp_count; i++){
+void sort_frt(){
+   float min = INFINITY;
+   int min_index = -1;
+   float frt_prio = 0.0;
+   char added[HAL_MAX_COMPS];
+
+   for(int i = 0; i < hal.comp_inst_count; i++){
       added[i] = 0;
    }
-   // add frt func
-   hal.frt_func_count = 0;
-   for(int i = 0; i < hal.comp_count; i++){
+
+   hal.frt_comp_count = 0;
+   for(int i = 0; i < hal.comp_inst_count; i++){
       min = INFINITY;
       min_index = -1;
-      for(int j = hal.comp_count - 1; j >= 0; j--){
-         frt_prio = hal.hal_pins[hal.hal_comps[j]->hal_pin_start_index + 3]->source->source->value;
-         if(frt_prio <= min && added[j] == 0 && frt_prio >= 0.0 && hal.hal_comps[j]->frt != 0){
+      for(int j = hal.comp_inst_count - 1; j >= 0; j--){
+         frt_prio = hal.comp_insts[j].pin_insts[hal.comp_insts[j].comp->pin_count - 4].source->source->value;
+         if(frt_prio <= min && added[j] == 0 && frt_prio >= 0.0 && hal.comp_insts[j].comp->frt != 0){
             min = frt_prio;
             min_index = j;
          }
       }
       if(min_index >= 0){
          added[min_index] = 1;
-         hal.frt[hal.frt_func_count++] = hal.hal_comps[min_index]->frt;
+         hal.frt_comps[hal.frt_comp_count++] = &hal.comp_insts[min_index];
       }
    }
-   // add (de)init func
-   hal.rt_init_func_count = 0;
-   hal.rt_deinit_func_count = 0;
-   for(int i = 0; i < hal.comp_count; i++){
-      rt_prio = hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 2]->source->source->value;
-      frt_prio = hal.hal_pins[hal.hal_comps[i]->hal_pin_start_index + 3]->source->source->value;
+}
 
-      if(rt_prio >= 0.0 || frt_prio >= 0.0){
-         if(hal.hal_comps[i]->rt_init != 0){
-            hal.rt_init[hal.rt_init_func_count++] = hal.hal_comps[i]->rt_init;
-         }
-         if(hal.hal_comps[i]->rt_deinit != 0){
-            hal.rt_deinit[hal.rt_deinit_func_count++] = hal.hal_comps[i]->rt_deinit;
-         }
+void start_rt(){   
+   for(int i = 0; i < hal.rt_comp_count; i++){
+      if(hal.rt_comps[i]->comp->rt_start != 0){
+         hal.rt_comps[i]->comp->rt_start(hal.rt_comps[i]->ctx, hal.rt_comps[i]->pin_insts);
       }
    }
-   for(int i = 0; i < hal.rt_init_func_count; i++){
-      hal.rt_init[i]();
-   }
+   
+   hal.rt_state = RT_SLEEP;
+}
 
-   hal_start_rt();
-
-   if(hal.frt_func_count > 0){
-      hal_start_frt();
-      hal_enable_frt();
+void start_frt(){
+   for(int i = 0; i < HAL_MAX_COMPS; i++){
+      if(hal.frt_comps[i]){
+         if(hal.frt_comps[i]->comp->frt_start != 0){
+            hal.frt_comps[i]->comp->frt_start(hal.frt_comps[i]->ctx, hal.frt_comps[i]->pin_insts);
+         }
+      }
+      else{
+         break;
+      }
    }
-   hal_enable_rt();
+   
+   hal.frt_state = FRT_SLEEP;
+}
+
+void hal_start(){
+   sort_rt();
+   sort_frt();
+   start_rt();
+   start_frt();
+}
+
+void stop_rt(){
+   hal.rt_state = RT_STOP;
+   
+   for(int i = 0; i < hal.rt_comp_count; i++){
+      if(hal.rt_comps[i]->comp->rt_stop != 0){
+         hal.rt_comps[i]->comp->rt_stop(hal.rt_comps[i]->ctx, hal.rt_comps[i]->pin_insts);
+      }
+   }
+}
+
+void stop_frt(){
+   hal.frt_state = FRT_STOP;
+   
+   for(int i = 0; i < hal.frt_comp_count; i++){
+      if(hal.frt_comps[i]->comp->frt_stop != 0){
+         hal.frt_comps[i]->comp->frt_stop(hal.frt_comps[i]->ctx, hal.frt_comps[i]->pin_insts);
+      }
+   }
 }
 
 void hal_stop(){
-   hal_stop_frt();
-   hal_stop_rt();
-   hal_disable_frt();
-   hal_disable_rt();
-   hal.hal_state = HAL2_OK;
-   for(; hal.rt_deinit_func_count > 0; hal.rt_deinit_func_count--){
-      hal.rt_deinit[hal.rt_deinit_func_count - 1]();
-   }
+   stop_rt();
+   stop_frt();
 }
 
-int hal_start_frt(){
-   if(hal.frt_state == FRT_STOP && hal.hal_state == HAL2_OK){
-      hal.active_frt_func = -1;
-      hal.frt_state = FRT_SLEEP;
-      return(1);
+void hal_init(){
+   hal.rt_state = RT_STOP;
+   hal.frt_state = FRT_STOP;
+   
+   hal.hal_state = HAL_OK2;
+   
+   for(int i = 0; i < HAL_MAX_COMPS; i++){
+      hal.rt_comps[i] = 0;
+      hal.frt_comps[i] = 0;
+   }
+   
+   hal.comp_inst_count = 0;
+   hal.rt_comp_count = 0;
+   hal.frt_comp_count = 0;
+   hal.pin_inst_count = 0;
+   
+   for(int i = 0; i < HAL_MAX_CTX; i++){
+      hal.ctxs[i] = 0;
+   }
+   hal.ctx_count = 0;
+   
+   hal.active_rt_func = -1;
+   hal.active_frt_func = -1;
+   hal.active_nrt_func = -1;
+}
+
+uint32_t hal_parse(char * cmd){
+   int32_t foo = 0;
+   
+   char sinkc[64];
+   uint32_t sinki = 0;
+   char sinkp[64];
+   
+   float value = 0.0;
+   
+   char sourcec[64];
+   uint32_t sourcei = 0;
+   char sourcep[64];
+   
+   volatile hal_pin_inst_t * sink;
+   volatile hal_pin_inst_t * source;
+   
+   uint32_t found = 0;
+   
+   foo = sscanf(cmd," %[a-zA-Z_]%i.%[a-zA-Z0-9_] = %f", sinkc, &sinki, sinkp, &value);
+   switch(foo){
+      case 0:
+      break;
+      case 1: // search comps
+         for(int i = 0; i < hal.comp_inst_count; i++){
+            if(!strncmp(hal.comp_insts[i].comp->name, sinkc, strlen(sinkc))){
+               printf("%s%i\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance);
+               found = 1;
+            }
+         }
+         if(!found){
+            printf("not found: %s\n", cmd);
+         }
+         break;
+      case 2: // search comps + instance
+         for(int i = 0; i < hal.comp_inst_count; i++){
+            if(hal.comp_insts[i].instance == sinki && !strcmp(hal.comp_insts[i].comp->name, sinkc)){
+               for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
+                  volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
+                  printf("%s%i.%s <= %s%i.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
+                  found = 1;
+               }
+            }
+         }
+         if(!found){
+            printf("not found: %s\n", cmd);
+         }
+         break;
+      case 3: 
+         foo = sscanf(cmd," %[a-zA-Z_]%i.%[a-zA-Z0-9_] = %[a-zA-Z_]%i.%[a-zA-Z0-9_]", sinkc, &sinki, sinkp, sourcec, &sourcei, sourcep);
+         if(foo == 6){ // link pins
+            sink = pin_inst_by_name(sinkc, sinki, sinkp);
+            source = pin_inst_by_name(sourcec, sourcei, sourcep);
+            if(sink && source){
+               sink->source = source->source;
+               printf("OK %s%i.%s <= %s%i.%s = %f\n", sinkc, sinki, sinkp, sourcec, sourcei, sourcep, source->source->value);
+
+            }
+            else if(sink){
+               printf("not found: %s%i.%s\n", sourcec, sourcei, sourcep);
+            }
+            else{
+               printf("not found: %s%i.%s\n", sinkc, sinki, sinkp);
+            }
+         }
+         else{ // search comps + instance + pin
+            for(int i = 0; i < hal.comp_inst_count; i++){
+               if(hal.comp_insts[i].instance == sinki && !strcmp(hal.comp_insts[i].comp->name, sinkc)){
+                  for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
+                     volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
+                     if(!strncmp(hal.comp_insts[i].pins[j], sinkp, strlen(sinkp))){
+                        printf("%s%i.%s <= %s%i.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
+                        found = 1;
+                     }
+                  }
+               }
+            }
+            if(!found){
+               printf("not found: %s\n", cmd);
+            }
+         }
+         break;
+      case 4: // set pin
+         sink = pin_inst_by_name(sinkc, sinki, sinkp);
+         if(sink){
+            sink->value = value;
+            sink->source = sink;
+            printf("OK %s%i.%s = %f\n", sinkc, sinki, sinkp, value);
+         }
+         else{
+            printf("not found: %s%i.%s\n", sinkc, sinki, sinkp);
+         }
+         break;
+      default:
+         printf("not found: %s\n", cmd);
    }
    return(0);
-}
-
-void hal_stop_rt(){
-   hal.active_rt_func = -1;
-   hal.rt_state = RT_STOP;
-   hal.active_rt_func = -1;
-   hal.rt_state = RT_STOP;
-}
-
-void hal_stop_frt(){
-   hal.active_frt_func = -1;
-   hal.frt_state = FRT_STOP;
-   hal.active_frt_func = -1;
-   hal.frt_state = FRT_STOP;
-}
-
-//TODO: calculate and reduce name length...
-void hal_init_pin(hal_name_t name, hal_pin_t* pin, float value){
-  strncpy(pin->name, hal.comp_types[hal.comp_type], HAL_NAME_LENGTH);
-  strncat(pin->name, hal_itoa(hal.comp_types_counter[hal.comp_type]), HAL_NAME_LENGTH);
-  strncat(pin->name, ".", HAL_NAME_LENGTH);
-  strncat(pin->name, name, HAL_NAME_LENGTH);
-  pin->value = value;
-  pin->source = pin;
-  hal_register_pin(pin);
-}
-
-int hal_register_pin(hal_pin_t* pin){
-  if(hal.hal_pin_count >= MAX_HAL_PINS){
-    hal.pin_errors++;
-    return(0);
-  }
-
-  for(int i = 0; i < hal.hal_pin_count; i++){
-    if(!strcmp(hal.hal_pins[i]->name, pin->name)){
-      hal.pin_errors++;
-      return(0);
-    }
-  }
-
-  hal.hal_pins[hal.hal_pin_count] = pin;
-  hal.hal_pin_count++;
-
-  return(1);
-}
-
-int hal_set_pin(hal_name_t name, float value){
-  for(int i = 0; i < hal.hal_pin_count; i++){
-    if(!strcmp(hal.hal_pins[i]->name, name)){
-      hal.hal_pins[i]->value = value;
-      hal.hal_pins[i]->source = hal.hal_pins[i];
-      return(1);
-    }
-  }
-  strcpy(hal.error_name,name);
-  hal.set_errors++;
-  return(0);
-}
-
-int hal_is_pin(hal_name_t name){
-  for(int i = 0; i < hal.hal_pin_count; i++){
-    if(!strcmp(hal.hal_pins[i]->name, name)){
-      return(1);
-    }
-  }
-  return(0);
-}
-
-int hal_is_compname(hal_name_t name){
-  for(int i = 0; i < hal.hal_pin_count; i++){
-    if(!strncmp(hal.hal_pins[i]->name, name, strlen(name))){
-      return(1);
-    }
-  }
-  return(0);
-}
-
-float hal_get_pin(hal_name_t name){
-  for(int i = 0; i < hal.hal_pin_count; i++){
-    if(!strcmp(hal.hal_pins[i]->name, name)){
-      return(hal.hal_pins[i]->source->source->value);
-    }
-  }
-  hal.get_errors++;
-  return(0.0);
-}
-
-hal_pin_t hal_map_pin(hal_name_t name){
-    for(int i = 0; i < hal.hal_pin_count; i++){
-      if(!strcmp(hal.hal_pins[i]->name, name)){
-		  return(*hal.hal_pins[i]);
-      }
-    }
-    return(*hal.hal_pins[0]);
-}
-
-void hal_write_pin(hal_pin_t* pin, float value){
-  pin->value = value;
-  pin->source = pin;
-}
-
-float hal_read_pin(hal_pin_t* pin){
-  return(pin->source->source->value);
-}
-
-hal_pin_t* hal_find_pin(hal_name_t name){
-  for(int i = 0; i < hal.hal_pin_count; i++){
-    if(!strcmp(hal.hal_pins[i]->name, name)){
-      return(hal.hal_pins[i]);
-    }
-  }
-  return(0);
-}
-
-int hal_link_pins(hal_name_t source, hal_name_t sink){
-  hal_pin_t* d;
-  hal_pin_t* s;
-  d = hal_find_pin(source);
-  s = hal_find_pin(sink);
-
-  if(d != 0 && s != 0){
-    s->value = s->source->source->value;
-    s->source = d;
-	return(1);
-  }
-  strcpy(hal.error_name,source);
-  hal.link_errors++;
-  return(0);
-}
-
-int hal_set_comp_type(hal_name_t name){
-  for(int i = 0; i < hal.comp_type_count; i++){
-    if(!strcmp(hal.comp_types[i], name)){
-      hal.comp_type = i;
-      return(hal.comp_types_counter[hal.comp_type]++);
-    }
-  }
-
-  if(hal.comp_type_count < MAX_COMP_TYPES){
-    strncpy(hal.comp_types[hal.comp_type_count], name, HAL_NAME_LENGTH);
-    hal.comp_type = hal.comp_type_count++;
-    return(0);
-  }
-  hal.comp_errors++;
-  return(-1);
-}
-
-void hal_add_comp(hal_comp_t* comp){
-   if(comp != 0 && hal.comp_count < MAX_COMPS){
-      hal.hal_comps[hal.comp_count++] = comp;
-      comp->instance = hal.comp_types_counter[hal.comp_type];
-      if(comp->nrt_init != 0){
-         hal.nrt_init[hal.nrt_init_func_count++] = comp->nrt_init;
-      }
-      if(comp->nrt != 0 && hal.nrt_func_count < MAX_COMPS){
-         hal.nrt[hal.nrt_func_count++] = comp->nrt;
-      }
-   }
-   else{
-      hal.comp_errors++;
-   }
-}
-
-int32_t find_comp_by_func(uint32_t p){
-   for(int i = 0; i < hal.comp_count; i++){
-      if(p == (uint32_t)hal.hal_comps[i]->rt){
-         return(i);
-      }
-      if(p == (uint32_t)hal.hal_comps[i]->frt){
-         return(i);
-      }
-      if(p == (uint32_t)hal.hal_comps[i]->nrt){
-         return(i);
-      }
-      if(p == (uint32_t)hal.hal_comps[i]->frt){
-         return(i);
-      }
-      if(p == (uint32_t)hal.hal_comps[i]->rt_init){
-         return(i);
-      }
-      if(p == (uint32_t)hal.hal_comps[i]->rt_deinit){
-         return(i);
-      }
-      if(p == (uint32_t)hal.hal_comps[i]->nrt_init){
-         return(i);
-      }
-   }
-   return(-1);
 }

@@ -29,7 +29,6 @@ SOURCES += stm32f303/src/usbd_desc.c
 SOURCES += stm32f303/src/version.c
 
 SOURCES += stm32f303/src/hal_tbl.c
-SOURCES += stm32f303/src/hal.c
 SOURCES += stm32f303/src/comps/test.c
 SOURCES += stm32f303/src/comps/term.c
 SOURCES += stm32f303/src/comps/sim.c
@@ -41,7 +40,7 @@ SOURCES += shared/crc16.c
 SOURCES += shared/common.c
 SOURCES += shared/angle.c
 SOURCES += shared/scanf.c
-#SOURCES += shared/hal.c
+SOURCES += shared/hal.c
 #SOURCES += shared/hal_term.c
 
 #USB Driver
