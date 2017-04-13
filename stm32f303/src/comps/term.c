@@ -46,12 +46,11 @@ void show(char * ptr){
 COMMAND("show", show);
 
 void list(char * ptr){
-   uint32_t offset = 0;
    for(int i = 0; i < hal.comp_inst_count; i++){
-      printf("%s%i:\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance);
+      printf("%s%lu:\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance);
       for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
          volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
-         printf("-  %s <= %s%i.%s = %f\n", hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
+         printf("-  %s <= %s%lu.%s = %f\n", hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
       }
    }
 }
@@ -97,8 +96,8 @@ void hal_term_print_state(){
 
 void hal_term_print_info(char * ptr){
    printf("######## hal info ########\n");
-   printf("#pins %i\n", hal.pin_inst_count);
-   printf("#comps %i\n", hal.comp_inst_count);
+   printf("#pins %lu\n", hal.pin_inst_count);
+   printf("#comps %lu\n", hal.comp_inst_count);
    // printf("link errors %lu\n", hal.link_errors);
    // printf("pin errors %lu\n", hal.pin_errors);
    // printf("comp errors %lu\n", hal.comp_errors);
@@ -148,12 +147,12 @@ void hal_term_print_info(char * ptr){
    }
    hal_term_print_state();
    
-   printf("active rt funcs(%u):\n", hal.rt_comp_count);
+   printf("active rt funcs(%lu):\n", hal.rt_comp_count);
    for(int j = 0; j < hal.rt_comp_count; j++){
       printf("%s\n", hal.rt_comps[j]->comp->name);
    }
    
-   printf("active frt funcs(%u):\n", hal.frt_comp_count);
+   printf("active frt funcs(%lu):\n", hal.frt_comp_count);
    for(int j = 0; j < hal.frt_comp_count; j++){
       printf("%s\n", hal.frt_comps[j]->comp->name);
    }

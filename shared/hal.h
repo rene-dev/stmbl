@@ -10,6 +10,10 @@
 #define HAL_PIN(name) 
 #define HAL_PINA(name, index) 
 
+extern uint32_t hal_get_systick_value();
+extern uint32_t hal_get_systick_reload();
+extern uint32_t hal_get_systick_freq();
+
 typedef char NAME[32];
 
 typedef NAME const pin_t;

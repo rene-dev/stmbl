@@ -54,7 +54,6 @@
 #include "defines.h"
 #include "hal.h"
 #include "angle.h"
-#include "scanf.h"
 #include "usbd_cdc_if.h"
 #include "version.h"
 #include "common.h"

@@ -425,14 +425,14 @@ uint32_t hal_parse(char * cmd){
    
    uint32_t found = 0;
    
-   foo = sscanf(cmd," %[a-zA-Z_]%i.%[a-zA-Z0-9_] = %f", sinkc, &sinki, sinkp, &value);
+   foo = sscanf(cmd," %[a-zA-Z_]%lu.%[a-zA-Z0-9_] = %f", sinkc, &sinki, sinkp, &value);
    switch(foo){
       case 0:
       break;
       case 1: // search comps
          for(int i = 0; i < hal.comp_inst_count; i++){
             if(!strncmp(hal.comp_insts[i].comp->name, sinkc, strlen(sinkc))){
-               printf("%s%i\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance);
+               printf("%s%lu\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance);
                found = 1;
             }
          }
@@ -445,7 +445,7 @@ uint32_t hal_parse(char * cmd){
             if(hal.comp_insts[i].instance == sinki && !strcmp(hal.comp_insts[i].comp->name, sinkc)){
                for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
                   volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
-                  printf("%s%i.%s <= %s%i.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
+                  printf("%s%lu.%s <= %s%lu.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
                   found = 1;
                }
             }
@@ -455,20 +455,20 @@ uint32_t hal_parse(char * cmd){
          }
          break;
       case 3: 
-         foo = sscanf(cmd," %[a-zA-Z_]%i.%[a-zA-Z0-9_] = %[a-zA-Z_]%i.%[a-zA-Z0-9_]", sinkc, &sinki, sinkp, sourcec, &sourcei, sourcep);
+         foo = sscanf(cmd," %[a-zA-Z_]%lu.%[a-zA-Z0-9_] = %[a-zA-Z_]%lu.%[a-zA-Z0-9_]", sinkc, &sinki, sinkp, sourcec, &sourcei, sourcep);
          if(foo == 6){ // link pins
             sink = pin_inst_by_name(sinkc, sinki, sinkp);
             source = pin_inst_by_name(sourcec, sourcei, sourcep);
             if(sink && source){
                sink->source = source->source;
-               printf("OK %s%i.%s <= %s%i.%s = %f\n", sinkc, sinki, sinkp, sourcec, sourcei, sourcep, source->source->value);
+               printf("OK %s%lu.%s <= %s%lu.%s = %f\n", sinkc, sinki, sinkp, sourcec, sourcei, sourcep, source->source->value);
 
             }
             else if(sink){
-               printf("not found: %s%i.%s\n", sourcec, sourcei, sourcep);
+               printf("not found: %s%lu.%s\n", sourcec, sourcei, sourcep);
             }
             else{
-               printf("not found: %s%i.%s\n", sinkc, sinki, sinkp);
+               printf("not found: %s%lu.%s\n", sinkc, sinki, sinkp);
             }
          }
          else{ // search comps + instance + pin
@@ -477,7 +477,7 @@ uint32_t hal_parse(char * cmd){
                   for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
                      volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
                      if(!strncmp(hal.comp_insts[i].pins[j], sinkp, strlen(sinkp))){
-                        printf("%s%i.%s <= %s%i.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
+                        printf("%s%lu.%s <= %s%lu.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
                         found = 1;
                      }
                   }
@@ -493,10 +493,10 @@ uint32_t hal_parse(char * cmd){
          if(sink){
             sink->value = value;
             sink->source = sink;
-            printf("OK %s%i.%s = %f\n", sinkc, sinki, sinkp, value);
+            printf("OK %s%lu.%s = %f\n", sinkc, sinki, sinkp, value);
          }
          else{
-            printf("not found: %s%i.%s\n", sinkc, sinki, sinkp);
+            printf("not found: %s%lu.%s\n", sinkc, sinki, sinkp);
          }
          break;
       default:

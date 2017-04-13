@@ -39,7 +39,6 @@ SOURCES += shared/crc8.c
 SOURCES += shared/crc16.c
 SOURCES += shared/common.c
 SOURCES += shared/angle.c
-SOURCES += shared/scanf.c
 SOURCES += shared/hal.c
 #SOURCES += shared/hal_term.c
 
