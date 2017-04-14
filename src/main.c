@@ -19,10 +19,7 @@
 */
 
 #include "stm32f4xx_conf.h"
-#include "scanf.h"
 #include "hal.h"
-#include "hal_term.h"
-#include "hal_conf.h"
 #include "setup.h"
 #include "link.h"
 #include "defines.h"
@@ -32,27 +29,22 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "usb_cdc.h"
+//#include "usbd_cdc.h"
 #include "main.h"
 
-GLOBAL_HAL_PIN(rt_time);
-GLOBAL_HAL_PIN(frt_time);
-GLOBAL_HAL_PIN(rt_period_time);
-GLOBAL_HAL_PIN(frt_period_time);
-
 //hal interface TODO: move hal interface to file
-void hal_enable_rt(){
-   TIM_Cmd(TIM_MASTER, ENABLE);
-}
-void hal_enable_frt(){
-   TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, ENABLE);
-}
-void hal_disable_rt(){
-   TIM_Cmd(TIM_MASTER, DISABLE);
-}
-void hal_disable_frt(){
-   TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, DISABLE);
-}
+// void hal_enable_rt(){
+//    TIM_Cmd(TIM_MASTER, ENABLE);
+// }
+// void hal_enable_frt(){
+//    TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, ENABLE);
+// }
+// void hal_disable_rt(){
+//    TIM_Cmd(TIM_MASTER, DISABLE);
+// }
+// void hal_disable_frt(){
+//    TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, DISABLE);
+// }
 
 uint32_t hal_get_systick_value(){
    return(SysTick->VAL);
@@ -76,93 +68,13 @@ void SysTick_Handler(void)
 //20kHz
 void TIM_SLAVE_HANDLER(void){
    TIM_ClearITPendingBit(TIM_SLAVE,TIM_IT_Update);
-   switch(hal.frt_state){
-      case FRT_STOP:
-         return;
-      case FRT_CALC:
-         hal.frt_state = FRT_STOP;
-         hal.hal_state = FRT_TOO_LONG;
-         hal.rt_state = RT_STOP;
-         return;
-      case FRT_SLEEP:
-         if(hal.active_frt_func > -1){
-            hal.frt_state = FRT_STOP;
-            hal.hal_state = MISC_ERROR;
-            hal.rt_state = RT_STOP;
-            return;
-         }
-         hal.frt_state = FRT_CALC;
-   }
-
-   static unsigned int last_start = 0;
-   unsigned int start = hal_get_systick_value();
-
-   if(last_start < start){
-     last_start += hal_get_systick_reload();
-   }
-
-   float period = ((float)(last_start - start)) / hal_get_systick_freq();
-   last_start = start;
-
-   hal_run_frt(period);
-
-   unsigned int end = hal_get_systick_value();
-   if(start < end){
-     start += hal_get_systick_reload();
-   }
-   PIN(frt_time) = ((float)(start - end)) / hal_get_systick_freq();
-   PIN(frt_period_time) = period;
-
-   hal.frt_state = FRT_SLEEP;
 }
 
 //5 kHz interrupt for hal. at this point all ADCs have been sampled,
 //see setup_res() in setup.c if you are interested in the magic behind this.
 void DMA2_Stream0_IRQHandler(void){
    DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
-   switch(hal.rt_state){
-      case RT_STOP:
-         return;
-      case RT_CALC:
-         hal.rt_state = RT_STOP;
-         hal.hal_state = RT_TOO_LONG;
-         hal.frt_state = FRT_STOP;
-         return;
-      case RT_SLEEP:
-         if(hal.active_rt_func > -1){
-            hal.rt_state = RT_STOP;
-            hal.hal_state = MISC_ERROR;
-            hal.frt_state = FRT_STOP;
-            return;
-         }
-         hal.rt_state = RT_CALC;
-   }
-
-   static unsigned int last_start = 0;
-   unsigned int start = hal_get_systick_value();
-
-   if(last_start < start){
-     last_start += hal_get_systick_reload();
-   }
-
-   float period = ((float)(last_start - start)) / hal_get_systick_freq();
-   last_start = start;
-
-   hal_run_rt(period);
-
-   unsigned int end = hal_get_systick_value();
-   if(start < end){
-     start += hal_get_systick_reload();
-   }
-   PIN(rt_time) = ((float)(start - end)) / hal_get_systick_freq();
-   PIN(rt_period_time) = period;
-
-   if(hal.hal_state != HAL2_OK){
-      hal.rt_state = RT_STOP;
-   }
-   else{
-      hal.rt_state = RT_SLEEP;
-   }
+   hal_run_rt();
 }
 
 int main(void)
@@ -172,12 +84,27 @@ int main(void)
    extern void *g_pfnVectors;
    SCB->VTOR = (uint32_t)&g_pfnVectors;
 
-   float period = 0.0;
-   int last_start = 0;
-   int start = 0;
-   int end = 0;
+   // float period = 0.0;
+   // int last_start = 0;
+   // int start = 0;
+   // int end = 0;
 
    setup();
+   hal_init();
+   // hal load comps
+   load_comp(comp_by_name("term"));
+   load_comp(comp_by_name("sim"));
+   hal_parse("term0.rt_prio = 1");  
+   hal_parse("sim0.rt_prio = 2");  
+   // hal parse config
+   hal_init_nrt();
+   // error foo
+   hal_start();
+   
+   TIM_Cmd(TIM_MASTER, ENABLE);
+   TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, ENABLE);
+   
+   /*
    hal_init();
 
    hal_set_comp_type("foo"); // default pin for mem errors
@@ -325,27 +252,12 @@ int main(void)
    else{
       hal.hal_state = MEM_ERROR;
    }
-
+*/
    while(1)//run non realtime stuff
    {
-      start = hal_get_systick_value();
-
-      if(last_start < start){
-        last_start += hal_get_systick_reload();
-      }
-
-      period = ((float)(last_start - start)) / hal_get_systick_freq();
-      last_start = start;
-
-      hal_run_nrt(period);
-
-      end = hal_get_systick_value();
-      if(start < end){
-        start += hal_get_systick_reload();
-      }
-      PIN(nrt_calc_time) = ((float)(start - end)) / hal_get_systick_freq();
-      PIN(nrt_period) = period;
-      Wait(2);
+      hal_run_nrt();
+      //cdc_poll();
+      Wait(1);
    }
 }
 

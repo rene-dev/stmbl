@@ -7,7 +7,7 @@
 //
 
 #include "setup.h"
-#include "usb_cdc.h"
+#include "usbd_cdc_if.h"
 
 void setup(){
    //Enable clocks

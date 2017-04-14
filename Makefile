@@ -21,9 +21,14 @@ SOURCES += src/stm32f4xx_it.c
 SOURCES += src/system_stm32f4xx.c #TODO: update this, system file from cmsis
 SOURCES += src/setup.c
 SOURCES += src/usb_cdc.c
-SOURCES += src/hal_conf.c
+# SOURCES += src/hal_conf.c
+SOURCES += src/hal_tbl.c
+
+SOURCES += shared/comps/sim.c
+SOURCES += shared/comps/term.c
+
 SOURCES += src/eeprom.c
-SOURCES += src/link.c
+# SOURCES += src/link.c
 SOURCES += src/version.c
 SOURCES += src/syscalls.c
 
@@ -32,8 +37,8 @@ SOURCES += shared/crc16.c
 SOURCES += shared/common.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
-SOURCES += shared/hal_term.c
-SOURCES += shared/scanf.c
+# SOURCES += shared/hal_term.c
+# SOURCES += shared/scanf.c
 SOURCES += shared/ringbuf.c
 
 USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
@@ -181,13 +186,13 @@ bin: $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-stm32f303/inc/commandslist.h: tbl
-#stm32f303/inc/hal_tbl.h: tbl
-#stm32f303/src/hal_tbl.c: tbl
+inc/commandslist.h: tbl
+inc/hal_tbl.h: tbl
+src/hal_tbl.c: tbl
 
 tbl:
-#	tools/create_hal_tbl.py stm32f303/ stm32f303/src/comps/*.c
-	tools/create_cmd.py src/comps/*.comp > inc/commandslist.h
+	tools/create_hal_tbl.py . shared/comps/*.c
+	tools/create_cmd.py shared/comps/*.c src/*.c > inc/commandslist.h
 
 boot:
 	$(MAKE) -f bootloader/Makefile

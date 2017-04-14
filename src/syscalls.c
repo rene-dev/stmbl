@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include "stm32f4xx.h"
-#include "usb_cdc.h"
+#include "usbd_cdc_if.h"
 
 //int __errno;
 size_t   __malloc_margin = 256;

@@ -1,4 +1,4 @@
-#include "usb_cdc.h"
+#include "usbd_cdc_if.h"
 #include "usbd_cdc_core.h"
 #include "usbd_usr.h"
 #include "usbd_desc.h"
@@ -228,7 +228,26 @@ uint8_t USB_CDC_is_connected(void)
 
 //TODO: implement new term API
 void cdc_init(void){}
-int cdc_tx(void* data, uint32_t len){return 0;}
-int cdc_getline(char *ptr, int len){return 0;}
-int cdc_is_connected(){return 0;}
+
+int cdc_tx(void* data, uint32_t len){
+   while (len--) {
+      // send a queued byte - copy to usb stack buffer
+      APP_Rx_Buffer[APP_Rx_ptr_in++] = *(uint8_t*)data;
+      data++;
+      // To avoid buffer overflow
+      if (APP_Rx_ptr_in >= APP_RX_DATA_SIZE) {
+         APP_Rx_ptr_in = 0;
+      }
+   }   
+   return len;
+}
+
+int cdc_getline(char *ptr, int len){
+   return USB_VCP_get_string(ptr);
+}
+
+int cdc_is_connected(){
+   return USB_CDC_is_connected();
+}
+
 void cdc_poll(){}

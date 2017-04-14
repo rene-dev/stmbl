@@ -105,6 +105,13 @@ void TIM8_UP_IRQHandler(){
    hal_run_rt();
 }
 
+void bootloader(char * ptr){
+   RTC->BKP0R = 0xDEADBEEF;
+   NVIC_SystemReset();
+}
+
+COMMAND("bootloader", bootloader);
+
 int main(void)
 {
 
