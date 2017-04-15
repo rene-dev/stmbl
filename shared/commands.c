@@ -24,3 +24,11 @@ uint32_t call_cmd(char * s){
    }
    return(0);
 }
+
+void listcmd(char * ptr){
+  for(uint32_t i = 0; i < sizeof(cmd) / sizeof(cmd_t); i++){
+    printf("%s\n",cmd[i].name);
+  }
+}
+
+COMMAND("help", listcmd);
