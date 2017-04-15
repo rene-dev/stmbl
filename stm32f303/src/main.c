@@ -176,8 +176,91 @@ int main(void)
   // hal load comps
   load_comp(comp_by_name("term"));
   load_comp(comp_by_name("sim"));
-  hal_parse("term0.rt_prio = 1");  
-  hal_parse("sim0.rt_prio = 2");  
+  load_comp(comp_by_name("io"));
+  
+  hal_parse("term0.rt_prio = 0.1");
+  hal_parse("ls0.rt_prio = 0.6");
+  hal_parse("io0.rt_prio = 1.0");
+  hal_parse("dq0.rt_prio = 2.0");
+  hal_parse("curpid0.rt_prio = 3.0");
+  hal_parse("idq0.rt_prio = 4.0");
+  hal_parse("svm0.rt_prio = 5.0");
+  hal_parse("hv0.rt_prio = 6.0");
+  
+  hal_parse("term0.send_step = 50.0");
+  hal_parse("term0.gain0 = 10.0");
+  hal_parse("term0.gain1 = 10.0");
+  hal_parse("term0.gain2 = 10.0");
+  hal_parse("term0.gain3 = 10.0");
+  hal_parse("term0.gain4 = 1.0");
+  hal_parse("term0.gain5 = 10.0");
+  hal_parse("term0.gain6 = 10.0");
+  hal_parse("term0.gain7 = 10.0");
+  hal_parse("curpid0.max_cur = 25.0");
+  /*
+  //link LS
+  hal_parse("io0.mot_temp", "ls0.mot_temp");
+  hal_parse("io0.udc", "ls0.dc_volt");
+  hal_parse("io0.hv_temp", "ls0.hv_temp");
+  hal_parse("ls0.d_cmd", "curpid0.id_cmd");
+  hal_parse("ls0.q_cmd", "curpid0.iq_cmd");
+  hal_parse("ls0.pos", "idq0.pos");
+  hal_parse("ls0.pos", "dq0.pos");
+  hal_parse("ls0.en", "hv0.en");
+  
+  //ADC TEST
+  hal_parse("io0.udc", "term0.wave3");
+  hal_parse("io0.udc", "hv0.udc");
+  hal_parse("io0.iu", "dq0.u");
+  hal_parse("io0.iv", "dq0.v");
+  hal_parse("io0.iw", "dq0.w");
+  
+  // hal_parse("sim0.vel", "idq0.pos");
+  // hal_parse("sim0.vel", "dq0.pos");
+  
+  hal_parse("idq0.u", "svm0.u");
+  hal_parse("idq0.v", "svm0.v");
+  hal_parse("idq0.w", "svm0.w");
+  hal_parse("svm0.su", "hv0.u");
+  hal_parse("svm0.sv", "hv0.v");
+  hal_parse("svm0.sw", "hv0.w");
+  hal_parse("io0.udc", "svm0.udc");
+  hal_parse("io0.hv_temp", "hv0.hv_temp");
+  
+  hal_parse("dq0.d", "curpid0.id_fb");
+  hal_parse("dq0.q", "curpid0.iq_fb");
+  
+  hal_parse("dq0.d", "ls0.d_fb");
+  hal_parse("dq0.q", "ls0.q_fb");
+  
+  hal_parse("io0.u", "ls0.u_fb");
+  hal_parse("io0.v", "ls0.v_fb");
+  hal_parse("io0.w", "ls0.w_fb");
+  
+  hal_parse("curpid0.ud", "idq0.d");
+  hal_parse("curpid0.uq", "idq0.q");
+  
+  hal_parse("curpid0.id_cmd", "term0.wave0");
+  hal_parse("curpid0.iq_cmd", "term0.wave1");
+
+  hal_parse("curpid0.id_fb", "term0.wave2");
+  hal_parse("curpid0.iq_fb", "term0.wave3");
+  
+  hal_parse("term0.con", "io0.led");
+
+  hal_parse("ls0.r", "curpid0.rd");
+  hal_parse("ls0.r", "curpid0.rq");
+  hal_parse("ls0.l", "curpid0.ld");
+  hal_parse("ls0.l", "curpid0.lq");
+  hal_parse("ls0.psi", "curpid0.psi");
+  hal_parse("ls0.cur_p", "curpid0.kp");
+  hal_parse("ls0.cur_i", "curpid0.ki");
+  hal_parse("ls0.cur_ff", "curpid0.ff");
+  hal_parse("ls0.cur_ind", "curpid0.kind");
+  hal_parse("ls0.max_cur", "curpid0.max_cur");
+  hal_parse("ls0.pwm_volt", "curpid0.pwm_volt");
+  hal_parse("ls0.vel", "curpid0.vel");
+  */
   // hal parse config
   hal_init_nrt();
   // error foo

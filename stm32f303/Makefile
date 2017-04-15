@@ -29,14 +29,16 @@ SOURCES += stm32f303/src/usbd_desc.c
 SOURCES += stm32f303/src/version.c
 
 SOURCES += stm32f303/src/hal_tbl.c
-# SOURCES += stm32f303/src/comps/test.c
-# SOURCES += stm32f303/src/comps/term.c
-# SOURCES += stm32f303/src/comps/sim.c
+SOURCES += stm32f303/src/comps/hv.c
+SOURCES += stm32f303/src/comps/io.c
+SOURCES += stm32f303/src/comps/ls.c
 
 SOURCES += shared/comps/sim.c
 SOURCES += shared/comps/term.c
 SOURCES += shared/comps/curpid.c
 SOURCES += shared/comps/svm.c
+SOURCES += shared/comps/dq.c
+SOURCES += shared/comps/idq.c
 
 INCDIRS += shared
 SOURCES += shared/ringbuf.c
@@ -201,8 +203,7 @@ stm32f303/src/hal_tbl.c: tbl
 
 tbl:
 	@echo Generating tables
-	@tools/create_hal_tbl.py stm32f303/ shared/comps/*.c
-	# stm32f303/src/comps/*.c
+	@tools/create_hal_tbl.py stm32f303/ shared/comps/*.c stm32f303/src/comps/*.c
 	#shared/comps/*.c src/comps/hw/*.c src/comps/*.c
 	@tools/create_cmd.py $(SOURCES) > stm32f303/inc/commandslist.h
 
