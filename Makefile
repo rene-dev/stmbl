@@ -29,6 +29,8 @@ SOURCES += src/comps/encm.c
 
 SOURCES += shared/comps/sim.c
 SOURCES += shared/comps/term.c
+SOURCES += shared/comps/curpid.c
+SOURCES += shared/comps/svm.c
 
 SOURCES += src/eeprom.c
 # SOURCES += src/link.c
