@@ -31,6 +31,7 @@
 #include <stdlib.h>
 //#include "usbd_cdc.h"
 #include "main.h"
+#include "commands.h"
 
 //hal interface TODO: move hal interface to file
 // void hal_enable_rt(){
@@ -77,6 +78,12 @@ void DMA2_Stream0_IRQHandler(void){
    hal_run_rt();
 }
 
+void bootloader(char * ptr){
+  *((unsigned long *)0x2001C000) = 0xDEADBEEF;//set bootloader trigger
+  NVIC_SystemReset();
+}
+COMMAND("bootloader", bootloader);
+
 int main(void)
 {
    // Relocate interrupt vectors
@@ -94,8 +101,10 @@ int main(void)
    // hal load comps
    load_comp(comp_by_name("term"));
    load_comp(comp_by_name("sim"));
+   load_comp(comp_by_name("io"));
    hal_parse("term0.rt_prio = 1");  
-   hal_parse("sim0.rt_prio = 2");  
+   hal_parse("sim0.rt_prio = 2");
+   hal_parse("io0.rt_prio = 10");  
    // hal parse config
    hal_init_nrt();
    // error foo

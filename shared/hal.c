@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include "commands.h"
 
 // hal_comp_inst_t comp_insts[HAL_MAX_COMPS];
 // hal_pin_inst_t pin_insts[HAL_MAX_PINS];
@@ -262,11 +263,13 @@ void hal_init_nrt(){
       if(hal.comp_insts[i].comp->nrt_init != 0){
          hal.comp_insts[i].comp->nrt_init(hal.comp_insts[i].ctx, hal.comp_insts[i].pin_insts);
       }
-      else{
-         break;
-      }
    }
 }
+
+void init(char * ptr){
+  hal_init_nrt();
+}
+COMMAND("init", init);
 
 void sort_rt(){
    float min = INFINITY;
