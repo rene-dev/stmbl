@@ -26,6 +26,14 @@ struct sim_ctx_t{
    float vel;
 };
 
+static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+  // struct sim_ctx_t * ctx = (struct sim_ctx_t *)ctx_ptr;
+  struct sim_pin_ctx_t * pins = (struct sim_pin_ctx_t *)pin_ptr;
+  PIN(amp) = 3.1;
+  PIN(freq) = 1.0;
+  PIN(res) = 100000.0;
+}
+
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    struct sim_ctx_t * ctx = (struct sim_ctx_t *)ctx_ptr;
    struct sim_pin_ctx_t * pins = (struct sim_pin_ctx_t *)pin_ptr;
@@ -74,4 +82,16 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    PIN(vel) = ctx->vel;//mod(((int)(vel * r)) / r + o);
 }
 
-hal_comp_t sim_comp_struct = {"sim", 0, rt_func, 0, 0, 0, 0, 0, 0, sizeof(struct sim_ctx_t), sizeof(struct sim_pin_ctx_t) / sizeof(struct hal_pin_inst_t)};
+hal_comp_t sim_comp_struct = {
+  .name = "sim",
+  .nrt = 0,
+  .rt = rt_func,
+  .frt = 0,
+  .nrt_init = nrt_init,
+  .rt_start = 0,
+  .frt_start = 0,
+  .rt_stop = 0,
+  .frt_stop = 0,
+  .ctx_size = sizeof(struct sim_ctx_t),
+  .pin_count = sizeof(struct sim_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+};

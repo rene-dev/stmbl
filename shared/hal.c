@@ -82,6 +82,113 @@ volatile hal_comp_inst_t * comp_inst_by_pin_inst(volatile hal_pin_inst_t * p){
    return(0);
 }
 
+
+
+void hal_term_print_state(){
+   switch(hal.hal_state){
+      case HAL_OK2:
+      printf("HAL state:  HAL_OK2\n");
+      break;
+      case RT_TOO_LONG:
+      printf("HAL state:  RT_TOO_LONG\n");
+      break;
+      case FRT_TOO_LONG:
+      printf("HAL state:  FRT_TOO_LONG\n");
+      break;
+      case MISC_ERROR:
+      printf("HAL state:  MISC_ERROR\n");
+      break;
+      case MEM_ERROR:
+      printf("HAL state:  MEM_ERROR\n");
+      break;
+      case CONFIG_LOAD_ERROR:
+      printf("HAL state:  CONFIG_LOAD_ERROR\n");
+      break;
+      case CONFIG_ERROR:
+      printf("HAL state:  CONFIG_ERROR\n");
+      break;
+      case NAN_ERROR:
+      printf("HAL state:  NAN_ERROR\n");
+      break;
+      default:
+      printf("HAL state:  unkonwn error\n");
+   }
+}
+
+void hal_term_print_info(char * ptr){
+   printf("######## hal info ########\n");
+   printf("#pins %lu\n", hal.pin_inst_count);
+   printf("#comps %lu\n", hal.comp_inst_count);
+   // printf("link errors %lu\n", hal.link_errors);
+   // printf("pin errors %lu\n", hal.pin_errors);
+   // printf("comp errors %lu\n", hal.comp_errors);
+   // printf("set errors %lu\n", hal.set_errors);
+   // printf("get errors %lu\n", hal.get_errors);
+   // printf("foo0.bar:  %f\n", hal_get_pin("foo0.bar"));
+   // printf("error_name: %s\n",hal.error_name);
+   float pe = hal.rt_period;
+   float ct = hal.rt_calc_time;
+   if(pe > 0.0){
+      printf("rt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
+      //printf("=%f%%\n",(ct/pe)*100);
+   }
+   pe = hal.frt_period;
+   ct = hal.rt_calc_time;
+   if(pe > 0.0){
+      printf("frt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
+      //printf("=%f%%\n",(ct/pe)*100);
+   }
+   pe = hal.nrt_period;
+   ct = hal.nrt_calc_time;
+   if(pe > 0.0){
+      printf("nrt time: %f/%fs", ct, pe);
+      printf("=%f%%\n",(ct/pe)*100);
+   }
+   switch(hal.rt_state){
+      case RT_STOP:
+      printf("rt state:  STOP\n");
+      break;
+      case RT_SLEEP:
+      printf("rt state:  SLEEP\n");
+      break;
+      case RT_CALC:
+      printf("rt state:  CALC\n");
+      break;
+   }
+   switch(hal.frt_state){
+      case FRT_STOP:
+      printf("frt state:  STOP\n");
+      break;
+      case FRT_SLEEP:
+      printf("frt state:  SLEEP\n");
+      break;
+      case FRT_CALC:
+      printf("frt state:  CALC\n");
+      break;
+   }
+   hal_term_print_state();
+   
+   printf("active rt funcs(%lu):\n", hal.rt_comp_count);
+   for(int j = 0; j < hal.rt_comp_count; j++){
+      printf("%s\n", hal.rt_comps[j]->comp->name);
+   }
+   
+   printf("active frt funcs(%lu):\n", hal.frt_comp_count);
+   for(int j = 0; j < hal.frt_comp_count; j++){
+      printf("%s\n", hal.frt_comps[j]->comp->name);
+   }
+   
+   printf("active nrt funcs:\n");
+   for(int j = 0; j < hal.comp_inst_count; j++){
+      if(hal.comp_insts[j].comp->nrt){
+         printf("%s\n", hal.comp_insts[j].comp->name);
+      }
+   }
+}
+
+COMMAND("hal", hal_term_print_info);
+
+
 uint32_t load_comp(hal_comp_t * comp){
    if(!comp){
       printf("load_comp: null ptr\n");
@@ -270,6 +377,37 @@ void init(char * ptr){
   hal_init_nrt();
 }
 COMMAND("init", init);
+
+void load(char * ptr){
+   printf("load :%s:\n", ptr);
+   load_comp(comp_by_name(ptr));
+}
+
+COMMAND("load", load);
+
+void show(char * ptr){
+   int j = 0;
+   int pin_offset = 0;
+   for(int i = 0; i < comp_count; i++){
+      printf("%s\n", comps[i]->name);
+      for(; j < pin_offset + comps[i]->pin_count; j++){
+         printf("- %s\n", pins[j]);
+      }
+      pin_offset += comps[i]->pin_count;
+   }
+}
+COMMAND("show", show);
+
+void list(char * ptr){
+   for(int i = 0; i < hal.comp_inst_count; i++){
+      printf("%s%lu:\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance);
+      for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
+         volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
+         printf("-  %s <= %s%lu.%s = %f\n", hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
+      }
+   }
+}
+COMMAND("list", list);
 
 void sort_rt(){
    float min = INFINITY;
