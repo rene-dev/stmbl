@@ -102,7 +102,9 @@ int main(void)
    load_comp(comp_by_name("term"));
    load_comp(comp_by_name("sim"));
    load_comp(comp_by_name("io"));
-   hal_parse("term0.rt_prio = 1");  
+   load_comp(comp_by_name("encm"));
+   hal_parse("term0.rt_prio = 1");
+   hal_parse("encm0.rt_prio = 1");  
    hal_parse("sim0.rt_prio = 2");
    hal_parse("io0.rt_prio = 10");  
    // hal parse config

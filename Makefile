@@ -25,6 +25,7 @@ SOURCES += src/usb_cdc.c
 SOURCES += src/hal_tbl.c
 
 SOURCES += src/comps/hw/io4.c
+SOURCES += src/comps/encm.c
 
 SOURCES += shared/comps/sim.c
 SOURCES += shared/comps/term.c
@@ -195,7 +196,7 @@ src/hal_tbl.c: tbl
 
 tbl:
 	@echo Generating tables
-	@tools/create_hal_tbl.py . shared/comps/*.c src/comps/hw/*.c
+	@tools/create_hal_tbl.py . shared/comps/*.c src/comps/hw/*.c src/comps/*.c
 	@tools/create_cmd.py $(SOURCES) > inc/commandslist.h
 
 boot:
