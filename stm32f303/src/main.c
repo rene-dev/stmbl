@@ -57,6 +57,7 @@
 #include "usbd_cdc_if.h"
 #include "version.h"
 #include "common.h"
+#include "commands.h"
 
 uint32_t systick_freq;
 
@@ -174,7 +175,6 @@ int main(void)
   hal_init();
   // hal load comps
   load_comp(comp_by_name("term"));
-  load_comp(comp_by_name("test"));
   load_comp(comp_by_name("sim"));
   hal_parse("term0.rt_prio = 1");  
   hal_parse("sim0.rt_prio = 2");  

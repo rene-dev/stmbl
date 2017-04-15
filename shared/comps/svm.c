@@ -1,12 +1,18 @@
+#include "commands.h"
+#include "hal.h"
+#include "math.h"
+#include "defines.h"
+#include "angle.h"
+
 HAL_COMP(svm);
 
 //U V W inputs
-HAL_PIN(u) = 0;
-HAL_PIN(v) = 0;
-HAL_PIN(w) = 0;
+HAL_PIN(u);
+HAL_PIN(v);
+HAL_PIN(w);
 
 //dclink input
-HAL_PIN(udc) = 0;
+HAL_PIN(udc);
 
 //U V W outputs
 HAL_PIN(su);
@@ -14,17 +20,29 @@ HAL_PIN(sv);
 HAL_PIN(sw);
 
 //commutation mode
-HAL_PIN(cmode) = 0.0;
+HAL_PIN(cmode);
 
 //modulation mode
-HAL_PIN(mode) = 2.0;
+HAL_PIN(mode);
 
 //half bridge enable out
-HAL_PIN(enu) = 1.0;
-HAL_PIN(env) = 1.0;
-HAL_PIN(enw) = 1.0;
+HAL_PIN(enu);
+HAL_PIN(env);
+HAL_PIN(enw);
 
-RT(
+static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+  // struct svm_ctx_t * ctx = (struct svm_ctx_t *)ctx_ptr;
+  struct svm_pin_ctx_t * pins = (struct svm_pin_ctx_t *)pin_ptr;
+  PIN(mode) = 2.0;
+  PIN(enu) = 1.0;
+  PIN(env) = 1.0;
+  PIN(enw) = 1.0;
+}
+
+static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   // struct svm_ctx_t * ctx = (struct svm_ctx_t *)ctx_ptr;
+   struct svm_pin_ctx_t * pins = (struct svm_pin_ctx_t *)pin_ptr;
+
    float offset = 0;
    float udc = PIN(udc);
    
@@ -75,6 +93,18 @@ RT(
    PIN(su) = u - offset;
    PIN(sv) = v - offset;
    PIN(sw) = w - offset;
-);
+}
 
-ENDCOMP;
+hal_comp_t svm_comp_struct = {
+  .name = "svm",
+  .nrt = 0,
+  .rt = rt_func,
+  .frt = 0,
+  .nrt_init = nrt_init,
+  .rt_start = 0,
+  .frt_start = 0,
+  .rt_stop = 0,
+  .frt_stop = 0,
+  .ctx_size = 0,
+  .pin_count = sizeof(struct svm_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+};

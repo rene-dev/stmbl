@@ -29,9 +29,14 @@ SOURCES += stm32f303/src/usbd_desc.c
 SOURCES += stm32f303/src/version.c
 
 SOURCES += stm32f303/src/hal_tbl.c
-SOURCES += stm32f303/src/comps/test.c
-SOURCES += stm32f303/src/comps/term.c
-SOURCES += stm32f303/src/comps/sim.c
+# SOURCES += stm32f303/src/comps/test.c
+# SOURCES += stm32f303/src/comps/term.c
+# SOURCES += stm32f303/src/comps/sim.c
+
+SOURCES += shared/comps/sim.c
+SOURCES += shared/comps/term.c
+SOURCES += shared/comps/curpid.c
+SOURCES += shared/comps/svm.c
 
 INCDIRS += shared
 SOURCES += shared/ringbuf.c
@@ -40,6 +45,7 @@ SOURCES += shared/crc16.c
 SOURCES += shared/common.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
+SOURCES += shared/commands.c
 #SOURCES += shared/hal_term.c
 
 #USB Driver
@@ -194,8 +200,11 @@ stm32f303/inc/hal_tbl.h: tbl
 stm32f303/src/hal_tbl.c: tbl
 
 tbl:
-	tools/create_hal_tbl.py stm32f303/ stm32f303/src/comps/*.c
-	tools/create_cmd.py stm32f303/src/comps/*.c > stm32f303/inc/commandslist.h
+	@echo Generating tables
+	@tools/create_hal_tbl.py stm32f303/ shared/comps/*.c
+	# stm32f303/src/comps/*.c
+	#shared/comps/*.c src/comps/hw/*.c src/comps/*.c
+	@tools/create_cmd.py $(SOURCES) > stm32f303/inc/commandslist.h
 
 gccversion:
 	@$(CC) --version
