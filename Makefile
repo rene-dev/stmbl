@@ -33,6 +33,8 @@ SOURCES += shared/comps/curpid.c
 SOURCES += shared/comps/svm.c
 SOURCES += shared/comps/dq.c
 SOURCES += shared/comps/idq.c
+SOURCES += shared/comps/vel.c
+SOURCES += shared/comps/rev.c
 
 SOURCES += src/eeprom.c
 # SOURCES += src/link.c

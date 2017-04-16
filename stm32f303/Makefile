@@ -39,6 +39,8 @@ SOURCES += shared/comps/curpid.c
 SOURCES += shared/comps/svm.c
 SOURCES += shared/comps/dq.c
 SOURCES += shared/comps/idq.c
+SOURCES += shared/comps/rev.c
+SOURCES += shared/comps/vel.c
 
 INCDIRS += shared
 SOURCES += shared/ringbuf.c
