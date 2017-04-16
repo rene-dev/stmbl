@@ -133,33 +133,53 @@ int main(void)
   MX_TIM8_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
-
+  MX_ADC3_Init();
+  MX_ADC4_Init();
   // MX_DAC_Init();
+  MX_OPAMP1_Init();
   MX_OPAMP2_Init();
+  MX_OPAMP3_Init();
   // MX_USART1_UART_Init();
-  // MX_USART3_UART_Init();
   MX_USB_DEVICE_Init();
   __HAL_RCC_DMA1_CLK_ENABLE();
-  // __HAL_RCC_DMA2_CLK_ENABLE();
+  __HAL_RCC_DMA2_CLK_ENABLE();
   __HAL_RCC_RTC_ENABLE();
 
+  /* USER CODE BEGIN 2 */
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
 
+  HAL_OPAMP_SelfCalibrate(&hopamp1);
   HAL_OPAMP_SelfCalibrate(&hopamp2);
+  HAL_OPAMP_SelfCalibrate(&hopamp3);
   
   //USB EN IO board: PB15
+  // GPIO_InitStruct.Pin = GPIO_PIN_15;
+  // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  // GPIO_InitStruct.Pull = GPIO_NOPULL;
+  // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  // HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+  
+  //IO pins
   GPIO_InitTypeDef GPIO_InitStruct;
-  GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_15;
+  GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  if (HAL_OPAMP_Start(&hopamp2) != HAL_OK){
-    Error_Handler();
-  }
+     if (HAL_OPAMP_Start(&hopamp1) != HAL_OK){
+       Error_Handler();
+     }
+     if (HAL_OPAMP_Start(&hopamp2) != HAL_OK){
+       Error_Handler();
+     }
+     if (HAL_OPAMP_Start(&hopamp3) != HAL_OK){
+       Error_Handler();
+     }
 
   htim8.Instance->CCR1 = 0;
   htim8.Instance->CCR2 = 0;
@@ -167,9 +187,29 @@ int main(void)
   
   HAL_ADC_Start(&hadc1);
   HAL_ADC_Start(&hadc2);
-
+  HAL_ADC_Start(&hadc3);
+  HAL_ADC_Start(&hadc4);
   if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
  	Error_Handler();
+  }
+  TIM8->RCR = 1;//uptate event foo
+  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
+	Error_Handler();
+  }
+  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
+  	Error_Handler();
+  }
+  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
+  	Error_Handler();
+  }
+  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
+	Error_Handler();
+  }
+  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
+  	Error_Handler();
+  }
+  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
+  	Error_Handler();
   }
 
   hal_init();
@@ -177,6 +217,12 @@ int main(void)
   load_comp(comp_by_name("term"));
   load_comp(comp_by_name("sim"));
   load_comp(comp_by_name("io"));
+  load_comp(comp_by_name("ls"));
+  load_comp(comp_by_name("dq"));
+  load_comp(comp_by_name("idq"));
+  load_comp(comp_by_name("svm"));
+  load_comp(comp_by_name("hv"));
+  load_comp(comp_by_name("curpid"));
   
   hal_parse("term0.rt_prio = 0.1");
   hal_parse("ls0.rt_prio = 0.6");
@@ -187,7 +233,7 @@ int main(void)
   hal_parse("svm0.rt_prio = 5.0");
   hal_parse("hv0.rt_prio = 6.0");
   
-  hal_parse("term0.send_step = 50.0");
+  hal_parse("term0.send_step = 100.0");
   hal_parse("term0.gain0 = 10.0");
   hal_parse("term0.gain1 = 10.0");
   hal_parse("term0.gain2 = 10.0");
@@ -197,70 +243,63 @@ int main(void)
   hal_parse("term0.gain6 = 10.0");
   hal_parse("term0.gain7 = 10.0");
   hal_parse("curpid0.max_cur = 25.0");
-  /*
+
   //link LS
-  hal_parse("io0.mot_temp", "ls0.mot_temp");
-  hal_parse("io0.udc", "ls0.dc_volt");
-  hal_parse("io0.hv_temp", "ls0.hv_temp");
-  hal_parse("ls0.d_cmd", "curpid0.id_cmd");
-  hal_parse("ls0.q_cmd", "curpid0.iq_cmd");
-  hal_parse("ls0.pos", "idq0.pos");
-  hal_parse("ls0.pos", "dq0.pos");
-  hal_parse("ls0.en", "hv0.en");
+  hal_parse("ls0.mot_temp = io0.mot_temp");
+  hal_parse("ls0.dc_volt = io0.udc");
+  hal_parse("ls0.hv_temp = io0.hv_temp");
+  hal_parse("curpid0.id_cmd = ls0.d_cmd");
+  hal_parse("curpid0.iq_cmd = ls0.q_cmd");
+  hal_parse("idq0.pos = ls0.pos");
+  hal_parse("dq0.pos = ls0.pos");
+  hal_parse("hv0.en = ls0.en");
   
   //ADC TEST
-  hal_parse("io0.udc", "term0.wave3");
-  hal_parse("io0.udc", "hv0.udc");
-  hal_parse("io0.iu", "dq0.u");
-  hal_parse("io0.iv", "dq0.v");
-  hal_parse("io0.iw", "dq0.w");
+  hal_parse("term0.wave3 = io0.udc");
+  hal_parse("hv0.udc = io0.udc");
+  hal_parse("dq0.u = io0.iu");
+  hal_parse("dq0.v = io0.iv");
+  hal_parse("dq0.w = io0.iw");
   
   // hal_parse("sim0.vel", "idq0.pos");
   // hal_parse("sim0.vel", "dq0.pos");
   
-  hal_parse("idq0.u", "svm0.u");
-  hal_parse("idq0.v", "svm0.v");
-  hal_parse("idq0.w", "svm0.w");
-  hal_parse("svm0.su", "hv0.u");
-  hal_parse("svm0.sv", "hv0.v");
-  hal_parse("svm0.sw", "hv0.w");
-  hal_parse("io0.udc", "svm0.udc");
-  hal_parse("io0.hv_temp", "hv0.hv_temp");
+  hal_parse("svm0.u = idq0.u");
+  hal_parse("svm0.v = idq0.v");
+  hal_parse("svm0.w = idq0.w");
+  hal_parse("hv0.u = svm0.su");
   
-  hal_parse("dq0.d", "curpid0.id_fb");
-  hal_parse("dq0.q", "curpid0.iq_fb");
-  
-  hal_parse("dq0.d", "ls0.d_fb");
-  hal_parse("dq0.q", "ls0.q_fb");
-  
-  hal_parse("io0.u", "ls0.u_fb");
-  hal_parse("io0.v", "ls0.v_fb");
-  hal_parse("io0.w", "ls0.w_fb");
-  
-  hal_parse("curpid0.ud", "idq0.d");
-  hal_parse("curpid0.uq", "idq0.q");
-  
-  hal_parse("curpid0.id_cmd", "term0.wave0");
-  hal_parse("curpid0.iq_cmd", "term0.wave1");
+  hal_parse("hv0.v = svm0.sv");
+  hal_parse("hv0.w = svm0.sw");
+  hal_parse("svm0.udc = io0.udc");
+  hal_parse("hv0.hv_temp = io0.hv_temp");
+  hal_parse("curpid0.id_fb = dq0.d");
+  hal_parse("curpid0.iq_fb = dq0.q");
+  hal_parse("ls0.d_fb = dq0.d");
+  hal_parse("ls0.q_fb = dq0.q");
+  hal_parse("ls0.u_fb = io0.u");
+  hal_parse("ls0.v_fb = io0.v");
+  hal_parse("ls0.w_fb = io0.w");
+  hal_parse("idq0.d = curpid0.ud");
+  hal_parse("idq0.q = curpid0.uq");
+  hal_parse("term0.wave0 = curpid0.id_cmd");
+  hal_parse("term0.wave1 = curpid0.iq_cmd");
+  hal_parse("term0.wave2 = curpid0.id_fb");
+  hal_parse("term0.wave3 = curpid0.iq_fb");
+  hal_parse("io0.led = term0.con");
+  hal_parse("curpid0.rd = ls0.r");
+  hal_parse("curpid0.rq = ls0.r");
+  hal_parse("curpid0.ld = ls0.l");
+  hal_parse("curpid0.lq = ls0.l");
+  hal_parse("curpid0.psi = ls0.psi");
+  hal_parse("curpid0.kp = ls0.cur_p");
+  hal_parse("curpid0.ki = ls0.cur_i");
+  hal_parse("curpid0.ff = ls0.cur_ff");
+  hal_parse("curpid0.kind = ls0.cur_ind");
+  hal_parse("curpid0.max_cur = ls0.max_cur");
+  hal_parse("curpid0.pwm_volt = ls0.pwm_volt");
+  hal_parse("curpid0.vel = ls0.vel");
 
-  hal_parse("curpid0.id_fb", "term0.wave2");
-  hal_parse("curpid0.iq_fb", "term0.wave3");
-  
-  hal_parse("term0.con", "io0.led");
-
-  hal_parse("ls0.r", "curpid0.rd");
-  hal_parse("ls0.r", "curpid0.rq");
-  hal_parse("ls0.l", "curpid0.ld");
-  hal_parse("ls0.l", "curpid0.lq");
-  hal_parse("ls0.psi", "curpid0.psi");
-  hal_parse("ls0.cur_p", "curpid0.kp");
-  hal_parse("ls0.cur_i", "curpid0.ki");
-  hal_parse("ls0.cur_ff", "curpid0.ff");
-  hal_parse("ls0.cur_ind", "curpid0.kind");
-  hal_parse("ls0.max_cur", "curpid0.max_cur");
-  hal_parse("ls0.pwm_volt", "curpid0.pwm_volt");
-  hal_parse("ls0.vel", "curpid0.vel");
-  */
   // hal parse config
   hal_init_nrt();
   // error foo

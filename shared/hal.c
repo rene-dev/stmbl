@@ -184,6 +184,9 @@ void hal_term_print_info(char * ptr){
          printf("%s\n", hal.comp_insts[j].comp->name);
       }
    }
+   printf("HAL_MAX_COMPS %lu/%i\n", hal.comp_inst_count, HAL_MAX_COMPS);
+   printf("HAL_MAX_PINS %lu/%i\n", hal.pin_inst_count, HAL_MAX_PINS);
+   printf("HAL_MAX_CTX %lu/%i\n", hal.ctx_count, HAL_MAX_CTX);
 }
 
 COMMAND("hal", hal_term_print_info);

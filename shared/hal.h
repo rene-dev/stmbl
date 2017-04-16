@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define HAL_MAX_PINS 128
+#define HAL_MAX_PINS 512
 #define HAL_MAX_COMPS 16
 #define HAL_MAX_CTX 4096
 
