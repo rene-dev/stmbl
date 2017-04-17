@@ -73,14 +73,19 @@ typedef union{
 #define RECORD_TYPE_MODE_DATA_RECORD 0xB0
 
 //process data
-#define DATA_TYPE_PAD 0x00//padding, done automaticly at the end
-#define DATA_TYPE_BITS 0x01
-#define DATA_TYPE_UNSIGNED 0x02
-#define DATA_TYPE_SIGNED 0x03
-#define DATA_TYPE_NONVOL_UNSIGNED 0x04
-#define DATA_TYPE_NONVOL_SIGNED 0x05
-#define DATA_TYPE_NONVOL_STREAM 0x06
-#define DATA_TYPE_NONVOL_BOOLEAN 0x07
+#define DATA_TYPE_PAD 				0x00 //padding, done automaticly at the end
+#define DATA_TYPE_BITS 				0x01
+#define DATA_TYPE_UNSIGNED 			0x02
+#define DATA_TYPE_SIGNED 			0x03
+#define DATA_TYPE_NONVOL_UNSIGNED 	0x04
+#define DATA_TYPE_NONVOL_SIGNED 	0x05
+#define DATA_TYPE_STREAM 			0x06
+#define DATA_TYPE_BOOLEAN 			0x07
+#define DATA_TYPE_ENCODER  			0x08
+#define DATA_TYPE_FLOAT  			0x09 // New for STMBL
+#define DATA_TYPE_ENCODER_H     	0x18 
+#define DATA_TYPE_ENCODER_L     	0x28 
+
 
 #define DATA_DIRECTION_INPUT 0x00
 #define DATA_DIRECTION_BI_DIRECTIONAL 0x40
@@ -444,11 +449,11 @@ RT_INIT(
   process_data_descriptor_t *last_pd;
 
   ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
-  ADD_PROCESS_VAR(("enable", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));             metadata(&(pd_table.enable), last_pd);
+  ADD_PROCESS_VAR(("enable", "none", 1, DATA_TYPE_BOOLEAN, DATA_DIRECTION_OUTPUT, 0, 1));         metadata(&(pd_table.enable), last_pd);
   ADD_PROCESS_VAR(("pos_cmd", "rad", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -3.2, 3.2));    metadata(&(pd_table.pos_cmd), last_pd);
   
   ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, -100, 100));    metadata(&(pd_table.input_pins), last_pd);
-  ADD_PROCESS_VAR(("fault", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));               metadata(&(pd_table.fault), last_pd);
+  ADD_PROCESS_VAR(("fault", "none", 1, DATA_TYPE_BOOLEAN, DATA_DIRECTION_INPUT, 0, 1));               metadata(&(pd_table.fault), last_pd);
   ADD_PROCESS_VAR(("pos_fb", "rad", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -3.2, 3.2));      metadata(&(pd_table.pos_fb), last_pd);
   //globals and modes are not working. https://github.com/LinuxCNC/linuxcnc/blob/2957cc5ad0a463c39fb35c10a0c14909c09a5fb7/src/hal/drivers/mesa-hostmot2/sserial.c#L1516
   // - globals need write support
