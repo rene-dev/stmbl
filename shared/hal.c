@@ -3,14 +3,8 @@
 #include <stdio.h>
 #include <math.h>
 #include "commands.h"
+#include "defines.h"
 
-// hal_comp_inst_t comp_insts[HAL_MAX_COMPS];
-// hal_pin_inst_t pin_insts[HAL_MAX_PINS];
-// uint8_t ctxs[HAL_MAX_CTX];
-
-// uint32_t comp_inst_count;
-// uint32_t pin_inst_count;
-// uint32_t ctx_count;
 volatile hal_t hal;
 
 hal_comp_t * comp_by_name(NAME name){
@@ -117,8 +111,11 @@ void hal_term_print_state(){
 
 void hal_term_print_info(char * ptr){
    printf("######## hal info ########\n");
-   printf("#pins %lu\n", hal.pin_inst_count);
-   printf("#comps %lu\n", hal.comp_inst_count);
+   printf("HAL_MAX_COMPS %lu/%i\n", hal.comp_inst_count, HAL_MAX_COMPS);
+   printf("HAL_MAX_PINS %lu/%i\n", hal.pin_inst_count, HAL_MAX_PINS);
+   printf("HAL_MAX_CTX %lu/%i\n", hal.ctx_count, HAL_MAX_CTX);
+   //printf("#pins %lu\n", hal.pin_inst_count);
+   //printf("#comps %lu\n", hal.comp_inst_count);
    // printf("link errors %lu\n", hal.link_errors);
    // printf("pin errors %lu\n", hal.pin_errors);
    // printf("comp errors %lu\n", hal.comp_errors);
@@ -128,21 +125,44 @@ void hal_term_print_info(char * ptr){
    // printf("error_name: %s\n",hal.error_name);
    float pe = hal.rt_period;
    float ct = hal.rt_calc_time;
-   if(pe > 0.0){
-      printf("rt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
-      //printf("=%f%%\n",(ct/pe)*100);
+   float mct = hal.max_rt_calc_time;
+   if(mct > 0.0){
+      if(pe > 0.0){
+         printf("rt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
+         printf("max rt time: %fus/%fus = %f%% @ %fkHz\n", mct * 1000000.0, pe * 1000000.0, (mct / pe) * 100.0, 1.0 / pe / 1000.0);
+         //printf("=%f%%\n",(ct/pe)*100);
+      }
+      else{
+         printf("rt time: %fus\n", ct * 1000000.0);
+         printf("max rt time: %fus\n", mct * 1000000.0);
+      }
    }
    pe = hal.frt_period;
-   ct = hal.rt_calc_time;
-   if(pe > 0.0){
-      printf("frt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
-      //printf("=%f%%\n",(ct/pe)*100);
+   ct = hal.frt_calc_time;
+   mct = hal.max_frt_calc_time; 
+   if(mct > 0.0){  
+      if(pe > 0.0){
+         printf("frt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
+         printf("max frt time: %fus/%fus = %f%% @ %fkHz\n", mct * 1000000.0, pe * 1000000.0, (mct / pe) * 100.0, 1.0 / pe / 1000.0);
+         //printf("=%f%%\n",(ct/pe)*100);
+      }
+      else{
+         printf("frt time: %fus\n", ct * 1000000.0);
+         printf("max frt time: %fus\n", mct * 1000000.0);
+      }
    }
    pe = hal.nrt_period;
    ct = hal.nrt_calc_time;
-   if(pe > 0.0){
-      printf("nrt time: %f/%fs", ct, pe);
-      printf("=%f%%\n",(ct/pe)*100);
+   mct = hal.max_nrt_calc_time;
+   if(mct > 0.0){
+      if(pe > 0.0){
+         printf("nrt time: %f/%fs\n", ct, pe);
+         printf("max nrt time: %f/%fs\n", mct, pe);
+      }
+      else{
+         printf("nrt time: %fus\n", ct * 1000000.0);
+         printf("max nrt time: %fus\n", mct * 1000000.0);
+      }
    }
    switch(hal.rt_state){
       case RT_STOP:
@@ -184,9 +204,6 @@ void hal_term_print_info(char * ptr){
          printf("%s\n", hal.comp_insts[j].comp->name);
       }
    }
-   printf("HAL_MAX_COMPS %lu/%i\n", hal.comp_inst_count, HAL_MAX_COMPS);
-   printf("HAL_MAX_PINS %lu/%i\n", hal.pin_inst_count, HAL_MAX_PINS);
-   printf("HAL_MAX_CTX %lu/%i\n", hal.ctx_count, HAL_MAX_CTX);
 }
 
 COMMAND("hal", hal_term_print_info);
@@ -246,15 +263,24 @@ uint32_t load_comp(hal_comp_t * comp){
 }
 
 void hal_run_rt(){
-   static unsigned int last_start = 0;
-   unsigned int start = hal_get_systick_value();
+   float period = 0.0;
    
-   if(last_start < start){
-     last_start += hal_get_systick_reload();
-   }
-   
-   float period = ((float)(last_start - start)) / hal_get_systick_freq();
-   last_start = start;
+   #ifdef HAL_CALC_TIME
+      static unsigned int last_start = 0;
+      unsigned int start = hal_get_systick_value();
+      #ifdef HAL_COMP_CALC_TIME
+         unsigned int comp_start;
+         unsigned int comp_end;
+         struct pin_ctx_t * pins;
+      #endif
+      
+      if(last_start < start){
+        last_start += hal_get_systick_reload();
+      }
+      
+      period = ((float)(last_start - start)) / hal_get_systick_freq();
+      last_start = start;
+   #endif
    
    switch(hal.rt_state){
       case RT_STOP:
@@ -274,13 +300,19 @@ void hal_run_rt(){
          hal.rt_state = RT_CALC;
    }
    
-   for(hal.active_rt_func = 0; hal.active_rt_func < HAL_MAX_COMPS; hal.active_rt_func++){
-      if(hal.rt_comps[hal.active_rt_func] != 0){
-         hal.rt_comps[hal.active_rt_func]->comp->rt(period, hal.rt_comps[hal.active_rt_func]->ctx, hal.rt_comps[hal.active_rt_func]->pin_insts);
-      }
-      else{
-         break;
-      }
+   for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_comp_count; hal.active_rt_func++){
+      #ifdef HAL_COMP_CALC_TIME
+         comp_start = hal_get_systick_value();
+      #endif
+      hal.rt_comps[hal.active_rt_func]->comp->rt(period, hal.rt_comps[hal.active_rt_func]->ctx, hal.rt_comps[hal.active_rt_func]->pin_insts);
+      #ifdef HAL_COMP_CALC_TIME
+         comp_end = hal_get_systick_value();
+         if(comp_start < comp_end){
+           comp_start += hal_get_systick_reload();
+         }
+         pins = ((struct pin_ctx_t *)(hal.rt_comps[hal.active_rt_func]->pin_insts));
+         PIN(rt_calc_time) = ((float)(comp_start - comp_end)) / hal_get_systick_freq();
+      #endif
    }
    hal.active_rt_func = -1;
    
@@ -288,25 +320,38 @@ void hal_run_rt(){
       hal.rt_state = RT_SLEEP;
    }
    
-   unsigned int end = hal_get_systick_value();
-   if(start < end){
-     start += hal_get_systick_reload();
-   }
+   #ifdef HAL_CALC_TIME
+      unsigned int end = hal_get_systick_value();
+      if(start < end){
+        start += hal_get_systick_reload();
+      }
+      
+      hal.rt_calc_time = ((float)(start - end)) / hal_get_systick_freq();
+      hal.max_rt_calc_time = MAX(hal.max_rt_calc_time, hal.rt_calc_time);
+   #endif
    
-   hal.rt_calc_time = ((float)(start - end)) / hal_get_systick_freq();
    hal.rt_period = period;
 }
 
 void hal_run_frt(){
-   static unsigned int last_start = 0;
-   unsigned int start = hal_get_systick_value();
+   float period = 0.0;
    
-   if(last_start < start){
-     last_start += hal_get_systick_reload();
-   }
-   
-   float period = ((float)(last_start - start)) / hal_get_systick_freq();
-   last_start = start;
+   #ifdef HAL_CALC_TIME
+      static unsigned int last_start = 0;
+      unsigned int start = hal_get_systick_value();
+      #ifdef HAL_COMP_CALC_TIME
+         unsigned int comp_start;
+         unsigned int comp_end;
+         struct pin_ctx_t * pins;
+      #endif
+      
+      if(last_start < start){
+        last_start += hal_get_systick_reload();
+      }
+      
+      period = ((float)(last_start - start)) / hal_get_systick_freq();
+      last_start = start;
+   #endif
    
    switch(hal.frt_state){
       case FRT_STOP:
@@ -326,13 +371,19 @@ void hal_run_frt(){
          hal.frt_state = FRT_CALC;
    }
    
-   for(hal.active_frt_func = 0; hal.active_frt_func < HAL_MAX_COMPS; hal.active_frt_func++){
-      if(hal.frt_comps[hal.active_frt_func] != 0){
-         hal.frt_comps[hal.active_frt_func]->comp->frt(period, hal.frt_comps[hal.active_frt_func]->ctx, hal.frt_comps[hal.active_frt_func]->pin_insts);
-      }
-      else{
-         break;
-      }
+   for(hal.active_frt_func = 0; hal.active_frt_func < hal.frt_comp_count; hal.active_frt_func++){
+      #ifdef HAL_COMP_CALC_TIME
+         comp_start = hal_get_systick_value();
+      #endif
+      hal.frt_comps[hal.active_frt_func]->comp->frt(period, hal.frt_comps[hal.active_frt_func]->ctx, hal.frt_comps[hal.active_frt_func]->pin_insts);
+      #ifdef HAL_COMP_CALC_TIME
+         comp_end = hal_get_systick_value();
+         if(comp_start < comp_end){
+           comp_start += hal_get_systick_reload();
+         }
+         pins = ((struct pin_ctx_t *)(hal.frt_comps[hal.active_frt_func]->pin_insts));
+         PIN(frt_calc_time) = ((float)(comp_start - comp_end)) / hal_get_systick_freq();
+      #endif
    }
    hal.active_frt_func = -1;
    
@@ -340,31 +391,67 @@ void hal_run_frt(){
       hal.frt_state = FRT_SLEEP;
    }
    
-   unsigned int end = hal_get_systick_value();
-   hal.frt_calc_time = ((float)(start - end)) / hal_get_systick_freq();
+   #ifdef HAL_CALC_TIME
+      unsigned int end = hal_get_systick_value();
+      if(start < end){
+        start += hal_get_systick_reload();
+      }
+      
+      hal.frt_calc_time = ((float)(start - end)) / hal_get_systick_freq();
+      hal.max_frt_calc_time = MAX(hal.max_frt_calc_time, hal.frt_calc_time);
+   #endif
+   
    hal.frt_period = period;
 }
 
 void hal_run_nrt(){
-   static unsigned int last_start = 0;
-   unsigned int start = hal_get_systick_value();
+   float period = 0.0;
    
-   if(last_start < start){
-     last_start += hal_get_systick_reload();
-   }
-   
-   float period = ((float)(last_start - start)) / hal_get_systick_freq();
-   last_start = start;
+   #ifdef HAL_CALC_TIME
+      static unsigned int last_start = 0;
+      unsigned int start = hal_get_systick_value();
+      #ifdef HAL_COMP_CALC_TIME
+         unsigned int comp_start;
+         unsigned int comp_end;
+         struct pin_ctx_t * pins;
+      #endif
+      
+      if(last_start < start){
+        last_start += hal_get_systick_reload();
+      }
+      
+      period = ((float)(last_start - start)) / hal_get_systick_freq();
+      last_start = start;
+   #endif
    
    for(hal.active_nrt_func = 0; hal.active_nrt_func < hal.comp_inst_count; hal.active_nrt_func++){
       if(hal.comp_insts[hal.active_nrt_func].comp->nrt != 0){
+         #ifdef HAL_COMP_CALC_TIME
+            comp_start = hal_get_systick_value();
+         #endif
          hal.comp_insts[hal.active_nrt_func].comp->nrt(period, hal.comp_insts[hal.active_nrt_func].ctx, hal.comp_insts[hal.active_nrt_func].pin_insts);
+         #ifdef HAL_COMP_CALC_TIME
+            comp_end = hal_get_systick_value();
+            if(comp_start < comp_end){
+              comp_start += hal_get_systick_reload();
+            }
+            pins = (struct pin_ctx_t *)(hal.comp_insts[hal.active_nrt_func].pin_insts);
+            PIN(nrt_calc_time) = ((float)(comp_start - comp_end)) / hal_get_systick_freq();
+         #endif
       }
    }
    hal.active_nrt_func = -1;
    
-   unsigned int end = hal_get_systick_value();
-   hal.nrt_calc_time = ((float)(start - end)) / hal_get_systick_freq();
+   #ifdef HAL_CALC_TIME
+      unsigned int end = hal_get_systick_value();
+      if(start < end){
+        start += hal_get_systick_reload();
+      }
+      
+      hal.nrt_calc_time = ((float)(start - end)) / hal_get_systick_freq();
+      hal.max_nrt_calc_time = MAX(hal.max_nrt_calc_time, hal.nrt_calc_time);
+   #endif
+   
    hal.nrt_period = period;
 }
 
@@ -373,7 +460,12 @@ void hal_init_nrt(){
       if(hal.comp_insts[i].comp->nrt_init != 0){
          hal.comp_insts[i].comp->nrt_init(hal.comp_insts[i].ctx, hal.comp_insts[i].pin_insts);
       }
+      struct pin_ctx_t * pins = (struct pin_ctx_t *)(hal.comp_insts[i].pin_insts);
+      PIN(nrt_calc_time) = 0.0;
    }
+   
+   hal.nrt_calc_time = 0.0;
+   hal.max_nrt_calc_time = 0.0;
 }
 
 void init(char * ptr){
@@ -417,6 +509,7 @@ void sort_rt(){
    int min_index = -1;
    float rt_prio = 0.0;
    char added[HAL_MAX_COMPS];
+   struct pin_ctx_t * pins;
 
    for(int i = 0; i < hal.comp_inst_count; i++){
       added[i] = 0;
@@ -427,8 +520,9 @@ void sort_rt(){
       min = INFINITY;
       min_index = -1;
       for(int j = hal.comp_inst_count - 1; j >= 0; j--){
-         rt_prio = hal.comp_insts[j].pin_insts[hal.comp_insts[j].comp->pin_count - 5].source->source->value;
-         if(rt_prio <= min && added[j] == 0 && rt_prio >= 0.0 && hal.comp_insts[j].comp->rt != 0){
+         pins = (struct pin_ctx_t *)(hal.comp_insts[j].pin_insts);
+         rt_prio = PIN(rt_prio);
+         if(rt_prio <= min && added[j] == 0 && rt_prio > 0.0 && hal.comp_insts[j].comp->rt != 0){
             min = rt_prio;
             min_index = j;
          }
@@ -445,6 +539,7 @@ void sort_frt(){
    int min_index = -1;
    float frt_prio = 0.0;
    char added[HAL_MAX_COMPS];
+   struct pin_ctx_t * pins;
 
    for(int i = 0; i < hal.comp_inst_count; i++){
       added[i] = 0;
@@ -455,8 +550,9 @@ void sort_frt(){
       min = INFINITY;
       min_index = -1;
       for(int j = hal.comp_inst_count - 1; j >= 0; j--){
-         frt_prio = hal.comp_insts[j].pin_insts[hal.comp_insts[j].comp->pin_count - 4].source->source->value;
-         if(frt_prio <= min && added[j] == 0 && frt_prio >= 0.0 && hal.comp_insts[j].comp->frt != 0){
+         pins = (struct pin_ctx_t *)(hal.comp_insts[j].pin_insts);
+         frt_prio = PIN(frt_prio);
+         if(frt_prio <= min && added[j] == 0 && frt_prio > 0.0 && hal.comp_insts[j].comp->frt != 0){
             min = frt_prio;
             min_index = j;
          }
@@ -473,22 +569,25 @@ void start_rt(){
       if(hal.rt_comps[i]->comp->rt_start != 0){
          hal.rt_comps[i]->comp->rt_start(hal.rt_comps[i]->ctx, hal.rt_comps[i]->pin_insts);
       }
+      struct pin_ctx_t * pins = (struct pin_ctx_t *)(hal.rt_comps[i]->pin_insts);
+      PIN(rt_calc_time) = 0.0;
    }
-   
+   hal.rt_calc_time = 0.0;
+   hal.max_rt_calc_time = 0.0;
+      
    hal.rt_state = RT_SLEEP;
 }
 
 void start_frt(){
-   for(int i = 0; i < HAL_MAX_COMPS; i++){
-      if(hal.frt_comps[i]){
-         if(hal.frt_comps[i]->comp->frt_start != 0){
-            hal.frt_comps[i]->comp->frt_start(hal.frt_comps[i]->ctx, hal.frt_comps[i]->pin_insts);
-         }
+   for(int i = 0; i < hal.frt_comp_count; i++){
+      if(hal.frt_comps[i]->comp->frt_start != 0){
+         hal.frt_comps[i]->comp->frt_start(hal.frt_comps[i]->ctx, hal.frt_comps[i]->pin_insts);
       }
-      else{
-         break;
-      }
+      struct pin_ctx_t * pins = (struct pin_ctx_t *)(hal.frt_comps[i]->pin_insts);
+      PIN(frt_calc_time) = 0.0;
    }
+   hal.frt_calc_time = 0.0;
+   hal.max_frt_calc_time = 0.0;
    
    hal.frt_state = FRT_SLEEP;
 }
@@ -549,9 +648,50 @@ void hal_init(){
    hal.active_rt_func = -1;
    hal.active_frt_func = -1;
    hal.active_nrt_func = -1;
+   
+   hal.rt_calc_time = 0.0;
+   hal.max_rt_calc_time = 0.0;
+   hal.frt_calc_time = 0.0;
+   hal.max_frt_calc_time = 0.0;
+   hal.nrt_calc_time = 0.0;
+   hal.max_nrt_calc_time = 0.0;
+   hal.rt_period = 0.0;
+   hal.frt_period = 0.0;
+   hal.nrt_period = 0.0;
+}
+
+void hal_print_pin(volatile hal_pin_inst_t * p){
+   pin_t * pin =  pin_by_pin_inst(p);
+   volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(p);
+   
+   pin_t * pin2;
+   volatile hal_comp_inst_t * comp2;
+   pin_t * pin3;
+   volatile hal_comp_inst_t * comp3;
+
+   if(p && pin && comp){
+      if(p == p->source){//if pin is not linked
+         printf("%s%lu.%s = %f\n", (char *)comp->comp->name, comp->instance, (char *)pin, p->value);
+      }else if(p->source == p->source->source){//pin is single linked
+         pin2 = pin_by_pin_inst(p->source);
+         comp2 = comp_inst_by_pin_inst(p->source);
+         printf("%s%lu.%s <= %s%lu.%s = %f\n", (char *)comp->comp->name, comp->instance, (char *)pin, (char *)comp2->comp->name, comp2->instance, (char *)pin2, p->source->value);
+      }
+      else{//pin is double linked
+         pin2 = pin_by_pin_inst(p->source);
+         comp2 = comp_inst_by_pin_inst(p->source);
+         pin3 = pin_by_pin_inst(p->source->source);
+         comp3 = comp_inst_by_pin_inst(p->source->source);
+         printf("%s%lu.%s <= %s%lu.%s <= %s%lu.%s = %f\n", (char *)comp->comp->name, comp->instance, (char *)pin, (char *)comp2->comp->name, comp2->instance, (char *)pin2, (char *)comp3->comp->name, comp3->instance, (char *)pin3, p->source->source->value);
+      }
+   }
 }
 
 uint32_t hal_parse(char * cmd){
+   if(call_cmd(cmd)){
+      return(1);
+   }
+   
    int32_t foo = 0;
    
    char sinkc[64];
@@ -588,8 +728,9 @@ uint32_t hal_parse(char * cmd){
          for(int i = 0; i < hal.comp_inst_count; i++){
             if(hal.comp_insts[i].instance == sinki && !strcmp(hal.comp_insts[i].comp->name, sinkc)){
                for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
-                  volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
-                  printf("%s%lu.%s <= %s%lu.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
+                  //volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
+                  //printf("%s%lu.%s <= %s%lu.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
+                  hal_print_pin(&(hal.comp_insts[i].pin_insts[j]));
                   found = 1;
                }
             }
@@ -619,9 +760,10 @@ uint32_t hal_parse(char * cmd){
             for(int i = 0; i < hal.comp_inst_count; i++){
                if(hal.comp_insts[i].instance == sinki && !strcmp(hal.comp_insts[i].comp->name, sinkc)){
                   for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
-                     volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
+                     //volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
                      if(!strncmp(hal.comp_insts[i].pins[j], sinkp, strlen(sinkp))){
-                        printf("%s%lu.%s <= %s%lu.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
+                        hal_print_pin(&(hal.comp_insts[i].pin_insts[j]));
+                        //printf("%s%lu.%s <= %s%lu.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
                         found = 1;
                      }
                   }

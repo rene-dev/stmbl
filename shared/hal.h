@@ -2,6 +2,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define HAL_CALC_TIME
+#define HAL_COMP_CALC_TIME
+
+
 #define HAL_MAX_PINS 512
 #define HAL_MAX_COMPS 16
 #define HAL_MAX_CTX 4096
@@ -91,8 +95,11 @@ typedef volatile struct{
    uint32_t ctx_count;
    
    volatile float rt_calc_time;
+   volatile float max_rt_calc_time;
    volatile float frt_calc_time;
+   volatile float max_frt_calc_time;
    volatile float nrt_calc_time;
+   volatile float max_nrt_calc_time;
    volatile float rt_period;
    volatile float frt_period;
    volatile float nrt_period;
@@ -108,6 +115,7 @@ volatile hal_pin_inst_t * pin_inst_by_name(NAME comp_name, uint32_t instance, NA
 uint32_t load_comp(hal_comp_t * comp);
 pin_t * pin_by_pin_inst(volatile hal_pin_inst_t * p);
 volatile hal_comp_inst_t * comp_inst_by_pin_inst(volatile hal_pin_inst_t * p);
+void hal_print_pin(volatile hal_pin_inst_t * p);
 
 void hal_init();
 void hal_init_nrt();

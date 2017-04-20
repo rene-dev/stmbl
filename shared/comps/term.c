@@ -87,9 +87,7 @@ static void nrt_func(float period, volatile void * ctx_ptr, volatile hal_pin_ins
    if (cdc_is_connected()) {
       char rx_buf[64];
       if (cdc_getline(rx_buf,sizeof(rx_buf))){
-         if(!call_cmd(rx_buf)){
-            hal_parse(rx_buf);
-         }
+         hal_parse(rx_buf);
       }
    }
 }
