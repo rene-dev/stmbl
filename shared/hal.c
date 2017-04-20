@@ -745,7 +745,7 @@ uint32_t hal_parse(char * cmd){
             sink = pin_inst_by_name(sinkc, sinki, sinkp);
             source = pin_inst_by_name(sourcec, sourcei, sourcep);
             if(sink && source){
-               sink->source = source->source;
+               sink->source = source;
                printf("OK %s%lu.%s <= %s%lu.%s = %f\n", sinkc, sinki, sinkp, sourcec, sourcei, sourcep, source->source->value);
 
             }
