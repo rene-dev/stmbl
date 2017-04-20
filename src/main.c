@@ -84,6 +84,11 @@ void bootloader(char * ptr){
 }
 COMMAND("bootloader", bootloader);
 
+void nv_reset(char * ptr){
+  NVIC_SystemReset();
+}
+COMMAND("reset", nv_reset);
+
 int main(void)
 {
    // Relocate interrupt vectors
