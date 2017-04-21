@@ -78,6 +78,58 @@ void DMA2_Stream0_IRQHandler(void){
    hal_run_rt();
 }
 
+char config[15*1024];
+const char* config_ro = (char*)0x08008000;
+
+void flashloadconf(char * ptr){
+   strncpy(config,config_ro,sizeof(config));
+}
+COMMAND("flashloadconf", flashloadconf);
+
+void flashsaveconf(char * ptr){
+   printf("erasing flash page...\n");
+   if(FLASH_EraseSector(FLASH_Sector_2,VoltageRange_3) != FLASH_COMPLETE){
+      printf("error!\n");
+      return;
+   }
+   printf("saving conf\n");
+   int i = 0;
+   do{
+      if(FLASH_ProgramByte((uint32_t)(config_ro + i), config[i]) != FLASH_COMPLETE){
+         printf("error writing %i\n",i);
+         break;
+      }
+   }while(config[i++] != 0);
+   printf("OK %i bytes written\n",i);
+}
+COMMAND("flashsaveconf", flashsaveconf);
+
+void loadconf(char * ptr){
+   //TODO: call hal_parse for each line
+   //hal_parse(config);
+}
+COMMAND("loadconf", loadconf);
+
+void showconf(char * ptr){
+   printf("** ram **\n");
+   printf("%s",config);
+   printf("** flash **\n");
+   printf("%s",config_ro);
+}
+COMMAND("showconf", showconf);
+
+void appendconf(char * ptr){
+   printf("adding %s\n",ptr);
+   strncat(config,ptr,sizeof(config) - 1);
+   strncat(config,"\n",sizeof(config) - 1);
+}
+COMMAND("appendconf", appendconf);
+
+void deleteconf(char * ptr){
+   config[0] = '\0';
+}
+COMMAND("deleteconf", deleteconf);
+
 void bootloader(char * ptr){
   *((unsigned long *)0x2001C000) = 0xDEADBEEF;//set bootloader trigger
   NVIC_SystemReset();
