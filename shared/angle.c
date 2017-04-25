@@ -95,11 +95,5 @@ inline float minus(float a, float b){
 }
 //TODO: blocks hal with large numbers
 inline float mod(float a){
-	while(a < -M_PI){
-		a += 2.0 * M_PI;
-	}
-	while(a > M_PI){
-		a -= 2.0 * M_PI;
-	}
-	return(a);
+	return fmod(a + M_PI, 2.0 * M_PI) - M_PI;
 }
