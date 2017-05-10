@@ -28,7 +28,7 @@
     (clearance 0.5))
   (pad "" np_thru_hole circle (at 6.35 5.4) (size 3.1 3.1) (drill 3.1) (layers *.Cu *.Mask)
     (clearance 0.5))
-  (model ${KIPRJMOD}/stmbl.pretty/RIA_AJT10L8813-011.wrl
+  (model ${KIPRJMOD}/../lib/stmbl.pretty/RIA_AJT10L8813-011.wrl
     (at (xyz 0 0 0))
     (scale (xyz 393.7 393.7 393.7))
     (rotate (xyz -90 0 180))

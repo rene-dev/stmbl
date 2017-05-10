@@ -49,7 +49,7 @@
     (clearance 0.15))
   (pad 10 thru_hole oval (at 6.35 21.5 180) (size 2 2) (drill 1) (layers *.Cu *.Mask B.SilkS))
   (pad 13 thru_hole oval (at 2.54 16.5 180) (size 2 2) (drill 1) (layers *.Cu *.Mask B.SilkS))
-  (model ${KIPRJMOD}/stmbl.pretty/iram256.wrl
+  (model ${KIPRJMOD}/../lib/stmbl.pretty/iram256.wrl
     (at (xyz -1.220472440944882 -0.4409448818897638 0.3149606299212598))
     (scale (xyz 0.394 0.394 0.394))
     (rotate (xyz 0 180 90))

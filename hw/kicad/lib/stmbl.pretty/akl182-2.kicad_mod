@@ -11,7 +11,7 @@
   (fp_line (start -2.55 8) (end 6.05 8) (layer F.SilkS) (width 0.15))
   (pad 1 thru_hole oval (at 0 0) (size 2.5 3.5) (drill 1.2 (offset 0 0.5)) (layers *.Cu *.Mask F.SilkS))
   (pad 2 thru_hole oval (at 3.5 0) (size 2.5 3.5) (drill 1.2 (offset 0 0.5)) (layers *.Cu *.Mask F.SilkS))
-  (model ${KIPRJMOD}/stmbl.pretty/akl182_2.wrl
+  (model ${KIPRJMOD}/../lib/stmbl.pretty/akl182_2.wrl
     (at (xyz 0.2362204724409449 0.125984251968504 0))
     (scale (xyz 0.394 0.394 0.394))
     (rotate (xyz 0 0 180))

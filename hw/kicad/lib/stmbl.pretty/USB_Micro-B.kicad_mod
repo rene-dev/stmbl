@@ -26,7 +26,7 @@
   (pad 6 thru_hole circle (at -3.5 0 270) (size 1.55 1.55) (drill 1) (layers *.Cu *.Mask F.Paste))
   (pad 6 smd roundrect (at 0 0) (size 2.5 2.25) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25)
     (zone_connect 2))
-  (model ${KIPRJMOD}/stmbl.pretty/MicroUSB-B_Molex_105017-0001.wrl
+  (model ${KIPRJMOD}/../lib/stmbl.pretty/MicroUSB-B_Molex_105017-0001.wrl
     (at (xyz 0 0 0.04921259842519685))
     (scale (xyz 393.7 393.7 393.7))
     (rotate (xyz -90 0 180))

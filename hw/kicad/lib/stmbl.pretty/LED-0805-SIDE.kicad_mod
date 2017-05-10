@@ -22,7 +22,7 @@
   (fp_line (start -1.9 -0.95) (end 1.9 -0.95) (layer F.CrtYd) (width 0.05))
   (pad 1 smd rect (at -1 0 180) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask))
   (pad 2 smd rect (at 1 0 180) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask))
-  (model ${KIPRJMOD}/stmbl.pretty/led_side_green.wrl
+  (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_green.wrl
     (at (xyz 0 -0.01181102362204724 0.01968503937007874))
     (scale (xyz 350.7 250.7 393.7))
     (rotate (xyz 0 0 0))
