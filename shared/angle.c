@@ -94,5 +94,9 @@ inline float minus(float a, float b){
 	}
 }
 inline float mod(float a){
-	return fmodf(a + M_PI, 2.0 * M_PI) - M_PI;
+  if(a + M_PI < 0.0f){
+      return -(fmodf(-(a + M_PI), M_PI * 2.0) - M_PI);
+  }else{
+      return fmodf(a + M_PI, M_PI * 2.0) - M_PI;
+  }
 }
