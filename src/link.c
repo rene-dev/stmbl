@@ -14,7 +14,7 @@ void link_ac(){
    hal_link_pins("conf0.polecount", "t2c0.polecount");
    hal_link_pins("conf0.psi", "t2c0.psi");
    hal_link_pins("cauto0.pos", "t2c0.pos");
-   
+
    hal_link_pins("t2c0.cur", "hv0.q_cmd");
    hal_link_pins("cauto0.i_d", "hv0.d_cmd");
    hal_link_pins("cauto0.pos", "hv0.pos");
@@ -73,7 +73,7 @@ void link_ac(){
    hal_link_pins("pmsm_limits0.max_torque", "pid0.max_torque");
    hal_link_pins("pmsm_limits0.min_torque", "pid0.min_torque");
    hal_link_pins("pmsm_limits0.abs_max_vel", "pid0.max_vel");
-   
+
    // i2t
    hal_link_pins("conf0.r", "i2t0.mot_res");
    hal_link_pins("conf0.psi", "i2t0.mot_psi");
@@ -83,7 +83,7 @@ void link_ac(){
    // hal_link_pins("conf0.max_ac_cur", "i2t0.mot_cont_cur");
    // hal_link_pins("i2t0.mot_temp", "fault0.motor_temp");
    hal_link_pins("fault0.mot_brake", "i2t0.brake");
-   
+
    hal_link_pins("curpid0.ud", "idq0.d");
    hal_link_pins("curpid0.uq", "idq0.q");
    hal_link_pins("conf0.polecount", "idq0.polecount");
@@ -168,7 +168,7 @@ void link_pid(){
    hal_link_pins("hv0.com_error", "fault0.hv_error");
    // hal_link_pins("hv0.hv_fault", "fault0.hv_error"); //TODO
 
-   hal_link_pins("fault0.mot_brake", "io0.brake");
+   hal_link_pins("fault0.mot_brake", "io0.out0");
    hal_link_pins("fault0.hv_fan", "io0.fan");
 
    hal_link_pins("fault0.en_out", "hv0.en");
