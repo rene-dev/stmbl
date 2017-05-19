@@ -10,9 +10,6 @@ HAL_PIN(out0) = 0.0;
 HAL_PIN(out1) = 0.0;
 HAL_PIN(out2) = 0.0;
 
-HAL_PIN(in0) = 0.0;
-HAL_PIN(in1) = 0.0;
-
 HAL_PIN(fb0g) = 0.0;
 HAL_PIN(fb0y) = 0.0;
 
@@ -24,6 +21,8 @@ HAL_PIN(cmdy) = 0.0;
 
 HAL_PIN(io0);
 HAL_PIN(io1);
+HAL_PIN(io0d);
+HAL_PIN(io1d);
 HAL_PIN(fb0);
 HAL_PIN(fb1);
 
@@ -123,6 +122,23 @@ RT(
    //TODO: check if adc sample complete?
    PIN(io0) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_1)), 3.3, 1000.0, 10000.0, 1000.0);
    PIN(io1) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_2)), 3.3, 1000.0, 10000.0, 1000.0);
+   
+   if(PIN(io0) > 12.0){
+      PIN(io0d) = 1.0;
+      GPIO_SetBits(GPIOE, GPIO_Pin_1);
+   }else{
+      PIN(io0d) = 0.0;
+      GPIO_ResetBits(GPIOE, GPIO_Pin_1);
+   }
+   
+   if(PIN(io1) > 12.0){
+      PIN(io1d) = 1.0;
+      GPIO_SetBits(GPIOE, GPIO_Pin_0);
+   }else{
+      PIN(io1d) = 0.0;
+      GPIO_ResetBits(GPIOE, GPIO_Pin_0);
+   }
+   
    PIN(fb0) = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_3)), 10000.0, 1000.0);
    PIN(fb1) = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_4)), 10000.0, 1000.0);
    ADC_SoftwareStartInjectedConv(ADC3);
@@ -200,16 +216,6 @@ NRT(
       GPIO_SetBits(GPIOE, GPIO_Pin_6);
    else
       GPIO_ResetBits(GPIOE, GPIO_Pin_6);
-   
-   if(PIN(in0) > 0)
-      GPIO_SetBits(GPIOE, GPIO_Pin_1);
-   else
-      GPIO_ResetBits(GPIOE, GPIO_Pin_1);
-   
-   if(PIN(in1) > 0)
-      GPIO_SetBits(GPIOE, GPIO_Pin_0);
-   else
-      GPIO_ResetBits(GPIOE, GPIO_Pin_0);
    
    if(PIN(fb0g) > 0)
       GPIO_SetBits(GPIOD, GPIO_Pin_8);
