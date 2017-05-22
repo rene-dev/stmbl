@@ -1,0 +1,1124 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:stmbl
+LIBS:mesabob-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L RJ45 J3
+U 1 1 5890A49D
+P 7150 1700
+F 0 "J3" V 7180 2178 50  0000 L CNN
+F 1 "RJ45" V 7271 2178 50  0000 L CNN
+F 2 "Connect:RJ45_8" H 7150 1700 50  0001 C CNN
+F 3 "" H 7150 1700 50  0000 C CNN
+	1    7150 1700
+	0    1    1    0   
+$EndComp
+$Comp
+L rs4854 U3
+U 1 1 59233101
+P 5750 1700
+F 0 "U3" H 5750 2368 50  0000 C CNN
+F 1 "rs4854" H 5750 2277 50  0000 C CNN
+F 2 "stmbl:SOIC-8-N" H 5750 2186 50  0000 C CIN
+F 3 "" H 5750 1700 50  0000 C CNN
+	1    5750 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR01
+U 1 1 592335BE
+P 5750 950
+F 0 "#PWR01" H 5750 800 50  0001 C CNN
+F 1 "+5V" H 5765 1123 50  0000 C CNN
+F 2 "" H 5750 950 50  0000 C CNN
+F 3 "" H 5750 950 50  0000 C CNN
+	1    5750 950 
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR02
+U 1 1 592335D8
+P 5750 2350
+F 0 "#PWR02" H 5750 2100 50  0001 C CNN
+F 1 "GND" H 5755 2177 50  0000 C CNN
+F 2 "" H 5750 2350 50  0000 C CNN
+F 3 "" H 5750 2350 50  0000 C CNN
+	1    5750 2350
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_02X13 P1
+U 1 1 5923363F
+P 2700 5950
+F 0 "P1" H 2700 6765 50  0000 C CNN
+F 1 "CONN_02X13" H 2700 6674 50  0000 C CNN
+F 2 "Connect:IDC_Header_Straight_26pins" H 2700 4800 50  0001 C CNN
+F 3 "" H 2700 4800 50  0000 C CNN
+	1    2700 5950
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR03
+U 1 1 59233773
+P 3050 6150
+F 0 "#PWR03" H 3050 5900 50  0001 C CNN
+F 1 "GND" V 3055 6022 50  0000 R CNN
+F 2 "" H 3050 6150 50  0000 C CNN
+F 3 "" H 3050 6150 50  0000 C CNN
+	1    3050 6150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR04
+U 1 1 592337EE
+P 2350 6250
+F 0 "#PWR04" H 2350 6000 50  0001 C CNN
+F 1 "GND" V 2355 6122 50  0000 R CNN
+F 2 "" H 2350 6250 50  0000 C CNN
+F 3 "" H 2350 6250 50  0000 C CNN
+	1    2350 6250
+	0    1    1    0   
+$EndComp
+$Comp
+L +5V #PWR05
+U 1 1 592338B3
+P 3050 6350
+F 0 "#PWR05" H 3050 6200 50  0001 C CNN
+F 1 "+5V" V 3065 6478 50  0000 L CNN
+F 2 "" H 3050 6350 50  0000 C CNN
+F 3 "" H 3050 6350 50  0000 C CNN
+	1    3050 6350
+	0    1    1    0   
+$EndComp
+$Comp
+L +5V #PWR06
+U 1 1 59233911
+P 2350 6450
+F 0 "#PWR06" H 2350 6300 50  0001 C CNN
+F 1 "+5V" V 2365 6578 50  0000 L CNN
+F 2 "" H 2350 6450 50  0000 C CNN
+F 3 "" H 2350 6450 50  0000 C CNN
+	1    2350 6450
+	0    -1   -1   0   
+$EndComp
+Text HLabel 2400 5350 0    60   Input ~ 0
+rx0
+Text HLabel 2400 5450 0    60   Input ~ 0
+tx0
+Text HLabel 2400 5550 0    60   Input ~ 0
+rx4
+Text HLabel 2400 5650 0    60   Input ~ 0
+rx6
+Text HLabel 2400 5750 0    60   Input ~ 0
+tx4
+Text HLabel 2400 5850 0    60   Input ~ 0
+tx6
+Text HLabel 2400 6050 0    60   Input ~ 0
+rx3
+Text HLabel 2400 6150 0    60   Input ~ 0
+tx3
+Text HLabel 3000 5350 2    60   Input ~ 0
+rx2
+Text HLabel 3000 5450 2    60   Input ~ 0
+tx2
+Text HLabel 3000 5550 2    60   Input ~ 0
+rx5
+Text HLabel 3000 5650 2    60   Input ~ 0
+rx7
+Text HLabel 3000 5750 2    60   Input ~ 0
+tx5
+Text HLabel 3000 5850 2    60   Input ~ 0
+tx7
+Text HLabel 3000 5950 2    60   Input ~ 0
+rx1
+Text HLabel 3000 6050 2    60   Input ~ 0
+tx1
+NoConn ~ 2450 5950
+NoConn ~ 2950 6550
+Wire Wire Line
+	2350 6250 2450 6250
+Wire Wire Line
+	2450 6350 2400 6350
+Wire Wire Line
+	2400 6350 2400 6250
+Connection ~ 2400 6250
+Wire Wire Line
+	2950 6150 3050 6150
+Wire Wire Line
+	2950 6250 3000 6250
+Wire Wire Line
+	3000 6250 3000 6150
+Connection ~ 3000 6150
+Wire Wire Line
+	5750 950  5750 1300
+Wire Wire Line
+	5750 2100 5750 2350
+Wire Wire Line
+	2350 6450 2450 6450
+Wire Wire Line
+	2950 6350 3050 6350
+Wire Wire Line
+	2450 6550 2400 6550
+Wire Wire Line
+	2400 6550 2400 6450
+Connection ~ 2400 6450
+Wire Wire Line
+	2950 6450 3000 6450
+Wire Wire Line
+	3000 6450 3000 6350
+Connection ~ 3000 6350
+Wire Wire Line
+	2450 5350 2400 5350
+Wire Wire Line
+	2450 5450 2400 5450
+Wire Wire Line
+	2400 5550 2450 5550
+Wire Wire Line
+	2400 5650 2450 5650
+Wire Wire Line
+	2400 5750 2450 5750
+Wire Wire Line
+	2400 5850 2450 5850
+Wire Wire Line
+	2400 6050 2450 6050
+Wire Wire Line
+	2450 6150 2400 6150
+Wire Wire Line
+	2950 6050 3000 6050
+Wire Wire Line
+	2950 5950 3000 5950
+Wire Wire Line
+	2950 5850 3000 5850
+Wire Wire Line
+	2950 5750 3000 5750
+Wire Wire Line
+	2950 5650 3000 5650
+Wire Wire Line
+	2950 5550 3000 5550
+Wire Wire Line
+	2950 5450 3000 5450
+Wire Wire Line
+	2950 5350 3000 5350
+Wire Wire Line
+	6150 1900 6400 1900
+Wire Wire Line
+	6400 1900 6400 1350
+Wire Wire Line
+	6400 1350 6700 1350
+Wire Wire Line
+	6150 1800 6450 1800
+Wire Wire Line
+	6450 1800 6450 1450
+Wire Wire Line
+	6450 1450 6700 1450
+Wire Wire Line
+	6700 1550 6250 1550
+Wire Wire Line
+	6250 1550 6250 1500
+Wire Wire Line
+	6250 1500 6150 1500
+Wire Wire Line
+	6150 1600 6250 1600
+Wire Wire Line
+	6250 1600 6250 1850
+Wire Wire Line
+	6250 1850 6700 1850
+Wire Wire Line
+	6700 1650 6600 1650
+Wire Wire Line
+	6600 1650 6600 2250
+Wire Wire Line
+	6600 1750 6700 1750
+Connection ~ 6600 1750
+Connection ~ 5750 2250
+Wire Wire Line
+	6700 1950 6700 2050
+Wire Wire Line
+	4800 1050 6550 1050
+Connection ~ 5750 1050
+Wire Wire Line
+	6700 2000 6550 2000
+Wire Wire Line
+	6550 2000 6550 1050
+Connection ~ 6700 2000
+Connection ~ 6600 2250
+Text HLabel 5250 1800 0    60   Input ~ 0
+tx2
+Text HLabel 5250 1600 0    60   Input ~ 0
+rx2
+Wire Wire Line
+	5250 1600 5350 1600
+Wire Wire Line
+	5250 1800 5350 1800
+$Comp
+L C C3
+U 1 1 5923491C
+P 4800 1700
+F 0 "C3" H 4915 1746 50  0000 L CNN
+F 1 "100n" H 4915 1655 50  0000 L CNN
+F 2 "stmbl:C_0603" H 4838 1550 50  0001 C CNN
+F 3 "" H 4800 1700 50  0000 C CNN
+	1    4800 1700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4800 1550 4800 1050
+Wire Wire Line
+	4800 2250 4800 1850
+$Comp
+L RJ45 J4
+U 1 1 59234E7C
+P 7150 3550
+F 0 "J4" V 7180 4028 50  0000 L CNN
+F 1 "RJ45" V 7271 4028 50  0000 L CNN
+F 2 "Connect:RJ45_8" H 7150 3550 50  0001 C CNN
+F 3 "" H 7150 3550 50  0000 C CNN
+	1    7150 3550
+	0    1    1    0   
+$EndComp
+$Comp
+L rs4854 U4
+U 1 1 59234E83
+P 5750 3550
+F 0 "U4" H 5750 4218 50  0000 C CNN
+F 1 "rs4854" H 5750 4127 50  0000 C CNN
+F 2 "stmbl:SOIC-8-N" H 5750 4036 50  0000 C CIN
+F 3 "" H 5750 3550 50  0000 C CNN
+	1    5750 3550
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR07
+U 1 1 59234E8A
+P 5750 2800
+F 0 "#PWR07" H 5750 2650 50  0001 C CNN
+F 1 "+5V" H 5765 2973 50  0000 C CNN
+F 2 "" H 5750 2800 50  0000 C CNN
+F 3 "" H 5750 2800 50  0000 C CNN
+	1    5750 2800
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR08
+U 1 1 59234E90
+P 5750 4200
+F 0 "#PWR08" H 5750 3950 50  0001 C CNN
+F 1 "GND" H 5755 4027 50  0000 C CNN
+F 2 "" H 5750 4200 50  0000 C CNN
+F 3 "" H 5750 4200 50  0000 C CNN
+	1    5750 4200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5750 2800 5750 3150
+Wire Wire Line
+	5750 3950 5750 4200
+Wire Wire Line
+	6150 3750 6400 3750
+Wire Wire Line
+	6400 3750 6400 3200
+Wire Wire Line
+	6400 3200 6700 3200
+Wire Wire Line
+	6150 3650 6450 3650
+Wire Wire Line
+	6450 3650 6450 3300
+Wire Wire Line
+	6450 3300 6700 3300
+Wire Wire Line
+	6700 3400 6250 3400
+Wire Wire Line
+	6250 3400 6250 3350
+Wire Wire Line
+	6250 3350 6150 3350
+Wire Wire Line
+	6150 3450 6250 3450
+Wire Wire Line
+	6250 3450 6250 3700
+Wire Wire Line
+	6250 3700 6700 3700
+Wire Wire Line
+	6700 3500 6600 3500
+Wire Wire Line
+	6600 3500 6600 4100
+Wire Wire Line
+	6600 3600 6700 3600
+Wire Wire Line
+	4800 4100 7500 4100
+Connection ~ 6600 3600
+Connection ~ 5750 4100
+Wire Wire Line
+	6700 3800 6700 3900
+Wire Wire Line
+	4800 2900 6550 2900
+Connection ~ 5750 2900
+Wire Wire Line
+	6700 3850 6550 3850
+Wire Wire Line
+	6550 3850 6550 2900
+Connection ~ 6700 3850
+Connection ~ 6600 4100
+Text HLabel 5250 3650 0    60   Input ~ 0
+tx3
+Text HLabel 5250 3450 0    60   Input ~ 0
+rx3
+Wire Wire Line
+	5250 3450 5350 3450
+Wire Wire Line
+	5250 3650 5350 3650
+$Comp
+L C C4
+U 1 1 59234EBD
+P 4800 3550
+F 0 "C4" H 4915 3596 50  0000 L CNN
+F 1 "100n" H 4915 3505 50  0000 L CNN
+F 2 "stmbl:C_0603" H 4838 3400 50  0001 C CNN
+F 3 "" H 4800 3550 50  0000 C CNN
+	1    4800 3550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4800 3400 4800 2900
+Wire Wire Line
+	4800 4100 4800 3700
+$Comp
+L RJ45 J5
+U 1 1 59234F4F
+P 7150 5400
+F 0 "J5" V 7180 5878 50  0000 L CNN
+F 1 "RJ45" V 7271 5878 50  0000 L CNN
+F 2 "Connect:RJ45_8" H 7150 5400 50  0001 C CNN
+F 3 "" H 7150 5400 50  0000 C CNN
+	1    7150 5400
+	0    1    1    0   
+$EndComp
+$Comp
+L rs4854 U5
+U 1 1 59234F56
+P 5750 5400
+F 0 "U5" H 5750 6068 50  0000 C CNN
+F 1 "rs4854" H 5750 5977 50  0000 C CNN
+F 2 "stmbl:SOIC-8-N" H 5750 5886 50  0000 C CIN
+F 3 "" H 5750 5400 50  0000 C CNN
+	1    5750 5400
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR09
+U 1 1 59234F5D
+P 5750 4650
+F 0 "#PWR09" H 5750 4500 50  0001 C CNN
+F 1 "+5V" H 5765 4823 50  0000 C CNN
+F 2 "" H 5750 4650 50  0000 C CNN
+F 3 "" H 5750 4650 50  0000 C CNN
+	1    5750 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR010
+U 1 1 59234F63
+P 5750 6050
+F 0 "#PWR010" H 5750 5800 50  0001 C CNN
+F 1 "GND" H 5755 5877 50  0000 C CNN
+F 2 "" H 5750 6050 50  0000 C CNN
+F 3 "" H 5750 6050 50  0000 C CNN
+	1    5750 6050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5750 4650 5750 5000
+Wire Wire Line
+	5750 5800 5750 6050
+Wire Wire Line
+	6150 5600 6400 5600
+Wire Wire Line
+	6400 5600 6400 5050
+Wire Wire Line
+	6400 5050 6700 5050
+Wire Wire Line
+	6150 5500 6450 5500
+Wire Wire Line
+	6450 5500 6450 5150
+Wire Wire Line
+	6450 5150 6700 5150
+Wire Wire Line
+	6700 5250 6250 5250
+Wire Wire Line
+	6250 5250 6250 5200
+Wire Wire Line
+	6250 5200 6150 5200
+Wire Wire Line
+	6150 5300 6250 5300
+Wire Wire Line
+	6250 5300 6250 5550
+Wire Wire Line
+	6250 5550 6700 5550
+Wire Wire Line
+	6700 5350 6600 5350
+Wire Wire Line
+	6600 5350 6600 5950
+Wire Wire Line
+	6600 5450 6700 5450
+Connection ~ 6600 5450
+Connection ~ 5750 5950
+Wire Wire Line
+	6700 5650 6700 5750
+Wire Wire Line
+	4800 4750 6550 4750
+Connection ~ 5750 4750
+Wire Wire Line
+	6700 5700 6550 5700
+Wire Wire Line
+	6550 5700 6550 4750
+Connection ~ 6700 5700
+Connection ~ 6600 5950
+Text HLabel 5250 5500 0    60   Input ~ 0
+tx4
+Text HLabel 5250 5300 0    60   Input ~ 0
+rx4
+Wire Wire Line
+	5250 5300 5350 5300
+Wire Wire Line
+	5250 5500 5350 5500
+$Comp
+L C C5
+U 1 1 59234F90
+P 4800 5400
+F 0 "C5" H 4915 5446 50  0000 L CNN
+F 1 "100n" H 4915 5355 50  0000 L CNN
+F 2 "stmbl:C_0603" H 4838 5250 50  0001 C CNN
+F 3 "" H 4800 5400 50  0000 C CNN
+	1    4800 5400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4800 5250 4800 4750
+Wire Wire Line
+	4800 5550 4800 5950
+$Comp
+L RJ45 J8
+U 1 1 59235159
+P 10400 1800
+F 0 "J8" V 10430 2278 50  0000 L CNN
+F 1 "RJ45" V 10521 2278 50  0000 L CNN
+F 2 "Connect:RJ45_8" H 10400 1800 50  0001 C CNN
+F 3 "" H 10400 1800 50  0000 C CNN
+	1    10400 1800
+	0    1    1    0   
+$EndComp
+$Comp
+L rs4854 U8
+U 1 1 59235160
+P 9000 1800
+F 0 "U8" H 9000 2468 50  0000 C CNN
+F 1 "rs4854" H 9000 2377 50  0000 C CNN
+F 2 "stmbl:SOIC-8-N" H 9000 2286 50  0000 C CIN
+F 3 "" H 9000 1800 50  0000 C CNN
+	1    9000 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR011
+U 1 1 59235167
+P 9000 1050
+F 0 "#PWR011" H 9000 900 50  0001 C CNN
+F 1 "+5V" H 9015 1223 50  0000 C CNN
+F 2 "" H 9000 1050 50  0000 C CNN
+F 3 "" H 9000 1050 50  0000 C CNN
+	1    9000 1050
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR012
+U 1 1 5923516D
+P 9000 2450
+F 0 "#PWR012" H 9000 2200 50  0001 C CNN
+F 1 "GND" H 9005 2277 50  0000 C CNN
+F 2 "" H 9000 2450 50  0000 C CNN
+F 3 "" H 9000 2450 50  0000 C CNN
+	1    9000 2450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9000 1050 9000 1400
+Wire Wire Line
+	9000 2200 9000 2450
+Wire Wire Line
+	9400 2000 9650 2000
+Wire Wire Line
+	9650 2000 9650 1450
+Wire Wire Line
+	9650 1450 9950 1450
+Wire Wire Line
+	9400 1900 9700 1900
+Wire Wire Line
+	9700 1900 9700 1550
+Wire Wire Line
+	9700 1550 9950 1550
+Wire Wire Line
+	9950 1650 9500 1650
+Wire Wire Line
+	9500 1650 9500 1600
+Wire Wire Line
+	9500 1600 9400 1600
+Wire Wire Line
+	9400 1700 9500 1700
+Wire Wire Line
+	9500 1700 9500 1950
+Wire Wire Line
+	9500 1950 9950 1950
+Wire Wire Line
+	9950 1750 9850 1750
+Wire Wire Line
+	9850 1750 9850 2350
+Wire Wire Line
+	9850 1850 9950 1850
+Connection ~ 9850 1850
+Connection ~ 9000 2350
+Wire Wire Line
+	9950 2050 9950 2150
+Wire Wire Line
+	8050 1150 9800 1150
+Connection ~ 9000 1150
+Wire Wire Line
+	9950 2100 9800 2100
+Wire Wire Line
+	9800 2100 9800 1150
+Connection ~ 9950 2100
+Connection ~ 9850 2350
+Text HLabel 8500 1900 0    60   Input ~ 0
+tx7
+Text HLabel 8500 1700 0    60   Input ~ 0
+rx7
+Wire Wire Line
+	8500 1700 8600 1700
+Wire Wire Line
+	8500 1900 8600 1900
+$Comp
+L C C8
+U 1 1 5923519A
+P 8050 1800
+F 0 "C8" H 8165 1846 50  0000 L CNN
+F 1 "100n" H 8165 1755 50  0000 L CNN
+F 2 "stmbl:C_0603" H 8088 1650 50  0001 C CNN
+F 3 "" H 8050 1800 50  0000 C CNN
+	1    8050 1800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8050 1650 8050 1150
+Wire Wire Line
+	8050 2350 8050 1950
+$Comp
+L RJ45 J6
+U 1 1 59235238
+P 10350 3650
+F 0 "J6" V 10380 4128 50  0000 L CNN
+F 1 "RJ45" V 10471 4128 50  0000 L CNN
+F 2 "Connect:RJ45_8" H 10350 3650 50  0001 C CNN
+F 3 "" H 10350 3650 50  0000 C CNN
+	1    10350 3650
+	0    1    1    0   
+$EndComp
+$Comp
+L rs4854 U6
+U 1 1 5923523F
+P 8950 3650
+F 0 "U6" H 8950 4318 50  0000 C CNN
+F 1 "rs4854" H 8950 4227 50  0000 C CNN
+F 2 "stmbl:SOIC-8-N" H 8950 4136 50  0000 C CIN
+F 3 "" H 8950 3650 50  0000 C CNN
+	1    8950 3650
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR013
+U 1 1 59235246
+P 8950 2900
+F 0 "#PWR013" H 8950 2750 50  0001 C CNN
+F 1 "+5V" H 8965 3073 50  0000 C CNN
+F 2 "" H 8950 2900 50  0000 C CNN
+F 3 "" H 8950 2900 50  0000 C CNN
+	1    8950 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR014
+U 1 1 5923524C
+P 8950 4300
+F 0 "#PWR014" H 8950 4050 50  0001 C CNN
+F 1 "GND" H 8955 4127 50  0000 C CNN
+F 2 "" H 8950 4300 50  0000 C CNN
+F 3 "" H 8950 4300 50  0000 C CNN
+	1    8950 4300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8950 2900 8950 3250
+Wire Wire Line
+	8950 4050 8950 4300
+Wire Wire Line
+	9350 3850 9600 3850
+Wire Wire Line
+	9600 3850 9600 3300
+Wire Wire Line
+	9600 3300 9900 3300
+Wire Wire Line
+	9350 3750 9650 3750
+Wire Wire Line
+	9650 3750 9650 3400
+Wire Wire Line
+	9650 3400 9900 3400
+Wire Wire Line
+	9900 3500 9450 3500
+Wire Wire Line
+	9450 3500 9450 3450
+Wire Wire Line
+	9450 3450 9350 3450
+Wire Wire Line
+	9350 3550 9450 3550
+Wire Wire Line
+	9450 3550 9450 3800
+Wire Wire Line
+	9450 3800 9900 3800
+Wire Wire Line
+	9900 3600 9800 3600
+Wire Wire Line
+	9800 3600 9800 4200
+Wire Wire Line
+	9800 3700 9900 3700
+Connection ~ 9800 3700
+Connection ~ 8950 4200
+Wire Wire Line
+	9900 3900 9900 4000
+Wire Wire Line
+	8000 3000 9750 3000
+Connection ~ 8950 3000
+Wire Wire Line
+	9900 3950 9750 3950
+Wire Wire Line
+	9750 3950 9750 3000
+Connection ~ 9900 3950
+Connection ~ 9800 4200
+Text HLabel 8450 3750 0    60   Input ~ 0
+tx5
+Text HLabel 8450 3550 0    60   Input ~ 0
+rx5
+Wire Wire Line
+	8450 3550 8550 3550
+Wire Wire Line
+	8450 3750 8550 3750
+$Comp
+L C C6
+U 1 1 59235279
+P 8000 3650
+F 0 "C6" H 8115 3696 50  0000 L CNN
+F 1 "100n" H 8115 3605 50  0000 L CNN
+F 2 "stmbl:C_0603" H 8038 3500 50  0001 C CNN
+F 3 "" H 8000 3650 50  0000 C CNN
+	1    8000 3650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8000 3500 8000 3000
+Wire Wire Line
+	8000 4200 8000 3800
+$Comp
+L RJ45 J7
+U 1 1 59235307
+P 10350 5550
+F 0 "J7" V 10380 6028 50  0000 L CNN
+F 1 "RJ45" V 10471 6028 50  0000 L CNN
+F 2 "Connect:RJ45_8" H 10350 5550 50  0001 C CNN
+F 3 "" H 10350 5550 50  0000 C CNN
+	1    10350 5550
+	0    1    1    0   
+$EndComp
+$Comp
+L rs4854 U7
+U 1 1 5923530E
+P 8950 5550
+F 0 "U7" H 8950 6218 50  0000 C CNN
+F 1 "rs4854" H 8950 6127 50  0000 C CNN
+F 2 "stmbl:SOIC-8-N" H 8950 6036 50  0000 C CIN
+F 3 "" H 8950 5550 50  0000 C CNN
+	1    8950 5550
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR015
+U 1 1 59235315
+P 8950 4800
+F 0 "#PWR015" H 8950 4650 50  0001 C CNN
+F 1 "+5V" H 8965 4973 50  0000 C CNN
+F 2 "" H 8950 4800 50  0000 C CNN
+F 3 "" H 8950 4800 50  0000 C CNN
+	1    8950 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR016
+U 1 1 5923531B
+P 8950 6200
+F 0 "#PWR016" H 8950 5950 50  0001 C CNN
+F 1 "GND" H 8955 6027 50  0000 C CNN
+F 2 "" H 8950 6200 50  0000 C CNN
+F 3 "" H 8950 6200 50  0000 C CNN
+	1    8950 6200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8950 4800 8950 5150
+Wire Wire Line
+	8950 5950 8950 6200
+Wire Wire Line
+	9350 5750 9600 5750
+Wire Wire Line
+	9600 5750 9600 5200
+Wire Wire Line
+	9600 5200 9900 5200
+Wire Wire Line
+	9350 5650 9650 5650
+Wire Wire Line
+	9650 5650 9650 5300
+Wire Wire Line
+	9650 5300 9900 5300
+Wire Wire Line
+	9900 5400 9450 5400
+Wire Wire Line
+	9450 5400 9450 5350
+Wire Wire Line
+	9450 5350 9350 5350
+Wire Wire Line
+	9350 5450 9450 5450
+Wire Wire Line
+	9450 5450 9450 5700
+Wire Wire Line
+	9450 5700 9900 5700
+Wire Wire Line
+	9900 5500 9800 5500
+Wire Wire Line
+	9800 5500 9800 6100
+Wire Wire Line
+	9800 5600 9900 5600
+Connection ~ 9800 5600
+Connection ~ 8950 6100
+Wire Wire Line
+	9900 5800 9900 5900
+Wire Wire Line
+	8000 4900 9750 4900
+Connection ~ 8950 4900
+Wire Wire Line
+	9900 5850 9750 5850
+Wire Wire Line
+	9750 5850 9750 4900
+Connection ~ 9900 5850
+Connection ~ 9800 6100
+Text HLabel 8450 5650 0    60   Input ~ 0
+tx6
+Text HLabel 8450 5450 0    60   Input ~ 0
+rx6
+Wire Wire Line
+	8450 5450 8550 5450
+Wire Wire Line
+	8450 5650 8550 5650
+$Comp
+L C C7
+U 1 1 59235348
+P 8000 5550
+F 0 "C7" H 8115 5596 50  0000 L CNN
+F 1 "100n" H 8115 5505 50  0000 L CNN
+F 2 "stmbl:C_0603" H 8038 5400 50  0001 C CNN
+F 3 "" H 8000 5550 50  0000 C CNN
+	1    8000 5550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8000 5400 8000 4900
+Wire Wire Line
+	8000 6100 8000 5700
+$Comp
+L RJ45 J1
+U 1 1 59235540
+P 3700 1650
+F 0 "J1" V 3730 2128 50  0000 L CNN
+F 1 "RJ45" V 3821 2128 50  0000 L CNN
+F 2 "Connect:RJ45_8" H 3700 1650 50  0001 C CNN
+F 3 "" H 3700 1650 50  0000 C CNN
+	1    3700 1650
+	0    1    1    0   
+$EndComp
+$Comp
+L rs4854 U1
+U 1 1 59235547
+P 2300 1650
+F 0 "U1" H 2300 2318 50  0000 C CNN
+F 1 "rs4854" H 2300 2227 50  0000 C CNN
+F 2 "stmbl:SOIC-8-N" H 2300 2136 50  0000 C CIN
+F 3 "" H 2300 1650 50  0000 C CNN
+	1    2300 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR017
+U 1 1 5923554E
+P 2300 900
+F 0 "#PWR017" H 2300 750 50  0001 C CNN
+F 1 "+5V" H 2315 1073 50  0000 C CNN
+F 2 "" H 2300 900 50  0000 C CNN
+F 3 "" H 2300 900 50  0000 C CNN
+	1    2300 900 
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR018
+U 1 1 59235554
+P 2300 2300
+F 0 "#PWR018" H 2300 2050 50  0001 C CNN
+F 1 "GND" H 2305 2127 50  0000 C CNN
+F 2 "" H 2300 2300 50  0000 C CNN
+F 3 "" H 2300 2300 50  0000 C CNN
+	1    2300 2300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2300 900  2300 1250
+Wire Wire Line
+	2300 2050 2300 2300
+Wire Wire Line
+	2700 1850 2950 1850
+Wire Wire Line
+	2950 1850 2950 1300
+Wire Wire Line
+	2950 1300 3250 1300
+Wire Wire Line
+	2700 1750 3000 1750
+Wire Wire Line
+	3000 1750 3000 1400
+Wire Wire Line
+	3000 1400 3250 1400
+Wire Wire Line
+	3250 1500 2800 1500
+Wire Wire Line
+	2800 1500 2800 1450
+Wire Wire Line
+	2800 1450 2700 1450
+Wire Wire Line
+	2700 1550 2800 1550
+Wire Wire Line
+	2800 1550 2800 1800
+Wire Wire Line
+	2800 1800 3250 1800
+Wire Wire Line
+	3250 1600 3150 1600
+Wire Wire Line
+	3150 1600 3150 2200
+Wire Wire Line
+	3150 1700 3250 1700
+Connection ~ 3150 1700
+Connection ~ 2300 2200
+Wire Wire Line
+	3250 1900 3250 2000
+Wire Wire Line
+	1350 1000 3100 1000
+Connection ~ 2300 1000
+Wire Wire Line
+	3250 1950 3100 1950
+Wire Wire Line
+	3100 1950 3100 1000
+Connection ~ 3250 1950
+Connection ~ 3150 2200
+Text HLabel 1800 1750 0    60   Input ~ 0
+tx0
+Text HLabel 1800 1550 0    60   Input ~ 0
+rx0
+Wire Wire Line
+	1800 1550 1900 1550
+Wire Wire Line
+	1800 1750 1900 1750
+$Comp
+L C C1
+U 1 1 59235581
+P 1350 1650
+F 0 "C1" H 1465 1696 50  0000 L CNN
+F 1 "100n" H 1465 1605 50  0000 L CNN
+F 2 "stmbl:C_0603" H 1388 1500 50  0001 C CNN
+F 3 "" H 1350 1650 50  0000 C CNN
+	1    1350 1650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1350 1500 1350 1000
+Wire Wire Line
+	1350 2200 1350 1800
+$Comp
+L rs4854 U2
+U 1 1 5923561E
+P 2300 3650
+F 0 "U2" H 2300 4318 50  0000 C CNN
+F 1 "rs4854" H 2300 4227 50  0000 C CNN
+F 2 "stmbl:SOIC-8-N" H 2300 4136 50  0000 C CIN
+F 3 "" H 2300 3650 50  0000 C CNN
+	1    2300 3650
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR019
+U 1 1 59235625
+P 2300 2900
+F 0 "#PWR019" H 2300 2750 50  0001 C CNN
+F 1 "+5V" H 2315 3073 50  0000 C CNN
+F 2 "" H 2300 2900 50  0000 C CNN
+F 3 "" H 2300 2900 50  0000 C CNN
+	1    2300 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR020
+U 1 1 5923562B
+P 2300 4300
+F 0 "#PWR020" H 2300 4050 50  0001 C CNN
+F 1 "GND" H 2305 4127 50  0000 C CNN
+F 2 "" H 2300 4300 50  0000 C CNN
+F 3 "" H 2300 4300 50  0000 C CNN
+	1    2300 4300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2300 2900 2300 3250
+Wire Wire Line
+	2300 4050 2300 4300
+Wire Wire Line
+	2700 3850 2950 3850
+Wire Wire Line
+	2950 3850 2950 3300
+Wire Wire Line
+	2950 3300 3250 3300
+Wire Wire Line
+	2700 3750 3000 3750
+Wire Wire Line
+	3000 3750 3000 3400
+Wire Wire Line
+	3000 3400 3250 3400
+Wire Wire Line
+	3250 3500 2800 3500
+Wire Wire Line
+	2800 3500 2800 3450
+Wire Wire Line
+	2800 3450 2700 3450
+Wire Wire Line
+	2700 3550 2800 3550
+Wire Wire Line
+	2800 3550 2800 3800
+Wire Wire Line
+	2800 3800 3250 3800
+Wire Wire Line
+	3250 3600 3150 3600
+Wire Wire Line
+	3150 3600 3150 4200
+Wire Wire Line
+	3150 3700 3250 3700
+Connection ~ 3150 3700
+Connection ~ 2300 4200
+Wire Wire Line
+	3250 3900 3250 4000
+Wire Wire Line
+	1350 3000 3100 3000
+Connection ~ 2300 3000
+Wire Wire Line
+	3250 3950 3100 3950
+Wire Wire Line
+	3100 3950 3100 3000
+Connection ~ 3250 3950
+Connection ~ 3150 4200
+Text HLabel 1800 3750 0    60   Input ~ 0
+tx1
+Text HLabel 1800 3550 0    60   Input ~ 0
+rx1
+Wire Wire Line
+	1800 3550 1900 3550
+Wire Wire Line
+	1800 3750 1900 3750
+$Comp
+L C C2
+U 1 1 59235658
+P 1350 3650
+F 0 "C2" H 1465 3696 50  0000 L CNN
+F 1 "100n" H 1465 3605 50  0000 L CNN
+F 2 "stmbl:C_0603" H 1388 3500 50  0001 C CNN
+F 3 "" H 1350 3650 50  0000 C CNN
+	1    1350 3650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1350 3500 1350 3000
+Wire Wire Line
+	1350 4200 1350 3800
+$Comp
+L RJ45 J2
+U 1 1 59235617
+P 3700 3650
+F 0 "J2" V 3730 4128 50  0000 L CNN
+F 1 "RJ45" V 3821 4128 50  0000 L CNN
+F 2 "Connect:RJ45_8" H 3700 3650 50  0001 C CNN
+F 3 "" H 3700 3650 50  0000 C CNN
+	1    3700 3650
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3150 2200 1350 2200
+Wire Wire Line
+	6600 2250 4800 2250
+Wire Wire Line
+	9850 2350 8050 2350
+Wire Wire Line
+	9800 4200 8000 4200
+Wire Wire Line
+	9800 6100 8000 6100
+Wire Wire Line
+	4800 5950 6600 5950
+Wire Wire Line
+	3150 4200 1350 4200
+$EndSCHEMATC
