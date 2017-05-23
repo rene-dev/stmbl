@@ -1,0 +1,59 @@
+HAL_COMP(lin2rev);
+
+//Calculate motor angle from position in machine units
+
+/*
+
+      |
+  Q2  |  Q1
+      |
+-------------
+      |
+  Q3  |  Q4
+      |
+
+*/
+
+HAL_PIN(scale) = 1.0;
+
+HAL_PIN(cmd_in);
+HAL_PIN(cmd_out);
+
+HAL_PIN(fb_in);
+HAL_PIN(fb_out);
+
+MEM(uint8_t lastq) = 0;
+MEM(int32_t rev) = 0;
+
+RT(
+float s = PIN(scale);
+if(s < 0.01){
+   s = 0.01;
+}
+
+PIN(cmd_out) = mod((PIN(cmd_in) / s) * 2.0 * M_PI);
+
+uint8_t q = 0;
+
+if(PIN(fb_in) > M_PI/2.0){
+   q = 2;
+}
+if(PIN(fb_in) < -M_PI/2.0){
+   q = 3;
+}
+
+if(q != 0 && q == 3 && lastq == 2){
+   rev++;
+}
+
+if(q != 0 && q == 2 && lastq == 3){
+   rev--;
+}
+
+lastq = q;
+
+PIN(fb_out) = ((PIN(fb_in) + rev * M_PI * 2.0) * s) / (2.0 * M_PI);
+
+);
+
+ENDCOMP;

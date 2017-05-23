@@ -227,6 +227,7 @@ int main(void)
    #include "comps/var.comp"
    #include "comps/i2t.comp"
    #include "comps/reslimit.comp"
+   #include "comps/lin2rev.comp"
 
 #ifdef V3
    #include "comps/hw/io3.comp"
