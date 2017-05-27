@@ -23,7 +23,7 @@
   (pad 2 smd rect (at 2 0) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
     (zone_connect 2))
   (pad 1 smd rect (at -2 0) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask))
-  (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+  (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
     (at (xyz 0 0 0))
     (scale (xyz 393.7 393.7 393.7))
     (rotate (xyz 0 0 0))

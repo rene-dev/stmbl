@@ -2147,7 +2147,7 @@
       (net 2 GND) (zone_connect 1) (thermal_width 0.75))
     (pad 1 thru_hole oval (at 0 0 90) (size 2.5 3.5) (drill 1.2 (offset 0 -0.5)) (layers *.Cu *.Mask B.SilkS)
       (net 44 +24V))
-    (model ${KIPRJMOD}/stmbl.pretty/akl182_2.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/akl182_2.wrl
       (at (xyz 0.2362204724409449 0.125984251968504 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 180))
@@ -2171,7 +2171,7 @@
       (net 78 "Net-(J3-Pad4)"))
     (pad 1 thru_hole oval (at 0 0) (size 2.5 3.5) (drill 1.2 (offset 0 -0.5)) (layers *.Cu *.Mask B.SilkS)
       (net 77 "Net-(J3-Pad5)"))
-    (model ${KIPRJMOD}/stmbl.pretty/akl182_2.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/akl182_2.wrl
       (at (xyz 0.2362204724409449 0.125984251968504 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 180))
@@ -2195,7 +2195,7 @@
       (net 4 GNDPWR))
     (pad 1 thru_hole oval (at 0 0 90) (size 2.5 3.5) (drill 1.2 (offset 0 -0.5)) (layers *.Cu *.Mask B.SilkS)
       (net 153 "Net-(P2-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/akl182_2.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/akl182_2.wrl
       (at (xyz 0.2362204724409449 0.125984251968504 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 180))
@@ -2227,7 +2227,7 @@
       (net 44 +24V))
     (pad 6 thru_hole oval (at 17.5 0 90) (size 2.5 3.5) (drill 1.2 (offset 0 -0.5)) (layers *.Cu *.Mask B.SilkS)
       (net 47 "Net-(D5-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/akl182_6.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/akl182_6.wrl
       (at (xyz 0.7893700787401575 0.125984251968504 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 180))
@@ -2259,7 +2259,7 @@
       (net 147 "Net-(P9-Pad5)"))
     (pad 6 thru_hole oval (at 17.5 0) (size 2.5 3.5) (drill 1.2 (offset 0 -0.5)) (layers *.Cu *.Mask B.SilkS)
       (net 2 GND))
-    (model ${KIPRJMOD}/stmbl.pretty/akl182_6.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/akl182_6.wrl
       (at (xyz 0.7893700787401575 0.125984251968504 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 180))
@@ -2285,7 +2285,7 @@
       (net 29 /hv/back-emf/V))
     (pad 3 thru_hole oval (at 10.16 0 270) (size 2 3.5) (drill 1.5) (layers *.Cu *.Mask B.SilkS)
       (net 27 /hv/back-emf/W))
-    (model ${KIPRJMOD}/stmbl.pretty/akl230_3.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/akl230_3.wrl
       (at (xyz -0.1240157480314961 -0.07874015748031496 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12220,7 +12220,7 @@
       (net 76 "Net-(J3-Pad6)"))
     (pad 8 smd rect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 120 "Net-(C53-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12265,7 +12265,7 @@
       (net 61 "Net-(J2-Pad6)"))
     (pad 8 smd rect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 123 "Net-(C72-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12310,7 +12310,7 @@
       (net 81 /hv/f3/HV_RX))
     (pad 8 smd rect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 3 +3.3VP))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12355,7 +12355,7 @@
       (net 70 "Net-(R56-Pad1)"))
     (pad 8 smd rect (at 2.75 -1.905) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 150 "Net-(C36-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12400,7 +12400,7 @@
       (net 71 "Net-(R57-Pad1)"))
     (pad 8 smd rect (at 2.75 -1.905) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 151 "Net-(C37-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12445,7 +12445,7 @@
       (net 74 "Net-(J3-Pad2)"))
     (pad 8 smd rect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 120 "Net-(C53-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12490,7 +12490,7 @@
       (net 78 "Net-(J3-Pad4)"))
     (pad 8 smd rect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 120 "Net-(C53-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12535,7 +12535,7 @@
       (net 80 "Net-(J3-Pad8)"))
     (pad 8 smd rect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 120 "Net-(C53-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12580,7 +12580,7 @@
       (net 65 "Net-(J2-Pad2)"))
     (pad 8 smd rect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 123 "Net-(C72-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12625,7 +12625,7 @@
       (net 64 "Net-(J1-Pad2)"))
     (pad 8 smd rect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 122 "Net-(C71-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12670,7 +12670,7 @@
       (net 60 "Net-(J1-Pad6)"))
     (pad 8 smd rect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 122 "Net-(C71-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12715,7 +12715,7 @@
       (net 92 "Net-(J2-Pad4)"))
     (pad 8 smd rect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 123 "Net-(C72-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12760,7 +12760,7 @@
       (net 90 "Net-(J1-Pad4)"))
     (pad 8 smd rect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)
       (net 122 "Net-(C71-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/so8.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
       (at (xyz -0.1220472440944882 -0.09842519685039371 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -12795,7 +12795,7 @@
       (net 4 GNDPWR) (zone_connect 2))
     (pad 1 smd rect (at -2 0 45) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
       (net 225 "Net-(C41-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -12830,7 +12830,7 @@
       (net 39 +15V) (zone_connect 2))
     (pad 1 smd rect (at -2 0) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
       (net 226 "Net-(C51-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -12865,7 +12865,7 @@
       (net 4 GNDPWR) (zone_connect 2))
     (pad 1 smd rect (at -2 0 90) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
       (net 9 "Net-(C15-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -12900,7 +12900,7 @@
       (net 2 GND) (zone_connect 2))
     (pad 1 smd rect (at -2 0) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
       (net 126 "Net-(C105-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -12935,7 +12935,7 @@
       (net 2 GND) (zone_connect 2))
     (pad 1 smd rect (at -2 0) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
       (net 128 "Net-(C106-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -12970,7 +12970,7 @@
       (net 2 GND) (zone_connect 2))
     (pad 1 smd rect (at -2 0 180) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
       (net 141 "Net-(C121-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13005,7 +13005,7 @@
       (net 45 "Net-(D2-Pad2)") (zone_connect 2))
     (pad 1 smd rect (at -2 0 90) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
       (net 44 +24V))
-    (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13040,7 +13040,7 @@
       (net 46 "Net-(D3-Pad2)") (zone_connect 2))
     (pad 1 smd rect (at -2 0 90) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
       (net 44 +24V))
-    (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13075,7 +13075,7 @@
       (net 47 "Net-(D5-Pad2)") (zone_connect 2))
     (pad 1 smd rect (at -2 0 90) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
       (net 44 +24V))
-    (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13110,7 +13110,7 @@
       (net 48 "Net-(D7-Pad2)") (zone_connect 2))
     (pad 1 smd rect (at -2 0 270) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
       (net 180 "Net-(C98-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13145,7 +13145,7 @@
       (net 2 GND) (zone_connect 2))
     (pad 1 smd rect (at -2 0) (size 2.5 1.75) (layers F.Cu F.Paste F.Mask)
       (net 44 +24V))
-    (model ${KIPRJMOD}/stmbl.pretty/sma.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/sma.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13180,7 +13180,7 @@
       (net 160 "Net-(D4-Pad1)"))
     (pad 2 smd rect (at 1 0 270) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask)
       (net 44 +24V))
-    (model ${KIPRJMOD}/stmbl.pretty/led_side_green.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_green.wrl
       (at (xyz 0 -0.01181102362204724 0.01968503937007874))
       (scale (xyz 350.7 250.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13215,7 +13215,7 @@
       (net 161 "Net-(D14-Pad1)"))
     (pad 2 smd rect (at 1 0 270) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask)
       (net 44 +24V))
-    (model ${KIPRJMOD}/stmbl.pretty/led_side_green.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_green.wrl
       (at (xyz 0 -0.01181102362204724 0.01968503937007874))
       (scale (xyz 350.7 250.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13250,7 +13250,7 @@
       (net 162 "Net-(D15-Pad1)"))
     (pad 2 smd rect (at 1 0 270) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask)
       (net 44 +24V))
-    (model ${KIPRJMOD}/stmbl.pretty/led_side_green.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_green.wrl
       (at (xyz 0 -0.01181102362204724 0.01968503937007874))
       (scale (xyz 350.7 250.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13285,7 +13285,7 @@
       (net 163 "Net-(D16-Pad1)"))
     (pad 2 smd rect (at 1 0 180) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask)
       (net 181 /ctrl/IO/IO_RED))
-    (model ${KIPRJMOD}/stmbl.pretty/led_side_red.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_red.wrl
       (at (xyz 0 -0.01181102362204724 0.01968503937007874))
       (scale (xyz 350.7 250.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13320,7 +13320,7 @@
       (net 164 "Net-(D17-Pad1)"))
     (pad 2 smd rect (at 1 0 180) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask)
       (net 182 /ctrl/IO/IO_YELLOW))
-    (model ${KIPRJMOD}/stmbl.pretty/led_side_yellow.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_yellow.wrl
       (at (xyz 0 -0.01181102362204724 0.01968503937007874))
       (scale (xyz 350.7 250.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13355,7 +13355,7 @@
       (net 165 "Net-(D18-Pad1)"))
     (pad 2 smd rect (at 1 0 180) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask)
       (net 183 /ctrl/IO/IO_GREEN))
-    (model ${KIPRJMOD}/stmbl.pretty/led_side_green.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_green.wrl
       (at (xyz 0 -0.01181102362204724 0.01968503937007874))
       (scale (xyz 350.7 250.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13390,7 +13390,7 @@
       (net 166 "Net-(D19-Pad1)"))
     (pad 2 smd rect (at 1 0 180) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask)
       (net 184 /ctrl/IO/IO_L0))
-    (model ${KIPRJMOD}/stmbl.pretty/led_side_green.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_green.wrl
       (at (xyz 0 -0.01181102362204724 0.01968503937007874))
       (scale (xyz 350.7 250.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13425,7 +13425,7 @@
       (net 167 "Net-(D20-Pad1)"))
     (pad 2 smd rect (at 1 0 180) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask)
       (net 185 /ctrl/IO/IO_L1))
-    (model ${KIPRJMOD}/stmbl.pretty/led_side_green.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_green.wrl
       (at (xyz 0 -0.01181102362204724 0.01968503937007874))
       (scale (xyz 350.7 250.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13460,7 +13460,7 @@
       (net 186 "Net-(D24-Pad1)"))
     (pad 2 smd rect (at 1 0 270) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask)
       (net 44 +24V))
-    (model ${KIPRJMOD}/stmbl.pretty/led_side_green.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_green.wrl
       (at (xyz 0 -0.01181102362204724 0.01968503937007874))
       (scale (xyz 350.7 250.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13495,7 +13495,7 @@
       (net 43 "Net-(D1-Pad1)"))
     (pad 2 smd rect (at 1 0 90) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask)
       (net 42 "Net-(D1-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/led_side_red.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_red.wrl
       (at (xyz 0 -0.01181102362204724 0.01968503937007874))
       (scale (xyz 350.7 250.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13530,7 +13530,7 @@
       (net 4 GNDPWR))
     (pad 2 smd rect (at 1 0 270) (size 1.1 0.9) (layers F.Cu F.Paste F.Mask)
       (net 49 "Net-(D8-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/led_side_green.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/led_side_green.wrl
       (at (xyz 0 -0.01181102362204724 0.01968503937007874))
       (scale (xyz 350.7 250.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13788,7 +13788,7 @@
       (net 225 "Net-(C41-Pad2)"))
     (pad 2 smd rect (at 5 0) (size 3 2.8) (layers F.Cu F.Paste F.Mask)
       (net 39 +15V))
-    (model ${KIPRJMOD}/stmbl.pretty/Coilcraft-DT3316P.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/Coilcraft-DT3316P.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz -90 0 90))
@@ -13816,7 +13816,7 @@
       (net 7 +5V))
     (pad 1 smd rect (at -1.2 0 90) (size 2.5 1) (layers F.Cu F.Paste F.Mask)
       (net 126 "Net-(C105-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/LQH32PN_sw.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/LQH32PN_sw.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13844,7 +13844,7 @@
       (net 129 +12V))
     (pad 1 smd rect (at -1.2 0 90) (size 2.5 1) (layers F.Cu F.Paste F.Mask)
       (net 128 "Net-(C106-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/LQH32PN_sw.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/LQH32PN_sw.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13872,7 +13872,7 @@
       (net 137 +5F))
     (pad 1 smd rect (at -1.2 0 270) (size 2.5 1) (layers F.Cu F.Paste F.Mask)
       (net 141 "Net-(C121-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/LQH32PN_sw.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/LQH32PN_sw.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -13900,7 +13900,7 @@
       (net 3 +3.3VP))
     (pad 1 smd rect (at -1.2 0 180) (size 2.5 1) (layers F.Cu F.Paste F.Mask)
       (net 9 "Net-(C15-Pad2)"))
-    (model ${KIPRJMOD}/stmbl.pretty/LQH32PN_sw.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/LQH32PN_sw.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -14005,7 +14005,7 @@
       (net 4 GNDPWR))
     (pad 6 smd roundrect (at 0 0 270) (size 2.5 2.25) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25)
       (net 4 GNDPWR) (zone_connect 2))
-    (model ${KIPRJMOD}/stmbl.pretty/MicroUSB-B_Molex_105017-0001.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/MicroUSB-B_Molex_105017-0001.wrl
       (at (xyz 0 0 0.04921259842519685))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz -90 0 180))
@@ -14049,7 +14049,7 @@
       (net 1 "Net-(C1-Pad1)"))
     (pad 6 smd roundrect (at 0 0) (size 2.5 2.25) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25)
       (net 1 "Net-(C1-Pad1)") (zone_connect 2))
-    (model ${KIPRJMOD}/stmbl.pretty/MicroUSB-B_Molex_105017-0001.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/MicroUSB-B_Molex_105017-0001.wrl
       (at (xyz 0 0 0.04921259842519685))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz -90 0 180))
@@ -14087,7 +14087,7 @@
       (net 224 "Net-(R143-Pad1)"))
     (pad 1 smd rect (at -2.45 -1.905 270) (size 0.6 2) (layers F.Cu F.Paste F.Mask)
       (net 26 "Net-(C41-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/SO7.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/SO7.wrl
       (at (xyz 0 0 0.03149606299212599))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz -90 0 90))
@@ -14118,7 +14118,7 @@
     (pad 3 smd rect (at -1.25 2 270) (size 1.5 1) (layers F.Cu F.Paste F.Mask))
     (pad 1 smd rect (at -1.25 -2 270) (size 1.5 1) (layers F.Cu F.Paste F.Mask)
       (net 22 "Net-(C31-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/GeyerElectronics_KX9A.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/GeyerElectronics_KX9A.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz -90 0 90))
@@ -14149,7 +14149,7 @@
     (pad 3 smd rect (at -1.25 2 180) (size 1.5 1) (layers F.Cu F.Paste F.Mask))
     (pad 1 smd rect (at -1.25 -2 180) (size 1.5 1) (layers F.Cu F.Paste F.Mask)
       (net 5 "Net-(C5-Pad1)"))
-    (model ${KIPRJMOD}/stmbl.pretty/GeyerElectronics_KX9A.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/GeyerElectronics_KX9A.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz -90 0 90))
@@ -14173,7 +14173,7 @@
       (net 4 GNDPWR) (zone_connect 2))
     (pad 2 thru_hole oval (at 5.08 0 270) (size 2 3.5) (drill 1.5) (layers *.Cu *.Mask B.SilkS)
       (net 12 VPP))
-    (model ${KIPRJMOD}/stmbl.pretty/akl230_2.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/akl230_2.wrl
       (at (xyz -0.1240157480314961 -0.07874015748031496 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 0))
@@ -14226,7 +14226,7 @@
       (clearance 0.5))
     (pad "" np_thru_hole circle (at 6.35 -5.4 90) (size 3.1 3.1) (drill 3.1) (layers *.Cu *.Mask)
       (clearance 0.5))
-    (model ${KIPRJMOD}/stmbl.pretty/RIA_AJT10L8813-011.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/RIA_AJT10L8813-011.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz -90 0 180))
@@ -14279,7 +14279,7 @@
       (clearance 0.5))
     (pad "" np_thru_hole circle (at 6.35 -5.4 90) (size 3.1 3.1) (drill 3.1) (layers *.Cu *.Mask)
       (clearance 0.5))
-    (model ${KIPRJMOD}/stmbl.pretty/RIA_AJT10L8813-011.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/RIA_AJT10L8813-011.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz -90 0 180))
@@ -14332,7 +14332,7 @@
       (clearance 0.5))
     (pad "" np_thru_hole circle (at 6.35 -5.4 90) (size 3.1 3.1) (drill 3.1) (layers *.Cu *.Mask)
       (clearance 0.5))
-    (model ${KIPRJMOD}/stmbl.pretty/RIA_AJT10L8813-011.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/RIA_AJT10L8813-011.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz -90 0 180))
@@ -14979,7 +14979,7 @@
       (net 31 /hv/back-emf/U))
     (pad 13 thru_hole oval (at 2.54 16.5) (size 2 2) (drill 1) (layers *.Cu *.Mask B.SilkS)
       (net 12 VPP))
-    (model ${KIPRJMOD}/stmbl.pretty/iram256.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/iram256.wrl
       (at (xyz -1.220472440944882 -0.4409448818897638 0.3149606299212598))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 180 90))
@@ -15012,7 +15012,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
     (pad 1 smd rect (at -2 0 90) (size 1.5 2) (layers F.Cu F.Paste F.Mask)
       (net 12 VPP) (solder_mask_margin 0.1) (zone_connect 2))
-    (model ${KIPRJMOD}/stmbl.pretty/cap_1808.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/cap_1808.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -15045,7 +15045,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
     (pad 1 smd rect (at -2 0 90) (size 1.5 2) (layers F.Cu F.Paste F.Mask)
       (net 12 VPP) (solder_mask_margin 0.1) (zone_connect 2))
-    (model ${KIPRJMOD}/stmbl.pretty/cap_1808.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/cap_1808.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -15078,7 +15078,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
     (pad 1 smd rect (at -2 0 90) (size 1.5 2) (layers F.Cu F.Paste F.Mask)
       (net 12 VPP) (solder_mask_margin 0.1) (zone_connect 2))
-    (model ${KIPRJMOD}/stmbl.pretty/cap_1808.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/cap_1808.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -15111,7 +15111,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
     (pad 1 smd rect (at -2 0 90) (size 1.5 2) (layers F.Cu F.Paste F.Mask)
       (net 12 VPP) (solder_mask_margin 0.1) (zone_connect 2))
-    (model ${KIPRJMOD}/stmbl.pretty/cap_1808.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/cap_1808.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -15144,7 +15144,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
     (pad 1 smd rect (at -2 0 90) (size 1.5 2) (layers F.Cu F.Paste F.Mask)
       (net 12 VPP) (solder_mask_margin 0.1) (zone_connect 2))
-    (model ${KIPRJMOD}/stmbl.pretty/cap_1808.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/cap_1808.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))
@@ -15177,7 +15177,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
     (pad 1 smd rect (at -2 0 90) (size 1.5 2) (layers F.Cu F.Paste F.Mask)
       (net 12 VPP) (solder_mask_margin 0.1) (zone_connect 2))
-    (model ${KIPRJMOD}/stmbl.pretty/cap_1808.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/cap_1808.wrl
       (at (xyz 0 0 0))
       (scale (xyz 393.7 393.7 393.7))
       (rotate (xyz 0 0 0))

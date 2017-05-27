@@ -22,7 +22,7 @@
     (solder_mask_margin 0.1) (zone_connect 2))
   (pad 1 smd rect (at -2 0) (size 1.5 2) (layers F.Cu F.Paste F.Mask)
     (solder_mask_margin 0.1) (zone_connect 2))
-  (model ${KIPRJMOD}/stmbl.pretty/cap_1808.wrl
+  (model ${KIPRJMOD}/../lib/stmbl.pretty/cap_1808.wrl
     (at (xyz 0 0 0))
     (scale (xyz 393.7 393.7 393.7))
     (rotate (xyz 0 0 0))
