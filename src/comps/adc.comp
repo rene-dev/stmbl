@@ -4,13 +4,13 @@ HAL_COMP(adc);
 #define INPUT_GAIN (OP_R_FEEDBACK / OP_R_INPUT * OP_R_OUT_LOW / (OP_R_OUT_HIGH + OP_R_OUT_LOW))
 #define V_DIFF(ADC) (((ADC) / ADC_ANZ / ADC_RES * ADC_REF - INPUT_REF) / INPUT_GAIN)
 
-HAL_PIN(sin) = 0.0;
-HAL_PIN(cos) = 0.0;
-HAL_PIN(sin3) = 0.0;
-HAL_PIN(cos3) = 0.0;
-HAL_PIN(quad) = 0.0;
+HAL_PIN(sin) = 0.0;//sin output
+HAL_PIN(cos) = 0.0;//cos output
+HAL_PIN(sin3) = 0.0;//sin output, last quater only
+HAL_PIN(cos3) = 0.0;//cos output, last quater only
+HAL_PIN(quad) = 0.0;//quadrant of sin/cos
 
-HAL_PIN(res_en) = 0.0;
+HAL_PIN(res_en) = 0.0;//flip polarity for resolvers
 
 HAL_PIN(sin_gain) = 1.0;
 HAL_PIN(cos_gain) = 1.0;
