@@ -14,6 +14,7 @@ HAL_PIN(cos) = 0.0;
 
 HAL_PIN(enable) = 0.0;
 HAL_PIN(error) = 0.0;
+HAL_PIN(error_n) = 1.0;
 HAL_PIN(tim_oc) = 51.0;
 MEM(int lastq) = 0;// last quadrant
 MEM(int abspos) = 0;// multiturn position
@@ -112,9 +113,11 @@ RT(
 
 	if(a < 0.25){
 		PIN(error) = 1.0;
+    PIN(error_n) = 0.0;
 	}
 	else{
 		PIN(error) = 0.0;
+    PIN(error_n) = 1.0;
       if(p == 1.0f){
          PIN(pos) = mod(pos + dpos);
       }else{

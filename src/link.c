@@ -297,7 +297,8 @@ int update_fb(){
          hal_link_pins("adc0.sin", "res0.sin");
          hal_link_pins("adc0.cos", "res0.cos");
          hal_link_pins("adc0.quad", "res0.quad");
-         hal_link_pins("res0.error", "net0.fb_error");
+         hal_link_pins("res0.error_n", "io0.fb0g");
+         hal_set_pin("io0.fb0y", 1.0);
          hal_set_pin("adc0.res_en", 1.0);
          hal_set_pin("res0.rt_prio", 2.0);
          break;
