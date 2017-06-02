@@ -80,6 +80,7 @@ SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_adc.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_adc_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_cortex.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_crc.c
 # SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac.c
 # SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac_ex.c
 # SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dma.c
@@ -112,7 +113,7 @@ CPPFLAGS += $(addprefix -I,$(INCDIRS))
 #  -g             generate debugging information
 #  -save-temps    preserve .s and .i-files
 #
-CPPFLAGS += -fsingle-precision-constant
+#CPPFLAGS += 
 # CPPFLAGS += -g
 # CPPFLAGS += -save-temps=obj
 
@@ -130,6 +131,16 @@ CFLAGS += -fno-builtin ## from old
 CFLAGS += -nostartfiles
 CFLAGS += -Wfatal-errors
 CFLAGS += -Wno-pointer-sign #for usb lib...
+#CFLAGS += -Wdouble-promotion
+CFLAGS += -Wfloat-conversion
+CFLAGS += -fsingle-precision-constant
+# CFLAGS += -ffast-math
+CFLAGS += -ffinite-math-only
+CFLAGS += -fno-trapping-math
+CFLAGS += -fno-signaling-nans
+CFLAGS += -fno-rounding-math
+CFLAGS += -fno-signed-zeros
+CFLAGS += -fno-math-errno
 #CFLAGS += -Wstrict-prototypes
 #CFLAGS += -Wextra
 #CFLAGS += -Wpointer-arith

@@ -26,6 +26,7 @@ SOURCES += src/hal_tbl.c
 
 SOURCES += src/comps/hw/io4.c
 SOURCES += src/comps/encm.c
+SOURCES += src/comps/hv.c
 
 SOURCES += shared/comps/sim.c
 SOURCES += shared/comps/term.c

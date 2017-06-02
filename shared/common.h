@@ -8,19 +8,12 @@
 #define DATABAUD 3000000 //baudrate used for communication
 
 //fixed point calculations signed bit, 9 bit predecimal, 6 bit decimal
-#define TOFIXED(a) ((int16_t)((a) * 64))
-#define TOFLOAT(a) ((float)((a) / 64.0))
+// #define TOFIXED(a) ((int16_t)((a) * 64))
+// #define TOFLOAT(a) ((float)((a) / 64.0))
 
 #define PWM_RES 4800
 
-#pragma pack(1)
-typedef struct{
-   uint8_t start; // 255
-   uint8_t key;
-   uint16_t crc;
-} packet_header_t;
-
-//data from f1 to f4
+//data from f3 to f4
 #pragma pack(1)
 typedef struct{
    float d_fb;
@@ -28,11 +21,15 @@ typedef struct{
    float dc_volt;
    float pwm_volt;
    float value;
-   uint8_t addr    : 7;
-   uint8_t fault : 1;
-} from_hv_t;
+   uint16_t addr;
+   union {
+      uint16_t fault : 1;
+      uint16_t foo;
+   } flags;
+   uint32_t crc;
+} packet_from_hv_t;
 
-//data from f4 to f1
+//data from f4 to f3
 #pragma pack(1)
 typedef struct{
    float d_cmd;
@@ -40,9 +37,13 @@ typedef struct{
    float pos;
    float vel;
    float value;
-   uint8_t addr    : 7;
-   uint8_t enable  : 1;
-} to_hv_t;
+   uint16_t addr;
+   union {
+      uint16_t enable : 1;
+      uint16_t foo;
+   } flags;
+   uint32_t crc;
+} packet_to_hv_t;
 
 #pragma pack(1)
 typedef union {
@@ -77,26 +78,14 @@ typedef union {
 } f3_state_data_t;
 
 
-#pragma pack(1)
-typedef struct{
-   packet_header_t head;
-   to_hv_t data;
-} packet_to_hv_t;
-
-#pragma pack(1)
-typedef struct{
-   packet_header_t head;
-   from_hv_t data;
-} packet_from_hv_t;
-
-void buff_packet(packet_header_t* p, uint8_t size);
-int unbuff_packet(packet_header_t* p, uint8_t size);
+// void buff_packet(packet_header_t* p, uint8_t size);
+// int unbuff_packet(packet_header_t* p, uint8_t size);
 
 //check if structs can be send at 5kHz using DATABAUD
 _Static_assert(sizeof(packet_to_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "to_hv struct to large");
 _Static_assert(sizeof(packet_from_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "from_hv struct to large");
-
-
+_Static_assert(!(sizeof(packet_to_hv_t) % 4), "to_hv struct not word aligned");
+_Static_assert(!(sizeof(packet_from_hv_t) % 4), "from_hv struct not word aligned");
 // struct f1tof4{
 //   int16 a;
 //   int16 b;
