@@ -114,8 +114,8 @@ void hal_term_print_info(char * ptr){
    printf("HAL_MAX_COMPS %lu/%i\n", hal.comp_inst_count, HAL_MAX_COMPS);
    printf("HAL_MAX_PINS %lu/%i\n", hal.pin_inst_count, HAL_MAX_PINS);
    printf("HAL_MAX_CTX %lu/%i\n", hal.ctx_count, HAL_MAX_CTX);
-   //printf("#pins %lu\n", hal.pin_inst_count);
-   //printf("#comps %lu\n", hal.comp_inst_count);
+   hal_term_print_state();
+   
    // printf("link errors %lu\n", hal.link_errors);
    // printf("pin errors %lu\n", hal.pin_errors);
    // printf("comp errors %lu\n", hal.comp_errors);
@@ -126,44 +126,8 @@ void hal_term_print_info(char * ptr){
    float pe = hal.rt_period;
    float ct = hal.rt_calc_time;
    float mct = hal.max_rt_calc_time;
-   if(mct > 0.0){
-      if(pe > 0.0){
-         printf("rt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
-         printf("max rt time: %fus/%fus = %f%% @ %fkHz\n", mct * 1000000.0, pe * 1000000.0, (mct / pe) * 100.0, 1.0 / pe / 1000.0);
-         //printf("=%f%%\n",(ct/pe)*100);
-      }
-      else{
-         printf("rt time: %fus\n", ct * 1000000.0);
-         printf("max rt time: %fus\n", mct * 1000000.0);
-      }
-   }
-   pe = hal.frt_period;
-   ct = hal.frt_calc_time;
-   mct = hal.max_frt_calc_time; 
-   if(mct > 0.0){  
-      if(pe > 0.0){
-         printf("frt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
-         printf("max frt time: %fus/%fus = %f%% @ %fkHz\n", mct * 1000000.0, pe * 1000000.0, (mct / pe) * 100.0, 1.0 / pe / 1000.0);
-         //printf("=%f%%\n",(ct/pe)*100);
-      }
-      else{
-         printf("frt time: %fus\n", ct * 1000000.0);
-         printf("max frt time: %fus\n", mct * 1000000.0);
-      }
-   }
-   pe = hal.nrt_period;
-   ct = hal.nrt_calc_time;
-   mct = hal.max_nrt_calc_time;
-   if(mct > 0.0){
-      if(pe > 0.0){
-         printf("nrt time: %f/%fs\n", ct, pe);
-         printf("max nrt time: %f/%fs\n", mct, pe);
-      }
-      else{
-         printf("nrt time: %fus\n", ct * 1000000.0);
-         printf("max nrt time: %fus\n", mct * 1000000.0);
-      }
-   }
+   struct pin_ctx_t * pins = 0;
+   printf("\n### rt info ###\n");
    switch(hal.rt_state){
       case RT_STOP:
       printf("rt state:  STOP\n");
@@ -175,6 +139,34 @@ void hal_term_print_info(char * ptr){
       printf("rt state:  CALC\n");
       break;
    }
+   if(mct > 0.0){
+      if(pe > 0.0){
+         printf("rt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
+         printf("max rt time: %fus/%fus = %f%% @ %fkHz\n", mct * 1000000.0, pe * 1000000.0, (mct / pe) * 100.0, 1.0 / pe / 1000.0);
+         //printf("=%f%%\n",(ct/pe)*100);
+      }
+      else{
+         printf("rt time: %fus\n", ct * 1000000.0);
+         printf("max rt time: %fus\n", mct * 1000000.0);
+      }
+   }
+   printf("active rt funcs(%lu):\n", hal.rt_comp_count);
+   for(int j = 0; j < hal.rt_comp_count; j++){
+      pins = (struct pin_ctx_t *)(hal.rt_comps[j]->pin_insts);
+      printf("@%fus: %s(%f) %fus", PIN(rt_start_time) * 1000000.0, hal.rt_comps[j]->comp->name, PIN(rt_prio), PIN(rt_calc_time) * 1000000.0);
+      if(pe > 0.0){
+         printf(" = %f%%\n", PIN(rt_calc_time) / pe * 100.0);
+      }
+      else{
+         printf("\n");
+      }
+   }
+   
+   
+   pe = hal.frt_period;
+   ct = hal.frt_calc_time;
+   mct = hal.max_frt_calc_time; 
+   printf("\n### frt info ###\n");
    switch(hal.frt_state){
       case FRT_STOP:
       printf("frt state:  STOP\n");
@@ -186,22 +178,48 @@ void hal_term_print_info(char * ptr){
       printf("frt state:  CALC\n");
       break;
    }
-   hal_term_print_state();
-   
-   printf("active rt funcs(%lu):\n", hal.rt_comp_count);
-   for(int j = 0; j < hal.rt_comp_count; j++){
-      printf("%s\n", hal.rt_comps[j]->comp->name);
+   if(mct > 0.0){  
+      if(pe > 0.0){
+         printf("frt time: %fus/%fus = %f%% @ %fkHz\n", ct * 1000000.0, pe * 1000000.0, (ct / pe) * 100.0, 1.0 / pe / 1000.0);
+         printf("max frt time: %fus/%fus = %f%% @ %fkHz\n", mct * 1000000.0, pe * 1000000.0, (mct / pe) * 100.0, 1.0 / pe / 1000.0);
+         //printf("=%f%%\n",(ct/pe)*100);
+      }
+      else{
+         printf("frt time: %fus\n", ct * 1000000.0);
+         printf("max frt time: %fus\n", mct * 1000000.0);
+      }
    }
-   
    printf("active frt funcs(%lu):\n", hal.frt_comp_count);
    for(int j = 0; j < hal.frt_comp_count; j++){
-      printf("%s\n", hal.frt_comps[j]->comp->name);
+      pins = (struct pin_ctx_t *)(hal.frt_comps[j]->pin_insts);
+      printf("%s(%f) %fus", hal.frt_comps[j]->comp->name, PIN(frt_prio), PIN(frt_calc_time) * 1000000.0);
+      if(pe > 0.0){
+         printf(" = %f%%\n", PIN(frt_calc_time) / pe * 100.0);
+      }
+      else{
+         printf("\n");
+      }
    }
    
-   printf("active nrt funcs:\n");
+   pe = hal.nrt_period;
+   ct = hal.nrt_calc_time;
+   mct = hal.max_nrt_calc_time;
+   printf("\n### nrt info ###\n");
+   if(mct > 0.0){
+      if(pe > 0.0){
+         printf("nrt time: %f/%fs\n", ct, pe);
+         printf("max nrt time: %f/%fs\n", mct, pe);
+      }
+      else{
+         printf("nrt time: %fus\n", ct * 1000000.0);
+         printf("max nrt time: %fus\n", mct * 1000000.0);
+      }
+   }
+   printf("active nrt funcs(%lu):\n", hal.comp_inst_count);
    for(int j = 0; j < hal.comp_inst_count; j++){
       if(hal.comp_insts[j].comp->nrt){
-         printf("%s\n", hal.comp_insts[j].comp->name);
+         pins = (struct pin_ctx_t *)(hal.comp_insts[j].pin_insts);
+         printf("%s %fus\n", hal.comp_insts[j].comp->name, PIN(nrt_calc_time) * 1000000.0);
       }
    }
 }
@@ -222,7 +240,8 @@ uint32_t load_comp(hal_comp_t * comp){
       printf("load_comp: not enough space to load comp pins: %s\n", comp->name);
       return(0);
    }
-   if(hal.ctx_count + comp->ctx_size >= HAL_MAX_CTX - 1){
+   uint32_t ctx_size = ((uint32_t)ceil((comp->ctx_size / 4.0))) * 4;
+   if(hal.ctx_count + ctx_size >= HAL_MAX_CTX - 1){
       printf("load_comp: not enough space to load comp ctx: %s\n", comp->name);
       return(0);
    }
@@ -231,6 +250,7 @@ uint32_t load_comp(hal_comp_t * comp){
    hal.comp_insts[hal.comp_inst_count].comp = comp;
    hal.comp_insts[hal.comp_inst_count].ctx = &hal.ctxs[hal.ctx_count];
    hal.comp_insts[hal.comp_inst_count].pin_insts = &hal.pin_insts[hal.pin_inst_count];
+   hal.comp_insts[hal.comp_inst_count].ctx_size = ctx_size;
    uint32_t offset = 0;
    for(int i = 0; i < comp_count; i++){
       if(comps[i] == comp){
@@ -254,10 +274,11 @@ uint32_t load_comp(hal_comp_t * comp){
    hal.pin_inst_count += comp->pin_count;
    
    // load ctx
-   for(int i = hal.ctx_count; i <  hal.ctx_count + comp->ctx_size; i++){
+   for(int i = hal.ctx_count; i <  hal.ctx_count + ctx_size; i++){
       hal.ctxs[i] = 0;
    }
-   hal.ctx_count += comp->ctx_size;
+
+   hal.ctx_count += ctx_size;
    
    return(1);
 }
@@ -300,6 +321,7 @@ void hal_run_rt(){
          hal.rt_state = RT_CALC;
    }
    
+
    for(hal.active_rt_func = 0; hal.active_rt_func < hal.rt_comp_count; hal.active_rt_func++){
       #ifdef HAL_COMP_CALC_TIME
          comp_start = hal_get_systick_value();
@@ -307,11 +329,20 @@ void hal_run_rt(){
       hal.rt_comps[hal.active_rt_func]->comp->rt(period, hal.rt_comps[hal.active_rt_func]->ctx, hal.rt_comps[hal.active_rt_func]->pin_insts);
       #ifdef HAL_COMP_CALC_TIME
          comp_end = hal_get_systick_value();
-         if(comp_start < comp_end){
-           comp_start += hal_get_systick_reload();
-         }
          pins = ((struct pin_ctx_t *)(hal.rt_comps[hal.active_rt_func]->pin_insts));
-         PIN(rt_calc_time) = ((float)(comp_start - comp_end)) / hal_get_systick_freq();
+
+         int calc_time = comp_start - comp_end;
+         int start_time = start - comp_start;
+         
+         if(calc_time < 0){
+           calc_time += hal_get_systick_reload();
+         }
+         if(start_time < 0){
+           start_time += hal_get_systick_reload();
+         }
+         
+         PIN(rt_calc_time) = ((float)calc_time) / hal_get_systick_freq();
+         PIN(rt_start_time) = ((float)start_time) / hal_get_systick_freq();
       #endif
    }
    hal.active_rt_func = -1;
@@ -485,6 +516,8 @@ void show(char * ptr){
    int pin_offset = 0;
    for(int i = 0; i < comp_count; i++){
       printf("%s\n", comps[i]->name);
+      printf("#pins: %lu\n", comps[i]->pin_count);
+      printf("#ctx: %lu byte\n", comps[i]->ctx_size);
       for(; j < pin_offset + comps[i]->pin_count; j++){
          printf("- %s\n", pins[j]);
       }
@@ -496,6 +529,11 @@ COMMAND("show", show);
 void list(char * ptr){
    for(int i = 0; i < hal.comp_inst_count; i++){
       printf("%s%lu:\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance);
+      printf("#pins: %lu\n", hal.comp_insts[i].comp->pin_count);
+      printf("#ctx: %lu byte\n", hal.comp_insts[i].comp->ctx_size);
+      printf("real #ctx: %lu byte\n", hal.comp_insts[i].ctx_size);
+      printf("*pins: %x byte\n", hal.comp_insts[i].pin_insts);
+      printf("*ctx: %x byte\n", hal.comp_insts[i].ctx);
       for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
          volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
          printf("-  %s <= %s%lu.%s = %f\n", hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
@@ -599,6 +637,8 @@ void hal_start(){
    start_frt();
 }
 
+COMMAND("start", hal_start);
+
 void stop_rt(){
    hal.rt_state = RT_STOP;
    
@@ -623,6 +663,8 @@ void hal_stop(){
    stop_rt();
    stop_frt();
 }
+
+COMMAND("stop", hal_stop);
 
 void hal_init(){
    hal.rt_state = RT_STOP;

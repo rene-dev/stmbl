@@ -49,6 +49,7 @@ typedef struct hal_comp_inst_t{
    volatile void * ctx;
    volatile hal_pin_inst_t * pin_insts;
    pin_t * pins;
+   uint32_t ctx_size;
 } hal_comp_inst_t;
 
 #define PIN(p) (pins->p.source->source->value)

@@ -102,8 +102,10 @@ void Error_Handler(void);
 
 
 void TIM8_UP_IRQHandler(){
+   GPIOA->BSRR |= GPIO_PIN_9;
    __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
    hal_run_rt();
+   GPIOA->BSRR |= GPIO_PIN_9 << 16;
 }
 
 void bootloader(char * ptr){
@@ -112,6 +114,16 @@ void bootloader(char * ptr){
 }
 
 COMMAND("bootloader", bootloader);
+
+void about(char * ptr){
+   printf("flash acr: %lu\n", FLASH->ACR);
+}
+COMMAND("about", about);
+
+void reset(char * ptr){
+   HAL_NVIC_SystemReset();
+}
+COMMAND("reset", reset);
 
 int main(void)
 {
@@ -141,6 +153,7 @@ int main(void)
   MX_OPAMP3_Init();
   // MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
+  HAL_Delay(500);
   __HAL_RCC_DMA1_CLK_ENABLE();
   __HAL_RCC_DMA2_CLK_ENABLE();
   __HAL_RCC_RTC_ENABLE();
@@ -154,6 +167,20 @@ int main(void)
   HAL_OPAMP_SelfCalibrate(&hopamp1);
   HAL_OPAMP_SelfCalibrate(&hopamp2);
   HAL_OPAMP_SelfCalibrate(&hopamp3);
+  
+  hcrc.Instance = CRC;
+  hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+  hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+  hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+  hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+  hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_WORDS;
+  
+  __HAL_RCC_CRC_CLK_ENABLE();
+  
+  if (HAL_CRC_Init(&hcrc) != HAL_OK)
+  {
+    Error_Handler();
+  }
   
   //USB EN IO board: PB15
   // GPIO_InitStruct.Pin = GPIO_PIN_15;
@@ -215,7 +242,7 @@ int main(void)
   hal_init();
   // hal load comps
   load_comp(comp_by_name("term"));
-  load_comp(comp_by_name("sim"));
+  // load_comp(comp_by_name("sim"));
   load_comp(comp_by_name("io"));
   load_comp(comp_by_name("ls"));
   load_comp(comp_by_name("dq"));

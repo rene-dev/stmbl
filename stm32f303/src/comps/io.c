@@ -54,9 +54,9 @@ struct io_ctx_t{
 //#define TEMP(a) (log10f((a) * (AREF) / (ARES) * (TPULLUP) / ((AREF) - (a) * (AREF) / (ARES))) * (-53.0) + 290.0)
 
 #define SHUNT 0.003//shunt
-#define SHUNT_PULLUP 15000
-#define SHUNT_SERIE 470
-#define SHUNT_GAIN 16
+#define SHUNT_PULLUP 15000.0
+#define SHUNT_SERIE 470.0
+#define SHUNT_GAIN 16.0
 
 #define AMP(a, gain) (((a) * AREF / ARES / (gain) - AREF / (SHUNT_PULLUP + SHUNT_SERIE) * SHUNT_SERIE) / (SHUNT * SHUNT_PULLUP) * (SHUNT_PULLUP + SHUNT_SERIE))
 
@@ -105,7 +105,7 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
   struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
-   
+
   while(!(DMA1->ISR & DMA_ISR_TCIF1)){}
   while(!(DMA2->ISR & DMA_ISR_TCIF5)){}
   
@@ -116,22 +116,22 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   uint32_t a34 = adc_34_buf[0] + adc_34_buf[1] + adc_34_buf[2] + adc_34_buf[3] + adc_34_buf[4];
   
   if(ctx->u_offset == 0){
-    ctx->w_offset = AMP((a12 & 0xFFFF) / 5.0, SHUNT_GAIN);
-    ctx->u_offset = AMP((a12 >> 16) / 5.0, SHUNT_GAIN);
-    ctx->v_offset = AMP((a34 & 0xFFFF) / 5.0, SHUNT_GAIN);
+    ctx->w_offset = AMP((float)(a12 & 0xFFFF) / 5.0, SHUNT_GAIN);
+    ctx->u_offset = AMP((float)(a12 >> 16) / 5.0, SHUNT_GAIN);
+    ctx->v_offset = AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN);
   }
   
-  PIN(iw) = -AMP((a12 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->w_offset;
-  PIN(iu) = -AMP((a12 >> 16) / 5.0, SHUNT_GAIN) + ctx->u_offset;
-  PIN(iv) = -AMP((a34 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->v_offset;
-  PIN(w) = VOLT(adc_12_buf[5] & 0xFFFF) * 0.05 + PIN(w) * 0.95;
+  PIN(iw) = -AMP((float)(a12 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->w_offset; // 1u
+  PIN(iu) = -AMP((float)(a12 >> 16) / 5.0, SHUNT_GAIN) + ctx->u_offset;
+  PIN(iv) = -AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->v_offset;
+  PIN(w) = VOLT(adc_12_buf[5] & 0xFFFF) * 0.05 + PIN(w) * 0.95; // 0.6u
   PIN(v) = VOLT(adc_12_buf[5] >> 16) * 0.05 + PIN(v) * 0.95;
   PIN(u) = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
   PIN(udc) = VOLT(adc_34_buf[5] >> 16) * 0.05 + PIN(udc) * 0.95;
   
-  PIN(hv_temp) = r2temp(HV_R(ADC(adc_34_buf[0] >> 16))) * 0.01 + PIN(hv_temp) * 0.99;
-  PIN(mot_temp) = MOT_R(MOT_REF(ADC(adc_34_buf[5] >> 16)));
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+  PIN(hv_temp) = r2temp(HV_R(ADC(adc_34_buf[0] >> 16))) * 0.01 + PIN(hv_temp) * 0.99; // 5.5u
+  PIN(mot_temp) = MOT_R(MOT_REF(ADC(adc_34_buf[5] >> 16))); // 1.4u
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET); // 0.1u
 }
 
 hal_comp_t io_comp_struct = {

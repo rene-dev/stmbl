@@ -31,8 +31,12 @@ header.write("struct pin_ctx_t{\n")
 header.write("   hal_pin_inst_t rt_prio;\n")
 header.write("   hal_pin_inst_t frt_prio;\n")
 header.write("   hal_pin_inst_t rt_calc_time;\n")
+header.write("   hal_pin_inst_t rt_start_time;\n")
 header.write("   hal_pin_inst_t frt_calc_time;\n")
+header.write("   hal_pin_inst_t frt_start_time;\n")
 header.write("   hal_pin_inst_t nrt_calc_time;\n")
+header.write("   hal_pin_inst_t nrt_start_time;\n")
+
 header.write("};\n\n")
 
 for comp_name, pins, file_name in comps:
@@ -40,8 +44,11 @@ for comp_name, pins, file_name in comps:
     header.write("   hal_pin_inst_t rt_prio;\n")
     header.write("   hal_pin_inst_t frt_prio;\n")
     header.write("   hal_pin_inst_t rt_calc_time;\n")
+    header.write("   hal_pin_inst_t rt_start_time;\n")
     header.write("   hal_pin_inst_t frt_calc_time;\n")
+    header.write("   hal_pin_inst_t frt_start_time;\n")
     header.write("   hal_pin_inst_t nrt_calc_time;\n")
+    header.write("   hal_pin_inst_t nrt_start_time;\n")
     
     for (p, i) in pins:
         if i > 1:
@@ -73,8 +80,11 @@ for comp_name, pins, file_name in comps:
     code.write("   \"rt_prio\",\n")
     code.write("   \"frt_prio\",\n")
     code.write("   \"rt_calc_time\",\n")
+    code.write("   \"rt_start_time\",\n")
     code.write("   \"frt_calc_time\",\n")
+    code.write("   \"frt_start_time\",\n")
     code.write("   \"nrt_calc_time\",\n")
+    code.write("   \"nrt_start_time\",\n")
     
     for (p, i) in pins:
         if i > 1:

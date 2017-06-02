@@ -69,6 +69,8 @@ void HardFault_Handler(void)
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {
+     GPIOA->BSRR |= GPIO_PIN_9;
+     GPIOA->BSRR |= GPIO_PIN_9 << 16;
   }
   /* USER CODE BEGIN HardFault_IRQn 1 */
 
@@ -85,6 +87,8 @@ void MemManage_Handler(void)
   /* USER CODE END MemoryManagement_IRQn 0 */
   while (1)
   {
+     GPIOA->BSRR |= GPIO_PIN_9 << 16;
+     GPIOA->BSRR |= GPIO_PIN_9;
   }
   /* USER CODE BEGIN MemoryManagement_IRQn 1 */
 
@@ -101,6 +105,10 @@ void BusFault_Handler(void)
   /* USER CODE END BusFault_IRQn 0 */
   while (1)
   {
+GPIOA->BSRR |= GPIO_PIN_9 << 16;
+GPIOA->BSRR |= GPIO_PIN_9;
+GPIOA->BSRR |= GPIO_PIN_9 << 16;
+GPIOA->BSRR |= GPIO_PIN_9;
   }
   /* USER CODE BEGIN BusFault_IRQn 1 */
 
@@ -117,6 +125,10 @@ void UsageFault_Handler(void)
   /* USER CODE END UsageFault_IRQn 0 */
   while (1)
   {
+     GPIOA->BSRR |= GPIO_PIN_9;
+     GPIOA->BSRR |= GPIO_PIN_9 << 16;
+     GPIOA->BSRR |= GPIO_PIN_9;
+     GPIOA->BSRR |= GPIO_PIN_9 << 16;
   }
   /* USER CODE BEGIN UsageFault_IRQn 1 */
 
@@ -164,11 +176,12 @@ void SysTick_Handler(void)
 void USB_LP_CAN_RX0_IRQHandler(void)
 {
   /* USER CODE BEGIN USB_LP_CAN_RX0_IRQn 0 */
+//GPIOA->BSRR |= GPIO_PIN_10;
 
   /* USER CODE END USB_LP_CAN_RX0_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_FS);
   /* USER CODE BEGIN USB_LP_CAN_RX0_IRQn 1 */
-
+//GPIOA->BSRR |= GPIO_PIN_10 << 16;
   /* USER CODE END USB_LP_CAN_RX0_IRQn 1 */
 }
 
