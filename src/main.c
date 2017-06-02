@@ -160,10 +160,12 @@ int main(void)
    load_comp(comp_by_name("sim"));
    load_comp(comp_by_name("io"));
    load_comp(comp_by_name("encm"));
+   load_comp(comp_by_name("hv"));
    hal_parse("term0.rt_prio = 1");
    hal_parse("encm0.rt_prio = 1");  
    hal_parse("sim0.rt_prio = 2");
    hal_parse("io0.rt_prio = 10");  
+   hal_parse("hv0.rt_prio = 6");  
    // hal parse config
    hal_init_nrt();
    // error foo

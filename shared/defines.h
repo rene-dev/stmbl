@@ -52,6 +52,7 @@ extern "C" {
 
 //TODO: change type to typeof()
 //TODO: change __old_val__ to something more useful 
+//BUG: fails with multiple comps TODO: move to ctx
 
 #define RISING_EDGE(sig)\
 ({static float __old_val__ = 0.0; uint8_t ret = (sig) > __old_val__; __old_val__ = (sig); ret;})
