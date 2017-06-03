@@ -41,6 +41,7 @@ SOURCES += shared/comps/dq.c
 SOURCES += shared/comps/idq.c
 SOURCES += shared/comps/rev.c
 SOURCES += shared/comps/vel.c
+SOURCES += shared/comps/hal_test.c
 
 INCDIRS += shared
 SOURCES += shared/ringbuf.c

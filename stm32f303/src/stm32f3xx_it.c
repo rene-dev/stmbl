@@ -34,6 +34,7 @@
 #include "stm32f3xx_hal.h"
 #include "stm32f3xx.h"
 #include "stm32f3xx_it.h"
+#include "hal.h"
 
 /* USER CODE BEGIN 0 */
 
@@ -41,7 +42,6 @@
 
 /* External variables --------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_FS;
-
 /******************************************************************************/
 /*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
 /******************************************************************************/
@@ -52,7 +52,7 @@ extern PCD_HandleTypeDef hpcd_USB_FS;
 void NMI_Handler(void)
 {
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
-
+  hal_error(NMI);
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
 
@@ -67,11 +67,7 @@ void HardFault_Handler(void)
   /* USER CODE BEGIN HardFault_IRQn 0 */
 
   /* USER CODE END HardFault_IRQn 0 */
-  while (1)
-  {
-     GPIOA->BSRR |= GPIO_PIN_9;
-     GPIOA->BSRR |= GPIO_PIN_9 << 16;
-  }
+  hal_error(HardFault);
   /* USER CODE BEGIN HardFault_IRQn 1 */
 
   /* USER CODE END HardFault_IRQn 1 */
@@ -85,11 +81,7 @@ void MemManage_Handler(void)
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
 
   /* USER CODE END MemoryManagement_IRQn 0 */
-  while (1)
-  {
-     GPIOA->BSRR |= GPIO_PIN_9 << 16;
-     GPIOA->BSRR |= GPIO_PIN_9;
-  }
+  hal_error(MemManage);
   /* USER CODE BEGIN MemoryManagement_IRQn 1 */
 
   /* USER CODE END MemoryManagement_IRQn 1 */
@@ -103,13 +95,7 @@ void BusFault_Handler(void)
   /* USER CODE BEGIN BusFault_IRQn 0 */
 
   /* USER CODE END BusFault_IRQn 0 */
-  while (1)
-  {
-GPIOA->BSRR |= GPIO_PIN_9 << 16;
-GPIOA->BSRR |= GPIO_PIN_9;
-GPIOA->BSRR |= GPIO_PIN_9 << 16;
-GPIOA->BSRR |= GPIO_PIN_9;
-  }
+  hal_error(BusFault);
   /* USER CODE BEGIN BusFault_IRQn 1 */
 
   /* USER CODE END BusFault_IRQn 1 */
@@ -123,13 +109,7 @@ void UsageFault_Handler(void)
   /* USER CODE BEGIN UsageFault_IRQn 0 */
 
   /* USER CODE END UsageFault_IRQn 0 */
-  while (1)
-  {
-     GPIOA->BSRR |= GPIO_PIN_9;
-     GPIOA->BSRR |= GPIO_PIN_9 << 16;
-     GPIOA->BSRR |= GPIO_PIN_9;
-     GPIOA->BSRR |= GPIO_PIN_9 << 16;
-  }
+  hal_error(UsageFault);
   /* USER CODE BEGIN UsageFault_IRQn 1 */
 
   /* USER CODE END UsageFault_IRQn 1 */

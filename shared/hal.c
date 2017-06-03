@@ -91,6 +91,31 @@ void hal_term_print_state(){
       break;
       case MISC_ERROR:
       printf("HAL state:  MISC_ERROR\n");
+      switch(hal.error_info.error_handler){
+         case HardFault:
+            printf("error handler: HardFault\n");
+         break;
+         
+         case NMI:
+            printf("error handler: NMI\n");
+         break;
+         
+         case MemManage:
+            printf("error handler: MemManage\n");
+         break;
+         
+         case BusFault:
+            printf("error handler: BusFault\n");
+         break;
+         
+         case UsageFault:
+            printf("error handler: UsageFault\n");
+         break;
+      }
+      printf("active rt func: %lu\n", hal.error_info.active_rt_func);
+      printf("active frt func: %lu\n", hal.error_info.active_frt_func);
+      printf("active nrt func: %lu\n", hal.error_info.active_nrt_func);
+      
       break;
       case MEM_ERROR:
       printf("HAL state:  MEM_ERROR\n");
@@ -572,6 +597,7 @@ void start_frt(){
 }
 
 void hal_start(){
+   hal.hal_state = HAL_OK2;
    sort_rt();
    sort_frt();
    start_rt();
@@ -772,3 +798,20 @@ uint32_t hal_parse(char * cmd){
    }
    return(0);
 }
+
+void hal_error(uint32_t error_handler){
+   hal.error_info.active_rt_func = hal.active_rt_func;
+   hal.error_info.active_frt_func = hal.active_frt_func;
+   hal.error_info.active_nrt_func = hal.active_nrt_func;
+   hal.error_info.error_handler = error_handler;
+   hal_stop();
+   hal.hal_state = MISC_ERROR;
+}
+
+void fault(){
+   printf("trigger fault handler\n");
+   volatile uint32_t * ptr = 0x08010000;
+   ptr[0] = 1;
+}
+
+COMMAND("fault", fault);

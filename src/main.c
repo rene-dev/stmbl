@@ -69,6 +69,11 @@ void SysTick_Handler(void)
 //20kHz
 void TIM_SLAVE_HANDLER(void){
    TIM_ClearITPendingBit(TIM_SLAVE,TIM_IT_Update);
+   hal_run_frt();
+   if(TIM_GetITStatus(TIM_SLAVE,TIM_IT_Update) == SET){
+      hal_stop();
+      hal.hal_state = FRT_TOO_LONG;
+   }
 }
 
 //5 kHz interrupt for hal. at this point all ADCs have been sampled,
@@ -77,6 +82,10 @@ void DMA2_Stream0_IRQHandler(void){
    GPIOD->BSRRL |= GPIO_Pin_1;
    DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
    hal_run_rt();
+   if(DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0) == SET){
+      hal_stop();
+      hal.hal_state = RT_TOO_LONG;
+   }
    GPIOD->BSRRH |= GPIO_Pin_1;
 }
 
@@ -163,11 +172,14 @@ int main(void)
    load_comp(comp_by_name("io"));
    load_comp(comp_by_name("encm"));
    load_comp(comp_by_name("hv"));
+   load_comp(comp_by_name("hal_test"));
    hal_parse("term0.rt_prio = 1");
    hal_parse("encm0.rt_prio = 1");  
    hal_parse("sim0.rt_prio = 2");
    hal_parse("io0.rt_prio = 10");  
    hal_parse("hv0.rt_prio = 6");  
+   hal_parse("hal_test0.rt_prio = 9");  
+   hal_parse("hal_test0.frt_prio = 9");  
    // hal parse config
    hal_init_nrt();
    // error foo

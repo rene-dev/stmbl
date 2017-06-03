@@ -106,6 +106,10 @@ void TIM8_UP_IRQHandler(){
    GPIOA->BSRR |= GPIO_PIN_9;
    __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
    hal_run_rt();
+   if(__HAL_TIM_GET_FLAG(&htim8, TIM_IT_UPDATE) == SET){
+      hal_stop();
+      hal.hal_state = RT_TOO_LONG;
+   }
    GPIOA->BSRR |= GPIO_PIN_9 << 16;
 }
 

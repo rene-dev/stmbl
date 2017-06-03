@@ -63,6 +63,19 @@ typedef struct hal_comp_inst_t{
 #define PINA(p, i) (pins->p[i].source->source->value)
 
 typedef struct{
+   volatile uint32_t active_rt_func;
+   volatile uint32_t active_frt_func;
+   volatile uint32_t active_nrt_func;
+   volatile enum {
+     HardFault,
+     NMI,
+     MemManage,
+     BusFault,
+     UsageFault,
+  } error_handler;
+} hal_error_t;
+
+typedef struct{
    volatile enum{
      RT_CALC,
      RT_SLEEP,
@@ -112,6 +125,8 @@ typedef struct{
    
    volatile float rt_period;
    volatile float frt_period;
+   
+   hal_error_t error_info;
 } hal_t;
 
 extern hal_t hal;
@@ -134,5 +149,6 @@ void hal_run_rt();
 void hal_run_frt();
 void hal_run_nrt();
 uint32_t hal_parse(char * cmd);
+void hal_error(uint32_t error_handler);
 
 #include "hal_tbl.h"
