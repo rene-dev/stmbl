@@ -166,7 +166,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    ADC_SoftwareStartInjectedConv(ADC3);
 }
 
-static void nrt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
    struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
 

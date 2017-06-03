@@ -60,6 +60,7 @@
 #include "commands.h"
 
 uint32_t systick_freq;
+CRC_HandleTypeDef hcrc;
 
 // //hal interface TODO: move hal interface to file
 // void hal_enable_rt(){
@@ -239,7 +240,7 @@ int main(void)
   	Error_Handler();
   }
 
-  hal_init();
+  hal_init(1.0 / 15000.0, 0.0);
   // hal load comps
   load_comp(comp_by_name("term"));
   // load_comp(comp_by_name("sim"));

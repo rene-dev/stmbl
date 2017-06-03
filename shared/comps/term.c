@@ -47,7 +47,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    }
 }
 
-static void nrt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    struct term_ctx_t * ctx = (struct term_ctx_t *)ctx_ptr;
    struct term_pin_ctx_t * pins = (struct term_pin_ctx_t *)pin_ptr;
 
@@ -64,7 +64,7 @@ static void nrt_func(float period, volatile void * ctx_ptr, volatile hal_pin_ins
       bc++;
       
       for(int i = 0; i < TERM_NUM_WAVES; i++){
-         tmp = (ctx->wave_buf[ctx->read_pos][i] + PINA(offset,i)) * PINA(gain,i) + 128;
+         tmp = (int)((ctx->wave_buf[ctx->read_pos][i] + PINA(offset,i)) * PINA(gain,i) + 128);
          buf[i+1] = CLAMP(tmp,1,254);
       }
 

@@ -53,21 +53,22 @@ HAL_PIN(dma_pos);
 HAL_PIN(idle);
 
 struct ls_ctx_t{
-   uint32_t dma_pos;
    uint32_t timeout;
    uint32_t tx_addr;
    uint8_t send;
+   volatile packet_to_hv_t packet_to_hv;
+   volatile packet_from_hv_t packet_from_hv;
 };
 
 //TODO: move to ctx
-volatile packet_to_hv_t packet_to_hv;
-volatile packet_from_hv_t packet_from_hv;
+// volatile packet_to_hv_t packet_to_hv;
+// volatile packet_from_hv_t packet_from_hv;
 
 f3_config_data_t config;
 f3_state_data_t state;
 
 static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
-   // struct ls_ctx_t * ctx = (struct ls_ctx_t *)ctx_ptr;
+   struct ls_ctx_t * ctx = (struct ls_ctx_t *)ctx_ptr;
    // struct ls_pin_ctx_t * pins = (struct ls_pin_ctx_t *)pin_ptr;
    
    GPIO_InitTypeDef GPIO_InitStruct;
@@ -105,7 +106,7 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    //TX DMA
    DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
    DMA1_Channel2->CPAR = (uint32_t)&(USART3->TDR);
-   DMA1_Channel2->CMAR = (uint32_t)&packet_from_hv;
+   DMA1_Channel2->CMAR = (uint32_t)&(ctx->packet_from_hv);
    DMA1_Channel2->CNDTR = sizeof(packet_from_hv_t);
    DMA1_Channel2->CCR = DMA_CCR_MINC | DMA_CCR_DIR;// | DMA_CCR_PL_0 | DMA_CCR_PL_1
    DMA1->IFCR = DMA_IFCR_CTCIF2 | DMA_IFCR_CHTIF2 | DMA_IFCR_CGIF2;
@@ -113,7 +114,7 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    //RX DMA
    DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
    DMA1_Channel3->CPAR = (uint32_t)&(USART3->RDR);
-   DMA1_Channel3->CMAR = (uint32_t)&packet_to_hv;
+   DMA1_Channel3->CMAR = (uint32_t)&(ctx->packet_to_hv);
    DMA1_Channel3->CNDTR = sizeof(packet_to_hv_t);
    DMA1_Channel3->CCR = DMA_CCR_MINC;// | DMA_CCR_PL_0 | DMA_CCR_PL_1
    DMA1->IFCR = DMA_IFCR_CTCIF3 | DMA_IFCR_CHTIF3 | DMA_IFCR_CGIF3;
@@ -139,7 +140,6 @@ static void rt_start(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    struct ls_ctx_t * ctx = (struct ls_ctx_t *)ctx_ptr;
    struct ls_pin_ctx_t * pins = (struct ls_pin_ctx_t *)pin_ptr;
    ctx->timeout = 0;
-   ctx->dma_pos = 0;
    ctx->tx_addr = 0;
    ctx->send = 0;
    PIN(crc_error) = 0.0;
@@ -152,20 +152,20 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    struct ls_ctx_t * ctx = (struct ls_ctx_t *)ctx_ptr;
    struct ls_pin_ctx_t * pins = (struct ls_pin_ctx_t *)pin_ptr;
    
-   uint32_t dma_pos = sizeof(packet_to_hv) - DMA1_Channel3->CNDTR;
+   uint32_t dma_pos = sizeof(packet_to_hv_t) - DMA1_Channel3->CNDTR;
    
    
-   if(dma_pos == sizeof(packet_to_hv)){
-      uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *) &packet_to_hv, sizeof(packet_to_hv) / 4 - 1);
-      if(crc == packet_to_hv.crc){
-         PIN(en) = packet_to_hv.flags.enable;
-         PIN(d_cmd) = packet_to_hv.d_cmd;
-         PIN(q_cmd) = packet_to_hv.q_cmd;
-         PIN(pos) = packet_to_hv.pos;
-         PIN(vel) = packet_to_hv.vel;
-         uint8_t a = packet_to_hv.addr;
+   if(dma_pos == sizeof(packet_to_hv_t)){
+      uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *) &(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
+      if(crc == ctx->packet_to_hv.crc){
+         PIN(en) = ctx->packet_to_hv.flags.enable;
+         PIN(d_cmd) = ctx->packet_to_hv.d_cmd;
+         PIN(q_cmd) = ctx->packet_to_hv.q_cmd;
+         PIN(pos) = ctx->packet_to_hv.pos;
+         PIN(vel) = ctx->packet_to_hv.vel;
+         uint8_t a = ctx->packet_to_hv.addr;
          a = CLAMP(a, 0, sizeof(config) / 4);
-         config.data[a] = packet_to_hv.value; // TODO: first enable after complete update
+         config.data[a] = ctx->packet_to_hv.value; // TODO: first enable after complete update
          
          PIN(mode) = config.pins.mode;
          PIN(r) = config.pins.r;
@@ -179,7 +179,9 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
          PIN(max_cur) = config.pins.max_cur;
          ctx->timeout = 0;
          PIN(crc_ok)++;
-         ctx->send = 1;
+         if(ctx->send == 0){
+            ctx->send = 1;
+         }
       }
       else{
          PIN(crc_error)++;
@@ -199,15 +201,18 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       
       // reset rx DMA
       DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
-      DMA1_Channel3->CNDTR = sizeof(packet_to_hv);
+      DMA1_Channel3->CNDTR = sizeof(packet_to_hv_t);
       DMA1_Channel3->CCR |= DMA_CCR_EN;
       dma_pos = 0;
       GPIOA->BSRR |= GPIO_PIN_10 << 16;
 
       //ctx->send = 1;
    }
-   if(ctx->send && dma_pos != 0){
+   if(ctx->send == 2){
       ctx->send = 0;
+   }
+   if(ctx->send == 1 && dma_pos != 0){
+      ctx->send = 2;
       //packet_to_hv.d_cmd = -99.0;
       state.pins.u_fb = PIN(u_fb);
       state.pins.v_fb = PIN(v_fb);
@@ -219,18 +224,18 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       state.pins.y = PIN(y);
       
       // fill tx struct
-      packet_from_hv.dc_volt = PIN(dc_volt);
-      packet_from_hv.pwm_volt = PIN(pwm_volt);
-      packet_from_hv.d_fb =  PIN(d_fb);
-      packet_from_hv.q_fb =  PIN(q_fb);
-      packet_from_hv.addr = ctx->tx_addr;
-      packet_from_hv.value = state.data[ctx->tx_addr++];
+      ctx->packet_from_hv.dc_volt = PIN(dc_volt);
+      ctx->packet_from_hv.pwm_volt = PIN(pwm_volt);
+      ctx->packet_from_hv.d_fb =  PIN(d_fb);
+      ctx->packet_from_hv.q_fb =  PIN(q_fb);
+      ctx->packet_from_hv.addr = ctx->tx_addr;
+      ctx->packet_from_hv.value = state.data[ctx->tx_addr++];
       ctx->tx_addr %= sizeof(state) / 4;
-      packet_from_hv.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *) &packet_from_hv, sizeof(packet_from_hv) / 4 - 1);
+      ctx->packet_from_hv.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *) &(ctx->packet_from_hv), sizeof(packet_from_hv_t) / 4 - 1);
       
       // start tx DMA
       DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
-      DMA1_Channel2->CNDTR = sizeof(packet_from_hv);
+      DMA1_Channel2->CNDTR = sizeof(packet_from_hv_t);
       DMA1_Channel2->CCR |= DMA_CCR_EN;
       //ctx->send = 0;
    }
@@ -240,78 +245,6 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       PIN(timeout)++;
    }
    ctx->timeout++;
-
-   //if(dma_pos == ctx->dma_pos){ // pause
-   // reset rx DMA
-   //   DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
-   //   DMA1_Channel3->CNDTR = sizeof(packet_to_hv);
-   //   DMA1_Channel3->CCR |= DMA_CCR_EN;
-   //   dma_pos = 0;
-   
-   //if(ctx->send){
-   // read state
-   //  state.pins.u_fb = PIN(u_fb);
-   //  state.pins.v_fb = PIN(v_fb);
-   //  state.pins.w_fb = PIN(w_fb);
-   //  state.pins.hv_temp = PIN(hv_temp);
-   //  state.pins.mot_temp = PIN(mot_temp);
-   //  state.pins.core_temp = PIN(core_temp);
-   //  state.pins.fault = PIN(fault);
-   //  state.pins.y = PIN(y);
-   //  
-   //  // fill tx struct
-   //  packet_from_hv.dc_volt = PIN(dc_volt);
-   //  packet_from_hv.pwm_volt = PIN(pwm_volt);
-   //  packet_from_hv.d_fb =  PIN(d_fb);
-   //  packet_from_hv.q_fb =  PIN(q_fb);
-   //  packet_from_hv.addr = ctx->tx_addr;
-   //  packet_from_hv.value = state.data[ctx->tx_addr++];
-   //  ctx->tx_addr %= sizeof(state) / 4;
-   //  packet_from_hv.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *) &packet_from_hv, sizeof(packet_from_hv) / 4 - 1);
-   //     
-   //  // start tx DMA
-   //  DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
-   //  DMA1_Channel2->CNDTR = sizeof(packet_from_hv);
-   //  DMA1_Channel2->CCR |= DMA_CCR_EN;
-   
-   //ctx->send = 0;
-   //   }
-   
-   // }
-   
-   
-   // else if(dma_pos == sizeof(packet_to_hv)){ // check crc
-   //    uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *) &packet_to_hv, sizeof(packet_to_hv) / 4 - 1);
-   //    if(crc == packet_to_hv.crc){
-   //       PIN(en) = packet_to_hv.flags.enable;
-   //       PIN(d_cmd) = packet_to_hv.d_cmd;
-   //       PIN(q_cmd) = packet_to_hv.q_cmd;
-   //       PIN(pos) = packet_to_hv.pos;
-   //       PIN(vel) = packet_to_hv.vel;
-   //       uint8_t a = packet_to_hv.addr;
-   //       a = CLAMP(a, 0, sizeof(config) / 4);
-   //       config.data[a] = packet_to_hv.value; // TODO: first enable after complete update
-   //       
-   //       PIN(mode) = config.pins.mode;
-   //       PIN(r) = config.pins.r;
-   //       PIN(l) = config.pins.l;
-   //       PIN(psi) = config.pins.psi;
-   //       PIN(cur_p) = config.pins.cur_p;
-   //       PIN(cur_i) = config.pins.cur_i;
-   //       PIN(cur_ff) = config.pins.cur_ff;
-   //       PIN(cur_ind) = config.pins.cur_ind;
-   //       PIN(max_y) = config.pins.max_y;
-   //       PIN(max_cur) = config.pins.max_cur;
-   //       
-   //       ctx->timeout = 0; //reset timeout
-   //       ctx->send = 1;
-   //    }
-   //    else{ // wrong crc
-   //       PIN(crc_error)++;
-   //       PIN(en) = 0;
-   //    }
-   // }
-   ctx->dma_pos = dma_pos;
    
    // TODO: sin = 0.5
    if(config.pins.mode == 0){// 90°

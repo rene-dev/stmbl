@@ -18,6 +18,16 @@ void setup(){
 
    setup_res();
    usb_init();
+   
+   // messpin
+   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   
+   //fan
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_0;
+   GPIO_Init(GPIOD, &GPIO_InitStructure);
 
 	// systick timer
 	RCC_GetClocksFreq(&RCC_Clocks);

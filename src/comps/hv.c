@@ -52,8 +52,6 @@ HAL_PIN(pwm_volt);
 HAL_PIN(uart_sr);
 HAL_PIN(uart_dr);
 HAL_PIN(crc_error);
-HAL_PIN(crc_ok);
-HAL_PIN(dma_pos);
 HAL_PIN(timeout);
 
 struct hv_ctx_t{
@@ -64,6 +62,8 @@ struct hv_ctx_t{
    uint16_t addr;
    uint16_t timeout;
 };
+
+volatile uint32_t foobar;
 
 static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
@@ -109,7 +109,7 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    // DMA2-Config
    DMA_InitStructure.DMA_Channel = UART_DRV_TX_DMA_CHAN;
    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_DRV->DR);
-   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ctx->packet_to_hv;
+   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&(ctx->packet_to_hv);
    DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
    DMA_InitStructure.DMA_BufferSize = sizeof(packet_to_hv_t);
    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -136,7 +136,7 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   // DMA2-Config
   DMA_InitStructure.DMA_Channel = UART_DRV_RX_DMA_CHAN;
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_DRV->DR);
-  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ctx->packet_from_hv;
+  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&(ctx->packet_from_hv);
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
   DMA_InitStructure.DMA_BufferSize = sizeof(packet_from_hv_t);
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
@@ -185,7 +185,8 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    uint32_t dma_pos = DMA_GetCurrDataCounter(UART_DRV_RX_DMA);
    if(dma_pos == 0){
       CRC_ResetDR();
-      uint32_t crc = CRC_CalcBlockCRC((uint32_t *) &ctx->packet_from_hv, sizeof(packet_from_hv_t) / 4 - 1);
+      uint32_t crc = CRC_CalcBlockCRC((uint32_t *) &(ctx->packet_from_hv), sizeof(packet_from_hv_t) / 4 - 1);
+      
       if(crc == ctx->packet_from_hv.crc){
          PIN(d_fb) = ctx->packet_from_hv.d_fb;
          PIN(q_fb) = ctx->packet_from_hv.q_fb;
@@ -204,7 +205,6 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
          PIN(core_temp) = ctx->state.pins.core_temp;
          PIN(fault) = ctx->state.pins.fault;
          PIN(y) = ctx->state.pins.y;
-         PIN(crc_ok)++;
          PIN(com_error) = 0.0;//TODO: link to fault
          ctx->timeout = 0;
       }else{
@@ -215,6 +215,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    
    if(ctx->timeout > 5){
       PIN(timeout)++;
+      PIN(com_error) = 1.0;
    }
    ctx->timeout++;
 
@@ -242,7 +243,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   ctx->addr %= sizeof(f3_config_data_t) / 4;
 
   CRC_ResetDR();
-  ctx->packet_to_hv.crc = CRC_CalcBlockCRC((uint32_t *) &ctx->packet_to_hv, sizeof(packet_to_hv_t) / 4 - 1);
+  ctx->packet_to_hv.crc = CRC_CalcBlockCRC((uint32_t *) &(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
 
   PIN(uart_sr) = UART_DRV->SR;
   PIN(uart_dr) = UART_DRV->DR;
@@ -255,8 +256,6 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
   DMA_ClearFlag(UART_DRV_TX_DMA, UART_DRV_TX_DMA_TCIF);
   DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
-
-  PIN(dma_pos) = dma_pos;
  
 
 
@@ -269,6 +268,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   //   PIN(ac_cur_sim) = PIN(dc_cur) / sqrtf(a*a+b*b) * PIN(pwm_volt);
   // }
 }
+
 
 hal_comp_t hv_comp_struct = {
   .name = "hv",

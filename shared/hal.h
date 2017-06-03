@@ -23,13 +23,13 @@ typedef char NAME[32];
 typedef NAME const pin_t;
 
 typedef struct hal_pin_inst_t{
-   float value;
+   volatile float value;
    volatile struct hal_pin_inst_t * source;
 } hal_pin_inst_t;
 
 typedef const struct{
    NAME name;
-   void (*nrt)(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr);
+   void (*nrt)(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr);
    void (*rt)(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr);
    void (*frt)(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr);
    
@@ -50,12 +50,19 @@ typedef struct hal_comp_inst_t{
    volatile hal_pin_inst_t * pin_insts;
    pin_t * pins;
    uint32_t ctx_size;
+   volatile int32_t rt_ticks;
+   volatile int32_t frt_ticks;
+   volatile int32_t nrt_ticks;
+   
+   volatile int32_t rt_max_ticks;
+   volatile int32_t frt_max_ticks;
+   volatile int32_t nrt_max_ticks;
 } hal_comp_inst_t;
 
 #define PIN(p) (pins->p.source->source->value)
 #define PINA(p, i) (pins->p[i].source->source->value)
 
-typedef volatile struct{
+typedef struct{
    volatile enum{
      RT_CALC,
      RT_SLEEP,
@@ -86,8 +93,8 @@ typedef volatile struct{
    volatile int32_t active_frt_func;
    volatile int32_t active_nrt_func;
    
-   volatile struct hal_comp_inst_t comp_insts[HAL_MAX_COMPS];
-   volatile struct hal_pin_inst_t pin_insts[HAL_MAX_PINS];
+   struct hal_comp_inst_t comp_insts[HAL_MAX_COMPS];
+   struct hal_pin_inst_t pin_insts[HAL_MAX_PINS];
    volatile uint8_t ctxs[HAL_MAX_CTX]; // create runtime ctx print in python based on COMP_ctx_t
    uint32_t comp_inst_count;
    uint32_t rt_comp_count;
@@ -95,15 +102,16 @@ typedef volatile struct{
    uint32_t pin_inst_count;
    uint32_t ctx_count;
    
-   volatile float rt_calc_time;
-   volatile float max_rt_calc_time;
-   volatile float frt_calc_time;
-   volatile float max_frt_calc_time;
-   volatile float nrt_calc_time;
-   volatile float max_nrt_calc_time;
+   volatile uint32_t rt_ticks;
+   volatile uint32_t frt_ticks;
+   volatile uint32_t nrt_ticks;
+   
+   volatile uint32_t rt_max_ticks;
+   volatile uint32_t frt_max_ticks;
+   volatile uint32_t nrt_max_ticks;
+   
    volatile float rt_period;
    volatile float frt_period;
-   volatile float nrt_period;
 } hal_t;
 
 extern hal_t hal;
@@ -118,7 +126,7 @@ pin_t * pin_by_pin_inst(volatile hal_pin_inst_t * p);
 volatile hal_comp_inst_t * comp_inst_by_pin_inst(volatile hal_pin_inst_t * p);
 void hal_print_pin(volatile hal_pin_inst_t * p);
 
-void hal_init();
+void hal_init(float rt_period, float frt_period);
 void hal_init_nrt();
 void hal_start();
 void hal_stop();

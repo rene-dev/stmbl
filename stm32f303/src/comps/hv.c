@@ -45,12 +45,12 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
 
   float udc = MAX(PIN(udc), 0.1);
   //convert voltages to PWM output compare values
-  int32_t u = CLAMP(PIN(u), 0.0, udc) / udc * 4800.0;
-  int32_t v = CLAMP(PIN(v), 0.0, udc) / udc * 4800.0;
-  int32_t w = CLAMP(PIN(w), 0.0, udc) / udc * 4800.0;
+  int32_t u = (int32_t)(CLAMP(PIN(u), 0.0, udc) / udc * 4800.0);
+  int32_t v = (int32_t)(CLAMP(PIN(v), 0.0, udc) / udc * 4800.0);
+  int32_t w = (int32_t)(CLAMP(PIN(w), 0.0, udc) / udc * 4800.0);
   //convert on and off times to PWM output compare values
-  int32_t min_on = 4800.0 * 15000.0 * PIN(min_on) + 0.5;
-  int32_t min_off = 4800.0 * 15000.0 * PIN(min_off) + 0.5;
+  int32_t min_on = (int32_t)(4800.0 * 15000.0 * PIN(min_on) + 0.5);
+  int32_t min_off = (int32_t)(4800.0 * 15000.0 * PIN(min_off) + 0.5);
    
   if((u > 0 && u < min_on) || (v > 0 && v < min_on) || (w > 0 && w < min_on)){
     u += min_on;
