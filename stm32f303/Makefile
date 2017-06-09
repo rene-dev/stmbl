@@ -32,6 +32,7 @@ SOURCES += stm32f303/src/hal_tbl.c
 SOURCES += stm32f303/src/comps/hv.c
 SOURCES += stm32f303/src/comps/io.c
 SOURCES += stm32f303/src/comps/ls.c
+SOURCES += stm32f303/src/comps/enc.c
 
 SOURCES += shared/comps/sim.c
 SOURCES += shared/comps/term.c
@@ -42,6 +43,8 @@ SOURCES += shared/comps/idq.c
 SOURCES += shared/comps/rev.c
 SOURCES += shared/comps/vel.c
 SOURCES += shared/comps/hal_test.c
+SOURCES += shared/comps/dc.c
+SOURCES += shared/comps/ypid.c
 
 INCDIRS += shared
 SOURCES += shared/ringbuf.c
