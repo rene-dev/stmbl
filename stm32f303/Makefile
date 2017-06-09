@@ -17,7 +17,6 @@ INCDIRS += stm32f303/inc
 SOURCES += stm32f303/src/main.c
 SOURCES += stm32f303/src/adc.c
 SOURCES += stm32f303/src/dac.c
-SOURCES += stm32f303/src/gpio.c
 SOURCES += stm32f303/src/opamp.c
 SOURCES += stm32f303/src/stm32f3xx_hal_msp.c
 SOURCES += stm32f303/src/tim.c

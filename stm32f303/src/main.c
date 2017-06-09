@@ -47,7 +47,6 @@
 #include "opamp.h"
 #include "tim.h"
 #include "usb_device.h"
-#include "gpio.h"
 
 /* USER CODE BEGIN Includes */
 #include <math.h>
@@ -114,8 +113,12 @@ void TIM8_UP_IRQHandler(){
 }
 
 void bootloader(char * ptr){
-   RTC->BKP0R = 0xDEADBEEF;
-   NVIC_SystemReset();
+  #ifdef USB_DISCONNECT_PIN
+  HAL_GPIO_WritePin(USB_DISCONNECT_PORT, USB_DISCONNECT_PIN, GPIO_PIN_SET);
+  HAL_Delay(100);
+  #endif
+  RTC->BKP0R = 0xDEADBEEF;
+  NVIC_SystemReset();
 }
 
 COMMAND("bootloader", bootloader);
@@ -146,7 +149,23 @@ int main(void)
   SystemClock_Config();
   systick_freq = HAL_RCC_GetHCLKFreq();
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+  
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  #ifdef USB_DISCONNECT_PIN
+    GPIO_InitTypeDef USB_DISCONNECT_PIN;
+    GPIO_InitStruct.Pin = GPIO_PIN_13;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(USB_DISCONNECT_PORT, &GPIO_InitStruct);
+    HAL_GPIO_WritePin(USB_DISCONNECT_PORT, USB_DISCONNECT_PIN, GPIO_PIN_RESET);
+  #endif
+  
   MX_TIM8_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
@@ -158,7 +177,16 @@ int main(void)
   MX_OPAMP3_Init();
   // MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
-  HAL_Delay(500);
+  
+#ifdef USB_CONNECT_PIN
+  GPIO_InitStruct.Pin = USB_CONNECT_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(USB_CONNECT_PORT, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(USB_CONNECT_PORT, USB_CONNECT_PIN, GPIO_PIN_SET);
+#endif
+
   __HAL_RCC_DMA1_CLK_ENABLE();
   __HAL_RCC_DMA2_CLK_ENABLE();
   __HAL_RCC_RTC_ENABLE();
@@ -187,16 +215,7 @@ int main(void)
     Error_Handler();
   }
   
-  //USB EN IO board: PB15
-  // GPIO_InitStruct.Pin = GPIO_PIN_15;
-  // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  // GPIO_InitStruct.Pull = GPIO_NOPULL;
-  // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  // HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-  // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
-  
   //IO pins
-  GPIO_InitTypeDef GPIO_InitStruct;
   GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;

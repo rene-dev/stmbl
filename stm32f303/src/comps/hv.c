@@ -4,6 +4,7 @@
 #include "defines.h"
 #include "angle.h"
 #include "tim.h"
+#include "f3hw.h"
 
 HAL_COMP(hv);
 
@@ -37,6 +38,21 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   PIN(enw) = 1.0;
   PIN(min_on) = 0.00000035;
   PIN(min_off) = 0.000005;
+  
+  GPIO_InitTypeDef GPIO_InitStruct;
+  //PA15 HV EN
+  GPIO_InitStruct.Pin = GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  //PB7 HV FAULT
+  GPIO_InitStruct.Pin = GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  
 }
 
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
@@ -64,9 +80,9 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
     w -= min_off;
   }
    
-  htim8.Instance->CCR3 = CLAMP(u, 0, 4800 - min_off);
-  htim8.Instance->CCR2 = CLAMP(v, 0, 4800 - min_off);
-  htim8.Instance->CCR1 = CLAMP(w, 0, 4800 - min_off);
+  PWM_U = CLAMP(u, 0, 4800 - min_off);
+  PWM_V = CLAMP(v, 0, 4800 - min_off);
+  PWM_W = CLAMP(w, 0, 4800 - min_off);
    
   if(PIN(hv_temp) < 85.0){
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);

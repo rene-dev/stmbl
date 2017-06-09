@@ -4,6 +4,7 @@
 #include "defines.h"
 #include "angle.h"
 #include "stm32f3xx_hal.h"
+#include "f3hw.h"
 
 HAL_COMP(io);
 
@@ -30,7 +31,6 @@ struct io_ctx_t{
   float w_offset;
 };
 
-#define AREF 3.338// analog reference voltage
 #define ARES 4096.0// analog resolution, 12 bit
 #define ADC(a) ((a) / ARES * AREF)
 
@@ -45,10 +45,6 @@ struct io_ctx_t{
 #define MOT_R(a) (MOT_TEMP_PULLUP / (MOT_TEMP_REF / (a) - 1))
 
 #define ARES 4096.0// analog resolution, 12 bit
-#define AREF 3.338// analog reference voltage
-
-#define VDIVUP 249000.0 * 2.0//HV div pullup R1,R12
-#define VDIVDOWN 3900.0//HV div pulldown R2,R9
 
 #define VOLT(a) ((a) / (ARES) * (AREF) / (VDIVDOWN) * ((VDIVUP) + (VDIVDOWN)))
 //#define TEMP(a) (log10f((a) * (AREF) / (ARES) * (TPULLUP) / ((AREF) - (a) * (AREF) / (ARES))) * (-53.0) + 290.0)
@@ -81,6 +77,14 @@ float r2temp(float r){
 static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
   // struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
+  
+  //PA8 LED
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  
   DMA1_Channel1->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA1_Channel1->CPAR = (uint32_t)&(ADC12_COMMON->CDR);
   DMA1_Channel1->CMAR = (uint32_t)adc_12_buf;

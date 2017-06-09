@@ -41,9 +41,9 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
 #include "stm32f3xx_hal.h"
 #include "usb_device.h"
+#include "f3hw.h"
 
 /* USER CODE BEGIN Includes */
 #include "version.h"
@@ -125,6 +125,26 @@ int main(void)
   MX_CRC_Init();
   MX_RTC_Init();
 
+GPIO_InitTypeDef GPIO_InitStruct;
+
+#ifdef USB_DISCONNECT_PIN
+  GPIO_InitStruct.Pin = USB_DISCONNECT_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(USB_DISCONNECT_PORT, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(USB_DISCONNECT_PORT, USB_DISCONNECT_PIN, GPIO_PIN_RESET);
+#endif
+
+#ifdef USB_CONNECT_PIN
+  GPIO_InitStruct.Pin = USB_CONNECT_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(USB_CONNECT_PORT, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(USB_CONNECT_PORT, USB_CONNECT_PIN, GPIO_PIN_SET);
+#endif
+
   /* USER CODE BEGIN 2 */
   if(app_ok() && RTC->BKP0R == 0x00000000){
     // SCB->VTOR = APP_START;
@@ -135,6 +155,10 @@ int main(void)
 
     /* Initialize user application's Stack Pointer */
     __set_MSP(*(__IO uint32_t*) USBD_DFU_APP_DEFAULT_ADD);
+#ifdef USB_DISCONNECT_PIN
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+    HAL_Delay(100);
+#endif
     JumpToApplication();
     while (1);
   }
