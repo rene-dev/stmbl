@@ -1,5 +1,5 @@
-(module VFQFPN48 (layer F.Cu) (tedit 5918EBD1)
-  (fp_text reference U4 (at -0.5 -6) (layer F.SilkS)
+(module VFQFPN48 (layer F.Cu) (tedit 593B3BEC)
+  (fp_text reference U2 (at -0.5 -6) (layer F.SilkS)
     (effects (font (size 1 1) (thickness 0.15)))
   )
   (fp_text value L6206Q (at 0.25 5) (layer F.Fab)
@@ -61,4 +61,9 @@
   (pad 48 smd roundrect (at -2.75 -3.5) (size 0.25 0.8) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25))
   (pad 49 smd rect (at 0 0) (size 5 5) (layers F.Cu F.Paste F.Mask)
     (zone_connect 2))
+  (model /Users/crinq/Documents/sandbox/stmbl/hw/kicad/lib/stmbl.pretty/QFN48_7x7.wrl
+    (at (xyz 0 0 0))
+    (scale (xyz 390 390 390))
+    (rotate (xyz -90 0 90))
+  )
 )

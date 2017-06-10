@@ -40,7 +40,7 @@ version=1
 version=1
 LibDir=../lib
 [eeschema/libraries]
-LibName1=stmsp-rescue
+LibName1=stmbl
 LibName2=transistors
 LibName3=stm32
 LibName4=conn
@@ -116,6 +116,4 @@ LibName73=ttl_ieee
 LibName74=valves
 LibName75=video
 LibName76=Xicor
-LibName77=xilinx
 LibName78=Zilog
-LibName79=stmbl
