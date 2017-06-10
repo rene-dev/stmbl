@@ -27,7 +27,7 @@
   (fp_line (start -2.5 0.75) (end -1.75 0.75) (layer F.SilkS) (width 0.15))
   (pad 1 smd rect (at -1.75 0) (size 1 0.85) (layers F.Cu F.Paste F.Mask))
   (pad 2 smd rect (at 1.75 0) (size 1 0.85) (layers F.Cu F.Paste F.Mask))
-  (model /Users/crinq/Documents/sandbox/stmbl/hw/kicad/lib/stmbl.pretty/SOD123.wrl
+  (model ../lib/stmbl.pretty/SOD123.wrl
     (at (xyz 0 0 0))
     (scale (xyz 390 390 390))
     (rotate (xyz 0 0 0))

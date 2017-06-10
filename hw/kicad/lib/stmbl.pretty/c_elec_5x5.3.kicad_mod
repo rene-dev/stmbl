@@ -29,7 +29,7 @@
   (fp_circle (center 0 0) (end -2.413 0) (layer F.SilkS) (width 0.15))
   (pad 1 smd rect (at 2.19964 0) (size 2.99974 1.6002) (layers F.Cu F.Paste F.Mask))
   (pad 2 smd rect (at -2.19964 0) (size 2.99974 1.6002) (layers F.Cu F.Paste F.Mask))
-  (model /Users/crinq/Documents/sandbox/stmbl/hw/kicad/lib/stmbl.pretty/ALU-C.WRL
+  (model ../lib/stmbl.pretty/ALU-C.WRL
     (at (xyz 0 0 0))
     (scale (xyz 390 390 390))
     (rotate (xyz 0 0 0))

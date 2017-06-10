@@ -61,7 +61,7 @@
   (pad 48 smd roundrect (at -2.75 -3.5) (size 0.25 0.8) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25))
   (pad 49 smd rect (at 0 0) (size 5 5) (layers F.Cu F.Paste F.Mask)
     (zone_connect 2))
-  (model /Users/crinq/Documents/sandbox/stmbl/hw/kicad/lib/stmbl.pretty/QFN48_7x7.wrl
+  (model ../lib/stmbl.pretty/QFN48_7x7.wrl
     (at (xyz 0 0 0))
     (scale (xyz 390 390 390))
     (rotate (xyz -90 0 90))
