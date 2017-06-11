@@ -65,8 +65,8 @@ RT(
          sii += ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff;
          coi += ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16;
          if(send == 0){
-           txbuf[0][txpos] = ((i==0 || i==2)?-1.0:1.0) * V_DIFF2(ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff);
-           txbuf[1][txpos] = ((i==0 || i==2)?-1.0:1.0) * V_DIFF2(ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16);
+           txbuf[0][txpos] = (((i==0 || i==2) && (PIN(res_en) > 0.0))?-1.0:1.0) * V_DIFF2(ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff);
+           txbuf[1][txpos] = (((i==0 || i==2) && (PIN(res_en) > 0.0))?-1.0:1.0) * V_DIFF2(ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16);
            txpos++;
          }
       }
