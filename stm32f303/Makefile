@@ -29,6 +29,7 @@ SOURCES += stm32f303/src/version.c
 
 SOURCES += stm32f303/src/hal_tbl.c
 SOURCES += stm32f303/src/comps/hv.c
+SOURCES += stm32f303/src/comps/hvdc.c
 SOURCES += stm32f303/src/comps/io.c
 SOURCES += stm32f303/src/comps/ls.c
 SOURCES += stm32f303/src/comps/enc.c
