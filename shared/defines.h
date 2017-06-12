@@ -64,7 +64,7 @@ extern "C" {
 ({static float __old_val__ = 0.0; uint8_t ret = (sig) != __old_val__; __old_val__ = (sig); ret;})
 
 //TODO: 5000 are fixed!
-#define LP_HZ(a) (((a) <= 0.0) ? (1.0) : (1.0 / (5000.0 / ((a) * M_PI * 2.0) + 1.0)))
+#define LP_HZ(a) (((a) <= 0.0) ? (1.0) : (1.0 / (1.0/period / ((a) * M_PI * 2.0) + 1.0)))
 
 #ifdef __cplusplus
 }
