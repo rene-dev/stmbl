@@ -57,6 +57,7 @@
 #include "version.h"
 #include "common.h"
 #include "commands.h"
+#include "f3hw.h"
 
 uint32_t systick_freq;
 CRC_HandleTypeDef hcrc;
