@@ -36,7 +36,7 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 4000;
+  htim1.Init.Period = 2000;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   // htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -65,7 +65,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   struct enc_pin_ctx_t * pins = (struct enc_pin_ctx_t *)pin_ptr;
   PIN(a) = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8);
   PIN(b) = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9);
-  PIN(pos) = mod(TIM1->CNT * 2.0f * M_PI / 4000.0f);
+  PIN(pos) = mod(TIM1->CNT * 2.0f * M_PI / 2000.0f);
 }
 
 hal_comp_t enc_comp_struct = {
