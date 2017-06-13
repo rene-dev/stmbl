@@ -1,4 +1,5 @@
 #include "hal_conf.h"
+#include "hal_term.h"
 #include "eeprom.h"
 #include "crc16.h"
 #include "link.h"

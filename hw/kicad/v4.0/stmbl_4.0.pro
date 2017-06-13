@@ -1,4 +1,4 @@
-update=Sonntag, 22. Januar 2017 um 20:07:31
+update=2017 May 10, Wednesday 21:33:53
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,9 +23,20 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=doc/
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=Pcbnew
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60
+ERC_TestSimilarLabels=1
 [eeschema]
 version=1
-LibDir=
+LibDir=../lib
 [eeschema/libraries]
 LibName1=transistors
 LibName2=stm32
@@ -104,16 +115,6 @@ LibName74=video
 LibName75=Xicor
 LibName76=xilinx
 LibName77=Zilog
+LibName78=stmbl
 [general]
 version=1
-[schematic_editor]
-version=1
-PageLayoutDescrFile=
-PlotDirectoryName=doc/
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=Pcbnew
-SpiceForceRefPrefix=0
-SpiceUseNetNumbers=0
-LabSize=60
-ERC_TestSimilarLabels=1

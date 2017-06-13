@@ -73,14 +73,19 @@ typedef union{
 #define RECORD_TYPE_MODE_DATA_RECORD 0xB0
 
 //process data
-#define DATA_TYPE_PAD 0x00//padding, done automaticly at the end
-#define DATA_TYPE_BITS 0x01
-#define DATA_TYPE_UNSIGNED 0x02
-#define DATA_TYPE_SIGNED 0x03
-#define DATA_TYPE_NONVOL_UNSIGNED 0x04
-#define DATA_TYPE_NONVOL_SIGNED 0x05
-#define DATA_TYPE_NONVOL_STREAM 0x06
-#define DATA_TYPE_NONVOL_BOOLEAN 0x07
+#define DATA_TYPE_PAD 				0x00 //padding, done automaticly at the end
+#define DATA_TYPE_BITS 				0x01
+#define DATA_TYPE_UNSIGNED 			0x02
+#define DATA_TYPE_SIGNED 			0x03
+#define DATA_TYPE_NONVOL_UNSIGNED 	0x04
+#define DATA_TYPE_NONVOL_SIGNED 	0x05
+#define DATA_TYPE_STREAM 			0x06
+#define DATA_TYPE_BOOLEAN 			0x07
+#define DATA_TYPE_ENCODER  			0x08
+#define DATA_TYPE_FLOAT  			0x10 // New for STMBL
+#define DATA_TYPE_ENCODER_H     	0x18 
+#define DATA_TYPE_ENCODER_L     	0x28 
+
 
 #define DATA_DIRECTION_INPUT 0x00
 #define DATA_DIRECTION_BI_DIRECTIONAL 0x40
@@ -444,12 +449,12 @@ RT_INIT(
   process_data_descriptor_t *last_pd;
 
   ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));       metadata(&(pd_table.output_pins), last_pd);
-  ADD_PROCESS_VAR(("enable", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));             metadata(&(pd_table.enable), last_pd);
-  ADD_PROCESS_VAR(("pos_cmd", "rad", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_OUTPUT, -3.2, 3.2));    metadata(&(pd_table.pos_cmd), last_pd);
+  ADD_PROCESS_VAR(("enable", "none", 1, DATA_TYPE_BOOLEAN, DATA_DIRECTION_OUTPUT, 0, 1));         metadata(&(pd_table.enable), last_pd);
+  ADD_PROCESS_VAR(("pos_cmd", "rad", 32, DATA_TYPE_FLOAT, DATA_DIRECTION_OUTPUT, -INFINITY, INFINITY));    metadata(&(pd_table.pos_cmd), last_pd);
   
   ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, -100, 100));    metadata(&(pd_table.input_pins), last_pd);
-  ADD_PROCESS_VAR(("fault", "none", 1, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, 0, 1));               metadata(&(pd_table.fault), last_pd);
-  ADD_PROCESS_VAR(("pos_fb", "rad", 16, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -3.2, 3.2));      metadata(&(pd_table.pos_fb), last_pd);
+  ADD_PROCESS_VAR(("fault", "none", 1, DATA_TYPE_BOOLEAN, DATA_DIRECTION_INPUT, 0, 1));               metadata(&(pd_table.fault), last_pd);
+  ADD_PROCESS_VAR(("pos_fb", "rad", 32, DATA_TYPE_FLOAT, DATA_DIRECTION_INPUT, -INFINITY, INFINITY));      metadata(&(pd_table.pos_fb), last_pd);
   //globals and modes are not working. https://github.com/LinuxCNC/linuxcnc/blob/2957cc5ad0a463c39fb35c10a0c14909c09a5fb7/src/hal/drivers/mesa-hostmot2/sserial.c#L1516
   // - globals need write support
   // - linuxcnc only supports globals of type DATA_TYPE_NONVOL_UNSIGNED or DATA_TYPE_NONVOL_SIGNED
@@ -601,18 +606,24 @@ RT (
   // update all hal pins with values from their associated pds
 
 
-  uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
-  PIN(pos_cmd) = scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
+  // uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
+  // scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
+  PIN(pos_cmd) = MEMFLOAT(pd_table.pos_cmd.ptr->data_addr);
   uint8_t outpins = MEMU8(pd_table.output_pins.ptr->data_addr);
-  PIN(out0) = outpins<<0 & 1 ? 1.0 : 0.0;
-  PIN(out1) = outpins<<1 & 1 ? 1.0 : 0.0;//TODO: out1 not working
-  PIN(out2) = outpins<<2 & 1 ? 1.0 : 0.0;
-  PIN(out3) = outpins<<3 & 1 ? 1.0 : 0.0;
+  PIN(out0) = outpins >> 0 & 1 ? 1.0 : 0.0;
+  PIN(out1) = outpins >> 1 & 1 ? 1.0 : 0.0;
+  PIN(out2) = outpins >> 2 & 1 ? 1.0 : 0.0;
+  PIN(out3) = outpins >> 3 & 1 ? 1.0 : 0.0;
   uint8_t enable = MEMU8(pd_table.enable.ptr->data_addr);
   PIN(enable) = enable<<0 & 1 ? 1.0 : 0.0;
   //TODO: how to handle bidirectional pins properly?
 
-  *((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
+  //*((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
+  
+  //uint32_t tmp = MEMU32(ptr);*((float*)&tmp);}))
+  
+  //MEMFLOAT(pd_table.pos_fb.ptr->data_addr) = PIN(pos_fb);
+  *((float *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = PIN(pos_fb);
   
   MEMU8(pd_table.fault.ptr->data_addr) = BOOLPIN(fault);
   MEMU8(pd_table.input_pins.ptr->data_addr) = BOOLPIN(in0)<<0 | BOOLPIN(in1)<<1 | BOOLPIN(in2)<<2 | BOOLPIN(in3)<<3;
@@ -684,8 +695,9 @@ FRT(
              //TODO: maybe packing and unpacking can be moved to RT
              process_data_rpc(0x00, txbuf, &(rxbuf[rxpos+1])); // todo: send a proper fault byte?
              send(memory.discovery.input,1);
-             uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
-             float p = scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
+             //uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
+             //float p = scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
+             float p = MEMFLOAT(pd_table.pos_cmd.ptr->data_addr);
              PIN(pos_cmd_d) = minus(p,last_pos_cmd)*1000.0f;//TODO: only valid for 1khz servo thread
              last_pos_cmd = p;
              //we cannot send the reply based on crc, as this causes timeouts

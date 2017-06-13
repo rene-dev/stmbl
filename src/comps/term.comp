@@ -146,8 +146,8 @@ NRT(
 
       printf("heap avail       = %luB\n", (uint32_t)((char*)__get_MSP() - __brkval));
       uint32_t fpscr = get_fpscr();
-      printf("FPU fpscr = %x\n", fpscr);
-      printf(" IDC: %i IXC: %i UFC: %i OFC: %i DZC: %i IOC %i\n", (fpscr & (1 << 7)) > 0, (fpscr & (1 << 4)) > 0, (fpscr & (1 << 3)) > 0, (fpscr & (1 << 2)) > 0, (fpscr & (1 << 1)) > 0, fpscr & (1 << 0));
+      printf("FPU fpscr = %lx\n", fpscr);
+      printf(" IDC: %i IXC: %i UFC: %i OFC: %i DZC: %i IOC %lu\n", (fpscr & (1 << 7)) > 0, (fpscr & (1 << 4)) > 0, (fpscr & (1 << 3)) > 0, (fpscr & (1 << 2)) > 0, (fpscr & (1 << 1)) > 0, fpscr & (1 << 0));
       fpscr &= (uint32_t)~0x9F; // Clear all exception flags
       set_fpscr(fpscr);
    }

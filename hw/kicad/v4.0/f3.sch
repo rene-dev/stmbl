@@ -1116,4 +1116,6 @@ F 3 "" H 2400 2500 60  0000 C CNN
 	1    2400 2500
 	0    -1   -1   0   
 $EndComp
+Text Notes 18400 5500 1    60   ~ 0
+do not populate ->
 $EndSCHEMATC

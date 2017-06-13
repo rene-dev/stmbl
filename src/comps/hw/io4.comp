@@ -21,12 +21,11 @@ HAL_PIN(fb1y) = 0.0;
 HAL_PIN(cmdg) = 0.0;
 HAL_PIN(cmdy) = 0.0;
 
-HAL_PIN(i0);
-HAL_PIN(i1);
-
 // inputs
 HAL_PIN(in0);
 HAL_PIN(in1);
+HAL_PIN(ind0);
+HAL_PIN(ind1);
 
 HAL_PIN(fb0);
 HAL_PIN(fb1);
@@ -35,6 +34,19 @@ HAL_PIN(CTX);
 HAL_PIN(CRX);
 HAL_PIN(DIO);
 HAL_PIN(CK);
+
+HAL_PIN(fb0);
+HAL_PIN(fb1);
+
+HAL_PIN(fb0a);
+HAL_PIN(fb0b);
+HAL_PIN(fb0z);
+
+HAL_PIN(fb1a);
+HAL_PIN(fb1b);
+HAL_PIN(fb1z);
+
+HAL_PIN(fbsd);//fb shutdown
 
 INIT(
    
@@ -130,6 +142,11 @@ INIT(
    //cmd green
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_7;
    GPIO_Init(GPIOD, &GPIO_InitStructure);
+   
+   //fb 5v enable
+   GPIO_SetBits(GPIOC, GPIO_Pin_13);
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+   GPIO_Init(GPIOC, &GPIO_InitStructure);
 );
 
 #include "../shared/hw_math.h"
@@ -141,6 +158,23 @@ RT(
    //TODO: check if adc sample complete?
    PIN(in0) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_1)), 3.3, 1000.0, 10000.0, 1000.0);
    PIN(in1) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_2)), 3.3, 1000.0, 10000.0, 1000.0);
+   
+   if(PIN(in0) > 12.0){
+      PIN(ind0) = 1.0;
+      GPIO_SetBits(GPIOE, GPIO_Pin_1);
+   }else{
+      PIN(ind0) = 0.0;
+      GPIO_ResetBits(GPIOE, GPIO_Pin_1);
+   }
+   
+   if(PIN(in0) > 12.0){
+      PIN(ind1) = 1.0;
+      GPIO_SetBits(GPIOE, GPIO_Pin_0);
+   }else{
+      PIN(ind1) = 0.0;
+      GPIO_ResetBits(GPIOE, GPIO_Pin_0);
+   }
+   
    PIN(fb0) = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_3)), 10000.0, 1000.0);
    PIN(fb1) = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_4)), 10000.0, 1000.0);
    ADC_SoftwareStartInjectedConv(ADC3);
@@ -224,16 +258,6 @@ NRT(
    else
       GPIO_ResetBits(GPIOE, GPIO_Pin_6);
    
-   if(PIN(i0) > 0)
-      GPIO_SetBits(GPIOE, GPIO_Pin_1);
-   else
-      GPIO_ResetBits(GPIOE, GPIO_Pin_1);
-   
-   if(PIN(i1) > 0)
-      GPIO_SetBits(GPIOE, GPIO_Pin_0);
-   else
-      GPIO_ResetBits(GPIOE, GPIO_Pin_0);
-   
    if(PIN(fb0g) > 0)
       GPIO_SetBits(GPIOD, GPIO_Pin_8);
    else
@@ -268,6 +292,20 @@ NRT(
       GPIO_SetBits(GPIOE, GPIO_Pin_3);
    else
       GPIO_ResetBits(GPIOE, GPIO_Pin_3);
+
+   if(PIN(fbsd) > 0)
+      GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+   else
+      GPIO_SetBits(GPIOC, GPIO_Pin_13);
+
+   PIN(fb0a) = GPIO_ReadInputDataBit(FB0_A_PORT,FB0_A_PIN);
+   PIN(fb0b) = GPIO_ReadInputDataBit(FB0_B_PORT,FB0_B_PIN);
+   PIN(fb0z) = GPIO_ReadInputDataBit(FB0_Z_PORT,FB0_Z_PIN);
+
+   PIN(fb1a) = GPIO_ReadInputDataBit(FB1_A_PORT,FB1_A_PIN);
+   PIN(fb1b) = GPIO_ReadInputDataBit(FB1_B_PORT,FB1_B_PIN);
+   PIN(fb1z) = GPIO_ReadInputDataBit(FB1_Z_PORT,FB1_Z_PIN);
+   
 );
 
 ENDCOMP;

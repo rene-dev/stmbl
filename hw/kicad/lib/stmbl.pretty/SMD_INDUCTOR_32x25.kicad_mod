@@ -15,7 +15,7 @@
   (fp_line (start -1.6 1.5) (end 1.6 1.5) (layer F.SilkS) (width 0.15))
   (pad 2 smd rect (at 1.2 0 90) (size 2.5 1) (layers F.Cu F.Paste F.Mask))
   (pad 1 smd rect (at -1.2 0 90) (size 2.5 1) (layers F.Cu F.Paste F.Mask))
-  (model ${KIPRJMOD}/stmbl.pretty/LQH32PN_sw.wrl
+  (model ${KIPRJMOD}/../lib/stmbl.pretty/LQH32PN_sw.wrl
     (at (xyz 0 0 0))
     (scale (xyz 393.7 393.7 393.7))
     (rotate (xyz 0 0 0))

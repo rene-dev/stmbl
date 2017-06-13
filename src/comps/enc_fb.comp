@@ -5,7 +5,7 @@ HAL_PIN(ires) = 1024.0;
 HAL_PIN(pos) = 0.0;
 HAL_PIN(abspos) = 0.0;
 HAL_PIN(isabs) = 0.0;
-HAL_PIN(index) = 0.0;
+HAL_PIN(index) = 0.0;//TODO:
 HAL_PIN(a) = 0.0;
 HAL_PIN(b) = 0.0;
 HAL_PIN(ipos) = 0.0;
@@ -17,9 +17,6 @@ HAL_PIN(oquadoff) = 0.0;
 HAL_PIN(qdiff) = 0.0;
 HAL_PIN(error) = 0.0;
 HAL_PIN(amp) = 0.0;
-HAL_PIN(s) = 0.0;
-HAL_PIN(c) = 0.0;
-
 
 MEM(int e_res) = 0.0;
 MEM(float absoffset) = 0.0;
@@ -92,8 +89,9 @@ FRT(
 );
 
 RT(
+   //sample timer value and timer pins together, so we can calculate the quadrant of the timer
   int32_t tim = TIM_GetCounter(FB0_ENC_TIM);//TODO: interrupt here?
-  uint32_t scgpio = FB0_A_PORT->IDR;//TODO: ENC PORT
+  uint32_t scgpio = FB0_A_PORT->IDR;
 
   float p = 0.0;
   int r = (int)PIN(res);
@@ -113,7 +111,8 @@ RT(
   PIN(amp) = a;
   int q;
 
-  if(!(scgpio & FB0_A_PIN)){//TODO: check A/B mapping, hw3 has A -> cos, B -> sin
+  //calculate quadrant of timer
+  if((scgpio & FB0_A_PIN)){//TODO: invert for v3... check: plot oquad vs quad
     if(scgpio & FB0_B_PIN){
       q = 1;
     }
@@ -129,6 +128,7 @@ RT(
     }
   }
   //TODO: sincos stuff at speed
+  //analog quadrant is calculated by adc component
   int qdiff = PIN(quad)-q;
 
   switch(qdiff){
@@ -153,8 +153,8 @@ RT(
 
   PIN(qdiff) = qdiff;
 
-  PIN(s) = (scgpio & FB0_A_PIN)?0:1;
-  PIN(c) = (scgpio & FB0_B_PIN)?1:0;
+  PIN(a) = (scgpio & FB0_A_PIN);//TODO: invert for v3
+  PIN(b) = (scgpio & FB0_B_PIN);
 
   PIN(oquad) = q;
 
@@ -171,22 +171,6 @@ RT(
   if(e_res != r){
     e_res = r;
     TIM_SetAutoreload(FB0_ENC_TIM, e_res - 1);
-  }
-  
-  if(GPIO_ReadInputDataBit(FB0_Z_PORT,FB0_Z_PIN)){//TODO: setup pin
-     PIN(index) = 0.0;
-  }else{
-     PIN(index) = 1.0;
-  }
-  if(GPIO_ReadInputDataBit(FB0_A_PORT,FB0_A_PIN)){//TODO: setup pin
-     PIN(a) = 0.0;
-  }else{
-     PIN(a) = 1.0;
-  }
-  if(GPIO_ReadInputDataBit(FB0_B_PORT,FB0_B_PIN)){//TODO: setup pin
-     PIN(b) = 0.0;
-  }else{
-     PIN(b) = 1.0;
   }
   
 );

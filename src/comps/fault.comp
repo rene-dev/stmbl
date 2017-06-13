@@ -118,6 +118,7 @@ RT(
          }
       break;
       
+      case LED_TEST:
       case HARD_FAULT:
       break;
    }
@@ -233,6 +234,7 @@ RT(
          scale = 0.0;
       break;
       
+      case LED_TEST:
       case HARD_FAULT:
          PIN(phase_start) = 0.0;
          PIN(mot_brake) = 0.0;

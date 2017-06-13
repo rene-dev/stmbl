@@ -1,0 +1,99 @@
+HAL_COMP(fb_switch);
+
+HAL_PIN(mot_polecount);
+
+HAL_PIN(pos_fb);
+HAL_PIN(vel_fb);
+HAL_PIN(com_fb);
+HAL_PIN(joint_fb);
+HAL_PIN(state); // 0 = disabled, 1 = enabled
+
+HAL_PIN(cmd_pos);
+
+HAL_PIN(mot_pos0);
+HAL_PIN(mot_abs_pos0);
+HAL_PIN(mot_polecount0);
+HAL_PIN(mot_offset0);
+HAL_PIN(mot_state0); // 0 = disabled, 1 = inc, 2 = abs
+
+HAL_PIN(mot_pos1);
+HAL_PIN(mot_abs_pos1);
+HAL_PIN(mot_polecount1);
+HAL_PIN(mot_offset1);
+HAL_PIN(mot_state1);
+
+HAL_PIN(joint_pos);
+HAL_PIN(joint_abs_pos);
+HAL_PIN(joint_offset);
+HAL_PIN(joint_state);
+
+HAL_PIN(mot_joint_ratio);
+
+HAL_PIN(capture_com) = 1.0;
+HAL_PIN(force_phase);
+HAL_PIN(phase_time);
+HAL_PIN(phase_cur);
+
+HAL_PIN(en);
+
+MEM(int32_t current_com_pos);
+MEM(float cmd_offset);
+MEM(float com_offset);
+
+RT_INIT(
+   current_com_pos = 10;
+   cmd_offset = 0.0;
+   com_offset = 0.0;
+);
+
+RT(
+   float mot_pos0 = PIN(mot_pos0);
+   PIN(pos_fb) = mod(mot_pos0 + cmd_offset);
+
+   if(PIN(en) <= 0.0){
+      PIN(state) = 0.0;
+      current_com_pos = 10;
+      com_offset = 0.0;
+      cmd_offset = minus(PIN(cmd_pos), mot_pos0);
+   }
+   else{
+      PIN(state) = 1.0;
+      if(PIN(joint_state) >= 2.0 && current_com_pos > 3.0){
+         current_com_pos = 3;
+         com_offset = minus(mod(PIN(joint_abs_pos) * PIN(mot_polecount) + PIN(joint_offset)), mot_pos0 * PIN(mot_polecount) / PIN(mot_polecount0));
+      }
+      if(PIN(mot_state1) >= 2.0 && current_com_pos > 2.0){
+         current_com_pos = 2;
+         com_offset = minus(mod(PIN(mot_abs_pos1) * PIN(mot_polecount) / PIN(mot_polecount1) + PIN(joint_offset)), mot_pos0 * PIN(mot_polecount) / PIN(mot_polecount0));
+      }
+      if(PIN(mot_state0) >= 2.0 && current_com_pos > 1.0){
+         current_com_pos = 1;
+         com_offset = 0.0;
+      }
+      if(current_com_pos >= 4.0){
+         // TODO cauto
+         PIN(state) = 0.0;
+      }
+      
+      if(PIN(capture_com) > 0.0){
+         PIN(com_fb) = mod(mot_pos0 * PIN(mot_polecount) / PIN(mot_polecount0) + com_offset);
+      }
+      else{
+         if(PIN(joint_state) >= 2.0 && current_com_pos == 3){
+            PIN(com_fb) = mod(PIN(joint_abs_pos) * PIN(mot_polecount) + PIN(joint_offset));
+         }
+         else if(PIN(mot_state1) >= 2.0 && current_com_pos == 2){
+            PIN(com_fb) = mod(PIN(mot_abs_pos1) * PIN(mot_polecount) / PIN(mot_polecount1) + PIN(joint_offset));
+         }
+         else{
+            PIN(state) = 0.0;
+         }
+      }
+      
+      
+      PIN(vel_fb) = mot_pos0;
+   }
+);
+
+
+ENDCOMP;

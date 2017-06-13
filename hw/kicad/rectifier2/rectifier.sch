@@ -28,10 +28,9 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:stmbl
 LIBS:relays
 LIBS:rectifier-cache
-EELAYER 26 0
+EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -54,7 +53,7 @@ F 1 "CONN_01X02" H 8669 2516 50  0000 C CNN
 F 2 "stmbl:RM5.08_1x2" H 6200 2150 50  0001 C CNN
 F 3 "" H 6200 2150 50  0001 C CNN
 	1    8750 2700
-	1    0    0    -1  
+	1    0    0    1   
 $EndComp
 $Comp
 L CONN_01X02 P2
@@ -76,7 +75,7 @@ F 1 "CONN_01X03" H 1769 2666 50  0000 C CNN
 F 2 "stmbl:RM5.08_1x3" H -1100 -2550 50  0001 C CNN
 F 3 "" H -1100 -2550 50  0001 C CNN
 	1    1850 2900
-	-1   0    0    1   
+	-1   0    0    -1  
 $EndComp
 $Comp
 L CP C1
@@ -84,7 +83,7 @@ U 1 1 58E40702
 P 7750 2700
 F 0 "C1" H 7868 2746 50  0000 L CNN
 F 1 "CP" H 7868 2655 50  0000 L CNN
-F 2 "stmbl:C_Radial_D26_L45_P10" H 5688 750 50  0001 C CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D35.0mm_P10.00mm_SnapIn" H 5688 750 50  0001 C CNN
 F 3 "" H 5650 900 50  0001 C CNN
 	1    7750 2700
 	1    0    0    -1  
@@ -95,7 +94,7 @@ U 1 1 58E4073F
 P 8150 2700
 F 0 "C2" H 8268 2746 50  0000 L CNN
 F 1 "CP" H 8268 2655 50  0000 L CNN
-F 2 "stmbl:C_Radial_D26_L45_P10" H 5488 850 50  0001 C CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D35.0mm_P10.00mm_SnapIn" H 5488 850 50  0001 C CNN
 F 3 "" H 5450 1000 50  0001 C CNN
 	1    8150 2700
 	1    0    0    -1  

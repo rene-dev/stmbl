@@ -229,8 +229,8 @@ int main(void)
    #include "comps/reslimit.comp"
    #include "comps/fanuc.comp"
    #include "comps/fb_switch.comp"
-
-   
+   #include "comps/lin2rev.comp"
+   #include "comps/uvw.comp"
 
 #ifdef V3
    #include "comps/hw/io3.comp"
