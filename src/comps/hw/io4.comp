@@ -30,6 +30,8 @@ HAL_PIN(fb1a);
 HAL_PIN(fb1b);
 HAL_PIN(fb1z);
 
+HAL_PIN(fbsd);//fb shutdown
+
 INIT(
    
    //**** ADC3 for analog input and fb temperature
@@ -115,6 +117,11 @@ INIT(
    //cmd green
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_7;
    GPIO_Init(GPIOD, &GPIO_InitStructure);
+   
+   //fb 5v enable
+   GPIO_SetBits(GPIOC, GPIO_Pin_13);
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+   GPIO_Init(GPIOC, &GPIO_InitStructure);
 );
 
 #include "../shared/hw_math.h"
@@ -255,7 +262,12 @@ NRT(
       GPIO_SetBits(GPIOE, GPIO_Pin_3);
    else
       GPIO_ResetBits(GPIOE, GPIO_Pin_3);
-   
+
+   if(PIN(fbsd) > 0)
+      GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+   else
+      GPIO_SetBits(GPIOC, GPIO_Pin_13);
+
    if(GPIO_ReadInputDataBit(FB1_A_PORT,FB1_A_PIN)){//TODO: setup pin
       PIN(fb1a) = 0.0;
    }else{
