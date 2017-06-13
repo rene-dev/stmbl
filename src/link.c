@@ -288,6 +288,8 @@ int update_fb(){
          hal_set_pin("enc_fb0.rt_prio", 2.0);
          hal_set_pin("enc_fb0.frt_prio", 1.0);
          hal_link_pins("enc_fb0.isabs", "cauto0.isabs");
+         hal_link_pins("adc0.sin3", "enc_fb0.sin");
+         hal_link_pins("adc0.cos3", "enc_fb0.cos");
          // hal_set_pin("pderiv1.frt_prio", 2.0);
          // hal_set_pin("pderiv1.rt_prio", 5.0);
          break;
@@ -338,6 +340,41 @@ int update_fb(){
          hal_link_pins("encs0.pos", "rev1.in");
          hal_set_pin("encs0.rt_prio", 2.0);
          break;
+      case FANUC:
+         hal_set_pin("fanuc0.rt_prio", 15.0);
+         hal_link_pins("io0.CRX", "fanuc0.C1");
+         hal_link_pins("io0.DIO", "fanuc0.C2");
+         hal_link_pins("io0.CTX", "fanuc0.C4");
+         hal_link_pins("io0.CK", "fanuc0.C8");
+         hal_set_pin("fb_switch0.rt_prio", 7.0);
+         hal_set_pin("cauto0.rt_prio", -1.0);
+         
+         hal_set_pin("fb_switch0.mot_polecount0", 1.0);
+//         hal_set_pin("fb_switch0.mot_polecount1", 1.0);
+         hal_set_pin("fb_switch0.mot_offset0", 0.0);
+         hal_set_pin("fb_switch0.mot_offset1", 0.0);
+         hal_set_pin("fb_switch0.mot_state0", 1.0);
+         hal_set_pin("fb_switch0.mot_state1", 2.0);
+         hal_set_pin("fb_switch0.joint_state", 0.0);
+
+         hal_link_pins("rev1.out", "fb_switch0.mot_pos0");
+         hal_link_pins("fanuc0.pos", "fb_switch0.mot_pos1");
+         hal_link_pins("fanuc0.pos", "fb_switch0.mot_abs_pos1");
+         hal_link_pins("conf0.polecount", "fb_switch0.mot_polecount");
+         hal_link_pins("conf0.polecount", "fb_switch0.mot_polecount1");
+         hal_link_pins("net0.cmd", "fb_switch0.cmd_pos");
+         hal_link_pins("fault0.en_pid", "fb_switch0.en");
+         hal_link_pins("fb_switch0.pos_fb", "net0.fb");
+         hal_link_pins("fb_switch0.com_fb", "hv0.pos");
+         hal_set_pin("hv0.polecount", 1.0);
+         
+         hal_link_pins("adc0.sin3", "enc_fb0.sin");
+         hal_link_pins("adc0.cos3", "enc_fb0.cos");
+         hal_link_pins("enc_fb0.pos", "rev1.in");
+         hal_link_pins("conf0.fb_res", "enc_fb0.res");
+         hal_set_pin("enc_fb0.rt_prio", 2.0);
+         hal_set_pin("enc_fb0.frt_prio", 1.0);
+         //hal_link_pins("enc_fb0.isabs", "cauto0.isabs");
       default:
          return -1;
    }

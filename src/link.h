@@ -19,7 +19,8 @@ typedef enum{
   SSERIAL,
   ENDAT,
   BISS,
-  SSI
+  SSI,
+  FANUC,
 } protocol_t;
 
 typedef enum{

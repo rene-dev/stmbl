@@ -1,0 +1,52 @@
+HAL_COMP(fanuc);
+
+HAL_PIN(C1);
+HAL_PIN(C2);
+HAL_PIN(C4);
+HAL_PIN(C8);
+
+HAL_PIN(pos);
+
+MEM(uint8_t tab[16]);
+
+RT_INIT(
+   // tab[0] = 0;
+   // tab[1] = 1;
+   // tab[2] = 3;
+   // tab[3] = 2;
+   // tab[4] = 7;
+   // tab[5] = 6;
+   // tab[6] = 4;
+   // tab[7] = 5;
+   // tab[8] = 15;
+   // tab[9] = 14;
+   // tab[10] = 12;
+   // tab[11] = 13;
+   // tab[12] = 8;
+   // tab[13] = 9;
+   // tab[14] = 11;
+   // tab[15] = 10;
+   tab[0] = 0;
+   tab[1] = 15;
+   tab[2] = 1;
+   tab[3] = 2;
+   tab[4] = 13;
+   tab[5] = 14;
+   tab[6] = 12;
+   tab[7] = 11;
+   tab[8] = 5;
+   tab[9] = 6;
+   tab[10] = 4;
+   tab[11] = 3;
+   tab[12] = 8;
+   tab[13] = 7;
+   tab[14] = 9;
+   tab[15] = 10;
+);
+
+RT(
+   uint32_t t = (PIN(C1) > 0.0) + (PIN(C2) > 0.0) * 2 + (PIN(C4) > 0.0) * 4 + (PIN(C8) > 0.0) * 8;
+   PIN(pos) = mod((tab[t] / 15.0 * 2.0 * M_PI));
+);
+
+ENDCOMP;

@@ -227,6 +227,8 @@ int main(void)
    #include "comps/var.comp"
    #include "comps/i2t.comp"
    #include "comps/reslimit.comp"
+   #include "comps/fanuc.comp"
+   #include "comps/fb_switch.comp"
    #include "comps/lin2rev.comp"
    #include "comps/uvw.comp"
 
