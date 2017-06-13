@@ -27,9 +27,6 @@ HAL_PIN(in1);
 HAL_PIN(ind0);
 HAL_PIN(ind1);
 
-HAL_PIN(fb0);
-HAL_PIN(fb1);
-
 HAL_PIN(CTX);
 HAL_PIN(CRX);
 HAL_PIN(DIO);

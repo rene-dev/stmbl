@@ -37,13 +37,13 @@ RT(
    float lq = MAX(PIN(lq), 0.0001);
    float psi = MAX(PIN(psi), 0.01);
    float r = MAX(PIN(r), 0.001);
-   float iq = PIN(iq);
+   float iq = PIN(iq); // TODO id
 
    float indq = PIN(indq); // TODO vel * (psi + id ld)
 
    float volt = PIN(ac_volt);
    float abs_max_cur = volt / r;
-   float abs_max_vel = volt / psid / p;
+   float abs_max_vel = volt / psi / p;
    float abs_max_torque = 3.0 / 2.0 * p * psi * abs_max_cur;
 
    float next_max_cur = iq + (volt - r * iq - indq) / lq * period * 2.0 / 3.0;
