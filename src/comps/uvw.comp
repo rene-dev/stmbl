@@ -1,0 +1,25 @@
+HAL_COMP(uvw);
+
+//u,v,w inputs
+HAL_PIN(u);
+HAL_PIN(v);
+HAL_PIN(w);
+
+//rotor position
+HAL_PIN(pos) = 0.0;
+
+RT(
+   uint32_t rpos = (PIN(u) > 0.0) * 1.0 + (PIN(v) > 0.0) * 2.0 + (PIN(w) > 0.0) * 4.0;
+   uint32_t t[8];
+   t[0] = 0;//fault
+   t[1] = 0;//u
+   t[2] = 2;//v
+   t[3] = 1;//u + v
+   t[4] = 4;//w
+   t[5] = 5;//u + w
+   t[6] = 3;//v + w
+   t[7] = 0;//fault
+   PIN(pos) = mod((float)t[rpos]/6.0 * 2.0 * M_PI);
+);
+
+ENDCOMP;
