@@ -47,13 +47,21 @@ RT(
    htim8.Instance->CCR3 = CLAMP(u, 0, 4800 - min_off);
    htim8.Instance->CCR2 = CLAMP(v, 0, 4800 - min_off);
    htim8.Instance->CCR1 = CLAMP(w, 0, 4800 - min_off);
-   
-   if(PIN(hv_temp) < 85.0){
-      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+
+   if(PIN(en) > 0.0){
+      GPIOA->BSRR = GPIO_PIN_15;
+      // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
    }
    else{
-      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
+      GPIOA->BSRR = GPIO_PIN_15 << 16;
+      // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
    }
+
+   if(PIN(hv_temp) > 85.0){
+      GPIOA->BSRR = GPIO_PIN_15 << 16;
+      // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
+   }
+   
    //TODO: check enable timing on fault pin
    PIN(fault) = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_7);
 );
