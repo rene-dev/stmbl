@@ -26,6 +26,10 @@ HAL_PIN(io1d);
 HAL_PIN(fb0);
 HAL_PIN(fb1);
 
+HAL_PIN(fb0a);
+HAL_PIN(fb0b);
+HAL_PIN(fb0z);
+
 HAL_PIN(fb1a);
 HAL_PIN(fb1b);
 HAL_PIN(fb1z);
@@ -268,24 +272,13 @@ NRT(
    else
       GPIO_SetBits(GPIOC, GPIO_Pin_13);
 
-   if(GPIO_ReadInputDataBit(FB1_A_PORT,FB1_A_PIN)){//TODO: setup pin
-      PIN(fb1a) = 0.0;
-   }else{
-      PIN(fb1a) = 1.0;
-   }
-   
-   if(GPIO_ReadInputDataBit(FB1_B_PORT,FB1_B_PIN)){//TODO: setup pin
-      PIN(fb1b) = 0.0;
-   }else{
-      PIN(fb1b) = 1.0;
-   }
-   
-   if(GPIO_ReadInputDataBit(FB1_Z_PORT,FB1_Z_PIN)){//TODO: setup pin
-      PIN(fb1z) = 0.0;
-   }else{
-      PIN(fb1z) = 1.0;
-   }
-   
+   PIN(fb0a) = GPIO_ReadInputDataBit(FB0_A_PORT,FB0_A_PIN);
+   PIN(fb0b) = GPIO_ReadInputDataBit(FB0_B_PORT,FB0_B_PIN);
+   PIN(fb0z) = GPIO_ReadInputDataBit(FB0_Z_PORT,FB0_Z_PIN);
+
+   PIN(fb1a) = GPIO_ReadInputDataBit(FB1_A_PORT,FB1_A_PIN);
+   PIN(fb1b) = GPIO_ReadInputDataBit(FB1_B_PORT,FB1_B_PIN);
+   PIN(fb1z) = GPIO_ReadInputDataBit(FB1_Z_PORT,FB1_Z_PIN);
    
 );
 
