@@ -26,6 +26,10 @@ HAL_PIN(io1d);
 HAL_PIN(fb0);
 HAL_PIN(fb1);
 
+HAL_PIN(fb1a);
+HAL_PIN(fb1b);
+HAL_PIN(fb1z);
+
 INIT(
    
    //**** ADC3 for analog input and fb temperature
@@ -251,6 +255,26 @@ NRT(
       GPIO_SetBits(GPIOE, GPIO_Pin_3);
    else
       GPIO_ResetBits(GPIOE, GPIO_Pin_3);
+   
+   if(GPIO_ReadInputDataBit(FB1_A_PORT,FB1_A_PIN)){//TODO: setup pin
+      PIN(fb1a) = 0.0;
+   }else{
+      PIN(fb1a) = 1.0;
+   }
+   
+   if(GPIO_ReadInputDataBit(FB1_B_PORT,FB1_B_PIN)){//TODO: setup pin
+      PIN(fb1b) = 0.0;
+   }else{
+      PIN(fb1b) = 1.0;
+   }
+   
+   if(GPIO_ReadInputDataBit(FB1_Z_PORT,FB1_Z_PIN)){//TODO: setup pin
+      PIN(fb1z) = 0.0;
+   }else{
+      PIN(fb1z) = 1.0;
+   }
+   
+   
 );
 
 ENDCOMP;

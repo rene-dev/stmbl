@@ -228,6 +228,7 @@ int main(void)
    #include "comps/i2t.comp"
    #include "comps/reslimit.comp"
    #include "comps/lin2rev.comp"
+   #include "comps/uvw.comp"
 
 #ifdef V3
    #include "comps/hw/io3.comp"

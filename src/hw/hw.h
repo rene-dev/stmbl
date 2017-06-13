@@ -127,6 +127,7 @@
 #define UART_DRV_TX_PIN_SOURCE GPIO_PinSource2
 #define UART_DRV_TX_AF_SOURCE GPIO_AF_USART2
 
+//FB0 TIM4
 #define FB0_A_PIN GPIO_Pin_12
 #define FB0_A_PIN_SOURCE GPIO_PinSource12
 #define FB0_A_PORT GPIOD
@@ -149,6 +150,18 @@
 #define FB0_RES_TIM TIM4
 #define FB0_RES_TIM_AF GPIO_AF_TIM4 //sync to slave timer for resolver
 #define FB0_RES_TIM_RCC RCC_APB1Periph_TIM4
+//FB1, TIM1
+#define FB1_A_PIN GPIO_Pin_9
+#define FB1_A_PIN_SOURCE GPIO_PinSource9
+#define FB1_A_PORT GPIOE
+
+#define FB1_B_PIN GPIO_Pin_11
+#define FB1_B_PIN_SOURCE GPIO_PinSource11
+#define FB1_B_PORT GPIOE
+
+#define FB1_Z_PIN GPIO_Pin_13
+#define FB1_Z_PIN_SOURCE GPIO_PinSource14
+#define FB1_Z_PORT GPIOE
 
 #define TIM_MASTER TIM3
 #define TIM_MASTER_RCC RCC_APB1Periph_TIM3
