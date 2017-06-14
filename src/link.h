@@ -14,13 +14,14 @@ typedef enum{
   FREQ,
   MITSU,
   YASKAWA,
-  HYPER,
+  HYPER, // 10
   SANYO,
   SSERIAL,
   ENDAT,
   BISS,
   SSI,
   FANUC,
+  ENC_HALL,
 } protocol_t;
 
 typedef enum{

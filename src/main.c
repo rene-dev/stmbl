@@ -321,6 +321,12 @@ int main(void)
    
    link_pid();
    hal_set_pin("io0.rt_prio", 20.0);
+   hal_link_pins("fault0.en_pid", "fb_switch0.en");
+   hal_link_pins("fb_switch0.pos_fb", "net0.fb");
+   hal_link_pins("fb_switch0.com_fb", "hv0.pos");
+   hal_set_pin("hv0.polecount", 1.0);
+   hal_link_pins("fb_switch0.state", "hv0.en");
+   
    hal_comp_init();//call init function of all comps
 
    if(hal.pin_errors + hal.comp_errors == 0){

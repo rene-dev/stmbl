@@ -153,8 +153,8 @@ RT(
 
   PIN(qdiff) = qdiff;
 
-  PIN(a) = (scgpio & FB0_A_PIN);//TODO: invert for v3
-  PIN(b) = (scgpio & FB0_B_PIN);
+  PIN(a) = (scgpio & FB0_A_PIN) > 0;//TODO: invert for v3
+  PIN(b) = (scgpio & FB0_B_PIN) > 0;
 
   PIN(oquad) = q;
 
