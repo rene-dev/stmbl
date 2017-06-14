@@ -13,48 +13,51 @@ INIT(
   USART_InitTypeDef USART_InitStruct;
   
   //TX enable
-  GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
+  GPIO_InitStruct.GPIO_Pin   = FB0_Z_TXEN_PIN;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_Init(FB0_Z_TXEN_PORT, &GPIO_InitStruct);
 
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
+  FB0_UART_CLOCK_COMMAND(FB0_UART_RCC, ENABLE);
 
   //USART TX
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_USART3);
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+  GPIO_PinAFConfig(FB0_UART_TX_PORT, FB0_UART_TX_PIN_SOURCE, FB0_UART_TX_AF_SOURCE);
+  GPIO_InitStruct.GPIO_Pin = FB0_UART_TX_PIN;
   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
-  GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_Init(FB0_UART_TX_PORT, &GPIO_InitStruct);
 
   //USART RX
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource11, GPIO_AF_USART3);
-  GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
-  GPIO_Init(GPIOB, &GPIO_InitStruct);
-
+#ifdef FB0_UART_RX_PORT
+  GPIO_PinAFConfig(FB0_UART_RX_PORT, FB0_UART_RX_PIN_SOURCE, FB0_UART_RX_AF_SOURCE);
+  GPIO_InitStruct.GPIO_Pin = FB0_UART_RX_PIN;
+  GPIO_Init(FB0_UART_RX_PORT, &GPIO_InitStruct);
+#endif
   USART_InitStruct.USART_BaudRate = 9600;
   USART_InitStruct.USART_WordLength = USART_WordLength_9b;
   USART_InitStruct.USART_StopBits = USART_StopBits_1;
   USART_InitStruct.USART_Parity = USART_Parity_Even;
   USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  USART_Init(USART3, &USART_InitStruct);
+  USART_Init(FB0_UART, &USART_InitStruct);
 
   /* Enable the USART */
-  USART_Cmd(USART3, ENABLE);
-
+  USART_Cmd(FB0_UART, ENABLE);
+#ifndef FB0_UART_RX_PORT
+  USART_HalfDuplexCmd(FB0_UART,ENABLE);
+#endif
   //TX DMA
 
-  DMA_Cmd(DMA1_Stream3, DISABLE);
-  DMA_DeInit(DMA1_Stream3);
+  DMA_Cmd(FB0_UART_TX_DMA, DISABLE);
+  DMA_DeInit(FB0_UART_TX_DMA);
 
   // DMA2-Config
-  DMA_InitStructure.DMA_Channel = DMA_Channel_4;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
+  DMA_InitStructure.DMA_Channel = FB0_UART_TX_DMA_CHAN;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(FB0_UART->DR);
   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&txbuf;
   DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
   DMA_InitStructure.DMA_BufferSize = sizeof(txbuf);
@@ -68,17 +71,17 @@ INIT(
   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  DMA_Init(DMA1_Stream3, &DMA_InitStructure);
-  USART_DMACmd(USART3, USART_DMAReq_Tx, ENABLE);
+  DMA_Init(FB0_UART_TX_DMA, &DMA_InitStructure);
+  USART_DMACmd(FB0_UART, USART_DMAReq_Tx, ENABLE);
 
   //RX DMA
 
-  DMA_Cmd(DMA1_Stream1, DISABLE);
-  DMA_DeInit(DMA1_Stream1);
+  DMA_Cmd(FB0_UART_RX_DMA, DISABLE);
+  DMA_DeInit(FB0_UART_RX_DMA);
 
   // DMA2-Config
-  DMA_InitStructure.DMA_Channel = DMA_Channel_4;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(USART3->DR);
+  DMA_InitStructure.DMA_Channel = FB0_UART_RX_DMA_CHAN;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(FB0_UART->DR);
   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&rxbuf;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
   DMA_InitStructure.DMA_BufferSize = sizeof(rxbuf);
@@ -92,21 +95,21 @@ INIT(
   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  DMA_Init(DMA1_Stream1, &DMA_InitStructure);
-  USART_DMACmd(USART3, USART_DMAReq_Rx, ENABLE);
+  DMA_Init(FB0_UART_RX_DMA, &DMA_InitStructure);
+  USART_DMACmd(FB0_UART, USART_DMAReq_Rx, ENABLE);
 );
 
 void start_tx(uint32_t len){
-   DMA_SetCurrDataCounter(DMA1_Stream3,len);
-   DMA_Cmd(DMA1_Stream3, DISABLE);
-   DMA_ClearFlag(DMA1_Stream3, DMA_FLAG_TCIF3);
-   DMA_Cmd(DMA1_Stream3, ENABLE);
+   DMA_SetCurrDataCounter(FB0_UART_TX_DMA,len);
+   DMA_Cmd(FB0_UART_TX_DMA, DISABLE);
+   DMA_ClearFlag(FB0_UART_TX_DMA, FB0_UART_TX_DMA_TCIF);
+   DMA_Cmd(FB0_UART_TX_DMA, ENABLE);
 }
 
 void start_rx(){
-   DMA_Cmd(DMA1_Stream1, DISABLE);
-   DMA_ClearFlag(DMA1_Stream1, DMA_FLAG_TCIF1);
-   DMA_Cmd(DMA1_Stream1, ENABLE);
+   DMA_Cmd(FB0_UART_RX_DMA, DISABLE);
+   DMA_ClearFlag(FB0_UART_RX_DMA, FB0_UART_RX_DMA_TCIF);
+   DMA_Cmd(FB0_UART_RX_DMA, ENABLE);
 }
 
 RT(
@@ -120,11 +123,11 @@ RT(
       txbuf[0] = 0xff;//broadcast
       txbuf[1] = 0x53;//reset
       txbuf[2] = txbuf[0] ^ txbuf[1];//xor checksum
-      GPIO_SetBits(GPIOB, GPIO_Pin_12);//tx enable
+      GPIO_SetBits(FB0_Z_TXEN_PORT, FB0_Z_TXEN_PIN);//tx enable
       SLEEP(0.001);
       start_tx(3);
       SLEEP(0.004);
-      GPIO_ResetBits(GPIOB, GPIO_Pin_12);//tx disable
+      GPIO_ResetBits(FB0_Z_TXEN_PORT, FB0_Z_TXEN_PIN);//tx disable
       SLEEP(0.1);
       GOTO(1);
    }
@@ -132,14 +135,14 @@ RT(
       txbuf[0] = 0xff;//broadcast
       txbuf[1] = 0x50;//get state
       txbuf[2] = txbuf[0] ^ txbuf[1];//xor checksum
-      GPIO_SetBits(GPIOB, GPIO_Pin_12);//tx enable
+      GPIO_SetBits(FB0_Z_TXEN_PORT, FB0_Z_TXEN_PIN);//tx enable
       SLEEP(0.001);
       start_tx(3);
       start_rx();
       SLEEP(0.004);
-      GPIO_ResetBits(GPIOB, GPIO_Pin_12);//tx disable
+      GPIO_ResetBits(FB0_Z_TXEN_PORT, FB0_Z_TXEN_PIN);//tx disable
       SLEEP(0.2);
-      available = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA1_Stream1);
+      available = sizeof(rxbuf) - DMA_GetCurrDataCounter(FB0_UART_RX_DMA);
       if(available == 4 && rxbuf[3] == (rxbuf[0] ^ rxbuf[1] ^ rxbuf[2])){//size and checksum ok
          if(rxbuf[2] == 0){
             PIN(status) = 0;
@@ -157,14 +160,14 @@ RT(
       txbuf[0] = 0xff;//broadcast
       txbuf[1] = 0x42;//read position
       txbuf[2] = txbuf[0] ^ txbuf[1];//xor checksum
-      GPIO_SetBits(GPIOB, GPIO_Pin_12);//tx enable
+      GPIO_SetBits(FB0_Z_TXEN_PORT, FB0_Z_TXEN_PIN);//tx enable
       SLEEP(0.001);
       start_tx(3);
       start_rx();
       SLEEP(0.004);
-      GPIO_ResetBits(GPIOB, GPIO_Pin_12);//tx disable
+      GPIO_ResetBits(FB0_Z_TXEN_PORT, FB0_Z_TXEN_PIN);//tx disable
       SLEEP(0.02);
-      available = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA1_Stream1);
+      available = sizeof(rxbuf) - DMA_GetCurrDataCounter(FB0_UART_RX_DMA);
       if(available == 7 && rxbuf[1] == 0x42 && rxbuf[6] == (rxbuf[0] ^ rxbuf[1] ^ rxbuf[2] ^ rxbuf[3] ^ rxbuf[4] ^ rxbuf[5])){
          pos = (rxbuf[2] << 24) + (rxbuf[3] << 16) + (rxbuf[4] << 8) + rxbuf[5];
          pos = pos % (128 * 32);
