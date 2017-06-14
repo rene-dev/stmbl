@@ -144,6 +144,11 @@ RT(
    float p = (int)MAX(PIN(polecount), 1.0);
    float pos = mod(PIN(pos) * p);
    float vel = PIN(vel) * p;
+   float rev = 1.0;
+   
+   if(PIN(rev) > 0.0){//TODO: rev DC
+      rev = -1.0;
+   }
    
    config.pins.mode = PIN(mode);
    config.pins.r = PIN(r);
@@ -160,7 +165,7 @@ RT(
       if(unbuff_packet((packet_header_t*)&packet_from_hv, sizeof(from_hv_t))){
          packet_from_hv.head.start = 0;
          PIN(d_fb) = packet_from_hv.data.d_fb;
-         PIN(q_fb) = packet_from_hv.data.q_fb;
+         PIN(q_fb) = packet_from_hv.data.q_fb * rev;
          PIN(dc_volt) = packet_from_hv.data.dc_volt;
          PIN(pwm_volt) = packet_from_hv.data.pwm_volt;
       
@@ -187,11 +192,7 @@ RT(
    }
 
    float d_cmd = PIN(d_cmd);
-   float q_cmd = PIN(q_cmd);
-
-   if(PIN(rev) > 0.0){//TODO: rev DC
-      q_cmd *= -1.0;
-   }
+   float q_cmd = PIN(q_cmd) * rev;
   
   if(e > 0.0){
     packet_to_hv.data.d_cmd = d_cmd;
