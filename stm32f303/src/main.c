@@ -46,18 +46,19 @@
 #include "adc.h"
 #include "opamp.h"
 #include "tim.h"
-#include "usb_device.h"
+//#include "usb_device.h"
 
 /* USER CODE BEGIN Includes */
 #include <math.h>
 #include "defines.h"
 #include "hal.h"
 #include "angle.h"
-#include "usbd_cdc_if.h"
+//#include "usbd_cdc_if.h"
 #include "version.h"
 #include "common.h"
 #include "commands.h"
 #include "f3hw.h"
+#include "uart_cdc.h"
 
 uint32_t systick_freq;
 CRC_HandleTypeDef hcrc;
@@ -136,227 +137,211 @@ COMMAND("reset", reset);
 
 int main(void)
 {
-
-  /* USER CODE BEGIN 1 */
-  SCB->VTOR = 0x8004000;
-  /* USER CODE END 1 */
-
-  /* MCU Configuration----------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* Configure the system clock */
-  SystemClock_Config();
-  systick_freq = HAL_RCC_GetHCLKFreq();
-  /* Initialize all configured peripherals */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOF_CLK_ENABLE();
   
-  GPIO_InitTypeDef GPIO_InitStruct;
+    /* USER CODE BEGIN 1 */
+    SCB->VTOR = 0x8004000;
+    /* USER CODE END 1 */
 
-  #ifdef USB_DISCONNECT_PIN
-    GPIO_InitTypeDef USB_DISCONNECT_PIN;
+    /* MCU Configuration----------------------------------------------------------*/
+
+    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+    HAL_Init();
+
+    /* Configure the system clock */
+    SystemClock_Config();
+    systick_freq = HAL_RCC_GetHCLKFreq();
+    /* Initialize all configured peripherals */
+    __HAL_RCC_GPIOF_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+
+    GPIO_InitTypeDef GPIO_InitStruct;
     GPIO_InitStruct.Pin = GPIO_PIN_13;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(USB_DISCONNECT_PORT, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(USB_DISCONNECT_PORT, USB_DISCONNECT_PIN, GPIO_PIN_RESET);
-  #endif
-  
-  MX_TIM8_Init();
-  MX_ADC1_Init();
-  MX_ADC2_Init();
-  MX_ADC3_Init();
-  MX_ADC4_Init();
-  // MX_DAC_Init();
-  MX_OPAMP1_Init();
-  MX_OPAMP2_Init();
-  MX_OPAMP3_Init();
-  // MX_USART1_UART_Init();
-  MX_USB_DEVICE_Init();
-  
-#ifdef USB_CONNECT_PIN
-  GPIO_InitStruct.Pin = USB_CONNECT_PIN;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(USB_CONNECT_PORT, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(USB_CONNECT_PORT, USB_CONNECT_PIN, GPIO_PIN_SET);
-#endif
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  __HAL_RCC_DMA1_CLK_ENABLE();
-  __HAL_RCC_DMA2_CLK_ENABLE();
-  __HAL_RCC_RTC_ENABLE();
+    MX_TIM8_Init();
+    MX_ADC1_Init();
+    MX_ADC2_Init();
+    MX_ADC3_Init();
+    MX_ADC4_Init();
+    // MX_DAC_Init();
+    MX_OPAMP1_Init();
+    MX_OPAMP2_Init();
+    MX_OPAMP3_Init();
+    // MX_USART1_UART_Init();
+    //MX_USB_DEVICE_Init();
+    cdc_init();
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
+    __HAL_RCC_DMA1_CLK_ENABLE();
+    __HAL_RCC_DMA2_CLK_ENABLE();
+    __HAL_RCC_RTC_ENABLE();
 
-  /* USER CODE BEGIN 2 */
-  HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
+    /* USER CODE BEGIN 2 */
+    HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+    HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+    HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+    HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
 
-  HAL_OPAMP_SelfCalibrate(&hopamp1);
-  HAL_OPAMP_SelfCalibrate(&hopamp2);
-  HAL_OPAMP_SelfCalibrate(&hopamp3);
-  
-  hcrc.Instance = CRC;
-  hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
-  hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
-  hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
-  hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
-  hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_WORDS;
-  
-  __HAL_RCC_CRC_CLK_ENABLE();
-  
-  if (HAL_CRC_Init(&hcrc) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  
-  //IO pins
-  GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    HAL_OPAMP_SelfCalibrate(&hopamp1);
+    HAL_OPAMP_SelfCalibrate(&hopamp2);
+    HAL_OPAMP_SelfCalibrate(&hopamp3);
 
-     if (HAL_OPAMP_Start(&hopamp1) != HAL_OK){
-       Error_Handler();
-     }
-     if (HAL_OPAMP_Start(&hopamp2) != HAL_OK){
-       Error_Handler();
-     }
-     if (HAL_OPAMP_Start(&hopamp3) != HAL_OK){
-       Error_Handler();
-     }
+    //USB EN IO board: PB15
+    // GPIO_InitStruct.Pin = GPIO_PIN_15;
+    // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    // GPIO_InitStruct.Pull = GPIO_NOPULL;
+    // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    // HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
 
-  htim8.Instance->CCR1 = 0;
-  htim8.Instance->CCR2 = 0;
-  htim8.Instance->CCR3 = 0;
-  
-  HAL_ADC_Start(&hadc1);
-  HAL_ADC_Start(&hadc2);
-  HAL_ADC_Start(&hadc3);
-  HAL_ADC_Start(&hadc4);
-  if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
- 	Error_Handler();
-  }
-  TIM8->RCR = 1;//uptate event foo
-  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
-	Error_Handler();
-  }
-  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
+    //IO pins
+    GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+       if (HAL_OPAMP_Start(&hopamp1) != HAL_OK){
+         Error_Handler();
+       }
+       if (HAL_OPAMP_Start(&hopamp2) != HAL_OK){
+         Error_Handler();
+       }
+       if (HAL_OPAMP_Start(&hopamp3) != HAL_OK){
+         Error_Handler();
+       }
+
+    htim8.Instance->CCR1 = 0;
+    htim8.Instance->CCR2 = 0;
+    htim8.Instance->CCR3 = 0;
+
+    HAL_ADC_Start(&hadc1);
+    HAL_ADC_Start(&hadc2);
+    HAL_ADC_Start(&hadc3);
+    HAL_ADC_Start(&hadc4);
+    if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
+   	Error_Handler();
+    }
+    TIM8->RCR = 1;//uptate event foo
+    if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
   	Error_Handler();
-  }
-  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
+    }
+    if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
+    	Error_Handler();
+    }
+    if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
+    	Error_Handler();
+    }
+    if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
   	Error_Handler();
-  }
-  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
-	Error_Handler();
-  }
-  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
-  	Error_Handler();
-  }
-  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
-  	Error_Handler();
-  }
+    }
+    if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
+    	Error_Handler();
+    }
+    if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
+    	Error_Handler();
+    }
 
-  hal_init(1.0 / 15000.0, 0.0);
-  // hal load comps
-  load_comp(comp_by_name("term"));
-  // load_comp(comp_by_name("sim"));
-  load_comp(comp_by_name("io"));
-  load_comp(comp_by_name("ls"));
-  load_comp(comp_by_name("dq"));
-  load_comp(comp_by_name("idq"));
-  load_comp(comp_by_name("svm"));
-  load_comp(comp_by_name("hv"));
-  load_comp(comp_by_name("curpid"));
-  
-  hal_parse("term0.rt_prio = 0.1");
-  hal_parse("ls0.rt_prio = 0.6");
-  hal_parse("io0.rt_prio = 1.0");
-  hal_parse("dq0.rt_prio = 2.0");
-  hal_parse("curpid0.rt_prio = 3.0");
-  hal_parse("idq0.rt_prio = 4.0");
-  hal_parse("svm0.rt_prio = 5.0");
-  hal_parse("hv0.rt_prio = 6.0");
-  
-  hal_parse("term0.send_step = 100.0");
-  hal_parse("term0.gain0 = 10.0");
-  hal_parse("term0.gain1 = 10.0");
-  hal_parse("term0.gain2 = 10.0");
-  hal_parse("term0.gain3 = 10.0");
-  hal_parse("term0.gain4 = 1.0");
-  hal_parse("term0.gain5 = 10.0");
-  hal_parse("term0.gain6 = 10.0");
-  hal_parse("term0.gain7 = 10.0");
-  hal_parse("curpid0.max_cur = 25.0");
+    hal_init(1.0 / 15000.0, 0.0);
+    // hal load comps
+    load_comp(comp_by_name("term"));
+    load_comp(comp_by_name("sim"));
+    load_comp(comp_by_name("io"));
+    load_comp(comp_by_name("vel"));
+    load_comp(comp_by_name("vel"));
+    load_comp(comp_by_name("ypid"));
+    // load_comp(comp_by_name("ls"));
+    // load_comp(comp_by_name("dq"));
+    // load_comp(comp_by_name("idq"));
+    // load_comp(comp_by_name("svm"));
+    // load_comp(comp_by_name("hv"));
+    load_comp(comp_by_name("hvdc"));
+    // load_comp(comp_by_name("dc"));
+    load_comp(comp_by_name("enc"));
+    // load_comp(comp_by_name("curpid"));
+    // hal parse config
+    hal_init_nrt();
 
-  //link LS
-  hal_parse("ls0.mot_temp = io0.mot_temp");
-  hal_parse("ls0.dc_volt = io0.udc");
-  hal_parse("ls0.hv_temp = io0.hv_temp");
-  hal_parse("curpid0.id_cmd = ls0.d_cmd");
-  hal_parse("curpid0.iq_cmd = ls0.q_cmd");
-  hal_parse("idq0.pos = ls0.pos");
-  hal_parse("dq0.pos = ls0.pos");
-  hal_parse("hv0.en = ls0.en");
-  
-  //ADC TEST
-  hal_parse("term0.wave3 = io0.udc");
-  hal_parse("hv0.udc = io0.udc");
-  hal_parse("dq0.u = io0.iu");
-  hal_parse("dq0.v = io0.iv");
-  hal_parse("dq0.w = io0.iw");
-  
-  // hal_parse("sim0.vel", "idq0.pos");
-  // hal_parse("sim0.vel", "dq0.pos");
-  
-  hal_parse("svm0.u = idq0.u");
-  hal_parse("svm0.v = idq0.v");
-  hal_parse("svm0.w = idq0.w");
-  hal_parse("hv0.u = svm0.su");
-  
-  hal_parse("hv0.v = svm0.sv");
-  hal_parse("hv0.w = svm0.sw");
-  hal_parse("svm0.udc = io0.udc");
-  hal_parse("hv0.hv_temp = io0.hv_temp");
-  hal_parse("curpid0.id_fb = dq0.d");
-  hal_parse("curpid0.iq_fb = dq0.q");
-  hal_parse("ls0.d_fb = dq0.d");
-  hal_parse("ls0.q_fb = dq0.q");
-  hal_parse("ls0.u_fb = io0.u");
-  hal_parse("ls0.v_fb = io0.v");
-  hal_parse("ls0.w_fb = io0.w");
-  hal_parse("idq0.d = curpid0.ud");
-  hal_parse("idq0.q = curpid0.uq");
-  hal_parse("term0.wave0 = curpid0.id_cmd");
-  hal_parse("term0.wave1 = curpid0.iq_cmd");
-  hal_parse("term0.wave2 = curpid0.id_fb");
-  hal_parse("term0.wave3 = curpid0.iq_fb");
-  hal_parse("io0.led = term0.con");
-  hal_parse("curpid0.rd = ls0.r");
-  hal_parse("curpid0.rq = ls0.r");
-  hal_parse("curpid0.ld = ls0.l");
-  hal_parse("curpid0.lq = ls0.l");
-  hal_parse("curpid0.psi = ls0.psi");
-  hal_parse("curpid0.kp = ls0.cur_p");
-  hal_parse("curpid0.ki = ls0.cur_i");
-  hal_parse("curpid0.ff = ls0.cur_ff");
-  hal_parse("curpid0.kind = ls0.cur_ind");
-  hal_parse("curpid0.max_cur = ls0.max_cur");
-  hal_parse("curpid0.pwm_volt = ls0.pwm_volt");
-  hal_parse("curpid0.vel = ls0.vel");
+    hal_parse("enc0.rt_prio = 0.01");
+    hal_parse("vel0.rt_prio = 0.02");
+    hal_parse("vel1.rt_prio = 0.021");
+    hal_parse("ypid0.rt_prio = 0.03");
+    hal_parse("term0.rt_prio = 0.1");
+    hal_parse("io0.rt_prio = 1.0");
+    // hal_parse("curpid0.rt_prio = 3.0");
+    // hal_parse("dc0.rt_prio = 4.0");
+    // hal_parse("svm0.rt_prio = 5.0");
+    // hal_parse("hv0.rt_prio = 6.0");
+    hal_parse("hvdc0.rt_prio = 6.0");
+    hal_parse("sim0.rt_prio = 7.0");
 
-  // hal parse config
-  hal_init_nrt();
-  // error foo
-  hal_start();
-  
+    hal_parse("term0.send_step = 100.0");
+    hal_parse("term0.gain0 = 20.0");
+    hal_parse("term0.gain1 = 20.0");
+    hal_parse("term0.gain2 = 20.0");
+    hal_parse("term0.gain3 = 20.0");
+    hal_parse("term0.gain4 = 20.0");
+    hal_parse("term0.gain5 = 20.0");
+    hal_parse("term0.gain6 = 20.0");
+    hal_parse("term0.gain7 = 20.0");
+
+    // hal_parse("svm0.u = dc0.u");
+    // hal_parse("svm0.v = dc0.v");
+    // hal_parse("svm0.w = dc0.w");
+    // hal_parse("svm0.mode = 2.0");//TODO: BUG, only 2 works
+    // hal_parse("hv0.u = svm0.su");
+    // hal_parse("hv0.v = svm0.sv");
+    // hal_parse("hv0.w = svm0.sw");
+    // hal_parse("svm0.udc = io0.udc");
+    hal_parse("hv0.hv_temp = io0.hv_temp");
+
+    hal_parse("io0.led = term0.con");
+
+    hal_parse("term0.wave0 = vel1.pos_out");
+    hal_parse("term0.wave1 = enc0.pos");
+    hal_parse("term0.wave2 = vel1.vel");
+    hal_parse("term0.wave3 = vel0.vel");
+
+    hal_parse("term0.gain0 = 20.0");
+    hal_parse("term0.gain1 = 20.0");
+    hal_parse("term0.gain2 = 1.0");
+    hal_parse("term0.gain3 = 1.0");
+
+    hal_parse("ypid0.pos_ext_cmd = vel1.pos_out");
+    hal_parse("ypid0.vel_ext_cmd = vel1.vel");
+
+    hal_parse("ypid0.pos_fb = enc0.pos");
+    hal_parse("ypid0.vel_fb = vel0.vel");
+    hal_parse("ypid0.max_vel = 800");
+    hal_parse("ypid0.max_acc = 80000");
+    // hal_parse("net0.fb_d", "ypid0.vel_fb");
+    // hal_parse("fault0.en_pid", "ypid0.enable");
+    hal_parse("ypid0.pos_p = 10");
+    hal_parse("ypid0.vel_p = 1");
+    hal_parse("ypid0.vel_i = 0.005");
+    hal_parse("ypid0.vel_ff = 1");
+    // hal_parse("ypid0.max_vel");
+    // hal_parse("ypid0.max_acc");
+    hal_parse("ypid0.max_out = io0.udc");
+    hal_parse("hvdc0.uq = ypid0.out");
+    hal_parse("hvdc0.udc = io0.udc");
+    // hal_parse("ypid0.saturated", "fault0.sat");
+    // hal_parse("ypid0.pos_error", "fault0.pos_error");
+    // hal_parse("conf0.acc_p", "ypid0.vel_p");//TODO: rename config pins?
+    // hal_parse("conf0.acc_pi", "ypid0.vel_i");//TODO: rename config pins?
+    hal_parse("vel0.w = 2000.0");//TODO: change to velbuf
+    hal_parse("vel0.pos_in = enc0.pos");
+    //TODO: pins here are overwritten by Init
+    //TODO: unlink by setting to value does not work
+
+
+    // error foo
+    hal_start();
+
   while (1)
   {
      hal_run_nrt();

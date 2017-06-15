@@ -153,6 +153,7 @@ void SysTick_Handler(void)
 /**
 * @brief This function handles USB low priority or CAN_RX0 interrupts.
 */
+#ifdef USB_CDC
 void USB_LP_CAN_RX0_IRQHandler(void)
 {
   /* USER CODE BEGIN USB_LP_CAN_RX0_IRQn 0 */
@@ -164,7 +165,7 @@ void USB_LP_CAN_RX0_IRQHandler(void)
 //GPIOA->BSRR |= GPIO_PIN_10 << 16;
   /* USER CODE END USB_LP_CAN_RX0_IRQn 1 */
 }
-
+#endif
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */

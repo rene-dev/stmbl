@@ -1,4 +1,5 @@
 //stmbl
+/*
 #define AREF 3.338// analog reference voltage
 
 #define VDIVUP 249000.0 * 2.0//HV div pullup R1,R12
@@ -15,8 +16,8 @@
 //io board
 //#define USB_CONNECT_PIN GPIO_PIN_15
 //#define USB_CONNECT_PORT GPIOB
+*/
 
-/*
 //otter
 #define AREF 3.3// analog reference voltage
 
@@ -35,4 +36,4 @@
 #define USB_DISCONNECT_PORT GPIOC
 
 #define PWM_DEADTIME 50
-*/
+

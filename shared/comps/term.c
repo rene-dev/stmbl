@@ -3,7 +3,8 @@
 #include "defines.h"
 #include <stdio.h>
 #include <string.h>
-#include "usbd_cdc_if.h"
+//#include "usbd_cdc_if.h"
+#include "uart_cdc.h"
 
 #define TERM_NUM_WAVES 8
 #define TERM_BUF_SIZE 8
