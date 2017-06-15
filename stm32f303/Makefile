@@ -21,6 +21,10 @@ SOURCES += stm32f303/src/opamp.c
 SOURCES += stm32f303/src/stm32f3xx_hal_msp.c
 SOURCES += stm32f303/src/tim.c
 SOURCES += stm32f303/src/stm32f3xx_it.c
+SOURCES += stm32f303/src/usb_device.c
+SOURCES += stm32f303/src/usbd_cdc_if.c
+SOURCES += stm32f303/src/usbd_conf.c
+SOURCES += stm32f303/src/usbd_desc.c
 SOURCES += stm32f303/src/version.c
 
 SOURCES += stm32f303/src/hal_tbl.c
@@ -52,26 +56,18 @@ SOURCES += shared/hal.c
 SOURCES += shared/commands.c
 #SOURCES += shared/hal_term.c
 
-SOURCES += stm32f303/src/uart_cdc.c
-
-#usb stuff
-#SOURCES += stm32f303/src/usb_device.c
-#SOURCES += stm32f303/src/usbd_cdc_if.c
-#SOURCES += stm32f303/src/usbd_conf.c
-#SOURCES += stm32f303/src/usbd_desc.c
-
 #USB Driver
-#USB_DEVICE_DIR = lib/STM32_USB_Device_Library-2.4.2
+USB_DEVICE_DIR = lib/STM32_USB_Device_Library-2.4.2
 
 #USB class
-#INCDIRS += $(USB_DEVICE_DIR)/Class/CDC/Inc/
-#SOURCES += $(USB_DEVICE_DIR)/Class/CDC/Src/usbd_cdc.c
+INCDIRS += $(USB_DEVICE_DIR)/Class/CDC/Inc/
+SOURCES += $(USB_DEVICE_DIR)/Class/CDC/Src/usbd_cdc.c
 
 #USB core
-#INCDIRS += $(USB_DEVICE_DIR)/Core/Inc/
-#SOURCES += $(USB_DEVICE_DIR)/Core/Src/usbd_core.c
-#SOURCES += $(USB_DEVICE_DIR)/Core/Src/usbd_ctlreq.c
-#SOURCES += $(USB_DEVICE_DIR)/Core/Src/usbd_ioreq.c
+INCDIRS += $(USB_DEVICE_DIR)/Core/Inc/
+SOURCES += $(USB_DEVICE_DIR)/Core/Src/usbd_core.c
+SOURCES += $(USB_DEVICE_DIR)/Core/Src/usbd_ctlreq.c
+SOURCES += $(USB_DEVICE_DIR)/Core/Src/usbd_ioreq.c
 
 #CMSIS
 CPPFLAGS += -DSTM32F303xC
