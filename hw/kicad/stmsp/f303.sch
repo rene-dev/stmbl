@@ -367,9 +367,9 @@ F 3 "" H 12250 2400 30  0000 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	12150 2750 12350 2750
+	11550 2750 12350 2750
 Wire Wire Line
-	12150 2650 12350 2650
+	11300 2650 12350 2650
 Wire Wire Line
 	12250 2550 12250 2750
 Connection ~ 12250 2750
@@ -710,7 +710,7 @@ U 1 1 5925B771
 P 11300 3400
 F 0 "T3" H 11300 3500 60  0000 C CNN
 F 1 "testpoint" H 11300 3300 60  0000 C CNN
-F 2 "" H 11300 3400 60  0001 C CNN
+F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 11300 3400 60  0001 C CNN
 F 3 "" H 11300 3400 60  0000 C CNN
 	1    11300 3400
 	1    0    0    -1  
@@ -721,7 +721,7 @@ Text HLabel 9100 3100 0    60   Input ~ 0
 SCK
 Text HLabel 9100 3600 0    60   Input ~ 0
 ENTX
-Text HLabel 9100 3300 0    60   Input ~ 0
+Text HLabel 8550 3300 0    60   Input ~ 0
 MOSI
 Text HLabel 9100 3400 0    60   Input ~ 0
 TX
@@ -745,7 +745,7 @@ U 1 1 5925CEA4
 P 8300 4000
 F 0 "T2" H 8300 4100 60  0000 C CNN
 F 1 "testpoint" H 8300 3900 60  0000 C CNN
-F 2 "" H 8300 4000 60  0001 C CNN
+F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 8300 4000 60  0001 C CNN
 F 3 "" H 8300 4000 60  0000 C CNN
 	1    8300 4000
 	-1   0    0    1   
@@ -758,7 +758,7 @@ U 1 1 5925D4E4
 P 8300 2900
 F 0 "T1" H 8300 3000 60  0000 C CNN
 F 1 "testpoint" H 8300 2800 60  0000 C CNN
-F 2 "" H 8300 2900 60  0001 C CNN
+F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 8300 2900 60  0001 C CNN
 F 3 "" H 8300 2900 60  0000 C CNN
 	1    8300 2900
 	-1   0    0    1   
@@ -782,7 +782,7 @@ Wire Wire Line
 Wire Wire Line
 	9100 3200 9200 3200
 Wire Wire Line
-	9100 3300 9200 3300
+	9000 3300 9200 3300
 Wire Wire Line
 	9100 3400 9200 3400
 Wire Wire Line
@@ -980,4 +980,41 @@ F 3 "" H 9400 1100 50  0000 C CNN
 	1    9400 1100
 	1    0    0    -1  
 $EndComp
+$Comp
+L R R43
+U 1 1 59489CB0
+P 8850 3300
+F 0 "R43" V 8930 3300 50  0000 C CNN
+F 1 "470" V 8850 3300 50  0000 C CNN
+F 2 "stmbl:R_0603" V 8780 3300 30  0001 C CNN
+F 3 "" H 8850 3300 30  0000 C CNN
+	1    8850 3300
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	8700 3300 8550 3300
+$Comp
+L testpoint T5
+U 1 1 5948A81F
+P 11350 2750
+F 0 "T5" H 11350 2850 60  0000 C CNN
+F 1 "testpoint" H 11350 2650 60  0000 C CNN
+F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 11350 2750 60  0001 C CNN
+F 3 "" H 11350 2750 60  0000 C CNN
+	1    11350 2750
+	-1   0    0    1   
+$EndComp
+$Comp
+L testpoint T4
+U 1 1 5948A8B7
+P 11100 2650
+F 0 "T4" H 11100 2750 60  0000 C CNN
+F 1 "testpoint" H 11100 2550 60  0000 C CNN
+F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 11100 2650 60  0001 C CNN
+F 3 "" H 11100 2650 60  0000 C CNN
+	1    11100 2650
+	-1   0    0    1   
+$EndComp
+Connection ~ 12150 2650
+Connection ~ 12150 2750
 $EndSCHEMATC
