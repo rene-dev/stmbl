@@ -409,4 +409,6 @@ F 3 "" H 6600 5000 50  0000 C CNN
 	1    6600 5000
 	1    0    0    -1  
 $EndComp
+Text Notes 8300 3200 0    60   ~ 0
+0.816V * (51k + 10k) / 10k = 4.9776V
 $EndSCHEMATC
