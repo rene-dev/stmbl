@@ -29,23 +29,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-//#include "usbd_cdc.h"
 #include "main.h"
 #include "commands.h"
-
-//hal interface TODO: move hal interface to file
-// void hal_enable_rt(){
-//    TIM_Cmd(TIM_MASTER, ENABLE);
-// }
-// void hal_enable_frt(){
-//    TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, ENABLE);
-// }
-// void hal_disable_rt(){
-//    TIM_Cmd(TIM_MASTER, DISABLE);
-// }
-// void hal_disable_frt(){
-//    TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, DISABLE);
-// }
 
 uint32_t hal_get_systick_value(){
    return(SysTick->VAL);
@@ -89,58 +74,6 @@ void DMA2_Stream0_IRQHandler(void){
    GPIOD->BSRRH |= GPIO_Pin_1;
 }
 
-char config[15*1024];
-const char* config_ro = (char*)0x08008000;
-
-void flashloadconf(char * ptr){
-   strncpy(config,config_ro,sizeof(config));
-}
-COMMAND("flashloadconf", flashloadconf);
-
-void flashsaveconf(char * ptr){
-   printf("erasing flash page...\n");
-   if(FLASH_EraseSector(FLASH_Sector_2,VoltageRange_3) != FLASH_COMPLETE){
-      printf("error!\n");
-      return;
-   }
-   printf("saving conf\n");
-   int i = 0;
-   do{
-      if(FLASH_ProgramByte((uint32_t)(config_ro + i), config[i]) != FLASH_COMPLETE){
-         printf("error writing %i\n",i);
-         break;
-      }
-   }while(config[i++] != 0);
-   printf("OK %i bytes written\n",i);
-}
-COMMAND("flashsaveconf", flashsaveconf);
-
-void loadconf(char * ptr){
-   //TODO: call hal_parse for each line
-   //hal_parse(config);
-}
-COMMAND("loadconf", loadconf);
-
-void showconf(char * ptr){
-   printf("** ram **\n");
-   printf("%s",config);
-   printf("** flash **\n");
-   printf("%s",config_ro);
-}
-COMMAND("showconf", showconf);
-
-void appendconf(char * ptr){
-   printf("adding %s\n",ptr);
-   strncat(config,ptr,sizeof(config) - 1);
-   strncat(config,"\n",sizeof(config) - 1);
-}
-COMMAND("appendconf", appendconf);
-
-void deleteconf(char * ptr){
-   config[0] = '\0';
-}
-COMMAND("deleteconf", deleteconf);
-
 void bootloader(char * ptr){
   *((unsigned long *)0x2001C000) = 0xDEADBEEF;//set bootloader trigger
   NVIC_SystemReset();
@@ -159,11 +92,6 @@ int main(void)
    extern void *g_pfnVectors;
    SCB->VTOR = (uint32_t)&g_pfnVectors;
 
-   // float period = 0.0;
-   // int last_start = 0;
-   // int start = 0;
-   // int end = 0;
-
    setup();
    hal_init(0.0002, 0.00005);
    // hal load comps
@@ -174,12 +102,12 @@ int main(void)
    load_comp(comp_by_name("hv"));
    load_comp(comp_by_name("hal_test"));
    hal_parse("term0.rt_prio = 1");
-   hal_parse("encm0.rt_prio = 1");  
+   hal_parse("encm0.rt_prio = 1");
    hal_parse("sim0.rt_prio = 2");
-   hal_parse("io0.rt_prio = 10");  
-   hal_parse("hv0.rt_prio = 6");  
-   hal_parse("hal_test0.rt_prio = 9");  
-   hal_parse("hal_test0.frt_prio = 9");  
+   hal_parse("io0.rt_prio = 10");
+   hal_parse("hv0.rt_prio = 6");
+   hal_parse("hal_test0.rt_prio = 9");
+   hal_parse("hal_test0.frt_prio = 9");
    // hal parse config
    hal_init_nrt();
    // error foo
@@ -187,156 +115,7 @@ int main(void)
    
    TIM_Cmd(TIM_MASTER, ENABLE);
    TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, ENABLE);
-   
-   /*
-   hal_init();
 
-   hal_set_comp_type("foo"); // default pin for mem errors
-   HAL_PIN(bar) = 0.0;
-
-   //feedback comps
-   #include "comps/adc.comp"
-   #include "comps/res.comp" //TODO: backport to v3... timer needs fixing
-   #include "comps/enc_fb.comp"
-   #include "comps/encm.comp" //TODO: backport to v3
-   //#include "comps/encs.comp" //TODO: not working in v4
-   //#include "comps/yaskawa.comp" //TODO: not working in v4
-   // #include "comps/hyper.comp" //TODO: not working in v4
-
-   //command comps
-   #include "comps/sserial.comp" //TODO: backport to v3
-   #include "comps/sim.comp"
-   // #include "comps/enc_cmd.comp" //TODO: not working in v4
-   // #include "comps/en.comp" //TODO: not working in v4
-
-   //PID
-   #include "comps/stp.comp"
-   #include "comps/rev.comp"
-   #include "comps/rev.comp"
-   #include "comps/vel.comp"
-   #include "comps/vel.comp"
-   #include "comps/pderiv.comp"
-   #include "comps/pderiv.comp"
-   #include "comps/vel_int.comp"
-   #include "comps/cauto.comp"
-   #include "comps/ypid.comp"
-   #include "comps/pid.comp"
-   #include "comps/pmsm_t2c.comp"
-   //#include "comps/curpid.comp"
-   //#include "comps/pmsm.comp"
-   #include "comps/pmsm_limits.comp"
-   //#include "comps/idq.comp"
-   //#include "comps/dq.comp"
-   #include "comps/hv.comp"
-
-   //other comps
-   #include "comps/fault.comp"
-   #include "comps/term.comp"
-   #include "comps/uf.comp"
-   #include "comps/freq_fb.comp"
-   #include "comps/psi.comp"
-   #include "comps/var.comp"
-   #include "comps/i2t.comp"
-   #include "comps/reslimit.comp"
-
-#ifdef V3
-   #include "comps/hw/io3.comp"
-#elif defined V4
-   #include "comps/hw/io4.comp"
-#endif   
-
-
-   hal_set_comp_type("net");
-   HAL_PIN(enable) = 0.0;
-   HAL_PIN(cmd) = 0.0;
-   HAL_PIN(fb) = 0.0;
-   HAL_PIN(fb_error) = 0.0;
-   HAL_PIN(cmd_d) = 0.0;
-   HAL_PIN(fb_d) = 0.0;
-   HAL_PIN(motor_temp) = 0.0;
-   HAL_PIN(rt_calc_time) = 0.0;
-   HAL_PIN(frt_calc_time) = 0.0;
-   HAL_PIN(nrt_calc_time) = 0.0;
-   HAL_PIN(rt_period) = 0.0;
-   HAL_PIN(frt_period) = 0.0;
-   HAL_PIN(nrt_period) = 0.0;
-
-   hal_set_comp_type("conf");
-   HAL_PIN(r) = 1.0;
-   HAL_PIN(l) = 0.01;
-   HAL_PIN(j) = KGCM2(0.26);
-   HAL_PIN(psi) = 0.05;
-   HAL_PIN(polecount) = 4.0;
-   HAL_PIN(mot_type) = 0.0;//ac sync,async/dc,2phase
-   HAL_PIN(out_rev) = 0.0;
-   HAL_PIN(high_motor_temp) = 80.0;
-   HAL_PIN(max_motor_temp) = 130.0;
-   HAL_PIN(phase_time) = 0.5;
-   HAL_PIN(phase_cur) = 1.0;
-
-   HAL_PIN(max_vel) = RPM(1000.0);
-   HAL_PIN(max_acc) = RPM(1000.0)/0.01;
-   HAL_PIN(max_force) = 1.0;
-   HAL_PIN(max_dc_cur) = 1.0;
-   HAL_PIN(max_ac_cur) = 2.0;
-
-   HAL_PIN(fb_type) = RES;
-   HAL_PIN(fb_polecount) = 1.0;
-   HAL_PIN(fb_offset) = 0.0;
-   HAL_PIN(fb_rev) = 0.0;
-   HAL_PIN(fb_res) = 1000.0;
-   HAL_PIN(autophase) = 1.0;//constant,cauto,hfi
-
-   HAL_PIN(cmd_type) = ENC;
-   HAL_PIN(cmd_unit) = 0.0;//pos,vel,torque
-   HAL_PIN(cmd_rev) = 0.0;
-   HAL_PIN(cmd_res) = 2000.0;
-   HAL_PIN(en_condition) = 0.0;//enable condition
-   HAL_PIN(error_out) = 0.0;
-   HAL_PIN(pos_static) = 0.0;//track pos in disabled and error condition TODO: not implemented
-
-   HAL_PIN(sin_offset) = 0.0;
-   HAL_PIN(cos_offset) = 0.0;
-   HAL_PIN(sin_gain) = 1.0;
-   HAL_PIN(cos_gain) = 1.0;
-   HAL_PIN(max_dc_volt) = 370.0;
-   HAL_PIN(max_hv_temp) = 90.0;
-   HAL_PIN(max_core_temp) = 55.0;
-   HAL_PIN(max_pos_error) = M_PI / 2.0;
-   HAL_PIN(high_dc_volt) = 350.0;
-   HAL_PIN(low_dc_volt) = 12.0;
-   HAL_PIN(high_hv_temp) = 70.0;
-   HAL_PIN(fan_hv_temp) = 60.0;
-   HAL_PIN(fan_core_temp) = 450.0;
-   HAL_PIN(fan_motor_temp) = 60.0;
-
-   HAL_PIN(g) = 0.99;
-   HAL_PIN(pos_p) = 100.0;
-   HAL_PIN(vel_p) = 2000.0;
-   HAL_PIN(vel_i) = 10.0;
-   HAL_PIN(vel_g) = 1.0;
-   HAL_PIN(cur_p) = 0.0;
-   HAL_PIN(cur_i) = 0.0;
-   HAL_PIN(cur_ff) = 1.0;
-   HAL_PIN(cur_ind) = 0.0;
-   HAL_PIN(max_sat) = 0.2;
-
-   rt_time_hal_pin = hal_map_pin("net0.rt_calc_time");
-   frt_time_hal_pin = hal_map_pin("net0.frt_calc_time");
-   rt_period_time_hal_pin = hal_map_pin("net0.rt_period");
-   frt_period_time_hal_pin = hal_map_pin("net0.frt_period");
-   
-   link_pid();
-   hal_set_pin("io0.rt_prio", 20.0);
-   hal_comp_init();//call init function of all comps
-
-   if(hal.pin_errors + hal.comp_errors == 0){
-      hal_start();
-   }
-   else{
-      hal.hal_state = MEM_ERROR;
-   }
-*/
    while(1)//run non realtime stuff
    {
       hal_run_nrt();
