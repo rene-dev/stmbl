@@ -48,6 +48,7 @@ SOURCES += shared/comps/pmsm_limits.c
 SOURCES += shared/comps/pmsm_t2c.c
 SOURCES += shared/comps/uvw.c
 SOURCES += shared/comps/fanuc.c
+SOURCES += shared/comps/fb_switch.c
 
 SOURCES += src/eeprom.c
 # SOURCES += src/link.c
