@@ -1,27 +1,45 @@
+#include "commands.h"
+#include "hal.h"
+#include "math.h"
+#include "defines.h"
+#include "angle.h"
+#include "stm32f4xx_conf.h"
+#include "hw/hw.h"
+
 HAL_COMP(enc_fb);
 
-HAL_PIN(res) = 2048.0;
-HAL_PIN(ires) = 1024.0;
-HAL_PIN(pos) = 0.0;
-HAL_PIN(abspos) = 0.0;
-HAL_PIN(isabs) = 0.0;
-HAL_PIN(index) = 0.0;//TODO:
-HAL_PIN(a) = 0.0;
-HAL_PIN(b) = 0.0;
-HAL_PIN(ipos) = 0.0;
-HAL_PIN(sin) = 0.0;
-HAL_PIN(cos) = 0.0;
-HAL_PIN(quad) = 0.0;
-HAL_PIN(oquad) = 0.0;
-HAL_PIN(oquadoff) = 0.0;
-HAL_PIN(qdiff) = 0.0;
-HAL_PIN(error) = 0.0;
-HAL_PIN(amp) = 0.0;
+HAL_PIN(res);
+HAL_PIN(ires);
+HAL_PIN(pos);
+HAL_PIN(abspos);
+HAL_PIN(isabs);
+HAL_PIN(index);//TODO:
+HAL_PIN(a);
+HAL_PIN(b);
+HAL_PIN(ipos);
+HAL_PIN(sin);
+HAL_PIN(cos);
+HAL_PIN(quad);
+HAL_PIN(oquad);
+HAL_PIN(oquadoff);
+HAL_PIN(qdiff);
+HAL_PIN(error);
+HAL_PIN(amp);
 
-MEM(int e_res) = 0.0;
-MEM(float absoffset) = 0.0;
 
-RT_INIT(
+struct enc_fb_ctx_t{
+   int e_res;
+   float absoffset;
+};
+
+static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   struct enc_fb_ctx_t * ctx = (struct enc_fb_ctx_t *)ctx_ptr;
+   struct enc_fb_pin_ctx_t * pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
+   ctx->e_res = 0;
+   ctx->absoffset = 0.0;
+   PIN(res) = 2048.0;
+   PIN(ires) = 1024.0;
+   
   GPIO_InitTypeDef GPIO_InitStructure;
   TIM_ICInitTypeDef TIM_ICInitStructure;
   TIM_ICInitStructure.TIM_Channel = TIM_Channel_1 | TIM_Channel_2;
@@ -32,9 +50,9 @@ RT_INIT(
   TIM_ICInit(FB0_ENC_TIM, &TIM_ICInitStructure);
 
   /***************** port 1, quadrature , sin/cos or resolver *********************/
-  e_res = (int)PIN(res);
-  if(e_res < 1){
-       e_res = 1;
+  ctx->e_res = (int)PIN(res);
+  if(ctx->e_res < 1){
+       ctx->e_res = 1;
   }
   // enable clocks
   RCC_APB1PeriphClockCmd(FB0_ENC_TIM_RCC, ENABLE);
@@ -55,29 +73,20 @@ RT_INIT(
   GPIO_PinAFConfig(FB0_B_PORT, FB0_B_PIN_SOURCE, FB0_ENC_TIM_AF);
 
   // enc res / turn
-  TIM_SetAutoreload(FB0_ENC_TIM, e_res - 1);
+  TIM_SetAutoreload(FB0_ENC_TIM, ctx->e_res - 1);
 
   // quad
   TIM_Cmd(FB0_ENC_TIM, DISABLE);
   TIM_EncoderInterfaceConfig(FB0_ENC_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
   TIM_Cmd(FB0_ENC_TIM, ENABLE);
-);
+}
 
-RT_DEINIT(
-   //TODO:
-   // TIM_Cmd(FB0_ENC_TIM, DISABLE);
-   // TIM_DeInit(FB0_ENC_TIM);
-   // RCC_APB2PeriphClockCmd(FB0_ENC_TIM_RCC, DISABLE);
-   // GPIO_InitStructure.GPIO_Pin = ENC1_A_PIN | ENC1_B_PIN;
-   // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-   // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-   // GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-   // GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-   // GPIO_Init(ENC1_A_PORT, &GPIO_InitStructure);
-);
 
-FRT(
-   float p = mod(TIM_GetCounter(FB0_ENC_TIM) * 2.0f * M_PI / (float)e_res);
+static void frt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   struct enc_fb_ctx_t * ctx = (struct enc_fb_ctx_t *)ctx_ptr;
+   struct enc_fb_pin_ctx_t * pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
+   
+   float p = mod(TIM_GetCounter(FB0_ENC_TIM) * 2.0f * M_PI / (float)ctx->e_res);
    PIN(pos) = p;
    //TODO: this gets triggered by wire saving abs encoders. add timeout?
    if(RISING_EDGE(!GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_11)) && PIN(isabs) != 1.0){
@@ -85,10 +94,13 @@ FRT(
       //absoffset = -p;
       //PIN(isabs) = 1.0;
    }
-   PIN(abspos) = mod(p + absoffset);
-);
+   PIN(abspos) = mod(p + ctx->absoffset);
+}
 
-RT(
+static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   struct enc_fb_ctx_t * ctx = (struct enc_fb_ctx_t *)ctx_ptr;
+   struct enc_fb_pin_ctx_t * pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
+   
    //sample timer value and timer pins together, so we can calculate the quadrant of the timer
   int32_t tim = TIM_GetCounter(FB0_ENC_TIM);//TODO: interrupt here?
   uint32_t scgpio = FB0_A_PORT->IDR;
@@ -144,11 +156,11 @@ RT(
      break;
   }
 
-  if(tim >= e_res){
+  if(tim >= ctx->e_res){
      tim = 0;
   }
   else if(tim < 0){
-     tim = e_res - 1;
+     tim = ctx->e_res - 1;
   }
 
   PIN(qdiff) = qdiff;
@@ -158,21 +170,34 @@ RT(
 
   PIN(oquad) = q;
 
-  p = mod(tim * 2.0f * M_PI / (float)e_res);
+  p = mod(tim * 2.0f * M_PI / (float)ctx->e_res);
 
+  //TODO: fix EDGE
   if(a < 0.15 && !EDGE(tim)){
     PIN(error) = 1.0;
   }
   else{
     PIN(error) = 0.0;
-    PIN(ipos) = mod(p + ((int)(ir * mod(atan2f(s, c) * 4.0 + M_PI) / M_PI)) / ir * M_PI / (float)e_res);
+    PIN(ipos) = mod(p + ((int)(ir * mod(atan2f(s, c) * 4.0 + M_PI) / M_PI)) / ir * M_PI / (float)ctx->e_res);
   }
 
-  if(e_res != r){
-    e_res = r;
-    TIM_SetAutoreload(FB0_ENC_TIM, e_res - 1);
+  if(ctx->e_res != r){
+    ctx->e_res = r;
+    TIM_SetAutoreload(FB0_ENC_TIM, ctx->e_res - 1);
   }
   
-);
+}
 
-ENDCOMP;
+hal_comp_t enc_fb_comp_struct = {
+  .name = "enc_fb",
+  .nrt = 0,
+  .rt = rt_func,
+  .frt = frt_func,
+  .nrt_init = nrt_init,
+  .rt_start = 0,
+  .frt_start = 0,
+  .rt_stop = 0,
+  .frt_stop = 0,
+  .ctx_size = sizeof(struct enc_fb_ctx_t),
+  .pin_count = sizeof(struct enc_fb_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+};
