@@ -1,37 +1,56 @@
+#include "commands.h"
+#include "hal.h"
+#include "math.h"
+#include "defines.h"
+#include "angle.h"
+
 HAL_COMP(pmsm_limits);
 
 // motor values
-HAL_PIN(psi) = 0.01;
-HAL_PIN(r) = 1.0;
-HAL_PIN(ld) = 0.001;
-HAL_PIN(lq) = 0.001;
-HAL_PIN(polecount) = 1.0;
+HAL_PIN(psi);
+HAL_PIN(r);
+HAL_PIN(ld);
+HAL_PIN(lq);
+HAL_PIN(polecount);
 
 // sys limit
-HAL_PIN(ac_volt) = 0.0;
+HAL_PIN(ac_volt);
 
 // next min max out -> pid, curpid
-HAL_PIN(next_max_cur) = 0.0;
-HAL_PIN(next_max_torque) = 0.0;
-HAL_PIN(next_min_cur) = 0.0;
-HAL_PIN(next_min_torque) = 0.0;
+HAL_PIN(next_max_cur);
+HAL_PIN(next_max_torque);
+HAL_PIN(next_min_cur);
+HAL_PIN(next_min_torque);
 
 // min max out @ current vel
-HAL_PIN(max_cur) = 0.0;
-HAL_PIN(max_torque) = 0.0;
-HAL_PIN(min_cur) = 0.0;
-HAL_PIN(min_torque) = 0.0;
+HAL_PIN(max_cur);
+HAL_PIN(max_torque);
+HAL_PIN(min_cur);
+HAL_PIN(min_torque);
 
 // abs max out
-HAL_PIN(abs_max_cur) = 0.0;
-HAL_PIN(abs_max_torque) = 0.0;
-HAL_PIN(abs_max_vel) = 0.0;
+HAL_PIN(abs_max_cur);
+HAL_PIN(abs_max_torque);
+HAL_PIN(abs_max_vel);
 
 // pmsm feedback
-HAL_PIN(iq) = 0.0;
-HAL_PIN(indq) = 0.0;
+HAL_PIN(iq);
+HAL_PIN(indq);
 
-RT(
+static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+  // struct pmsm_limits_ctx_t * ctx = (struct pmsm_limits_ctx_t *)ctx_ptr;
+  struct pmsm_limits_pin_ctx_t * pins = (struct pmsm_limits_pin_ctx_t *)pin_ptr;
+  PIN(psi) = 0.01;
+  PIN(r) = 1.0;
+  PIN(ld) = 0.001;
+  PIN(lq) = 0.001;
+  PIN(polecount) = 1.0;
+}
+
+static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   struct pmsm_limits_ctx_t * ctx = (struct pmsm_limits_ctx_t *)ctx_ptr;
+   struct pmsm_limits_pin_ctx_t * pins = (struct pmsm_limits_pin_ctx_t *)pin_ptr;
+
    float p = (int)MAX(PIN(polecount), 1.0);
    //float ld = MAX(PIN(ld), 0.0001);
    float lq = MAX(PIN(lq), 0.0001);
@@ -68,6 +87,18 @@ RT(
    PIN(min_cur) = min_cur;
    PIN(max_torque) = max_torque;
    PIN(min_torque) = min_torque;
-);
+}
 
-ENDCOMP;
+hal_comp_t pmsm_limits_comp_struct = {
+  .name = "pmsm_limits",
+  .nrt = 0,
+  .rt = rt_func,
+  .frt = 0,
+  .nrt_init = nrt_init,
+  .rt_start = 0,
+  .frt_start = 0,
+  .rt_stop = 0,
+  .frt_stop = 0,
+  .ctx_size = 0,
+  .pin_count = sizeof(struct pmsm_limits_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+};

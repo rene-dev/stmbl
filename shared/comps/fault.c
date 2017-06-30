@@ -1,91 +1,124 @@
+#include "commands.h"
+#include "hal.h"
+#include "math.h"
+#include "defines.h"
+#include "angle.h"
+#include "main.h"
+
 HAL_COMP(fault);
 
-HAL_PIN(en) = 0.0;
-HAL_PIN(reset) = 0.0;
-HAL_PIN(state) = 0.0;
-HAL_PIN(fault) = 0.0;
-HAL_PIN(en_out) = 0.0;
-HAL_PIN(en_pid) = 0.0;
+HAL_PIN(en);
+HAL_PIN(reset);
+HAL_PIN(state);
+HAL_PIN(fault);
+HAL_PIN(en_out);
+HAL_PIN(en_pid);
 
-HAL_PIN(phase_start) = 0.0;
-HAL_PIN(phase_ready) = 0.0;
+HAL_PIN(phase_start);
+HAL_PIN(phase_ready);
 
-HAL_PIN(cmd) = 0.0;
-HAL_PIN(fb) = 0.0;
-HAL_PIN(start_offset) = 0.0;
+HAL_PIN(cmd);
+HAL_PIN(fb);
+HAL_PIN(start_offset);
 
-HAL_PIN(cmd_error) = 0.0;
-HAL_PIN(fb0_error) = 0.0;
-HAL_PIN(fb1_error) = 0.0;
-HAL_PIN(hv_error) = 0.0;
+HAL_PIN(cmd_error);
+HAL_PIN(fb0_error);
+HAL_PIN(fb1_error);
+HAL_PIN(hv_error);
 
-HAL_PIN(cmd_ready) = 1.0;
-HAL_PIN(fb0_ready) = 1.0;
-HAL_PIN(fb1_ready) = 1.0;
-HAL_PIN(hv_ready) = 1.0;
+HAL_PIN(cmd_ready);
+HAL_PIN(fb0_ready);
+HAL_PIN(fb1_ready);
+HAL_PIN(hv_ready);
 
-HAL_PIN(hv_temp) = 0.0;
-HAL_PIN(mot_temp) = 0.0;
-HAL_PIN(max_hv_temp) = 90.0;
-HAL_PIN(max_mot_temp) = 100.0;
-HAL_PIN(high_hv_temp) = 70.0;
-HAL_PIN(high_mot_temp) = 80.0;
-HAL_PIN(fan_hv_temp) = 60.0;
-HAL_PIN(fan_mot_temp) = 60.0;
+HAL_PIN(hv_temp);
+HAL_PIN(mot_temp);
+HAL_PIN(max_hv_temp);
+HAL_PIN(max_mot_temp);
+HAL_PIN(high_hv_temp);
+HAL_PIN(high_mot_temp);
+HAL_PIN(fan_hv_temp);
+HAL_PIN(fan_mot_temp);
 
-HAL_PIN(scale) = 1.0;
+HAL_PIN(scale);
 
-HAL_PIN(hv_volt) = 0.0;
-HAL_PIN(min_hv_volt) = 20.0;
-HAL_PIN(high_hv_volt) = 370.0;
-HAL_PIN(max_hv_volt) = 390.0;
+HAL_PIN(hv_volt);
+HAL_PIN(min_hv_volt);
+HAL_PIN(high_hv_volt);
+HAL_PIN(max_hv_volt);
 
-HAL_PIN(dc_cur) = 0.0;
-HAL_PIN(high_dc_cur) = 0.0;
-HAL_PIN(max_dc_cur) = 0.0;
+HAL_PIN(dc_cur);
+HAL_PIN(high_dc_cur);
+HAL_PIN(max_dc_cur);
 
-HAL_PIN(pos_error) = 0.0;
-HAL_PIN(max_pos_error) = 0.0;
+HAL_PIN(pos_error);
+HAL_PIN(max_pos_error);
 
-HAL_PIN(sat) = 0.0;
-HAL_PIN(max_sat) = 0.0;
+HAL_PIN(sat);
+HAL_PIN(max_sat);
 
-HAL_PIN(mot_brake) = 0.0;
-HAL_PIN(dc_brake) = 0.0;
+HAL_PIN(mot_brake);
+HAL_PIN(dc_brake);
 
-HAL_PIN(hv_fan) = 0.0;
-HAL_PIN(mot_fan) = 0.0;
+HAL_PIN(hv_fan);
+HAL_PIN(mot_fan);
 
-HAL_PIN(phase_with_brake) = 1.0;
-HAL_PIN(phase_on_start) = 1.0;
-HAL_PIN(rephase) = 0.0;
+HAL_PIN(phase_with_brake);
+HAL_PIN(phase_on_start);
+HAL_PIN(rephase);
 
-HAL_PIN(print) = 0.0;
+HAL_PIN(print);
 
-HAL_PIN(brake_release) = 0.0;
+HAL_PIN(brake_release);
 
-MEM(state_t state) = DISABLED;
+struct fault_ctx_t{
+   state_t state;
+   fault_t fault;
+   uint32_t phased;
+};
 
-MEM(fault_t fault) = NO_ERROR;
+static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   struct fault_ctx_t * ctx = (struct fault_ctx_t *)ctx_ptr;
+   struct fault_pin_ctx_t * pins = (struct fault_pin_ctx_t *)pin_ptr;
+   ctx->state = DISABLED;
+   ctx->fault = NO_ERROR;
+   ctx->phased = 0;
+   PIN(phase_with_brake) = 1.0;
+   PIN(phase_on_start) = 1.0;
+   PIN(min_hv_volt) = 20.0;
+   PIN(high_hv_volt) = 370.0;
+   PIN(max_hv_volt) = 390.0;
+   PIN(cmd_ready) = 1.0;
+   PIN(fb0_ready) = 1.0;
+   PIN(fb1_ready) = 1.0;
+   PIN(hv_ready) = 1.0;
+   PIN(max_hv_temp) = 90.0;
+   PIN(max_mot_temp) = 100.0;
+   PIN(high_hv_temp) = 70.0;
+   PIN(high_mot_temp) = 80.0;
+   PIN(fan_hv_temp) = 60.0;
+   PIN(fan_mot_temp) = 60.0;
+}
 
-MEM(uint32_t phased) = 0;
+static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   struct fault_ctx_t * ctx = (struct fault_ctx_t *)ctx_ptr;
+   struct fault_pin_ctx_t * pins = (struct fault_pin_ctx_t *)pin_ptr;
 
-RT(
    if(PIN(phase_on_start) <= 0.0){
-      phased = 1;
+      ctx->phased = 1;
    }
    
-   switch(state){
+   switch(ctx->state){
       case DISABLED:
          if(RISING_EDGE(PIN(en)) & (PIN(cmd_ready) > 0.0) & (PIN(fb0_ready) > 0.0) & (PIN(fb1_ready) > 0.0) & (PIN(hv_ready) > 0.0)){
             if(PIN(rephase) > 0.0){ // TODO: check phase_on_start
-               phased = 0;
+               ctx->phased = 0;
             }
-            if(phased == 0){
-               state = PHASING;
+            if(ctx->phased == 0){
+               ctx->state = PHASING;
             }
             else{
-               state = ENABLED;
+               ctx->state = ENABLED;
                PIN(start_offset) = minus(PIN(fb), PIN(cmd));
             }
          }      
@@ -93,27 +126,27 @@ RT(
       
       case ENABLED:
          if(PIN(en) <= 0.0){
-            state = DISABLED;
+            ctx->state = DISABLED;
          }
       break;
          
       case PHASING:
          if(RISING_EDGE(PIN(phase_ready))){
-            state = ENABLED;
+            ctx->state = ENABLED;
             PIN(start_offset) = minus(PIN(fb), PIN(cmd));
          }
          
          if(PIN(en) <= 0.0){
-            state = DISABLED;
+            ctx->state = DISABLED;
          }
       break;
          
       case SOFT_FAULT:
          if(PIN(en) <= 0.0){
-            state = DISABLED;
+            ctx->state = DISABLED;
          }else if(FALLING_EDGE(PIN(reset)) & (PIN(cmd_ready) > 0.0) & (PIN(fb0_ready) > 0.0) & (PIN(fb1_ready) > 0.0) & (PIN(hv_ready) > 0.0)){
             //TODO: phasing
-            state = ENABLED;
+            ctx->state = ENABLED;
             PIN(start_offset) = minus(PIN(fb), PIN(cmd));
          }
       break;
@@ -124,55 +157,55 @@ RT(
    }
 
    if(PIN(cmd_error) > 0.0){
-      fault = CMD_ERROR;
-      state = SOFT_FAULT;
+      ctx->fault = CMD_ERROR;
+      ctx->state = SOFT_FAULT;
    }
 
    if(PIN(fb0_error) > 0.0){
-      fault = FB0_ERROR;
-      state = SOFT_FAULT;
-      phased = 0;
+      ctx->fault = FB0_ERROR;
+      ctx->state = SOFT_FAULT;
+      ctx->phased = 0;
    }
 
    if(PIN(fb1_error) > 0.0){
-      fault = FB1_ERROR;
-      state = SOFT_FAULT;
-      phased = 0;
+      ctx->fault = FB1_ERROR;
+      ctx->state = SOFT_FAULT;
+      ctx->phased = 0;
    }
 
    if(PIN(hv_error) > 0.0){
-      fault = HV_ERROR;
-      state = SOFT_FAULT;
+      ctx->fault = HV_ERROR;
+      ctx->state = SOFT_FAULT;
    }
 
    if(ABS(PIN(pos_error)) > PIN(max_pos_error)){
-      fault = POS_ERROR;
-      state = SOFT_FAULT;
+      ctx->fault = POS_ERROR;
+      ctx->state = SOFT_FAULT;
    }
    
    if(PIN(sat) > PIN(max_sat)){
-      fault = SAT_ERROR;
-      state = SOFT_FAULT;
+      ctx->fault = SAT_ERROR;
+      ctx->state = SOFT_FAULT;
    }
 
    if(PIN(hv_temp) > PIN(max_hv_temp)){
-      fault = HV_TEMP_ERROR;
-      state = SOFT_FAULT;
+      ctx->fault = HV_TEMP_ERROR;
+      ctx->state = SOFT_FAULT;
    }
 
    if(PIN(hv_volt) > PIN(max_hv_volt)){
-      fault = HV_VOLT_ERROR;
-      state = SOFT_FAULT;
+      ctx->fault = HV_VOLT_ERROR;
+      ctx->state = SOFT_FAULT;
    }
    
    if(PIN(hv_volt) < PIN(min_hv_volt)){
-      fault = HV_VOLT_ERROR;
-      state = SOFT_FAULT;
+      ctx->fault = HV_VOLT_ERROR;
+      ctx->state = SOFT_FAULT;
    }
 
    if(PIN(mot_temp) > PIN(max_mot_temp)){
-      fault = MOT_TEMP_ERROR;
-      state = SOFT_FAULT;
+      ctx->fault = MOT_TEMP_ERROR;
+      ctx->state = SOFT_FAULT;
    }
 
    float scale = 1.0;
@@ -199,13 +232,13 @@ RT(
       PIN(mot_fan) = 0.0;
    }
 
-   switch(state){
+   switch(ctx->state){
       case DISABLED:
          PIN(phase_start) = 0.0;
          PIN(mot_brake) = 0.0;
          PIN(en_out) = 0.0;
          PIN(en_pid) = 0.0;
-         fault = NO_ERROR;
+         ctx->fault = NO_ERROR;
          scale = 0.0;
       break;
       
@@ -214,14 +247,14 @@ RT(
          PIN(mot_brake) = 1.0;
          PIN(en_out) = 1.0;
          PIN(en_pid) = 1.0;
-         fault = NO_ERROR;
-         phased = 1;
+         ctx->fault = NO_ERROR;
+         ctx->phased = 1;
       break;
       
       case PHASING:
          PIN(phase_start) = 1.0;
          PIN(mot_brake) = PIN(phase_with_brake);
-         fault = NO_ERROR;
+         ctx->fault = NO_ERROR;
          PIN(en_pid) = 0.0;
          PIN(en_out) = 1.0;
       break;
@@ -244,18 +277,23 @@ RT(
       break;
    }
 
-   PIN(fault) = fault;
-   PIN(state) = state;
+   PIN(fault) = ctx->fault;
+   PIN(state) = ctx->state;
    PIN(scale) = scale;
    
    if(PIN(brake_release) > 0.0){
       PIN(mot_brake) = 1.0;
    }
-);
-NRT(
-if(EDGE(state) || PIN(print) > 0.0){
+}
+
+
+static void nrt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+struct fault_ctx_t * ctx = (struct fault_ctx_t *)ctx_ptr;
+struct fault_pin_ctx_t * pins = (struct fault_pin_ctx_t *)pin_ptr;
+//TODO: fix EDGE
+if(EDGE(ctx->state) || PIN(print) > 0.0){
    PIN(print) = 0.0;
-   switch((state_t)state){
+   switch((state_t)ctx->state){
       case DISABLED:
       printf("INFO: Disabled \n");
       break;
@@ -270,7 +308,7 @@ if(EDGE(state) || PIN(print) > 0.0){
 
       case SOFT_FAULT:
       printf("ERROR: Soft fault: ");
-      switch((fault_t)fault){
+      switch((fault_t)ctx->fault){
          case NO_ERROR:
          printf("no error\n");
          break;
@@ -321,5 +359,18 @@ if(EDGE(state) || PIN(print) > 0.0){
       break;
    }
 }
-);
-ENDCOMP;
+}
+
+hal_comp_t fault_comp_struct = {
+  .name = "fault",
+  .nrt = nrt_func,
+  .rt = rt_func,
+  .frt = 0,
+  .nrt_init = nrt_init,
+  .rt_start = 0,
+  .frt_start = 0,
+  .rt_stop = 0,
+  .frt_stop = 0,
+  .ctx_size = sizeof(struct fault_ctx_t),
+  .pin_count = sizeof(struct fault_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+};

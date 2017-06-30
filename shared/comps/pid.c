@@ -18,69 +18,97 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "commands.h"
+#include "hal.h"
+#include "math.h"
+#include "defines.h"
+#include "angle.h"
+
 HAL_COMP(pid);
 
-HAL_PIN(pos_ext_cmd) = 0.0; // cmd in (rad)
-HAL_PIN(pos_fb) = 0.0; // feedback in (rad)
-HAL_PIN(pos_error) = 0.0; // error out (rad)
+HAL_PIN(pos_ext_cmd); // cmd in (rad)
+HAL_PIN(pos_fb); // feedback in (rad)
+HAL_PIN(pos_error); // error out (rad)
 
-HAL_PIN(vel_ext_cmd) = 0.0; // cmd in (rad/s)
-HAL_PIN(vel_fb) = 0.0; // feedback in (rad/s)
-HAL_PIN(vel_cmd) = 0.0; // cmd out (rad/s)
-HAL_PIN(vel_error) = 0.0; // error out (rad/s)
+HAL_PIN(vel_ext_cmd); // cmd in (rad/s)
+HAL_PIN(vel_fb); // feedback in (rad/s)
+HAL_PIN(vel_cmd); // cmd out (rad/s)
+HAL_PIN(vel_error); // error out (rad/s)
 
-HAL_PIN(acc_ext_cmd) = 0.0; // cmd in (rad/s^2)
-HAL_PIN(acc_cmd) = 0.0; // cmd out (rad/s^2)
+HAL_PIN(acc_ext_cmd); // cmd in (rad/s^2)
+HAL_PIN(acc_cmd); // cmd out (rad/s^2)
 
-HAL_PIN(torque_ext_cmd) = 0.0; // cmd in (Nm)
-HAL_PIN(torque_cmd) = 0.0; // cmd out (Nm)
-HAL_PIN(torque_cor_cmd) = 0.0; // corrected cmd out (Nm)
-HAL_PIN(torque_sum) = 0.0; 
+HAL_PIN(torque_ext_cmd); // cmd in (Nm)
+HAL_PIN(torque_cmd); // cmd out (Nm)
+HAL_PIN(torque_cor_cmd); // corrected cmd out (Nm)
+HAL_PIN(torque_sum); 
 
-HAL_PIN(friction) = 0.0; // (Nm)
-HAL_PIN(damping) = 0.0; // (Nm/rad/s)
-HAL_PIN(load) = 0.0; // (Nm)
+HAL_PIN(friction); // (Nm)
+HAL_PIN(damping); // (Nm/rad/s)
+HAL_PIN(load); // (Nm)
 
 
-HAL_PIN(enable) = 0.0;
-HAL_PIN(pos_en) = 1.0;
-HAL_PIN(vel_en) = 1.0;
-HAL_PIN(acc_en) = 1.0;
-HAL_PIN(torque_en) = 1.0;
+HAL_PIN(enable);
+HAL_PIN(pos_en);
+HAL_PIN(vel_en);
+HAL_PIN(acc_en);
+HAL_PIN(torque_en);
 
-HAL_PIN(pos_p) = 100.0; // (1/s)
+HAL_PIN(pos_p); // (1/s)
 
-HAL_PIN(vel_p) = 2000.0; // (1/s)
-HAL_PIN(vel_i) = 10.0;
-HAL_PIN(vel_g) = 1.0;
+HAL_PIN(vel_p); // (1/s)
+HAL_PIN(vel_i);
+HAL_PIN(vel_g);
 
-HAL_PIN(acc_g) = 1.0;
+HAL_PIN(acc_g);
 
-HAL_PIN(g) = 0.99; // model limit scaling
+HAL_PIN(g); // model limit scaling
 
-HAL_PIN(j) = 0.0; // (kgm^2)
+HAL_PIN(j); // (kgm^2)
 
 
 // system limits
-HAL_PIN(max_vel) = 0.0; // (rad/s)
-HAL_PIN(max_torque) = 0.0; // (Nm)
-HAL_PIN(min_torque) = 0.0; // (Nm)
+HAL_PIN(max_vel); // (rad/s)
+HAL_PIN(max_torque); // (Nm)
+HAL_PIN(min_torque); // (Nm)
 
 // user limits
-HAL_PIN(max_usr_vel) = 0.0; // (rad/s)
-HAL_PIN(max_usr_acc) = 0.0; // (rad/s^2)
-HAL_PIN(max_usr_torque) = 0.0; // (Nm)
+HAL_PIN(max_usr_vel); // (rad/s)
+HAL_PIN(max_usr_acc); // (rad/s^2)
+HAL_PIN(max_usr_torque); // (Nm)
 
-HAL_PIN(vel_sat) = 0.0;
-HAL_PIN(acc_sat) = 0.0;
-HAL_PIN(torque_sat) = 0.0;
-HAL_PIN(saturated) = 0.0; // (s)
+HAL_PIN(vel_sat);
+HAL_PIN(acc_sat);
+HAL_PIN(torque_sat);
+HAL_PIN(saturated); // (s)
 
+struct pid_ctx_t{
+   float sat;//saturated time
+   float torque_sum;//integrator
+};
 
-MEM(float sat) = 0.0;
-MEM(float torque_sum) = 0.0;
+static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+  struct pid_ctx_t * ctx = (struct pid_ctx_t *)ctx_ptr;
+  struct pid_pin_ctx_t * pins = (struct pid_pin_ctx_t *)pin_ptr;
+  ctx->sat = 0.0;
+  ctx->torque_sum = 0.0;
+  PIN(pos_en) = 1.0;
+  PIN(vel_en) = 1.0;
+  PIN(acc_en) = 1.0;
+  PIN(torque_en) = 1.0;
+  PIN(pos_p) = 100.0; // (1/s)
+  PIN(vel_p) = 2000.0; // (1/s)
+  PIN(vel_i) = 10.0;
+  PIN(vel_g) = 1.0;
+  PIN(acc_g) = 1.0;
+  PIN(g) = 0.99; // model limit scaling
+  
+}
 
-RT(
+static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   struct pid_ctx_t * ctx = (struct pid_ctx_t *)ctx_ptr;
+   struct pid_pin_ctx_t * pins = (struct pid_pin_ctx_t *)pin_ptr;
+
    float j = MAX(PIN(j), 0.0);
    float g = CLAMP(PIN(g), 0.0, 1.0);
 
@@ -138,7 +166,7 @@ RT(
          pos_error = 0.0;
          vel_ext_cmd = 0.0;
          vel_fb = 0.0;
-         torque_sum = 0.0;
+         ctx->torque_sum = 0.0;
       }
       if(pos_en <= 0.0){
          pos_p = 0.0;
@@ -164,14 +192,14 @@ RT(
       // acc -> torque
       torque_cmd = acc_cmd * j + torque_ext_cmd; // ff
       torque_cmd = CLAMP(torque_cmd, torque_min, torque_max); // clamping
-      torque_sum += vel_error * period * vel_i; // i
-      torque_sum = CLAMP(torque_sum, torque_min - torque_cmd, torque_max - torque_cmd); // dynamic integral clamping
-      torque_cmd += torque_sum;
+      ctx->torque_sum += vel_error * period * vel_i; // i
+      ctx->torque_sum = CLAMP(ctx->torque_sum, torque_min - torque_cmd, torque_max - torque_cmd); // dynamic integral clamping
+      torque_cmd += ctx->torque_sum;
       torque_sat = SAT2(torque_cmd, torque_min * 0.99, torque_max * 0.99);
       
       
       if(vel_i == 0.0){
-         torque_sum = 0.0;
+         ctx->torque_sum = 0.0;
       }
       
       PIN(torque_cmd) = torque_cmd;
@@ -188,15 +216,15 @@ RT(
 
       // sat
       if(ABS(vel_sat) + ABS(acc_sat) + ABS(torque_sat) > 0.0){
-         sat += period;
+         ctx->sat += period;
       }
       else{
-         sat -= period;
+         ctx->sat -= period;
       }
-      sat = MAX(sat, 0.0);
+      ctx->sat = MAX(ctx->sat, 0.0);
    }
    else{
-      torque_sum = 0.0;
+      ctx->torque_sum = 0.0;
       pos_error = 0.0;
       vel_cmd = 0.0;
       vel_error = 0.0;
@@ -205,7 +233,7 @@ RT(
       vel_sat = 0.0;
       acc_sat = 0.0;
       torque_sat = 0.0;
-      sat = 0.0;
+      ctx->sat = 0.0;
    }
 
    PIN(pos_error) = pos_error;
@@ -213,12 +241,24 @@ RT(
    PIN(vel_error) = vel_error;
    PIN(acc_cmd) = acc_cmd;
    PIN(torque_cor_cmd) = torque_cmd;
-   PIN(torque_sum) = torque_sum;
+   PIN(torque_sum) = ctx->torque_sum;
 
    PIN(vel_sat) = vel_sat;
    PIN(acc_sat) = acc_sat;
    PIN(torque_sat) = torque_sat;
-   PIN(saturated) = sat;
-);
+   PIN(saturated) = ctx->sat;
+}
 
-ENDCOMP;
+hal_comp_t pid_comp_struct = {
+  .name = "pid",
+  .nrt = 0,
+  .rt = rt_func,
+  .frt = 0,
+  .nrt_init = nrt_init,
+  .rt_start = 0,
+  .frt_start = 0,
+  .rt_stop = 0,
+  .frt_stop = 0,
+  .ctx_size = sizeof(struct pid_ctx_t),
+  .pin_count = sizeof(struct pid_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+};

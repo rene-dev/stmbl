@@ -39,6 +39,10 @@ SOURCES += shared/comps/rev.c
 SOURCES += shared/comps/hal_test.c
 SOURCES += shared/comps/dc.c
 SOURCES += shared/comps/ypid.c
+SOURCES += shared/comps/fault.c
+SOURCES += shared/comps/pid.c
+SOURCES += shared/comps/pmsm_limits.c
+SOURCES += shared/comps/pmsm_t2c.c
 
 SOURCES += src/eeprom.c
 # SOURCES += src/link.c
