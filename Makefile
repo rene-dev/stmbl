@@ -29,6 +29,7 @@ SOURCES += src/comps/encm.c
 SOURCES += src/comps/hv.c
 SOURCES += src/comps/adc.c
 SOURCES += src/comps/enc_fb.c
+SOURCES += src/comps/conf.c
 
 SOURCES += shared/comps/sim.c
 SOURCES += shared/comps/term.c
