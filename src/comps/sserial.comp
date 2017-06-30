@@ -82,7 +82,7 @@ typedef union{
 #define DATA_TYPE_STREAM 			0x06
 #define DATA_TYPE_BOOLEAN 			0x07
 #define DATA_TYPE_ENCODER  			0x08
-#define DATA_TYPE_FLOAT  			0x09 // New for STMBL
+#define DATA_TYPE_FLOAT  			0x10 // New for STMBL
 #define DATA_TYPE_ENCODER_H     	0x18 
 #define DATA_TYPE_ENCODER_L     	0x28 
 
