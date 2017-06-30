@@ -34,6 +34,13 @@ HAL_PIN(out2);
 
 HAL_PIN(in0);
 HAL_PIN(in1);
+HAL_PIN(ind0);
+HAL_PIN(ind1);
+
+HAL_PIN(CTX);
+HAL_PIN(CRX);
+HAL_PIN(DIO);
+HAL_PIN(CK);
 
 HAL_PIN(fb0g);
 HAL_PIN(fb0y);
@@ -49,6 +56,16 @@ HAL_PIN(io1);
 HAL_PIN(fb0);
 HAL_PIN(fb1);
 
+HAL_PIN(fb0a);
+HAL_PIN(fb0b);
+HAL_PIN(fb0z);
+
+HAL_PIN(fb1a);
+HAL_PIN(fb1b);
+HAL_PIN(fb1z);
+
+HAL_PIN(fbsd);//fb shutdown
+
 static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
    // struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
@@ -63,6 +80,15 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
    GPIO_Init(GPIOC, &GPIO_InitStructure);
+   
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
+   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_Init(GPIOD, &GPIO_InitStructure);
+   
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14;
+   GPIO_Init(GPIOA, &GPIO_InitStructure);
    
    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC3, ENABLE);
    ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;//data converted will be shifted to right
@@ -147,6 +173,11 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    //cmd green
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_7;
    GPIO_Init(GPIOD, &GPIO_InitStructure);
+   
+   //fb 5v enable
+   GPIO_SetBits(GPIOC, GPIO_Pin_13);
+   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+   GPIO_Init(GPIOC, &GPIO_InitStructure);
 }
 
 #include "../shared/hw_math.h"
@@ -159,11 +190,33 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    
    //TODO: unit conversion
    //TODO: check if adc sample complete?
-   PIN(io0) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_1)), 3.3, 1000.0, 10000.0, 1000.0);
-   PIN(io1) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_2)), 3.3, 1000.0, 10000.0, 1000.0);
+   PIN(in0) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_1)), 3.3, 1000.0, 10000.0, 1000.0);
+   PIN(in1) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_2)), 3.3, 1000.0, 10000.0, 1000.0);
+   
+   if(PIN(in0) > 12.0){
+      PIN(ind0) = 1.0;
+      GPIO_SetBits(GPIOE, GPIO_Pin_1);
+   }else{
+      PIN(ind0) = 0.0;
+      GPIO_ResetBits(GPIOE, GPIO_Pin_1);
+   }
+   
+   if(PIN(in0) > 12.0){
+      PIN(ind1) = 1.0;
+      GPIO_SetBits(GPIOE, GPIO_Pin_0);
+   }else{
+      PIN(ind1) = 0.0;
+      GPIO_ResetBits(GPIOE, GPIO_Pin_0);
+   }
+   
    PIN(fb0) = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_3)), 10000.0, 1000.0);
    PIN(fb1) = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_4)), 10000.0, 1000.0);
    ADC_SoftwareStartInjectedConv(ADC3);
+   
+   PIN(CRX) = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_0);
+   PIN(CTX) = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_1);
+   PIN(DIO) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_13);
+   PIN(CK) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_14);
 }
 
 static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
@@ -242,16 +295,6 @@ static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    else
       GPIO_ResetBits(GPIOE, GPIO_Pin_6);
    
-   if(PIN(in0) > 0)
-      GPIO_SetBits(GPIOE, GPIO_Pin_1);
-   else
-      GPIO_ResetBits(GPIOE, GPIO_Pin_1);
-   
-   if(PIN(in1) > 0)
-      GPIO_SetBits(GPIOE, GPIO_Pin_0);
-   else
-      GPIO_ResetBits(GPIOE, GPIO_Pin_0);
-   
    if(PIN(fb0g) > 0)
       GPIO_SetBits(GPIOD, GPIO_Pin_8);
    else
@@ -286,6 +329,19 @@ static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
       GPIO_SetBits(GPIOE, GPIO_Pin_3);
    else
       GPIO_ResetBits(GPIOE, GPIO_Pin_3);
+
+   if(PIN(fbsd) > 0)
+      GPIO_ResetBits(GPIOC, GPIO_Pin_13);
+   else
+      GPIO_SetBits(GPIOC, GPIO_Pin_13);
+
+   PIN(fb0a) = GPIO_ReadInputDataBit(FB0_A_PORT,FB0_A_PIN);
+   PIN(fb0b) = GPIO_ReadInputDataBit(FB0_B_PORT,FB0_B_PIN);
+   PIN(fb0z) = GPIO_ReadInputDataBit(FB0_Z_PORT,FB0_Z_PIN);
+
+   PIN(fb1a) = GPIO_ReadInputDataBit(FB1_A_PORT,FB1_A_PIN);
+   PIN(fb1b) = GPIO_ReadInputDataBit(FB1_B_PORT,FB1_B_PIN);
+   PIN(fb1z) = GPIO_ReadInputDataBit(FB1_Z_PORT,FB1_Z_PIN);
 }
 
 hal_comp_t io_comp_struct = {

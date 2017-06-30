@@ -25,6 +25,30 @@
 #define OP_R_OUT_HIGH 470.0//opamp out high
 #define OP_REF 5.0//opamp reference voltage
 
+//FB UART
+#define FB0_UART USART3
+#define FB0_UART_RCC RCC_APB1Periph_USART3
+#define FB0_UART_CLOCK_COMMAND RCC_APB1PeriphClockCmd
+
+#define FB0_UART_RX_DMA DMA1_Stream1
+#define FB0_UART_RX_DMA_CHAN DMA_Channel_4
+#define FB0_UART_RX_DMA_TCIF DMA_FLAG_TCIF1
+
+#define FB0_UART_TX_DMA DMA1_Stream3
+#define FB0_UART_TX_DMA_CHAN DMA_Channel_4
+#define FB0_UART_TX_DMA_TCIF DMA_FLAG_TCIF3
+
+#define FB0_UART_RX_PIN GPIO_Pin_11
+#define FB0_UART_RX_PORT GPIOB
+#define FB0_UART_RX_PIN_SOURCE GPIO_PinSource11
+#define FB0_UART_RX_AF_SOURCE GPIO_AF_USART3
+
+#define FB0_UART_TX_PIN GPIO_Pin_10
+#define FB0_UART_TX_PORT GPIOB
+#define FB0_UART_TX_PIN_SOURCE GPIO_PinSource10
+#define FB0_UART_TX_AF_SOURCE GPIO_AF_USART3
+
+//HV UART
 #define UART_DRV USART2
 #define UART_DRV_RCC RCC_APB1Periph_USART2
 #define UART_DRV_CLOCK_COMMAND RCC_APB1PeriphClockCmd
@@ -105,6 +129,31 @@
 #define OP_R_OUT_HIGH 22.0//opamp out high
 #define OP_REF 1.83//opamp reference voltage
 
+//FB UART
+#define FB0_UART USART6
+#define FB0_UART_RCC RCC_APB2Periph_USART6
+#define FB0_UART_CLOCK_COMMAND RCC_APB2PeriphClockCmd
+
+#define FB0_UART_RX_DMA DMA2_Stream1
+#define FB0_UART_RX_DMA_CHAN DMA_Channel_5
+#define FB0_UART_RX_DMA_TCIF DMA_FLAG_TCIF1
+
+#define FB0_UART_TX_DMA DMA2_Stream6
+#define FB0_UART_TX_DMA_CHAN DMA_Channel_5
+#define FB0_UART_TX_DMA_TCIF DMA_FLAG_TCIF6
+
+//v4 does not have dedicated rx pin, use pc6 as rx and tx. 
+//#define FB0_UART_RX_PIN GPIO_Pin_11
+//#define FB0_UART_RX_PORT GPIOB
+//#define FB0_UART_RX_PIN_SOURCE GPIO_PinSource11
+//#define FB0_UART_RX_AF_SOURCE GPIO_AF_USART3
+
+#define FB0_UART_TX_PIN GPIO_Pin_6
+#define FB0_UART_TX_PORT GPIOC
+#define FB0_UART_TX_PIN_SOURCE GPIO_PinSource6
+#define FB0_UART_TX_AF_SOURCE GPIO_AF_USART6
+
+//HV UART
 #define UART_DRV USART2
 #define UART_DRV_RCC RCC_APB1Periph_USART2
 #define UART_DRV_CLOCK_COMMAND RCC_APB1PeriphClockCmd
@@ -127,6 +176,7 @@
 #define UART_DRV_TX_PIN_SOURCE GPIO_PinSource2
 #define UART_DRV_TX_AF_SOURCE GPIO_AF_USART2
 
+//FB0 TIM4
 #define FB0_A_PIN GPIO_Pin_12
 #define FB0_A_PIN_SOURCE GPIO_PinSource12
 #define FB0_A_PORT GPIOD
@@ -149,6 +199,18 @@
 #define FB0_RES_TIM TIM4
 #define FB0_RES_TIM_AF GPIO_AF_TIM4 //sync to slave timer for resolver
 #define FB0_RES_TIM_RCC RCC_APB1Periph_TIM4
+//FB1, TIM1
+#define FB1_A_PIN GPIO_Pin_9
+#define FB1_A_PIN_SOURCE GPIO_PinSource9
+#define FB1_A_PORT GPIOE
+
+#define FB1_B_PIN GPIO_Pin_11
+#define FB1_B_PIN_SOURCE GPIO_PinSource11
+#define FB1_B_PORT GPIOE
+
+#define FB1_Z_PIN GPIO_Pin_13
+#define FB1_Z_PIN_SOURCE GPIO_PinSource14
+#define FB1_Z_PORT GPIOE
 
 #define TIM_MASTER TIM3
 #define TIM_MASTER_RCC RCC_APB1Periph_TIM3
