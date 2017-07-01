@@ -251,20 +251,20 @@ COMMAND("hal", hal_term_print_info);
 
 uint32_t load_comp(hal_comp_t * comp){
    if(!comp){
-      printf("load_comp: null ptr\n");
+      printf("<font color=\"FireBrick\">load_comp: not found</font>\n");
       return(0);
    }
    if(hal.comp_inst_count >= HAL_MAX_COMPS - 1){
-      printf("load_comp: not enough space to load comp: %s\n", comp->name);
+      printf("<font color=\"FireBrick\">load_comp: not enough space to load comp: %s</font>\n", comp->name);
       return(0);
    }
    if(hal.pin_inst_count + comp->pin_count >= HAL_MAX_PINS - 1){
-      printf("load_comp: not enough space to load comp pins: %s\n", comp->name);
+      printf("<font color=\"FireBrick\">load_comp: not enough space to load comp pins: %s</font>\n", comp->name);
       return(0);
    }
    uint32_t ctx_size = ((uint32_t)ceil((comp->ctx_size / 4.0))) * 4;
    if(hal.ctx_count + ctx_size >= HAL_MAX_CTX - 1){
-      printf("load_comp: not enough space to load comp ctx: %s\n", comp->name);
+      printf("<font color=\"FireBrick\">load_comp: not enough space to load comp ctx: %s</font>\n", comp->name);
       return(0);
    }
    
@@ -729,7 +729,7 @@ uint32_t hal_parse(char * cmd){
             }
          }
          if(!found){
-            printf("not found: %s\n", cmd);
+            printf("<font color=\"FireBrick\">not found</font>: %s\n", cmd);
          }
          break;
       case 2: // search comps + instance
@@ -744,7 +744,7 @@ uint32_t hal_parse(char * cmd){
             }
          }
          if(!found){
-            printf("not found: %s\n", cmd);
+            printf("<font color=\"FireBrick\">not found</font>: %s\n", cmd);
          }
          break;
       case 3: 
@@ -758,10 +758,10 @@ uint32_t hal_parse(char * cmd){
 
             }
             else if(sink){
-               printf("not found: %s%lu.%s\n", sourcec, sourcei, sourcep);
+               printf("<font color=\"FireBrick\">not found</font>: %s%lu.%s\n", sourcec, sourcei, sourcep);
             }
             else{
-               printf("not found: %s%lu.%s\n", sinkc, sinki, sinkp);
+               printf("<font color=\"FireBrick\">not found</font>: %s%lu.%s\n", sinkc, sinki, sinkp);
             }
          }
          else{ // search comps + instance + pin
@@ -778,7 +778,7 @@ uint32_t hal_parse(char * cmd){
                }
             }
             if(!found){
-               printf("not found: %s\n", cmd);
+               printf("<font color=\"FireBrick\">not found</font>: %s\n", cmd);
             }
          }
          break;
@@ -790,11 +790,11 @@ uint32_t hal_parse(char * cmd){
             printf("OK %s%lu.%s = %f\n", sinkc, sinki, sinkp, value);
          }
          else{
-            printf("not found: %s%lu.%s\n", sinkc, sinki, sinkp);
+            printf("<font color=\"FireBrick\">not found</font>: %s%lu.%s\n", sinkc, sinki, sinkp);
          }
          break;
       default:
-         printf("not found: %s\n", cmd);
+         printf("<font color=\"FireBrick\">not found</font>: %s\n", cmd);
    }
    return(0);
 }
