@@ -1,0 +1,135 @@
+load conf
+load adc
+load res_limit
+load rev
+load rev
+load rev
+load rev
+load fb_switch
+load vel
+load vel
+load vel
+load pid
+load fault
+load hv
+load iit
+load sim
+load stp
+load io
+confload
+adc0.rt_prio = 1
+res_limit0.rt_prio = 3
+rev0.rt_prio = 4
+rev1.rt_prio = 4
+rev2.rt_prio = 4
+rev3.rt_prio = 4
+fb_switch0.rt_prio = 5
+vel0.rt_prio = 6
+vel1.rt_prio = 6
+vel2.rt_prio = 6
+pid0.rt_prio = 8
+fault0.rt_prio = 10
+hv0.rt_prio = 11
+iit0.rt_prio = 12
+sim0.rt_prio = 13
+stp0.rt_prio = 14
+term0.rt_prio = 15
+rev0.rev = conf0.cmd_rev
+rev1.rev = conf0.mot_rev
+rev2.rev = conf0.joint_rev
+rev3.rev = conf0.com_rev
+vel1.j = conf0.j
+vel2.j = conf0.j
+pid0.j = conf0.j
+pid0.pos_p = conf0.pos_p
+pid0.vel_p = conf0.vel_p
+pid0.vel_i = conf0.vel_i
+pid0.vel_g = conf0.vel_g
+pid0.acc_g = conf0.acc_g
+pid0.g = conf0.g
+pid0.max_usr_vel = conf0.max_vel
+pid0.max_usr_acc = conf0.max_acc
+pid0.max_usr_torque = conf0.max_force
+fault0.max_sat = conf0.max_sat
+fault0.max_pos_error = conf0.max_pos_error
+fault0.max_vel_error = conf0.max_vel_error
+fault0.max_dc_cur = conf0.max_dc_cur
+fault0.max_ac_cur = conf0.max_ac_cur
+fault0.max_dc_volt = conf0.max_dc_volt
+fault0.high_dc_volt = conf0.max_dc_volt
+fault0.min_dc_volt = conf0.min_dc_volt
+fault0.max_hv_temp = conf0.max_hv_temp
+fault0.max_mot_temp = conf0.max_mot_temp
+fault0.high_hv_temp = conf0.high_hv_temp
+fault0.high_mot_temp = conf0.high_mot_temp
+fault0.fan_hv_temp = conf0.fan_hv_temp
+fault0.fan_mot_temp = conf0.fan_mot_temp
+hv0.rev = conf0.out_rev
+hv0.r = conf0.r
+hv0.l = conf0.l
+hv0.psi = conf0.psi
+hv0.cur_p = conf0.cur_p
+hv0.cur_i = conf0.cur_i
+hv0.cur_ff = conf0.cur_ff
+hv0.cur_ind = conf0.cur_ind
+fb_switch0.cmd_pos = rev0.out
+fb_switch0.mot_pos = rev1.out
+fb_switch0.joint_pos = rev2.out
+fb_switch0.com_pos = rev3.out
+vel0.pos_in = rev0.out
+vel0.en = fault0.en_pid
+vel1.pos_in = fb_switch0.vel_fb
+vel1.en = fault0.en_pid
+vel1.torque = pid0.torque_cor_cmd
+vel2.pos_in = fb_switch0.com_fb
+vel2.en = fault0.en_pid
+vel2.torque = pid0.torque_cor_cmd
+pid0.enable = fault0.en_pid
+pid0.pos_ext_cmd = vel0.pos_out
+pid0.vel_ext_cmd = vel0.vel
+pid0.pos_fb = vel1.pos_out
+pid0.vel_fb = vel1.vel
+fault0.pos_error = pid0.pos_error
+fault0.vel_error = pid0.vel_error
+fault0.sat = pid0.saturated
+fault0.dc_volt = hv0.dc_volt
+fault0.hv_temp = hv0.hv_temp
+fault0.dc_cur = hv0.dc_cur
+fault0.mot_temp = hv0.mot_temp
+fault0.hv_error = hv0.com_error
+hv0.en = fault0.en_out
+hv0.pos = vel2.pos_out
+hv0.vel = vel2.vel
+io0.out0 = fault0.mot_brake
+io0.fan = fault0.hv_fan
+io0.fault = fault0.fault
+io0.state = fault0.state
+load pmsm_limits
+load pmsm_ttc
+pmsm_limits0.rt_prio = 7
+pmsm_ttc0.rt_prio = 9
+pmsm_limits0.r = conf0.r
+pmsm_limits0.ld = conf0.l
+pmsm_limits0.lq = conf0.l
+pmsm_limits0.psi = conf0.psi
+pmsm_limits0.j = conf0.j
+pmsm_limits0.polecount = conf0.polecount
+pmsm_ttc0.psi = conf0.psi
+pmsm_ttc0.polecount = conf0.polecount
+pmsm_limits0.ac_volt = hv0.pwm_volt
+pmsm_limits0.iq = hv0.q_fb
+pmsm_limits0.id = hv0.d_fb
+pid0.max_torque = pmsm_limits0.max_torque
+pid0.min_torque = pmsm_limits0.min_torque
+pid0.max_vel = pmsm_limits0.abs_max_vel
+pmsm_ttc0.torque = pid0.torque_cor_cmd
+hv0.q_cmd = pmsm_ttc0.cur
+load enc_fb
+enc_fb0.rt_prio = 1
+enc_fb0.frt_prio = 1
+enc_fb0.res = conf0.fb_res
+enc_fb0.sin = adc0.sin3
+enc_fb0.cos = adc0.cos3
+enc_fb0.quad = adc0.quad
+fault0.fb_error = enc_fb0.error
+init_hw

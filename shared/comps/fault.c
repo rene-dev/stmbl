@@ -42,10 +42,10 @@ HAL_PIN(fan_mot_temp);
 
 HAL_PIN(scale);
 
-HAL_PIN(hv_volt);
-HAL_PIN(min_hv_volt);
-HAL_PIN(high_hv_volt);
-HAL_PIN(max_hv_volt);
+HAL_PIN(dc_volt);
+HAL_PIN(min_dc_volt);
+HAL_PIN(high_dc_volt);
+HAL_PIN(max_dc_volt);
 
 HAL_PIN(dc_cur);
 HAL_PIN(high_dc_cur);
@@ -85,9 +85,9 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    ctx->phased = 0;
    PIN(phase_with_brake) = 1.0;
    PIN(phase_on_start) = 1.0;
-   PIN(min_hv_volt) = 20.0;
-   PIN(high_hv_volt) = 370.0;
-   PIN(max_hv_volt) = 390.0;
+   PIN(min_dc_volt) = 20.0;
+   PIN(high_dc_volt) = 370.0;
+   PIN(max_dc_volt) = 390.0;
    PIN(cmd_ready) = 1.0;
    PIN(fb0_ready) = 1.0;
    PIN(fb1_ready) = 1.0;
@@ -193,12 +193,12 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       ctx->state = SOFT_FAULT;
    }
 
-   if(PIN(hv_volt) > PIN(max_hv_volt)){
+   if(PIN(dc_volt) > PIN(max_dc_volt)){
       ctx->fault = HV_VOLT_ERROR;
       ctx->state = SOFT_FAULT;
    }
    
-   if(PIN(hv_volt) < PIN(min_hv_volt)){
+   if(PIN(dc_volt) < PIN(min_dc_volt)){
       ctx->fault = HV_VOLT_ERROR;
       ctx->state = SOFT_FAULT;
    }
@@ -210,11 +210,11 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
 
    float scale = 1.0;
    scale = MIN(scale, SCALE(PIN(hv_temp), PIN(high_hv_temp), PIN(max_hv_temp)));
-   scale = MIN(scale, SCALE(PIN(hv_volt), PIN(high_hv_volt), PIN(max_hv_volt)));
+   scale = MIN(scale, SCALE(PIN(dc_volt), PIN(high_dc_volt), PIN(max_dc_volt)));
    scale = MIN(scale, SCALE(PIN(mot_temp), PIN(high_mot_temp), PIN(max_mot_temp)));
    scale = MIN(scale, SCALE(PIN(dc_cur), PIN(max_dc_cur) * 0.8, PIN(max_dc_cur))); // TODO PIN(high_dc_cur)
 
-   PIN(dc_brake) = SCALE(PIN(hv_volt), PIN(max_hv_volt), PIN(high_hv_volt));
+   PIN(dc_brake) = SCALE(PIN(dc_volt), PIN(max_dc_volt), PIN(high_dc_volt));
 
    if(PIN(hv_temp) >= PIN(fan_hv_temp)){
       PIN(hv_fan) = 1.0;

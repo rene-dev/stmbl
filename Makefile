@@ -45,12 +45,12 @@ COMPS += shared/comps/ypid.c
 COMPS += shared/comps/fault.c
 COMPS += shared/comps/pid.c
 COMPS += shared/comps/pmsm_limits.c
-COMPS += shared/comps/pmsm_t2c.c
+COMPS += shared/comps/pmsm_ttc.c
 COMPS += shared/comps/uvw.c
 COMPS += shared/comps/fanuc.c
 COMPS += shared/comps/fb_switch.c
 COMPS += shared/comps/reslimit.c
-COMPS += shared/comps/i2t.c
+COMPS += shared/comps/iit.c
 COMPS += shared/comps/vel_int.c
 
 SOURCES += $(COMPS)

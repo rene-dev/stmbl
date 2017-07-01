@@ -286,7 +286,7 @@ uint32_t load_comp(hal_comp_t * comp){
          hal.comp_insts[hal.comp_inst_count].instance++;
       }
    }
-   hal.comp_inst_count++;
+   
    
    // load pins 
    for(int i = hal.pin_inst_count; i <  hal.pin_inst_count + comp->pin_count; i++){
@@ -301,6 +301,14 @@ uint32_t load_comp(hal_comp_t * comp){
    }
 
    hal.ctx_count += ctx_size;
+   
+   if(hal.comp_insts[hal.comp_inst_count].comp->nrt_init != 0){
+      hal.comp_insts[hal.comp_inst_count].comp->nrt_init(hal.comp_insts[hal.comp_inst_count].ctx, hal.comp_insts[hal.comp_inst_count].pin_insts);
+   }
+   hal.comp_insts[hal.comp_inst_count].nrt_ticks = 0;
+   hal.comp_insts[hal.comp_inst_count].nrt_max_ticks = 0;
+   
+   hal.comp_inst_count++;
    
    return(1);
 }
@@ -450,23 +458,15 @@ void hal_run_nrt(){
    #endif
 }
 
-void hal_init_nrt(){
+void hal_init_hw(char * ptr){
    for(int i = 0; i < hal.comp_inst_count; i++){
-      if(hal.comp_insts[i].comp->nrt_init != 0){
-         hal.comp_insts[i].comp->nrt_init(hal.comp_insts[i].ctx, hal.comp_insts[i].pin_insts);
+      if(hal.comp_insts[i].comp->hw_init != 0){
+         hal.comp_insts[i].comp->hw_init(hal.comp_insts[i].ctx, hal.comp_insts[i].pin_insts);
       }
-      hal.comp_insts[i].nrt_ticks = 0;
-      hal.comp_insts[i].nrt_max_ticks = 0;
    }
-   
-   hal.nrt_ticks = 0.0;
-   hal.nrt_max_ticks = 0.0;
 }
 
-void init(char * ptr){
-  hal_init_nrt();
-}
-COMMAND("init", init);
+COMMAND("init_hw", hal_init_hw);
 
 void load(char * ptr){
    printf("load :%s:\n", ptr);
@@ -666,6 +666,8 @@ void hal_init(float rt_period, float frt_period){
    hal.nrt_max_ticks = 0.0;
    hal.rt_period = rt_period;
    hal.frt_period = frt_period;
+   hal.nrt_ticks = 0.0;
+   hal.nrt_max_ticks = 0.0;
 }
 
 void hal_print_pin(volatile hal_pin_inst_t * p){
@@ -729,7 +731,7 @@ uint32_t hal_parse(char * cmd){
             }
          }
          if(!found){
-            printf("<font color=\"FireBrick\">not found</font>: %s\n", cmd);
+            printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
          }
          break;
       case 2: // search comps + instance
@@ -744,7 +746,7 @@ uint32_t hal_parse(char * cmd){
             }
          }
          if(!found){
-            printf("<font color=\"FireBrick\">not found</font>: %s\n", cmd);
+            printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
          }
          break;
       case 3: 
@@ -758,10 +760,10 @@ uint32_t hal_parse(char * cmd){
 
             }
             else if(sink){
-               printf("<font color=\"FireBrick\">not found</font>: %s%lu.%s\n", sourcec, sourcei, sourcep);
+               printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sourcec, sourcei, sourcep);
             }
             else{
-               printf("<font color=\"FireBrick\">not found</font>: %s%lu.%s\n", sinkc, sinki, sinkp);
+               printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sinkc, sinki, sinkp);
             }
          }
          else{ // search comps + instance + pin
@@ -778,7 +780,7 @@ uint32_t hal_parse(char * cmd){
                }
             }
             if(!found){
-               printf("<font color=\"FireBrick\">not found</font>: %s\n", cmd);
+               printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
             }
          }
          break;
@@ -790,11 +792,11 @@ uint32_t hal_parse(char * cmd){
             printf("OK %s%lu.%s = %f\n", sinkc, sinki, sinkp, value);
          }
          else{
-            printf("<font color=\"FireBrick\">not found</font>: %s%lu.%s\n", sinkc, sinki, sinkp);
+            printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sinkc, sinki, sinkp);
          }
          break;
       default:
-         printf("<font color=\"FireBrick\">not found</font>: %s\n", cmd);
+         printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
    }
    return(0);
 }

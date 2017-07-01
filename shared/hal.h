@@ -6,9 +6,9 @@
 #define HAL_COMP_CALC_TIME
 
 
-#define HAL_MAX_PINS 512
-#define HAL_MAX_COMPS 16
-#define HAL_MAX_CTX 4096
+#define HAL_MAX_PINS 1024
+#define HAL_MAX_COMPS 32
+#define HAL_MAX_CTX 16384
 
 #define HAL_COMP(name) 
 #define HAL_PIN(name) 
@@ -34,6 +34,7 @@ typedef const struct{
    void (*frt)(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr);
    
    void (*nrt_init)(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr);
+   void (*hw_init)(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr);
    void (*rt_start)(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr);
    void (*frt_start)(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr);
    void (*rt_stop)(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr);
@@ -142,7 +143,7 @@ volatile hal_comp_inst_t * comp_inst_by_pin_inst(volatile hal_pin_inst_t * p);
 void hal_print_pin(volatile hal_pin_inst_t * p);
 
 void hal_init(float rt_period, float frt_period);
-void hal_init_nrt();
+// void hal_init_nrt();
 void hal_start();
 void hal_stop();
 void hal_run_rt();

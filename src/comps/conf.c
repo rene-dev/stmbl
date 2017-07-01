@@ -14,8 +14,8 @@ HAL_PIN(psi);
 HAL_PIN(polecount);
 HAL_PIN(mot_type);//ac sync,async/dc,2phase
 HAL_PIN(out_rev);
-HAL_PIN(high_motor_temp);
-HAL_PIN(max_motor_temp);
+HAL_PIN(high_mot_temp);
+HAL_PIN(max_mot_temp);
 HAL_PIN(phase_time);
 HAL_PIN(phase_cur);
 
@@ -53,7 +53,7 @@ HAL_PIN(low_dc_volt);
 HAL_PIN(high_hv_temp);
 HAL_PIN(fan_hv_temp);
 HAL_PIN(fan_core_temp);
-HAL_PIN(fan_motor_temp);
+HAL_PIN(fan_mot_temp);
 
 HAL_PIN(g);
 HAL_PIN(pos_p);

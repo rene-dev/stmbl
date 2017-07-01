@@ -4,7 +4,7 @@
 #include "defines.h"
 #include "angle.h"
 
-HAL_COMP(i2t);
+HAL_COMP(iit);
 
 HAL_PIN(brake_r);
 HAL_PIN(brake);
@@ -23,13 +23,13 @@ HAL_PIN(id);
 HAL_PIN(iq);
 HAL_PIN(flow);
 
-struct i2t_ctx_t{
+struct iit_ctx_t{
    float mot_temp;
 };
 
 static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
-  struct i2t_ctx_t * ctx = (struct i2t_ctx_t *)ctx_ptr;
-  struct i2t_pin_ctx_t * pins = (struct i2t_pin_ctx_t *)pin_ptr;
+  struct iit_ctx_t * ctx = (struct iit_ctx_t *)ctx_ptr;
+  struct iit_pin_ctx_t * pins = (struct iit_pin_ctx_t *)pin_ptr;
   ctx->mot_temp = 25.0;
   PIN(brake_r) = 50.0;
   PIN(brake) = 2.0;
@@ -50,8 +50,8 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
 }
 
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
-   struct i2t_ctx_t * ctx = (struct i2t_ctx_t *)ctx_ptr;
-   struct i2t_pin_ctx_t * pins = (struct i2t_pin_ctx_t *)pin_ptr;
+   struct iit_ctx_t * ctx = (struct iit_ctx_t *)ctx_ptr;
+   struct iit_pin_ctx_t * pins = (struct iit_pin_ctx_t *)pin_ptr;
    
    float mot_real_res = PIN(mot_res) * (1 + 0.004 * (ctx->mot_temp - PIN(air_temp)));
    
@@ -74,8 +74,8 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    PIN(mot_real_psi) = PIN(mot_psi) * (1 - 0.0013 * (ctx->mot_temp - PIN(air_temp)));;
 }
 
-hal_comp_t i2t_comp_struct = {
-  .name = "i2t",
+hal_comp_t iit_comp_struct = {
+  .name = "iit",
   .nrt = 0,
   .rt = rt_func,
   .frt = 0,
@@ -84,6 +84,6 @@ hal_comp_t i2t_comp_struct = {
   .frt_start = 0,
   .rt_stop = 0,
   .frt_stop = 0,
-  .ctx_size = sizeof(struct i2t_ctx_t),
-  .pin_count = sizeof(struct i2t_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+  .ctx_size = sizeof(struct iit_ctx_t),
+  .pin_count = sizeof(struct iit_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
 };

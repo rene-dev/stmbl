@@ -39,7 +39,11 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    ctx->absoffset = 0.0;
    PIN(res) = 2048.0;
    PIN(ires) = 1024.0;
-   
+}
+
+static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   struct enc_fb_ctx_t * ctx = (struct enc_fb_ctx_t *)ctx_ptr;
+   struct enc_fb_pin_ctx_t * pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStructure;
   TIM_ICInitTypeDef TIM_ICInitStructure;
   TIM_ICInitStructure.TIM_Channel = TIM_Channel_1 | TIM_Channel_2;
@@ -77,7 +81,7 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
 
   // quad
   TIM_Cmd(FB0_ENC_TIM, DISABLE);
-  TIM_EncoderInterfaceConfig(FB0_ENC_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
+  TIM_EncoderInterfaceConfig(FB0_ENC_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Falling);
   TIM_Cmd(FB0_ENC_TIM, ENABLE);
 }
 
@@ -188,12 +192,13 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   
 }
 
-hal_comp_t enc_fb_comp_struct = {
+const hal_comp_t enc_fb_comp_struct = {
   .name = "enc_fb",
   .nrt = 0,
   .rt = rt_func,
   .frt = frt_func,
   .nrt_init = nrt_init,
+  .hw_init = hw_init,
   .rt_start = 0,
   .frt_start = 0,
   .rt_stop = 0,
