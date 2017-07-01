@@ -224,16 +224,22 @@ Wire Wire Line
 Wire Wire Line
 	10400 4200 10500 4200
 Wire Wire Line
-	10000 4500 10000 4700
+	10000 4500 10000 4600
+Wire Wire Line
+	10000 4600 10000 4700
 Connection ~ 9100 1500
 Wire Wire Line
 	8600 1500 8700 1500
 Wire Wire Line
-	9000 1500 9200 1500
+	9000 1500 9100 1500
+Wire Wire Line
+	9100 1500 9200 1500
 Wire Wire Line
 	7700 2400 7700 2300
 Wire Wire Line
-	7700 1800 7700 2000
+	7700 1800 7700 1900
+Wire Wire Line
+	7700 1900 7700 2000
 Wire Wire Line
 	7700 1900 9200 1900
 Connection ~ 8600 2000
@@ -247,21 +253,31 @@ Wire Wire Line
 Wire Wire Line
 	9100 2300 9100 2200
 Wire Wire Line
-	8500 2300 8700 2300
+	8500 2300 8600 2300
 Wire Wire Line
-	8500 2000 9100 2000
+	8600 2300 8700 2300
+Wire Wire Line
+	8500 2000 8600 2000
+Wire Wire Line
+	8600 2000 9100 2000
 Wire Wire Line
 	8100 2000 8200 2000
 Wire Wire Line
 	8100 2300 8200 2300
 Connection ~ 7700 1900
 Wire Wire Line
-	9700 1100 9700 1300
+	9700 1100 9700 1200
 Wire Wire Line
-	9900 1100 9900 1300
+	9700 1200 9700 1300
+Wire Wire Line
+	9900 1100 9900 1200
+Wire Wire Line
+	9900 1200 9900 1300
 Connection ~ 9900 1200
 Wire Wire Line
-	9800 1100 9800 1300
+	9800 1100 9800 1200
+Wire Wire Line
+	9800 1200 9800 1300
 Connection ~ 9800 1200
 Connection ~ 9700 1200
 Wire Wire Line
@@ -278,7 +294,11 @@ Connection ~ 9700 700
 Wire Wire Line
 	9700 4500 9700 4600
 Wire Wire Line
-	9700 4600 10000 4600
+	9700 4600 9800 4600
+Wire Wire Line
+	9800 4600 9900 4600
+Wire Wire Line
+	9900 4600 10000 4600
 Connection ~ 10000 4600
 Wire Wire Line
 	9800 4500 9800 4600
@@ -289,18 +309,34 @@ Connection ~ 9900 4600
 Wire Wire Line
 	9400 1100 9400 1200
 Wire Wire Line
-	9400 1200 9900 1200
+	9400 1200 9700 1200
 Wire Wire Line
-	9400 700  10800 700 
+	9700 1200 9800 1200
 Wire Wire Line
-	10000 1100 10000 1300
+	9800 1200 9900 1200
+Wire Wire Line
+	9400 700  9700 700 
+Wire Wire Line
+	9700 700  9800 700 
+Wire Wire Line
+	9800 700  9900 700 
+Wire Wire Line
+	9900 700  10000 700 
+Wire Wire Line
+	10000 700  10800 700 
+Wire Wire Line
+	10000 1100 10000 1200
+Wire Wire Line
+	10000 1200 10000 1300
 Wire Wire Line
 	10000 700  10000 800 
 Wire Wire Line
 	10100 1200 10000 1200
 Connection ~ 10000 1200
 Wire Wire Line
-	10700 1200 11050 1200
+	10700 1200 10800 1200
+Wire Wire Line
+	10800 1200 11050 1200
 Wire Wire Line
 	10800 1200 10800 1150
 Wire Wire Line
@@ -325,7 +361,9 @@ F 3 "" V 11800 2650 50  0000 C CNN
 	0    -1   1    0   
 $EndComp
 Wire Wire Line
-	11750 3150 11750 3350
+	11750 3150 11750 3250
+Wire Wire Line
+	11750 3250 11750 3350
 $Comp
 L R R4
 U 1 1 5825AC16
@@ -367,9 +405,11 @@ F 3 "" H 12250 2400 30  0000 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	11550 2750 12350 2750
+	12150 2750 12250 2750
 Wire Wire Line
-	11300 2650 12350 2650
+	12250 2750 12350 2750
+Wire Wire Line
+	12150 2650 12350 2650
 Wire Wire Line
 	12250 2550 12250 2750
 Connection ~ 12250 2750
@@ -484,7 +524,11 @@ Wire Wire Line
 Wire Wire Line
 	12350 4100 12450 4100
 Wire Wire Line
-	12450 4000 12450 4700
+	12450 4000 12450 4100
+Wire Wire Line
+	12450 4100 12450 4400
+Wire Wire Line
+	12450 4400 12450 4700
 Wire Wire Line
 	12450 4700 12350 4700
 Wire Wire Line
@@ -993,28 +1037,4 @@ F 3 "" H 8850 3300 30  0000 C CNN
 $EndComp
 Wire Wire Line
 	8700 3300 8550 3300
-$Comp
-L testpoint T5
-U 1 1 5948A81F
-P 11350 2750
-F 0 "T5" H 11350 2850 60  0000 C CNN
-F 1 "testpoint" H 11350 2650 60  0000 C CNN
-F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 11350 2750 60  0001 C CNN
-F 3 "" H 11350 2750 60  0000 C CNN
-	1    11350 2750
-	-1   0    0    1   
-$EndComp
-$Comp
-L testpoint T4
-U 1 1 5948A8B7
-P 11100 2650
-F 0 "T4" H 11100 2750 60  0000 C CNN
-F 1 "testpoint" H 11100 2550 60  0000 C CNN
-F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 11100 2650 60  0001 C CNN
-F 3 "" H 11100 2650 60  0000 C CNN
-	1    11100 2650
-	-1   0    0    1   
-$EndComp
-Connection ~ 12150 2650
-Connection ~ 12150 2750
 $EndSCHEMATC
