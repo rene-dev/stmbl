@@ -810,7 +810,7 @@ void hal_error(uint32_t error_handler){
 
 void fault(){
    printf("trigger fault handler\n");
-   volatile uint32_t * ptr = 0x08010000;
+   volatile uint32_t * ptr = (uint32_t*)0x08010000;
    ptr[0] = 1;
 }
 

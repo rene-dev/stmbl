@@ -9,7 +9,8 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    // struct rev_ctx_t * ctx = (struct rev_ctx_t *)ctx_ptr;
    struct hal_test_pin_ctx_t * pins = (struct hal_test_pin_ctx_t *)pin_ptr;
 
-   volatile uint32_t foo;
+   volatile uint32_t foo = 0;
+   (void)foo;
    for(uint32_t i = 0; i < PIN(rt_wait); i++){
      foo = 1;
    }
@@ -19,7 +20,8 @@ static void frt_func(float period, volatile void * ctx_ptr, volatile hal_pin_ins
    // struct rev_ctx_t * ctx = (struct rev_ctx_t *)ctx_ptr;
    struct hal_test_pin_ctx_t * pins = (struct hal_test_pin_ctx_t *)pin_ptr;
 
-   volatile uint32_t foo;
+   volatile uint32_t foo = 0;
+   (void)foo;
    for(uint32_t i = 0; i < PIN(frt_wait); i++){
      foo = 1;
    }

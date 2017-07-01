@@ -84,10 +84,10 @@ void conf_save(){
    //    return;
    // }
    hal_comp_inst_t *inst;
-   inst = comp_inst_by_name("conf",0);
+   inst = (hal_comp_inst_t*)comp_inst_by_name("conf",0);
    if(!inst){
       printf("conf0 not loaded\n");
-      return 0;
+      return;
    }
    typedef union{
       float f;
@@ -128,7 +128,7 @@ void conf_save(){
       return;
    }
    FLASH_Lock();
-   printf("saved %u parameters to flash\n",inst->comp->pin_count-2);
+   printf("saved %lu parameters to flash\n",inst->comp->pin_count-2);
 }
 
 COMMAND("confsave", conf_save);
@@ -140,7 +140,7 @@ int conf_load(){
    //    return(-4);
    // }
    hal_comp_inst_t *inst;
-   inst = comp_inst_by_name("conf",0);
+   inst = (hal_comp_inst_t*)comp_inst_by_name("conf",0);
    if(!inst){
       printf("conf0 not loaded\n");
       return 0;
@@ -187,7 +187,7 @@ int conf_load(){
    if(crc != lo){//CRC error
       return -5;
    }
-   printf("loaded %u parameters from flash\n",inst->comp->pin_count-2);
+   printf("loaded %lu parameters from flash\n",inst->comp->pin_count-2);
    //TODO: update stuff
    //update cmd/fb links
    //update_cmd();

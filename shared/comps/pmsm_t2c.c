@@ -34,7 +34,7 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
 }
 
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
-   struct pmsm_t2c_ctx_t * ctx = (struct pmsm_t2c_ctx_t *)ctx_ptr;
+   // struct pmsm_t2c_ctx_t * ctx = (struct pmsm_t2c_ctx_t *)ctx_ptr;
    struct pmsm_t2c_pin_ctx_t * pins = (struct pmsm_t2c_pin_ctx_t *)pin_ptr;
 
    float p = MAX(PIN(polecount), 1.0);

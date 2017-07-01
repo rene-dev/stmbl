@@ -49,7 +49,7 @@ struct fb_switch_ctx_t{
 
 static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    struct fb_switch_ctx_t * ctx = (struct fb_switch_ctx_t *)ctx_ptr;
-   struct fb_switch_pin_ctx_t * pins = (struct fb_switch_pin_ctx_t *)pin_ptr;
+   // struct fb_switch_pin_ctx_t * pins = (struct fb_switch_pin_ctx_t *)pin_ptr;
    ctx->current_com_pos = 10;
    ctx->cmd_offset = 0.0;
    ctx->com_offset = 0.0;
