@@ -28,23 +28,26 @@ SOURCES += stm32f303/src/usbd_desc.c
 SOURCES += stm32f303/src/version.c
 
 SOURCES += stm32f303/src/hal_tbl.c
-SOURCES += stm32f303/src/comps/hv.c
-SOURCES += stm32f303/src/comps/hvdc.c
-SOURCES += stm32f303/src/comps/io.c
-SOURCES += stm32f303/src/comps/ls.c
-SOURCES += stm32f303/src/comps/enc.c
 
-SOURCES += shared/comps/sim.c
-SOURCES += shared/comps/term.c
-SOURCES += shared/comps/curpid.c
-SOURCES += shared/comps/svm.c
-SOURCES += shared/comps/dq.c
-SOURCES += shared/comps/idq.c
-SOURCES += shared/comps/rev.c
-SOURCES += shared/comps/vel.c
-SOURCES += shared/comps/hal_test.c
-SOURCES += shared/comps/dc.c
-SOURCES += shared/comps/ypid.c
+COMPS += stm32f303/src/comps/hv.c
+COMPS += stm32f303/src/comps/hvdc.c
+COMPS += stm32f303/src/comps/io.c
+COMPS += stm32f303/src/comps/ls.c
+COMPS += stm32f303/src/comps/enc.c
+
+COMPS += shared/comps/sim.c
+COMPS += shared/comps/term.c
+COMPS += shared/comps/curpid.c
+COMPS += shared/comps/svm.c
+COMPS += shared/comps/dq.c
+COMPS += shared/comps/idq.c
+# COMPS += shared/comps/rev.c
+# COMPS += shared/comps/vel.c
+# COMPS += shared/comps/hal_test.c
+# COMPS += shared/comps/dc.c
+# COMPS += shared/comps/ypid.c
+
+SOURCES += $(COMPS)
 
 INCDIRS += shared
 SOURCES += shared/ringbuf.c
@@ -220,7 +223,7 @@ stm32f303/src/hal_tbl.c: tbl
 
 tbl:
 	@echo Generating tables
-	@tools/create_hal_tbl.py stm32f303/ shared/comps/*.c stm32f303/src/comps/*.c
+	@tools/create_hal_tbl.py stm32f303/ $(COMPS)
 	#shared/comps/*.c src/comps/hw/*.c src/comps/*.c
 	@tools/create_cmd.py $(SOURCES) > stm32f303/inc/commandslist.h
 

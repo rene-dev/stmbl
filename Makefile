@@ -24,31 +24,33 @@ SOURCES += src/usb_cdc.c
 # SOURCES += src/hal_conf.c
 SOURCES += src/hal_tbl.c
 
-SOURCES += src/comps/hw/io4.c
-SOURCES += src/comps/encm.c
-SOURCES += src/comps/hv.c
-SOURCES += src/comps/adc.c
-SOURCES += src/comps/enc_fb.c
-SOURCES += src/comps/conf.c
+COMPS += src/comps/hw/io4.c
+COMPS += src/comps/encm.c
+COMPS += src/comps/hv.c
+COMPS += src/comps/adc.c
+COMPS += src/comps/enc_fb.c
+COMPS += src/comps/conf.c
 
-SOURCES += shared/comps/sim.c
-SOURCES += shared/comps/term.c
-SOURCES += shared/comps/curpid.c
-SOURCES += shared/comps/svm.c
-SOURCES += shared/comps/dq.c
-SOURCES += shared/comps/idq.c
-SOURCES += shared/comps/vel.c
-SOURCES += shared/comps/rev.c
-SOURCES += shared/comps/hal_test.c
-SOURCES += shared/comps/dc.c
-SOURCES += shared/comps/ypid.c
-SOURCES += shared/comps/fault.c
-SOURCES += shared/comps/pid.c
-SOURCES += shared/comps/pmsm_limits.c
-SOURCES += shared/comps/pmsm_t2c.c
-SOURCES += shared/comps/uvw.c
-SOURCES += shared/comps/fanuc.c
-SOURCES += shared/comps/fb_switch.c
+COMPS += shared/comps/sim.c
+COMPS += shared/comps/term.c
+COMPS += shared/comps/curpid.c
+COMPS += shared/comps/svm.c
+COMPS += shared/comps/dq.c
+COMPS += shared/comps/idq.c
+COMPS += shared/comps/vel.c
+COMPS += shared/comps/rev.c
+COMPS += shared/comps/hal_test.c
+COMPS += shared/comps/dc.c
+COMPS += shared/comps/ypid.c
+COMPS += shared/comps/fault.c
+COMPS += shared/comps/pid.c
+COMPS += shared/comps/pmsm_limits.c
+COMPS += shared/comps/pmsm_t2c.c
+COMPS += shared/comps/uvw.c
+COMPS += shared/comps/fanuc.c
+COMPS += shared/comps/fb_switch.c
+
+SOURCES += $(COMPS)
 
 SOURCES += src/eeprom.c
 # SOURCES += src/link.c
@@ -216,7 +218,7 @@ src/hal_tbl.c: tbl
 
 tbl:
 	@echo Generating tables
-	@tools/create_hal_tbl.py . shared/comps/*.c src/comps/hw/*.c src/comps/*.c
+	@tools/create_hal_tbl.py . $(COMPS)
 	@tools/create_cmd.py $(SOURCES) > inc/commandslist.h
 
 boot:
