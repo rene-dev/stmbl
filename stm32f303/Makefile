@@ -53,7 +53,6 @@ INCDIRS += shared
 SOURCES += shared/ringbuf.c
 SOURCES += shared/crc8.c
 SOURCES += shared/crc16.c
-SOURCES += shared/common.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/commands.c

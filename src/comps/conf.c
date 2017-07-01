@@ -1,14 +1,9 @@
 #include <stdio.h>
-#include "hal_conf.h"
 #include "eeprom.h"
 #include "crc16.h"
-#include "link.h"
 #include "main.h" // for Wait
 #include "commands.h"
 #include "hal.h"
-#include "math.h"
-#include "defines.h"
-#include "angle.h"
 
 HAL_COMP(conf);
 
@@ -71,21 +66,7 @@ HAL_PIN(cur_ff);
 HAL_PIN(cur_ind);
 HAL_PIN(max_sat);
 
-// void conf_bla(char * ptr){
-//    hal_comp_inst_t *inst;
-//    inst = comp_inst_by_name("conf",0);
-//    if(inst){
-//       for(int i = 2; i < inst->comp->pin_count; i++){
-//          printf("%s: %f\n",inst->pins[i],inst->pin_insts[i].source->value);
-//       }
-//       printf("found! %u\n",inst->comp->pin_count);
-//    }else{
-//       printf("conf0 not loaded\n");
-//    }
-// }
-//
-// CDOMMAND("confbla", conf_bla);
-
+//initialise empty or corrupt flash section
 uint16_t conf_init(){
    FLASH_Unlock();
    uint16_t ret = EE_Init();
@@ -95,6 +76,7 @@ uint16_t conf_init(){
 }
 COMMAND("confinit", conf_init);
 
+//save all pins to flash
 void conf_save(){
    //TODO: check hal running?
    // if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
@@ -127,7 +109,7 @@ void conf_save(){
       param.f = inst->pin_insts[i].source->value;
       crc = crc16_update(crc, (void*)&param.byte[0], 2);
       crc = crc16_update(crc, (void*)&param.byte[1], 2);
-      //printf("param: %s=%f address:%i\n",hal.hal_pins[i]->name,param.f,address);
+      //printf("param: %s=%f address:%i\n",inst->pins[i],param.f,address);
       elo = EE_WriteVariable(address,param.byte[0]);
       ehi = EE_WriteVariable(address+1,param.byte[1]);
       if(elo != FLASH_COMPLETE || ehi != FLASH_COMPLETE){
@@ -151,6 +133,7 @@ void conf_save(){
 
 COMMAND("confsave", conf_save);
 
+//load pins from flash
 int conf_load(){
    //TODO: check hal running?
    // if(hal.rt_state != RT_STOP || hal.frt_state != FRT_STOP){
