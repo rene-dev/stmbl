@@ -1,27 +1,50 @@
-//using FB_TX
+#include "commands.h"
+#include "hal.h"
+#include "math.h"
+#include "defines.h"
+#include "angle.h"
+#include "stm32f4xx_conf.h"
+#include "hw/hw.h"
 
 HAL_COMP(res);
 
-HAL_PIN(pos) = 0.0;
-HAL_PIN(amp) = 0.0;
-HAL_PIN(quad) = 0.0;
-HAL_PIN(poles) = 1.0;
+HAL_PIN(pos);
+HAL_PIN(amp);
+HAL_PIN(quad);
+HAL_PIN(poles);
 
-HAL_PIN(vel) = 0.0; // TODO: vel rev, fb,cmd -> vel0,1 -> rev
+HAL_PIN(vel); // TODO: vel rev, fb,cmd -> vel0,1 -> rev
 
-HAL_PIN(sin) = 0.0;
-HAL_PIN(cos) = 0.0;
+HAL_PIN(sin);
+HAL_PIN(cos);
 
-HAL_PIN(enable) = 0.0;
-HAL_PIN(error) = 0.0;
-HAL_PIN(error_n) = 1.0;
-HAL_PIN(tim_oc) = 47.0;
-MEM(int lastq) = 0;// last quadrant
-MEM(int abspos) = 0;// multiturn position
+HAL_PIN(enable);
+HAL_PIN(error);
+HAL_PIN(error_n);
+HAL_PIN(tim_oc);
 
 // TODO: in hal stop, reset adc dma
 
-RT_INIT(
+struct res_ctx_t{
+   int lastq;// last quadrant
+   int abspos;// multiturn position
+};
+
+static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   struct res_ctx_t * ctx = (struct res_ctx_t *)ctx_ptr;
+   struct res_pin_ctx_t * pins = (struct res_pin_ctx_t *)pin_ptr;
+   
+   PIN(poles) = 1.0;
+   PIN(error_n) = 1.0;
+   PIN(tim_oc) = 47.0;
+   
+   ctx->abspos = 0;
+   ctx->lastq = 0;
+   
+   TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+   TIM_OCInitTypeDef TIM_OCInitStructure;
+   GPIO_InitTypeDef GPIO_InitStructure;
+   
    //timer init for v4, v3 uses slave timer
    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -79,22 +102,11 @@ RT_INIT(
    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
    GPIO_Init(FB0_Z_TXEN_PORT, &GPIO_InitStructure);
    GPIO_SetBits(FB0_Z_TXEN_PORT,FB0_Z_TXEN_PIN);
-);
+}
 
-RT_DEINIT(
-   // GPIO_ResetBits(GPIOB,GPIO_Pin_12);//tx disable
-   // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_12;
-   // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-   // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-   // GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-   // GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-   // GPIO_Init(GPIOB, &GPIO_InitStructure);
-   // TIM_CtrlPWMOutputs(TIM2, DISABLE);
-   // TIM_OCStructInit(&TIM_OCInitStructure);
-   // TIM_OC3Init(TIM2, &TIM_OCInitStructure);
-);
-
-RT(
+static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   struct res_ctx_t * ctx = (struct res_ctx_t *)ctx_ptr;
+   struct res_pin_ctx_t * pins = (struct res_pin_ctx_t *)pin_ptr;
    //TODO: arr can change!
    TIM4->CCR3 = (int)CLAMP(PIN(tim_oc), 0, TIM4->ARR - 1);
    
@@ -123,26 +135,38 @@ RT(
       }else{
          int q = PIN(quad);// current quadrant
 
-         if(lastq == 2 && q == 3)
-            abspos++;
-         if(lastq == 3 && q == 2)
-            abspos--;
+         if(ctx->lastq == 2 && q == 3)
+            ctx->abspos++;
+         if(ctx->lastq == 3 && q == 2)
+            ctx->abspos--;
 
-			if(abspos >= p){
-				abspos = 0;
+			if(ctx->abspos >= p){
+				ctx->abspos = 0;
 			}
-			if(abspos <= -1){
-				abspos = p - 1;
+			if(ctx->abspos <= -1){
+				ctx->abspos = p - 1;
 			}
 
-         lastq = q;
-         //TODO: clamp abspos
-         float absa = pos + abspos * M_PI * 2.0f;
+         ctx->lastq = q;
+         //TODO: clamp ctx->abspos
+         float absa = pos + ctx->abspos * M_PI * 2.0f;
          PIN(pos) = mod(absa/p + dpos);
       }
 	}
 	PIN(amp) = a;
-);
+}
 
-
-ENDCOMP;
+const hal_comp_t res_comp_struct = {
+  .name = "res",
+  .nrt = 0,
+  .rt = rt_func,
+  .frt = 0,
+  .nrt_init = 0,
+  .hw_init = hw_init,
+  .rt_start = 0,
+  .frt_start = 0,
+  .rt_stop = 0,
+  .frt_stop = 0,
+  .ctx_size = sizeof(struct res_ctx_t),
+  .pin_count = sizeof(struct res_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+};
