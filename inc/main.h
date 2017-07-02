@@ -14,8 +14,9 @@ typedef enum{
 typedef enum{
    NO_ERROR = 0,
    CMD_ERROR,
-   FB0_ERROR,
-   FB1_ERROR,
+   MOT_FB_ERROR,
+   COM_FB_ERROR,
+   JOINT_FB_ERROR,
    POS_ERROR,
    SAT_ERROR,
    HV_ERROR,

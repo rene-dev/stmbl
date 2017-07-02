@@ -49,8 +49,8 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   PIN(sin_gain) = 1.0;
   PIN(cos_gain) = 1.0;
   ctx->txpos = 0;
-  ctx->send_counter = 0;//send_step counter
-  ctx->send = 0;//send buffer state
+  ctx->send_counter = 0; //send_step counter
+  ctx->send = 1; //send buffer state
 }
 
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
@@ -84,7 +84,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
          //ADC dual mode puts both channels in one word, right aligned.
          sii += ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff;
          coi += ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16;
-         if(ctx->send == 0){
+         if(ctx->send == 0){ // TODO: move V_DIFF2 to nrt, this is too slow
            ctx->txbuf[0][ctx->txpos] = (((i==0 || i==2) && (PIN(res_en) > 0.0))?-1.0:1.0) * V_DIFF2(ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff);
            ctx->txbuf[1][ctx->txpos] = (((i==0 || i==2) && (PIN(res_en) > 0.0))?-1.0:1.0) * V_DIFF2(ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16);
            ctx->txpos++;
@@ -151,7 +151,7 @@ static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
       USB_VCP_send_string(buf);
     }
     ctx->send_counter = 0;
-    ctx->send = 0.0;
+    ctx->send = 0;
   }
 }
 

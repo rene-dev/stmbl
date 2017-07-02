@@ -45,7 +45,6 @@ HAL_PIN(v_fb);
 HAL_PIN(w_fb);
 
 // misc
-HAL_PIN(polecount);
 HAL_PIN(rev);
 HAL_PIN(com_error);
 HAL_PIN(pwm_volt);
@@ -53,6 +52,7 @@ HAL_PIN(uart_sr);
 HAL_PIN(uart_dr);
 HAL_PIN(crc_error);
 HAL_PIN(timeout);
+HAL_PIN(scale);
 
 struct hv_ctx_t{
    volatile packet_to_hv_t packet_to_hv;
@@ -167,9 +167,8 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    struct hv_pin_ctx_t * pins = (struct hv_pin_ctx_t *)pin_ptr;
    
    float e = PIN(en);
-   float p = (int)MAX(PIN(polecount), 1.0);
-   float pos = mod(PIN(pos) * p);
-   float vel = PIN(vel) * p;
+   float pos = PIN(pos);
+   float vel = PIN(vel);
    
    ctx->config.pins.mode = PIN(mode);
    ctx->config.pins.r = PIN(r);
@@ -180,7 +179,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    ctx->config.pins.cur_ff = PIN(cur_ff);
    ctx->config.pins.cur_ind = PIN(cur_ind);
    ctx->config.pins.max_y = PIN(max_y);
-   ctx->config.pins.max_cur = PIN(max_cur);
+   ctx->config.pins.max_cur = PIN(max_cur) * PIN(scale);
 
    uint32_t dma_pos = DMA_GetCurrDataCounter(UART_DRV_RX_DMA);
    if(dma_pos == 0){

@@ -22,13 +22,15 @@ HAL_PIN(fb);
 HAL_PIN(start_offset);
 
 HAL_PIN(cmd_error);
-HAL_PIN(fb0_error);
-HAL_PIN(fb1_error);
+HAL_PIN(mot_fb_error);
+HAL_PIN(com_fb_error);
+HAL_PIN(joint_fb_error);
 HAL_PIN(hv_error);
 
 HAL_PIN(cmd_ready);
-HAL_PIN(fb0_ready);
-HAL_PIN(fb1_ready);
+HAL_PIN(mot_fb_ready);
+HAL_PIN(com_fb_ready);
+HAL_PIN(joint_fb_ready);
 HAL_PIN(hv_ready);
 
 HAL_PIN(hv_temp);
@@ -89,8 +91,9 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    PIN(high_dc_volt) = 370.0;
    PIN(max_dc_volt) = 390.0;
    PIN(cmd_ready) = 1.0;
-   PIN(fb0_ready) = 1.0;
-   PIN(fb1_ready) = 1.0;
+   PIN(mot_fb_ready) = 1.0;
+   PIN(com_fb_ready) = 1.0;
+   PIN(joint_fb_ready) = 1.0;
    PIN(hv_ready) = 1.0;
    PIN(max_hv_temp) = 90.0;
    PIN(max_mot_temp) = 100.0;
@@ -110,7 +113,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    
    switch(ctx->state){
       case DISABLED:
-         if(RISING_EDGE(PIN(en)) & (PIN(cmd_ready) > 0.0) & (PIN(fb0_ready) > 0.0) & (PIN(fb1_ready) > 0.0) & (PIN(hv_ready) > 0.0)){
+         if(RISING_EDGE(PIN(en)) & (PIN(cmd_ready) > 0.0) & (PIN(mot_fb_ready) > 0.0) & (PIN(com_fb_ready) > 0.0) & (PIN(joint_fb_ready) > 0.0) & (PIN(hv_ready) > 0.0)){
             if(PIN(rephase) > 0.0){ // TODO: check phase_on_start
                ctx->phased = 0;
             }
@@ -144,7 +147,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       case SOFT_FAULT:
          if(PIN(en) <= 0.0){
             ctx->state = DISABLED;
-         }else if(FALLING_EDGE(PIN(reset)) & (PIN(cmd_ready) > 0.0) & (PIN(fb0_ready) > 0.0) & (PIN(fb1_ready) > 0.0) & (PIN(hv_ready) > 0.0)){
+         }else if(FALLING_EDGE(PIN(reset)) & (PIN(cmd_ready) > 0.0) & (PIN(mot_fb_ready) > 0.0) & (PIN(com_fb_ready) > 0.0) & (PIN(joint_fb_ready) > 0.0) & (PIN(hv_ready) > 0.0)){
             //TODO: phasing
             ctx->state = ENABLED;
             PIN(start_offset) = minus(PIN(fb), PIN(cmd));
@@ -161,14 +164,20 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       ctx->state = SOFT_FAULT;
    }
 
-   if(PIN(fb0_error) > 0.0){
-      ctx->fault = FB0_ERROR;
+   if(PIN(mot_fb_error) > 0.0){
+      ctx->fault = MOT_FB_ERROR;
       ctx->state = SOFT_FAULT;
       ctx->phased = 0;
    }
 
-   if(PIN(fb1_error) > 0.0){
-      ctx->fault = FB1_ERROR;
+   if(PIN(com_fb_error) > 0.0){
+      ctx->fault = COM_FB_ERROR;
+      ctx->state = SOFT_FAULT;
+      ctx->phased = 0;
+   }
+   
+   if(PIN(joint_fb_error) > 0.0){
+      ctx->fault = JOINT_FB_ERROR;
       ctx->state = SOFT_FAULT;
       ctx->phased = 0;
    }
@@ -239,7 +248,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
          PIN(en_out) = 0.0;
          PIN(en_pid) = 0.0;
          ctx->fault = NO_ERROR;
-         scale = 0.0;
+         // scale = 0.0;
       break;
       
       case ENABLED:
@@ -264,7 +273,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
          PIN(mot_brake) = 0.0;
          PIN(en_out) = 0.0;
          PIN(en_pid) = 0.0;
-         scale = 0.0;
+         // scale = 0.0;
       break;
       
       case LED_TEST:
@@ -273,7 +282,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
          PIN(mot_brake) = 0.0;
          PIN(en_out) = 0.0;
          PIN(en_pid) = 0.0;
-         scale = 0.0;
+         // scale = 0.0;
       break;
    }
 
@@ -317,12 +326,16 @@ if(EDGE(ctx->state) || PIN(print) > 0.0){
          printf("CMD error\n");
          break;
         
-         case FB0_ERROR:
-         printf("FB0 error\n");
+         case MOT_FB_ERROR:
+         printf("mot FB error\n");
          break;
         
-         case FB1_ERROR:
-         printf("FB1 error\n");
+         case COM_FB_ERROR:
+         printf("com FB error\n");
+         break;
+         
+         case JOINT_FB_ERROR:
+         printf("com FB error\n");
          break;
         
          case POS_ERROR:
