@@ -52,6 +52,7 @@ COMPS += shared/comps/fb_switch.c
 COMPS += shared/comps/reslimit.c
 COMPS += shared/comps/iit.c
 COMPS += shared/comps/vel_int.c
+COMPS += shared/comps/linrev.c
 
 SOURCES += $(COMPS)
 
