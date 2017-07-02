@@ -19,6 +19,7 @@ void setup(){
    setup_res();
    usb_init();
    
+   GPIO_InitTypeDef GPIO_InitStructure;
    // messpin
    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -42,6 +43,8 @@ void setup(){
 // slave timer OC generates resolver reference signal at 10kHz, phase can be adjusted by oc value
 // DMA2 moves ADC_ANZ samples to memory, generates transfer complete interrupt at 5kHz
 void setup_res(){
+   TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+   TIM_OCInitTypeDef TIM_OCInitStructure;
    //master timer
    RCC_APB1PeriphClockCmd(TIM_MASTER_RCC, ENABLE);
    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -52,7 +55,7 @@ void setup_res(){
    TIM_TimeBaseInit(TIM_MASTER, &TIM_TimeBaseStructure);
    TIM_ARRPreloadConfig(TIM_MASTER,ENABLE);
    TIM_SelectOutputTrigger(TIM_MASTER, TIM_TRGOSource_Update);// trigger ADC
-
+   
    //oc for adc trigger
    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
@@ -83,6 +86,7 @@ void setup_res(){
     RCC_APB2PeriphClockCmd(SIN_ADC_RCC | COS_ADC_RCC, ENABLE);
 
     //Analog pin configuration
+    GPIO_InitTypeDef GPIO_InitStructure;
     GPIO_InitStructure.GPIO_Pin = SIN_PIN;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
@@ -93,7 +97,7 @@ void setup_res(){
 
     //ADC structure configuration
     ADC_DeInit();
-
+    ADC_InitTypeDef ADC_InitStructure;
     ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;//data converted will be shifted to right
     ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;//Input voltage is converted into a 12bit number giving a maximum value of 4096
     ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; //the conversion is continuous, the input data is converted more than once
@@ -128,6 +132,7 @@ void setup_res(){
     DMA_DeInit(DMA2_Stream0);
 
     // DMA2-Config
+    DMA_InitTypeDef DMA_InitStructure;
     DMA_InitStructure.DMA_Channel = DMA_Channel_0;
     DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC->CDR;
     DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&ADC_DMA_Buffer0;
@@ -148,6 +153,7 @@ void setup_res(){
     //DMA_DoubleBufferModeCmd(DMA2_Stream0, ENABLE);
     DMA_Init(DMA2_Stream0, &DMA_InitStructure);
 
+    NVIC_InitTypeDef NVIC_InitStructure;
     //HAL Fast realtime irq 20kHz
     NVIC_InitStructure.NVIC_IRQChannel = TIM_SLAVE_IRQ;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
