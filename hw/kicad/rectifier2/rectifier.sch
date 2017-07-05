@@ -1133,30 +1133,6 @@ R_FET
 Wire Wire Line
 	8900 6050 9050 6050
 $Comp
-L Q_NMOS_GDS Q1
-U 1 1 595A3313
-P 8000 6050
-F 0 "Q1" H 8205 6096 50  0000 L CNN
-F 1 "Q_NMOS_GDS" H 8205 6005 50  0000 L CNN
-F 2 "" H 8200 6150 50  0001 C CNN
-F 3 "" H 8000 6050 50  0001 C CNN
-	1    8000 6050
-	1    0    0    -1  
-$EndComp
-Text GLabel 8100 5800 1    60   Input ~ 0
-REL
-$Comp
-L GNDPWR #PWR25
-U 1 1 595A3BC7
-P 8100 6300
-F 0 "#PWR25" H 8100 6100 50  0001 C CNN
-F 1 "GNDPWR" H 8100 6170 50  0000 C CNN
-F 2 "" H 8100 6250 60  0000 C CNN
-F 3 "" H 8100 6250 60  0000 C CNN
-	1    8100 6300
-	1    0    0    -1  
-$EndComp
-$Comp
 L D D4
 U 1 1 595A4986
 P 2850 1300
@@ -1169,14 +1145,6 @@ F 3 "" H 2850 1300 50  0001 C CNN
 $EndComp
 Text GLabel 5100 1650 2    60   Input ~ 0
 REL
-Wire Wire Line
-	8100 6300 8100 6250
-Wire Wire Line
-	8100 5850 8100 5800
-Text GLabel 7750 6050 0    60   Input ~ 0
-REL_FET
-Wire Wire Line
-	7750 6050 7800 6050
 $Comp
 L R R4
 U 1 1 595A657A
@@ -1247,14 +1215,10 @@ Text GLabel 8600 4050 2    60   Input ~ 0
 VDC_in
 Wire Wire Line
 	8450 4050 8600 4050
-Text GLabel 8600 4550 2    60   Input ~ 0
-REL_FET
 Text GLabel 8600 3950 2    60   Input ~ 0
 R_FET
 Wire Wire Line
 	8450 3950 8600 3950
-Wire Wire Line
-	8450 4550 8600 4550
 Text GLabel 8600 4950 2    60   Input ~ 0
 swdio
 Text GLabel 8600 5050 2    60   Input ~ 0
@@ -1639,4 +1603,8 @@ Text GLabel 8600 4350 2    60   Input ~ 0
 ENABLED_HIGH
 Wire Wire Line
 	8450 4350 8600 4350
+Wire Wire Line
+	8450 4550 8600 4550
+Text GLabel 8600 4550 2    60   Input ~ 0
+REL
 $EndSCHEMATC
