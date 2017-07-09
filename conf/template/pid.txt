@@ -1,6 +1,6 @@
 load conf
 load adc
-load res_limit
+load reslimit
 load rev
 load rev
 load rev
@@ -16,9 +16,8 @@ load iit
 load sim
 load stp
 load io
-confload
 adc0.rt_prio = 1
-res_limit0.rt_prio = 3
+reslimit0.rt_prio = 3
 rev0.rt_prio = 4
 rev1.rt_prio = 4
 rev2.rt_prio = 4
@@ -110,59 +109,3 @@ io0.out0 = fault0.mot_brake
 io0.fan = fault0.hv_fan
 io0.fault = fault0.fault
 io0.state = fault0.state
-load pmsm_limits
-load pmsm_ttc
-pmsm_limits0.rt_prio = 7
-pmsm_ttc0.rt_prio = 9
-pmsm_limits0.r = conf0.r
-pmsm_limits0.ld = conf0.l
-pmsm_limits0.lq = conf0.l
-pmsm_limits0.psi = conf0.psi
-pmsm_limits0.j = conf0.j
-pmsm_limits0.polecount = conf0.polecount
-pmsm_ttc0.psi = conf0.psi
-pmsm_ttc0.polecount = conf0.polecount
-pmsm_limits0.ac_volt = hv0.pwm_volt
-pmsm_limits0.iq = hv0.q_fb
-pmsm_limits0.id = hv0.d_fb
-pid0.max_torque = pmsm_limits0.max_torque
-pid0.min_torque = pmsm_limits0.min_torque
-pid0.max_vel = pmsm_limits0.abs_max_vel
-pmsm_ttc0.torque = pid0.torque_cor_cmd
-hv0.q_cmd = pmsm_ttc0.cur
-load enc_fb
-enc_fb0.rt_prio = 2
-enc_fb0.frt_prio = 1
-enc_fb0.res = conf0.fb_res
-enc_fb0.sin = adc0.sin3
-enc_fb0.cos = adc0.cos3
-enc_fb0.quad = adc0.quad
-rev1.in = enc_fb0.pos
-fb_switch0.mot_polecount = 1
-fb_switch0.mot_state = 1
-fault0.mot_fb_error = enc_fb0.error
-load uvw
-uvw0.rt_prio = 2
-uvw0.u = io0.fb1a
-uvw0.v = io0.fb1b
-uvw0.w = io0.fb1z
-rev2.in = uvw0.pos
-fb_switch0.com_state = 3
-fb_switch0.com_polecount = conf0.polecount
-fault0.mot_temp = 0
-term0.wave0 = vel0.pos_out
-term0.wave1 = fb_switch0.pos_fb
-term0.wave2 = vel0.vel
-term0.wave3 = vel1.vel
-conf0.autophase = 0
-conf0.max_ac_cur = 5
-conf0.out_rev = 1
-conf0.vel_i = 2
-conf0.j = 0.0002
-conf0.cur_i = 0.0001
-conf0.cur_p = 0.2
-rev1.rev = 1
-rev0.in = sim0.msin
-sim0.freq = 0.2
-init_hw
-start

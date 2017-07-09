@@ -1,0 +1,15 @@
+fault0.mot_temp = 0
+term0.wave0 = vel0.pos_out
+term0.wave1 = fb_switch0.pos_fb
+term0.wave2 = vel0.vel
+term0.wave3 = vel1.vel
+conf0.autophase = 0
+conf0.max_ac_cur = 5
+conf0.out_rev = 1
+conf0.vel_i = 2
+conf0.j = 0.0002
+conf0.cur_i = 0.0001
+conf0.cur_p = 0.2
+rev1.rev = 1
+rev0.in = sim0.msin
+sim0.freq = 0.2

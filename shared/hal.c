@@ -697,7 +697,29 @@ void hal_print_pin(volatile hal_pin_inst_t * p){
    }
 }
 
+char * findline(char * ptr){
+   for(int i = 0; i < 64; i++){
+      if(ptr[i] == 0){
+         return(0);
+      }
+      if(ptr[i] == '\n'){
+         return(ptr + i + 1);
+      }
+   }
+   return(0);
+}
+
+uint32_t hal_parse_(char * cmd);
+
 uint32_t hal_parse(char * cmd){
+   do{
+      hal_parse_(cmd);
+      cmd = findline(cmd);
+   }while(cmd);
+   return(0);
+}
+
+uint32_t hal_parse_(char * cmd){
    if(call_cmd(cmd)){
       return(1);
    }

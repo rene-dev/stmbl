@@ -81,6 +81,65 @@ void nv_reset(char * ptr){
 }
 COMMAND("reset", nv_reset);
 
+
+char config[15*1024];
+const char* config_ro = (char*)0x08008000;
+
+void flashloadconf(char * ptr){
+   strncpy(config,config_ro,sizeof(config));
+}
+COMMAND("flashloadconf", flashloadconf);
+
+void flashsaveconf(char * ptr){
+   printf("erasing flash page...\n");
+   FLASH_Unlock();
+   if(FLASH_EraseSector(FLASH_Sector_2,VoltageRange_3) != FLASH_COMPLETE){
+      printf("error!\n");
+      FLASH_Lock();
+      return;
+   }
+   printf("saving conf\n");
+   int i = 0;
+   int ret = 0;
+   do{
+      ret = FLASH_ProgramByte((uint32_t)(config_ro + i), config[i]) != FLASH_COMPLETE;
+      if(ret){
+         printf("error writing %i\n",ret);
+         break;
+      }
+   }while(config[i++] != 0);
+   printf("OK %i bytes written\n",i);
+   FLASH_Lock();
+}
+COMMAND("flashsaveconf", flashsaveconf);
+
+void loadconf(char * ptr){
+   hal_parse(config);
+}
+COMMAND("loadconf", loadconf);
+
+void showconf(char * ptr){
+   printf("** ram **\n");
+   printf("%s",config);
+   printf("** flash **\n");
+   printf("%s",config_ro);
+}
+COMMAND("showconf", showconf);
+
+void appendconf(char * ptr){
+   printf("adding %s\n",ptr);
+   strncat(config,ptr,sizeof(config) - 1);
+   strncat(config,"\n",sizeof(config) - 1);
+}
+COMMAND("appendconf", appendconf);
+
+void deleteconf(char * ptr){
+   config[0] = '\0';
+}
+COMMAND("deleteconf", deleteconf);
+
+
+
 int main(void)
 {
    // Relocate interrupt vectors
@@ -92,12 +151,16 @@ int main(void)
    hal_init(0.0002, 0.00005);
    // hal load comps
    load_comp(comp_by_name("term"));
+   hal_parse("flashloadconf");
+   hal_parse("loadconf");
+   
    // load_comp(comp_by_name("sim"));
    // load_comp(comp_by_name("io"));
    // load_comp(comp_by_name("encm"));
    // load_comp(comp_by_name("hv"));
    // load_comp(comp_by_name("hal_test"));
-   hal_parse("term0.rt_prio = 20");
+   //hal_parse("term0.rt_prio = 20");
+   // hal_parse("load conf\nload adc\n        load          reslimit\n# foo bar\nload rev\nload pid");
    // hal_parse("encm0.rt_prio = 1");
    // hal_parse("sim0.rt_prio = 2");
    // hal_parse("io0.rt_prio = 10");

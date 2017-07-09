@@ -1,0 +1,8 @@
+load uvw
+uvw0.rt_prio = 2
+uvw0.u = io0.fb1a
+uvw0.v = io0.fb1b
+uvw0.w = io0.fb1z
+rev2.in = uvw0.pos
+fb_switch0.com_state = 3
+fb_switch0.com_polecount = conf0.polecount
