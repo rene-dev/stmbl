@@ -225,6 +225,7 @@ sym: $(TARGET).sym
 inc/commandslist.h: tbl
 inc/hal_tbl.h: tbl
 src/hal_tbl.c: tbl
+src/conf_templates.c: tbl
 
 tbl:
 	@echo Generating tables
@@ -284,6 +285,7 @@ clean:
 	# rm -rf hv_firmware.o
 	rm -rf $(OBJDIR)
 	rm -rf inc/commandslist.h
+	rm -rf src/conf_templates.c
 	@$(MAKE) -f bootloader/Makefile clean
 	@$(MAKE) -f stm32f103/Makefile clean
 
