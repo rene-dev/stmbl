@@ -229,8 +229,8 @@ src/hal_tbl.c: tbl
 tbl:
 	@echo Generating tables
 	@tools/create_hal_tbl.py . $(COMPS)
-	@tools/create_cmd.py $(SOURCES) > inc/commandslist.h
 	@tools/create_config.py conf/template/* > src/conf_templates.c
+	@tools/create_cmd.py $(SOURCES) > inc/commandslist.h
 
 boot:
 	$(MAKE) -f bootloader/Makefile
