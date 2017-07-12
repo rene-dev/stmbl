@@ -80,6 +80,9 @@ volatile hal_comp_inst_t * comp_inst_by_pin_inst(volatile hal_pin_inst_t * p){
 
 void hal_term_print_state(){
    switch(hal.hal_state){
+      case PRE_HW_INIT:
+      printf("HAL state:  PRE_HW_INIT\n");
+      break;
       case HAL_OK2:
       printf("HAL state:  HAL_OK2\n");
       break;
@@ -458,7 +461,7 @@ void hal_run_nrt(){
    #endif
 }
 
-void hal_init_hw(char * ptr){
+void hal_init_hw(){
    for(int i = 0; i < hal.comp_inst_count; i++){
       if(hal.comp_insts[i].comp->hw_init != 0){
          hal.comp_insts[i].comp->hw_init(hal.comp_insts[i].ctx, hal.comp_insts[i].pin_insts);
@@ -466,7 +469,6 @@ void hal_init_hw(char * ptr){
    }
 }
 
-COMMAND("init_hw", hal_init_hw, "call hw init function");
 
 void load(char * ptr){
    printf("load :%s:\n", ptr);
@@ -597,7 +599,11 @@ void start_frt(){
 }
 
 void hal_start(){
+   if(hal.hal_state == PRE_HW_INIT){
+      hal_init_hw();
+   }
    hal.hal_state = HAL_OK2;
+   
    sort_rt();
    sort_frt();
    start_rt();
@@ -637,7 +643,7 @@ void hal_init(float rt_period, float frt_period){
    hal.rt_state = RT_STOP;
    hal.frt_state = FRT_STOP;
    
-   hal.hal_state = HAL_OK2;
+   hal.hal_state = PRE_HW_INIT;
    
    for(int i = 0; i < HAL_MAX_COMPS; i++){
       hal.rt_comps[i] = 0;

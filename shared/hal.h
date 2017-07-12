@@ -97,7 +97,8 @@ typedef struct{
      CONFIG_LOAD_ERROR,
      CONFIG_ERROR,
      NAN_ERROR,
-     HAL_OK2
+     HAL_OK2,
+     PRE_HW_INIT // TODO: / comp instance
    } hal_state;
    
    volatile struct hal_comp_inst_t * rt_comps[HAL_MAX_COMPS];
