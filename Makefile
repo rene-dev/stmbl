@@ -70,6 +70,9 @@ SOURCES += shared/crc16.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/commands.c
+SOURCES += shared/config.c
+SOURCES += src/conf_templates.c
+
 # SOURCES += shared/hal_term.c
 # SOURCES += shared/scanf.c
 SOURCES += shared/ringbuf.c
@@ -227,6 +230,7 @@ tbl:
 	@echo Generating tables
 	@tools/create_hal_tbl.py . $(COMPS)
 	@tools/create_cmd.py $(SOURCES) > inc/commandslist.h
+	@tools/create_config.py conf/template/* > src/conf_templates.c
 
 boot:
 	$(MAKE) -f bootloader/Makefile
