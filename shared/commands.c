@@ -27,8 +27,8 @@ uint32_t call_cmd(char * s){
 
 void listcmd(char * ptr){
   for(uint32_t i = 0; i < sizeof(cmd) / sizeof(cmd_t); i++){
-    printf("%s\n",cmd[i].name);
+    printf("%s: %s\n",cmd[i].name, cmd[i].doc);
   }
 }
 
-COMMAND("help", listcmd);
+COMMAND("help", listcmd, "print this");

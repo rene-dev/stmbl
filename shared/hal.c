@@ -246,7 +246,7 @@ void hal_term_print_info(char * ptr){
    }
 }
 
-COMMAND("hal", hal_term_print_info);
+COMMAND("hal", hal_term_print_info, "print HAL stats");
 
 
 uint32_t load_comp(hal_comp_t * comp){
@@ -466,14 +466,14 @@ void hal_init_hw(char * ptr){
    }
 }
 
-COMMAND("init_hw", hal_init_hw);
+COMMAND("init_hw", hal_init_hw, "call hw init function");
 
 void load(char * ptr){
    printf("load :%s:\n", ptr);
    load_comp(comp_by_name(ptr));
 }
 
-COMMAND("load", load);
+COMMAND("load", load, "load comp from flash");
 
 void show(char * ptr){
    int j = 0;
@@ -488,7 +488,7 @@ void show(char * ptr){
       pin_offset += comps[i]->pin_count;
    }
 }
-COMMAND("show", show);
+COMMAND("show", show, "show comps in flash");
 
 void list(char * ptr){
    for(int i = 0; i < hal.comp_inst_count; i++){
@@ -504,7 +504,7 @@ void list(char * ptr){
       }
    }
 }
-COMMAND("list", list);
+COMMAND("list", list, "show comps");
 
 void sort_rt(){
    float min = INFINITY;
@@ -604,7 +604,7 @@ void hal_start(){
    start_frt();
 }
 
-COMMAND("start", hal_start);
+COMMAND("start", hal_start, "start rt system");
 
 void stop_rt(){
    hal.rt_state = RT_STOP;
@@ -631,7 +631,7 @@ void hal_stop(){
    stop_frt();
 }
 
-COMMAND("stop", hal_stop);
+COMMAND("stop", hal_stop, "stop rt system");
 
 void hal_init(float rt_period, float frt_period){
    hal.rt_state = RT_STOP;
@@ -838,4 +838,4 @@ void fault(){
    ptr[0] = 1;
 }
 
-COMMAND("fault", fault);
+COMMAND("fault", fault, "trigger fault");

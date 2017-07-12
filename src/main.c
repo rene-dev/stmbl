@@ -74,12 +74,12 @@ void bootloader(char * ptr){
   *((unsigned long *)0x2001C000) = 0xDEADBEEF;//set bootloader trigger
   NVIC_SystemReset();
 }
-COMMAND("bootloader", bootloader);
+COMMAND("bootloader", bootloader, "enter bootloader");
 
 void nv_reset(char * ptr){
   NVIC_SystemReset();
 }
-COMMAND("reset", nv_reset);
+COMMAND("reset", nv_reset, "reset STMBL");
 
 
 char config[15*1024];
@@ -88,7 +88,7 @@ const char* config_ro = (char*)0x08008000;
 void flashloadconf(char * ptr){
    strncpy(config,config_ro,sizeof(config));
 }
-COMMAND("flashloadconf", flashloadconf);
+COMMAND("flashloadconf", flashloadconf, "load config from flash");
 
 void flashsaveconf(char * ptr){
    printf("erasing flash page...\n");
@@ -111,12 +111,12 @@ void flashsaveconf(char * ptr){
    printf("OK %i bytes written\n",i);
    FLASH_Lock();
 }
-COMMAND("flashsaveconf", flashsaveconf);
+COMMAND("flashsaveconf", flashsaveconf, "save config to flash");
 
 void loadconf(char * ptr){
    hal_parse(config);
 }
-COMMAND("loadconf", loadconf);
+COMMAND("loadconf", loadconf, "parse config");
 
 void showconf(char * ptr){
    printf("** ram **\n");
@@ -124,19 +124,19 @@ void showconf(char * ptr){
    printf("** flash **\n");
    printf("%s",config_ro);
 }
-COMMAND("showconf", showconf);
+COMMAND("showconf", showconf, "show config");
 
 void appendconf(char * ptr){
    printf("adding %s\n",ptr);
    strncat(config,ptr,sizeof(config) - 1);
    strncat(config,"\n",sizeof(config) - 1);
 }
-COMMAND("appendconf", appendconf);
+COMMAND("appendconf", appendconf, "append string to config");
 
 void deleteconf(char * ptr){
    config[0] = '\0';
 }
-COMMAND("deleteconf", deleteconf);
+COMMAND("deleteconf", deleteconf, "delete config");
 
 
 
