@@ -25,25 +25,27 @@ HAL_PIN(max_force);
 HAL_PIN(max_dc_cur);
 HAL_PIN(max_ac_cur);
 
-HAL_PIN(fb_type);
-HAL_PIN(fb_polecount);
-HAL_PIN(fb_offset);
-HAL_PIN(fb_rev);
-HAL_PIN(fb_res);
+HAL_PIN(mot_fb_polecount);
+HAL_PIN(mot_fb_offset);
+HAL_PIN(mot_fb_rev);
+HAL_PIN(mot_fb_res);
+
+HAL_PIN(joint_fb_polecount);
+HAL_PIN(joint_fb_offset);
+HAL_PIN(joint_fb_rev);
+HAL_PIN(joint_fb_res);
+
+HAL_PIN(com_fb_polecount);
+HAL_PIN(com_fb_offset);
+HAL_PIN(com_fb_rev);
+HAL_PIN(com_fb_res);
+
 HAL_PIN(autophase);//constant,cauto,hfi
 
-HAL_PIN(cmd_type);
-HAL_PIN(cmd_unit);//pos,vel,torque
 HAL_PIN(cmd_rev);
 HAL_PIN(cmd_res);
-HAL_PIN(en_condition);//enable condition
-HAL_PIN(error_out);
-HAL_PIN(pos_static);//track pos in disabled and error condition TODO: not implemented
+//HAL_PIN(pos_static);//track pos in disabled and error condition TODO: not implemented
 
-HAL_PIN(sin_offset);
-HAL_PIN(cos_offset);
-HAL_PIN(sin_gain);
-HAL_PIN(cos_gain);
 HAL_PIN(max_dc_volt);
 HAL_PIN(max_hv_temp);
 HAL_PIN(max_core_temp);
