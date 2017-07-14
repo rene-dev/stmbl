@@ -39,6 +39,8 @@ HAL_PIN(force_phase);
 HAL_PIN(phase_time);
 HAL_PIN(phase_cur);
 
+HAL_PIN(current_com_pos);
+
 HAL_PIN(en);
 
 struct fb_switch_ctx_t{
@@ -89,13 +91,15 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
          PIN(state) = 0.0;
       }
       
+      PIN(current_com_pos) = ctx->current_com_pos;
+      
       switch(ctx->current_com_pos){
          case 4:
             PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset);
          break;
          
          case 3:
-            if(PIN(joint_state) != 2.0){
+            if(PIN(joint_state) != 3.0){
                PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset);
             }
             else{
@@ -104,7 +108,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
          break;
          
          case 2:
-            if(PIN(com_state) != 2.0){
+            if(PIN(com_state) != 3.0){
                PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset);
             }
             else{
@@ -113,7 +117,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
          break;
          
          case 1:
-            if(PIN(com_state) != 2.0){
+            if(PIN(mot_state) != 3.0){
                PIN(state) = 0.0;
             }
             else{
