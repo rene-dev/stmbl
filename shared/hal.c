@@ -80,8 +80,6 @@ volatile hal_comp_inst_t * comp_inst_by_pin_inst(volatile hal_pin_inst_t * p){
 
 void hal_term_print_state(){
    switch(hal.hal_state){
-      case PRE_HW_INIT:
-      printf("HAL state:  PRE_HW_INIT\n");
       break;
       case HAL_OK2:
       printf("HAL state:  HAL_OK2\n");
@@ -276,6 +274,8 @@ uint32_t load_comp(hal_comp_t * comp){
    hal.comp_insts[hal.comp_inst_count].ctx = &hal.ctxs[hal.ctx_count];
    hal.comp_insts[hal.comp_inst_count].pin_insts = &hal.pin_insts[hal.pin_inst_count];
    hal.comp_insts[hal.comp_inst_count].ctx_size = ctx_size;
+   hal.comp_insts[hal.comp_inst_count].state = PRE_INIT;
+   
    uint32_t offset = 0;
    for(int i = 0; i < comp_count; i++){
       if(comps[i] == comp){
@@ -310,6 +310,7 @@ uint32_t load_comp(hal_comp_t * comp){
    }
    hal.comp_insts[hal.comp_inst_count].nrt_ticks = 0;
    hal.comp_insts[hal.comp_inst_count].nrt_max_ticks = 0;
+   hal.comp_insts[hal.comp_inst_count].state = PRE_HW_INIT;
    
    hal.comp_inst_count++;
    
@@ -464,7 +465,11 @@ void hal_run_nrt(){
 void hal_init_hw(){
    for(int i = 0; i < hal.comp_inst_count; i++){
       if(hal.comp_insts[i].comp->hw_init != 0){
-         hal.comp_insts[i].comp->hw_init(hal.comp_insts[i].ctx, hal.comp_insts[i].pin_insts);
+         if(hal.comp_insts[i].state == PRE_HW_INIT){
+            hal.comp_insts[i].comp->hw_init(hal.comp_insts[i].ctx, hal.comp_insts[i].pin_insts);
+            hal.comp_insts[i].state = STARTED;
+         }
+         
       }
    }
 }
@@ -500,6 +505,20 @@ void list(char * ptr){
       printf("real #ctx: %lu byte\n", hal.comp_insts[i].ctx_size);
       printf("*pins: %x byte\n", (unsigned int)hal.comp_insts[i].pin_insts);
       printf("*ctx: %x byte\n", (unsigned int)hal.comp_insts[i].ctx);
+      printf("state: ");
+      switch(hal.comp_insts[i].state) {
+         case PRE_INIT:
+            printf("PRE_INIT\n");
+            break;
+         case PRE_HW_INIT:
+            printf("PRE_HW_INIT\n");
+            break;
+         case STARTED:
+            printf("STARTED\n");
+            break;
+         default:
+            printf("unknown\n");
+      }
       for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++){
          volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
          printf("-  %s <= %s%lu.%s = %f\n", hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
@@ -599,13 +618,11 @@ void start_frt(){
 }
 
 void hal_start(){
-   if(hal.hal_state == PRE_HW_INIT){
-      hal_init_hw();
-   }
    hal.hal_state = HAL_OK2;
    
    sort_rt();
    sort_frt();
+   hal_init_hw();
    start_rt();
    start_frt();
 }
@@ -642,9 +659,7 @@ COMMAND("stop", hal_stop, "stop rt system");
 void hal_init(float rt_period, float frt_period){
    hal.rt_state = RT_STOP;
    hal.frt_state = FRT_STOP;
-   
-   hal.hal_state = PRE_HW_INIT;
-   
+      
    for(int i = 0; i < HAL_MAX_COMPS; i++){
       hal.rt_comps[i] = 0;
       hal.frt_comps[i] = 0;

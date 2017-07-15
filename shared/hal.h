@@ -58,6 +58,12 @@ typedef struct hal_comp_inst_t{
    volatile int32_t rt_max_ticks;
    volatile int32_t frt_max_ticks;
    volatile int32_t nrt_max_ticks;
+   
+   volatile enum {
+      PRE_INIT,
+      PRE_HW_INIT,
+      STARTED,
+   } state;
 } hal_comp_inst_t;
 
 #define PIN(p) (pins->p.source->source->value)
@@ -97,8 +103,7 @@ typedef struct{
      CONFIG_LOAD_ERROR,
      CONFIG_ERROR,
      NAN_ERROR,
-     HAL_OK2,
-     PRE_HW_INIT // TODO: / comp instance
+     HAL_OK2
    } hal_state;
    
    volatile struct hal_comp_inst_t * rt_comps[HAL_MAX_COMPS];
