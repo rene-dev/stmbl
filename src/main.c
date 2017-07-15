@@ -153,6 +153,7 @@ int main(void)
    load_comp(comp_by_name("term"));
    hal_parse("flashloadconf");
    hal_parse("loadconf");
+   hal_parse("start");
    
    // load_comp(comp_by_name("sim"));
    // load_comp(comp_by_name("io"));
