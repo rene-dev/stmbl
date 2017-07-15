@@ -93,7 +93,7 @@ inline float minus(float a, float b){
 		return(a - b + 2.0 * M_PI);
 	}
 }
-//TODO: blocks hal with large numbers
+
 inline float mod(float a){
   if(a + M_PI < 0.0f){
       return -(fmodf(-(a + M_PI), M_PI * 2.0) - M_PI);
