@@ -1,4 +1,4 @@
-update=So 02 Jul 2017 22:27:22 CEST
+update=Sa 15 Jul 2017 23:03:34 CEST
 version=1
 last_client=kicad
 [pcbnew]
@@ -60,5 +60,5 @@ LibName28=contrib
 LibName29=valves
 LibName30=/Users/rene/dev/stmbl/hw/kicad/lib/stmbl
 LibName31=relays
-LibName32=stmbl
-LibName33=stm32
+LibName32=stm32
+LibName33=stmbl
