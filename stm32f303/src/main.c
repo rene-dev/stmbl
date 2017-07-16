@@ -122,17 +122,12 @@ void bootloader(char * ptr){
   NVIC_SystemReset();
 }
 
-COMMAND("bootloader", bootloader);
-
-void about(char * ptr){
-   printf("flash acr: %lu\n", FLASH->ACR);
-}
-COMMAND("about", about);
+COMMAND("bootloader", bootloader, "enter bootloader");
 
 void reset(char * ptr){
    HAL_NVIC_SystemReset();
 }
-COMMAND("reset", reset);
+COMMAND("reset", reset, "reset STMBL");
 
 int main(void)
 {
@@ -158,8 +153,7 @@ int main(void)
   GPIO_InitTypeDef GPIO_InitStruct;
 
   #ifdef USB_DISCONNECT_PIN
-    GPIO_InitTypeDef USB_DISCONNECT_PIN;
-    GPIO_InitStruct.Pin = GPIO_PIN_13;
+    GPIO_InitStruct.Pin = USB_DISCONNECT_PIN;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -353,7 +347,7 @@ int main(void)
   hal_parse("curpid0.vel = ls0.vel");
 
   // hal parse config
-  hal_init_nrt();
+  // hal_init_nrt();
   // error foo
   hal_start();
   
