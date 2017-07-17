@@ -18,6 +18,7 @@ HAL_PIN(u);
 HAL_PIN(v);
 HAL_PIN(w);
 HAL_PIN(udc);
+HAL_PIN(udc_pwm);
 
 HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
@@ -49,9 +50,6 @@ struct io_ctx_t{
 #define VOLT(a) ((a) / (ARES) * (AREF) / (VDIVDOWN) * ((VDIVUP) + (VDIVDOWN)))
 //#define TEMP(a) (log10f((a) * (AREF) / (ARES) * (TPULLUP) / ((AREF) - (a) * (AREF) / (ARES))) * (-53.0) + 290.0)
 
-#define SHUNT 0.003//shunt
-#define SHUNT_PULLUP 15000.0
-#define SHUNT_SERIE 470.0
 #define SHUNT_GAIN 16.0
 
 #define AMP(a, gain) (((a) * AREF / ARES / (gain) - AREF / (SHUNT_PULLUP + SHUNT_SERIE) * SHUNT_SERIE) / (SHUNT * SHUNT_PULLUP) * (SHUNT_PULLUP + SHUNT_SERIE))
@@ -132,6 +130,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   PIN(v) = VOLT(adc_12_buf[5] >> 16) * 0.05 + PIN(v) * 0.95;
   PIN(u) = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
   PIN(udc) = VOLT(adc_34_buf[5] >> 16) * 0.05 + PIN(udc) * 0.95;
+  PIN(udc_pwm) = PIN(udc) / 2.0;
   
   PIN(hv_temp) = r2temp(HV_R(ADC(adc_34_buf[0] >> 16))) * 0.01 + PIN(hv_temp) * 0.99; // 5.5u
   PIN(mot_temp) = MOT_R(MOT_REF(ADC(adc_34_buf[5] >> 16))); // 1.4u

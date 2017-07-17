@@ -79,11 +79,17 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
     v -= min_off;
     w -= min_off;
   }
-   
+
+#ifdef PWM_INVERT
+  PWM_U = 4800-CLAMP(u, 0, 4800 - min_off);
+  PWM_V = 4800-CLAMP(v, 0, 4800 - min_off);
+  PWM_W = 4800-CLAMP(w, 0, 4800 - min_off);
+#else
   PWM_U = CLAMP(u, 0, 4800 - min_off);
   PWM_V = CLAMP(v, 0, 4800 - min_off);
   PWM_W = CLAMP(w, 0, 4800 - min_off);
-   
+#endif
+  
   if(PIN(hv_temp) < 85.0){
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
   }
