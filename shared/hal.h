@@ -5,10 +5,17 @@
 #define HAL_CALC_TIME
 #define HAL_COMP_CALC_TIME
 
-
+#ifndef HAL_MAX_PINS
 #define HAL_MAX_PINS 1024
+#endif
+
+#ifndef HAL_MAX_COMPS
 #define HAL_MAX_COMPS 32
+#endif
+
+#ifndef HAL_MAX_CTX
 #define HAL_MAX_CTX 16384
+#endif
 
 #define HAL_COMP(name) 
 #define HAL_PIN(name) 
