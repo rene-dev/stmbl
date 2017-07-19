@@ -3,6 +3,9 @@
 
 #define VDIVUP 249000.0 * 2.0//HV div pullup R1,R12
 #define VDIVDOWN 3900.0//HV div pulldown R2,R9
+#define SHUNT 0.003//shunt
+#define SHUNT_PULLUP 15000.0
+#define SHUNT_SERIE 470.0
 
 #define LED_Pin GPIO_PIN_0
 #define LED_GPIO_Port GPIOA
@@ -18,10 +21,15 @@
 
 /*
 //otter
+//TODO: swap v,w cur feedback
+#define PWM_INVERT
 #define AREF 3.3// analog reference voltage
 
 #define VDIVUP 56000.0//HV div pullup R1,R12
 #define VDIVDOWN 2000.0//HV div pulldown R2,R9
+#define SHUNT 0.003//shunt
+#define SHUNT_PULLUP 5100.0
+#define SHUNT_SERIE 100.0
 
 #define LED_Pin GPIO_PIN_0
 #define LED_GPIO_Port GPIOA

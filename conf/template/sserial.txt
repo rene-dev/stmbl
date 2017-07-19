@@ -1,0 +1,18 @@
+load sserial
+load vel_int
+load reslimit
+sserial0.rt_prio = 2.0
+sserial0.frt_prio = 2.0
+vel_int0.rt_prio = 2.1
+reslimit0.rt_prio = 2.2
+vel_int0.pos_in = sserial0.pos_cmd
+vel_int0.vel_in = sserial0.pos_cmd_d
+sserial0.enable = fault0.en
+sserial0.fault = fault0.fault
+fault0.cmd_ready = sserial0.connected
+fault0.brake_release = sserial0.out0
+sserial0.pos_fb = rev1.out
+reslimit0.pos_in = vel_int0.pos_out
+net0.cmd = reslimit0.pos_out
+net0.cmd_d = vel_int0.vel_out
+vel_int0.wd = 0.002

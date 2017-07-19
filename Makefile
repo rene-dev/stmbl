@@ -60,7 +60,7 @@ COMPS += shared/comps/stp.c
 
 SOURCES += $(COMPS)
 
-SOURCES += src/eeprom.c
+# SOURCES += src/eeprom.c
 # SOURCES += src/link.c
 SOURCES += src/version.c
 SOURCES += src/syscalls.c

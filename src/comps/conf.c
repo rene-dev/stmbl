@@ -1,6 +1,4 @@
 #include <stdio.h>
-#include "eeprom.h"
-#include "crc16.h"
 #include "main.h" // for Wait
 #include "commands.h"
 #include "hal.h"
