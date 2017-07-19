@@ -4,6 +4,7 @@
 
 #define HAL_CALC_TIME
 #define HAL_COMP_CALC_TIME
+#define HAL_WATCHDOG
 
 
 #define HAL_MAX_PINS 1024
@@ -17,6 +18,8 @@
 extern uint32_t hal_get_systick_value();
 extern uint32_t hal_get_systick_reload();
 extern uint32_t hal_get_systick_freq();
+extern void hal_init_watchdog(float time);
+extern void hal_reset_watchdog();
 
 typedef char NAME[32];
 

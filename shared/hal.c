@@ -370,6 +370,10 @@ void hal_run_rt(){
       hal.rt_ticks = hal_start - hal_end;
       hal.rt_max_ticks = MAX(hal.rt_max_ticks, hal.rt_ticks);
    #endif
+   
+   #ifdef HAL_WATCHDOG
+      hal_reset_watchdog();
+   #endif
 }
 
 void hal_run_frt(){
@@ -425,6 +429,10 @@ void hal_run_frt(){
       hal.frt_ticks = hal_start - hal_end;
       hal.frt_max_ticks = MAX(hal.frt_max_ticks, hal.frt_ticks);
    #endif
+   
+   #ifdef HAL_WATCHDOG
+      hal_reset_watchdog();
+   #endif
 }
 
 void hal_run_nrt(){
@@ -459,6 +467,10 @@ void hal_run_nrt(){
       }
       hal.nrt_ticks = hal_start - hal_end;
       hal.nrt_max_ticks = MAX(hal.nrt_max_ticks, hal.nrt_ticks);
+   #endif
+   
+   #ifdef HAL_WATCHDOG
+      hal_reset_watchdog();
    #endif
 }
 
