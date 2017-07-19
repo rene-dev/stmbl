@@ -59,6 +59,8 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       ctx->pos += v * period;
    }
    
+   ctx->pos = mod(ctx->pos);
+   
    PIN(pos_out) = ctx->pos;
    PIN(vel_out) = v;
 }

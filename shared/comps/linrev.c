@@ -12,13 +12,14 @@
 
 */
 
+
 #include "hal.h"
 #include "angle.h"
 #include <math.h>
 
 HAL_COMP(linrev);
 
-HAL_PIN(scale);
+HAL_PIN(scale); // TODO: scale vel
 
 HAL_PIN(cmd_in);
 HAL_PIN(cmd_out);
