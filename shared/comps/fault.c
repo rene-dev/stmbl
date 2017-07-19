@@ -27,12 +27,6 @@ HAL_PIN(com_fb_error);
 HAL_PIN(joint_fb_error);
 HAL_PIN(hv_error);
 
-HAL_PIN(cmd_ready);
-HAL_PIN(mot_fb_ready);
-HAL_PIN(com_fb_ready);
-HAL_PIN(joint_fb_ready);
-HAL_PIN(hv_ready);
-
 HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
 HAL_PIN(max_hv_temp);
@@ -90,11 +84,6 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    PIN(min_dc_volt) = 20.0;
    PIN(high_dc_volt) = 370.0;
    PIN(max_dc_volt) = 390.0;
-   PIN(cmd_ready) = 1.0;
-   PIN(mot_fb_ready) = 1.0;
-   PIN(com_fb_ready) = 1.0;
-   PIN(joint_fb_ready) = 1.0;
-   PIN(hv_ready) = 1.0;
    PIN(max_hv_temp) = 90.0;
    PIN(max_mot_temp) = 100.0;
    PIN(high_hv_temp) = 70.0;
@@ -113,7 +102,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    
    switch(ctx->state){
       case DISABLED:
-         if(RISING_EDGE(PIN(en)) & (PIN(cmd_ready) > 0.0) & (PIN(mot_fb_ready) > 0.0) & (PIN(com_fb_ready) > 0.0) & (PIN(joint_fb_ready) > 0.0) & (PIN(hv_ready) > 0.0)){
+         if(PIN(en) > 0.0){
             if(PIN(rephase) > 0.0){ // TODO: check phase_on_start
                ctx->phased = 0;
             }
@@ -147,10 +136,6 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       case SOFT_FAULT:
          if(PIN(en) <= 0.0){
             ctx->state = DISABLED;
-         }else if(FALLING_EDGE(PIN(reset)) & (PIN(cmd_ready) > 0.0) & (PIN(mot_fb_ready) > 0.0) & (PIN(com_fb_ready) > 0.0) & (PIN(joint_fb_ready) > 0.0) & (PIN(hv_ready) > 0.0)){
-            //TODO: phasing
-            ctx->state = ENABLED;
-            PIN(start_offset) = minus(PIN(fb), PIN(cmd));
          }
       break;
       

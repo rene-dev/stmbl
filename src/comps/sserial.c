@@ -35,7 +35,7 @@ HAL_COMP(sserial);
 
 // pins
 HAL_PIN(dump_pd_vals);
-HAL_PIN(error);//counts unknown commands
+HAL_PIN(error);
 HAL_PIN(crc_error);//counts crc errors
 HAL_PIN(connected);//connection status TODO: not stable during startup, needs link to pd
 HAL_PIN(timeout);// 20khz / 1khz * 2 reads = 40
@@ -604,16 +604,17 @@ for(int j = 0;j<2;j++){
          }
       } else {
          //TODO: handle unkown packet
-         PIN(error)++;
       }
    }
 
    timeout++;
    if(timeout > PIN(timeout)){//TODO: clamping
       PIN(connected) = 0;
+      PIN(error) = 1;
       rxpos = bufferpos;
    }else{
       PIN(connected) = 1;
+      PIN(error) = 0;
    }
    rxpos = rxpos % sizeof(rxbuf);
 }

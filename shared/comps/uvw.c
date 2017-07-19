@@ -45,13 +45,13 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    //TODO: make this const, fault output
    uint32_t t[8];
    t[0] = PIN(p0);
-   t[1] = PIN(p0);
-   t[2] = PIN(p0);
-   t[3] = PIN(p0);
-   t[4] = PIN(p0);
-   t[5] = PIN(p0);
-   t[6] = PIN(p0);
-   t[7] = PIN(p0);
+   t[1] = PIN(p1);
+   t[2] = PIN(p2);
+   t[3] = PIN(p3);
+   t[4] = PIN(p4);
+   t[5] = PIN(p5);
+   t[6] = PIN(p6);
+   t[7] = PIN(p7);
    PIN(rpos) = rpos;
    PIN(pos) = mod((float)t[rpos]/6.0 * 2.0 * M_PI);
 }

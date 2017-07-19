@@ -8,6 +8,8 @@ HAL_COMP(rev);
 
 HAL_PIN(in);
 HAL_PIN(out);
+HAL_PIN(in_d);
+HAL_PIN(out_d);
 HAL_PIN(rev);
 
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
@@ -16,9 +18,11 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    
   if(PIN(rev) > 0.0){
     PIN(out) = minus(0, PIN(in));
+    PIN(out_d) = -PIN(in_d);
   }
   else{
     PIN(out) = PIN(in);
+    PIN(out_d) = PIN(in_d);
   }
 }
 

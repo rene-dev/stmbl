@@ -4,7 +4,7 @@
 
 #define HAL_CALC_TIME
 #define HAL_COMP_CALC_TIME
-#define HAL_WATCHDOG
+//#define HAL_WATCHDOG
 
 #ifndef HAL_MAX_PINS
 #define HAL_MAX_PINS 1024

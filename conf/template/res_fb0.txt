@@ -10,3 +10,4 @@ fb_switch0.mot_abs_pos = rev1.out
 fb_switch0.mot_polecount = conf0.mot_fb_polecount
 fb_switch0.mot_state = 3
 fault0.mot_fb_error = res0.error
+res0.vel = rev1.out_d

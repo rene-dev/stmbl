@@ -119,9 +119,6 @@ void loadconf(char * ptr){
 COMMAND("loadconf", loadconf, "parse config");
 
 void showconf(char * ptr){
-   printf("** ram **\n");
-   printf("%s",config);
-   printf("** flash **\n");
    printf("%s",config_ro);
 }
 COMMAND("showconf", showconf, "show config");
