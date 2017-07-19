@@ -8,7 +8,6 @@
 HAL_COMP(fault);
 
 HAL_PIN(en);
-HAL_PIN(reset);
 HAL_PIN(state);
 HAL_PIN(fault);
 HAL_PIN(en_out);
