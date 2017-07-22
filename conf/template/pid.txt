@@ -26,6 +26,7 @@ fb_switch0.rt_prio = 5
 vel0.rt_prio = 6
 vel1.rt_prio = 6
 vel2.rt_prio = 6
+io0.rt_prio = 7
 pid0.rt_prio = 8
 fault0.rt_prio = 10
 hv0.rt_prio = 11
