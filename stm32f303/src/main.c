@@ -286,11 +286,10 @@ int main(void)
   hal_parse("term0.gain1 = 10.0");
   hal_parse("term0.gain2 = 10.0");
   hal_parse("term0.gain3 = 10.0");
-  hal_parse("term0.gain4 = 1.0");
+  hal_parse("term0.gain4 = 10.0");
   hal_parse("term0.gain5 = 10.0");
   hal_parse("term0.gain6 = 10.0");
   hal_parse("term0.gain7 = 10.0");
-  hal_parse("curpid0.max_cur = 25.0");
 
   //link LS
   hal_parse("ls0.mot_temp = io0.mot_temp");
