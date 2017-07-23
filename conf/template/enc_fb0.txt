@@ -9,3 +9,5 @@ rev1.in = enc_fb0.pos
 fb_switch0.mot_polecount = 1
 fb_switch0.mot_state = 1
 fault0.mot_fb_error = enc_fb0.error
+io0.fb0y = enc_fb0.error
+io0.fb0g = 1
