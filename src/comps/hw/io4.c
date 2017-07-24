@@ -201,7 +201,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       GPIO_ResetBits(GPIOE, GPIO_Pin_1);
    }
    
-   if(PIN(in0) > 12.0){
+   if(PIN(in1) > 12.0){
       PIN(ind1) = 1.0;
       GPIO_SetBits(GPIOE, GPIO_Pin_0);
    }else{

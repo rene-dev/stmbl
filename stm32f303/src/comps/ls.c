@@ -52,6 +52,7 @@ HAL_PIN(timeout);
 HAL_PIN(dma_pos);
 HAL_PIN(idle);
 
+
 struct ls_ctx_t{
    uint32_t timeout;
    uint32_t tx_addr;
@@ -67,7 +68,7 @@ struct ls_ctx_t{
 f3_config_data_t config;
 f3_state_data_t state;
 
-static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    struct ls_ctx_t * ctx = (struct ls_ctx_t *)ctx_ptr;
    // struct ls_pin_ctx_t * pins = (struct ls_pin_ctx_t *)pin_ptr;
    
@@ -87,8 +88,8 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    huart3.Init.OverSampling = UART_OVERSAMPLING_8;
    huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
    huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+   USART3->CR3 |= USART_CR3_DMAT | USART_CR3_DMAR | USART_CR3_OVRDIS;
    HAL_UART_Init(&huart3);
-   USART3->CR3 |= USART_CR3_DMAT | USART_CR3_DMAR;
    
    /**USART3 GPIO Configuration    
    PB10     ------> USART3_TX
@@ -186,14 +187,12 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       else{
          PIN(crc_error)++;
       }
-   }
-
-
+   }   
    
    if(USART3->ISR & USART_ISR_RTOF){ // idle line
-      USART3->ICR |= USART_ICR_RTOCF; // timeout clear flag
+      USART3->ICR |= USART_ICR_RTOCF | USART_ICR_FECF | USART_ICR_ORECF; // timeout clear flag
       GPIOA->BSRR |= GPIO_PIN_10;
-
+      
       PIN(idle)++;
       if(dma_pos != sizeof(packet_to_hv_t)){
          PIN(dma_pos) = dma_pos;
@@ -208,6 +207,9 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
 
       //ctx->send = 1;
    }
+   
+   
+   
    if(ctx->send == 2){
       ctx->send = 0;
    }
@@ -267,7 +269,7 @@ hal_comp_t ls_comp_struct = {
    .nrt = 0,
    .rt = rt_func,
    .frt = 0,
-   .nrt_init = nrt_init,
+   .hw_init = hw_init,
    .rt_start = rt_start,
    .frt_start = 0,
    .rt_stop = 0,
