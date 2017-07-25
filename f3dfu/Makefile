@@ -15,14 +15,14 @@ TARGET = $(OBJDIR)/f3dfu
 
 # Define all C source files (dependencies are generated automatically)
 INCDIRS += f3dfu/Inc
-SOURCES += f3dfu/src/main.c
-SOURCES += f3dfu/src/stm32f3xx_hal_msp.c
-SOURCES += f3dfu/src/stm32f3xx_it.c
-SOURCES += f3dfu/src/system_stm32f3xx.c
-SOURCES += f3dfu/src/usb_device.c
-SOURCES += f3dfu/src/usbd_conf.c
-SOURCES += f3dfu/src/usbd_desc.c
-SOURCES += f3dfu/src/usbd_dfu_if.c
+SOURCES += f3dfu/Src/main.c
+SOURCES += f3dfu/Src/stm32f3xx_hal_msp.c
+SOURCES += f3dfu/Src/stm32f3xx_it.c
+SOURCES += f3dfu/Src/system_stm32f3xx.c
+SOURCES += f3dfu/Src/usb_device.c
+SOURCES += f3dfu/Src/usbd_conf.c
+SOURCES += f3dfu/Src/usbd_desc.c
+SOURCES += f3dfu/Src/usbd_dfu_if.c
 
 INCDIRS += shared
 #SOURCES += shared/crc8.c
