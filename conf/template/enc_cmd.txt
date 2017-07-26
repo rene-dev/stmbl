@@ -1,0 +1,7 @@
+load enc_cmd
+enc_cmd0.rt_prio = 2
+enc_cmd0.res = conf0.cmd_res
+rev0.in = enc_cmd0.pos
+fb_switch0.cmd_pos = rev0.out
+fault0.cmd_error = 0
+io0.cmdg = 1

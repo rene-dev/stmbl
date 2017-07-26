@@ -176,6 +176,27 @@
 #define UART_DRV_TX_PIN_SOURCE GPIO_PinSource2
 #define UART_DRV_TX_AF_SOURCE GPIO_AF_USART2
 
+// CMD
+#define CMD_ENC_TIM TIM2
+#define CMD_ENC_TIM_AF GPIO_AF_TIM2
+#define CMD_ENC_TIM_RCC RCC_APB1Periph_TIM2
+
+#define CMD_A_PIN GPIO_Pin_15
+#define CMD_A_PIN_SOURCE GPIO_PinSource15
+#define CMD_A_PORT GPIOA
+
+#define CMD_B_PIN GPIO_Pin_0
+#define CMD_B_PIN_SOURCE GPIO_PinSource0
+#define CMD_B_PORT GPIOA
+
+#define CMD_A_EN_PIN GPIO_Pin_6
+#define CMD_A_EN_PIN_SOURCE GPIO_PinSource6
+#define CMD_A_EN_PORT GPIOB
+
+#define CMD_B_EN_PIN GPIO_Pin_7
+#define CMD_B_EN_PIN_SOURCE GPIO_PinSource7
+#define CMD_B_EN_PORT GPIOB
+
 //FB0 TIM4
 #define FB0_A_PIN GPIO_Pin_12
 #define FB0_A_PIN_SOURCE GPIO_PinSource12
