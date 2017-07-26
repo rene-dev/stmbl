@@ -1,0 +1,44 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# ULN2803ADWR
+#
+DEF ULN2803ADWR U 0 40 Y Y 1 L N
+F0 "U" -204 594 50 H V L BNN
+F1 "ULN2803ADWR" -155 -993 50 H V L BNN
+F2 "SOIC127P1030X265-18N" 0 0 50 H I L BNN
+F3 "0.56 USD" 0 0 50 H I L BNN "Price"
+F4 "Good" 0 0 50 H I L BNN "Availability"
+F5 "Texas Instruments" 0 0 50 H I L BNN "MF"
+F6 "Uln2803adwr%2C %40Darlington Transi Stor Array %282000%29%3CAz" 0 0 50 H I L BNN "Description"
+F7 "ULN2803ADWR" 0 0 50 H I L BNN "MP"
+F8 "SOIC-18 Texas Instruments" 0 0 50 H I L BNN "Package"
+DRAW
+P 2 0 0 16 -500 500 -500 -800 N
+P 2 0 0 16 -500 -800 500 -800 N
+P 2 0 0 16 500 -800 500 500 N
+P 2 0 0 16 500 500 -500 500 N
+X 1B 1 -700 300 200 R 40 40 0 0 I 
+X 2B 2 -700 200 200 R 40 40 0 0 I 
+X 3B 3 -700 100 200 R 40 40 0 0 I 
+X 4B 4 -700 0 200 R 40 40 0 0 I 
+X 5B 5 -700 -100 200 R 40 40 0 0 I 
+X 6B 6 -700 -200 200 R 40 40 0 0 I 
+X 7B 7 -700 -300 200 R 40 40 0 0 I 
+X 8B 8 -700 -400 200 R 40 40 0 0 I 
+X GND 9 -700 -600 200 R 40 40 0 0 P 
+X 1C 18 700 300 200 L 40 40 0 0 O 
+X 2C 17 700 200 200 L 40 40 0 0 O 
+X 3C 16 700 100 200 L 40 40 0 0 O 
+X 4C 15 700 0 200 L 40 40 0 0 O 
+X 5C 14 700 -100 200 L 40 40 0 0 O 
+X 6C 13 700 -200 200 L 40 40 0 0 O 
+X 7C 12 700 -300 200 L 40 40 0 0 O 
+X 8C 11 700 -400 200 L 40 40 0 0 O 
+X COM 10 700 -600 200 L 40 40 0 0 O 
+ENDDRAW
+ENDDEF
+#
+# End Library
