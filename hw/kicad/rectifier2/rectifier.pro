@@ -1,4 +1,4 @@
-update=2017 April 05, Wednesday 02:47:29
+update=Sa 15 Jul 2017 23:03:34 CEST
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,6 +23,8 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
+[general]
+version=1
 [eeschema]
 version=1
 LibDir=../lib
@@ -58,6 +60,5 @@ LibName28=contrib
 LibName29=valves
 LibName30=/Users/rene/dev/stmbl/hw/kicad/lib/stmbl
 LibName31=relays
-LibName32=stmbl
-[general]
-version=1
+LibName32=stm32
+LibName33=stmbl
