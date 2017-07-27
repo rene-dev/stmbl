@@ -1,0 +1,608 @@
+EESchema Schematic File Version 2
+LIBS:stmbl
+LIBS:transistors
+LIBS:stm32
+LIBS:conn
+LIBS:power
+LIBS:74xgxx
+LIBS:74xx
+LIBS:ac-dc
+LIBS:actel
+LIBS:adc-dac
+LIBS:Altera
+LIBS:analog_devices
+LIBS:analog_switches
+LIBS:atmel
+LIBS:audio
+LIBS:brooktre
+LIBS:cmos_ieee
+LIBS:cmos4000
+LIBS:contrib
+LIBS:cypress
+LIBS:dc-dc
+LIBS:device
+LIBS:digital-audio
+LIBS:diode
+LIBS:display
+LIBS:dsp
+LIBS:elec-unifil
+LIBS:ESD_Protection
+LIBS:ftdi
+LIBS:gennum
+LIBS:graphic
+LIBS:hc11
+LIBS:intel
+LIBS:interface
+LIBS:ir
+LIBS:Lattice
+LIBS:linear
+LIBS:logo
+LIBS:maxim
+LIBS:memory
+LIBS:microchip_dspic33dsc
+LIBS:microchip_pic10mcu
+LIBS:microchip_pic12mcu
+LIBS:microchip_pic16mcu
+LIBS:microchip_pic18mcu
+LIBS:microchip_pic32mcu
+LIBS:microchip
+LIBS:microcontrollers
+LIBS:motor_drivers
+LIBS:motorola
+LIBS:msp430
+LIBS:nordicsemi
+LIBS:nxp_armmcu
+LIBS:onsemi
+LIBS:opto
+LIBS:Oscillators
+LIBS:philips
+LIBS:Power_Management
+LIBS:powerint
+LIBS:pspice
+LIBS:references
+LIBS:regul
+LIBS:relays
+LIBS:rfcom
+LIBS:sensors
+LIBS:silabs
+LIBS:siliconi
+LIBS:stm8
+LIBS:supertex
+LIBS:switches
+LIBS:texas
+LIBS:transf
+LIBS:ttl_ieee
+LIBS:valves
+LIBS:video
+LIBS:Xicor
+LIBS:stmsp-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 7 9
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L R R40
+U 1 1 59236B6A
+P 8050 1700
+F 0 "R40" V 8130 1700 50  0000 C CNN
+F 1 "R" V 8050 1700 50  0000 C CNN
+F 2 "stmbl:R_0603" V 7980 1700 50  0001 C CNN
+F 3 "" H 8050 1700 50  0000 C CNN
+	1    8050 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R41
+U 1 1 59236B81
+P 8050 2200
+F 0 "R41" V 8130 2200 50  0000 C CNN
+F 1 "R" V 8050 2200 50  0000 C CNN
+F 2 "stmbl:R_0603" V 7980 2200 50  0001 C CNN
+F 3 "" H 8050 2200 50  0000 C CNN
+	1    8050 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R42
+U 1 1 59236BA7
+P 8300 1700
+F 0 "R42" V 8380 1700 50  0000 C CNN
+F 1 "R" V 8300 1700 50  0000 C CNN
+F 2 "stmbl:R_0603" V 8230 1700 50  0001 C CNN
+F 3 "" H 8300 1700 50  0000 C CNN
+	1    8300 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C32
+U 1 1 59236BEE
+P 8300 2200
+F 0 "C32" H 8325 2300 50  0000 L CNN
+F 1 "1n" H 8325 2100 50  0000 L CNN
+F 2 "stmbl:C_0603" H 8338 2050 50  0001 C CNN
+F 3 "" H 8300 2200 50  0000 C CNN
+	1    8300 2200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8050 1850 8050 2050
+Wire Wire Line
+	8300 1850 8300 2050
+Wire Wire Line
+	8050 1950 8400 1950
+Connection ~ 8300 1950
+Connection ~ 8050 1950
+$Comp
+L +3.3V #PWR052
+U 1 1 59236E8B
+P 8300 1450
+F 0 "#PWR052" H 8300 1300 50  0001 C CNN
+F 1 "+3.3V" H 8300 1590 50  0000 C CNN
+F 2 "" H 8300 1450 50  0000 C CNN
+F 3 "" H 8300 1450 50  0000 C CNN
+	1    8300 1450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8300 1450 8300 1550
+Wire Wire Line
+	8050 2350 8050 2450
+Wire Wire Line
+	8050 2450 8300 2450
+Wire Wire Line
+	8300 2350 8300 2550
+$Comp
+L GND #PWR053
+U 1 1 59236F1D
+P 8300 2550
+F 0 "#PWR053" H 8300 2300 50  0001 C CNN
+F 1 "GND" H 8300 2400 50  0000 C CNN
+F 2 "" H 8300 2550 50  0000 C CNN
+F 3 "" H 8300 2550 50  0000 C CNN
+	1    8300 2550
+	1    0    0    -1  
+$EndComp
+Connection ~ 8300 2450
+Wire Wire Line
+	8050 1550 8050 1450
+Wire Wire Line
+	8050 1450 7950 1450
+Text HLabel 7950 1450 0    60   Input ~ 0
+IN1
+Text HLabel 8400 1950 2    60   Input ~ 0
+I1
+$Comp
+L R R43
+U 1 1 59237856
+P 8900 1700
+F 0 "R43" V 8980 1700 50  0000 C CNN
+F 1 "R" V 8900 1700 50  0000 C CNN
+F 2 "stmbl:R_0603" V 8830 1700 50  0001 C CNN
+F 3 "" H 8900 1700 50  0000 C CNN
+	1    8900 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R44
+U 1 1 5923785D
+P 8900 2200
+F 0 "R44" V 8980 2200 50  0000 C CNN
+F 1 "R" V 8900 2200 50  0000 C CNN
+F 2 "stmbl:R_0603" V 8830 2200 50  0001 C CNN
+F 3 "" H 8900 2200 50  0000 C CNN
+	1    8900 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R45
+U 1 1 59237864
+P 9150 1700
+F 0 "R45" V 9230 1700 50  0000 C CNN
+F 1 "R" V 9150 1700 50  0000 C CNN
+F 2 "stmbl:R_0603" V 9080 1700 50  0001 C CNN
+F 3 "" H 9150 1700 50  0000 C CNN
+	1    9150 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C33
+U 1 1 5923786B
+P 9150 2200
+F 0 "C33" H 9175 2300 50  0000 L CNN
+F 1 "1n" H 9175 2100 50  0000 L CNN
+F 2 "stmbl:C_0603" H 9188 2050 50  0001 C CNN
+F 3 "" H 9150 2200 50  0000 C CNN
+	1    9150 2200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8900 1850 8900 2050
+Wire Wire Line
+	9150 1850 9150 2050
+Wire Wire Line
+	8900 1950 9250 1950
+Connection ~ 9150 1950
+Connection ~ 8900 1950
+$Comp
+L +3.3V #PWR054
+U 1 1 59237877
+P 9150 1450
+F 0 "#PWR054" H 9150 1300 50  0001 C CNN
+F 1 "+3.3V" H 9150 1590 50  0000 C CNN
+F 2 "" H 9150 1450 50  0000 C CNN
+F 3 "" H 9150 1450 50  0000 C CNN
+	1    9150 1450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9150 1450 9150 1550
+Wire Wire Line
+	8900 2350 8900 2450
+Wire Wire Line
+	8900 2450 9150 2450
+Wire Wire Line
+	9150 2350 9150 2550
+$Comp
+L GND #PWR055
+U 1 1 59237881
+P 9150 2550
+F 0 "#PWR055" H 9150 2300 50  0001 C CNN
+F 1 "GND" H 9150 2400 50  0000 C CNN
+F 2 "" H 9150 2550 50  0000 C CNN
+F 3 "" H 9150 2550 50  0000 C CNN
+	1    9150 2550
+	1    0    0    -1  
+$EndComp
+Connection ~ 9150 2450
+Wire Wire Line
+	8900 1550 8900 1450
+Wire Wire Line
+	8900 1450 8800 1450
+Text HLabel 8800 1450 0    60   Input ~ 0
+IN2
+Text HLabel 9250 1950 2    60   Input ~ 0
+I2
+$Comp
+L R R37
+U 1 1 5923792E
+P 7200 1700
+F 0 "R37" V 7280 1700 50  0000 C CNN
+F 1 "R" V 7200 1700 50  0000 C CNN
+F 2 "stmbl:R_0603" V 7130 1700 50  0001 C CNN
+F 3 "" H 7200 1700 50  0000 C CNN
+	1    7200 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R38
+U 1 1 59237935
+P 7200 2200
+F 0 "R38" V 7280 2200 50  0000 C CNN
+F 1 "R" V 7200 2200 50  0000 C CNN
+F 2 "stmbl:R_0603" V 7130 2200 50  0001 C CNN
+F 3 "" H 7200 2200 50  0000 C CNN
+	1    7200 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R39
+U 1 1 5923793C
+P 7450 1700
+F 0 "R39" V 7530 1700 50  0000 C CNN
+F 1 "R" V 7450 1700 50  0000 C CNN
+F 2 "stmbl:R_0603" V 7380 1700 50  0001 C CNN
+F 3 "" H 7450 1700 50  0000 C CNN
+	1    7450 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C31
+U 1 1 59237943
+P 7450 2200
+F 0 "C31" H 7475 2300 50  0000 L CNN
+F 1 "1n" H 7475 2100 50  0000 L CNN
+F 2 "stmbl:C_0603" H 7488 2050 50  0001 C CNN
+F 3 "" H 7450 2200 50  0000 C CNN
+	1    7450 2200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7200 1850 7200 2050
+Wire Wire Line
+	7450 1850 7450 2050
+Wire Wire Line
+	7200 1950 7550 1950
+Connection ~ 7450 1950
+Connection ~ 7200 1950
+$Comp
+L +3.3V #PWR056
+U 1 1 5923794F
+P 7450 1450
+F 0 "#PWR056" H 7450 1300 50  0001 C CNN
+F 1 "+3.3V" H 7450 1590 50  0000 C CNN
+F 2 "" H 7450 1450 50  0000 C CNN
+F 3 "" H 7450 1450 50  0000 C CNN
+	1    7450 1450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7450 1450 7450 1550
+Wire Wire Line
+	7200 2350 7200 2450
+Wire Wire Line
+	7200 2450 7450 2450
+Wire Wire Line
+	7450 2350 7450 2550
+$Comp
+L GND #PWR057
+U 1 1 59237959
+P 7450 2550
+F 0 "#PWR057" H 7450 2300 50  0001 C CNN
+F 1 "GND" H 7450 2400 50  0000 C CNN
+F 2 "" H 7450 2550 50  0000 C CNN
+F 3 "" H 7450 2550 50  0000 C CNN
+	1    7450 2550
+	1    0    0    -1  
+$EndComp
+Connection ~ 7450 2450
+Wire Wire Line
+	7200 1550 7200 1450
+Wire Wire Line
+	7200 1450 7100 1450
+Text HLabel 7100 1450 0    60   Input ~ 0
+IN0
+Text HLabel 7550 1950 2    60   Input ~ 0
+I0
+$Comp
+L R R35
+U 1 1 5923844E
+P 5500 2300
+F 0 "R35" V 5580 2300 50  0000 C CNN
+F 1 "R" V 5500 2300 50  0000 C CNN
+F 2 "stmbl:R_0603" V 5430 2300 50  0001 C CNN
+F 3 "" H 5500 2300 50  0000 C CNN
+	1    5500 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R36
+U 1 1 59238488
+P 5750 2050
+F 0 "R36" V 5830 2050 50  0000 C CNN
+F 1 "R" V 5750 2050 50  0000 C CNN
+F 2 "stmbl:R_0603" V 5680 2050 50  0001 C CNN
+F 3 "" H 5750 2050 50  0000 C CNN
+	1    5750 2050
+	0    1    1    0   
+$EndComp
+$Comp
+L Q_NJFET_GSD Q2
+U 1 1 59238612
+P 5200 2050
+F 0 "Q2" H 5500 2100 50  0000 R CNN
+F 1 "Q_NJFET_GSD" H 5850 2000 50  0000 R CNN
+F 2 "stmbl:SOT-23" H 5400 2150 50  0001 C CNN
+F 3 "" H 5200 2050 50  0000 C CNN
+	1    5200 2050
+	-1   0    0    -1  
+$EndComp
+$Comp
+L D D6
+U 1 1 5923871B
+P 5100 1500
+F 0 "D6" H 5100 1600 50  0000 C CNN
+F 1 "D" H 5100 1400 50  0000 C CNN
+F 2 "stmbl:SMA_Standard" H 5100 1500 50  0001 C CNN
+F 3 "" H 5100 1500 50  0000 C CNN
+	1    5100 1500
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5100 1650 5100 1850
+Wire Wire Line
+	5400 2050 5600 2050
+Wire Wire Line
+	5500 2150 5500 2050
+Connection ~ 5500 2050
+Wire Wire Line
+	5500 2550 5500 2450
+Wire Wire Line
+	4450 2550 5500 2550
+Wire Wire Line
+	5100 2250 5100 2650
+$Comp
+L VPP #PWR058
+U 1 1 59238B56
+P 5100 1250
+F 0 "#PWR058" H 5100 1100 50  0001 C CNN
+F 1 "VPP" H 5100 1400 50  0000 C CNN
+F 2 "" H 5100 1250 50  0000 C CNN
+F 3 "" H 5100 1250 50  0000 C CNN
+	1    5100 1250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4350 1750 5100 1750
+Connection ~ 5100 1750
+Wire Wire Line
+	5900 2050 6000 2050
+Connection ~ 5100 2550
+$Comp
+L GND #PWR059
+U 1 1 59238DA9
+P 5100 2650
+F 0 "#PWR059" H 5100 2400 50  0001 C CNN
+F 1 "GND" H 5100 2500 50  0000 C CNN
+F 2 "" H 5100 2650 50  0000 C CNN
+F 3 "" H 5100 2650 50  0000 C CNN
+	1    5100 2650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5100 1250 5100 1350
+Text HLabel 6000 2050 2    60   Input ~ 0
+OUT1
+Text HLabel 4350 1750 0    60   Input ~ 0
+O1
+$Comp
+L R R34
+U 1 1 59239D97
+P 4450 2300
+F 0 "R34" V 4530 2300 50  0000 C CNN
+F 1 "R" V 4450 2300 50  0000 C CNN
+F 2 "stmbl:R_0603" V 4380 2300 50  0001 C CNN
+F 3 "" H 4450 2300 50  0000 C CNN
+	1    4450 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Led_Small D5
+U 1 1 59239E8E
+P 4450 1950
+F 0 "D5" H 4400 2075 50  0000 L CNN
+F 1 "Led_Small" H 4275 1850 50  0000 L CNN
+F 2 "stmbl:LED-0805-SIDE" V 4450 1950 50  0001 C CNN
+F 3 "" V 4450 1950 50  0000 C CNN
+	1    4450 1950
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4450 2050 4450 2150
+Wire Wire Line
+	4450 2450 4450 2550
+Wire Wire Line
+	4450 1850 4450 1750
+Connection ~ 4450 1750
+$Comp
+L R R32
+U 1 1 5923AA16
+P 3200 2300
+F 0 "R32" V 3280 2300 50  0000 C CNN
+F 1 "R" V 3200 2300 50  0000 C CNN
+F 2 "stmbl:R_0603" V 3130 2300 50  0001 C CNN
+F 3 "" H 3200 2300 50  0000 C CNN
+	1    3200 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R33
+U 1 1 5923AA1C
+P 3450 2050
+F 0 "R33" V 3530 2050 50  0000 C CNN
+F 1 "R" V 3450 2050 50  0000 C CNN
+F 2 "stmbl:R_0603" V 3380 2050 50  0001 C CNN
+F 3 "" H 3450 2050 50  0000 C CNN
+	1    3450 2050
+	0    1    1    0   
+$EndComp
+$Comp
+L Q_NJFET_GSD Q1
+U 1 1 5923AA22
+P 2900 2050
+F 0 "Q1" H 3200 2100 50  0000 R CNN
+F 1 "Q_NJFET_GSD" H 3550 2000 50  0000 R CNN
+F 2 "stmbl:SOT-23" H 3100 2150 50  0001 C CNN
+F 3 "" H 2900 2050 50  0000 C CNN
+	1    2900 2050
+	-1   0    0    -1  
+$EndComp
+$Comp
+L D D4
+U 1 1 5923AA28
+P 2800 1500
+F 0 "D4" H 2800 1600 50  0000 C CNN
+F 1 "D" H 2800 1400 50  0000 C CNN
+F 2 "stmbl:SMA_Standard" H 2800 1500 50  0001 C CNN
+F 3 "" H 2800 1500 50  0000 C CNN
+	1    2800 1500
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2800 1650 2800 1850
+Wire Wire Line
+	3100 2050 3300 2050
+Wire Wire Line
+	3200 2150 3200 2050
+Connection ~ 3200 2050
+Wire Wire Line
+	3200 2550 3200 2450
+Wire Wire Line
+	2150 2550 3200 2550
+Wire Wire Line
+	2800 2250 2800 2650
+$Comp
+L VPP #PWR060
+U 1 1 5923AA35
+P 2800 1250
+F 0 "#PWR060" H 2800 1100 50  0001 C CNN
+F 1 "VPP" H 2800 1400 50  0000 C CNN
+F 2 "" H 2800 1250 50  0000 C CNN
+F 3 "" H 2800 1250 50  0000 C CNN
+	1    2800 1250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2050 1750 2800 1750
+Connection ~ 2800 1750
+Wire Wire Line
+	3600 2050 3700 2050
+Connection ~ 2800 2550
+$Comp
+L GND #PWR061
+U 1 1 5923AA3F
+P 2800 2650
+F 0 "#PWR061" H 2800 2400 50  0001 C CNN
+F 1 "GND" H 2800 2500 50  0000 C CNN
+F 2 "" H 2800 2650 50  0000 C CNN
+F 3 "" H 2800 2650 50  0000 C CNN
+	1    2800 2650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2800 1250 2800 1350
+Text HLabel 3700 2050 2    60   Input ~ 0
+OUT0
+Text HLabel 2050 1750 0    60   Input ~ 0
+O0
+$Comp
+L R R31
+U 1 1 5923AA48
+P 2150 2300
+F 0 "R31" V 2230 2300 50  0000 C CNN
+F 1 "R" V 2150 2300 50  0000 C CNN
+F 2 "stmbl:R_0603" V 2080 2300 50  0001 C CNN
+F 3 "" H 2150 2300 50  0000 C CNN
+	1    2150 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Led_Small D3
+U 1 1 5923AA4E
+P 2150 1950
+F 0 "D3" H 2100 2075 50  0000 L CNN
+F 1 "Led_Small" H 1975 1850 50  0000 L CNN
+F 2 "stmbl:LED-0805-SIDE" V 2150 1950 50  0001 C CNN
+F 3 "" V 2150 1950 50  0000 C CNN
+	1    2150 1950
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2150 2050 2150 2150
+Wire Wire Line
+	2150 2450 2150 2550
+Wire Wire Line
+	2150 1850 2150 1750
+Connection ~ 2150 1750
+Text Notes 3100 1750 0    60   ~ 0
+IRLML0060TRPBF
+$EndSCHEMATC
