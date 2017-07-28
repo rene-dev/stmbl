@@ -69,6 +69,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       ctx->current_com_pos = 10;
       ctx->com_offset = 0.0;
       ctx->cmd_offset = minus(PIN(cmd_pos), mot_pos);
+      PIN(pos_fb) = mod(mot_pos);
    }
    else{
       PIN(state) = 1.0;
