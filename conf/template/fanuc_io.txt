@@ -1,0 +1,10 @@
+load fanuc
+fanuc0.rt_prio = 2
+fanuc0.C1 = io0.CTX
+fanuc0.C2 = io0.C12
+fanuc0.C4 = io0.C36
+fanuc0.C8 = io0.C54
+rev2.in = fanuc0.pos
+fb_switch0.com_abs_pos = rev2.out
+fb_switch0.com_state = 3
+fb_switch0.com_polecount = conf0.com_fb_polecount
