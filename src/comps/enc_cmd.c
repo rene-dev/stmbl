@@ -123,7 +123,7 @@ static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    GPIO_PinAFConfig(ctx->a_port, ctx->a_pin_source, ctx->tim_af);
    GPIO_PinAFConfig(ctx->b_port, ctx->b_pin_source, ctx->tim_af);
 
-   TIM_SetAutoreload(ctx->tim, ctx->e_res - 1);
+   TIM_SetAutoreload(ctx->tim, ctx->e_res * 2 - 1);
    // quad
    TIM_Cmd(ctx->tim, DISABLE);
    TIM_EncoderInterfaceConfig(ctx->tim, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
@@ -165,7 +165,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   
   if(ctx->e_res != r){
     ctx->e_res = r;
-    TIM_SetAutoreload(ctx->tim, ctx->e_res - 1);
+    TIM_SetAutoreload(ctx->tim, ctx->e_res * 2 - 1);
   }
   
   if(PIN(fault) > 0.0){
