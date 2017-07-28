@@ -130,16 +130,16 @@ static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    TIM_ICInitTypeDef TIM_ICInitStruct;
    TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
    TIM_ICInitStruct.TIM_ICFilter = 0x0f;                         //Digital filtering @ 1/32 fDTS
-   TIM_ICInitStruct.TIM_ICPolarity = TIM_ICPolarity_Rising;     //Just trigger at the rising edge, because its the  clock
+   TIM_ICInitStruct.TIM_ICPolarity = TIM_ICPolarity_BothEdge;     //Just trigger at the rising edge, because its the  clock
    TIM_ICInitStruct.TIM_ICPrescaler = 1;                        //no prescaler, capture is done each time an edge is detected on the capture input
-   TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_DirectTI; //IC1 mapped to TI1
+   TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI; //IC1 mapped to TI1
    TIM_ICInit(ctx->tim, &TIM_ICInitStruct);
 
    TIM_ICInitStruct.TIM_Channel = TIM_Channel_2;
    TIM_ICInitStruct.TIM_ICFilter = 0x0f;                         //Digital filtering @ 1/32 fDTS
-   TIM_ICInitStruct.TIM_ICPolarity = TIM_ICPolarity_BothEdge;   //Trigger at every edge, because its the direction
+   TIM_ICInitStruct.TIM_ICPolarity = TIM_ICPolarity_Rising;   //Trigger at every edge, because its the direction
    TIM_ICInitStruct.TIM_ICPrescaler = 1;                        //no prescaler, capture is done each time an edge is detected on the capture input
-   TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI; //IC2 mapped to TI1
+   TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_DirectTI; //IC2 mapped to TI1
    TIM_ICInit(ctx->tim, &TIM_ICInitStruct);
    TIM_Cmd(ctx->tim, ENABLE);
 }
