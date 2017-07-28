@@ -36,6 +36,10 @@ HAL_PIN(in0);
 HAL_PIN(in1);
 HAL_PIN(ind0);
 HAL_PIN(ind1);
+HAL_PIN(ind0n);
+HAL_PIN(ind1n);
+HAL_PIN(th0);
+HAL_PIN(th1);
 
 HAL_PIN(CTX);
 HAL_PIN(CRX);
@@ -60,10 +64,16 @@ HAL_PIN(fb1y);
 HAL_PIN(cmdg);
 HAL_PIN(cmdy);
 
-HAL_PIN(io0);
-HAL_PIN(io1);
+
 HAL_PIN(fb0);
 HAL_PIN(fb1);
+HAL_PIN(fbd0);
+HAL_PIN(fbd1);
+HAL_PIN(fbd0n);
+HAL_PIN(fbd1n);
+HAL_PIN(fbth0);
+HAL_PIN(fbth1);
+
 
 HAL_PIN(fb0a);
 HAL_PIN(fb0b);
@@ -74,6 +84,14 @@ HAL_PIN(fb1b);
 HAL_PIN(fb1z);
 
 HAL_PIN(fbsd);//fb shutdown
+
+static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+   struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
+   PIN(th0) = 12.0;
+   PIN(th1) = 12.0;
+   PIN(fbth0) = 2.5;
+   PIN(fbth1) = 2.5;
+}
 
 static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
@@ -226,28 +244,60 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    
    //TODO: unit conversion
    //TODO: check if adc sample complete?
-   PIN(in0) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_1)), 3.3, 1000.0, 10000.0, 1000.0);
-   PIN(in1) = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_2)), 3.3, 1000.0, 10000.0, 1000.0);
+   float in0 = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_1)), 3.3, 1000.0, 10000.0, 1000.0);
+   float in1 = V2(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_2)), 3.3, 1000.0, 10000.0, 1000.0);
+   PIN(in0) = in0;
+   PIN(in1) = in1;
    
-   if(PIN(in0) > 12.0){
+   if(in0 > PIN(th0) + 0.1){
       PIN(ind0) = 1.0;
+      PIN(ind0n) = 0.0;
       GPIO_SetBits(GPIOE, GPIO_Pin_1);
-   }else{
+   }
+   else if(in0 < PIN(th0) - 0.1){
       PIN(ind0) = 0.0;
+      PIN(ind0n) = 1.0;
       GPIO_ResetBits(GPIOE, GPIO_Pin_1);
    }
    
-   if(PIN(in1) > 12.0){
+   if(in1 > PIN(th1) + 0.1){
       PIN(ind1) = 1.0;
+      PIN(ind1n) = 0.0;
       GPIO_SetBits(GPIOE, GPIO_Pin_0);
-   }else{
+   }
+   else if(in1 < PIN(th1) - 0.1){
       PIN(ind1) = 0.0;
+      PIN(ind1n) = 1.0;
       GPIO_ResetBits(GPIOE, GPIO_Pin_0);
    }
    
-   PIN(fb0) = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_3)), 10000.0, 1000.0);
-   PIN(fb1) = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_4)), 10000.0, 1000.0);
+   
+   in0 = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_3)), 10000.0, 1000.0);
+   in1 = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_4)), 10000.0, 1000.0);
+   PIN(fb0) = in0;
+   PIN(fb1) = in1;
+   
    ADC_SoftwareStartInjectedConv(ADC3);
+   
+   if(in0 > PIN(fbth0) + 0.1){
+      PIN(fbd0) = 1.0;
+      PIN(fbd0n) = 0.0;
+   }
+   else if(in0 < PIN(fbth0) - 0.1){
+      PIN(fbd0) = 0.0;
+      PIN(fbd0n) = 1.0;
+   }
+   
+   if(in1 > PIN(fbth1) + 0.1){
+      PIN(fbd1) = 1.0;
+      PIN(fbd1n) = 0.0;
+   }
+   else if(in1 < PIN(fbth1) - 0.1){
+      PIN(fbd1) = 0.0;
+      PIN(fbd1n) = 1.0;
+   }
+   
+   
    
    // PIN(DIO) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_13);
    // PIN(CK) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_14);
@@ -432,6 +482,7 @@ hal_comp_t io_comp_struct = {
   .nrt = 0,
   .rt = rt_func,
   .frt = 0,
+  .nrt_init = nrt_init,
   .hw_init = hw_init,
   .rt_start = 0,
   .frt_start = 0,

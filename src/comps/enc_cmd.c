@@ -12,13 +12,14 @@ HAL_PIN(res);
 HAL_PIN(pos);
 HAL_PIN(a);
 HAL_PIN(b);
+HAL_PIN(fault);
 HAL_PIN(mode); // 0 = quad, 1 = step/dir, 2 = dir/step, 3 = up/down
 HAL_PIN(remap); // 0 = cmd, 1 = fb0, 2 = fb1
 
 struct enc_cmd_ctx_t{
    int e_res;
-   uint32_t a_pin, b_pin, a_pin_source, b_pin_source, tim_af, tim_rcc;
-   GPIO_TypeDef * a_port, * b_port;
+   uint32_t a_pin, b_pin, c_pin, c_en_pin, a_pin_source, b_pin_source, tim_af, tim_rcc;
+   GPIO_TypeDef * a_port, * b_port, * c_port, * c_en_port;
    TIM_TypeDef * tim;
 };
 
@@ -53,35 +54,50 @@ static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
       case 0:
          ctx->a_pin = CMD_A_PIN;
          ctx->b_pin = CMD_B_PIN;
+         ctx->c_pin = CMD_C_PIN;
+         ctx->c_en_pin = CMD_C_EN_PIN;
          ctx->a_port = CMD_A_PORT;
          ctx->b_port = CMD_B_PORT;
+         ctx->c_port = CMD_C_PORT;
+         ctx->c_en_port = CMD_C_EN_PORT;
          ctx->a_pin_source = CMD_A_PIN_SOURCE;
          ctx->b_pin_source = CMD_B_PIN_SOURCE;
          ctx->tim_af = CMD_ENC_TIM_AF;
          ctx->tim_rcc = CMD_ENC_TIM_RCC;
          ctx->tim = CMD_ENC_TIM;
+         RCC_APB1PeriphClockCmd(ctx->tim_rcc, ENABLE);
       break;
       case 1:
          ctx->a_pin = FB0_A_PIN;
          ctx->b_pin = FB0_B_PIN;
+         ctx->c_pin = FB0_Z_PIN;
+         ctx->c_en_pin = FB0_Z_TXEN_PIN;
          ctx->a_port = FB0_A_PORT;
          ctx->b_port = FB0_B_PORT;
+         ctx->c_port = FB0_Z_PORT;
+         ctx->c_en_port = FB0_Z_TXEN_PORT;
          ctx->a_pin_source = FB0_A_PIN_SOURCE;
          ctx->b_pin_source = FB0_B_PIN_SOURCE;
          ctx->tim_af = FB0_ENC_TIM_AF;
          ctx->tim_rcc = FB0_ENC_TIM_RCC;
          ctx->tim = FB0_ENC_TIM;
+         RCC_APB1PeriphClockCmd(ctx->tim_rcc, ENABLE);
       break;
       case 2:
          ctx->a_pin = FB1_A_PIN;
          ctx->b_pin = FB1_B_PIN;
+         ctx->c_pin = FB1_Z_PIN;
+         ctx->c_en_pin = FB1_Z_TXEN_PIN;
          ctx->a_port = FB1_A_PORT;
          ctx->b_port = FB1_B_PORT;
+         ctx->c_port = FB1_Z_PORT;
+         ctx->c_en_port = FB1_Z_TXEN_PORT;
          ctx->a_pin_source = FB1_A_PIN_SOURCE;
          ctx->b_pin_source = FB1_B_PIN_SOURCE;
          ctx->tim_af = FB1_ENC_TIM_AF;
          ctx->tim_rcc = FB1_ENC_TIM_RCC;
          ctx->tim = FB1_ENC_TIM;
+         RCC_APB2PeriphClockCmd(ctx->tim_rcc, ENABLE);
       break;
       default:
       return;
@@ -92,11 +108,20 @@ static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    GPIO_InitStruct.GPIO_Pin   = ctx->b_pin;
    GPIO_Init(ctx->b_port, &GPIO_InitStruct);
    
+   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
+   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
+   GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   GPIO_InitStruct.GPIO_Pin = ctx->c_pin;
+   GPIO_Init(ctx->c_port, &GPIO_InitStruct);
+   GPIO_InitStruct.GPIO_Pin = ctx->c_en_pin;
+   GPIO_Init(ctx->c_en_port, &GPIO_InitStruct);
+   
+   GPIO_SetBits(ctx->c_en_port, ctx->c_en_pin);
+   
    //Bind pins to Timer
    GPIO_PinAFConfig(ctx->a_port, ctx->a_pin_source, ctx->tim_af);
    GPIO_PinAFConfig(ctx->b_port, ctx->b_pin_source, ctx->tim_af);
-
-   RCC_APB1PeriphClockCmd(ctx->tim_rcc, ENABLE);
 
    TIM_SetAutoreload(ctx->tim, ctx->e_res - 1);
    // quad
@@ -142,6 +167,13 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
     ctx->e_res = r;
     TIM_SetAutoreload(ctx->tim, ctx->e_res - 1);
   }
+  
+  if(PIN(fault) > 0.0){
+     GPIO_SetBits(ctx->c_port, ctx->c_pin);
+  }
+  else{
+     GPIO_ResetBits(ctx->c_port, ctx->c_pin);
+ }
 }
 
 const hal_comp_t enc_cmd_comp_struct = {

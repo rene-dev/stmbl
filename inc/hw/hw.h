@@ -258,8 +258,12 @@
 #define FB1_B_PORT GPIOE
 
 #define FB1_Z_PIN GPIO_Pin_13
-#define FB1_Z_PIN_SOURCE GPIO_PinSource14
+#define FB1_Z_PIN_SOURCE GPIO_PinSource13
 #define FB1_Z_PORT GPIOE
+
+#define FB1_Z_TXEN_PIN GPIO_Pin_14
+#define FB1_Z_TXEN_PIN_SOURCE GPIO_PinSource14
+#define FB1_Z_TXEN_PORT GPIOE
 
 #define FB1_ENC_TIM TIM1
 #define FB1_ENC_TIM_AF GPIO_AF_TIM1
