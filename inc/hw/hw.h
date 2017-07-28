@@ -185,9 +185,17 @@
 #define CMD_A_PIN_SOURCE GPIO_PinSource15
 #define CMD_A_PORT GPIOA
 
-#define CMD_B_PIN GPIO_Pin_0
-#define CMD_B_PIN_SOURCE GPIO_PinSource0
-#define CMD_B_PORT GPIOA
+#define CMD_B_PIN GPIO_Pin_3
+#define CMD_B_PIN_SOURCE GPIO_PinSource3
+#define CMD_B_PORT GPIOB
+
+#define CMD_C_PIN GPIO_Pin_5
+#define CMD_C_PIN_SOURCE GPIO_PinSource5
+#define CMD_C_PORT GPIOB
+
+#define CMD_D_PIN GPIO_Pin_8
+#define CMD_D_PIN_SOURCE GPIO_PinSource8
+#define CMD_D_PORT GPIOB
 
 #define CMD_A_EN_PIN GPIO_Pin_6
 #define CMD_A_EN_PIN_SOURCE GPIO_PinSource6
@@ -196,6 +204,14 @@
 #define CMD_B_EN_PIN GPIO_Pin_7
 #define CMD_B_EN_PIN_SOURCE GPIO_PinSource7
 #define CMD_B_EN_PORT GPIOB
+
+#define CMD_C_EN_PIN GPIO_Pin_9
+#define CMD_C_EN_PIN_SOURCE GPIO_PinSource9
+#define CMD_C_EN_PORT GPIOB
+
+#define CMD_D_EN_PIN GPIO_Pin_2
+#define CMD_D_EN_PIN_SOURCE GPIO_PinSource2
+#define CMD_D_EN_PORT GPIOB
 
 //FB0 TIM4
 #define FB0_A_PIN GPIO_Pin_12
@@ -209,6 +225,18 @@
 #define FB0_Z_PIN GPIO_Pin_14
 #define FB0_Z_PIN_SOURCE GPIO_PinSource14
 #define FB0_Z_PORT GPIOD
+
+#define FB0_A_EN_PIN GPIO_Pin_11
+#define FB0_A_EN_PIN_SOURCE GPIO_PinSource11
+#define FB0_A_EN_PORT GPIOD
+
+#define FB0_B_EN_PIN GPIO_Pin_10
+#define FB0_B_EN_PIN_SOURCE GPIO_PinSource10
+#define FB0_B_EN_PORT GPIOD
+
+#define FB0_Z_EN_PIN GPIO_Pin_15
+#define FB0_Z_EN_PIN_SOURCE GPIO_PinSource15
+#define FB0_Z_EN_PORT GPIOD
 
 #define FB0_Z_TXEN_PIN GPIO_Pin_15
 #define FB0_Z_TXEN_PORT GPIOD

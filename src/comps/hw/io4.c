@@ -48,6 +48,10 @@ HAL_PIN(fb0y);
 HAL_PIN(fb1g);
 HAL_PIN(fb1y);
 
+HAL_PIN(cmdc);
+HAL_PIN(cmdc_en);
+HAL_PIN(cmdd);
+HAL_PIN(cmdd_en);
 HAL_PIN(cmdg);
 HAL_PIN(cmdy);
 
@@ -166,6 +170,13 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_8;
    GPIO_Init(GPIOE, &GPIO_InitStructure);
    
+   //cmd
+   // GPIO_InitStructure.GPIO_Pin   = CMD_C_EN_PIN;
+   // GPIO_Init(CMD_C_EN_PORT, &GPIO_InitStructure);
+   // 
+   // GPIO_InitStructure.GPIO_Pin   = CMD_D_EN_PIN;
+   // GPIO_Init(CMD_D_EN_PORT, &GPIO_InitStructure);
+   
    //cmd yellow
    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_6;
    GPIO_Init(GPIOD, &GPIO_InitStructure);
@@ -222,6 +233,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
 static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
    struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
+   GPIO_InitTypeDef GPIO_InitStructure;
 
    uint32_t red    = 0;
    uint32_t green  = 0;
@@ -314,6 +326,57 @@ static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
       GPIO_SetBits(GPIOE, GPIO_Pin_8);
    else
       GPIO_ResetBits(GPIOE, GPIO_Pin_8);
+   
+   
+   // if(PIN(cmdc_en) > 0){
+   //    GPIO_SetBits(CMD_C_EN_PORT, CMD_C_EN_PIN);
+   //    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+   //    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   //    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   //    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   //    GPIO_InitStructure.GPIO_Pin = CMD_C_PIN;
+   //    GPIO_Init(CMD_C_PORT, &GPIO_InitStructure);
+   //    if(PIN(cmdc) > 0){
+   //       GPIO_SetBits(CMD_C_PORT, CMD_C_PIN);
+   //    }
+   //    else{
+   //       GPIO_ResetBits(CMD_C_PORT, CMD_C_PIN);
+   //    }
+   // }
+   // else{
+   //    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN;
+   //    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   //    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   //    GPIO_InitStructure.GPIO_Pin = CMD_C_PIN;
+   //    GPIO_Init(CMD_C_PORT, &GPIO_InitStructure);
+   //    GPIO_ResetBits(CMD_C_EN_PORT, CMD_C_EN_PIN);
+   //    PIN(cmdc) = (CMD_C_PORT->IDR & CMD_C_PIN) > 0;
+   // }
+   // 
+   // if(PIN(cmdd_en) > 0){
+   //    GPIO_SetBits(CMD_D_EN_PORT, CMD_D_EN_PIN);
+   //    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+   //    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+   //    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   //    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   //    GPIO_InitStructure.GPIO_Pin = CMD_C_PIN;
+   //    GPIO_Init(CMD_D_PORT, &GPIO_InitStructure);
+   //    if(PIN(cmdd) > 0){
+   //       GPIO_SetBits(CMD_D_PORT, CMD_D_PIN);
+   //    }
+   //    else{
+   //       GPIO_ResetBits(CMD_D_PORT, CMD_D_PIN);
+   //    }
+   // }
+   // else{
+   //    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN;
+   //    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+   //    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+   //    GPIO_InitStructure.GPIO_Pin = CMD_D_PIN;
+   //    GPIO_Init(CMD_D_PORT, &GPIO_InitStructure);
+   //    GPIO_ResetBits(CMD_D_EN_PORT, CMD_D_EN_PIN);
+   //    PIN(cmdd) = (CMD_D_PORT->IDR & CMD_D_PIN) > 0;
+   // }
    
    if(PIN(cmdy) > 0)
       GPIO_SetBits(GPIOD, GPIO_Pin_6);
