@@ -39,8 +39,13 @@ HAL_PIN(ind1);
 
 HAL_PIN(CTX);
 HAL_PIN(CRX);
-HAL_PIN(DIO);
-HAL_PIN(CK);
+HAL_PIN(C12);
+HAL_PIN(C36);
+HAL_PIN(C54);
+HAL_PIN(cmd_remap);
+
+// HAL_PIN(DIO);
+// HAL_PIN(CK);
 
 HAL_PIN(fb0g);
 HAL_PIN(fb0y);
@@ -48,10 +53,10 @@ HAL_PIN(fb0y);
 HAL_PIN(fb1g);
 HAL_PIN(fb1y);
 
-HAL_PIN(cmdc);
-HAL_PIN(cmdc_en);
-HAL_PIN(cmdd);
-HAL_PIN(cmdd_en);
+// HAL_PIN(cmdc);
+// HAL_PIN(cmdc_en);
+// HAL_PIN(cmdd);
+// HAL_PIN(cmdd_en);
 HAL_PIN(cmdg);
 HAL_PIN(cmdy);
 
@@ -70,9 +75,9 @@ HAL_PIN(fb1z);
 
 HAL_PIN(fbsd);//fb shutdown
 
-static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
-   // struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
+   struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
 
    GPIO_InitTypeDef GPIO_InitStructure;
    ADC_InitTypeDef ADC_InitStructure;
@@ -189,6 +194,23 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    GPIO_SetBits(GPIOC, GPIO_Pin_13);
    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
    GPIO_Init(GPIOC, &GPIO_InitStructure);
+   
+   if(PIN(cmd_remap) > 0){
+      // CMD EN
+      GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+      GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+      GPIO_InitStructure.GPIO_Pin = CMD_A_EN_PIN;
+      GPIO_Init(CMD_A_EN_PORT, &GPIO_InitStructure);
+      GPIO_InitStructure.GPIO_Pin = CMD_B_EN_PIN;
+      GPIO_Init(CMD_B_EN_PORT, &GPIO_InitStructure);
+      GPIO_InitStructure.GPIO_Pin = CMD_C_EN_PIN;
+      GPIO_Init(CMD_C_EN_PORT, &GPIO_InitStructure);
+      
+      GPIO_SetBits(CMD_A_EN_PORT, CMD_A_EN_PIN);
+      GPIO_SetBits(CMD_B_EN_PORT, CMD_B_EN_PIN);
+      GPIO_SetBits(CMD_C_EN_PORT, CMD_C_EN_PIN);
+   }
 }
 
 #include "../shared/hw_math.h"
@@ -198,6 +220,9 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
    struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
+   uint32_t red    = 0;
+   uint32_t green  = 0;
+   uint32_t yellow = 0;
    
    //TODO: unit conversion
    //TODO: check if adc sample complete?
@@ -224,20 +249,10 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    PIN(fb1) = V3(ADC2V(ADC_GetInjectedConversionValue(ADC3, ADC_InjectedChannel_4)), 10000.0, 1000.0);
    ADC_SoftwareStartInjectedConv(ADC3);
    
-   PIN(CRX) = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_0);
-   PIN(CTX) = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_1);
-   PIN(DIO) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_13);
-   PIN(CK) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_14);
-}
+   // PIN(DIO) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_13);
+   // PIN(CK) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_14);
 
-static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
-   // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
-   struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
-   GPIO_InitTypeDef GPIO_InitStructure;
 
-   uint32_t red    = 0;
-   uint32_t green  = 0;
-   uint32_t yellow = 0;
 
    switch((state_t)PIN(state)){
       case DISABLED:
@@ -327,7 +342,6 @@ static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    else
       GPIO_ResetBits(GPIOE, GPIO_Pin_8);
    
-   
    // if(PIN(cmdc_en) > 0){
    //    GPIO_SetBits(CMD_C_EN_PORT, CMD_C_EN_PIN);
    //    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
@@ -398,6 +412,12 @@ static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    else
       GPIO_SetBits(GPIOC, GPIO_Pin_13);
 
+   PIN(CRX) = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_0);
+   PIN(CTX) = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_1);
+   PIN(C12) = GPIO_ReadInputDataBit(CMD_A_PORT, CMD_A_PIN);
+   PIN(C36) = GPIO_ReadInputDataBit(CMD_B_PORT, CMD_B_PIN);
+   PIN(C54) = GPIO_ReadInputDataBit(CMD_C_PORT, CMD_C_PIN);
+   
    PIN(fb0a) = GPIO_ReadInputDataBit(FB0_A_PORT,FB0_A_PIN);
    PIN(fb0b) = GPIO_ReadInputDataBit(FB0_B_PORT,FB0_B_PIN);
    PIN(fb0z) = GPIO_ReadInputDataBit(FB0_Z_PORT,FB0_Z_PIN);
@@ -409,10 +429,10 @@ static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
 
 hal_comp_t io_comp_struct = {
   .name = "io",
-  .nrt = nrt_func,
+  .nrt = 0,
   .rt = rt_func,
   .frt = 0,
-  .nrt_init = nrt_init,
+  .hw_init = hw_init,
   .rt_start = 0,
   .frt_start = 0,
   .rt_stop = 0,
