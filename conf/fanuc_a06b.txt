@@ -20,3 +20,6 @@ conf0.max_force = 20
 conf0.mot_fb_rev = 1
 conf0.cur_i = 0.0001
 conf0.com_fb_polecount = 4
+fault0.en = io0.fbd1
+io0.fbth1 = 12
+io0.out0 = fault0.fault
