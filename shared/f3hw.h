@@ -7,7 +7,7 @@
 #define SHUNT_PULLUP 15000.0
 #define SHUNT_SERIE 470.0
 
-#define LED_Pin GPIO_PIN_0
+#define LED_Pin GPIO_PIN_8
 #define LED_GPIO_Port GPIOA
 
 #define PWM_U TIM8->CCR3
