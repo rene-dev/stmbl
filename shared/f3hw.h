@@ -7,8 +7,13 @@
 #define SHUNT_PULLUP 15000.0
 #define SHUNT_SERIE 470.0
 
+<<<<<<< Updated upstream
 #define LED_Pin GPIO_PIN_8
 #define LED_GPIO_Port GPIOA
+=======
+#define LED_Pin GPIO_PIN_13
+#define LED_GPIO_Port GPIOC
+>>>>>>> Stashed changes
 
 #define PWM_U TIM8->CCR3
 #define PWM_V TIM8->CCR2
@@ -16,8 +21,8 @@
 
 #define PWM_DEADTIME 0
 //io board
-//#define USB_CONNECT_PIN GPIO_PIN_15
-//#define USB_CONNECT_PORT GPIOB
+#define USB_CONNECT_PIN GPIO_PIN_2
+#define USB_CONNECT_PORT GPIOB
 
 /*
 //otter

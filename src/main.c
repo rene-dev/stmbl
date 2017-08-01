@@ -84,7 +84,7 @@ COMMAND("reset", nv_reset, "reset STMBL");
 
 char config[15*1024];
 const char* config_ro = (char*)0x08008000;
-
+//TODO: crc
 void flashloadconf(char * ptr){
    strncpy(config,config_ro,sizeof(config));
 }
@@ -107,7 +107,7 @@ void flashsaveconf(char * ptr){
          printf("error writing %i\n",ret);
          break;
       }
-   }while(config[i++] != 0);
+   }while(config[i++] != 0);//TODO: check length
    printf("OK %i bytes written\n",i);
    FLASH_Lock();
 }

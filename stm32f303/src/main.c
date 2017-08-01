@@ -61,6 +61,75 @@
 
 uint32_t systick_freq;
 CRC_HandleTypeDef hcrc;
+TIM_HandleTypeDef htim1;
+
+static void MX_TIM1_Init(void)
+{
+  __HAL_RCC_TIM1_CLK_ENABLE();
+  TIM_MasterConfigTypeDef sMasterConfig;
+  TIM_OC_InitTypeDef sConfigOC;
+  TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
+
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 0;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 2400;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  // htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  HAL_TIM_OC_Init(&htim1);
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig);
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 1200;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
+  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+  HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1);
+
+  HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2);
+
+  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
+  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
+  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
+  sBreakDeadTimeConfig.DeadTime = 0;
+  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;
+  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
+  sBreakDeadTimeConfig.BreakFilter = 0;
+  sBreakDeadTimeConfig.Break2State = TIM_BREAK2_DISABLE;
+  sBreakDeadTimeConfig.Break2Polarity = TIM_BREAK2POLARITY_HIGH;
+  sBreakDeadTimeConfig.Break2Filter = 0;
+  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
+  HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig);
+
+  GPIO_InitTypeDef GPIO_InitStruct;
+  /**TIM1 GPIO Configuration    
+  PB13     ------> TIM1_CH1N
+  PB14     ------> TIM1_CH2N
+  PA8     ------> TIM1_CH1
+  PA9     ------> TIM1_CH2 
+  */
+  GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF6_TIM1;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF6_TIM1;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+}
+
 
 // //hal interface TODO: move hal interface to file
 // void hal_enable_rt(){
@@ -103,14 +172,14 @@ void Error_Handler(void);
 
 
 void TIM8_UP_IRQHandler(){
-   GPIOA->BSRR |= GPIO_PIN_9;
+   //GPIOA->BSRR |= GPIO_PIN_9;
    __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
    hal_run_rt();
    if(__HAL_TIM_GET_FLAG(&htim8, TIM_IT_UPDATE) == SET){
       hal_stop();
       hal.hal_state = RT_TOO_LONG;
    }
-   GPIOA->BSRR |= GPIO_PIN_9 << 16;
+   //GPIOA->BSRR |= GPIO_PIN_9 << 16;
 }
 
 void bootloader(char * ptr){
@@ -162,14 +231,16 @@ int main(void)
   #endif
   
   MX_TIM8_Init();
-  MX_ADC1_Init();
-  MX_ADC2_Init();
-  MX_ADC3_Init();
-  MX_ADC4_Init();
+  MX_TIM1_Init();
+  // MX_ADC1_Init();
+  // MX_ADC2_Init();
+  // MX_ADC3_Init();
+  // MX_ADC4_Init();
   // MX_DAC_Init();
-  MX_OPAMP1_Init();
+  // MX_OPAMP1_Init();
   MX_OPAMP2_Init();
   MX_OPAMP3_Init();
+  MX_OPAMP4_Init();
   // MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
   
@@ -187,14 +258,15 @@ int main(void)
   __HAL_RCC_RTC_ENABLE();
 
   /* USER CODE BEGIN 2 */
-  HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
-  HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
+  // HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+  // HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+  // HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+  // HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
 
-  HAL_OPAMP_SelfCalibrate(&hopamp1);
+  // HAL_OPAMP_SelfCalibrate(&hopamp1);
   HAL_OPAMP_SelfCalibrate(&hopamp2);
   HAL_OPAMP_SelfCalibrate(&hopamp3);
+  HAL_OPAMP_SelfCalibrate(&hopamp4);
   
   hcrc.Instance = CRC;
   hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
@@ -211,12 +283,12 @@ int main(void)
   }
   
   //IO pins
-  GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
+  // GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_10;
+  // GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  // GPIO_InitStruct.Pull = GPIO_NOPULL;
+  // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  // HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+/*
      if (HAL_OPAMP_Start(&hopamp1) != HAL_OK){
        Error_Handler();
      }
@@ -226,51 +298,59 @@ int main(void)
      if (HAL_OPAMP_Start(&hopamp3) != HAL_OK){
        Error_Handler();
      }
-
+*/
   htim8.Instance->CCR1 = 0;
   htim8.Instance->CCR2 = 0;
   htim8.Instance->CCR3 = 0;
   
-  HAL_ADC_Start(&hadc1);
-  HAL_ADC_Start(&hadc2);
-  HAL_ADC_Start(&hadc3);
-  HAL_ADC_Start(&hadc4);
+  htim1.Instance->CCR1 = 1200;
+  htim1.Instance->CCR2 = 1200;
+  HAL_TIM_Base_Start(&htim1);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+  HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+  HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
+  
+  // HAL_ADC_Start(&hadc1);
+  // HAL_ADC_Start(&hadc2);
+  // HAL_ADC_Start(&hadc3);
+  // HAL_ADC_Start(&hadc4);
   if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
  	Error_Handler();
   }
 #ifndef PWM_INVERT
   TIM8->RCR = 1;//uptate event foo
 #endif
-  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
-	Error_Handler();
-  }
-  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
-  	Error_Handler();
-  }
-  if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
-  	Error_Handler();
-  }
-  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
-	Error_Handler();
-  }
-  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
-  	Error_Handler();
-  }
-  if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
-  	Error_Handler();
-  }
+  // if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
+	// Error_Handler();
+  // }
+  // if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
+  // 	Error_Handler();
+  // }
+  // if (HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
+  // 	Error_Handler();
+  // }
+  // if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_1) != HAL_OK){
+	// Error_Handler();
+  // }
+  // if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_2) != HAL_OK){
+  // 	Error_Handler();
+  // }
+  // if (HAL_TIMEx_PWMN_Start(&htim8, TIM_CHANNEL_3) != HAL_OK){
+  // 	Error_Handler();
+  // }
 
   hal_init(1.0 / 15000.0, 0.0);
   // hal load comps
   load_comp(comp_by_name("term"));
-  // load_comp(comp_by_name("sim"));
+  load_comp(comp_by_name("sim"));
   load_comp(comp_by_name("io"));
-  load_comp(comp_by_name("ls"));
-  load_comp(comp_by_name("dq"));
+  // load_comp(comp_by_name("ls"));
+  // load_comp(comp_by_name("dq"));
   load_comp(comp_by_name("idq"));
-  load_comp(comp_by_name("svm"));
-  load_comp(comp_by_name("hv"));
-  load_comp(comp_by_name("curpid"));
+  // load_comp(comp_by_name("svm"));
+  // load_comp(comp_by_name("hv"));
+  // load_comp(comp_by_name("curpid"));
   
   hal_parse("term0.rt_prio = 0.1");
   hal_parse("ls0.rt_prio = 0.6");
@@ -280,6 +360,7 @@ int main(void)
   hal_parse("idq0.rt_prio = 4.0");
   hal_parse("svm0.rt_prio = 5.0");
   hal_parse("hv0.rt_prio = 6.0");
+  hal_parse("sim0.rt_prio = 7.0");
   
   hal_parse("term0.send_step = 100.0");
   hal_parse("term0.gain0 = 10.0");
@@ -289,7 +370,11 @@ int main(void)
   hal_parse("term0.gain4 = 10.0");
   hal_parse("term0.gain5 = 10.0");
   hal_parse("term0.gain6 = 10.0");
-  hal_parse("term0.gain7 = 10.0");
+  hal_parse("term0.gain7 = 10.0"); 
+  
+  hal_parse("idq0.pos = sim0.vel");
+  hal_parse("io0.oc1 = idq0.a");
+  hal_parse("io0.oc2 = idq0.b");
 
   //link LS
   hal_parse("ls0.mot_temp = io0.mot_temp");
@@ -400,7 +485,7 @@ void SystemClock_Config(void)
   }
 
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB|RCC_PERIPHCLK_USART1
-                              |RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_TIM8
+                              |RCC_PERIPHCLK_USART3|RCC_PERIPHCLK_TIM8|RCC_PERIPHCLK_TIM1
                               |RCC_PERIPHCLK_ADC12|RCC_PERIPHCLK_ADC34|RCC_PERIPHCLK_RTC;
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
   PeriphClkInit.Usart3ClockSelection = RCC_USART3CLKSOURCE_SYSCLK;
@@ -408,6 +493,7 @@ void SystemClock_Config(void)
   PeriphClkInit.Adc34ClockSelection = RCC_ADC34PLLCLK_DIV1;
   PeriphClkInit.USBClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
   PeriphClkInit.Tim8ClockSelection = RCC_TIM8CLK_PLLCLK;
+  PeriphClkInit.Tim1ClockSelection = RCC_TIM1CLK_PLLCLK;
   PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {

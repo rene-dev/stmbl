@@ -59,6 +59,7 @@
 extern OPAMP_HandleTypeDef hopamp1;
 extern OPAMP_HandleTypeDef hopamp2;
 extern OPAMP_HandleTypeDef hopamp3;
+extern OPAMP_HandleTypeDef hopamp4;
 
 /* USER CODE BEGIN Private defines */
 

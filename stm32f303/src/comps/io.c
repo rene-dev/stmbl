@@ -22,6 +22,8 @@ HAL_PIN(udc_pwm);
 
 HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
+HAL_PIN(oc1);
+HAL_PIN(oc2);
 
 uint32_t adc_12_buf[10];
 uint32_t adc_34_buf[10];
@@ -77,11 +79,26 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   // struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
   //PA8 LED
-  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Pin = LED_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
+  
+  //enable
+  GPIO_InitStruct.Pin = GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = GPIO_PIN_10;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
   
   DMA1_Channel1->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA1_Channel1->CPAR = (uint32_t)&(ADC12_COMMON->CDR);
@@ -107,9 +124,10 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
   struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
-
-  while(!(DMA1->ISR & DMA_ISR_TCIF1)){}
-  while(!(DMA2->ISR & DMA_ISR_TCIF5)){}
+TIM1->CCR1 = PIN(oc1) * 1200.0+1200.0;
+TIM1->CCR2 = PIN(oc2) * 1200.0+1200.0;
+  // while(!(DMA1->ISR & DMA_ISR_TCIF1)){}
+  // while(!(DMA2->ISR & DMA_ISR_TCIF5)){}
   
   DMA1->IFCR = DMA_IFCR_CTCIF1;
   DMA2->IFCR = DMA_IFCR_CTCIF5;
@@ -134,7 +152,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   
   PIN(hv_temp) = r2temp(HV_R(ADC(adc_34_buf[0] >> 16))) * 0.01 + PIN(hv_temp) * 0.99; // 5.5u
   PIN(mot_temp) = MOT_R(MOT_REF(ADC(adc_34_buf[5] >> 16))); // 1.4u
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET); // 0.1u
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET); // 0.1u
 }
 
 hal_comp_t io_comp_struct = {
