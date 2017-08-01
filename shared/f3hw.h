@@ -7,13 +7,8 @@
 #define SHUNT_PULLUP 15000.0
 #define SHUNT_SERIE 470.0
 
-<<<<<<< Updated upstream
-#define LED_Pin GPIO_PIN_8
-#define LED_GPIO_Port GPIOA
-=======
 #define LED_Pin GPIO_PIN_13
 #define LED_GPIO_Port GPIOC
->>>>>>> Stashed changes
 
 #define PWM_U TIM8->CCR3
 #define PWM_V TIM8->CCR2

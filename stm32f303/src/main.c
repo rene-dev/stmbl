@@ -348,10 +348,12 @@ int main(void)
   // load_comp(comp_by_name("ls"));
   // load_comp(comp_by_name("dq"));
   load_comp(comp_by_name("idq"));
+  load_comp(comp_by_name("tle"));
   // load_comp(comp_by_name("svm"));
   // load_comp(comp_by_name("hv"));
   // load_comp(comp_by_name("curpid"));
   
+  hal_parse("tle0.rt_prio = 0.01");
   hal_parse("term0.rt_prio = 0.1");
   hal_parse("ls0.rt_prio = 0.6");
   hal_parse("io0.rt_prio = 1.0");
