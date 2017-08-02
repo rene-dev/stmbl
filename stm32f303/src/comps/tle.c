@@ -1,3 +1,4 @@
+//driver for TLE5012 GMR-Based Angular Sensor
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -14,6 +15,99 @@ HAL_PIN(d3);
 HAL_PIN(d4);
 
 SPI_HandleTypeDef hspi1;
+
+typedef union{
+   struct {
+      uint8_t rw   :1;//Read-write 0:Write 1:Read
+      uint8_t lock :4;//4-bit lock value 0000B: Default operating access for addresses 0x00:0x04, 1010B: Config-access for addresses 0x05:0x11
+      uint8_t upd  :1;//Update register access 0: Access to current values 1: Access to updated values
+      uint8_t addr :6;//6-bit Address
+      uint8_t nd   :4;//4-bit Number of data words
+   };
+   uint16_t word;
+} tle_cmd_t;
+
+typedef union{
+   struct {
+      uint8_t rst         :1;//Indication of chip reset 0: Reset occurred 1: No reset
+      uint8_t sys_err     :1;//system error 1: No error
+      uint8_t if_err      :1;//interface error 1: No error
+      uint8_t angle_valid :1;//Valid angle value 1: Angle value valid
+      uint8_t resp        :4;//Sensor number response indicator
+      uint8_t crc         :8;//Cyclic Redundancy Check
+   };
+   uint16_t word;
+} tle_safety_t;
+
+typedef union{
+   struct {
+      uint8_t rd_st     :1;//Read Status
+      uint8_t s_nr      :2;//Slave Number
+      uint8_t no_gmr_a  :1;//No valid GMR Angle Value
+      uint8_t no_gmr_xy :1;//No valid GMR XY Values
+      uint8_t s_rom     :1;//Status ROM
+      uint8_t s_adct    :1;//Status ADC-Test
+      uint8_t res       :1;//reserved
+      uint8_t s_magol   :1;//Status Magnitude Out of Limit
+      uint8_t s_xyol    :1;//Status X,Y Data Out of Limit
+      uint8_t s_ov      :1;//Status Overflow
+      uint8_t s_dspu    :1;//Status Digital Signal Processing Unit
+      uint8_t s_fuse    :1;//Status Fuse CRC
+      uint8_t s_vr      :1;//Status Voltage Regulator
+      uint8_t s_wd      :1;//Status Watchdog
+      uint8_t s_rst     :1;//Status Reset
+   };
+   uint16_t word;
+} tle_reg_stat_t;
+
+typedef union{
+   struct {
+      uint8_t res1       :6;//Reserved
+      uint8_t as_adct    :1;//Enable ADC Testvector Check
+      uint8_t res2       :1;//Reserved
+      uint8_t as_vec_mag :1;//Activation of Magnitude Check
+      uint8_t as_vec_xy  :1;//Activation of X,Y out of limit Check
+      uint8_t as_ov      :1;//Enable of DSPU Overflow Check
+      uint8_t as_dspu    :1;//Activation DSPU BIST
+      uint8_t as_fuse    :1;//Activation Fuse CRC
+      uint8_t as_vr      :1;//Enable Voltage Regulator Check
+      uint8_t as_wd      :1;//Enable DSPU Watchdog-HW-Reset
+      uint8_t as_rst     :1;//Activation of Hardware Reset
+   };
+   uint16_t word;
+} tle_reg_acstat_t;
+
+typedef union{
+   struct {
+      uint8_t fir_md     :2;//Filter Decimation Setting (Update Rate Setting)
+      uint8_t res        :9;//Reserved
+      uint8_t clk_sel    :1;//Clock Source Select
+      uint8_t ssc_od     :1;//SSC Interface 0: Push-pull 1: Open drain
+      uint8_t dsp_hold   :1;//Hold DSPU Operation
+      uint8_t iif_mod    :2;//Incremental Interface Mode
+   };
+   uint16_t word;
+} tle_reg_mod1_t;
+
+#define TLE_REG_STAT   0x00 //Status Register
+#define TLE_REG_ACSTAT 0x01 //Activation Status Register
+#define TLE_REG_AVAL   0x02 //Angle Value Register
+#define TLE_REG_ASPD   0x03 //Angle Speed Register
+#define TLE_REG_AREV   0x04 //Angle Revolution Register
+#define TLE_REG_FSYNC  0x05 //Frame Synchronization Register
+#define TLE_REG_MOD_1  0x06 //Interface Mode1 Register
+#define TLE_REG_SIL    0x07 //SIL Register
+#define TLE_REG_MOD_2  0x08 //Interface Mode2 Register
+#define TLE_REG_MOD_3  0x09 //Interface Mode3 Register
+#define TLE_REG_OFFX   0x0A //Offset X
+#define TLE_REG_OFFY   0x0B //Offset Y
+#define TLE_REG_SYNCH  0x0C //Synchronicity
+#define TLE_REG_IFAB   0x0D //IFAB Register
+#define TLE_REG_MOD_4  0x0E //Interface Mode4 Register
+#define TLE_REG_TCO_Y  0x0F //Temperature Coefficient Register
+#define TLE_REG_ADC_X  0x10 //X-raw value
+#define TLE_REG_ADC_Y  0x11 //Y-raw value
+#define TLE_REG_CNT    0x20 //IIF Counter value
 
 static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   // struct tle_ctx_t * ctx = (struct tle_ctx_t *)ctx_ptr;
