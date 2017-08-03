@@ -79,12 +79,12 @@ typedef union{
 
 typedef union{
    struct {
-      uint8_t fir_md     :2;//Filter Decimation Setting (Update Rate Setting)
-      uint8_t res        :9;//Reserved
-      uint8_t clk_sel    :1;//Clock Source Select
-      uint8_t ssc_od     :1;//SSC Interface 0: Push-pull 1: Open drain
-      uint8_t dsp_hold   :1;//Hold DSPU Operation
-      uint8_t iif_mod    :2;//Incremental Interface Mode
+      uint8_t  fir_md     :2;//Filter Decimation Setting (Update Rate Setting)
+      uint16_t res        :9;//Reserved
+      uint8_t  clk_sel    :1;//Clock Source Select
+      uint8_t  ssc_od     :1;//SSC Interface 0: Push-pull 1: Open drain
+      uint8_t  dsp_hold   :1;//Hold DSPU Operation
+      uint8_t  iif_mod    :2;//Incremental Interface Mode
    };
    uint16_t word;
 } tle_reg_mod1_t;
