@@ -30,7 +30,7 @@ LIBS:contrib
 LIBS:valves
 LIBS:stmbl
 LIBS:mesabob-cache
-EELAYER 25 0
+EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -58,141 +58,57 @@ $EndComp
 $Comp
 L GND #PWR01
 U 1 1 59233773
-P 6200 2300
-F 0 "#PWR01" H 6200 2050 50  0001 C CNN
-F 1 "GND" V 6205 2172 50  0000 R CNN
-F 2 "" H 6200 2300 50  0000 C CNN
-F 3 "" H 6200 2300 50  0000 C CNN
-	1    6200 2300
+P 6200 1900
+F 0 "#PWR01" H 6200 1650 50  0001 C CNN
+F 1 "GND" V 6205 1772 50  0000 R CNN
+F 2 "" H 6200 1900 50  0000 C CNN
+F 3 "" H 6200 1900 50  0000 C CNN
+	1    6200 1900
 	0    -1   -1   0   
-$EndComp
-$Comp
-L GND #PWR02
-U 1 1 592337EE
-P 5500 2400
-F 0 "#PWR02" H 5500 2150 50  0001 C CNN
-F 1 "GND" V 5505 2272 50  0000 R CNN
-F 2 "" H 5500 2400 50  0000 C CNN
-F 3 "" H 5500 2400 50  0000 C CNN
-	1    5500 2400
-	0    1    1    0   
 $EndComp
 $Comp
 L +5V #PWR03
 U 1 1 592338B3
-P 6200 2500
-F 0 "#PWR03" H 6200 2350 50  0001 C CNN
-F 1 "+5V" V 6215 2628 50  0000 L CNN
-F 2 "" H 6200 2500 50  0000 C CNN
-F 3 "" H 6200 2500 50  0000 C CNN
-	1    6200 2500
+P 6200 2300
+F 0 "#PWR03" H 6200 2150 50  0001 C CNN
+F 1 "+5V" V 6215 2428 50  0000 L CNN
+F 2 "" H 6200 2300 50  0000 C CNN
+F 3 "" H 6200 2300 50  0000 C CNN
+	1    6200 2300
 	0    1    1    0   
 $EndComp
-$Comp
-L +5V #PWR04
-U 1 1 59233911
-P 5500 2600
-F 0 "#PWR04" H 5500 2450 50  0001 C CNN
-F 1 "+5V" V 5515 2728 50  0000 L CNN
-F 2 "" H 5500 2600 50  0000 C CNN
-F 3 "" H 5500 2600 50  0000 C CNN
-	1    5500 2600
-	0    -1   -1   0   
-$EndComp
-Text HLabel 5550 1500 0    60   Input ~ 0
+Text HLabel 5500 1500 0    60   Input ~ 0
 rx0
-Text HLabel 5550 1600 0    60   Input ~ 0
+Text HLabel 5500 1700 0    60   Input ~ 0
 tx0
-Text HLabel 5550 1700 0    60   Input ~ 0
+Text HLabel 5500 1900 0    60   Input ~ 0
 rx4
-Text HLabel 5550 1800 0    60   Input ~ 0
+Text HLabel 5500 2100 0    60   Input ~ 0
 rx6
-Text HLabel 5550 1900 0    60   Input ~ 0
+Text HLabel 5500 2300 0    60   Input ~ 0
 tx4
-Text HLabel 5550 2000 0    60   Input ~ 0
+Text HLabel 5500 2500 0    60   Input ~ 0
 tx6
-Text HLabel 5550 2200 0    60   Input ~ 0
+Text HLabel 6200 1600 2    60   Input ~ 0
 rx3
-Text HLabel 5550 2300 0    60   Input ~ 0
+Text HLabel 6200 1800 2    60   Input ~ 0
 tx3
-Text HLabel 6150 1500 2    60   Input ~ 0
+Text HLabel 5500 1600 0    60   Input ~ 0
 rx2
-Text HLabel 6150 1600 2    60   Input ~ 0
+Text HLabel 5500 1800 0    60   Input ~ 0
 tx2
-Text HLabel 6150 1700 2    60   Input ~ 0
+Text HLabel 5500 2000 0    60   Input ~ 0
 rx5
-Text HLabel 6150 1800 2    60   Input ~ 0
+Text HLabel 5500 2200 0    60   Input ~ 0
 rx7
-Text HLabel 6150 1900 2    60   Input ~ 0
+Text HLabel 5500 2400 0    60   Input ~ 0
 tx5
-Text HLabel 6150 2000 2    60   Input ~ 0
+Text HLabel 5500 2600 0    60   Input ~ 0
 tx7
-Text HLabel 6150 2100 2    60   Input ~ 0
+Text HLabel 6200 1500 2    60   Input ~ 0
 rx1
-Text HLabel 6150 2200 2    60   Input ~ 0
+Text HLabel 6200 1700 2    60   Input ~ 0
 tx1
-NoConn ~ 5600 2100
-NoConn ~ 6100 2700
-Wire Wire Line
-	5500 2400 5600 2400
-Wire Wire Line
-	5600 2500 5550 2500
-Wire Wire Line
-	5550 2500 5550 2400
-Connection ~ 5550 2400
-Wire Wire Line
-	6100 2300 6200 2300
-Wire Wire Line
-	6100 2400 6150 2400
-Wire Wire Line
-	6150 2400 6150 2300
-Connection ~ 6150 2300
-Wire Wire Line
-	5500 2600 5600 2600
-Wire Wire Line
-	6100 2500 6200 2500
-Wire Wire Line
-	5600 2700 5550 2700
-Wire Wire Line
-	5550 2700 5550 2600
-Connection ~ 5550 2600
-Wire Wire Line
-	6100 2600 6150 2600
-Wire Wire Line
-	6150 2600 6150 2500
-Connection ~ 6150 2500
-Wire Wire Line
-	5600 1500 5550 1500
-Wire Wire Line
-	5600 1600 5550 1600
-Wire Wire Line
-	5550 1700 5600 1700
-Wire Wire Line
-	5550 1800 5600 1800
-Wire Wire Line
-	5550 1900 5600 1900
-Wire Wire Line
-	5550 2000 5600 2000
-Wire Wire Line
-	5550 2200 5600 2200
-Wire Wire Line
-	5600 2300 5550 2300
-Wire Wire Line
-	6100 2200 6150 2200
-Wire Wire Line
-	6100 2100 6150 2100
-Wire Wire Line
-	6100 2000 6150 2000
-Wire Wire Line
-	6100 1900 6150 1900
-Wire Wire Line
-	6100 1800 6150 1800
-Wire Wire Line
-	6100 1700 6150 1700
-Wire Wire Line
-	6100 1600 6150 1600
-Wire Wire Line
-	6100 1500 6150 1500
 $Sheet
 S 7000 950  750  550 
 U 59238838
@@ -321,4 +237,62 @@ Wire Wire Line
 	8150 1250 8250 1250
 Wire Wire Line
 	8250 1150 8150 1150
+Wire Wire Line
+	6100 1900 6200 1900
+Wire Wire Line
+	6100 2000 6150 2000
+Wire Wire Line
+	6150 1900 6150 2200
+Connection ~ 6150 1900
+Wire Wire Line
+	6150 2100 6100 2100
+Connection ~ 6150 2000
+Wire Wire Line
+	6150 2200 6100 2200
+Connection ~ 6150 2100
+Wire Wire Line
+	6100 2300 6200 2300
+Wire Wire Line
+	6100 2400 6150 2400
+Wire Wire Line
+	6150 2300 6150 2600
+Connection ~ 6150 2300
+Wire Wire Line
+	6150 2500 6100 2500
+Connection ~ 6150 2400
+Wire Wire Line
+	6150 2600 6100 2600
+Connection ~ 6150 2500
+Wire Wire Line
+	5500 1500 5600 1500
+Wire Wire Line
+	5500 1600 5600 1600
+Wire Wire Line
+	5500 1700 5600 1700
+Wire Wire Line
+	5500 1800 5600 1800
+Wire Wire Line
+	5600 1900 5500 1900
+Wire Wire Line
+	5500 2000 5600 2000
+Wire Wire Line
+	5600 2100 5500 2100
+Wire Wire Line
+	5500 2200 5600 2200
+Wire Wire Line
+	5600 2300 5500 2300
+Wire Wire Line
+	5500 2400 5600 2400
+Wire Wire Line
+	5600 2500 5500 2500
+Wire Wire Line
+	5500 2600 5600 2600
+Wire Wire Line
+	6200 1500 6100 1500
+Wire Wire Line
+	6100 1600 6200 1600
+Wire Wire Line
+	6200 1700 6100 1700
+Wire Wire Line
+	6100 1800 6200 1800
 $EndSCHEMATC
