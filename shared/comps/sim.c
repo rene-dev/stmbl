@@ -55,8 +55,8 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
 
    ctx->time += period;
 
-   if(ABS(ctx->freq * ctx->time) >= 1.0){ // TODO
-      ctx->time = 0.0;
+   if(ABS(ctx->freq * ctx->time) >= 1.0 && ABS(ctx->freq) > 0.0){ // TODO fix
+      ctx->time -= 1.0 / ABS(ctx->freq);
    }
 
    float co = 0.0;
