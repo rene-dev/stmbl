@@ -6,6 +6,9 @@
 
 HAL_COMP(curpid);
 
+// enable
+HAL_PIN(en);
+
 // current command
 HAL_PIN(id_cmd);
 HAL_PIN(iq_cmd);
@@ -102,13 +105,20 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       ctx->iq_error_sum = LIMIT(ctx->iq_error_sum + kpq * kiq * iq_error, max_volt - uq);
    }
    else{
-      ctx->id_error_sum = 0;
-      ctx->iq_error_sum = 0;
+      ctx->id_error_sum = 0.0;
+      ctx->iq_error_sum = 0.0;
    }
 
    ud += ctx->id_error_sum;
    uq += ctx->iq_error_sum;
 
+   if(PIN(en) <= 0.0){
+      ud = 0.0;
+      uq = 0.0;
+      ctx->id_error_sum = 0.0;
+      ctx->iq_error_sum = 0.0;
+   }
+   
    PIN(ud) = ud;
    PIN(uq) = uq;
 

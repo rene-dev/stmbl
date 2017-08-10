@@ -346,6 +346,7 @@ int main(void)
   hal_parse("curpid0.max_cur = ls0.max_cur");
   hal_parse("curpid0.pwm_volt = ls0.pwm_volt");
   hal_parse("curpid0.vel = ls0.vel");
+  hal_parse("curpid0.en = ls0.en");
 
   // hal parse config
   // hal_init_nrt();
