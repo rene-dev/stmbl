@@ -48,8 +48,9 @@ HAL_PIN(C36);
 HAL_PIN(C54);
 HAL_PIN(cmd_remap);
 
-// HAL_PIN(DIO);
-// HAL_PIN(CK);
+HAL_PIN(swd_remap);
+HAL_PIN(DIO);
+HAL_PIN(CK);
 
 HAL_PIN(fb0g);
 HAL_PIN(fb0y);
@@ -114,8 +115,13 @@ static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
    GPIO_Init(GPIOD, &GPIO_InitStructure);
    
-   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14;
-   GPIO_Init(GPIOA, &GPIO_InitStructure);
+   if(PIN(swd_remap) > 0){
+      GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+      GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+      GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+      GPIO_Init(GPIOA, &GPIO_InitStructure);
+   }
    
    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC3, ENABLE);
    ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;//data converted will be shifted to right
@@ -296,13 +302,11 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       PIN(fbd1) = 0.0;
       PIN(fbd1n) = 1.0;
    }
-   
-   
-   
-   // PIN(DIO) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_13);
-   // PIN(CK) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_14);
 
-
+   if(PIN(swd_remap) > 0){
+      PIN(DIO) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_13);
+      PIN(CK) = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_14);
+   }
 
    switch((state_t)PIN(state)){
       case DISABLED:
