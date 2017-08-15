@@ -85,6 +85,19 @@ COMMAND("reset", nv_reset, "reset STMBL");
 char config[15*1024];
 const char* config_ro = (char*)0x08008000;
 
+
+void confcrc(char * ptr){
+   uint32_t len = strnlen(config,sizeof(config)-1);
+   CRC_ResetDR();
+   uint32_t crc = CRC_CalcBlockCRC((uint32_t *) config, len / 4);
+   for(int i = 0;i<len;i++){
+      printf("%x ",config[i]);
+   }
+   printf("\n");
+   printf("size: %lu words: %lu crc:%lx\n", len, len / 4, crc);
+}
+COMMAND("confcrc", confcrc, "foo");
+
 void flashloadconf(char * ptr){
    strncpy(config,config_ro,sizeof(config));
 }
