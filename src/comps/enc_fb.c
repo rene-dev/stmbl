@@ -96,11 +96,12 @@ static void frt_func(float period, volatile void * ctx_ptr, volatile hal_pin_ins
    float p = mod(TIM_GetCounter(FB0_ENC_TIM) * 2.0f * M_PI / (float)ctx->e_res);
    PIN(pos) = p;
    //TODO: this gets triggered by wire saving abs encoders. add timeout?
-   if(RISING_EDGE(!GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_11)) && PIN(isabs) != 1.0){
+   if(RISING_EDGE(!GPIO_ReadInputDataBit(FB0_Z_PORT,FB0_Z_PIN))){
       // TODO: fix
-      //absoffset = -p;
-      //PIN(isabs) = 1.0;
+      ctx->absoffset = -p;
+      PIN(isabs) = 1.0;
    }
+   PIN(index) = GPIO_ReadInputDataBit(FB0_Z_PORT,FB0_Z_PIN);
    PIN(abspos) = mod(p + ctx->absoffset);
 }
 
