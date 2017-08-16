@@ -18,7 +18,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stm32f4xx_conf.h"
+//#include "stm32f4xx_conf.h"
 #include "hal.h"
 #include "setup.h"
 #include "defines.h"
