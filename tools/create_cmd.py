@@ -1,5 +1,12 @@
-#!/usr/bin/env python
-
+#! /bin/sh
+"true" '''\'
+if command -v python2 > /dev/null; then
+  exec python2 "$0" "$@"
+else
+  exec python "$0" "$@"
+fi
+exit $?
+'''
 import re
 import sys
 
