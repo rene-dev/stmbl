@@ -1,4 +1,4 @@
-update=Do 20 Okt 2016 14:51:20 CEST
+update=Di 29 Aug 2017 16:10:53 CEST
 version=1
 last_client=kicad
 [pcbnew]
@@ -23,8 +23,6 @@ ModuleOutlineThickness=0.150000000000
 [cvpcb]
 version=1
 NetIExt=net
-[general]
-version=1
 [eeschema]
 version=1
 LibDir=crystal_lib;hr911104;ksz8081_lib
@@ -65,3 +63,5 @@ LibName33=hr911104/hr911105_rj45
 LibName34=stm32
 LibName35=crystal_lib/crystal_smd
 LibName36=usblc
+[general]
+version=1

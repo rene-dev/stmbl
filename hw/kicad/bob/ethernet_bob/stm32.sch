@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:ethernet_bob-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -1684,4 +1685,47 @@ F 3 "" H 6900 7600 50  0000 C CNN
 $EndComp
 Connection ~ 6650 7450
 Connection ~ 6650 7750
+$Comp
+L CONN_01X01 J4
+U 1 1 59A7399E
+P 10950 1300
+F 0 "J4" H 11028 1341 50  0000 L CNN
+F 1 "CONN_01X01" H 11028 1250 50  0000 L CNN
+F 2 "Measurement_Points:Measurement_Point_Round-SMD-Pad_Big" H 10950 1300 50  0001 C CNN
+F 3 "" H 10950 1300 50  0001 C CNN
+	1    10950 1300
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3V3 #PWR068
+U 1 1 59ABCEF1
+P 13100 4350
+F 0 "#PWR068" H 13100 4200 50  0001 C CNN
+F 1 "+3V3" H 13115 4523 50  0000 C CNN
+F 2 "" H 13100 4350 50  0000 C CNN
+F 3 "" H 13100 4350 50  0000 C CNN
+	1    13100 4350
+	1    0    0    -1  
+$EndComp
+Text HLabel 13150 4700 2    60   Input ~ 0
+STM_MDIO
+$Comp
+L R R22
+U 1 1 59ABD33A
+P 13100 4500
+F 0 "R22" H 13170 4546 50  0000 L CNN
+F 1 "R" H 13170 4455 50  0000 L CNN
+F 2 "stmbl:R_0603" V 13030 4500 50  0001 C CNN
+F 3 "" H 13100 4500 50  0001 C CNN
+	1    13100 4500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	13100 4650 13100 4700
+Wire Wire Line
+	13100 4700 13150 4700
+Text HLabel 10750 1200 2    60   Input ~ 0
+STM_REFCLK
+Wire Wire Line
+	10750 1300 10750 1200
 $EndSCHEMATC

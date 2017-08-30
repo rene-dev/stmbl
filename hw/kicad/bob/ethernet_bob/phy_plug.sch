@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:ethernet_bob-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -78,13 +79,13 @@ Wire Wire Line
 	1700 4800 1900 4800
 Wire Wire Line
 	1700 4900 1900 4900
-Text GLabel 8650 2950 0    60   Input ~ 0
-TX_P
 Text GLabel 8650 3150 0    60   Input ~ 0
+TX_P
+Text GLabel 8650 2950 0    60   Input ~ 0
 TX_N
-Text GLabel 8650 3300 0    60   Input ~ 0
-RX_P
 Text GLabel 8650 3500 0    60   Input ~ 0
+RX_P
+Text GLabel 8650 3300 0    60   Input ~ 0
 RX_N
 Wire Wire Line
 	8650 2950 8750 2950
@@ -705,4 +706,71 @@ Wire Wire Line
 	8700 4000 8750 4000
 Wire Wire Line
 	8700 4100 8750 4100
+$Comp
+L CRYSTAL_SMD X2
+U 1 1 59AB4D47
+P 1700 5950
+F 0 "X2" H 1700 6170 50  0000 C CNN
+F 1 "CRYSTAL_SMD" H 1700 6079 50  0000 C CNN
+F 2 "Crystals:Crystal_SMD_0603-4pin_6.0x3.5mm" H 1700 5950 50  0001 C CNN
+F 3 "" H 1700 5950 50  0000 C CNN
+	1    1700 5950
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C27
+U 1 1 59AB4F41
+P 1500 6200
+F 0 "C27" H 1550 6300 40  0000 L CNN
+F 1 "100n" H 1500 6100 40  0000 L CNN
+F 2 "stmbl:C_0603" H 1538 6050 30  0001 C CNN
+F 3 "" H 1500 6200 60  0000 C CNN
+	1    1500 6200
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C28
+U 1 1 59AB4FB7
+P 1900 6200
+F 0 "C28" H 1950 6300 40  0000 L CNN
+F 1 "100n" H 1900 6100 40  0000 L CNN
+F 2 "stmbl:C_0603" H 1938 6050 30  0001 C CNN
+F 3 "" H 1900 6200 60  0000 C CNN
+	1    1900 6200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1500 5700 1500 6050
+Wire Wire Line
+	1900 5850 1900 6050
+Wire Wire Line
+	2600 5700 1500 5700
+Connection ~ 1500 5950
+Wire Wire Line
+	1900 5850 2700 5850
+Connection ~ 2700 5850
+Connection ~ 1900 5950
+Wire Wire Line
+	1500 6350 1900 6350
+Wire Wire Line
+	1650 6050 1650 6350
+Connection ~ 1650 6350
+Wire Wire Line
+	1750 6050 1750 6350
+Connection ~ 1750 6350
+$Comp
+L GND #PWR067
+U 1 1 59AB8568
+P 1650 6350
+F 0 "#PWR067" H 1650 6100 50  0001 C CNN
+F 1 "GND" H 1655 6177 50  0000 C CNN
+F 2 "" H 1650 6350 50  0000 C CNN
+F 3 "" H 1650 6350 50  0000 C CNN
+	1    1650 6350
+	1    0    0    -1  
+$EndComp
+Text HLabel 3600 6100 3    60   Input ~ 0
+PHY_REFCLK
+Wire Wire Line
+	3600 5700 3600 6100
 $EndSCHEMATC
