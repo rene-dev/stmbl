@@ -70,6 +70,14 @@ struct fault_ctx_t{
    state_t state;
    fault_t fault;
    uint32_t phased;
+   float cmd_error;
+   float mot_fb_error;
+   float com_fb_error;
+   float joint_fb_error;
+   float hv_error;
+   float hv_temp_error;
+   float dc_volt_error;
+   float mot_temp_error;
 };
 
 static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
@@ -90,6 +98,23 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    PIN(fan_hv_temp) = 60.0;
    PIN(fan_mot_temp) = 60.0;
 }
+
+float err_filter(float *ctx, float max, float dens, float err){
+  if(err > 0.0){
+    *ctx += 1.0;
+  }
+  else{
+    *ctx -= dens;
+  }
+
+  *ctx = CLAMP(*ctx, 0.0, max);
+
+  if(*ctx < max * 0.99){
+    return(0.0);
+  }
+  return(1.0);
+}
+
 
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    struct fault_ctx_t * ctx = (struct fault_ctx_t *)ctx_ptr;
@@ -143,30 +168,30 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       break;
    }
 
-   if(PIN(cmd_error) > 0.0){
+   if(err_filter(&(ctx->cmd_error), 5.0, 0.001, PIN(cmd_error) > 0.0)){
       ctx->fault = CMD_ERROR;
       ctx->state = SOFT_FAULT;
    }
 
-   if(PIN(mot_fb_error) > 0.0){
+   if(err_filter(&(ctx->mot_fb_error), 5.0, 0.001, PIN(mot_fb_error) > 0.0)){
       ctx->fault = MOT_FB_ERROR;
       ctx->state = SOFT_FAULT;
       ctx->phased = 0;
    }
 
-   if(PIN(com_fb_error) > 0.0){
+   if(err_filter(&(ctx->com_fb_error), 5.0, 0.001, PIN(com_fb_error) > 0.0)){
       ctx->fault = COM_FB_ERROR;
       ctx->state = SOFT_FAULT;
       ctx->phased = 0;
    }
    
-   if(PIN(joint_fb_error) > 0.0){
+   if(err_filter(&(ctx->joint_fb_error), 5.0, 0.001, PIN(joint_fb_error) > 0.0)){
       ctx->fault = JOINT_FB_ERROR;
       ctx->state = SOFT_FAULT;
       ctx->phased = 0;
    }
 
-   if(PIN(hv_error) > 0.0){
+   if(err_filter(&(ctx->hv_error), 3.0, 0.001, PIN(hv_error) > 0.0)){
       ctx->fault = HV_ERROR;
       ctx->state = SOFT_FAULT;
    }
@@ -181,22 +206,17 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       ctx->state = SOFT_FAULT;
    }
 
-   if(PIN(hv_temp) > PIN(max_hv_temp)){
+   if(err_filter(&(ctx->hv_temp_error), 5.0, 0.001, PIN(hv_temp) > PIN(max_hv_temp))){
       ctx->fault = HV_TEMP_ERROR;
       ctx->state = SOFT_FAULT;
    }
 
-   if(PIN(dc_volt) > PIN(max_dc_volt)){
-      ctx->fault = HV_VOLT_ERROR;
-      ctx->state = SOFT_FAULT;
-   }
-   
-   if(PIN(dc_volt) < PIN(min_dc_volt)){
+   if(err_filter(&(ctx->dc_volt_error), 5.0, 0.001, PIN(dc_volt) > PIN(max_dc_volt) || PIN(dc_volt) < PIN(min_dc_volt))){
       ctx->fault = HV_VOLT_ERROR;
       ctx->state = SOFT_FAULT;
    }
 
-   if(PIN(mot_temp) > PIN(max_mot_temp)){
+   if(err_filter(&(ctx->mot_temp_error), 5.0, 0.001, PIN(mot_temp) > PIN(max_mot_temp))){
       ctx->fault = MOT_TEMP_ERROR;
       ctx->state = SOFT_FAULT;
    }
