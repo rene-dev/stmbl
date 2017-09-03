@@ -50,6 +50,7 @@ COMPS += shared/comps/fault.c
 COMPS += shared/comps/pid.c
 COMPS += shared/comps/pmsm_limits.c
 COMPS += shared/comps/pmsm_ttc.c
+COMPS += shared/comps/acim_ttc.c
 COMPS += shared/comps/uvw.c
 COMPS += shared/comps/fanuc.c
 COMPS += shared/comps/fb_switch.c
