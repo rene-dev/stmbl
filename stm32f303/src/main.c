@@ -298,7 +298,9 @@ int main(void)
   hal_parse("curpid0.id_cmd = ls0.d_cmd");
   hal_parse("curpid0.iq_cmd = ls0.q_cmd");
   hal_parse("idq0.pos = ls0.pos");
+  hal_parse("idq0.mode = ls0.mode");
   hal_parse("dq0.pos = ls0.pos");
+  hal_parse("dq0.mode = ls0.mode");
   hal_parse("hv0.en = ls0.en");
   
   //ADC TEST

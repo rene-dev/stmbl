@@ -6,6 +6,8 @@
 
 HAL_COMP(idq);
 
+HAL_PIN(mode);
+
 //d,q inputs
 HAL_PIN(d);
 HAL_PIN(q);
@@ -42,9 +44,33 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   float b = d * si + q * co;
   
   //inverse clarke transformation
-  float u =   a;
-  float v = - a / 2.0 + b / 2.0 * M_SQRT3;
-  float w = - a / 2.0 - b / 2.0 * M_SQRT3;
+  float u, v, w;
+
+  switch((int)PIN(mode)){
+    case 0: // 90°
+      u = a;
+      v = 0.0;
+      w = b;
+      break;
+
+    case 1: // 120°
+      u =   a;
+      v = - a / 2.0 + b / 2.0 * M_SQRT3;
+      w = - a / 2.0 - b / 2.0 * M_SQRT3;
+      break;
+
+    case 2: // 180°
+      u = b / 2.0;
+      v = 0.0;
+      w = - b / 2.0;
+      break;
+      
+    default:
+      u = 0.0;
+      v = 0.0;
+      w = 0.0;
+   }
+   
 
   PIN(a) = a;
   PIN(b) = b;

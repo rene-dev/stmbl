@@ -6,6 +6,8 @@
 
 HAL_COMP(dq);
 
+HAL_PIN(mode);
+
 //U V W inputs
 HAL_PIN(u);
 HAL_PIN(v);
@@ -33,10 +35,33 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    float w = PIN(w);
    
    //clarke transformation
-   float a = u * 2.0 / 3.0 - v / 3.0 - w / 3.0;
-   float b = v / M_SQRT3 - w / M_SQRT3;
-   float y = u / 3.0 + v / 3.0 + w / 3.0;
+  float a, b, y;
 
+  switch((int)PIN(mode)){
+    case 0: // 90°
+      a = u - v;
+      b = w - v;
+      y = u / 3.0 + v / 3.0 + w / 3.0;
+      break;
+
+    case 1: // 120°
+      a = u * 2.0 / 3.0 - v / 3.0 - w / 3.0;
+      b = v / M_SQRT3 - w / M_SQRT3;
+      y = u / 3.0 + v / 3.0 + w / 3.0;
+      break;
+
+    case 2: // 180°
+      a = 0;
+      b = (u - w) / 2.0;
+      y = (u + w) / 2.0;
+      break;
+
+    default:
+      a = 0.0;
+      b = 0.0;
+      y = 0.0;
+   }
+   
    float p = (int)MAX(PIN(polecount), 1.0);
    float pos = PIN(pos) * p;
 
