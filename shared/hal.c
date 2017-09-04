@@ -477,12 +477,11 @@ void hal_run_nrt(){
 
 void hal_init_hw(){
    for(int i = 0; i < hal.comp_inst_count; i++){
-      if(hal.comp_insts[i].comp->hw_init != 0){
-         if(hal.comp_insts[i].state == PRE_HW_INIT){
+      if(hal.comp_insts[i].state == PRE_HW_INIT){
+         if(hal.comp_insts[i].comp->hw_init != 0){
             hal.comp_insts[i].comp->hw_init(hal.comp_insts[i].ctx, hal.comp_insts[i].pin_insts);
-            hal.comp_insts[i].state = STARTED;
          }
-         
+         hal.comp_insts[i].state = STARTED;
       }
    }
 }
