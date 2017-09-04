@@ -59,14 +59,14 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    output += cmd_d * PIN(kff1); // feedforward 1
    output += error * PIN(kp); // porportional
    output += error_d * PIN(kd); // differential
-   if(max_error > 0.0 && ABS(error) > max_error * 0.001){
+   if(PIN(ksd) != 0.0 && ABS(error) > (max - min) / PIN(ksd) * 0.001){
       ctx->error_sum += error_d / ABS(error) * PIN(ksd); // scalded differential
    }
    output = CLAMP(output, min, max);
 
    ctx->error_sum += error * PIN(ki) * period; // integrator
    ctx->error_sum += error_d * PIN(kdi) * period; // differential integrator
-   if(max_error > 0.0 && ABS(error) > max_error * 0.001){
+   if(PIN(ksdi) != 0.0 && ABS(error) > (max - min) / PIN(ksdi) * 0.001){
       ctx->error_sum += error_d / ABS(error) * PIN(ksdi) * period; // scalded differential integrator
    }
    ctx->error_sum = CLAMP(ctx->error_sum, min - output, max - output); // dynamic anti windup
