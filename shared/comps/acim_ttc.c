@@ -6,11 +6,12 @@
 
 HAL_COMP(acim_ttc);
 
+HAL_PIN(mode); // 0 = u/f, 1 = mtpa
+
 // motor values
 HAL_PIN(torque_n);
 HAL_PIN(cur_n);
-HAL_PIN(vel_n);
-HAL_PIN(freq_n);
+HAL_PIN(slip_n);
 HAL_PIN(polecount);
 
 // torque cmd in
@@ -18,7 +19,8 @@ HAL_PIN(torque);
 HAL_PIN(vel);
 
 // cur cmd out
-HAL_PIN(cur);
+HAL_PIN(id);
+HAL_PIN(iq);
 HAL_PIN(freq);
 HAL_PIN(slip)
 HAL_PIN(pos);
@@ -29,13 +31,39 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
 
    float poles = MAX(PIN(polecount), 1.0);
    float torque = PIN(torque);
-   float slip_n = PIN(freq_n) - PIN(vel_n) / 2.0 / M_PI * poles;
+   float vel = PIN(vel);
+   float slip_n = PIN(slip_n);
    float torque_n = MAX(PIN(torque_n), 0.01);
+   float cur_n = PIN(cur_n);
 
-   float slip = slip_n / torque_n * torque;
-   slip = slip_n * SIGN(torque);
-   float freq = PIN(vel) / 2.0 / M_PI * poles + slip;
-   PIN(cur) = PIN(cur_n) / torque_n * torque;
+   float id = 0.0;
+   float iq = 0.0;
+   float freq = vel * poles / 2.0 / M_PI;
+   float slip = 0.0;
+
+   switch((int)PIN(mode)){
+      case 0:
+         id = cur_n / sqrtf(2.0);
+         iq = cur_n / sqrtf(2.0) / torque_n * torque;
+         slip = slip_n / torque_n * torque;
+      break;
+
+      case 1:
+         id = 0.0;
+         iq = cur_n / torque_n * torque;
+         slip = slip_n * SIGN(torque);
+         break;
+
+      default:
+         id = 0;
+         iq = 0;
+         slip = 0.0;
+   }
+
+   freq += slip;
+
+   PIN(id) = id;
+   PIN(iq) = iq;
    PIN(freq) = freq;
    PIN(slip) = slip;
    PIN(pos) = mod(PIN(pos) + freq * period * 2.0 * M_PI);
