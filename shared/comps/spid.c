@@ -15,13 +15,16 @@ HAL_PIN(en); // enalbe
 HAL_PIN(kp); // proportional
 HAL_PIN(ki); // integator
 HAL_PIN(kd); // differential
-HAL_PIN(kdi); // differentail
+HAL_PIN(ksd); // scaled differential
+HAL_PIN(kdi); // differential integrator
+HAL_PIN(ksdi); // scaled differential integrator
 HAL_PIN(kff0); // feedforward 0
 HAL_PIN(kff1); // feedforward 1
 HAL_PIN(offset); // 0 offset
 
 HAL_PIN(min_output);
 HAL_PIN(max_output);
+HAL_PIN(max_error);
 
 // output
 HAL_PIN(output);
@@ -38,24 +41,34 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    struct spid_ctx_t * ctx = (struct spid_ctx_t *)ctx_ptr;
    struct spid_pin_ctx_t * pins = (struct spid_pin_ctx_t *)pin_ptr;
 
-   float cmd = PIN(cmd);
-   float cmd_d = cmd - ctx->last_cmd;
-   float error = cmd - PIN(fb);
-   float error_d = error - ctx->last_error;
-
    float offset = PIN(offset);
    float min = PIN(min_output) - offset;
    float max = PIN(max_output) - offset;
-   
+   float max_error = PIN(max_error);
+
+   float cmd = PIN(cmd);
+   float cmd_d = (cmd - ctx->last_cmd) / period;
+   float error = cmd - PIN(fb);
+   if(max_error > 0.0){
+      error = LIMIT(error, max_error);
+   }
+   float error_d = (error - ctx->last_error) / period;
+
    float output = 0.0;
    output += cmd * PIN(kff0); // feedforward 0
    output += cmd_d * PIN(kff1); // feedforward 1
    output += error * PIN(kp); // porportional
-   output += error_d * PIN(kd); // differentail
+   output += error_d * PIN(kd); // differential
+   if(max_error > 0.0 && ABS(error) > max_error * 0.001){
+      ctx->error_sum += error_d / ABS(error) * PIN(ksd); // scalded differential
+   }
    output = CLAMP(output, min, max);
 
    ctx->error_sum += error * PIN(ki) * period; // integrator
-   ctx->error_sum += error_d * PIN(kdi) * period; // differentail integrator
+   ctx->error_sum += error_d * PIN(kdi) * period; // differential integrator
+   if(max_error > 0.0 && ABS(error) > max_error * 0.001){
+      ctx->error_sum += error_d / ABS(error) * PIN(ksdi) * period; // scalded differential integrator
+   }
    ctx->error_sum = CLAMP(ctx->error_sum, min - output, max - output); // dynamic anti windup
 
    output += ctx->error_sum;
