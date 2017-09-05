@@ -16,7 +16,6 @@
 *.pyc
 
 .vscode/*
-.clang-format
 
 tools/pycrc*
 

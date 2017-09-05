@@ -255,6 +255,8 @@ boot_btflash: boot
 hv:
 	$(MAKE) -f stm32f103/Makefile
 
+format:
+	find src/ f3dfu/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ -iname *.h -o -iname *.c | xargs clang-format -i
 
 # Display compiler version information
 #
