@@ -5,6 +5,7 @@ AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: 'true'
 AlignOperands: 'false'
 AlignTrailingComments: 'true'
+SortIncludes: 'false'
 ColumnLimit: '0'
 IndentCaseLabels: 'true'
 IndentWidth: '2'
