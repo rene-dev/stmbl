@@ -192,7 +192,7 @@ void metadata(pd_metadata_t *pdm, process_data_descriptor_t *ptr) {
 //TODO: lbp command 0xe6 to set mode
 
 static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
-   struct sserial_ctx_t * ctx = (struct sserial_ctx_t *)ctx_ptr;
+   // struct sserial_ctx_t * ctx = (struct sserial_ctx_t *)ctx_ptr;
    struct sserial_pin_ctx_t * pins = (struct sserial_pin_ctx_t *)pin_ptr;
 
    PIN(timeout) = 100.0;// 20khz / 1khz * 2 reads = 40
@@ -469,7 +469,7 @@ int32_t scale_in(pd_metadata_t pd, float val) {
 }
 
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
-   struct res_ctx_t * ctx = (struct res_ctx_t *)ctx_ptr;
+   // struct res_ctx_t * ctx = (struct res_ctx_t *)ctx_ptr;
    struct sserial_pin_ctx_t * pins = (struct sserial_pin_ctx_t *)pin_ptr;
    // update all hal pins with values from their associated pds
 
@@ -500,7 +500,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
 
 
 static void frt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
-struct res_ctx_t * ctx = (struct res_ctx_t *)ctx_ptr;
+// struct res_ctx_t * ctx = (struct res_ctx_t *)ctx_ptr;
 struct sserial_pin_ctx_t * pins = (struct sserial_pin_ctx_t *)pin_ptr;
    
 for(int j = 0;j<2;j++){

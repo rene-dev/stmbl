@@ -15,7 +15,7 @@ HAL_PIN(b);
 
 static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   // struct enc_ctx_t * ctx = (struct enc_ctx_t *)ctx_ptr;
-  struct enc_pin_ctx_t * pins = (struct enc_pin_ctx_t *)pin_ptr;
+  // struct enc_pin_ctx_t * pins = (struct enc_pin_ctx_t *)pin_ptr;
   __HAL_RCC_TIM1_CLK_ENABLE();
   
   /**TIM1 GPIO Configuration    

@@ -13,7 +13,7 @@ HAL_PIN(b);
 
 static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    // struct o_fb_ctx_t * ctx = (struct o_fb_ctx_t *)ctx_ptr;
-   struct o_fb_pin_ctx_t * pins = (struct o_fb_pin_ctx_t *)pin_ptr;
+   // struct o_fb_pin_ctx_t * pins = (struct o_fb_pin_ctx_t *)pin_ptr;
    
    GPIO_InitTypeDef GPIO_InitStructure;
    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
