@@ -16,14 +16,14 @@
 #define COS_PIN GPIO_Pin_5
 #define COS_PORT GPIOC
 
-#define ADC_REF 3.3//analog reference voltage
-#define ADC_RES 4096.0//analog resolution, 12 bit
+#define ADC_REF 3.3  //analog reference voltage
+#define ADC_RES 4096.0  //analog resolution, 12 bit
 
-#define OP_R_INPUT 1000.0//opamp input
-#define OP_R_FEEDBACK 3900.0//opamp feedback
-#define OP_R_OUT_LOW 180.0//opamp out low
-#define OP_R_OUT_HIGH 470.0//opamp out high
-#define OP_REF 5.0//opamp reference voltage
+#define OP_R_INPUT 1000.0  //opamp input
+#define OP_R_FEEDBACK 3900.0  //opamp feedback
+#define OP_R_OUT_LOW 180.0  //opamp out low
+#define OP_R_OUT_HIGH 470.0  //opamp out high
+#define OP_REF 5.0  //opamp reference voltage
 
 //FB UART
 #define FB0_UART USART3
@@ -91,7 +91,7 @@
 #define FB0_ENC_TIM_RCC RCC_APB1Periph_TIM3
 
 #define FB0_RES_TIM TIM2
-#define FB0_RES_TIM_AF GPIO_AF_TIM2 //sync to slave timer for resolver
+#define FB0_RES_TIM_AF GPIO_AF_TIM2  //sync to slave timer for resolver
 #define FB0_RES_TIM_RCC RCC_APB1Periph_TIM2
 
 #define TIM_MASTER TIM4
@@ -120,14 +120,14 @@
 #define COS_PIN GPIO_Pin_7
 #define COS_PORT GPIOA
 
-#define ADC_REF 3.3//analog reference voltage
-#define ADC_RES 4096.0//analog resolution, 12 bit
+#define ADC_REF 3.3  //analog reference voltage
+#define ADC_RES 4096.0  //analog resolution, 12 bit
 
-#define OP_R_INPUT 10000.0//opamp input
-#define OP_R_FEEDBACK 15000.0//opamp feedback
-#define OP_R_OUT_LOW 470.0//opamp out low
-#define OP_R_OUT_HIGH 22.0//opamp out high
-#define OP_REF 1.83//opamp reference voltage
+#define OP_R_INPUT 10000.0  //opamp input
+#define OP_R_FEEDBACK 15000.0  //opamp feedback
+#define OP_R_OUT_LOW 470.0  //opamp out low
+#define OP_R_OUT_HIGH 22.0  //opamp out high
+#define OP_REF 1.83  //opamp reference voltage
 
 //FB UART
 #define FB0_UART USART6
@@ -142,7 +142,7 @@
 #define FB0_UART_TX_DMA_CHAN DMA_Channel_5
 #define FB0_UART_TX_DMA_TCIF DMA_FLAG_TCIF6
 
-//v4 does not have dedicated rx pin, use pc6 as rx and tx. 
+//v4 does not have dedicated rx pin, use pc6 as rx and tx.
 //#define FB0_UART_RX_PIN GPIO_Pin_11
 //#define FB0_UART_RX_PORT GPIOB
 //#define FB0_UART_RX_PIN_SOURCE GPIO_PinSource11
@@ -246,7 +246,7 @@
 #define FB0_ENC_TIM_RCC RCC_APB1Periph_TIM4
 
 #define FB0_RES_TIM TIM4
-#define FB0_RES_TIM_AF GPIO_AF_TIM4 //sync to slave timer for resolver
+#define FB0_RES_TIM_AF GPIO_AF_TIM4  //sync to slave timer for resolver
 #define FB0_RES_TIM_RCC RCC_APB1Periph_TIM4
 //FB1, TIM1
 #define FB1_A_PIN GPIO_Pin_9

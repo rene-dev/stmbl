@@ -83,4 +83,4 @@ SIG o----|
         GND
 */
 #define V3(a, pm, pd) ((a) / (pd) * ((pm) + (pd)))
-#define R3(a, vcc, pu, pm, pd) (V3(a, pm, pd) / ((vcc) - V3(a, pm, pd)) / (pu) - V3(a, pm, pd) / ((pm) + (pd)))
+#define R3(a, vcc, pu, pm, pd) (V3(a, pm, pd) / ((vcc)-V3(a, pm, pd)) / (pu)-V3(a, pm, pd) / ((pm) + (pd)))

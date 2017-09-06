@@ -13,7 +13,7 @@
  *    ReflectOut   = True
  *    Algorithm    = table-driven
  *****************************************************************************/
-#include "crc32.h"     /* include the header file generated with pycrc */
+#include "crc32.h" /* include the header file generated with pycrc */
 #include <stdlib.h>
 #include <stdint.h>
 
@@ -84,8 +84,7 @@ static const crc32_t crc_table[256] = {
     0xbdbdf21c, 0xcabac28a, 0x53b39330, 0x24b4a3a6,
     0xbad03605, 0xcdd70693, 0x54de5729, 0x23d967bf,
     0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94,
-    0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
-};
+    0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d};
 
 /**
  * Reflect all bits of a \a data word of \a data_len bytes.
@@ -94,17 +93,16 @@ static const crc32_t crc_table[256] = {
  * \param data_len     The width of \a data expressed in number of bits.
  * \return             The reflected data.
  *****************************************************************************/
-crc32_t crc32_reflect(crc32_t data, size_t data_len)
-{
-    unsigned int i;
-    crc32_t ret;
+crc32_t crc32_reflect(crc32_t data, size_t data_len) {
+  unsigned int i;
+  crc32_t ret;
 
-    ret = data & 0x01;
-    for (i = 1; i < data_len; i++) {
-        data >>= 1;
-        ret = (ret << 1) | (data & 0x01);
-    }
-    return ret;
+  ret = data & 0x01;
+  for(i = 1; i < data_len; i++) {
+    data >>= 1;
+    ret = (ret << 1) | (data & 0x01);
+  }
+  return ret;
 }
 
 
@@ -116,18 +114,15 @@ crc32_t crc32_reflect(crc32_t data, size_t data_len)
  * \param data_len Number of bytes in the \a data buffer.
  * \return         The updated crc value.
  *****************************************************************************/
-crc32_t crc32_update(crc32_t crc, const void *data, size_t data_len)
-{
-    const unsigned char *d = (const unsigned char *)data;
-    unsigned int tbl_idx;
+crc32_t crc32_update(crc32_t crc, const void *data, size_t data_len) {
+  const unsigned char *d = (const unsigned char *)data;
+  unsigned int tbl_idx;
 
-    while (data_len--) {
-        tbl_idx = (crc ^ *d) & 0xff;
-        crc = (crc_table[tbl_idx] ^ (crc >> 8)) & 0xffffffff;
+  while(data_len--) {
+    tbl_idx = (crc ^ *d) & 0xff;
+    crc     = (crc_table[tbl_idx] ^ (crc >> 8)) & 0xffffffff;
 
-        d++;
-    }
-    return crc & 0xffffffff;
+    d++;
+  }
+  return crc & 0xffffffff;
 }
-
-

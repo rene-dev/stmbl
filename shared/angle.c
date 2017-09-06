@@ -55,49 +55,61 @@ const float sintab[257] = {
     0.989177, 0.990058, 0.990903, 0.991710, 0.992480, 0.993212, 0.993907, 0.994565,
     0.995185, 0.995767, 0.996313, 0.996820, 0.997290, 0.997723, 0.998118, 0.998476,
     0.998795, 0.999078, 0.999322, 0.999529, 0.999699, 0.999831, 0.999925, 0.999981,
-    1.000000
-};
+    1.000000};
 
-void sincos_fast(float x, float *sin, float *cos){
-    extern const float sintab[257];
+void sincos_fast(float x, float *sin, float *cos) {
+  extern const float sintab[257];
 
-    x = x * 256 / (M_PI/2);
+  x = x * 256 / (M_PI / 2);
 
-    int y = (int)x;
-    if (y < 0)
-        y -= 1;
+  int y = (int)x;
+  if(y < 0)
+    y -= 1;
 
-    float  f = x - y;
-    int    i = y & 255;
+  float f = x - y;
+  int i   = y & 255;
 
-    float  s = (1-f) * sintab[i    ] + f * sintab[i+1  ];
-    float  c = (1-f) * sintab[256-i] + f * sintab[255-i];
+  float s = (1 - f) * sintab[i] + f * sintab[i + 1];
+  float c = (1 - f) * sintab[256 - i] + f * sintab[255 - i];
 
-    switch ((y >> 8) & 3) {
-    case 0:   *sin =  s;  *cos =  c;  break;
-    case 1:   *sin =  c;  *cos = -s;  break;
-    case 2:   *sin = -s;  *cos = -c;  break;
-    case 3:   *sin = -c;  *cos =  s;  break;
-    default:  *sin =  0;  *cos =  0;  break;
-    }
+  switch((y >> 8) & 3) {
+    case 0:
+      *sin = s;
+      *cos = c;
+      break;
+    case 1:
+      *sin = c;
+      *cos = -s;
+      break;
+    case 2:
+      *sin = -s;
+      *cos = -c;
+      break;
+    case 3:
+      *sin = -c;
+      *cos = s;
+      break;
+    default:
+      *sin = 0;
+      *cos = 0;
+      break;
+  }
 }
 
-inline float minus(float a, float b){
-	if(ABS(a - b) < M_PI){
-		return(a - b);
-	}
-	else if(a > b){
-		return(a - b - 2.0 * M_PI);
-	}
-	else{
-		return(a - b + 2.0 * M_PI);
-	}
+inline float minus(float a, float b) {
+  if(ABS(a - b) < M_PI) {
+    return (a - b);
+  } else if(a > b) {
+    return (a - b - 2.0 * M_PI);
+  } else {
+    return (a - b + 2.0 * M_PI);
+  }
 }
 
-inline float mod(float a){
-  if(a + M_PI < 0.0f){
-      return -(fmodf(-(a + M_PI), M_PI * 2.0) - M_PI);
-  }else{
-      return fmodf(a + M_PI, M_PI * 2.0) - M_PI;
+inline float mod(float a) {
+  if(a + M_PI < 0.0f) {
+    return -(fmodf(-(a + M_PI), M_PI * 2.0) - M_PI);
+  } else {
+    return fmodf(a + M_PI, M_PI * 2.0) - M_PI;
   }
 }

@@ -56,9 +56,8 @@ crc8_t crc8_reflect(crc8_t data, size_t data_len);
  *
  * \return     The initial crc value.
  *****************************************************************************/
-static inline crc8_t crc8_init(void)
-{
-    return 0x00;
+static inline crc8_t crc8_init(void) {
+  return 0x00;
 }
 
 
@@ -79,14 +78,13 @@ crc8_t crc8_update(crc8_t crc, const void *data, size_t data_len);
  * \param crc  The current crc value.
  * \return     The final crc value.
  *****************************************************************************/
-static inline crc8_t crc8_finalize(crc8_t crc)
-{
-    return crc ^ 0x00;
+static inline crc8_t crc8_finalize(crc8_t crc) {
+  return crc ^ 0x00;
 }
 
 
 #ifdef __cplusplus
-}           /* closing brace for extern "C" */
+} /* closing brace for extern "C" */
 #endif
 
-#endif      /* __CRC8_H__ */
+#endif /* __CRC8_H__ */

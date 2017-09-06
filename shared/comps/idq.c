@@ -15,7 +15,7 @@ HAL_PIN(q);
 
 //rotor position
 HAL_PIN(pos);
-HAL_PIN(polecount);//1
+HAL_PIN(polecount);  //1
 
 //a,b output
 HAL_PIN(a);
@@ -26,14 +26,14 @@ HAL_PIN(u);
 HAL_PIN(v);
 HAL_PIN(w);
 
-static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
-   // struct idq_ctx_t * ctx = (struct idq_ctx_t *)ctx_ptr;
-   struct idq_pin_ctx_t * pins = (struct idq_pin_ctx_t *)pin_ptr;
+static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  // struct idq_ctx_t * ctx = (struct idq_ctx_t *)ctx_ptr;
+  struct idq_pin_ctx_t *pins = (struct idq_pin_ctx_t *)pin_ptr;
 
   float d = PIN(d);
   float q = PIN(q);
 
-  float p = (int)MAX(PIN(polecount), 1.0);
+  float p   = (int)MAX(PIN(polecount), 1.0);
   float pos = PIN(pos) * p;
 
   float si = 0.0;
@@ -43,41 +43,41 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   //inverse park transformation
   float a = d * co - q * si;
   float b = d * si + q * co;
-  
+
   //inverse clarke transformation
   float u, v, w;
 
-  switch((int)PIN(mode)){
-    case PHASE_90_3PH: // 90°
+  switch((int)PIN(mode)) {
+    case PHASE_90_3PH:  // 90°
       u = a;
       v = 0.0;
       w = b;
       break;
 
-    case PHASE_120_3PH: // 120°
+    case PHASE_120_3PH:  // 120°
       u = a;
-      v = - a / 2.0 + b / 2.0 * M_SQRT3;
-      w = - a / 2.0 - b / 2.0 * M_SQRT3;
+      v = -a / 2.0 + b / 2.0 * M_SQRT3;
+      w = -a / 2.0 - b / 2.0 * M_SQRT3;
       break;
 
-    case PHASE_180_2PH: // 180°
+    case PHASE_180_2PH:  // 180°
       u = b / 2.0;
       v = 0.0;
-      w = - b / 2.0;
+      w = -b / 2.0;
       break;
 
-    case PHASE_180_3PH: // 180°
+    case PHASE_180_3PH:  // 180°
       u = b / 2.0;
       v = a;
-      w = - b / 2.0;
+      w = -b / 2.0;
       break;
-      
+
     default:
       u = 0.0;
       v = 0.0;
       w = 0.0;
-   }
-   
+  }
+
 
   PIN(a) = a;
   PIN(b) = b;
@@ -88,15 +88,15 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
 }
 
 hal_comp_t idq_comp_struct = {
-  .name = "idq",
-  .nrt = 0,
-  .rt = rt_func,
-  .frt = 0,
-  .nrt_init = 0,
-  .rt_start = 0,
-  .frt_start = 0,
-  .rt_stop = 0,
-  .frt_stop = 0,
-  .ctx_size = 0,
-  .pin_count = sizeof(struct idq_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+    .name      = "idq",
+    .nrt       = 0,
+    .rt        = rt_func,
+    .frt       = 0,
+    .nrt_init  = 0,
+    .rt_start  = 0,
+    .frt_start = 0,
+    .rt_stop   = 0,
+    .frt_stop  = 0,
+    .ctx_size  = 0,
+    .pin_count = sizeof(struct idq_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
 };

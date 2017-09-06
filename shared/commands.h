@@ -1,12 +1,12 @@
 #pragma once
 #include <stdint.h>
 
-#define COMMAND(c,p,d)
+#define COMMAND(c, p, d)
 
-uint32_t call_cmd(char * s);
+uint32_t call_cmd(char *s);
 
-typedef struct{
+typedef struct {
   char name[32];
-  char * doc;
+  char *doc;
   void (*ptr)(char *);
-}cmd_t;
+} cmd_t;

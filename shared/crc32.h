@@ -56,9 +56,8 @@ crc32_t crc32_reflect(crc32_t data, size_t data_len);
  *
  * \return     The initial crc value.
  *****************************************************************************/
-static inline crc32_t crc32_init(void)
-{
-    return 0xffffffff;
+static inline crc32_t crc32_init(void) {
+  return 0xffffffff;
 }
 
 
@@ -79,14 +78,13 @@ crc32_t crc32_update(crc32_t crc, const void *data, size_t data_len);
  * \param crc  The current crc value.
  * \return     The final crc value.
  *****************************************************************************/
-static inline crc32_t crc32_finalize(crc32_t crc)
-{
-    return crc ^ 0xffffffff;
+static inline crc32_t crc32_finalize(crc32_t crc) {
+  return crc ^ 0xffffffff;
 }
 
 
 #ifdef __cplusplus
-}           /* closing brace for extern "C" */
+} /* closing brace for extern "C" */
 #endif
 
-#endif      /* __CRC32_H__ */
+#endif /* __CRC32_H__ */

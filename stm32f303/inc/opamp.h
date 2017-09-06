@@ -45,7 +45,7 @@
 #ifndef __opamp_H
 #define __opamp_H
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/

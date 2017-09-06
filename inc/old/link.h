@@ -4,7 +4,7 @@
 #define KGCM2(a) ((a) / 10000.0)
 
 //Do not change order, append new types at the end
-typedef enum{
+typedef enum {
   ENC = 1,
   RES,
   SINCOS,
@@ -22,7 +22,7 @@ typedef enum{
   SSI
 } protocol_t;
 
-typedef enum{
+typedef enum {
   ACSYNC = 0,
   ACASYNC,
   AC2PHASE,

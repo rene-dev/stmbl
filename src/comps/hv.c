@@ -10,7 +10,7 @@
 
 HAL_COMP(hv);
 
-//process data from LS 
+//process data from LS
 HAL_PIN(d_cmd);
 HAL_PIN(q_cmd);
 HAL_PIN(pos);
@@ -55,79 +55,79 @@ HAL_PIN(crc_error);
 HAL_PIN(timeout);
 HAL_PIN(scale);
 
-struct hv_ctx_t{
-   volatile packet_to_hv_t packet_to_hv;
-   volatile packet_from_hv_t packet_from_hv;
-   f3_config_data_t config;
-   f3_state_data_t state;
-   uint16_t addr;
-   uint16_t timeout;
+struct hv_ctx_t {
+  volatile packet_to_hv_t packet_to_hv;
+  volatile packet_from_hv_t packet_from_hv;
+  f3_config_data_t config;
+  f3_state_data_t state;
+  uint16_t addr;
+  uint16_t timeout;
 };
 
 volatile uint32_t foobar;
 
-static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
-  struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
-  struct hv_pin_ctx_t * pins = (struct hv_pin_ctx_t *)pin_ptr;
-  
-   //setup uart to f1. uses DMA to transfer to_hv struct.
-   GPIO_InitTypeDef GPIO_InitStruct;
-   USART_InitTypeDef USART_InitStruct;
-   DMA_InitTypeDef DMA_InitStructure;
+static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
+  struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
-   UART_DRV_CLOCK_COMMAND(UART_DRV_RCC, ENABLE);
+  //setup uart to f1. uses DMA to transfer to_hv struct.
+  GPIO_InitTypeDef GPIO_InitStruct;
+  USART_InitTypeDef USART_InitStruct;
+  DMA_InitTypeDef DMA_InitStructure;
 
-   //USART TX
-   GPIO_PinAFConfig(UART_DRV_TX_PORT, UART_DRV_TX_PIN_SOURCE, UART_DRV_TX_AF_SOURCE);
-   GPIO_InitStruct.GPIO_Pin = UART_DRV_TX_PIN;
-   GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
-   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP ;
-   GPIO_Init(UART_DRV_TX_PORT, &GPIO_InitStruct);
+  UART_DRV_CLOCK_COMMAND(UART_DRV_RCC, ENABLE);
 
-   //USART RX
-   GPIO_PinAFConfig(UART_DRV_RX_PORT, UART_DRV_RX_PIN_SOURCE, UART_DRV_RX_AF_SOURCE);
-   GPIO_InitStruct.GPIO_Pin = UART_DRV_RX_PIN;
-   GPIO_Init(UART_DRV_RX_PORT, &GPIO_InitStruct);
+  //USART TX
+  GPIO_PinAFConfig(UART_DRV_TX_PORT, UART_DRV_TX_PIN_SOURCE, UART_DRV_TX_AF_SOURCE);
+  GPIO_InitStruct.GPIO_Pin   = UART_DRV_TX_PIN;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_AF;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_UP;
+  GPIO_Init(UART_DRV_TX_PORT, &GPIO_InitStruct);
 
-   USART_OverSampling8Cmd(UART_DRV,ENABLE);
-   USART_InitStruct.USART_BaudRate = DATABAUD;
-   USART_InitStruct.USART_WordLength = USART_WordLength_8b;
-   USART_InitStruct.USART_StopBits = USART_StopBits_1;
-   USART_InitStruct.USART_Parity = USART_Parity_No;
-   USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-   USART_InitStruct.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-   USART_Init(UART_DRV, &USART_InitStruct);
+  //USART RX
+  GPIO_PinAFConfig(UART_DRV_RX_PORT, UART_DRV_RX_PIN_SOURCE, UART_DRV_RX_AF_SOURCE);
+  GPIO_InitStruct.GPIO_Pin = UART_DRV_RX_PIN;
+  GPIO_Init(UART_DRV_RX_PORT, &GPIO_InitStruct);
 
-   /* Enable the USART */
-   USART_Cmd(UART_DRV, ENABLE);
+  USART_OverSampling8Cmd(UART_DRV, ENABLE);
+  USART_InitStruct.USART_BaudRate            = DATABAUD;
+  USART_InitStruct.USART_WordLength          = USART_WordLength_8b;
+  USART_InitStruct.USART_StopBits            = USART_StopBits_1;
+  USART_InitStruct.USART_Parity              = USART_Parity_No;
+  USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStruct.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;
+  USART_Init(UART_DRV, &USART_InitStruct);
 
-   // DMA-Disable
-   DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
-   DMA_DeInit(UART_DRV_TX_DMA);
+  /* Enable the USART */
+  USART_Cmd(UART_DRV, ENABLE);
 
-   // DMA2-Config
-   DMA_InitStructure.DMA_Channel = UART_DRV_TX_DMA_CHAN;
-   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_DRV->DR);
-   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&(ctx->packet_to_hv);
-   DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-   DMA_InitStructure.DMA_BufferSize = sizeof(packet_to_hv_t);
-   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-   DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
-   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
-   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-   DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
-   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-   DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-   DMA_Init(UART_DRV_TX_DMA, &DMA_InitStructure);
+  // DMA-Disable
+  DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
+  DMA_DeInit(UART_DRV_TX_DMA);
 
-   //DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
+  // DMA2-Config
+  DMA_InitStructure.DMA_Channel            = UART_DRV_TX_DMA_CHAN;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) & (UART_DRV->DR);
+  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t) & (ctx->packet_to_hv);
+  DMA_InitStructure.DMA_DIR                = DMA_DIR_MemoryToPeripheral;
+  DMA_InitStructure.DMA_BufferSize         = sizeof(packet_to_hv_t);
+  DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize     = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_Mode               = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority           = DMA_Priority_High;
+  DMA_InitStructure.DMA_FIFOMode           = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold      = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_MemoryBurst        = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst    = DMA_PeripheralBurst_Single;
+  DMA_Init(UART_DRV_TX_DMA, &DMA_InitStructure);
 
-   USART_DMACmd(UART_DRV, USART_DMAReq_Tx, ENABLE);
+  //DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
+
+  USART_DMACmd(UART_DRV, USART_DMAReq_Tx, ENABLE);
 
 
   // DMA-Disable
@@ -135,21 +135,21 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   DMA_DeInit(UART_DRV_RX_DMA);
 
   // DMA2-Config
-  DMA_InitStructure.DMA_Channel = UART_DRV_RX_DMA_CHAN;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(UART_DRV->DR);
-  DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&(ctx->packet_from_hv);
-  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-  DMA_InitStructure.DMA_BufferSize = sizeof(packet_from_hv_t);
-  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_Channel            = UART_DRV_RX_DMA_CHAN;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) & (UART_DRV->DR);
+  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t) & (ctx->packet_from_hv);
+  DMA_InitStructure.DMA_DIR                = DMA_DIR_PeripheralToMemory;
+  DMA_InitStructure.DMA_BufferSize         = sizeof(packet_from_hv_t);
+  DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-  DMA_InitStructure.DMA_MemoryDataSize = DMA_PeripheralDataSize_Byte;
-  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
-  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
-  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_InitStructure.DMA_MemoryDataSize     = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_Mode               = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority           = DMA_Priority_High;
+  DMA_InitStructure.DMA_FIFOMode           = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold      = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_MemoryBurst        = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst    = DMA_PeripheralBurst_Single;
   DMA_Init(UART_DRV_RX_DMA, &DMA_InitStructure);
 
 
@@ -157,108 +157,107 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
   DMA_ClearFlag(UART_DRV_RX_DMA, UART_DRV_RX_DMA_TCIF);
   DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
-  
+
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
   ctx->timeout = 0;
   PIN(timeout) = 0;
 }
 
-static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
-   struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
-   struct hv_pin_ctx_t * pins = (struct hv_pin_ctx_t *)pin_ptr;
-   
-   float e = PIN(en);
-   float pos = PIN(pos);
-   float vel = PIN(vel);
-   
-   ctx->config.pins.r = PIN(r);
-   ctx->config.pins.l = PIN(l);
-   ctx->config.pins.psi = PIN(psi);
-   ctx->config.pins.cur_p = PIN(cur_p);
-   ctx->config.pins.cur_i = PIN(cur_i);
-   ctx->config.pins.cur_ff = PIN(cur_ff);
-   ctx->config.pins.cur_ind = PIN(cur_ind);
-   ctx->config.pins.max_y = PIN(max_y);
-   ctx->config.pins.max_cur = PIN(max_cur) * PIN(scale);
+static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
+  struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
-   uint32_t dma_pos = DMA_GetCurrDataCounter(UART_DRV_RX_DMA);
-   if(dma_pos == 0){
-      CRC_ResetDR();
-      uint32_t crc = CRC_CalcBlockCRC((uint32_t *) &(ctx->packet_from_hv), sizeof(packet_from_hv_t) / 4 - 1);
-      
-      if(crc == ctx->packet_from_hv.crc){
-         PIN(d_fb) = ctx->packet_from_hv.d_fb;
-         PIN(q_fb) = ctx->packet_from_hv.q_fb;
-         PIN(dc_volt) = ctx->packet_from_hv.dc_volt;
-         PIN(pwm_volt) = ctx->packet_from_hv.pwm_volt;
-      
-         uint16_t a = ctx->packet_from_hv.addr;
-         a = CLAMP(a, 0, sizeof(f3_state_data_t) / 4);
-         ctx->state.data[a] = ctx->packet_from_hv.value;
-      
-         PIN(u_fb) = ctx->state.pins.u_fb;
-         PIN(v_fb) = ctx->state.pins.v_fb;
-         PIN(w_fb) = ctx->state.pins.w_fb;
-         PIN(hv_temp) = ctx->state.pins.hv_temp;
-         PIN(mot_temp) = ctx->state.pins.mot_temp;
-         PIN(core_temp) = ctx->state.pins.core_temp;
-         PIN(fault) = ctx->state.pins.fault;
-         PIN(y) = ctx->state.pins.y;
-         PIN(com_error) = 0.0;//TODO: link to fault
-         ctx->timeout = 0;
-      }else{
-         PIN(crc_error)++;
-         PIN(com_error) = 1.0;
-      }
-   }
-   
-   if(ctx->timeout > 5){
-      PIN(timeout)++;
+  float e   = PIN(en);
+  float pos = PIN(pos);
+  float vel = PIN(vel);
+
+  ctx->config.pins.r       = PIN(r);
+  ctx->config.pins.l       = PIN(l);
+  ctx->config.pins.psi     = PIN(psi);
+  ctx->config.pins.cur_p   = PIN(cur_p);
+  ctx->config.pins.cur_i   = PIN(cur_i);
+  ctx->config.pins.cur_ff  = PIN(cur_ff);
+  ctx->config.pins.cur_ind = PIN(cur_ind);
+  ctx->config.pins.max_y   = PIN(max_y);
+  ctx->config.pins.max_cur = PIN(max_cur) * PIN(scale);
+
+  uint32_t dma_pos = DMA_GetCurrDataCounter(UART_DRV_RX_DMA);
+  if(dma_pos == 0) {
+    CRC_ResetDR();
+    uint32_t crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_from_hv), sizeof(packet_from_hv_t) / 4 - 1);
+
+    if(crc == ctx->packet_from_hv.crc) {
+      PIN(d_fb)     = ctx->packet_from_hv.d_fb;
+      PIN(q_fb)     = ctx->packet_from_hv.q_fb;
+      PIN(dc_volt)  = ctx->packet_from_hv.dc_volt;
+      PIN(pwm_volt) = ctx->packet_from_hv.pwm_volt;
+
+      uint16_t a         = ctx->packet_from_hv.addr;
+      a                  = CLAMP(a, 0, sizeof(f3_state_data_t) / 4);
+      ctx->state.data[a] = ctx->packet_from_hv.value;
+
+      PIN(u_fb)      = ctx->state.pins.u_fb;
+      PIN(v_fb)      = ctx->state.pins.v_fb;
+      PIN(w_fb)      = ctx->state.pins.w_fb;
+      PIN(hv_temp)   = ctx->state.pins.hv_temp;
+      PIN(mot_temp)  = ctx->state.pins.mot_temp;
+      PIN(core_temp) = ctx->state.pins.core_temp;
+      PIN(fault)     = ctx->state.pins.fault;
+      PIN(y)         = ctx->state.pins.y;
+      PIN(com_error) = 0.0;  //TODO: link to fault
+      ctx->timeout   = 0;
+    } else {
+      PIN(crc_error)
+      ++;
       PIN(com_error) = 1.0;
-   }
-   ctx->timeout++;
-
-   float d_cmd = PIN(d_cmd);
-   float q_cmd = PIN(q_cmd);
-
-   if(PIN(rev) > 0.0){//TODO: rev DC
-      q_cmd *= -1.0;
-   }
-  
-  if(e > 0.0){
-    ctx->packet_to_hv.d_cmd = d_cmd;
-    ctx->packet_to_hv.q_cmd = q_cmd;
-    ctx->packet_to_hv.flags.enable = 1;
+    }
   }
-  else{
-    ctx->packet_to_hv.d_cmd = 0.0;
-    ctx->packet_to_hv.q_cmd = 0.0;
+
+  if(ctx->timeout > 5) {
+    PIN(timeout)
+    ++;
+    PIN(com_error) = 1.0;
+  }
+  ctx->timeout++;
+
+  float d_cmd = PIN(d_cmd);
+  float q_cmd = PIN(q_cmd);
+
+  if(PIN(rev) > 0.0) {  //TODO: rev DC
+    q_cmd *= -1.0;
+  }
+
+  if(e > 0.0) {
+    ctx->packet_to_hv.d_cmd        = d_cmd;
+    ctx->packet_to_hv.q_cmd        = q_cmd;
+    ctx->packet_to_hv.flags.enable = 1;
+  } else {
+    ctx->packet_to_hv.d_cmd        = 0.0;
+    ctx->packet_to_hv.q_cmd        = 0.0;
     ctx->packet_to_hv.flags.enable = 0;
   }
-  ctx->packet_to_hv.flags.cmd_type = PIN(cmd_mode);
+  ctx->packet_to_hv.flags.cmd_type   = PIN(cmd_mode);
   ctx->packet_to_hv.flags.phase_type = PIN(phase_mode);
-  ctx->packet_to_hv.pos = pos;
-  ctx->packet_to_hv.vel = vel;
-  ctx->packet_to_hv.addr = ctx->addr;
-  ctx->packet_to_hv.value = ctx->config.data[ctx->addr++];
+  ctx->packet_to_hv.pos              = pos;
+  ctx->packet_to_hv.vel              = vel;
+  ctx->packet_to_hv.addr             = ctx->addr;
+  ctx->packet_to_hv.value            = ctx->config.data[ctx->addr++];
   ctx->addr %= sizeof(f3_config_data_t) / 4;
 
   CRC_ResetDR();
-  ctx->packet_to_hv.crc = CRC_CalcBlockCRC((uint32_t *) &(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
+  ctx->packet_to_hv.crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
 
   PIN(uart_sr) = UART_DRV->SR;
   PIN(uart_dr) = UART_DRV->DR;
- //start DMA RX transfer
- DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
- DMA_ClearFlag(UART_DRV_RX_DMA, UART_DRV_RX_DMA_TCIF);
- DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
- 
+  //start DMA RX transfer
+  DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
+  DMA_ClearFlag(UART_DRV_RX_DMA, UART_DRV_RX_DMA_TCIF);
+  DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
+
   //start DMA TX transfer
   DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
   DMA_ClearFlag(UART_DRV_TX_DMA, UART_DRV_TX_DMA_TCIF);
   DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
- 
-
 
 
   // PIN(power) = PIN(dc_cur) * PIN(dc_volt);
@@ -272,15 +271,15 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
 
 
 hal_comp_t hv_comp_struct = {
-  .name = "hv",
-  .nrt = 0,
-  .rt = rt_func,
-  .frt = 0,
-  .nrt_init = nrt_init,
-  .rt_start = 0,
-  .frt_start = 0,
-  .rt_stop = 0,
-  .frt_stop = 0,
-  .ctx_size = sizeof(struct hv_ctx_t),
-  .pin_count = sizeof(struct hv_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+    .name      = "hv",
+    .nrt       = 0,
+    .rt        = rt_func,
+    .frt       = 0,
+    .nrt_init  = nrt_init,
+    .rt_start  = 0,
+    .frt_start = 0,
+    .rt_stop   = 0,
+    .frt_stop  = 0,
+    .ctx_size  = sizeof(struct hv_ctx_t),
+    .pin_count = sizeof(struct hv_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
 };

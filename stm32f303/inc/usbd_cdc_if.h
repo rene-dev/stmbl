@@ -46,7 +46,7 @@
 #define __USBD_CDC_IF_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc.h"
@@ -56,82 +56,82 @@
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
   */
-  
+
 /** @defgroup USBD_CDC_IF
   * @brief header 
   * @{
-  */ 
+  */
 
 /** @defgroup USBD_CDC_IF_Exported_Defines
   * @{
-  */ 
+  */
 /* USER CODE BEGIN EXPORTED_DEFINES */
 /* USER CODE END EXPORTED_DEFINES */
 
 /**
   * @}
-  */ 
+  */
 
 /** @defgroup USBD_CDC_IF_Exported_Types
   * @{
-  */  
+  */
 /* USER CODE BEGIN EXPORTED_TYPES */
 /* USER CODE END EXPORTED_TYPES */
 
 /**
   * @}
-  */ 
+  */
 
 /** @defgroup USBD_CDC_IF_Exported_Macros
   * @{
-  */ 
+  */
 /* USER CODE BEGIN EXPORTED_MACRO */
 /* USER CODE END EXPORTED_MACRO */
 
 /**
   * @}
-  */ 
+  */
 
 /** @defgroup USBD_AUDIO_IF_Exported_Variables
   * @{
-  */ 
-extern USBD_CDC_ItfTypeDef  USBD_Interface_fops_FS;
+  */
+extern USBD_CDC_ItfTypeDef USBD_Interface_fops_FS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
 /* USER CODE END EXPORTED_VARIABLES */
 
 /**
   * @}
-  */ 
+  */
 
 /** @defgroup USBD_CDC_IF_Exported_FunctionsPrototype
   * @{
-  */ 
-uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len);
+  */
+uint8_t CDC_Transmit_FS(uint8_t *Buf, uint16_t Len);
 
 /* USER CODE BEGIN EXPORTED_FUNCTIONS */
 //void cdc_init(void);
-int cdc_tx(void* data, uint32_t len);
+int cdc_tx(void *data, uint32_t len);
 int cdc_getline(char *ptr, int len);
 int cdc_is_connected();
 void cdc_poll();
 /* USER CODE END EXPORTED_FUNCTIONS */
 /**
   * @}
-  */ 
+  */
 
 /**
   * @}
-  */ 
+  */
 
 /**
   * @}
-  */ 
-  
+  */
+
 #ifdef __cplusplus
 }
 #endif
-  
+
 #endif /* __USBD_CDC_IF_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
