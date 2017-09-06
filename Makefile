@@ -49,6 +49,7 @@ COMPS += shared/comps/ypid.c
 COMPS += shared/comps/fault.c
 COMPS += shared/comps/pid.c
 COMPS += shared/comps/spid.c
+COMPS += shared/comps/pe.c
 COMPS += shared/comps/pmsm_limits.c
 COMPS += shared/comps/pmsm_ttc.c
 COMPS += shared/comps/acim_ttc.c
