@@ -18,7 +18,8 @@ HAL_PIN(vel);
 HAL_PIN(en);
 
 // config data from LS
-HAL_PIN(mode);
+HAL_PIN(cmd_mode);
+HAL_PIN(phase_mode);
 HAL_PIN(r);
 HAL_PIN(l);
 HAL_PIN(psi);
@@ -121,7 +122,6 @@ static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    DMA1->IFCR = DMA_IFCR_CTCIF3 | DMA_IFCR_CHTIF3 | DMA_IFCR_CGIF3;
    DMA1_Channel3->CCR |= DMA_CCR_EN;
    
-   config.pins.mode = 0.0;
    config.pins.r = 0.0;
    config.pins.l = 0.0;
    config.pins.psi = 0.0;
@@ -152,14 +152,15 @@ static void rt_start(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    struct ls_ctx_t * ctx = (struct ls_ctx_t *)ctx_ptr;
    struct ls_pin_ctx_t * pins = (struct ls_pin_ctx_t *)pin_ptr;
-   
+
    uint32_t dma_pos = sizeof(packet_to_hv_t) - DMA1_Channel3->CNDTR;
-   
-   
+
    if(dma_pos == sizeof(packet_to_hv_t)){
       uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *) &(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
       if(crc == ctx->packet_to_hv.crc){
          PIN(en) = ctx->packet_to_hv.flags.enable;
+         PIN(phase_mode) = ctx->packet_to_hv.flags.phase_type;
+         PIN(cmd_mode) = ctx->packet_to_hv.flags.cmd_type;
          PIN(d_cmd) = ctx->packet_to_hv.d_cmd;
          PIN(q_cmd) = ctx->packet_to_hv.q_cmd;
          PIN(pos) = ctx->packet_to_hv.pos;
@@ -167,8 +168,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
          uint8_t a = ctx->packet_to_hv.addr;
          a = CLAMP(a, 0, sizeof(config) / 4);
          config.data[a] = ctx->packet_to_hv.value; // TODO: first enable after complete update
-         
-         PIN(mode) = config.pins.mode;
+
          PIN(r) = config.pins.r;
          PIN(l) = config.pins.l;
          PIN(psi) = config.pins.psi;
@@ -192,12 +192,12 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    if(USART3->ISR & USART_ISR_RTOF){ // idle line
       USART3->ICR |= USART_ICR_RTOCF | USART_ICR_FECF | USART_ICR_ORECF; // timeout clear flag
       GPIOA->BSRR |= GPIO_PIN_10;
-      
+
       PIN(idle)++;
       if(dma_pos != sizeof(packet_to_hv_t)){
          PIN(dma_pos) = dma_pos;
       }
-      
+
       // reset rx DMA
       DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
       DMA1_Channel3->CNDTR = sizeof(packet_to_hv_t);
@@ -207,9 +207,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
 
       //ctx->send = 1;
    }
-   
-   
-   
+
    if(ctx->send == 2){
       ctx->send = 0;
    }
@@ -224,7 +222,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       state.pins.core_temp = PIN(core_temp);
       state.pins.fault = PIN(fault);
       state.pins.y = PIN(y);
-      
+
       // fill tx struct
       ctx->packet_from_hv.dc_volt = PIN(dc_volt);
       ctx->packet_from_hv.pwm_volt = PIN(pwm_volt);
@@ -234,34 +232,42 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       ctx->packet_from_hv.value = state.data[ctx->tx_addr++];
       ctx->tx_addr %= sizeof(state) / 4;
       ctx->packet_from_hv.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *) &(ctx->packet_from_hv), sizeof(packet_from_hv_t) / 4 - 1);
-      
+
       // start tx DMA
       DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
       DMA1_Channel2->CNDTR = sizeof(packet_from_hv_t);
       DMA1_Channel2->CCR |= DMA_CCR_EN;
       //ctx->send = 0;
    }
-   
+
    if(ctx->timeout > 5){//disable driver
       PIN(en) = 0.0;
       PIN(timeout)++;
    }
    ctx->timeout++;
-   
+
    // TODO: sin = 0.5
-   if(config.pins.mode == 0){// 90°
-      PIN(pwm_volt) = PIN(dc_volt) / M_SQRT2 * 0.95;
-   }else if(config.pins.mode == 1){// 120°
-      PIN(pwm_volt) = PIN(dc_volt) / M_SQRT3 * 0.95;
-   }else if(config.pins.mode == 2){// 180°
-      PIN(pwm_volt) = PIN(dc_volt) * 0.95;
-   }else{
-      PIN(pwm_volt) = 0.0;
+   switch((uint16_t)PIN(phase_mode)){
+      case PHASE_90_3PH: // 90°
+         PIN(pwm_volt) = PIN(dc_volt) / M_SQRT2 * 0.95;
+      break;
+
+      case PHASE_90_4PH: // 90°
+         PIN(pwm_volt) = PIN(dc_volt) * 0.95;
+      break;
+
+      case PHASE_120_3PH: // 120°
+         PIN(pwm_volt) = PIN(dc_volt) / M_SQRT3 * 0.95;
+      break;
+
+      case PHASE_180_2PH: // 180°
+      case PHASE_180_3PH: // 180°
+         PIN(pwm_volt) = PIN(dc_volt) * 0.95;
+      break;
+
+      default:
+         PIN(pwm_volt) = 0.0;
    }
-   
-   
-   
-   
 }
 
 hal_comp_t ls_comp_struct = {

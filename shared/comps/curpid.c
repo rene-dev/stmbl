@@ -1,4 +1,5 @@
 #include "commands.h"
+#include "common.h"
 #include "hal.h"
 #include "math.h"
 #include "defines.h"
@@ -8,6 +9,7 @@ HAL_COMP(curpid);
 
 // enable
 HAL_PIN(en);
+HAL_PIN(cmd_mode);
 
 // current command
 HAL_PIN(id_cmd);
@@ -111,6 +113,15 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
 
    ud += ctx->id_error_sum;
    uq += ctx->iq_error_sum;
+
+   if(PIN(cmd_mode) == VOLT_MODE){
+    ud = LIMIT(PIN(id_cmd), max_volt);
+    uq = LIMIT(PIN(iq_cmd), max_volt);
+    ctx->id_error_sum = 0.0;
+    ctx->iq_error_sum = 0.0;
+    id_error = 0.0;
+    iq_error = 0.0;
+   }
 
    if(PIN(en) <= 0.0){
       ud = 0.0;

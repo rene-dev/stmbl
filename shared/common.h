@@ -34,17 +34,29 @@ typedef struct{
    float vel;
    float value;
    uint16_t addr;
-   union {
-      uint16_t enable : 1;
-      uint16_t foo;
-   } flags;
+   union{
+    struct{
+        uint16_t enable : 1;
+        enum packet_to_hv_cmd_type_t{
+          VOLT_MODE = 0,
+          CURRENT_MODE,
+        } cmd_type : 1;
+        enum packet_to_hv_phase_type_t{
+          PHASE_90_3PH = 0,
+          PHASE_90_4PH,
+          PHASE_120_3PH,
+          PHASE_180_2PH,
+          PHASE_180_3PH,
+        } phase_type : 3;
+    } flags;
+    uint16_t foo;
+  };
    uint32_t crc;
 } packet_to_hv_t;
 
 #pragma pack(1)
 typedef union {
    struct f3_config_data_temp{
-      float mode;
       float r;
       float l;
       float psi;

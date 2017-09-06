@@ -1,4 +1,5 @@
 #include "commands.h"
+#include "common.h"
 #include "hal.h"
 #include "math.h"
 #include "defines.h"
@@ -47,21 +48,27 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   float u, v, w;
 
   switch((int)PIN(mode)){
-    case 0: // 90°
+    case PHASE_90_3PH: // 90°
       u = a;
       v = 0.0;
       w = b;
       break;
 
-    case 1: // 120°
-      u =   a;
+    case PHASE_120_3PH: // 120°
+      u = a;
       v = - a / 2.0 + b / 2.0 * M_SQRT3;
       w = - a / 2.0 - b / 2.0 * M_SQRT3;
       break;
 
-    case 2: // 180°
+    case PHASE_180_2PH: // 180°
       u = b / 2.0;
       v = 0.0;
+      w = - b / 2.0;
+      break;
+
+    case PHASE_180_3PH: // 180°
+      u = b / 2.0;
+      v = a;
       w = - b / 2.0;
       break;
       

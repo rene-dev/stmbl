@@ -18,7 +18,8 @@ HAL_PIN(vel);
 HAL_PIN(en);
 
 // config data from LS
-HAL_PIN(mode);
+HAL_PIN(phase_mode);
+HAL_PIN(cmd_mode);
 HAL_PIN(r);
 HAL_PIN(l);
 HAL_PIN(psi);
@@ -170,7 +171,6 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    float pos = PIN(pos);
    float vel = PIN(vel);
    
-   ctx->config.pins.mode = PIN(mode);
    ctx->config.pins.r = PIN(r);
    ctx->config.pins.l = PIN(l);
    ctx->config.pins.psi = PIN(psi);
@@ -235,6 +235,8 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
     ctx->packet_to_hv.q_cmd = 0.0;
     ctx->packet_to_hv.flags.enable = 0;
   }
+  ctx->packet_to_hv.flags.cmd_type = PIN(cmd_mode);
+  ctx->packet_to_hv.flags.phase_type = PIN(phase_mode);
   ctx->packet_to_hv.pos = pos;
   ctx->packet_to_hv.vel = vel;
   ctx->packet_to_hv.addr = ctx->addr;
