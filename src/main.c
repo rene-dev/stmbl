@@ -149,7 +149,6 @@ void deleteconf(char * ptr){
 COMMAND("deleteconf", deleteconf, "delete config");
 
 
-
 int main(void)
 {
    // Relocate interrupt vectors
@@ -164,24 +163,6 @@ int main(void)
    hal_parse("flashloadconf");
    hal_parse("loadconf");
    hal_parse("start");
-   
-   // load_comp(comp_by_name("sim"));
-   // load_comp(comp_by_name("io"));
-   // load_comp(comp_by_name("encm"));
-   // load_comp(comp_by_name("hv"));
-   // load_comp(comp_by_name("hal_test"));
-   //hal_parse("term0.rt_prio = 20");
-   // hal_parse("load conf\nload adc\n        load          reslimit\n# foo bar\nload rev\nload pid");
-   // hal_parse("encm0.rt_prio = 1");
-   // hal_parse("sim0.rt_prio = 2");
-   // hal_parse("io0.rt_prio = 10");
-   // hal_parse("hv0.rt_prio = 6");
-   // hal_parse("hal_test0.rt_prio = 9");
-   // hal_parse("hal_test0.frt_prio = 9");
-   // hal parse config
-   // hal_init_nrt();
-   // error foo
-   //hal_start();
    
    TIM_Cmd(TIM_MASTER, ENABLE);
    TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, ENABLE);

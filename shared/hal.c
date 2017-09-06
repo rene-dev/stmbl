@@ -197,13 +197,13 @@ void hal_term_print_info(char * ptr){
    mct = (float)hal.frt_max_ticks / hal_get_systick_freq();
    printf("\n### frt info ###\n");
    switch(hal.frt_state){
-      case FRT_STOP:
+      case RT_STOP:
       printf("frt state:  STOP\n");
       break;
-      case FRT_SLEEP:
+      case RT_SLEEP:
       printf("frt state:  SLEEP\n");
       break;
-      case FRT_CALC:
+      case RT_CALC:
       printf("frt state:  CALC\n");
       break;
    }
@@ -329,13 +329,13 @@ void hal_run_rt(){
       case RT_CALC: // call stop
          hal.rt_state = RT_STOP;
          hal.hal_state = RT_TOO_LONG;
-         hal.frt_state = FRT_STOP;
+         hal.frt_state = RT_STOP;
          return;
       case RT_SLEEP:
          if(hal.active_rt_func > -1){ // call stop
             hal.rt_state = RT_STOP;
             hal.hal_state = MISC_ERROR;
-            hal.frt_state = FRT_STOP;
+            hal.frt_state = RT_STOP;
             return;
          }
          hal.rt_state = RT_CALC;
@@ -383,21 +383,21 @@ void hal_run_frt(){
    #endif
 
    switch(hal.frt_state){
-      case FRT_STOP:
+      case RT_STOP:
          return;
-      case FRT_CALC:
+      case RT_CALC:
          hal.rt_state = RT_STOP;
          hal.hal_state = FRT_TOO_LONG;
-         hal.frt_state = FRT_STOP;
+         hal.frt_state = RT_STOP;
          return;
-      case FRT_SLEEP:
+      case RT_SLEEP:
          if(hal.active_frt_func > -1){
             hal.rt_state = RT_STOP;
             hal.hal_state = MISC_ERROR;
-            hal.frt_state = FRT_STOP;
+            hal.frt_state = RT_STOP;
             return;
          }
-         hal.frt_state = FRT_CALC;
+         hal.frt_state = RT_CALC;
    }
    
    #ifdef HAL_COMP_CALC_TIME
@@ -418,8 +418,8 @@ void hal_run_frt(){
    }
    hal.active_frt_func = -1;
    
-   if(hal.frt_state == FRT_CALC){
-      hal.frt_state = FRT_SLEEP;
+   if(hal.frt_state == RT_CALC){
+      hal.frt_state = RT_SLEEP;
    }
    
    #ifdef HAL_CALC_TIME
@@ -626,7 +626,7 @@ void start_frt(){
    hal.frt_ticks = 0.0;
    hal.frt_max_ticks = 0.0;
    
-   hal.frt_state = FRT_SLEEP;
+   hal.frt_state = RT_SLEEP;
 }
 
 void hal_start(){
@@ -652,7 +652,7 @@ void stop_rt(){
 }
 
 void stop_frt(){
-   hal.frt_state = FRT_STOP;
+   hal.frt_state = RT_STOP;
    
    for(int i = 0; i < hal.frt_comp_count; i++){
       if(hal.frt_comps[i]->comp->frt_stop != 0){
@@ -670,7 +670,7 @@ COMMAND("stop", hal_stop, "stop rt system");
 
 void hal_init(float rt_period, float frt_period){
    hal.rt_state = RT_STOP;
-   hal.frt_state = FRT_STOP;
+   hal.frt_state = RT_STOP;
       
    for(int i = 0; i < HAL_MAX_COMPS; i++){
       hal.rt_comps[i] = 0;

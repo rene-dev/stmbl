@@ -33,7 +33,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    float torque = PIN(torque);
    float vel = PIN(vel);
    float slip_n = PIN(slip_n);
-   float torque_n = MAX(PIN(torque_n), 0.01);
+   float torque_n = MAX(PIN(torque_n), 0.001);
    float cur_n = PIN(cur_n);
 
    float id = 0.0;
@@ -42,16 +42,16 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    float slip = 0.0;
 
    switch((int)PIN(mode)){
-      case 0:
-         id = cur_n / sqrtf(2.0);
+      case 0: // slip control
+         id = cur_n / sqrtf(2.0); // constant flux
          iq = cur_n / sqrtf(2.0) / torque_n * torque;
-         slip = slip_n / torque_n * torque;
+         slip = slip_n / torque_n * torque; 
       break;
 
-      case 1:
+      case 1: // mtpa
          id = 0.0;
          iq = cur_n / torque_n * torque;
-         slip = slip_n * SIGN(torque);
+         slip = slip_n * SIGN(torque); // constant slip
          break;
 
       default:

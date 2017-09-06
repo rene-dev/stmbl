@@ -93,19 +93,15 @@ typedef struct{
 } hal_error_t;
 
 typedef struct{
-   volatile enum{
+   volatile enum thread_state_t{
      RT_CALC,
      RT_SLEEP,
      RT_STOP
    } rt_state;
 
-   volatile enum{
-     FRT_CALC,
-     FRT_SLEEP,
-     FRT_STOP
-   } frt_state;
+   volatile enum thread_state_t frt_state;
 
-   volatile enum {
+   volatile enum hal_state_t{
      FRT_TOO_LONG,
      RT_TOO_LONG,
      MISC_ERROR,
