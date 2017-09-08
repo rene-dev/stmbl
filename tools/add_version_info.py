@@ -119,7 +119,7 @@ def parse_args():
 def dprint(*str):
     if args.verbose:
         for s in str:
-            print s,
+            print (s,)
         print
 
 
@@ -189,5 +189,5 @@ if __name__ == '__main__':
         patch_elf()
 
     except Exception as e:
-        print e
+        print (e)
         exit(1)
