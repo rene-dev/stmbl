@@ -44,6 +44,7 @@
 #include "main.h"
 #include "stm32f3xx_hal.h"
 #include "adc.h"
+#include "dac.h"
 #include "opamp.h"
 #include "tim.h"
 #include "usb_device.h"
@@ -164,7 +165,13 @@ int main(void) {
   MX_ADC2_Init();
   MX_ADC3_Init();
   MX_ADC4_Init();
-  // MX_DAC_Init();
+  MX_DAC_Init();
+  //COMP1 in+ pa1(ADC1_IN2)  in- pa4(dac1_ch1)
+  COMP1->CSR = COMP_CSR_COMPxINSEL_2 | COMP1_CSR_COMP1OUTSEL_2 | COMP_CSR_COMPxEN;
+  //COMP2 in+ pa7(ADC2_IN4)  in- pa4(dac1_ch1) COMP_CSR_COMPxNONINSEL
+  COMP2->CSR = COMP_CSR_COMPxINSEL_2 | COMP2_CSR_COMP2OUTSEL_0 | COMP2_CSR_COMP2OUTSEL_1 | COMP_CSR_COMPxEN;
+  //COMP4 in+ pb0(ADC3_IN12) in- pa4(dac1_ch1)
+  COMP4->CSR = COMP_CSR_COMPxINSEL_2 | COMP4_CSR_COMP4OUTSEL_0 | COMP4_CSR_COMP4OUTSEL_1 | COMP_CSR_COMPxEN;
   MX_OPAMP1_Init();
   MX_OPAMP2_Init();
   MX_OPAMP3_Init();
@@ -232,8 +239,10 @@ int main(void) {
   HAL_ADC_Start(&hadc2);
   HAL_ADC_Start(&hadc3);
   HAL_ADC_Start(&hadc4);
-  if(HAL_TIM_Base_Start_IT(&htim8) != HAL_OK) {
-    Error_Handler();
+  HAL_DAC_Start(&hdac,DAC_CHANNEL_1);
+  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,0);
+  if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
+     Error_Handler();
   }
 #ifndef PWM_INVERT
   TIM8->RCR = 1;  //uptate event foo
