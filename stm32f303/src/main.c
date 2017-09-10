@@ -1,46 +1,23 @@
-/**
-  ******************************************************************************
-  * File Name          : main.c
-  * Description        : Main program body
-  ******************************************************************************
-  *
-  * Copyright (c) 2016 STMicroelectronics International N.V. 
-  * All rights reserved.
-  *
-  * Redistribution and use in source and binary forms, with or without 
-  * modification, are permitted, provided that the following conditions are met:
-  *
-  * 1. Redistribution of source code must retain the above copyright notice, 
-  *    this list of conditions and the following disclaimer.
-  * 2. Redistributions in binary form must reproduce the above copyright notice,
-  *    this list of conditions and the following disclaimer in the documentation
-  *    and/or other materials provided with the distribution.
-  * 3. Neither the name of STMicroelectronics nor the names of other 
-  *    contributors to this software may be used to endorse or promote products 
-  *    derived from this software without specific written permission.
-  * 4. This software, including modifications and/or derivative works of this 
-  *    software, must execute solely and exclusively on microcontroller or
-  *    microprocessor devices manufactured by or for STMicroelectronics.
-  * 5. Redistribution and use of this software other than as permitted under 
-  *    this license is void and will automatically terminate your rights under 
-  *    this license. 
-  *
-  * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
-  * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
-  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-  * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
-  * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
-  * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-  * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-  * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
-  * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
-  */
-/* Includes ------------------------------------------------------------------*/
+/*
+* This file is part of the stmbl project.
+*
+* Copyright (C) 2013-2017 Rene Hopf <renehopf@mac.com>
+* Copyright (C) 2013-2017 Nico Stute <crinq@crinq.de>
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "main.h"
 #include "stm32f3xx_hal.h"
 #include "adc.h"
@@ -49,7 +26,6 @@
 #include "tim.h"
 #include "usb_device.h"
 
-/* USER CODE BEGIN Includes */
 #include <math.h>
 #include "defines.h"
 #include "hal.h"
@@ -62,20 +38,7 @@
 
 uint32_t systick_freq;
 CRC_HandleTypeDef hcrc;
-
-// //hal interface TODO: move hal interface to file
-// void hal_enable_rt(){
-//    // TIM_Cmd(TIM4, ENABLE);
-// }
-// void hal_enable_frt(){
-//    // TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-// }
-// void hal_disable_rt(){
-//    // TIM_Cmd(TIM4, DISABLE);
-// }
-// void hal_disable_frt(){
-//    // TIM_ITConfig(TIM2, TIM_IT_Update, DISABLE);
-// }
+date, DISABLE);
 
 uint32_t hal_get_systick_value() {
   return (SysTick->VAL);
@@ -89,19 +52,8 @@ uint32_t hal_get_systick_freq() {
   return (systick_freq);
 }
 
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void Error_Handler(void);
-
-/* USER CODE BEGIN PFP */
-/* Private function prototypes -----------------------------------------------*/
-
-/* USER CODE END PFP */
-
-/* USER CODE BEGIN 0 */
-
 
 void TIM8_UP_IRQHandler() {
   GPIOA->BSRR |= GPIO_PIN_9;
@@ -131,11 +83,9 @@ void reset(char *ptr) {
 COMMAND("reset", reset, "reset STMBL");
 
 int main(void) {
-  /* USER CODE BEGIN 1 */
-  SCB->VTOR = 0x8004000;
-  /* USER CODE END 1 */
-
-  /* MCU Configuration----------------------------------------------------------*/
+  // Relocate interrupt vectors
+  extern void *g_pfnVectors;
+  SCB->VTOR = (uint32_t)&g_pfnVectors;
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
@@ -423,14 +373,10 @@ void SystemClock_Config(void) {
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
-/* USER CODE BEGIN 4 */
-
 //Delay implementation for hal_term.c
 void Wait(uint32_t ms) {
   HAL_Delay(ms);
 }
-
-/* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.
@@ -438,12 +384,10 @@ void Wait(uint32_t ms) {
   * @retval None
   */
 void Error_Handler(void) {
-  /* USER CODE BEGIN Error_Handler */
   /* User can add his own implementation to report the HAL error return state */
   while(1) {
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
   }
-  /* USER CODE END Error_Handler */
 }
 
 #ifdef USE_FULL_ASSERT
@@ -463,13 +407,3 @@ void assert_failed(uint8_t *file, uint32_t line) {
 }
 
 #endif
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-*/
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

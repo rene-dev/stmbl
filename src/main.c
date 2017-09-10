@@ -150,7 +150,6 @@ COMMAND("deleteconf", deleteconf, "delete config");
 
 int main(void) {
   // Relocate interrupt vectors
-  //
   extern void *g_pfnVectors;
   SCB->VTOR = (uint32_t)&g_pfnVectors;
 
