@@ -30,7 +30,15 @@ HAL_PIN(fault);
 HAL_PIN(min_on);  // min on time [s]
 HAL_PIN(min_off);  // min off time [s]
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+HAL_PIN(dac);
+
+HAL_PIN(c1);
+HAL_PIN(c2);
+HAL_PIN(c3);
+HAL_PIN(moe_r);
+HAL_PIN(moe_w);
+
+static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   // struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
@@ -39,6 +47,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(enw)     = 1.0;
   PIN(min_on)  = 0.00000035;
   PIN(min_off) = 0.000005;
+  PIN(dac)     = 1100;
 
   GPIO_InitTypeDef GPIO_InitStruct;
   //PA15 HV EN
@@ -97,6 +106,16 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
   //TODO: check enable timing on fault pin
   PIN(fault) = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_7);
+  // PIN(dac_i) = DAC1->DOR1;
+  DAC1->DHR12R1 = PIN(dac);
+  PIN(c1) = (COMP1->CSR & COMP_CSR_COMPxOUT) > 0;
+  PIN(c2) = (COMP2->CSR & COMP_CSR_COMPxOUT) > 0;
+  PIN(c3) = (COMP4->CSR & COMP_CSR_COMPxOUT) > 0;
+  PIN(moe_r) = (TIM8->BDTR & TIM_BDTR_MOE) > 0;
+  if(PIN(moe_w) > 0.0){
+     PIN(moe_w) = 0.0;
+     TIM8->BDTR |= TIM_BDTR_MOE;
+  }
 }
 
 hal_comp_t hv_comp_struct = {
