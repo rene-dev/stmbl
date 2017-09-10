@@ -38,7 +38,6 @@
 
 uint32_t systick_freq;
 CRC_HandleTypeDef hcrc;
-date, DISABLE);
 
 uint32_t hal_get_systick_value() {
   return (SysTick->VAL);
