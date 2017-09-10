@@ -256,6 +256,15 @@ boot_btflash: boot
 hv:
 	$(MAKE) -f stm32f103/Makefile
 
+f3:
+	$(MAKE) -f stm32f303/Makefile
+
+f3_flash:
+	$(MAKE) -f stm32f303/Makefile flash
+
+f3_btflash:
+	$(MAKE) -f stm32f303/Makefile btburn
+
 format:
 	find src/ f3dfu/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ -iname *.h -o -iname *.c | xargs clang-format -i
 

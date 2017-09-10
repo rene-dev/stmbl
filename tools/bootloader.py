@@ -19,4 +19,4 @@ for port in serial.tools.list_ports.comports():
       done = True
 
 if not done:
-   print ("No boards found")
+   print ("No boards found, or board is already in bootloader")
