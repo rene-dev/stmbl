@@ -12,6 +12,7 @@ HAL_PIN(pos);
 HAL_PIN(amp);
 HAL_PIN(quad);
 HAL_PIN(poles);
+HAL_PIN(min_amp);
 
 HAL_PIN(vel);  // TODO: vel rev, fb,cmd -> vel0,1 -> rev
 
@@ -30,13 +31,17 @@ struct res_ctx_t {
   int abspos;  // multiturn position
 };
 
+static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  // struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
+  struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
+  PIN(poles)                 = 1.0;
+  PIN(error_n)               = 1.0;
+  PIN(tim_oc)                = 47.0;
+  PIN(min_amp)               = 0.25;
+}
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
-
-  PIN(poles)   = 1.0;
-  PIN(error_n) = 1.0;
-  PIN(tim_oc)  = 47.0;
 
   ctx->abspos = 0;
   ctx->lastq  = 0;
@@ -123,7 +128,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float pos  = atan2f(s, c);
   float dpos = PIN(vel) * period / 2.0;
 
-  if(a < 0.25) {
+  if(a < PIN(min_amp)) {
     PIN(error)   = 1.0;
     PIN(error_n) = 0.0;
   } else {
@@ -160,7 +165,7 @@ const hal_comp_t res_comp_struct = {
     .nrt       = 0,
     .rt        = rt_func,
     .frt       = 0,
-    .nrt_init  = 0,
+    .nrt_init  = nrt_init,
     .hw_init   = hw_init,
     .rt_start  = 0,
     .frt_start = 0,
