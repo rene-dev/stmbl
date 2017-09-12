@@ -31,7 +31,6 @@ COMPS += src/comps/adc.c
 COMPS += src/comps/enc_fb.c
 COMPS += src/comps/enc_cmd.c
 COMPS += src/comps/o_fb.c
-COMPS += src/comps/conf.c
 COMPS += src/comps/res.c
 COMPS += src/comps/sserial.c
 
@@ -71,7 +70,6 @@ SOURCES += src/version.c
 SOURCES += src/syscalls.c
 
 SOURCES += shared/crc8.c
-SOURCES += shared/crc16.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/commands.c
