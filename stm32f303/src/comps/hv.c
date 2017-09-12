@@ -50,18 +50,21 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   PIN(dac)     = 1100;
 
   GPIO_InitTypeDef GPIO_InitStruct;
-  //PA15 HV EN
-  GPIO_InitStruct.Pin   = GPIO_PIN_15;
+  
+#ifdef HV_EN_PIN
+  GPIO_InitStruct.Pin   = HV_EN_PIN;
   GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull  = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(HV_EN_PORT, &GPIO_InitStruct);
+#endif
 
-  //PB7 HV FAULT
-  GPIO_InitStruct.Pin  = GPIO_PIN_7;
+#ifdef HV_FAULT_PIN
+  GPIO_InitStruct.Pin  = HV_FAULT_PIN;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(HV_FAULT_PORT, &GPIO_InitStruct);
+#endif
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -99,14 +102,19 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PWM_W = CLAMP(w, 0, 4800 - min_off);
 #endif
 
+#ifdef HV_EN_PIN
   if(PIN(hv_temp) < 85.0) {
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
   } else {
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
   }
+#endif
+
+#ifdef HV_FAULT_PIN
   //TODO: check enable timing on fault pin
-  PIN(fault) = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_7);
-  // PIN(dac_i) = DAC1->DOR1;
+  PIN(fault) = HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN);
+#endif
+
   DAC1->DHR12R1 = PIN(dac);
   PIN(c1) = (COMP1->CSR & COMP_CSR_COMPxOUT) > 0;
   PIN(c2) = (COMP2->CSR & COMP_CSR_COMPxOUT) > 0;

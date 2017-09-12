@@ -1,5 +1,9 @@
 //stmbl
 #define AREF 3.338  // analog reference voltage
+#define HV_EN_PIN GPIO_PIN_15
+#define HV_EN_PORT GPIOA
+#define HV_FAULT_PIN GPIO_PIN_7
+#define HV_FAULT_PORT GPIOB
 
 #define VDIVUP 249000.0 * 2.0  //HV div pullup R1,R12
 #define VDIVDOWN 3900.0  //HV div pulldown R2,R9
