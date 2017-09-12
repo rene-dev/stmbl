@@ -23,8 +23,8 @@ HAL_PIN(udc_pwm);
 HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
 
-uint32_t adc_12_buf[10];
-uint32_t adc_34_buf[10];
+uint32_t adc_12_buf[6];
+uint32_t adc_34_buf[6];
 
 struct io_ctx_t {
   float u_offset;
@@ -86,7 +86,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   DMA1_Channel1->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA1_Channel1->CPAR  = (uint32_t) & (ADC12_COMMON->CDR);
   DMA1_Channel1->CMAR  = (uint32_t)adc_12_buf;
-  DMA1_Channel1->CNDTR = 6;
+  DMA1_Channel1->CNDTR = ARRAY_SIZE(adc_12_buf);
   DMA1_Channel1->CCR   = DMA_CCR_MINC | DMA_CCR_PL_0 | DMA_CCR_MSIZE_1 | DMA_CCR_PSIZE_1 | DMA_CCR_CIRC;
   ADC1->CFGR |= ADC_CFGR_DMAEN | ADC_CFGR_DMACFG;
   DMA1_Channel1->CCR |= DMA_CCR_EN;
@@ -96,7 +96,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   DMA2_Channel5->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA2_Channel5->CPAR  = (uint32_t) & (ADC34_COMMON->CDR);
   DMA2_Channel5->CMAR  = (uint32_t)adc_34_buf;
-  DMA2_Channel5->CNDTR = 6;
+  DMA2_Channel5->CNDTR = ARRAY_SIZE(adc_34_buf);
   DMA2_Channel5->CCR   = DMA_CCR_MINC | DMA_CCR_PL_0 | DMA_CCR_MSIZE_1 | DMA_CCR_PSIZE_1 | DMA_CCR_CIRC;
   ADC3->CFGR |= ADC_CFGR_DMAEN | ADC_CFGR_DMACFG;
   DMA2_Channel5->CCR |= DMA_CCR_EN;
