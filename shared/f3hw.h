@@ -19,6 +19,8 @@
 #define PWM_W TIM8->CCR1
 
 #define PWM_DEADTIME 0
+#define PWM_RES 4800
+
 //io board
 //#define USB_CONNECT_PIN GPIO_PIN_15
 //#define USB_CONNECT_PORT GPIOB

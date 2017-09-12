@@ -73,12 +73,12 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   float udc = MAX(PIN(udc), 0.1);
   //convert voltages to PWM output compare values
-  int32_t u = (int32_t)(CLAMP(PIN(u), 0.0, udc) / udc * 4800.0);
-  int32_t v = (int32_t)(CLAMP(PIN(v), 0.0, udc) / udc * 4800.0);
-  int32_t w = (int32_t)(CLAMP(PIN(w), 0.0, udc) / udc * 4800.0);
+  int32_t u = (int32_t)(CLAMP(PIN(u), 0.0, udc) / udc * (float)(PWM_RES));
+  int32_t v = (int32_t)(CLAMP(PIN(v), 0.0, udc) / udc * (float)(PWM_RES));
+  int32_t w = (int32_t)(CLAMP(PIN(w), 0.0, udc) / udc * (float)(PWM_RES));
   //convert on and off times to PWM output compare values
-  int32_t min_on  = (int32_t)(4800.0 * 15000.0 * PIN(min_on) + 0.5);
-  int32_t min_off = (int32_t)(4800.0 * 15000.0 * PIN(min_off) + 0.5);
+  int32_t min_on  = (int32_t)((float)(PWM_RES) * 15000.0 * PIN(min_on) + 0.5);
+  int32_t min_off = (int32_t)((float)(PWM_RES) * 15000.0 * PIN(min_off) + 0.5);
 
   if((u > 0 && u < min_on) || (v > 0 && v < min_on) || (w > 0 && w < min_on)) {
     u += min_on;
@@ -86,20 +86,20 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     w += min_on;
   }
 
-  if((u > 4800 - min_off) || (v > 4800 - min_off) || (w > 4800 - min_off)) {
+  if((u > PWM_RES - min_off) || (v > PWM_RES - min_off) || (w > PWM_RES - min_off)) {
     u -= min_off;
     v -= min_off;
     w -= min_off;
   }
 
 #ifdef PWM_INVERT
-  PWM_U = 4800 - CLAMP(u, 0, 4800 - min_off);
-  PWM_V = 4800 - CLAMP(v, 0, 4800 - min_off);
-  PWM_W = 4800 - CLAMP(w, 0, 4800 - min_off);
+  PWM_U = PWM_RES - CLAMP(u, 0, PWM_RES - min_off);
+  PWM_V = PWM_RES - CLAMP(v, 0, PWM_RES - min_off);
+  PWM_W = PWM_RES - CLAMP(w, 0, PWM_RES - min_off);
 #else
-  PWM_U = CLAMP(u, 0, 4800 - min_off);
-  PWM_V = CLAMP(v, 0, 4800 - min_off);
-  PWM_W = CLAMP(w, 0, 4800 - min_off);
+  PWM_U = CLAMP(u, 0, PWM_RES - min_off);
+  PWM_V = CLAMP(v, 0, PWM_RES - min_off);
+  PWM_W = CLAMP(w, 0, PWM_RES - min_off);
 #endif
 
 #ifdef HV_EN_PIN

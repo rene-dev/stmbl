@@ -7,8 +7,6 @@
 
 #define DATABAUD 3000000  //baudrate used for communication
 
-#define PWM_RES 4800
-
 //data from f3 to f4
 #pragma pack(1)
 typedef struct {
