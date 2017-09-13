@@ -13,6 +13,7 @@ HAL_PIN(led);
 HAL_PIN(iu);
 HAL_PIN(iv);
 HAL_PIN(iw);
+HAL_PIN(iabs);
 
 HAL_PIN(u);
 HAL_PIN(v);
@@ -44,8 +45,6 @@ struct io_ctx_t {
 #define MOT_TEMP_REF 15.26
 #define MOT_REF(a) ((a) * (MOT_TEMP_PULLMID + MOT_TEMP_PULLDOWN) / MOT_TEMP_PULLDOWN)
 #define MOT_R(a) (MOT_TEMP_PULLUP / (MOT_TEMP_REF / (a)-1))
-
-#define ARES 4096.0  // analog resolution, 12 bit
 
 #define VOLT(a) ((a) / (ARES) * (AREF) / (VDIVDOWN) * ((VDIVUP) + (VDIVDOWN)))
 //#define TEMP(a) (log10f((a) * (AREF) / (ARES) * (TPULLUP) / ((AREF) - (a) * (AREF) / (ARES))) * (-53.0) + 290.0)
@@ -125,15 +124,15 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     ctx->v_offset = AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN);
   }
 
-  PIN(iw)      = -AMP((float)(a12 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->w_offset;  // 1u
-  PIN(iu)      = -AMP((float)(a12 >> 16) / 5.0, SHUNT_GAIN) + ctx->u_offset;
-  PIN(iv)      = -AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->v_offset;
-  PIN(w)       = VOLT(adc_12_buf[5] & 0xFFFF) * 0.05 + PIN(w) * 0.95;  // 0.6u
-  PIN(v)       = VOLT(adc_12_buf[5] >> 16) * 0.05 + PIN(v) * 0.95;
-  PIN(u)       = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
-  PIN(udc)     = VOLT(adc_34_buf[5] >> 16) * 0.05 + PIN(udc) * 0.95;
-  PIN(udc_pwm) = PIN(udc) / 2.0;
-
+  PIN(iw)       = -AMP((float)(a12 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->w_offset;  // 1u
+  PIN(iu)       = -AMP((float)(a12 >> 16) / 5.0, SHUNT_GAIN) + ctx->u_offset;
+  PIN(iv)       = -AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->v_offset;
+  PIN(w)        = VOLT(adc_12_buf[5] & 0xFFFF) * 0.05 + PIN(w) * 0.95;  // 0.6u
+  PIN(v)        = VOLT(adc_12_buf[5] >> 16) * 0.05 + PIN(v) * 0.95;
+  PIN(u)        = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
+  PIN(udc)      = VOLT(adc_34_buf[5] >> 16) * 0.05 + PIN(udc) * 0.95;
+  PIN(udc_pwm)  = PIN(udc) / 2.0;
+  PIN(iabs)     = MAX3(ABS(PIN(iu)), PIN(iv), PIN(iw));
   PIN(hv_temp)  = r2temp(HV_R(ADC(adc_34_buf[0] >> 16))) * 0.01 + PIN(hv_temp) * 0.99;  // 5.5u
   PIN(mot_temp) = MOT_R(MOT_REF(ADC(adc_34_buf[3] >> 16)));  // 1.4u
   HAL_GPIO_WritePin(LED_PORT, LED_PIN, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);  // 0.1u

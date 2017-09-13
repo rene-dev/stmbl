@@ -45,7 +45,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct uvw_pin_ctx_t *pins = (struct uvw_pin_ctx_t *)pin_ptr;
 
   uint32_t rpos = (PIN(u) > 0.0) * 1.0 + (PIN(v) > 0.0) * 2.0 + (PIN(w) > 0.0) * 4.0;
-  PIN(led) = (PIN(u) > 0.0) ^ (PIN(v) > 0.0) ^ (PIN(w) > 0.0);
+  PIN(led)      = (PIN(u) > 0.0) ^ (PIN(v) > 0.0) ^ (PIN(w) > 0.0);
   //TODO: make this const, fault output
   uint32_t t[8];
   t[0]      = PIN(p0);

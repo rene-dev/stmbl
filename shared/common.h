@@ -1,3 +1,23 @@
+/*
+* This file is part of the stmbl project.
+*
+* Copyright (C) 2013-2017 Rene Hopf <renehopf@mac.com>
+* Copyright (C) 2013-2017 Nico Stute <crinq@crinq.de>
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #pragma once
 #include <stdint.h>
 
@@ -7,31 +27,31 @@
 
 #define DATABAUD 3000000  //baudrate used for communication
 
-//data from f3 to f4
+//process data from f3 to f4
 #pragma pack(1)
 typedef struct {
   float d_fb;
   float q_fb;
   float dc_volt;
   float pwm_volt;
-  float value;
-  uint16_t addr;
+  float value;  //config data value
+  uint16_t addr;  //config data address from f3_state_data_t
   union {
     uint16_t fault : 1;
-    uint16_t foo;
+    uint16_t padding;
   } flags;
   uint32_t crc;
 } packet_from_hv_t;
 
-//data from f4 to f3
+//process data from f4 to f3
 #pragma pack(1)
 typedef struct {
   float d_cmd;
   float q_cmd;
   float pos;
   float vel;
-  float value;
-  uint16_t addr;
+  float value;  //status data value
+  uint16_t addr;  //status data address from f3_config_data_t
   union {
     struct {
       uint16_t enable : 1;
@@ -47,11 +67,12 @@ typedef struct {
         PHASE_180_3PH,
       } phase_type : 3;
     } flags;
-    uint16_t foo;
+    uint16_t padding;
   };
   uint32_t crc;
 } packet_to_hv_t;
 
+//config data for f3
 #pragma pack(1)
 typedef union {
   struct f3_config_data_temp {
@@ -68,6 +89,7 @@ typedef union {
   float data[sizeof(struct f3_config_data_temp) / 4];
 } f3_config_data_t;
 
+//status reply from f3
 #pragma pack(1)
 typedef union {
   struct f3_state_data_temp {
@@ -83,8 +105,9 @@ typedef union {
   float data[sizeof(struct f3_state_data_temp) / 4];
 } f3_state_data_t;
 
-//check if structs can be send at 5kHz using DATABAUD
+//check if structs can be send at 5kHz with DATABAUD
 _Static_assert(sizeof(packet_to_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "to_hv struct to large");
 _Static_assert(sizeof(packet_from_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "from_hv struct to large");
+//check if structs are word aligned
 _Static_assert(!(sizeof(packet_to_hv_t) % 4), "to_hv struct not word aligned");
 _Static_assert(!(sizeof(packet_from_hv_t) % 4), "from_hv struct not word aligned");

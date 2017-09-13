@@ -188,10 +188,10 @@ int main(void) {
   HAL_ADC_Start(&hadc2);
   HAL_ADC_Start(&hadc3);
   HAL_ADC_Start(&hadc4);
-  HAL_DAC_Start(&hdac,DAC_CHANNEL_1);
-  HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,0);
-  if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
-     Error_Handler();
+  HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
+  if(HAL_TIM_Base_Start_IT(&htim8) != HAL_OK) {
+    Error_Handler();
   }
 #ifndef PWM_INVERT
   TIM8->RCR = 1;  //uptate event foo
@@ -250,6 +250,7 @@ int main(void) {
   hal_parse("ls0.mot_temp = io0.mot_temp");
   hal_parse("ls0.dc_volt = io0.udc");
   hal_parse("ls0.hv_temp = io0.hv_temp");
+  hal_parse("ls0.fault = hv0.fault");
   hal_parse("curpid0.id_cmd = ls0.d_cmd");
   hal_parse("curpid0.iq_cmd = ls0.q_cmd");
   hal_parse("idq0.pos = ls0.pos");
@@ -269,9 +270,9 @@ int main(void) {
   hal_parse("svm0.v = idq0.v");
   hal_parse("svm0.w = idq0.w");
   hal_parse("hv0.u = svm0.su");
-
   hal_parse("hv0.v = svm0.sv");
   hal_parse("hv0.w = svm0.sw");
+  hal_parse("hv0.iabs = io0.iabs");
   hal_parse("svm0.udc = io0.udc");
   hal_parse("hv0.hv_temp = io0.hv_temp");
   hal_parse("curpid0.id_fb = dq0.d");

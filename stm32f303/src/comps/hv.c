@@ -14,6 +14,7 @@ HAL_PIN(v);
 HAL_PIN(w);
 //dclink input
 HAL_PIN(udc);
+HAL_PIN(iabs);
 
 HAL_PIN(hv_temp);
 
@@ -32,13 +33,15 @@ HAL_PIN(min_off);  // min off time [s]
 
 HAL_PIN(dac);
 
-HAL_PIN(c1);
-HAL_PIN(c2);
-HAL_PIN(c3);
+//comperator outputs
+HAL_PIN(cu);
+HAL_PIN(cv);
+HAL_PIN(cw);
+//master out enable
 HAL_PIN(moe_r);
 HAL_PIN(moe_w);
 
-static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
@@ -50,7 +53,7 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   PIN(dac)     = 1100;
 
   GPIO_InitTypeDef GPIO_InitStruct;
-  
+
 #ifdef HV_EN_PIN
   GPIO_InitStruct.Pin   = HV_EN_PIN;
   GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
@@ -77,8 +80,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   int32_t v = (int32_t)(CLAMP(PIN(v), 0.0, udc) / udc * (float)(PWM_RES));
   int32_t w = (int32_t)(CLAMP(PIN(w), 0.0, udc) / udc * (float)(PWM_RES));
   //convert on and off times to PWM output compare values
-  int32_t min_on  = (int32_t)((float)(PWM_RES) * 15000.0 * PIN(min_on) + 0.5);
-  int32_t min_off = (int32_t)((float)(PWM_RES) * 15000.0 * PIN(min_off) + 0.5);
+  int32_t min_on  = (int32_t)((float)(PWM_RES)*15000.0 * PIN(min_on) + 0.5);
+  int32_t min_off = (int32_t)((float)(PWM_RES)*15000.0 * PIN(min_off) + 0.5);
 
   if((u > 0 && u < min_on) || (v > 0 && v < min_on) || (w > 0 && w < min_on)) {
     u += min_on;
@@ -102,6 +105,16 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PWM_W = CLAMP(w, 0, PWM_RES - min_off);
 #endif
 
+//temp 85.0
+//volt 380
+//soft current 25
+//hard current
+//fault in
+
+// PIN(udc);
+// PIN(iabs);
+// PIN(hv_temp);
+
 #ifdef HV_EN_PIN
   if(PIN(hv_temp) < 85.0) {
     HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
@@ -110,19 +123,24 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 #endif
 
-#ifdef HV_FAULT_PIN
-  //TODO: check enable timing on fault pin
-  PIN(fault) = HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN);
-#endif
+  // #ifdef HV_FAULT_PIN
+  //   //TODO: check enable timing on fault pin
+  //   PIN(fault) = HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN);
+  // #endif
 
+  //dac output for comperators
   DAC1->DHR12R1 = PIN(dac);
-  PIN(c1) = (COMP1->CSR & COMP_CSR_COMPxOUT) > 0;
-  PIN(c2) = (COMP2->CSR & COMP_CSR_COMPxOUT) > 0;
-  PIN(c3) = (COMP4->CSR & COMP_CSR_COMPxOUT) > 0;
+
+  //comperator outputs for debugging
+  PIN(cu) = (COMP1->CSR & COMP_CSR_COMPxOUT) > 0;
+  PIN(cv) = (COMP2->CSR & COMP_CSR_COMPxOUT) > 0;
+  PIN(cw) = (COMP4->CSR & COMP_CSR_COMPxOUT) > 0;
+
+  //master out enable
   PIN(moe_r) = (TIM8->BDTR & TIM_BDTR_MOE) > 0;
-  if(PIN(moe_w) > 0.0){
-     PIN(moe_w) = 0.0;
-     TIM8->BDTR |= TIM_BDTR_MOE;
+  if(PIN(moe_w) > 0.0) {
+    PIN(moe_w) = 0.0;
+    TIM8->BDTR |= TIM_BDTR_MOE;
   }
 }
 
