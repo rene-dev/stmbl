@@ -10,23 +10,55 @@ HAL_COMP(io);
 
 HAL_PIN(led);
 
-HAL_PIN(iu);
-HAL_PIN(iv);
-HAL_PIN(iw);
-
-HAL_PIN(u);
-HAL_PIN(v);
-HAL_PIN(w);
-HAL_PIN(udc);
-HAL_PIN(udc_pwm);
-
-HAL_PIN(hv_temp);
-HAL_PIN(mot_temp);
 HAL_PIN(oc1);
 HAL_PIN(oc2);
+HAL_PIN(ena);
+HAL_PIN(enb);
 
-uint32_t adc_12_buf[10];
-uint32_t adc_34_buf[10];
+HAL_PIN(hv_temp);
+HAL_PIN(dc_link);
+HAL_PIN(bemf0);
+HAL_PIN(bemf1);
+HAL_PIN(in0);
+HAL_PIN(in1);
+HAL_PIN(iap);
+HAL_PIN(ian);
+HAL_PIN(ibp);
+HAL_PIN(ibn);
+HAL_PIN(ip);
+HAL_PIN(in);
+HAL_PIN(ia);
+HAL_PIN(ib);
+
+// uint32_t adc_12_buf[80];
+// uint32_t adc_34_buf[80];
+
+#pragma pack(1)
+struct adc_12_t{
+  uint16_t dc_link;
+  uint16_t shunt_low0;
+  uint16_t bemf0;
+  uint16_t bemf1;
+  uint16_t in0;
+  uint16_t in1;
+  uint16_t hv_temp;
+  uint16_t shunt_low1;
+};
+
+#pragma pack(1)
+struct adc_34_t{
+  uint16_t shunt_a0;
+  uint16_t shunt_b0;
+  uint16_t shunt_a1;
+  uint16_t shunt_b1;
+  uint16_t shunt_a2;
+  uint16_t shunt_b2;
+  uint16_t shunt_a3;
+  uint16_t shunt_b3;
+};
+
+volatile struct adc_12_t adc_12_buf[20];
+volatile struct adc_34_t adc_34_buf[20];
 
 struct io_ctx_t{
   float u_offset;
@@ -52,7 +84,7 @@ struct io_ctx_t{
 #define VOLT(a) ((a) / (ARES) * (AREF) / (VDIVDOWN) * ((VDIVUP) + (VDIVDOWN)))
 //#define TEMP(a) (log10f((a) * (AREF) / (ARES) * (TPULLUP) / ((AREF) - (a) * (AREF) / (ARES))) * (-53.0) + 290.0)
 
-#define SHUNT_GAIN 16.0
+#define SHUNT_GAIN 8.0
 
 #define AMP(a, gain) (((a) * AREF / ARES / (gain) - AREF / (SHUNT_PULLUP + SHUNT_SERIE) * SHUNT_SERIE) / (SHUNT * SHUNT_PULLUP) * (SHUNT_PULLUP + SHUNT_SERIE))
 
@@ -96,16 +128,15 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-  
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+ 
   
   DMA1_Channel1->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA1_Channel1->CPAR = (uint32_t)&(ADC12_COMMON->CDR);
   DMA1_Channel1->CMAR = (uint32_t)adc_12_buf;
-  DMA1_Channel1->CNDTR = 6;
+  DMA1_Channel1->CNDTR = 80;
   DMA1_Channel1->CCR = DMA_CCR_MINC | DMA_CCR_PL_0 | DMA_CCR_MSIZE_1 | DMA_CCR_PSIZE_1 | DMA_CCR_CIRC;
   ADC1->CFGR |= ADC_CFGR_DMAEN | ADC_CFGR_DMACFG;
+  DMA1_Channel1->CCR |= DMA_CCR_TCIE;
   DMA1_Channel1->CCR |= DMA_CCR_EN;
 
   //   ADC12_COMMON->CCR |= ADC12_CCR_MDMA_1;
@@ -113,7 +144,7 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   DMA2_Channel5->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA2_Channel5->CPAR = (uint32_t)&(ADC34_COMMON->CDR);
   DMA2_Channel5->CMAR = (uint32_t)adc_34_buf;
-  DMA2_Channel5->CNDTR = 6;
+  DMA2_Channel5->CNDTR = 80;
   DMA2_Channel5->CCR = DMA_CCR_MINC | DMA_CCR_PL_0 | DMA_CCR_MSIZE_1 | DMA_CCR_PSIZE_1 | DMA_CCR_CIRC;
   ADC3->CFGR |= ADC_CFGR_DMAEN | ADC_CFGR_DMACFG;
   DMA2_Channel5->CCR |= DMA_CCR_EN;
@@ -124,35 +155,81 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
   struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
-TIM1->CCR1 = PIN(oc1) * 1200.0+1200.0;
-TIM1->CCR2 = PIN(oc2) * 1200.0+1200.0;
-  // while(!(DMA1->ISR & DMA_ISR_TCIF1)){}
-  // while(!(DMA2->ISR & DMA_ISR_TCIF5)){}
-  
-  DMA1->IFCR = DMA_IFCR_CTCIF1;
-  DMA2->IFCR = DMA_IFCR_CTCIF5;
 
-  uint32_t a12 = adc_12_buf[0] + adc_12_buf[1] + adc_12_buf[2] + adc_12_buf[3] + adc_12_buf[4];
-  uint32_t a34 = adc_34_buf[0] + adc_34_buf[1] + adc_34_buf[2] + adc_34_buf[3] + adc_34_buf[4];
-  
-  if(ctx->u_offset == 0){
-    ctx->w_offset = AMP((float)(a12 & 0xFFFF) / 5.0, SHUNT_GAIN);
-    ctx->u_offset = AMP((float)(a12 >> 16) / 5.0, SHUNT_GAIN);
-    ctx->v_offset = AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN);
+  // uint32_t dc_link = adc_12_buf[2].dc_link;
+  // uint32_t hv_temp = adc_12_buf[2].hv_temp;
+  // uint32_t bemf0 = adc_12_buf[2].bemf0;
+  // uint32_t bemf1 = adc_12_buf[2].bemf1;
+  // uint32_t in0 = adc_12_buf[2].in0;
+  // uint32_t in1 = adc_12_buf[2].in1;
+  // uint32_t iap = adc_34_buf[2].shunt_a0;
+  // uint32_t ian = adc_34_buf[3].shunt_a0;
+  // uint32_t ibp = adc_34_buf[2].shunt_b0;
+  // uint32_t ibn = adc_34_buf[3].shunt_b0;
+  // uint32_t ip = adc_12_buf[2].shunt_low0;
+  // uint32_t in = adc_12_buf[3].shunt_low0;
+
+  uint32_t dc_link = 0;
+  uint32_t hv_temp = 0;
+  uint32_t bemf0 = 0;
+  uint32_t bemf1 = 0;
+  uint32_t in0 = 0;
+  uint32_t in1 = 0;
+  uint32_t iap = 0;
+  uint32_t ian = 0;
+  uint32_t ibp = 0;
+  uint32_t ibn = 0;
+  uint32_t ip = 0;
+  uint32_t in = 0;
+
+  for(int i = 0; i < 10; i++){
+    dc_link += adc_12_buf[2 * i].dc_link + adc_12_buf[2 * i + 1].dc_link;
+    hv_temp += adc_12_buf[2 * i].hv_temp + adc_12_buf[2 * i + 1].hv_temp;
+    in0 += adc_12_buf[2 * i].in0 + adc_12_buf[2 * i + 1].in0;
+    in1 += adc_12_buf[2 * i].in1 + adc_12_buf[2 * i + 1].in1;
+    bemf0 += adc_12_buf[2 * i].bemf0 + adc_12_buf[2 * i + 1].bemf0;
+    bemf1 += adc_12_buf[2 * i].bemf1 + adc_12_buf[2 * i + 1].bemf1;
+    ian += adc_34_buf[2 * i].shunt_a0 + adc_34_buf[2 * i].shunt_a1 + adc_34_buf[2 * i].shunt_a2 + adc_34_buf[2 * i].shunt_a3;
+    iap += adc_34_buf[2 * i + 1].shunt_a0 + adc_34_buf[2 * i + 1].shunt_a1 + adc_34_buf[2 * i + 1].shunt_a2 + adc_34_buf[2 * i + 1].shunt_a3;
+    ibn += adc_34_buf[2 * i].shunt_b0 + adc_34_buf[2 * i].shunt_b1 + adc_34_buf[2 * i].shunt_b2 + adc_34_buf[2 * i].shunt_b3;
+    ibp += adc_34_buf[2 * i + 1].shunt_b0 + adc_34_buf[2 * i + 1].shunt_b1 + adc_34_buf[2 * i + 1].shunt_b2 + adc_34_buf[2 * i + 1].shunt_b3;
+    in += adc_12_buf[2 * i].shunt_low0 + adc_12_buf[2 * i].shunt_low1;
+    ip += adc_12_buf[2 * i + 1].shunt_low0 + adc_12_buf[2 * i + 1].shunt_low1;
   }
+
+TIM1->CCR1 = PIN(oc1) * 720.0 + 720.0;
+TIM1->CCR2 = PIN(oc2) * 720.0 + 720.0;
+
+  // PIN(dclink) = dc_link / 1.0 * 3.3 / ARES * (10.0 + 10.0 + 1.0) / 1.0;
+  // PIN(bemf0) = bemf0 / 1.0 * 3.3 / ARES * (10.0 + 10.0 + 1.0) / 1.0;
+  // PIN(bemf1) = bemf1 / 1.0 * 3.3 / ARES * (10.0 + 10.0 + 1.0) / 1.0;
+  // PIN(in0) = in0 / 1.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
+  // PIN(in1) = in1 / 1.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
+  PIN(hv_temp) = hv_temp / 20.0 * 3.3 / ARES;
+  PIN(dc_link) = dc_link / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
+  PIN(bemf0) = bemf0 / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
+  PIN(bemf1) = bemf1 / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
+  PIN(in0) = in0 / 20.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
+  PIN(in1) = in1 / 20.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
+  // PIN(iap) = iap / 40.0 * 3.3 / ARES;
+  // PIN(ian) = ian / 40.0 * 3.3 / ARES;
+  // PIN(ibp) = ibp / 40.0 * 3.3 / ARES;
+  // PIN(ibn) = ibn / 40.0 * 3.3 / ARES;
+  // PIN(ip) = ip / 20.0 * 3.3 / ARES;
+  // PIN(in) = in / 20.0 * 3.3 / ARES;
+  PIN(iap) = AMP(iap / 40.0, 8.0);
+  PIN(ian) = AMP(ian / 40.0, 8.0);
+  PIN(ibp) = AMP(ibp / 40.0, 8.0);
+  PIN(ibn) = AMP(ibn / 40.0, 8.0);
+  PIN(ip) = ip / 20.0 * 3.3 / ARES;
+  PIN(in) = in / 20.0 * 3.3 / ARES;
+  PIN(ia) = PIN(iap) - PIN(ian);
+  PIN(ib) = PIN(ibp) - PIN(ibn);
   
-  PIN(iw) = -AMP((float)(a12 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->w_offset; // 1u
-  PIN(iu) = -AMP((float)(a12 >> 16) / 5.0, SHUNT_GAIN) + ctx->u_offset;
-  PIN(iv) = -AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->v_offset;
-  PIN(w) = VOLT(adc_12_buf[5] & 0xFFFF) * 0.05 + PIN(w) * 0.95; // 0.6u
-  PIN(v) = VOLT(adc_12_buf[5] >> 16) * 0.05 + PIN(v) * 0.95;
-  PIN(u) = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
-  PIN(udc) = VOLT(adc_34_buf[5] >> 16) * 0.05 + PIN(udc) * 0.95;
-  PIN(udc_pwm) = PIN(udc) / 2.0;
-  
-  PIN(hv_temp) = r2temp(HV_R(ADC(adc_34_buf[0] >> 16))) * 0.01 + PIN(hv_temp) * 0.99; // 5.5u
-  PIN(mot_temp) = MOT_R(MOT_REF(ADC(adc_34_buf[5] >> 16))); // 1.4u
-  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET); // 0.1u
+
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, PIN(led) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET); // 0.1u
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, PIN(enb) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, PIN(ena) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 hal_comp_t io_comp_struct = {

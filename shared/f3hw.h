@@ -1,11 +1,11 @@
 //stmbl
 #define AREF 3.338// analog reference voltage
 
-#define VDIVUP 249000.0 * 2.0//HV div pullup R1,R12
-#define VDIVDOWN 3900.0//HV div pulldown R2,R9
-#define SHUNT 0.003//shunt
-#define SHUNT_PULLUP 15000.0
-#define SHUNT_SERIE 470.0
+#define VDIVUP 20000.0 * 2.0//HV div pullup R1,R12
+#define VDIVDOWN 1000.0//HV div pulldown R2,R9
+#define SHUNT 0.013//shunt
+#define SHUNT_PULLUP 3900.0
+#define SHUNT_SERIE 120.0
 
 #define LED_Pin GPIO_PIN_13
 #define LED_GPIO_Port GPIOC

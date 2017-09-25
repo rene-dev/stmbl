@@ -63,7 +63,7 @@ void MX_OPAMP1_Init(void)
   hopamp1.Init.NonInvertingInput = OPAMP_NONINVERTINGINPUT_IO0;
   hopamp1.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
   hopamp1.Init.PgaConnect = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
-  hopamp1.Init.PgaGain = OPAMP_PGA_GAIN_16;
+  hopamp1.Init.PgaGain = OPAMP_PGA_GAIN_8;
   hopamp1.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
   if (HAL_OPAMP_Init(&hopamp1) != HAL_OK)
   {
@@ -80,7 +80,7 @@ void MX_OPAMP2_Init(void)
   hopamp2.Init.NonInvertingInput = OPAMP_NONINVERTINGINPUT_IO0;
   hopamp2.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
   hopamp2.Init.PgaConnect = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
-  hopamp2.Init.PgaGain = OPAMP_PGA_GAIN_16;
+  hopamp2.Init.PgaGain = OPAMP_PGA_GAIN_8;
   hopamp2.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
   if (HAL_OPAMP_Init(&hopamp2) != HAL_OK)
   {
@@ -97,7 +97,7 @@ void MX_OPAMP3_Init(void)
   hopamp3.Init.NonInvertingInput = OPAMP_NONINVERTINGINPUT_IO0;
   hopamp3.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
   hopamp3.Init.PgaConnect = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
-  hopamp3.Init.PgaGain = OPAMP_PGA_GAIN_16;
+  hopamp3.Init.PgaGain = OPAMP_PGA_GAIN_8;
   hopamp3.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
   if (HAL_OPAMP_Init(&hopamp3) != HAL_OK)
   {
@@ -110,13 +110,13 @@ void MX_OPAMP3_Init(void)
 void MX_OPAMP4_Init(void)
 {
 
-  hopamp3.Instance = OPAMP4;
-  hopamp3.Init.Mode = OPAMP_PGA_MODE;
-  hopamp3.Init.NonInvertingInput = OPAMP_NONINVERTINGINPUT_IO0;
-  hopamp3.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
-  hopamp3.Init.PgaConnect = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
-  hopamp3.Init.PgaGain = OPAMP_PGA_GAIN_16;
-  hopamp3.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
+  hopamp4.Instance = OPAMP4;
+  hopamp4.Init.Mode = OPAMP_PGA_MODE;
+  hopamp4.Init.NonInvertingInput = OPAMP_NONINVERTINGINPUT_IO3;
+  hopamp4.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
+  hopamp4.Init.PgaConnect = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
+  hopamp4.Init.PgaGain = OPAMP_PGA_GAIN_8;
+  hopamp4.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
   if (HAL_OPAMP_Init(&hopamp4) != HAL_OK)
   {
     Error_Handler();

@@ -72,19 +72,21 @@ static void MX_TIM1_Init(void)
 
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
-  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 2400;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED3;
+  htim1.Init.Period = 1440;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
+  // htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;  
   // htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   HAL_TIM_OC_Init(&htim1);
 
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
+  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_UPDATE;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig);
+
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 1200;
+  sConfigOC.Pulse = 720;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
@@ -171,15 +173,18 @@ void Error_Handler(void);
 /* USER CODE BEGIN 0 */
 
 
-void TIM8_UP_IRQHandler(){
-   //GPIOA->BSRR |= GPIO_PIN_9;
-   __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
+void DMA1_Channel1_IRQHandler(){
+  //  GPIOC->BSRR |= GPIO_PIN_13;
+  //  __HAL_DMA_CLEAR_FLAG(&hdma1, DMA_FLAG_TC1);
+  DMA1->IFCR = DMA_IFCR_CTCIF1;
+  DMA2->IFCR = DMA_IFCR_CTCIF5;
+
    hal_run_rt();
-   if(__HAL_TIM_GET_FLAG(&htim8, TIM_IT_UPDATE) == SET){
-      hal_stop();
-      hal.hal_state = RT_TOO_LONG;
-   }
-   //GPIOA->BSRR |= GPIO_PIN_9 << 16;
+  //  if(__HAL_DMA_GET_FLAG(&hdma1, DMA_FLAG_TC1) == SET){
+  //     hal_stop();
+  //     hal.hal_state = RT_TOO_LONG;
+  //  }
+  //  GPIOC->BSRR |= GPIO_PIN_13 << 16;
 }
 
 void bootloader(char * ptr){
@@ -232,10 +237,19 @@ int main(void)
   
   MX_TIM8_Init();
   MX_TIM1_Init();
-  // MX_ADC1_Init();
-  // MX_ADC2_Init();
-  // MX_ADC3_Init();
-  // MX_ADC4_Init();
+  MX_ADC1_Init();
+  MX_ADC2_Init();
+  MX_ADC3_Init();
+  MX_ADC4_Init();
+  /* DMA interrupt init */
+  /* DMA1_Channel1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+  /* DMA2_Channel5_IRQn interrupt configuration */
+  // HAL_NVIC_SetPriority(DMA2_Channel5_IRQn, 0, 0);
+  // HAL_NVIC_EnableIRQ(DMA2_Channel5_IRQn);
+
+  
   // MX_DAC_Init();
   // MX_OPAMP1_Init();
   MX_OPAMP2_Init();
@@ -258,10 +272,10 @@ int main(void)
   __HAL_RCC_RTC_ENABLE();
 
   /* USER CODE BEGIN 2 */
-  // HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-  // HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-  // HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
-  // HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc3, ADC_SINGLE_ENDED);
+  HAL_ADCEx_Calibration_Start(&hadc4, ADC_SINGLE_ENDED);
 
   // HAL_OPAMP_SelfCalibrate(&hopamp1);
   HAL_OPAMP_SelfCalibrate(&hopamp2);
@@ -288,36 +302,32 @@ int main(void)
   // GPIO_InitStruct.Pull = GPIO_NOPULL;
   // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   // HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-/*
-     if (HAL_OPAMP_Start(&hopamp1) != HAL_OK){
-       Error_Handler();
-     }
+
      if (HAL_OPAMP_Start(&hopamp2) != HAL_OK){
        Error_Handler();
      }
      if (HAL_OPAMP_Start(&hopamp3) != HAL_OK){
        Error_Handler();
      }
-*/
-  htim8.Instance->CCR1 = 0;
-  htim8.Instance->CCR2 = 0;
-  htim8.Instance->CCR3 = 0;
+     if (HAL_OPAMP_Start(&hopamp4) != HAL_OK){
+       Error_Handler();
+     }
+
+  // htim8.Instance->CCR1 = 0;
+  // htim8.Instance->CCR2 = 0;
+  // htim8.Instance->CCR3 = 0;
   
-  htim1.Instance->CCR1 = 1200;
-  htim1.Instance->CCR2 = 1200;
-  HAL_TIM_Base_Start(&htim1);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-  HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
+  // htim1.Instance->CCR1 = 1200;
+  // htim1.Instance->CCR2 = 1200;
+
   
-  // HAL_ADC_Start(&hadc1);
-  // HAL_ADC_Start(&hadc2);
-  // HAL_ADC_Start(&hadc3);
-  // HAL_ADC_Start(&hadc4);
-  if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
- 	Error_Handler();
-  }
+  HAL_ADC_Start(&hadc1);
+  HAL_ADC_Start(&hadc2);
+  HAL_ADC_Start(&hadc3);
+  HAL_ADC_Start(&hadc4);
+  // if (HAL_TIM_Base_Start_IT(&htim8) != HAL_OK){
+ 	// Error_Handler();
+  // }
 #ifndef PWM_INVERT
   TIM8->RCR = 1;//uptate event foo
 #endif
@@ -340,22 +350,29 @@ int main(void)
   // 	Error_Handler();
   // }
 
-  hal_init(1.0 / 15000.0, 0.0);
+  hal_init(1.0 / 5000.0, 0.0);
   // hal load comps
   load_comp(comp_by_name("term"));
   load_comp(comp_by_name("sim"));
   load_comp(comp_by_name("io"));
   // load_comp(comp_by_name("ls"));
-  // load_comp(comp_by_name("dq"));
+  load_comp(comp_by_name("dq"));
   load_comp(comp_by_name("idq"));
   load_comp(comp_by_name("tle"));
+  load_comp(comp_by_name("pole"));
+  load_comp(comp_by_name("map"));
+  load_comp(comp_by_name("rev"));
   // load_comp(comp_by_name("svm"));
   // load_comp(comp_by_name("hv"));
-  // load_comp(comp_by_name("curpid"));
+  load_comp(comp_by_name("curpid"));
+  
   
   hal_parse("tle0.rt_prio = 0.01");
   hal_parse("term0.rt_prio = 0.1");
   hal_parse("ls0.rt_prio = 0.6");
+  hal_parse("pole0.rt_prio = 1.0");
+  hal_parse("map0.rt_prio = 2.0");
+  hal_parse("rev0.rt_prio = 1.0");
   hal_parse("io0.rt_prio = 1.0");
   hal_parse("dq0.rt_prio = 2.0");
   hal_parse("curpid0.rt_prio = 3.0");
@@ -364,7 +381,7 @@ int main(void)
   hal_parse("hv0.rt_prio = 6.0");
   hal_parse("sim0.rt_prio = 7.0");
   
-  hal_parse("term0.send_step = 100.0");
+  hal_parse("term0.send_step = 10.0");
   hal_parse("term0.gain0 = 10.0");
   hal_parse("term0.gain1 = 10.0");
   hal_parse("term0.gain2 = 10.0");
@@ -377,67 +394,50 @@ int main(void)
   hal_parse("idq0.pos = sim0.vel");
   hal_parse("io0.oc1 = idq0.a");
   hal_parse("io0.oc2 = idq0.b");
-
-  //link LS
-  hal_parse("ls0.mot_temp = io0.mot_temp");
-  hal_parse("ls0.dc_volt = io0.udc");
-  hal_parse("ls0.hv_temp = io0.hv_temp");
-  hal_parse("curpid0.id_cmd = ls0.d_cmd");
-  hal_parse("curpid0.iq_cmd = ls0.q_cmd");
-  hal_parse("idq0.pos = ls0.pos");
-  hal_parse("dq0.pos = ls0.pos");
-  hal_parse("hv0.en = ls0.en");
   
-  //ADC TEST
-  hal_parse("term0.wave3 = io0.udc");
-  hal_parse("hv0.udc = io0.udc");
-  hal_parse("dq0.u = io0.iu");
-  hal_parse("dq0.v = io0.iv");
-  hal_parse("dq0.w = io0.iw");
-  
-  // hal_parse("sim0.vel", "idq0.pos");
-  // hal_parse("sim0.vel", "dq0.pos");
-  
-  hal_parse("svm0.u = idq0.u");
-  hal_parse("svm0.v = idq0.v");
-  hal_parse("svm0.w = idq0.w");
-  hal_parse("hv0.u = svm0.su");
-  
-  hal_parse("hv0.v = svm0.sv");
-  hal_parse("hv0.w = svm0.sw");
-  hal_parse("svm0.udc = io0.udc");
-  hal_parse("hv0.hv_temp = io0.hv_temp");
   hal_parse("curpid0.id_fb = dq0.d");
   hal_parse("curpid0.iq_fb = dq0.q");
-  hal_parse("ls0.d_fb = dq0.d");
-  hal_parse("ls0.q_fb = dq0.q");
-  hal_parse("ls0.u_fb = io0.u");
-  hal_parse("ls0.v_fb = io0.v");
-  hal_parse("ls0.w_fb = io0.w");
   hal_parse("idq0.d = curpid0.ud");
   hal_parse("idq0.q = curpid0.uq");
-  hal_parse("term0.wave0 = curpid0.id_cmd");
-  hal_parse("term0.wave1 = curpid0.iq_cmd");
-  hal_parse("term0.wave2 = curpid0.id_fb");
-  hal_parse("term0.wave3 = curpid0.iq_fb");
-  hal_parse("io0.led = term0.con");
-  hal_parse("curpid0.rd = ls0.r");
-  hal_parse("curpid0.rq = ls0.r");
-  hal_parse("curpid0.ld = ls0.l");
-  hal_parse("curpid0.lq = ls0.l");
-  hal_parse("curpid0.psi = ls0.psi");
-  hal_parse("curpid0.kp = ls0.cur_p");
-  hal_parse("curpid0.ki = ls0.cur_i");
-  hal_parse("curpid0.ff = ls0.cur_ff");
-  hal_parse("curpid0.kind = ls0.cur_ind");
-  hal_parse("curpid0.max_cur = ls0.max_cur");
-  hal_parse("curpid0.pwm_volt = ls0.pwm_volt");
-  hal_parse("curpid0.vel = ls0.vel");
+  hal_parse("dq0.a = io0.ia");
+  hal_parse("dq0.b = io0.ib");
+  hal_parse("dq0.pos = sim0.vel");
+
+  hal_parse("curpid0.rd = 0.5");
+  hal_parse("curpid0.rq = 0.5");
+  hal_parse("curpid0.ld = 0.001");
+  hal_parse("curpid0.lq = 0.001");
+  hal_parse("curpid0.psi = 0.005");
+  hal_parse("curpid0.kp = 0.1");
+  hal_parse("curpid0.ki = 0.0001");
+  hal_parse("curpid0.ff = 0");
+  hal_parse("curpid0.kind = 0");
+  hal_parse("curpid0.max_cur = 5");
+  hal_parse("curpid0.pwm_volt = io0.dc_link");
+
+  // hal_parse("idq0.pos = pole0.cpos");
+  hal_parse("pole0.pos = sim0.vel");
+  hal_parse("pole0.p = -50.0");
+  hal_parse("term0.wave0 = map0.error");
+  hal_parse("term0.wave1 = map0.corr");
+  hal_parse("map0.pos0 = sim0.vel");
+  hal_parse("map0.pos1 = tle0.d3");
+  hal_parse("map0.amp = 0.03");
+  hal_parse("map0.offset = 2");
+
+
+  
 
   // hal parse config
   // hal_init_nrt();
   // error foo
   hal_start();
+
+  HAL_TIM_Base_Start(&htim1);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+  HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+  HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
   
   while (1)
   {
@@ -494,7 +494,7 @@ void SystemClock_Config(void)
   PeriphClkInit.Adc12ClockSelection = RCC_ADC12PLLCLK_DIV1;
   PeriphClkInit.Adc34ClockSelection = RCC_ADC34PLLCLK_DIV1;
   PeriphClkInit.USBClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
-  PeriphClkInit.Tim8ClockSelection = RCC_TIM8CLK_PLLCLK;
+  // PeriphClkInit.Tim8ClockSelection = RCC_TIM8CLK_PLLCLK;
   PeriphClkInit.Tim1ClockSelection = RCC_TIM1CLK_PLLCLK;
   PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)

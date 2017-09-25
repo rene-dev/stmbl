@@ -28,14 +28,14 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    // struct dq_ctx_t * ctx = (struct dq_ctx_t *)ctx_ptr;
    struct dq_pin_ctx_t * pins = (struct dq_pin_ctx_t *)pin_ptr;
 
-   float u = PIN(u);
-   float v = PIN(v);
-   float w = PIN(w);
+  //  float u = PIN(u);
+  //  float v = PIN(v);
+  //  float w = PIN(w);
    
    //clarke transformation
-   float a = u * 2.0 / 3.0 - v / 3.0 - w / 3.0;
-   float b = v / M_SQRT3 - w / M_SQRT3;
-   float y = u / 3.0 + v / 3.0 + w / 3.0;
+   float a = PIN(a);//u * 2.0 / 3.0 - v / 3.0 - w / 3.0;
+   float b = PIN(b);//v / M_SQRT3 - w / M_SQRT3;
+   float y = 0.0;//u / 3.0 + v / 3.0 + w / 3.0;
 
    float p = (int)MAX(PIN(polecount), 1.0);
    float pos = PIN(pos) * p;
@@ -48,9 +48,9 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
    float d =   a * co + b * si;
    float q = - a * si + b * co;
 
-   PIN(a) = a;
-   PIN(b) = b;
-   PIN(y) = y;
+  //  PIN(a) = a;
+  //  PIN(b) = b;
+  //  PIN(y) = y;
 
    PIN(d) = d;
    PIN(q) = q;
