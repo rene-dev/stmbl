@@ -197,15 +197,14 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
     ip += adc_12_buf[2 * i + 1].shunt_low0 + adc_12_buf[2 * i + 1].shunt_low1;
   }
 
-TIM1->CCR1 = PIN(oc1) * 720.0 + 720.0;
-TIM1->CCR2 = PIN(oc2) * 720.0 + 720.0;
+
 
   // PIN(dclink) = dc_link / 1.0 * 3.3 / ARES * (10.0 + 10.0 + 1.0) / 1.0;
   // PIN(bemf0) = bemf0 / 1.0 * 3.3 / ARES * (10.0 + 10.0 + 1.0) / 1.0;
   // PIN(bemf1) = bemf1 / 1.0 * 3.3 / ARES * (10.0 + 10.0 + 1.0) / 1.0;
   // PIN(in0) = in0 / 1.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
   // PIN(in1) = in1 / 1.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
-  PIN(hv_temp) = hv_temp / 20.0 * 3.3 / ARES;
+  PIN(hv_temp) = 258.0 - hv_temp / 20.0 * 3.3 / ARES * 114.4;
   PIN(dc_link) = dc_link / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
   PIN(bemf0) = bemf0 / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
   PIN(bemf1) = bemf1 / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
@@ -225,7 +224,15 @@ TIM1->CCR2 = PIN(oc2) * 720.0 + 720.0;
   PIN(in) = in / 20.0 * 3.3 / ARES;
   PIN(ia) = PIN(iap) - PIN(ian);
   PIN(ib) = PIN(ibp) - PIN(ibn);
-  
+
+  if(PIN(dc_link) > 10.0){
+    TIM1->CCR1 = PIN(oc1) / PIN(dc_link) * 720.0 + 720.0;
+    TIM1->CCR2 = PIN(oc2) / PIN(dc_link) * 720.0 + 720.0;
+  }
+  else{
+    TIM1->CCR1 = 720;
+    TIM1->CCR2 = 720;
+  }
 
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, PIN(led) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET); // 0.1u
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, PIN(enb) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET);

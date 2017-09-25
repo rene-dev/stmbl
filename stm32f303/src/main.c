@@ -408,8 +408,8 @@ int main(void)
   hal_parse("curpid0.ld = 0.001");
   hal_parse("curpid0.lq = 0.001");
   hal_parse("curpid0.psi = 0.005");
-  hal_parse("curpid0.kp = 0.1");
-  hal_parse("curpid0.ki = 0.0001");
+  hal_parse("curpid0.kp = 0.5");
+  hal_parse("curpid0.ki = 0.001");
   hal_parse("curpid0.ff = 0");
   hal_parse("curpid0.kind = 0");
   hal_parse("curpid0.max_cur = 5");
@@ -424,8 +424,7 @@ int main(void)
   hal_parse("map0.pos1 = tle0.d3");
   hal_parse("map0.amp = 0.03");
   hal_parse("map0.offset = 2");
-
-
+  hal_parse("io0.led = term0.con");
   
 
   // hal parse config
