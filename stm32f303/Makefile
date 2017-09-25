@@ -60,6 +60,7 @@ SOURCES += shared/crc16.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/commands.c
+SOURCES += shared/flashconf.c
 #SOURCES += shared/hal_term.c
 
 #USB Driver
@@ -94,8 +95,8 @@ SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_crc.c
 # SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac.c
 # SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac_ex.c
 # SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dma.c
-# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash.c
-# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash_ex.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_gpio.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_spi.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_spi_ex.c
