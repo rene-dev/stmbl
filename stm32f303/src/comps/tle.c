@@ -9,36 +9,34 @@
 HAL_COMP(tle);
 
 HAL_PIN(pos);
-HAL_PIN(d1);
-HAL_PIN(d2);
-HAL_PIN(d3);
-HAL_PIN(d4);
+HAL_PIN(error);
 
 SPI_HandleTypeDef hspi1;
 
+#pragma pack(1)
 typedef union{
    struct {
-      uint8_t rw   :1;//Read-write 0:Write 1:Read
-      uint8_t lock :4;//4-bit lock value 0000B: Default operating access for addresses 0x00:0x04, 1010B: Config-access for addresses 0x05:0x11
-      uint8_t upd  :1;//Update register access 0: Access to current values 1: Access to updated values
-      uint8_t addr :6;//6-bit Address
-      uint8_t nd   :4;//4-bit Number of data words
+      uint16_t nd   :4;//4-bit Number of data words
+      uint16_t addr :6;//6-bit Address
+      uint16_t upd  :1;//Update register access 0: Access to current values 1: Access to updated values
+      uint16_t lock :4;//4-bit lock value 0000B: Default operating access for addresses 0x00:0x04, 1010B: Config-access for addresses 0x05:0x11
+      uint16_t rw   :1;//Read-write 0:Write 1:Read
    };
    uint16_t word;
 } tle_cmd_t;
 
 typedef union{
    struct {
-      uint8_t rst         :1;//Indication of chip reset 0: Reset occurred 1: No reset
-      uint8_t sys_err     :1;//system error 1: No error
-      uint8_t if_err      :1;//interface error 1: No error
-      uint8_t angle_valid :1;//Valid angle value 1: Angle value valid
-      uint8_t resp        :4;//Sensor number response indicator
       uint8_t crc         :8;//Cyclic Redundancy Check
+      uint8_t resp        :4;//Sensor number response indicator
+      uint8_t angle_valid :1;//Valid angle value 1: Angle value valid
+      uint8_t if_err      :1;//interface error 1: No error
+      uint8_t sys_err     :1;//system error 1: No error
+      uint8_t rst         :1;//Indication of chip reset 0: Reset occurred 1: No reset
    };
    uint16_t word;
 } tle_safety_t;
-
+//TODO: alles hier drunter drehen
 typedef union{
    struct {
       uint8_t rd_st     :1;//Read Status
@@ -142,7 +140,7 @@ static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;//SPI_BAUDRATEPRESCALER_64;//1.125 Mhz
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;//SPI_BAUDRATEPRESCALER_64;//1.125 Mhz
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -152,25 +150,29 @@ static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   HAL_SPI_Init(&hspi1);
 }
 
-static void nrt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
+static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   // struct tle_ctx_t * ctx = (struct tle_ctx_t *)ctx_ptr;
   struct tle_pin_ctx_t * pins = (struct tle_pin_ctx_t *)pin_ptr;
   uint16_t buf[10];
-  buf[0] = 0x8004;
+  tle_cmd_t tle_cmd;
+  tle_safety_t tle_safety;
+  tle_cmd.word = 0x0000;
+  tle_cmd.rw = 1;
+  tle_cmd.addr = 2;
+  tle_cmd.nd = 1;
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
-  HAL_SPI_Transmit(&hspi1, buf, 1, 100);
-  HAL_SPI_Receive(&hspi1, buf, 5, 100);
+  HAL_SPI_Transmit(&hspi1, &tle_cmd.word, 1, 100);
+  HAL_SPI_Receive(&hspi1, buf, tle_cmd.nd + 1, 100);
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
-  PIN(d1) = buf[0];
-  PIN(d2) = buf[1];
-  PIN(d3) = (float)(buf[2] & 0x7fff - 0x4000) / 16384.0 * 2 * M_PI - M_PI;
-  PIN(d4) = buf[3];
+  PIN(pos) = (float)(buf[0] & 0x7fff - 0x4000) / 16384.0 * 2 * M_PI - M_PI;
+  tle_safety.word = buf[1];
+  PIN(error) = !tle_safety.angle_valid;
 }
 
 hal_comp_t tle_comp_struct = {
   .name = "tle",
-  .nrt = nrt_func,
-  .rt = 0,
+  .nrt = 0,
+  .rt = rt_func,
   .frt = 0,
   .hw_init = hw_init,
   .rt_start = 0,
