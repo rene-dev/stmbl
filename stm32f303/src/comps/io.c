@@ -57,8 +57,8 @@ struct adc_34_t {
   uint16_t shunt_b3;
 };
 
-volatile struct adc_12_t adc_12_buf[20];
-volatile struct adc_34_t adc_34_buf[20];
+volatile struct adc_12_t adc_12_buf[ADC_COUNT / ADC_OVER];
+volatile struct adc_34_t adc_34_buf[ADC_COUNT / ADC_OVER];
 
 struct io_ctx_t {
   float u_offset;
@@ -110,8 +110,8 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
   // struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
-  //PA8 LED
-  GPIO_InitStruct.Pin   = LED_Pin;
+
+  GPIO_InitStruct.Pin   = LED_Pin | GPIO_PIN_14 | GPIO_PIN_15;
   GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull  = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -120,7 +120,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   DMA1_Channel1->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA1_Channel1->CPAR  = (uint32_t) & (ADC12_COMMON->CDR);
   DMA1_Channel1->CMAR  = (uint32_t)adc_12_buf;
-  DMA1_Channel1->CNDTR = 80;
+  DMA1_Channel1->CNDTR = ADC_COUNT;
   DMA1_Channel1->CCR   = DMA_CCR_MINC | DMA_CCR_PL_0 | DMA_CCR_MSIZE_1 | DMA_CCR_PSIZE_1 | DMA_CCR_CIRC;
   ADC1->CFGR |= ADC_CFGR_DMAEN | ADC_CFGR_DMACFG;
   DMA1_Channel1->CCR |= DMA_CCR_TCIE;
@@ -131,7 +131,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   DMA2_Channel5->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA2_Channel5->CPAR  = (uint32_t) & (ADC34_COMMON->CDR);
   DMA2_Channel5->CMAR  = (uint32_t)adc_34_buf;
-  DMA2_Channel5->CNDTR = 80;
+  DMA2_Channel5->CNDTR = ADC_COUNT;
   DMA2_Channel5->CCR   = DMA_CCR_MINC | DMA_CCR_PL_0 | DMA_CCR_MSIZE_1 | DMA_CCR_PSIZE_1 | DMA_CCR_CIRC;
   ADC3->CFGR |= ADC_CFGR_DMAEN | ADC_CFGR_DMACFG;
   DMA2_Channel5->CCR |= DMA_CCR_EN;
@@ -156,7 +156,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   uint32_t ip      = 0;
   uint32_t in      = 0;
 
-  for(int i = 0; i < 10; i++) {
+  for(int i = 0; i < ADC_COUNT / ADC_OVER / 2; i++) {
     dc_link += adc_12_buf[2 * i].dc_link + adc_12_buf[2 * i + 1].dc_link;
     hv_temp += adc_12_buf[2 * i].hv_temp + adc_12_buf[2 * i + 1].hv_temp;
     in0 += adc_12_buf[2 * i].in0 + adc_12_buf[2 * i + 1].in0;
@@ -172,29 +172,21 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 
 
-  PIN(hv_temp) = 258.0 - hv_temp / 20.0 * 3.3 / ARES * 114.4;
-  PIN(dc_link) = dc_link / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
-  PIN(bemf0)   = bemf0 / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
-  PIN(bemf1)   = bemf1 / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
-  PIN(in0)     = in0 / 20.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
-  PIN(in1)     = in1 / 20.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
+  PIN(hv_temp) = 258.0 - hv_temp * 3.3 / ARES * 114.4 * ADC_OVER / ADC_COUNT;
+  PIN(dc_link) = dc_link * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
+  PIN(bemf0)   = bemf0 * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
+  PIN(bemf1)   = bemf1 * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
+  PIN(in0)     = in0 * 3.3 / ARES * (10.0 + 1.5) / 1.5 * ADC_OVER / ADC_COUNT;
+  PIN(in1)     = in1 * 3.3 / ARES * (10.0 + 1.5) / 1.5 * ADC_OVER / ADC_COUNT;
 
-  PIN(iap) = AMP(iap / 40.0, 8.0);
-  PIN(ian) = AMP(ian / 40.0, 8.0);
-  PIN(ibp) = AMP(ibp / 40.0, 8.0);
-  PIN(ibn) = AMP(ibn / 40.0, 8.0);
-  PIN(ip)  = ip / 20.0 * 3.3 / ARES;
-  PIN(in)  = in / 20.0 * 3.3 / ARES;
+  PIN(iap) = AMP(iap * 2 * ADC_OVER / ADC_COUNT, 8.0);
+  PIN(ian) = AMP(ian * 2 * ADC_OVER / ADC_COUNT, 8.0);
+  PIN(ibp) = AMP(ibp * 2 * ADC_OVER / ADC_COUNT, 8.0);
+  PIN(ibn) = AMP(ibn * 2 * ADC_OVER / ADC_COUNT, 8.0);
+  PIN(ip)  = ip * ADC_OVER / ADC_COUNT * 3.3 / ARES;
+  PIN(in)  = in * ADC_OVER / ADC_COUNT * 3.3 / ARES;
   PIN(ia)  = PIN(iap) - PIN(ian);
   PIN(ib)  = PIN(ibp) - PIN(ibn);
-
-  if(PIN(dc_link) > 10.0) {
-    TIM1->CCR1 = PIN(oc1) / PIN(dc_link) * 720.0 + 720.0;
-    TIM1->CCR2 = PIN(oc2) / PIN(dc_link) * 720.0 + 720.0;
-  } else {
-    TIM1->CCR1 = 720;
-    TIM1->CCR2 = 720;
-  }
 
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, PIN(led) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET);  // 0.1u
 }

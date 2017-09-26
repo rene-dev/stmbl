@@ -172,7 +172,8 @@ void Error_Handler(void);
 
 
 void DMA1_Channel1_IRQHandler() {
-  //  GPIOC->BSRR |= GPIO_PIN_13;
+  GPIOC->BSRR |= GPIO_PIN_14;
+  GPIOC->BSRR |= GPIO_PIN_15;
   //  __HAL_DMA_CLEAR_FLAG(&hdma1, DMA_FLAG_TC1);
   DMA1->IFCR = DMA_IFCR_CTCIF1;
   DMA2->IFCR = DMA_IFCR_CTCIF5;
@@ -182,7 +183,7 @@ void DMA1_Channel1_IRQHandler() {
   //     hal_stop();
   //     hal.hal_state = RT_TOO_LONG;
   //  }
-  //  GPIOC->BSRR |= GPIO_PIN_13 << 16;
+  GPIOC->BSRR |= GPIO_PIN_14 << 16;
 }
 
 void bootloader(char *ptr) {
@@ -345,7 +346,7 @@ int main(void) {
   // 	Error_Handler();
   // }
 
-  hal_init(1.0 / 5000.0, 0.0);
+  hal_init(1.0 / RT_FREQ, 0.0);
   // hal load comps
   load_comp(comp_by_name("term"));
   load_comp(comp_by_name("sim"));
@@ -403,9 +404,9 @@ int main(void) {
   hal_parse("curpid0.ld = 0.0038");
   hal_parse("curpid0.lq = 0.0038");
   hal_parse("curpid0.psi = 0.005");
-  hal_parse("curpid0.kp = 0.3");
-  hal_parse("curpid0.ki = 0.005");
-  hal_parse("curpid0.ff = 0");
+  hal_parse("curpid0.kp = 0.1");
+  hal_parse("curpid0.ki = 0.002");
+  hal_parse("curpid0.ff = 1");
   hal_parse("curpid0.kind = 0");
   hal_parse("curpid0.max_cur = 4");
   hal_parse("curpid0.pwm_volt = io0.dc_link");
@@ -427,11 +428,11 @@ int main(void) {
   hal_parse("curpid0.iq_cmd = ypid0.out");
 
   hal_parse("ypid0.max_vel = 30");
-  hal_parse("ypid0.max_acc = 20000");
-  hal_parse("ypid0.max_out = 2.5");
+  hal_parse("ypid0.max_acc = 200000");
+  hal_parse("ypid0.max_out = 4");
   hal_parse("ypid0.pos_p = 100");
-  hal_parse("ypid0.vel_p = 0.05");
-  hal_parse("ypid0.vel_i = 0.1");
+  hal_parse("ypid0.vel_p = 0.1");
+  hal_parse("ypid0.vel_i = 0.05");
   hal_parse("ypid0.vel_ff = 1.0");
   
   hal_parse("term0.wave0 = vel0.pos_out");
