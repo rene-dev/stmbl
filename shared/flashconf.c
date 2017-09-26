@@ -19,10 +19,10 @@ void flashsaveconf(char *ptr) {
   uint32_t PageError = 0;
   HAL_StatusTypeDef status;
   FLASH_EraseInitTypeDef eraseinitstruct;
-  eraseinitstruct.TypeErase = FLASH_TYPEERASE_PAGES;
+  eraseinitstruct.TypeErase   = FLASH_TYPEERASE_PAGES;
   eraseinitstruct.PageAddress = (uint32_t)config_ro;
-  eraseinitstruct.NbPages = 1;
-  status = HAL_FLASHEx_Erase(&eraseinitstruct, &PageError);
+  eraseinitstruct.NbPages     = 1;
+  status                      = HAL_FLASHEx_Erase(&eraseinitstruct, &PageError);
 
   if(status != HAL_OK) {
     printf("error!\n");
@@ -31,9 +31,9 @@ void flashsaveconf(char *ptr) {
   }
   printf("saving conf\n");
   int ret = 0;
-  for(int i = 0;i<sizeof(config);i+=4){
-    uint32_t word = (config[i+0]) + (config[i+1] << 8) + (config[i+2] << 16) + (config[i+3] << 24);
-    ret = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, (uint32_t)config_ro + i, word) != HAL_OK;
+  for(int i = 0; i < sizeof(config); i += 4) {
+    uint32_t word = (config[i + 0]) + (config[i + 1] << 8) + (config[i + 2] << 16) + (config[i + 3] << 24);
+    ret           = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, (uint32_t)config_ro + i, word) != HAL_OK;
     if(ret) {
       printf("error writing %i\n", ret);
       break;

@@ -36,11 +36,10 @@ void MX_OPAMP1_Init(void) {
   hopamp1.Init.Mode                   = OPAMP_PGA_MODE;
   hopamp1.Init.NonInvertingInput      = OPAMP_NONINVERTINGINPUT_IO0;
   hopamp1.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
-  hopamp1.Init.PgaConnect = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
-  hopamp1.Init.PgaGain = OPAMP_PGA_GAIN_8;
-  hopamp1.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
-  if (HAL_OPAMP_Init(&hopamp1) != HAL_OK)
-  {
+  hopamp1.Init.PgaConnect             = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
+  hopamp1.Init.PgaGain                = OPAMP_PGA_GAIN_8;
+  hopamp1.Init.UserTrimming           = OPAMP_TRIMMING_FACTORY;
+  if(HAL_OPAMP_Init(&hopamp1) != HAL_OK) {
     Error_Handler();
   }
 }
@@ -50,11 +49,10 @@ void MX_OPAMP2_Init(void) {
   hopamp2.Init.Mode                   = OPAMP_PGA_MODE;
   hopamp2.Init.NonInvertingInput      = OPAMP_NONINVERTINGINPUT_IO0;
   hopamp2.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
-  hopamp2.Init.PgaConnect = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
-  hopamp2.Init.PgaGain = OPAMP_PGA_GAIN_8;
-  hopamp2.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
-  if (HAL_OPAMP_Init(&hopamp2) != HAL_OK)
-  {
+  hopamp2.Init.PgaConnect             = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
+  hopamp2.Init.PgaGain                = OPAMP_PGA_GAIN_8;
+  hopamp2.Init.UserTrimming           = OPAMP_TRIMMING_FACTORY;
+  if(HAL_OPAMP_Init(&hopamp2) != HAL_OK) {
     Error_Handler();
   }
 }
@@ -64,36 +62,29 @@ void MX_OPAMP3_Init(void) {
   hopamp3.Init.Mode                   = OPAMP_PGA_MODE;
   hopamp3.Init.NonInvertingInput      = OPAMP_NONINVERTINGINPUT_IO0;
   hopamp3.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
-  hopamp3.Init.PgaConnect = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
-  hopamp3.Init.PgaGain = OPAMP_PGA_GAIN_8;
-  hopamp3.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
-  if (HAL_OPAMP_Init(&hopamp3) != HAL_OK)
-  {
+  hopamp3.Init.PgaConnect             = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
+  hopamp3.Init.PgaGain                = OPAMP_PGA_GAIN_8;
+  hopamp3.Init.UserTrimming           = OPAMP_TRIMMING_FACTORY;
+  if(HAL_OPAMP_Init(&hopamp3) != HAL_OK) {
     Error_Handler();
   }
 }
 
 /* OPAMP3 init function */
-void MX_OPAMP4_Init(void)
-{
-
-  hopamp4.Instance = OPAMP4;
-  hopamp4.Init.Mode = OPAMP_PGA_MODE;
-  hopamp4.Init.NonInvertingInput = OPAMP_NONINVERTINGINPUT_IO3;
+void MX_OPAMP4_Init(void) {
+  hopamp4.Instance                    = OPAMP4;
+  hopamp4.Init.Mode                   = OPAMP_PGA_MODE;
+  hopamp4.Init.NonInvertingInput      = OPAMP_NONINVERTINGINPUT_IO3;
   hopamp4.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
-  hopamp4.Init.PgaConnect = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
-  hopamp4.Init.PgaGain = OPAMP_PGA_GAIN_8;
-  hopamp4.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
-  if (HAL_OPAMP_Init(&hopamp4) != HAL_OK)
-  {
+  hopamp4.Init.PgaConnect             = OPAMP_PGA_CONNECT_INVERTINGINPUT_NO;
+  hopamp4.Init.PgaGain                = OPAMP_PGA_GAIN_8;
+  hopamp4.Init.UserTrimming           = OPAMP_TRIMMING_FACTORY;
+  if(HAL_OPAMP_Init(&hopamp4) != HAL_OK) {
     Error_Handler();
   }
-
 }
 
-void HAL_OPAMP_MspInit(OPAMP_HandleTypeDef* opampHandle)
-{
-
+void HAL_OPAMP_MspInit(OPAMP_HandleTypeDef *opampHandle) {
   GPIO_InitTypeDef GPIO_InitStruct;
   if(opampHandle->Instance == OPAMP1) {
     /* USER CODE BEGIN OPAMP1_MspInit 0 */
@@ -145,25 +136,24 @@ void HAL_OPAMP_MspInit(OPAMP_HandleTypeDef* opampHandle)
 
     /* USER CODE BEGIN OPAMP3_MspInit 1 */
 
-  /* USER CODE END OPAMP3_MspInit 1 */
-  }else if(opampHandle->Instance==OPAMP4)
-  {
-  /* USER CODE BEGIN OPAMP4_MspInit 0 */
+    /* USER CODE END OPAMP3_MspInit 1 */
+  } else if(opampHandle->Instance == OPAMP4) {
+    /* USER CODE BEGIN OPAMP4_MspInit 0 */
 
-  /* USER CODE END OPAMP4_MspInit 0 */
-  
+    /* USER CODE END OPAMP4_MspInit 0 */
+
     /**OPAMP4 GPIO Configuration    
     PB11     ------> OPAMP4_VINP
     PB12     ------> OPAMP4_VOUT 
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
+    GPIO_InitStruct.Pin  = GPIO_PIN_11 | GPIO_PIN_12;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN OPAMP4_MspInit 1 */
+    /* USER CODE BEGIN OPAMP4_MspInit 1 */
 
-  /* USER CODE END OPAMP4_MspInit 1 */
+    /* USER CODE END OPAMP4_MspInit 1 */
   }
 }
 
