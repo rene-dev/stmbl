@@ -25,8 +25,11 @@ float interp(float value, float* array, uint32_t array_size){
 
   uint32_t min_i = (uint32_t)(value * array_size) % array_size;
   uint32_t max_i = (uint32_t)(min_i + 1.0) % array_size;
+
+  float dy = minus(array[max_i], array[min_i]);
+  float dx = 1.0 / array_size;
   
-  return(array[min_i] + (value - (float)min_i / array_size) * minus(array[max_i], array[min_i]) / ((float)max_i / array_size - (float)min_i / array_size));
+  return(array[min_i] + (value - (float)min_i / array_size) * dy / dx);
 }
 
 float interpd(float value, float* array, uint32_t array_size){
@@ -35,8 +38,11 @@ float interpd(float value, float* array, uint32_t array_size){
 
   uint32_t min_i = (uint32_t)(value * array_size) % array_size;
   uint32_t max_i = (uint32_t)(min_i + 1.0) % array_size;
+
+  float dy = minus(array[max_i], array[min_i]);
+  float dx = 1.0 / array_size;
   
-  return(minus(array[max_i], array[min_i]) / ((float)max_i / array_size - (float)min_i / array_size));
+  return(dy / dx);
 }
 
 struct map_ctx_t{
@@ -87,7 +93,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
          }
       break;
       
-      case 1: // move motor
+      case 1: // move motor +
          ctx->pos += 2.0 * M_PI * PIN(freq) * period;
          PIN(pos_out) = mod(ctx->pos);
          
@@ -104,7 +110,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       break;
       
       case 2: // measure
-         ctx->value = PIN(pos_in) ;// PIN(over);
+         ctx->value = PIN(pos_in);// PIN(over);
          ctx->counter++;
          if(ctx->counter > PIN(over)){
             ctx->map[ctx->index] = mod(ctx->value);
@@ -112,11 +118,48 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
             ctx->index++;
          }
       break;
+
+
+      case 3: // move motor + 1
+        ctx->pos += 2.0 * M_PI * PIN(freq) * period;
+        PIN(pos_out) = mod(ctx->pos);
+
+        if(ctx->pos >= (float)(ctx->index + 1) * 2.0 * M_PI / POLES){
+          ctx->state = 4;
+        }
+      break;
+
+      case 4: // move motor -
+        ctx->pos -= 2.0 * M_PI * PIN(freq) * period;
+        PIN(pos_out) = mod(ctx->pos);
+        
+        if(ctx->pos <= (float)ctx->index * 2.0 * M_PI / POLES){
+          ctx->value = 0.0;
+          ctx->counter = 0;
+          ctx->state = 5;
+          //PIN(pos_out) = mod((float)ctx->index / POLES * 2.0 * M_PI);
+        }
+        
+        if(ctx->index <= 0){
+          ctx->state = 6;
+        }
+      break;
+   
+      case 5: // measure
+        ctx->value += minus(PIN(pos_in), ctx->value) / 2.0;// PIN(over);
+        ctx->counter++;
+        if(ctx->counter > PIN(over)){
+          ctx->map[ctx->index] = mod(ctx->value);
+          ctx->state = 4;
+          ctx->index--;
+        }
+      break;
+
       
-      case 3: // remap
+      case 6: // remap
       break;
       
-      case 4: // map
+      case 7: // map
         PIN(pos_out2) = interp(PIN(pos_in) / 2.0 / M_PI + 0.5, ctx->rmap, POLES);
       
         if(PIN(start) <= 0.0){
@@ -146,7 +189,7 @@ static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
       }
    }
 
-  if(ctx->state == 3){ // remap
+  if(ctx->state == 6){ // remap
     float p = 0.0;
     float pp = 0.0;
     float error = 0.0;
@@ -168,7 +211,7 @@ static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
       ctx->rmap[i] = pp;
     }
 
-    ctx->state = 4;
+    ctx->state = 7;
   }
 }
 
