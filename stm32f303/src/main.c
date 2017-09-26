@@ -350,43 +350,42 @@ int main(void) {
   load_comp(comp_by_name("term"));
   load_comp(comp_by_name("sim"));
   load_comp(comp_by_name("io"));
-  // load_comp(comp_by_name("ls"));
   load_comp(comp_by_name("dq"));
   load_comp(comp_by_name("idq"));
   load_comp(comp_by_name("tle"));
   load_comp(comp_by_name("pole"));
   load_comp(comp_by_name("map"));
-  load_comp(comp_by_name("rev"));
-  // load_comp(comp_by_name("svm"));
+  load_comp(comp_by_name("vel"));
+  load_comp(comp_by_name("vel"));
+  load_comp(comp_by_name("ypid"));
   load_comp(comp_by_name("hv"));
   load_comp(comp_by_name("curpid"));
 
-
-  hal_parse("tle0.rt_prio = 0.01");
-  hal_parse("term0.rt_prio = 0.1");
-  hal_parse("ls0.rt_prio = 0.6");
-  hal_parse("pole0.rt_prio = 1.0");
-  hal_parse("map0.rt_prio = 2.0");
-  hal_parse("rev0.rt_prio = 1.0");
-  hal_parse("io0.rt_prio = 1.0");
-  hal_parse("dq0.rt_prio = 2.0");
-  hal_parse("curpid0.rt_prio = 3.0");
-  hal_parse("idq0.rt_prio = 4.0");
-  hal_parse("svm0.rt_prio = 5.0");
-  hal_parse("hv0.rt_prio = 6.0");
-  hal_parse("sim0.rt_prio = 7.0");
+  hal_parse("io0.rt_prio = 1.0");  
+  hal_parse("tle0.rt_prio = 2.0");
+  hal_parse("map0.rt_prio = 3.0");
+  hal_parse("vel0.rt_prio = 4.0");
+  hal_parse("vel1.rt_prio = 4.0");
+  hal_parse("pole0.rt_prio = 4.0");
+  hal_parse("dq0.rt_prio = 5.0");
+  hal_parse("ypid0.rt_prio = 6.0");
+  hal_parse("curpid0.rt_prio = 7.0");
+  hal_parse("idq0.rt_prio = 8.0");  
+  hal_parse("hv0.rt_prio = 9.0");
+  
+  hal_parse("term0.rt_prio = 10");
+  hal_parse("sim0.rt_prio = 10.0");
 
   hal_parse("term0.send_step = 10.0");
-  hal_parse("term0.gain0 = 10.0");
-  hal_parse("term0.gain1 = 10.0");
-  hal_parse("term0.gain2 = 10.0");
-  hal_parse("term0.gain3 = 10.0");
+  hal_parse("term0.gain0 = 20.0");
+  hal_parse("term0.gain1 = 20.0");
+  hal_parse("term0.gain2 = 1.0");
+  hal_parse("term0.gain3 = 1.0");
   hal_parse("term0.gain4 = 10.0");
   hal_parse("term0.gain5 = 10.0");
   hal_parse("term0.gain6 = 10.0");
   hal_parse("term0.gain7 = 10.0");
 
-  hal_parse("idq0.pos = sim0.vel");
   hal_parse("hv0.a = idq0.a");
   hal_parse("hv0.b = idq0.b");
   hal_parse("hv0.udc = io0.dc_link");
@@ -398,7 +397,6 @@ int main(void) {
   hal_parse("idq0.q = curpid0.uq");
   hal_parse("dq0.a = io0.ia");
   hal_parse("dq0.b = io0.ib");
-  hal_parse("dq0.pos = sim0.vel");
 
   hal_parse("curpid0.rd = 1.6");
   hal_parse("curpid0.rq = 1.6");
@@ -406,28 +404,58 @@ int main(void) {
   hal_parse("curpid0.lq = 0.0038");
   hal_parse("curpid0.psi = 0.005");
   hal_parse("curpid0.kp = 0.3");
-  hal_parse("curpid0.ki = 0.001");
+  hal_parse("curpid0.ki = 0.005");
   hal_parse("curpid0.ff = 0");
   hal_parse("curpid0.kind = 0");
-  hal_parse("curpid0.max_cur = 5");
+  hal_parse("curpid0.max_cur = 4");
   hal_parse("curpid0.pwm_volt = io0.dc_link");
 
-  // hal_parse("idq0.pos = pole0.cpos");
-  hal_parse("pole0.pos = sim0.vel");
   hal_parse("pole0.p = 50.0");
-  hal_parse("term0.wave0 = map0.error");
-  hal_parse("term0.wave1 = map0.corr");
-  hal_parse("map0.pos0 = sim0.vel");
-  hal_parse("map0.pos1 = tle0.d3");
-  hal_parse("map0.amp = 0.03");
-  hal_parse("map0.offset = 2");
   hal_parse("io0.led = term0.con");
 
+  hal_parse("dq0.pos = pole0.cpos");
+  hal_parse("idq0.pos = pole0.cpos");
+  hal_parse("pole0.pos = map0.pos_out2");
+  hal_parse("map0.pos_in = tle0.pos");
+  hal_parse("map0.freq = 0.1");
+  hal_parse("curpid0.cmd_mode = 1");
+  hal_parse("vel1.pos_in = map0.pos_out2");
+  hal_parse("ypid0.pos_ext_cmd = vel0.pos_out");
+  hal_parse("ypid0.vel_ext_cmd = vel0.vel");
+  hal_parse("ypid0.pos_fb = map0.pos_out2");
+  hal_parse("ypid0.vel_fb = vel1.vel");
+  hal_parse("curpid0.iq_cmd = ypid0.out");
+
+  hal_parse("ypid0.max_vel = 30");
+  hal_parse("ypid0.max_acc = 20000");
+  hal_parse("ypid0.max_out = 2.5");
+  hal_parse("ypid0.pos_p = 100");
+  hal_parse("ypid0.vel_p = 0.05");
+  hal_parse("ypid0.vel_i = 0.1");
+  hal_parse("ypid0.vel_ff = 1.0");
+  
+  hal_parse("term0.wave0 = vel0.pos_out");
+  hal_parse("term0.wave1 = map0.pos_out2");
+  hal_parse("term0.wave2 = vel0.vel");
+  hal_parse("term0.wave3 = vel1.vel");
+  
+  hal_parse("vel0.w = 3000");
+  hal_parse("vel1.w = 3000");
+
+  hal_parse("vel0.en = 1");
+  hal_parse("vel1.en = 1");
+  hal_parse("ypid0.enable = 1");
+  hal_parse("curpid0.en = 1");
+  hal_parse("hv0.en = 1");
+
+  hal_parse("flashloadconf");
+  hal_parse("loadconf");
+  hal_parse("start");
 
   // hal parse config
   // hal_init_nrt();
   // error foo
-  hal_start();
+  // hal_start();
 
   HAL_TIM_Base_Start(&htim1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);

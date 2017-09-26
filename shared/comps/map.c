@@ -18,6 +18,7 @@ HAL_PIN(print);
 HAL_PIN(state);
 HAL_PIN(counter);
 HAL_PIN(index);
+HAL_PINA(m, 50);
 
 float interp(float value, float *array, uint32_t array_size) {
   value      = CLAMP(value, 0.0, 1.0);
@@ -65,6 +66,15 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   }
 }
 
+static void rt_start(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  struct map_ctx_t *ctx      = (struct map_ctx_t *)ctx_ptr;
+  struct map_pin_ctx_t *pins = (struct map_pin_ctx_t *)pin_ptr;
+
+  for(int i = 0; i < POLES; i++){
+    ctx->rmap[i] = PINA(m, i);
+  }
+}
+
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct map_ctx_t *ctx      = (struct map_ctx_t *)ctx_ptr;
@@ -81,6 +91,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     case 0:  // pipe through
       //PIN(pos_out) = PIN(pos_in);
       PIN(pos_out) = 0.0;
+      PIN(pos_out2) = interp(PIN(pos_in) / 2.0 / M_PI + 0.5, ctx->rmap, POLES);
 
       if(PIN(start) > 0.0) {
         PIN(pos_out) = 0.0;
@@ -202,11 +213,13 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
         pp    = mod(pp);
         error = minus(p, interp(pp / 2.0 / M_PI + 0.5, ctx->map, POLES));
         j++;
-      } while(j < 20000 && ABS(error) >= 2.0 * M_PI / 32768.0 * 20.0);
-      printf("index %u, error %f, it %u\n", i, error, j);
+      } while(j < 200 && ABS(error) >= 2.0 * M_PI / 32768.0 * 20.0);
+      //printf("index %u, error %f, it %u\n", i, error, j);
       error = 0.0;
 
       ctx->rmap[i] = pp;
+      PINA(m, i) = pp;
+      printf("map0.m%i=%f\n", i, pp);
     }
 
     ctx->state = 7;
@@ -219,7 +232,7 @@ hal_comp_t map_comp_struct = {
     .rt        = rt_func,
     .frt       = 0,
     .nrt_init  = nrt_init,
-    .rt_start  = 0,
+    .rt_start  = rt_start,
     .frt_start = 0,
     .rt_stop   = 0,
     .frt_stop  = 0,

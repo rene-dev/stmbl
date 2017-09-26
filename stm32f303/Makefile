@@ -46,10 +46,10 @@ COMPS += shared/comps/idq.c
 COMPS += shared/comps/pole.c
 COMPS += shared/comps/map.c
 # COMPS += shared/comps/rev.c
-# COMPS += shared/comps/vel.c
+COMPS += shared/comps/vel.c
 # COMPS += shared/comps/hal_test.c
 # COMPS += shared/comps/dc.c
-# COMPS += shared/comps/ypid.c
+COMPS += shared/comps/ypid.c
 
 SOURCES += $(COMPS)
 
