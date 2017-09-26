@@ -33,9 +33,9 @@ CFLAGS += -DHAL_MAX_CTX=1024
 COMPS += stm32f303/src/comps/hv.c
 # COMPS += stm32f303/src/comps/hvdc.c
 COMPS += stm32f303/src/comps/io.c
+COMPS += stm32f303/src/comps/tle.c
 # COMPS += stm32f303/src/comps/ls.c
 # COMPS += stm32f303/src/comps/enc.c
-COMPS += stm32f303/src/comps/tle.c
 
 COMPS += shared/comps/sim.c
 COMPS += shared/comps/term.c
@@ -55,8 +55,7 @@ SOURCES += $(COMPS)
 
 INCDIRS += shared
 SOURCES += shared/ringbuf.c
-# SOURCES += shared/crc8.c
-# SOURCES += shared/crc16.c
+SOURCES += shared/crc8.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/commands.c
@@ -98,8 +97,6 @@ SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_crc.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_gpio.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_spi.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_spi_ex.c
 # SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c.c
 # SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_opamp.c
@@ -114,6 +111,9 @@ SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_tim.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_tim_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_uart.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_uart_ex.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_spi.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_spi_ex.c
+
 
 LDSCRIPT = stm32f303/STM32F303CBTx_FLASH.ld
 

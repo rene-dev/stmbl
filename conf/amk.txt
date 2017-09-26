@@ -1,0 +1,21 @@
+link pid
+link acim
+link enc_fb0
+link misc
+conf0.r = 1.4
+conf0.l = 0.0013
+conf0.j = 0.006
+conf0.max_force = 9
+conf0.max_ac_cur = 13
+conf0.mot_fb_res = 4096
+conf0.cmd_res = 4096
+acim_ttc0.slip_n = 3
+acim_ttc0.cur_n = 6
+acim_ttc0.torque_n = 9
+conf0.polecount = 2
+conf0.vel_p = 1000
+conf0.vel_i = 1
+conf0.max_sat = 10
+conf0.cur_p = 1
+pe0.cap = 0.00136
+rev1.in = enc_fb0.ipos

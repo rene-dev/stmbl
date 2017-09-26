@@ -13,7 +13,7 @@
  *    ReflectOut   = True
  *    Algorithm    = table-driven
  *****************************************************************************/
-#include "crc8.h"     /* include the header file generated with pycrc */
+#include "crc8.h" /* include the header file generated with pycrc */
 #include <stdlib.h>
 #include <stdint.h>
 
@@ -36,8 +36,7 @@ static const crc8_t crc_table[256] = {
     0xca, 0x94, 0x76, 0x28, 0xab, 0xf5, 0x17, 0x49, 0x08, 0x56, 0xb4, 0xea, 0x69, 0x37, 0xd5, 0x8b,
     0x57, 0x09, 0xeb, 0xb5, 0x36, 0x68, 0x8a, 0xd4, 0x95, 0xcb, 0x29, 0x77, 0xf4, 0xaa, 0x48, 0x16,
     0xe9, 0xb7, 0x55, 0x0b, 0x88, 0xd6, 0x34, 0x6a, 0x2b, 0x75, 0x97, 0xc9, 0x4a, 0x14, 0xf6, 0xa8,
-    0x74, 0x2a, 0xc8, 0x96, 0x15, 0x4b, 0xa9, 0xf7, 0xb6, 0xe8, 0x0a, 0x54, 0xd7, 0x89, 0x6b, 0x35
-};
+    0x74, 0x2a, 0xc8, 0x96, 0x15, 0x4b, 0xa9, 0xf7, 0xb6, 0xe8, 0x0a, 0x54, 0xd7, 0x89, 0x6b, 0x35};
 
 /**
  * Reflect all bits of a \a data word of \a data_len bytes.
@@ -46,17 +45,16 @@ static const crc8_t crc_table[256] = {
  * \param data_len     The width of \a data expressed in number of bits.
  * \return             The reflected data.
  *****************************************************************************/
-crc8_t crc8_reflect(crc8_t data, size_t data_len)
-{
-    unsigned int i;
-    crc8_t ret;
+crc8_t crc8_reflect(crc8_t data, size_t data_len) {
+  unsigned int i;
+  crc8_t ret;
 
-    ret = data & 0x01;
-    for (i = 1; i < data_len; i++) {
-        data >>= 1;
-        ret = (ret << 1) | (data & 0x01);
-    }
-    return ret;
+  ret = data & 0x01;
+  for(i = 1; i < data_len; i++) {
+    data >>= 1;
+    ret = (ret << 1) | (data & 0x01);
+  }
+  return ret;
 }
 
 
@@ -68,18 +66,15 @@ crc8_t crc8_reflect(crc8_t data, size_t data_len)
  * \param data_len Number of bytes in the \a data buffer.
  * \return         The updated crc value.
  *****************************************************************************/
-crc8_t crc8_update(crc8_t crc, const void *data, size_t data_len)
-{
-    const unsigned char *d = (const unsigned char *)data;
-    unsigned int tbl_idx;
+crc8_t crc8_update(crc8_t crc, const void *data, size_t data_len) {
+  const unsigned char *d = (const unsigned char *)data;
+  unsigned int tbl_idx;
 
-    while (data_len--) {
-        tbl_idx = (crc ^ *d);
-        crc = (crc_table[tbl_idx]) & 0xff;
+  while(data_len--) {
+    tbl_idx = (crc ^ *d);
+    crc     = (crc_table[tbl_idx]) & 0xff;
 
-        d++;
-    }
-    return crc & 0xff;
+    d++;
+  }
+  return crc & 0xff;
 }
-
-

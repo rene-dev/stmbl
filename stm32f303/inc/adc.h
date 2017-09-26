@@ -45,7 +45,7 @@
 #ifndef __adc_H
 #define __adc_H
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/

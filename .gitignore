@@ -14,6 +14,9 @@
 *.list
 *.out
 *.pyc
+
+.vscode/*
+
 tools/pycrc*
 
 sim/sim

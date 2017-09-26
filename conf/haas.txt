@@ -1,0 +1,17 @@
+link pid
+link pmsm
+link enc_fb0
+link misc
+conf0.r = 1.4
+conf0.l = 0.0013
+conf0.j = 0.00124
+conf0.max_force = 4
+conf0.max_ac_cur = 13
+conf0.mot_fb_res = 8000
+conf0.cmd_res = 8000
+conf0.mot_fb_rev = 1
+conf0.polecount = 1
+hv0.phase_mode = 3
+hv0.pos = 0
+conf0.psi = 1.2
+conf0.cur_p = 0.7

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "stm32f4xx_conf.h"
-#include "misc.h"
+//#include "misc.h"
 #include "version.h"
 #include "common.h"
 #include "hw/hw.h"
@@ -18,8 +18,8 @@
 //sample times for F4: 3,15,28,56,84,112,144,480
 #define RES_SampleTime ADC_SampleTime_3Cycles
 
-#define  ADC_ANZ 60
-#define  PID_WAVES 4
+#define ADC_ANZ 60
+#define PID_WAVES 4
 
 void setup(void);
 void setup_res(void);

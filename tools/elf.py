@@ -301,18 +301,18 @@ class ELFObject:
 
 
 if __name__ == '__main__':
-    print "This is only a module test!"
+    print ("This is only a module test!")
     elf = ELFObject()
     elf.fromFile(open("test.elf"))
     if elf.e_type != ELFObject.ET_EXEC:
         raise Exception("No executable")
-    print elf
+    print (elf)
 
     #~ print repr(elf.getSection('.text').data)
     #~ print [(s.name, hex(s.sh_addr)) for s in elf.getSections()]
-    print "-"*20
-    for p in elf.sections: print p
-    print "-"*20
-    for p in elf.getSections(): print p
-    print "-"*20
-    for p in elf.getProgrammableSections(): print p
+    print ("-"*20)
+    for p in elf.sections: print (p)
+    print ("-"*20)
+    for p in elf.getSections(): print (p)
+    print ("-"*20)
+    for p in elf.getProgrammableSections(): print (p)

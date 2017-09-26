@@ -48,8 +48,11 @@ COMPS += shared/comps/dc.c
 COMPS += shared/comps/ypid.c
 COMPS += shared/comps/fault.c
 COMPS += shared/comps/pid.c
+COMPS += shared/comps/spid.c
+COMPS += shared/comps/pe.c
 COMPS += shared/comps/pmsm_limits.c
 COMPS += shared/comps/pmsm_ttc.c
+COMPS += shared/comps/acim_ttc.c
 COMPS += shared/comps/uvw.c
 COMPS += shared/comps/fanuc.c
 COMPS += shared/comps/fb_switch.c
@@ -68,7 +71,6 @@ SOURCES += src/version.c
 SOURCES += src/syscalls.c
 
 SOURCES += shared/crc8.c
-SOURCES += shared/crc16.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/commands.c
@@ -253,6 +255,17 @@ boot_btflash: boot
 hv:
 	$(MAKE) -f stm32f103/Makefile
 
+f3:
+	$(MAKE) -f stm32f303/Makefile
+
+f3_flash:
+	$(MAKE) -f stm32f303/Makefile flash
+
+f3_btflash:
+	$(MAKE) -f stm32f303/Makefile btburn
+
+format:
+	find src/ f3dfu/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ -iname *.h -o -iname *.c | xargs clang-format -i
 
 # Display compiler version information
 #

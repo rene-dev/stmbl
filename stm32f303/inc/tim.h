@@ -45,7 +45,7 @@
 #ifndef __tim_H
 #define __tim_H
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -65,9 +65,9 @@ extern TIM_HandleTypeDef htim8;
 extern void Error_Handler(void);
 
 void MX_TIM8_Init(void);
-                    
+
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-                
+
 
 /* USER CODE BEGIN Prototypes */
 

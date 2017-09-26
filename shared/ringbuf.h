@@ -7,13 +7,14 @@
  *
  */
 struct ringbuf {
-    char *buf;          ///< Pointer to buffer memory
-    unsigned   bufsize;      ///< Size of buffer memory
-    volatile unsigned pos;   ///< Current read position
-    volatile unsigned len;   ///< Length of data in buffer
+  char *buf;  ///< Pointer to buffer memory
+  unsigned bufsize;  ///< Size of buffer memory
+  volatile unsigned pos;  ///< Current read position
+  volatile unsigned len;  ///< Length of data in buffer
 };
 
-#define RINGBUF(size) { .buf = (char[(size)]) {0}, .bufsize = (size) }
+#define RINGBUF(size) \
+  { .buf = (char[(size)]){0}, .bufsize = (size) }
 
 /**
  * Read a single byte from a buffer

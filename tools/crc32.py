@@ -126,11 +126,11 @@ if __name__=='__main__':
 
   # CRC32 with default polynom
   crc = CRC32().calc(arg[::-1])
-  print "CRC32(%s) = 0x%08x" % (repr(arg), crc)
+  print ("CRC32(%s) = 0x%08x" % (repr(arg), crc))
   assert(struct.pack('<L', crc) == check[::-1])
 
   rcrc = CRC32().rcalc(arg[::-1], crc)
-  print "RCRC32(%s, 0x%08x) = 0x%08x" % (repr(arg), crc, rcrc)
+  print ("RCRC32(%s, 0x%08x) = 0x%08x" % (repr(arg), crc, rcrc))
   assert(rcrc == 0xffffffff)
 
 
