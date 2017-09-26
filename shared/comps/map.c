@@ -10,6 +10,7 @@ HAL_COMP(map);
 
 HAL_PIN(pos_in);
 HAL_PIN(pos_out);
+HAL_PIN(pos_out2);
 HAL_PIN(start);
 HAL_PIN(freq);
 HAL_PIN(over);
@@ -18,6 +19,25 @@ HAL_PIN(state);
 HAL_PIN(counter);
 HAL_PIN(index);
 
+float interp(float value, float* array, uint32_t array_size){
+  value = CLAMP(value, 0.0, 1.0);
+  array_size = MAX(array_size, 1);
+
+  uint32_t min_i = (uint32_t)(value * array_size) % array_size;
+  uint32_t max_i = (uint32_t)(min_i + 1.0) % array_size;
+  
+  return(array[min_i] + (value - (float)min_i / array_size) * minus(array[max_i], array[min_i]) / ((float)max_i / array_size - (float)min_i / array_size));
+}
+
+float interpd(float value, float* array, uint32_t array_size){
+  value = CLAMP(value, 0.0, 1.0);
+  array_size = MAX(array_size, 1);
+
+  uint32_t min_i = (uint32_t)(value * array_size) % array_size;
+  uint32_t max_i = (uint32_t)(min_i + 1.0) % array_size;
+  
+  return(minus(array[max_i], array[min_i]) / ((float)max_i / array_size - (float)min_i / array_size));
+}
 
 struct map_ctx_t{
    float map[(int)POLES];
@@ -84,7 +104,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       break;
       
       case 2: // measure
-         ctx->value += PIN(pos_in) / PIN(over);
+         ctx->value = PIN(pos_in) ;// PIN(over);
          ctx->counter++;
          if(ctx->counter > PIN(over)){
             ctx->map[ctx->index] = mod(ctx->value);
@@ -97,22 +117,16 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       break;
       
       case 4: // map
-         index = (int)((mod(PIN(pos_in)) + M_PI) / 2.0 / M_PI * POLES);
-         min = ctx->rmap[index];
-         max = ctx->rmap[(index + 1) % (int)POLES];
-         p = mod(PIN(pos_in));
-         min_p = mod(index * 2.0 * M_PI / POLES);
-         max_p = mod((index + 1) * 2.0 * M_PI / POLES);
-         k = minus(p, min_p) / minus(max_p, min_p);
-         
-         PIN(pos_out) = mod(min + minus(max, min) * k);
+        PIN(pos_out2) = interp(PIN(pos_in) / 2.0 / M_PI + 0.5, ctx->rmap, POLES);
       
-         if(PIN(start) <= 0.0){
-            ctx->state = 0;
-         }
+        if(PIN(start) <= 0.0){
+          ctx->state = 0;
+        }
       break;
    }
 }
+
+
 
 static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
    struct map_ctx_t * ctx = (struct map_ctx_t *)ctx_ptr;
@@ -131,45 +145,31 @@ static void nrt_func(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
          printf("%i, %f, %f\n", i, ctx->rmap[i], (float)i / POLES * 2.0 * M_PI);
       }
    }
-   
-   if(ctx->state == 3){ // remap
-      
-      float min, max, p;
-      int min_index, max_index;
-      
-      for(int i = 0; i < POLES; i++){
-         min = -10.0;
-         max = 10.0;
-         min_index = 0;
-         max_index = 0;
-         p = (float)i * 2.0 * M_PI / POLES;
-         
-         for(int j = 0; j < POLES; j++){
-            if(minus(p, ctx->map[j]) <= min && minus(p, ctx->map[j]) >= 0.0){
-               min = minus(p, ctx->map[j]);
-               min_index = j;
-            }
-            if(minus(ctx->map[j], p) <= max && minus(ctx->map[j], p) >= 0.0){
-               max = minus(ctx->map[j], p);
-               max_index = j;
-            }
-         }
-         p = mod(p);
-         min = mod(min);
-         max = mod(max);
-         
-         ctx->rmap[i] = min_index * 2.0 * M_PI / POLES
-                      + minus(max_index * 2.0 * M_PI / POLES, min_index * 2.0 * M_PI / POLES) * min / (min + max);
-         
-         //ctx->rmap[i] = min_index * 2.0 * M_PI / POLES * minus(p, min) / minus(max, min) + max_index * 2.0 * M_PI / POLES * minus(max, p) / minus(max, min);
+
+  if(ctx->state == 3){ // remap
+    float p = 0.0;
+    float pp = 0.0;
+    float error = 0.0;
+    int j = 0;
+
+    for(int i = 0; i < POLES; i++){
+      p = (float)i * 2.0 * M_PI / POLES - M_PI;
+      j = 0;
+      do{
+        pp += error * 0.6 / interpd(pp / 2.0 / M_PI + 0.5, ctx->map, POLES);
+        pp = mod(pp);
+        error = minus(p, interp(pp / 2.0 / M_PI + 0.5, ctx->map, POLES));
+        j++;
       }
-      
-      // for(int i = 0; i < POLES; i++){
-      //    ctx->map[i] = ctx->rmap[i];
-      // }
-      
-      ctx->state = 4;
-   }
+      while(j < 20000 && ABS(error) >= 2.0 * M_PI / 32768.0 * 20.0);
+      printf("index %u, error %f, it %u\n", i, error, j);
+      error = 0.0;
+
+      ctx->rmap[i] = pp;
+    }
+
+    ctx->state = 4;
+  }
 }
 
 hal_comp_t map_comp_struct = {

@@ -116,20 +116,7 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
-  
-  //enable
-  GPIO_InitStruct.Pin = GPIO_PIN_15;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-  GPIO_InitStruct.Pin = GPIO_PIN_10;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
- 
-  
+   
   DMA1_Channel1->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA1_Channel1->CPAR = (uint32_t)&(ADC12_COMMON->CDR);
   DMA1_Channel1->CMAR = (uint32_t)adc_12_buf;
@@ -155,19 +142,6 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
   struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
-
-  // uint32_t dc_link = adc_12_buf[2].dc_link;
-  // uint32_t hv_temp = adc_12_buf[2].hv_temp;
-  // uint32_t bemf0 = adc_12_buf[2].bemf0;
-  // uint32_t bemf1 = adc_12_buf[2].bemf1;
-  // uint32_t in0 = adc_12_buf[2].in0;
-  // uint32_t in1 = adc_12_buf[2].in1;
-  // uint32_t iap = adc_34_buf[2].shunt_a0;
-  // uint32_t ian = adc_34_buf[3].shunt_a0;
-  // uint32_t ibp = adc_34_buf[2].shunt_b0;
-  // uint32_t ibn = adc_34_buf[3].shunt_b0;
-  // uint32_t ip = adc_12_buf[2].shunt_low0;
-  // uint32_t in = adc_12_buf[3].shunt_low0;
 
   uint32_t dc_link = 0;
   uint32_t hv_temp = 0;
@@ -198,24 +172,13 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   }
 
 
-
-  // PIN(dclink) = dc_link / 1.0 * 3.3 / ARES * (10.0 + 10.0 + 1.0) / 1.0;
-  // PIN(bemf0) = bemf0 / 1.0 * 3.3 / ARES * (10.0 + 10.0 + 1.0) / 1.0;
-  // PIN(bemf1) = bemf1 / 1.0 * 3.3 / ARES * (10.0 + 10.0 + 1.0) / 1.0;
-  // PIN(in0) = in0 / 1.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
-  // PIN(in1) = in1 / 1.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
   PIN(hv_temp) = 258.0 - hv_temp / 20.0 * 3.3 / ARES * 114.4;
   PIN(dc_link) = dc_link / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
   PIN(bemf0) = bemf0 / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
   PIN(bemf1) = bemf1 / 20.0 * 3.3 / ARES * (20.0 + 1.0) / 1.0;
   PIN(in0) = in0 / 20.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
   PIN(in1) = in1 / 20.0 * 3.3 / ARES * (10.0 + 1.5) / 1.5;
-  // PIN(iap) = iap / 40.0 * 3.3 / ARES;
-  // PIN(ian) = ian / 40.0 * 3.3 / ARES;
-  // PIN(ibp) = ibp / 40.0 * 3.3 / ARES;
-  // PIN(ibn) = ibn / 40.0 * 3.3 / ARES;
-  // PIN(ip) = ip / 20.0 * 3.3 / ARES;
-  // PIN(in) = in / 20.0 * 3.3 / ARES;
+  
   PIN(iap) = AMP(iap / 40.0, 8.0);
   PIN(ian) = AMP(ian / 40.0, 8.0);
   PIN(ibp) = AMP(ibp / 40.0, 8.0);
@@ -235,8 +198,7 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   }
 
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, PIN(led) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET); // 0.1u
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, PIN(enb) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, PIN(ena) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+
 }
 
 hal_comp_t io_comp_struct = {

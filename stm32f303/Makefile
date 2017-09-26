@@ -16,7 +16,7 @@ TARGET = $(OBJDIR)/hvf3
 INCDIRS += stm32f303/inc
 SOURCES += stm32f303/src/main.c
 SOURCES += stm32f303/src/adc.c
-SOURCES += stm32f303/src/dac.c
+# SOURCES += stm32f303/src/dac.c
 SOURCES += stm32f303/src/opamp.c
 SOURCES += stm32f303/src/stm32f3xx_hal_msp.c
 SOURCES += stm32f303/src/tim.c
@@ -31,9 +31,9 @@ SOURCES += stm32f303/src/hal_tbl.c
 
 CFLAGS += -DHAL_MAX_CTX=1024
 COMPS += stm32f303/src/comps/hv.c
-COMPS += stm32f303/src/comps/hvdc.c
+# COMPS += stm32f303/src/comps/hvdc.c
 COMPS += stm32f303/src/comps/io.c
-COMPS += stm32f303/src/comps/ls.c
+# COMPS += stm32f303/src/comps/ls.c
 # COMPS += stm32f303/src/comps/enc.c
 COMPS += stm32f303/src/comps/tle.c
 
@@ -45,7 +45,7 @@ COMPS += shared/comps/dq.c
 COMPS += shared/comps/idq.c
 COMPS += shared/comps/pole.c
 COMPS += shared/comps/map.c
-COMPS += shared/comps/rev.c
+# COMPS += shared/comps/rev.c
 # COMPS += shared/comps/vel.c
 # COMPS += shared/comps/hal_test.c
 # COMPS += shared/comps/dc.c
@@ -55,8 +55,8 @@ SOURCES += $(COMPS)
 
 INCDIRS += shared
 SOURCES += shared/ringbuf.c
-SOURCES += shared/crc8.c
-SOURCES += shared/crc16.c
+# SOURCES += shared/crc8.c
+# SOURCES += shared/crc16.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/commands.c

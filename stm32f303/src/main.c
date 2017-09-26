@@ -363,7 +363,7 @@ int main(void)
   load_comp(comp_by_name("map"));
   load_comp(comp_by_name("rev"));
   // load_comp(comp_by_name("svm"));
-  // load_comp(comp_by_name("hv"));
+  load_comp(comp_by_name("hv"));
   load_comp(comp_by_name("curpid"));
   
   
@@ -392,8 +392,10 @@ int main(void)
   hal_parse("term0.gain7 = 10.0"); 
   
   hal_parse("idq0.pos = sim0.vel");
-  hal_parse("io0.oc1 = idq0.a");
-  hal_parse("io0.oc2 = idq0.b");
+  hal_parse("hv0.a = idq0.a");
+  hal_parse("hv0.b = idq0.b");
+  hal_parse("hv0.udc = io0.dc_link");
+  hal_parse("hv0.hv_temp = io0.hv_temp");
   
   hal_parse("curpid0.id_fb = dq0.d");
   hal_parse("curpid0.iq_fb = dq0.q");
@@ -403,12 +405,12 @@ int main(void)
   hal_parse("dq0.b = io0.ib");
   hal_parse("dq0.pos = sim0.vel");
 
-  hal_parse("curpid0.rd = 0.5");
-  hal_parse("curpid0.rq = 0.5");
-  hal_parse("curpid0.ld = 0.001");
-  hal_parse("curpid0.lq = 0.001");
+  hal_parse("curpid0.rd = 1.6");
+  hal_parse("curpid0.rq = 1.6");
+  hal_parse("curpid0.ld = 0.0038");
+  hal_parse("curpid0.lq = 0.0038");
   hal_parse("curpid0.psi = 0.005");
-  hal_parse("curpid0.kp = 0.5");
+  hal_parse("curpid0.kp = 0.3");
   hal_parse("curpid0.ki = 0.001");
   hal_parse("curpid0.ff = 0");
   hal_parse("curpid0.kind = 0");
@@ -417,7 +419,7 @@ int main(void)
 
   // hal_parse("idq0.pos = pole0.cpos");
   hal_parse("pole0.pos = sim0.vel");
-  hal_parse("pole0.p = -50.0");
+  hal_parse("pole0.p = 50.0");
   hal_parse("term0.wave0 = map0.error");
   hal_parse("term0.wave1 = map0.corr");
   hal_parse("map0.pos0 = sim0.vel");
