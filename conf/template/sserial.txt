@@ -22,3 +22,4 @@ vel_int0.wd = 0.002
 vel0.en = 0
 io0.cmdy = sserial0.error
 io0.cmdg = 1
+linrev0.scale = 1.0
