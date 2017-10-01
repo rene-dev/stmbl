@@ -35,6 +35,7 @@ COMPS += stm32f303/src/comps/hvdc.c
 COMPS += stm32f303/src/comps/io.c
 COMPS += stm32f303/src/comps/ls.c
 COMPS += stm32f303/src/comps/enc.c
+COMPS += stm32f303/src/comps/uart.c
 
 COMPS += shared/comps/sim.c
 COMPS += shared/comps/term.c
@@ -42,6 +43,7 @@ COMPS += shared/comps/curpid.c
 COMPS += shared/comps/svm.c
 COMPS += shared/comps/dq.c
 COMPS += shared/comps/idq.c
+COMPS += shared/comps/uvw.c
 # COMPS += shared/comps/rev.c
 # COMPS += shared/comps/vel.c
 # COMPS += shared/comps/hal_test.c
@@ -119,7 +121,7 @@ CPPFLAGS += $(addprefix -I,$(INCDIRS))
 #  -g             generate debugging information
 #  -save-temps    preserve .s and .i-files
 #
-#CPPFLAGS += 
+#CPPFLAGS +=
 # CPPFLAGS += -g
 # CPPFLAGS += -save-temps=obj
 

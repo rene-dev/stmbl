@@ -123,13 +123,13 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *timHandle) {
 
     /* USER CODE END TIM8_MspPostInit 0 */
 
-    /**TIM8 GPIO Configuration    
+    /**TIM8 GPIO Configuration
     PB3     ------> TIM8_CH1N
     PB4     ------> TIM8_CH2N
     PB5     ------> TIM8_CH3N
     PB6     ------> TIM8_CH1
     PB8     ------> TIM8_CH2
-    PB9     ------> TIM8_CH3 
+    PB9     ------> TIM8_CH3
     */
     GPIO_InitStruct.Pin       = GPIO_PIN_3 | GPIO_PIN_4;
     GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;

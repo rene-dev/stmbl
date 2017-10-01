@@ -220,16 +220,21 @@ int main(void) {
   load_comp(comp_by_name("term"));
   // load_comp(comp_by_name("sim"));
   load_comp(comp_by_name("io"));
-  load_comp(comp_by_name("ls"));
+  //load_comp(comp_by_name("ls"));
   load_comp(comp_by_name("dq"));
   load_comp(comp_by_name("idq"));
   load_comp(comp_by_name("svm"));
   load_comp(comp_by_name("hv"));
+  load_comp(comp_by_name("uvw"));
   load_comp(comp_by_name("curpid"));
+  load_comp(comp_by_name("uart"));
 
   hal_parse("term0.rt_prio = 0.1");
+  hal_parse("uart0.rt_prio = 0.2");
   hal_parse("ls0.rt_prio = 0.6");
+
   hal_parse("io0.rt_prio = 1.0");
+  hal_parse("uvw0.rt_prio = 1.5");
   hal_parse("dq0.rt_prio = 2.0");
   hal_parse("curpid0.rt_prio = 3.0");
   hal_parse("idq0.rt_prio = 4.0");
@@ -241,38 +246,40 @@ int main(void) {
   hal_parse("term0.gain1 = 10.0");
   hal_parse("term0.gain2 = 10.0");
   hal_parse("term0.gain3 = 10.0");
-  hal_parse("term0.gain4 = 10.0");
+  hal_parse("term0.gain4 = 1.0");
   hal_parse("term0.gain5 = 10.0");
   hal_parse("term0.gain6 = 10.0");
   hal_parse("term0.gain7 = 10.0");
+
+  hal_parse("curpid0.max_cur = 100.0");
 
   //link LS
   hal_parse("ls0.mot_temp = io0.mot_temp");
   hal_parse("ls0.dc_volt = io0.udc");
   hal_parse("ls0.hv_temp = io0.hv_temp");
-  hal_parse("ls0.fault = hv0.fault");
   hal_parse("curpid0.id_cmd = ls0.d_cmd");
   hal_parse("curpid0.iq_cmd = ls0.q_cmd");
   hal_parse("idq0.pos = ls0.pos");
-  hal_parse("idq0.mode = ls0.phase_mode");
   hal_parse("dq0.pos = ls0.pos");
-  hal_parse("dq0.mode = ls0.phase_mode");
   hal_parse("hv0.en = ls0.en");
 
   //ADC TEST
   hal_parse("term0.wave3 = io0.udc");
   hal_parse("hv0.udc = io0.udc");
   hal_parse("dq0.u = io0.iu");
-  hal_parse("dq0.v = io0.iv");
-  hal_parse("dq0.w = io0.iw");
+  hal_parse("dq0.v = io0.iw");
+  hal_parse("dq0.w = io0.iv");
+
+  // hal_parse("sim0.vel", "idq0.pos");
+  // hal_parse("sim0.vel", "dq0.pos");
 
   hal_parse("svm0.u = idq0.u");
   hal_parse("svm0.v = idq0.v");
   hal_parse("svm0.w = idq0.w");
   hal_parse("hv0.u = svm0.su");
+
   hal_parse("hv0.v = svm0.sv");
   hal_parse("hv0.w = svm0.sw");
-  hal_parse("hv0.iabs = io0.iabs");
   hal_parse("svm0.udc = io0.udc");
   hal_parse("hv0.hv_temp = io0.hv_temp");
   hal_parse("curpid0.id_fb = dq0.d");
@@ -298,11 +305,27 @@ int main(void) {
   hal_parse("curpid0.ki = ls0.cur_i");
   hal_parse("curpid0.ff = ls0.cur_ff");
   hal_parse("curpid0.kind = ls0.cur_ind");
-  hal_parse("curpid0.max_cur = ls0.max_cur");
-  hal_parse("curpid0.pwm_volt = ls0.pwm_volt");
   hal_parse("curpid0.vel = ls0.vel");
-  hal_parse("curpid0.en = ls0.en");
-  hal_parse("curpid0.cmd_mode = ls0.cmd_mode");
+
+  hal_parse("uvw0.u = io0.in0");
+  hal_parse("uvw0.v = io0.in1");
+  hal_parse("uvw0.w = io0.in2");
+  hal_parse("dq0.polecount = 1");
+  hal_parse("idq0.polecount = 1");
+  hal_parse("idq0.pos = uvw0.pos");
+  hal_parse("dq0.pos = uvw0.pos");
+  hal_parse("svm0.mode = 1");
+  hal_parse("curpid0.pwm_volt = io0.udc_pwm");
+  hal_parse("curpid0.kp = 0.02");
+  hal_parse("curpid0.ki = 0.005");
+
+  hal_parse("curpid0.cmd_mode = 1.0");
+  hal_parse("idq0.mode = 2.0");
+  hal_parse("dq0.mode = 2.0");
+
+  hal_parse("curpid0.iq_cmd = uart0.current");
+  hal_parse("hv0.en = uart0.en");
+  hal_parse("curpid0.en = uart0.en");
 
   // hal parse config
   // hal_init_nrt();
@@ -323,7 +346,7 @@ void SystemClock_Config(void) {
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_PeriphCLKInitTypeDef PeriphClkInit;
 
-  /**Initializes the CPU, AHB and APB busses clocks 
+  /**Initializes the CPU, AHB and APB busses clocks
     */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState       = RCC_HSE_ON;
@@ -337,7 +360,7 @@ void SystemClock_Config(void) {
     Error_Handler();
   }
 
-  /**Initializes the CPU, AHB and APB busses clocks 
+  /**Initializes the CPU, AHB and APB busses clocks
     */
   RCC_ClkInitStruct.ClockType      = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;
@@ -361,11 +384,11 @@ void SystemClock_Config(void) {
     Error_Handler();
   }
 
-  /**Configure the Systick interrupt time 
+  /**Configure the Systick interrupt time
     */
   HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq() / 1000);
 
-  /**Configure the Systick 
+  /**Configure the Systick
     */
   HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
