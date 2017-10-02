@@ -39,14 +39,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct linrev_ctx_t *ctx      = (struct linrev_ctx_t *)ctx_ptr;
   struct linrev_pin_ctx_t *pins = (struct linrev_pin_ctx_t *)pin_ptr;
 
-  float s = PIN(scale);
-  if(s < 0.01) {
-    s = 0.01;
+  float scale = PIN(scale);
+  if(ABS(scale) > 0.01) {
+    PIN(cmd_out)   = mod((PIN(cmd_in) / scale) * 2.0 * M_PI);
+    PIN(cmd_d_out) = PIN(cmd_d_in) / scale * 2.0 * M_PI;
   }
-
-  PIN(cmd_out)   = mod((PIN(cmd_in) / s) * 2.0 * M_PI);
-  PIN(cmd_d_out) = PIN(cmd_d_in) / s * 2.0 * M_PI;
-
   uint8_t q = 0;
 
   if(PIN(fb_in) > M_PI / 2.0) {
@@ -66,7 +63,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   ctx->lastq = q;
 
-  PIN(fb_out) = ((PIN(fb_in) + ctx->rev * M_PI * 2.0) * s) / (2.0 * M_PI);
+  PIN(fb_out) = ((PIN(fb_in) + ctx->rev * M_PI * 2.0) * scale) / (2.0 * M_PI);
 }
 
 const hal_comp_t linrev_comp_struct = {
