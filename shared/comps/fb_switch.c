@@ -40,6 +40,7 @@ HAL_PIN(phase_time);
 HAL_PIN(phase_cur);
 
 HAL_PIN(current_com_pos);
+HAL_PIN(offset);
 
 HAL_PIN(en);
 
@@ -76,11 +77,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     PIN(state) = 1.0;
     if(PIN(joint_state) >= 2.0 && ctx->current_com_pos > 3.0) {
       ctx->current_com_pos = 3;
-      ctx->com_offset      = minus(mod((PIN(joint_abs_pos) + PIN(joint_offset)) * PIN(polecount) / PIN(mot_joint_ratio)), mot_pos * PIN(polecount) / PIN(mot_polecount));
+      ctx->com_offset      = minus(mod((PIN(joint_abs_pos) + PIN(joint_offset)) * PIN(polecount) / PIN(mot_joint_ratio)), mod(mot_pos * PIN(polecount) / PIN(mot_polecount)));
     }
     if(PIN(com_state) >= 2.0 && ctx->current_com_pos > 2.0) {
       ctx->current_com_pos = 2;
-      ctx->com_offset      = minus(mod((PIN(com_abs_pos) + PIN(com_offset)) * PIN(polecount) / PIN(com_polecount)), mot_pos * PIN(polecount) / PIN(mot_polecount));
+      ctx->com_offset      = minus(mod((PIN(com_abs_pos) + PIN(com_offset)) * PIN(polecount) / PIN(com_polecount)), mod(mot_pos * PIN(polecount) / PIN(mot_polecount)));
     }
     if(PIN(mot_state) >= 2.0 && ctx->current_com_pos > 1.0) {
       ctx->current_com_pos = 1;
@@ -94,15 +95,16 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     }
 
     PIN(current_com_pos) = ctx->current_com_pos;
+    PIN(offset) = ctx->com_offset;
 
     switch(ctx->current_com_pos) {
       case 4:
-        PIN(com_fb) = mod((mot_pos + ctx->com_offset) * PIN(polecount) / PIN(mot_polecount));
+        PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset);
         break;
 
       case 3:
         if(PIN(joint_state) != 3.0) {
-          PIN(com_fb) = mod((mot_pos + ctx->com_offset) * PIN(polecount) / PIN(mot_polecount));
+          PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset);
         } else {
           PIN(com_fb) = mod((PIN(joint_abs_pos) + PIN(joint_offset)) * PIN(polecount));
         }
@@ -110,7 +112,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
       case 2:
         if(PIN(com_state) != 3.0) {
-          PIN(com_fb) = mod((mot_pos + ctx->com_offset) * PIN(polecount) / PIN(mot_polecount));
+          PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset);
         } else {
           PIN(com_fb) = mod((PIN(com_abs_pos) + PIN(com_offset)) * PIN(polecount) / PIN(com_polecount));
         }
