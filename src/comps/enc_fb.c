@@ -24,15 +24,12 @@ HAL_PIN(oquad);
 HAL_PIN(oquadoff);
 HAL_PIN(qdiff);
 HAL_PIN(error);
-HAL_PIN(error_cnt);
-HAL_PIN(error_max_cnt);
 HAL_PIN(amp);
 
 
 struct enc_fb_ctx_t {
   int e_res;
   float absoffset;
-  float error_cnt;
 };
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -179,27 +176,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   //TODO: fix EDGE
   if(a < 0.15 && !EDGE(tim)) {
-    ctx->error_cnt += 1.0;
-  } else {
-    ctx->error_cnt -= 0.01;
-  }
-
-  if(ctx->error_cnt > 5.0) {
-    ctx->error_cnt = 5.0;
-  }
-  if(ctx->error_cnt < 0.0) {
-    ctx->error_cnt = 0.0;
-  }
-
-  if(ctx->error_cnt < 5.0) {
     PIN(error) = 0.0;
     PIN(ipos)  = mod(p + ((int)(ir * mod(atan2f(s, c) * 4.0 + M_PI) / M_PI)) / ir * M_PI / (float)ctx->e_res);
   } else {
     PIN(error) = 1.0;
   }
-  PIN(error_cnt)     = ctx->error_cnt;
-  PIN(error_max_cnt) = MAX(ctx->error_cnt, PIN(error_max_cnt));
-
 
   if(ctx->e_res != r) {
     ctx->e_res = r;
