@@ -15,6 +15,7 @@
 
 #include "hal.h"
 #include "angle.h"
+#include "defines.h"
 #include <math.h>
 
 HAL_COMP(linrev);

@@ -129,7 +129,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   // #endif
 
   //dac output for comperators
-  DAC1->DHR12R1 = PIN(dac);
+  DAC1->DHR12R1 = (uint32_t)PIN(dac);
 
   //comperator outputs for debugging
   PIN(cu) = (COMP1->CSR & COMP_CSR_COMPxOUT) > 0;
