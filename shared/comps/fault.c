@@ -11,14 +11,10 @@ HAL_PIN(en);
 HAL_PIN(state);
 HAL_PIN(fault);
 HAL_PIN(en_out);
+HAL_PIN(en_fb);
 HAL_PIN(en_pid);
 
-HAL_PIN(phase_start);
-HAL_PIN(phase_ready);
-
-HAL_PIN(cmd);
-HAL_PIN(fb);
-HAL_PIN(start_offset);
+HAL_PIN(fb_ready);
 
 HAL_PIN(cmd_error);
 HAL_PIN(mot_fb_error);
@@ -58,10 +54,6 @@ HAL_PIN(dc_brake);
 HAL_PIN(hv_fan);
 HAL_PIN(mot_fan);
 
-HAL_PIN(phase_with_brake);
-HAL_PIN(phase_on_start);
-HAL_PIN(rephase);
-
 HAL_PIN(print);
 
 HAL_PIN(brake_release);
@@ -69,7 +61,6 @@ HAL_PIN(brake_release);
 struct fault_ctx_t {
   state_t state;
   fault_t fault;
-  uint32_t phased;
   float cmd_error;
   float mot_fb_error;
   float com_fb_error;
@@ -86,9 +77,6 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
   ctx->state            = DISABLED;
   ctx->fault            = NO_ERROR;
-  ctx->phased           = 0;
-  PIN(phase_with_brake) = 1.0;
-  PIN(phase_on_start)   = 1.0;
   PIN(min_dc_volt)      = 20.0;
   PIN(high_dc_volt)     = 370.0;
   PIN(max_dc_volt)      = 390.0;
@@ -120,22 +108,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct fault_ctx_t *ctx      = (struct fault_ctx_t *)ctx_ptr;
   struct fault_pin_ctx_t *pins = (struct fault_pin_ctx_t *)pin_ptr;
 
-  if(PIN(phase_on_start) <= 0.0) {
-    ctx->phased = 1;
-  }
-
   switch(ctx->state) {
     case DISABLED:
       if(PIN(en) > 0.0) {
-        if(PIN(rephase) > 0.0) {  // TODO: check phase_on_start
-          ctx->phased = 0;
-        }
-        if(ctx->phased == 0) {
-          ctx->state = PHASING;
-        } else {
-          ctx->state        = ENABLED;
-          PIN(start_offset) = minus(PIN(fb), PIN(cmd));
-        }
+        ctx->state = PHASING;
       }
       break;
 
@@ -146,9 +122,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       break;
 
     case PHASING:
-      if(RISING_EDGE(PIN(phase_ready))) {
+      if(PIN(fb_ready) > 0.0) {
         ctx->state        = ENABLED;
-        PIN(start_offset) = minus(PIN(fb), PIN(cmd));
       }
 
       if(PIN(en) <= 0.0) {
@@ -175,19 +150,16 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   if(err_filter(&(ctx->mot_fb_error), 5.0, 0.001, PIN(mot_fb_error) > 0.0)) {
     ctx->fault  = MOT_FB_ERROR;
     ctx->state  = SOFT_FAULT;
-    ctx->phased = 0;
   }
 
   if(err_filter(&(ctx->com_fb_error), 5.0, 0.001, PIN(com_fb_error) > 0.0)) {
     ctx->fault  = COM_FB_ERROR;
     ctx->state  = SOFT_FAULT;
-    ctx->phased = 0;
   }
 
   if(err_filter(&(ctx->joint_fb_error), 5.0, 0.001, PIN(joint_fb_error) > 0.0)) {
     ctx->fault  = JOINT_FB_ERROR;
     ctx->state  = SOFT_FAULT;
-    ctx->phased = 0;
   }
 
   if(err_filter(&(ctx->hv_error), 3.0, 0.001, PIN(hv_error) > 0.0)) {
@@ -246,44 +218,43 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   switch(ctx->state) {
     case DISABLED:
-      PIN(phase_start) = 0.0;
       PIN(mot_brake)   = 0.0;
       PIN(en_out)      = 0.0;
+      PIN(en_fb)       = 0.0;
       PIN(en_pid)      = 0.0;
       ctx->fault       = NO_ERROR;
       // scale = 0.0;
       break;
 
     case ENABLED:
-      PIN(phase_start) = 0.0;
       PIN(mot_brake)   = 1.0;
       PIN(en_out)      = 1.0;
+      PIN(en_fb)       = 1.0;
       PIN(en_pid)      = 1.0;
       ctx->fault       = NO_ERROR;
-      ctx->phased      = 1;
       break;
 
     case PHASING:
-      PIN(phase_start) = 1.0;
-      PIN(mot_brake)   = PIN(phase_with_brake);
+      PIN(mot_brake)   = 1.0;
       ctx->fault       = NO_ERROR;
       PIN(en_pid)      = 0.0;
+      PIN(en_fb)       = 1.0;
       PIN(en_out)      = 1.0;
       break;
 
     case SOFT_FAULT:
-      PIN(phase_start) = 0.0;
       PIN(mot_brake)   = 0.0;
       PIN(en_out)      = 0.0;
+      PIN(en_fb)       = 0.0;
       PIN(en_pid)      = 0.0;
       // scale = 0.0;
       break;
 
     case LED_TEST:
     case HARD_FAULT:
-      PIN(phase_start) = 0.0;
       PIN(mot_brake)   = 0.0;
       PIN(en_out)      = 0.0;
+      PIN(en_fb)       = 0.0;
       PIN(en_pid)      = 0.0;
       // scale = 0.0;
       break;

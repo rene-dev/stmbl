@@ -11,3 +11,4 @@ conf0.max_ac_cur = 5
 conf0.mot_fb_res = 16384
 conf0.mot_fb_offset = -0.57
 conf0.mot_fb_rev = 1
+fb_switch0.phase_cur = 2

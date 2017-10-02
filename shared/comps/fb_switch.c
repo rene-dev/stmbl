@@ -39,9 +39,9 @@ HAL_PIN(joint_rev);
 
 HAL_PIN(mot_joint_ratio);
 
-HAL_PIN(force_phase);
 HAL_PIN(phase_time);
 HAL_PIN(phase_cur);
+HAL_PIN(id);
 
 HAL_PIN(current_com_pos);
 
@@ -51,15 +51,19 @@ struct fb_switch_ctx_t {
   int32_t current_com_pos;
   float cmd_offset;
   float com_offset;
+  float phase_timer;
+  int32_t phase_state;
 };
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct fb_switch_ctx_t *ctx = (struct fb_switch_ctx_t *)ctx_ptr;
-  // struct fb_switch_pin_ctx_t * pins = (struct fb_switch_pin_ctx_t *)pin_ptr;
+  struct fb_switch_pin_ctx_t * pins = (struct fb_switch_pin_ctx_t *)pin_ptr;
 
   ctx->current_com_pos = 10;
   ctx->cmd_offset      = 0.0;
   ctx->com_offset      = 0.0;
+  PIN(phase_cur) = 1.0;
+  PIN(phase_time) = 1.0;  
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -106,6 +110,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     ctx->com_offset      = 0.0;
     ctx->cmd_offset      = minus(PIN(cmd_pos), mot_pos);
     PIN(pos_fb)          = mod(mot_pos);
+    PIN(id) = 0.0;
   } else {
     PIN(state) = 1.0;
     if(PIN(joint_state) >= 2.0 && ctx->current_com_pos > 3.0) {
@@ -121,10 +126,18 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       ctx->com_offset      = 0.0;
     }
     if(ctx->current_com_pos > 4.0) {
-      ctx->current_com_pos = 4.0;
-      // TODO cauto
-      // ctx->com_offset = cauto
-      PIN(state) = 0.0;
+      PIN(com_fb) = 0.0;
+      
+      ctx->phase_timer += period;
+      PIN(id) = CLAMP(ctx->phase_timer / (MAX(PIN(phase_time), 0.1) / 3.0) * PIN(phase_cur), 0.0, PIN(phase_cur));
+
+      if(ctx->phase_timer >= MAX(PIN(phase_time), 0.1)){
+        ctx->phase_timer = 0.0;
+        ctx->com_offset = -mod(mot_pos * PIN(polecount) / PIN(mot_polecount));
+        ctx->cmd_offset = minus(PIN(cmd_pos), mot_pos);
+        PIN(id) = 0.0;
+        ctx->current_com_pos = 4.0;
+      }
     }
 
     PIN(current_com_pos) = ctx->current_com_pos;
