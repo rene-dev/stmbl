@@ -22,7 +22,7 @@ HAL_PIN(mot_polecount);
 HAL_PIN(mot_offset);
 HAL_PIN(mot_state);  // 0 = disabled, 1 = inc, 2 = start abs, 3 = abs
 HAL_PIN(mot_rev);
-
+HAL_PIN(mot_fb_no_offset);
 
 HAL_PIN(com_pos);
 HAL_PIN(com_abs_pos);
@@ -36,6 +36,7 @@ HAL_PIN(joint_abs_pos);
 HAL_PIN(joint_offset);
 HAL_PIN(joint_state);
 HAL_PIN(joint_rev);
+HAL_PIN(joint_fb_no_offset);
 
 HAL_PIN(mot_joint_ratio);
 
@@ -101,6 +102,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     joint_offset *= -1.0;
   }
 
+  PIN(mot_fb_no_offset) = mot_pos;
+  PIN(joint_fb_no_offset) = joint_pos;
+  
   PIN(pos_fb)   = mod(mot_pos + ctx->cmd_offset);
   PIN(vel_fb)   = mot_pos;
 
