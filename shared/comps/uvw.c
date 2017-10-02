@@ -25,6 +25,7 @@ HAL_PIN(p7);
 //rotor position output
 HAL_PIN(pos);
 HAL_PIN(rpos);
+HAL_PIN(state);
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct uvw_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
@@ -38,6 +39,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(p5) = 5;  //u + w  = -1.047198
   PIN(p6) = 3;  //v + w  = -3.141593
   PIN(p7) = 0;  //fault
+  PIN(state) = 3.0;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {

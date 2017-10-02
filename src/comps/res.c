@@ -21,7 +21,7 @@ HAL_PIN(cos);
 
 HAL_PIN(enable);
 HAL_PIN(error);
-HAL_PIN(error_n);
+HAL_PIN(state);
 HAL_PIN(tim_oc);
 
 // TODO: in hal stop, reset adc dma
@@ -35,7 +35,6 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
   PIN(poles)                 = 1.0;
-  PIN(error_n)               = 1.0;
   PIN(tim_oc)                = 47.0;
   PIN(min_amp)               = 0.25;
 }
@@ -130,10 +129,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   if(a < PIN(min_amp)) {
     PIN(error)   = 1.0;
-    PIN(error_n) = 0.0;
+    PIN(state) = 0.0;
   } else {
     PIN(error)   = 0.0;
-    PIN(error_n) = 1.0;
+    PIN(state) = 3.0;
     if(p == 1.0f) {
       PIN(pos) = mod(pos + dpos);
     } else {

@@ -10,6 +10,7 @@ HAL_COMP(encm);
 
 HAL_PIN(pos);
 HAL_PIN(error);
+HAL_PIN(state);
 HAL_PIN(dma);  //dma transfers left
 
 struct encm_ctx_t {
@@ -116,13 +117,16 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       uint32_t tpos = ((ctx->rxbuf[2 + offset] & 0x80) >> 7) + ctx->rxbuf[3 + offset] * 2 + ctx->rxbuf[4 + offset] * 512;  // 17 bit single turn position
       PIN(pos)      = (tpos * M_PI * 2.0 / 131072.0) - M_PI;  // convert to +-PI
       PIN(error)    = 0.0;
+      PIN(state) = 3.0;
     } else {
       ctx->error++;  //TODO: overflow...
       PIN(error) = ctx->error;
+      PIN(state) = 0.0;
     }
   } else {
     ctx->error++;  //TODO: overflow...
     PIN(error) = ctx->error;
+    PIN(state) = 0.0;
   }
 
   //TODO: irq here will cause problems

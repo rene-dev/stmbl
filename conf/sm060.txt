@@ -12,7 +12,6 @@ conf0.mot_fb_res = 10000
 conf0.cmd_res = 10000
 conf0.mot_fb_rev = 1
 conf0.polecount = 5
-conf0.com_polecount = 5
 uvw0.p0 = 3
 uvw0.p1 = 2
 uvw0.p2 = 2

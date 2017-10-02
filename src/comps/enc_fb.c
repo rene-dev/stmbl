@@ -11,8 +11,8 @@ HAL_COMP(enc_fb);
 HAL_PIN(res);
 HAL_PIN(ires);
 HAL_PIN(pos);
-HAL_PIN(abspos);
-HAL_PIN(isabs);
+HAL_PIN(abs_pos);
+HAL_PIN(state);
 HAL_PIN(index);  //TODO:
 HAL_PIN(a);
 HAL_PIN(b);
@@ -25,6 +25,7 @@ HAL_PIN(oquadoff);
 HAL_PIN(qdiff);
 HAL_PIN(error);
 HAL_PIN(amp);
+HAL_PIN(ccr3);
 
 
 struct enc_fb_ctx_t {
@@ -72,10 +73,14 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_InitStructure.GPIO_Pin = FB0_B_PIN;
   GPIO_Init(FB0_B_PORT, &GPIO_InitStructure);
 
+  GPIO_InitStructure.GPIO_Pin = FB0_Z_PIN;
+  GPIO_Init(FB0_Z_PORT, &GPIO_InitStructure);
+
   // pin af -> tim
   GPIO_PinAFConfig(FB0_A_PORT, FB0_A_PIN_SOURCE, FB0_ENC_TIM_AF);
   GPIO_PinAFConfig(FB0_B_PORT, FB0_B_PIN_SOURCE, FB0_ENC_TIM_AF);
-
+  GPIO_PinAFConfig(FB0_Z_PORT, FB0_Z_PIN_SOURCE, FB0_ENC_TIM_AF);
+  
   // enc res / turn
   TIM_SetAutoreload(FB0_ENC_TIM, ctx->e_res - 1);
 
@@ -83,24 +88,27 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   TIM_Cmd(FB0_ENC_TIM, DISABLE);
   TIM_EncoderInterfaceConfig(FB0_ENC_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Falling);
   TIM_Cmd(FB0_ENC_TIM, ENABLE);
+  FB0_ENC_TIM->CCMR2 |= TIM_CCMR2_CC3S_0;//CC3 channel is configured as input, IC3 is mapped on CH3
+  FB0_ENC_TIM->CCER  |= TIM_CCER_CC3E;//Capture enabled
 }
 
 
-static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;
-  struct enc_fb_pin_ctx_t *pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
+// static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+//   struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;
+//   struct enc_fb_pin_ctx_t *pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
 
-  float p  = mod(TIM_GetCounter(FB0_ENC_TIM) * 2.0f * M_PI / (float)ctx->e_res);
-  PIN(pos) = p;
-  //TODO: this gets triggered by wire saving abs encoders. add timeout?
-  if(RISING_EDGE(!GPIO_ReadInputDataBit(FB0_Z_PORT, FB0_Z_PIN))) {
-    // TODO: fix
-    ctx->absoffset = -p;
-    PIN(isabs)     = 1.0;
-  }
-  PIN(index)  = GPIO_ReadInputDataBit(FB0_Z_PORT, FB0_Z_PIN);
-  PIN(abspos) = mod(p + ctx->absoffset);
-}
+//   float p  = mod(TIM_GetCounter(FB0_ENC_TIM) * 2.0f * M_PI / (float)ctx->e_res);
+//   PIN(pos) = p;
+//   //TODO: this gets triggered by wire saving abs encoders. add timeout?
+//   if(RISING_EDGE(!GPIO_ReadInputDataBit(FB0_Z_PORT, FB0_Z_PIN))) {
+//     // TODO: fix
+//     ctx->absoffset = -p;
+//     PIN(state)     = 3.0;
+
+//   }
+//   PIN(index)  = GPIO_ReadInputDataBit(FB0_Z_PORT, FB0_Z_PIN);
+//   PIN(abs_pos) = mod(p + ctx->absoffset);
+// }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;
@@ -173,13 +181,24 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(oquad) = q;
 
   p = mod(tim * 2.0f * M_PI / (float)ctx->e_res);
+  PIN(pos) = p;
+
+  if(FB0_ENC_TIM->SR & TIM_SR_CC3IF){
+    PIN(state) = 3.0;
+    ctx->absoffset = mod(FB0_ENC_TIM->CCR3 * 2.0f * M_PI / (float)ctx->e_res);
+  }
+  PIN(abs_pos) = minus(p, ctx->absoffset);
+  PIN(index)  = GPIO_ReadInputDataBit(FB0_Z_PORT, FB0_Z_PIN);
+  
 
   //TODO: fix EDGE
-  if(a < 0.15 && !EDGE(tim)) {
+  if(a > 0.15 || EDGE(tim)) {
     PIN(error) = 0.0;
+    PIN(state) = MAX(PIN(state), 1.0);
     PIN(ipos)  = mod(p + ((int)(ir * mod(atan2f(s, c) * 4.0 + M_PI) / M_PI)) / ir * M_PI / (float)ctx->e_res);
   } else {
     PIN(error) = 1.0;
+    PIN(state) = 0.0;
   }
 
   if(ctx->e_res != r) {
@@ -192,7 +211,7 @@ const hal_comp_t enc_fb_comp_struct = {
     .name      = "enc_fb",
     .nrt       = 0,
     .rt        = rt_func,
-    .frt       = frt_func,
+    .frt       = 0,
     .nrt_init  = nrt_init,
     .hw_init   = hw_init,
     .rt_start  = 0,

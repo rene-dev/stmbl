@@ -21,17 +21,21 @@ HAL_PIN(mot_abs_pos);
 HAL_PIN(mot_polecount);
 HAL_PIN(mot_offset);
 HAL_PIN(mot_state);  // 0 = disabled, 1 = inc, 2 = start abs, 3 = abs
+HAL_PIN(mot_rev);
+
 
 HAL_PIN(com_pos);
 HAL_PIN(com_abs_pos);
 HAL_PIN(com_polecount);
 HAL_PIN(com_offset);
 HAL_PIN(com_state);
+HAL_PIN(com_rev);
 
 HAL_PIN(joint_pos);
 HAL_PIN(joint_abs_pos);
 HAL_PIN(joint_offset);
 HAL_PIN(joint_state);
+HAL_PIN(joint_rev);
 
 HAL_PIN(mot_joint_ratio);
 
@@ -40,7 +44,6 @@ HAL_PIN(phase_time);
 HAL_PIN(phase_cur);
 
 HAL_PIN(current_com_pos);
-HAL_PIN(offset);
 
 HAL_PIN(en);
 
@@ -64,6 +67,28 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct fb_switch_pin_ctx_t *pins = (struct fb_switch_pin_ctx_t *)pin_ptr;
 
   float mot_pos = PIN(mot_pos);
+  float com_pos = PIN(com_pos);
+  float joint_pos = PIN(joint_pos);
+  
+  float mot_abs_pos = PIN(mot_abs_pos);
+  float com_abs_pos = PIN(com_abs_pos);
+  float joint_abs_pos = PIN(joint_abs_pos);
+
+  if(PIN(mot_rev) > 0.0){
+    mot_pos *= -1.0;
+    mot_abs_pos *= -1.0;
+  }
+
+  if(PIN(com_rev) > 0.0){
+    com_pos *= -1.0;
+    com_abs_pos *= -1.0;
+  }
+
+  if(PIN(joint_rev) > 0.0){
+    joint_pos *= -1.0;
+    joint_abs_pos *= -1.0;
+  }
+
   PIN(pos_fb)   = mod(mot_pos + ctx->cmd_offset);
   PIN(vel_fb)   = mot_pos;
 
@@ -77,11 +102,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     PIN(state) = 1.0;
     if(PIN(joint_state) >= 2.0 && ctx->current_com_pos > 3.0) {
       ctx->current_com_pos = 3;
-      ctx->com_offset      = minus(mod((PIN(joint_abs_pos) + PIN(joint_offset)) * PIN(polecount) / PIN(mot_joint_ratio)), mod(mot_pos * PIN(polecount) / PIN(mot_polecount)));
+      ctx->com_offset      = minus(mod((joint_abs_pos + PIN(joint_offset)) * PIN(polecount) / PIN(mot_joint_ratio)), mod(mot_pos * PIN(polecount) / PIN(mot_polecount)));
     }
     if(PIN(com_state) >= 2.0 && ctx->current_com_pos > 2.0) {
       ctx->current_com_pos = 2;
-      ctx->com_offset      = minus(mod((PIN(com_abs_pos) + PIN(com_offset)) * PIN(polecount) / PIN(com_polecount)), mod(mot_pos * PIN(polecount) / PIN(mot_polecount)));
+      ctx->com_offset      = minus(mod((com_abs_pos + PIN(com_offset)) * PIN(polecount) / PIN(com_polecount)), mod(mot_pos * PIN(polecount) / PIN(mot_polecount)));
     }
     if(PIN(mot_state) >= 2.0 && ctx->current_com_pos > 1.0) {
       ctx->current_com_pos = 1;
@@ -95,7 +120,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     }
 
     PIN(current_com_pos) = ctx->current_com_pos;
-    PIN(offset) = ctx->com_offset;
 
     switch(ctx->current_com_pos) {
       case 4:
@@ -106,7 +130,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
         if(PIN(joint_state) != 3.0) {
           PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset);
         } else {
-          PIN(com_fb) = mod((PIN(joint_abs_pos) + PIN(joint_offset)) * PIN(polecount));
+          PIN(com_fb) = mod((joint_abs_pos + PIN(joint_offset)) * PIN(polecount));
         }
         break;
 
@@ -114,7 +138,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
         if(PIN(com_state) != 3.0) {
           PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset);
         } else {
-          PIN(com_fb) = mod((PIN(com_abs_pos) + PIN(com_offset)) * PIN(polecount) / PIN(com_polecount));
+          PIN(com_fb) = mod((com_abs_pos + PIN(com_offset)) * PIN(polecount) / PIN(com_polecount));
         }
         break;
 
@@ -122,7 +146,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
         if(PIN(mot_state) != 3.0) {
           PIN(state) = 0.0;
         } else {
-          PIN(com_fb) = mod((PIN(mot_abs_pos) + PIN(mot_offset)) * PIN(polecount) / PIN(mot_polecount));
+          PIN(com_fb) = mod((mot_abs_pos + PIN(mot_offset)) * PIN(polecount) / PIN(mot_polecount));
         }
         break;
 
