@@ -1,0 +1,13 @@
+link pid
+link pmsm
+link enc_fb0
+link misc
+conf0.r = 0.4
+conf0.l = 0.01
+conf0.j = 0.0001
+conf0.polecount = 2
+conf0.max_force = 5.7
+conf0.max_ac_cur = 5
+conf0.mot_fb_res = 16384
+conf0.mot_fb_offset = -0.57
+conf0.mot_fb_rev = 1
