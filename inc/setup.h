@@ -15,16 +15,10 @@
 #include "hw/hw.h"
 #define U_ID ((__IO uint32_t *)0x1FFF7A10)
 
-//sample times for F4: 3,15,28,56,84,112,144,480
-#define RES_SampleTime ADC_SampleTime_3Cycles
-
-#define ADC_ANZ 60
-#define PID_WAVES 4
-
 void setup(void);
 void setup_res(void);
 
-volatile uint32_t ADC_DMA_Buffer0[ADC_ANZ * PID_WAVES];
-volatile uint32_t ADC_DMA_Buffer1[ADC_ANZ * PID_WAVES];
+volatile uint32_t ADC_DMA_Buffer0[ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1)];
+volatile uint32_t ADC_DMA_Buffer1[ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1)];
 
 RCC_ClocksTypeDef RCC_Clocks;

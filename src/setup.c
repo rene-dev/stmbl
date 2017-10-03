@@ -49,7 +49,7 @@ void setup_res() {
   RCC_APB1PeriphClockCmd(TIM_MASTER_RCC, ENABLE);
   TIM_TimeBaseStructure.TIM_ClockDivision     = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode       = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Period            = 70 - 1;  // 84e6 / 70 = 1.2MHz
+  TIM_TimeBaseStructure.TIM_Period            = ADC_TIMER_FREQ / RES_TIMER_FREQ / ADC_TR_COUNT - 1; // 240khz
   TIM_TimeBaseStructure.TIM_Prescaler         = 0;
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
   TIM_TimeBaseInit(TIM_MASTER, &TIM_TimeBaseStructure);
@@ -72,7 +72,7 @@ void setup_res() {
   RCC_APB1PeriphClockCmd(TIM_SLAVE_RCC, ENABLE);
   TIM_TimeBaseStructure.TIM_ClockDivision     = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode       = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Period            = 60 - 1;  // 1.2e6 / 60 = 20kHz
+  TIM_TimeBaseStructure.TIM_Period            = ADC_TR_COUNT - 1;  // 20kHz
   TIM_TimeBaseStructure.TIM_Prescaler         = 0;
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
   TIM_TimeBaseInit(TIM_SLAVE, &TIM_TimeBaseStructure);
@@ -83,17 +83,23 @@ void setup_res() {
   TIM_Cmd(TIM_SLAVE, ENABLE);
 
   /* ADC clock enable */
-  RCC_APB2PeriphClockCmd(SIN_ADC_RCC | COS_ADC_RCC, ENABLE);
+  RCC_APB2PeriphClockCmd(FB0_SIN_ADC_RCC | FB0_COS_ADC_RCC | FB1_SIN_ADC_RCC | FB1_COS_ADC_RCC, ENABLE);
 
   //Analog pin configuration
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin  = SIN_PIN;
+  GPIO_InitStructure.GPIO_Pin  = FB0_SIN_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(SIN_PORT, &GPIO_InitStructure);
+  GPIO_Init(FB0_SIN_PORT, &GPIO_InitStructure);
 
-  GPIO_InitStructure.GPIO_Pin = COS_PIN;
-  GPIO_Init(COS_PORT, &GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = FB0_COS_PIN;
+  GPIO_Init(FB0_COS_PORT, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = FB1_SIN_PIN;
+  GPIO_Init(FB1_SIN_PORT, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = FB1_COS_PIN;
+  GPIO_Init(FB1_COS_PORT, &GPIO_InitStructure);
 
   //ADC structure configuration
   ADC_DeInit();
@@ -103,11 +109,11 @@ void setup_res() {
   ADC_InitStructure.ADC_ContinuousConvMode   = DISABLE;  //the conversion is continuous, the input data is converted more than once
   ADC_InitStructure.ADC_ExternalTrigConv     = TIM_MASTER_ADC;  //trigger on rising edge of TIM_MASTER oc
   ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
-  ADC_InitStructure.ADC_NbrOfConversion      = 1;  //ADC_ANZ;//I think this one is clear :p
+  ADC_InitStructure.ADC_NbrOfConversion      = ADC_OVER_FB0 + ADC_OVER_FB1;  //I think this one is clear :p
   ADC_InitStructure.ADC_ScanConvMode         = ENABLE;  //The scan is configured in one channel
-  ADC_Init(SIN_ADC, &ADC_InitStructure);  //Initialize ADC with the previous configuration
+  ADC_Init(FB0_SIN_ADC, &ADC_InitStructure);  //Initialize ADC with the previous configuration
   ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
-  ADC_Init(COS_ADC, &ADC_InitStructure);  //Initialize ADC with the previous configuration
+  ADC_Init(FB0_COS_ADC, &ADC_InitStructure);  //Initialize ADC with the previous configuration
 
   ADC_CommonInitTypeDef ADC_CommonInitStructure;
   ADC_CommonInitStructure.ADC_Mode             = ADC_DualMode_RegSimult;
@@ -116,16 +122,21 @@ void setup_res() {
   ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
   ADC_CommonInit(&ADC_CommonInitStructure);
 
-  for(int i = 1; i <= 1; i++) {
-    ADC_RegularChannelConfig(SIN_ADC, SIN_ADC_CHAN, i, RES_SampleTime);
-    ADC_RegularChannelConfig(COS_ADC, COS_ADC_CHAN, i, RES_SampleTime);
+  for(int i = 1; i <= ADC_OVER_FB0; i++) {
+    ADC_RegularChannelConfig(FB0_SIN_ADC, FB0_SIN_ADC_CHAN, i, RES_SampleTime);
+    ADC_RegularChannelConfig(FB0_COS_ADC, FB0_COS_ADC_CHAN, i, RES_SampleTime);
+  }
+
+  for(int i = ADC_OVER_FB0 + 1; i <= ADC_OVER_FB0 + ADC_OVER_FB1; i++) {
+    ADC_RegularChannelConfig(FB1_SIN_ADC, FB1_SIN_ADC_CHAN, i, RES_SampleTime);
+    ADC_RegularChannelConfig(FB1_COS_ADC, FB1_COS_ADC_CHAN, i, RES_SampleTime);
   }
 
   ADC_MultiModeDMARequestAfterLastTransferCmd(ENABLE);
 
   //Enable ADC conversion
-  ADC_Cmd(SIN_ADC, ENABLE);
-  ADC_Cmd(COS_ADC, ENABLE);
+  ADC_Cmd(FB0_SIN_ADC, ENABLE);
+  ADC_Cmd(FB0_COS_ADC, ENABLE);
 
   // DMA-Disable
   DMA_Cmd(DMA2_Stream0, DISABLE);
@@ -137,7 +148,7 @@ void setup_res() {
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC->CDR;
   DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t)&ADC_DMA_Buffer0;
   DMA_InitStructure.DMA_DIR                = DMA_DIR_PeripheralToMemory;
-  DMA_InitStructure.DMA_BufferSize         = ADC_ANZ * PID_WAVES;
+  DMA_InitStructure.DMA_BufferSize         = ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1);
   DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;

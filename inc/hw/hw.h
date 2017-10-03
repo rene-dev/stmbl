@@ -108,17 +108,40 @@
 
 #elif defined V4
 
-#define SIN_ADC ADC1
-#define SIN_ADC_RCC RCC_APB2Periph_ADC1
-#define SIN_ADC_CHAN ADC_Channel_6
-#define SIN_PIN GPIO_Pin_6
-#define SIN_PORT GPIOA
+//sample times for F4: 3,15,28,56,84,112,144,480
+#define RES_SampleTime ADC_SampleTime_3Cycles
 
-#define COS_ADC ADC2
-#define COS_ADC_RCC RCC_APB2Periph_ADC2
-#define COS_ADC_CHAN ADC_Channel_7
-#define COS_PIN GPIO_Pin_7
-#define COS_PORT GPIOA
+// ADC_TIMER_FREQ / RES_TIMER_FREQ / ADC_TR_COUNT \in \N
+#define ADC_TR_COUNT 6 // ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) == 60
+#define PID_WAVES 4
+#define ADC_OVER_FB0 9
+#define ADC_OVER_FB1 1
+#define ADC_TIMER_FREQ 84000000
+#define RES_TIMER_FREQ 20000
+
+#define FB0_SIN_ADC ADC1
+#define FB0_SIN_ADC_RCC RCC_APB2Periph_ADC1
+#define FB0_SIN_ADC_CHAN ADC_Channel_6
+#define FB0_SIN_PIN GPIO_Pin_6
+#define FB0_SIN_PORT GPIOA
+
+#define FB0_COS_ADC ADC2
+#define FB0_COS_ADC_RCC RCC_APB2Periph_ADC2
+#define FB0_COS_ADC_CHAN ADC_Channel_7
+#define FB0_COS_PIN GPIO_Pin_7
+#define FB0_COS_PORT GPIOA
+
+#define FB1_SIN_ADC ADC1
+#define FB1_SIN_ADC_RCC RCC_APB2Periph_ADC1
+#define FB1_SIN_ADC_CHAN ADC_Channel_4
+#define FB1_SIN_PIN GPIO_Pin_4
+#define FB1_SIN_PORT GPIOA
+
+#define FB1_COS_ADC ADC2
+#define FB1_COS_ADC_RCC RCC_APB2Periph_ADC2
+#define FB1_COS_ADC_CHAN ADC_Channel_5
+#define FB1_COS_PIN GPIO_Pin_5
+#define FB1_COS_PORT GPIOA
 
 #define ADC_REF 3.3  //analog reference voltage
 #define ADC_RES 4096.0  //analog resolution, 12 bit

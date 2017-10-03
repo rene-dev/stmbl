@@ -35,8 +35,8 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
   PIN(poles)                 = 1.0;
-  PIN(tim_oc)                = 47.0;
-  PIN(min_amp)               = 0.25;
+  PIN(tim_oc)                = 0.85;
+  PIN(min_amp)               = 0.15;
 }
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
@@ -53,7 +53,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
   TIM_TimeBaseStructure.TIM_ClockDivision     = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode       = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Period            = 60 - 1;  // 1.2e6 / 60 = 20kHz
+  TIM_TimeBaseStructure.TIM_Period            = ADC_TR_COUNT - 1;  // 20kHz
   TIM_TimeBaseStructure.TIM_Prescaler         = 0;
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
   TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
@@ -112,7 +112,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
   //TODO: arr can change!
-  TIM4->CCR3 = (int)CLAMP(PIN(tim_oc), 0, TIM4->ARR - 1);
+  TIM4->CCR3 = (int)CLAMP(PIN(tim_oc) * TIM4->ARR, 0, TIM4->ARR - 1);
 
   float s = 0.0;
   float c = 0.0;
