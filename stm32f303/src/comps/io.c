@@ -69,7 +69,7 @@ struct io_ctx_t {
 #define ARES 4096.0  // analog resolution, 12 bit
 #define ADC(a) ((a) / ARES * AREF)
 
-#define HV_TEMP_PULLUP 10000
+#define HV_TEMP_PULLUP 1000
 #define HV_R(a) (HV_TEMP_PULLUP / (AREF / (a)-1))
 
 #define MOT_TEMP_PULLUP 10000
@@ -91,11 +91,10 @@ struct io_ctx_t {
 
 float r2temp(float r) {
   r               = r / 1000;
-  const int step  = 10;
+  const int step  = 5;
   const int start = -10;
   //-10..100
-  const float temp[] = {271.7, 158.2, 95.23, 59.07, 37.64, 24.59, 16.43, 11.21, 7.798, 5.518, 3.972, 2.902};
-
+  const float temp[] = {21.377,16.869,13.411,10.735,8.653,7.018,5.726,4.700,3.879,3.219,2.685,2.250,1.895,1.604,1.363,1.163,0.996,0.857,0.740,0.641,0.558,0.487,0.426,0.375,0.330,0.292,0.259,0.230};//{271.7, 158.2, 95.23, 59.07, 37.64, 24.59, 16.43, 11.21, 7.798, 5.518, 3.972, 2.902};
   for(int i = 1; i < ARRAY_SIZE(temp); i++) {
     if(temp[i] < r) {
       float a = temp[i - 1];
@@ -172,19 +171,19 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 
 
-  PIN(hv_temp) = 258.0 - hv_temp * 3.3 / ARES * 114.4 * ADC_OVER / ADC_COUNT;
+  PIN(hv_temp) = r2temp(HV_R(ADC(hv_temp / 20.0)));//258.0 - hv_temp * 3.3 / ARES * 114.4 * ADC_OVER / ADC_COUNT;
   PIN(dc_link) = dc_link * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
   PIN(bemf0)   = bemf0 * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
   PIN(bemf1)   = bemf1 * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
   PIN(in0)     = in0 * 3.3 / ARES * (10.0 + 1.5) / 1.5 * ADC_OVER / ADC_COUNT;
   PIN(in1)     = in1 * 3.3 / ARES * (10.0 + 1.5) / 1.5 * ADC_OVER / ADC_COUNT;
 
-  PIN(iap) = AMP(iap * 2 * ADC_OVER / ADC_COUNT, 8.0);
-  PIN(ian) = AMP(ian * 2 * ADC_OVER / ADC_COUNT, 8.0);
-  PIN(ibp) = AMP(ibp * 2 * ADC_OVER / ADC_COUNT, 8.0);
-  PIN(ibn) = AMP(ibn * 2 * ADC_OVER / ADC_COUNT, 8.0);
-  PIN(ip)  = ip * ADC_OVER / ADC_COUNT * 3.3 / ARES;
-  PIN(in)  = in * ADC_OVER / ADC_COUNT * 3.3 / ARES;
+  PIN(iap) = AMP(iap * 2.0 * ADC_OVER / ADC_COUNT / 4.0, 8.0);
+  PIN(ian) = AMP(ian * 2.0 * ADC_OVER / ADC_COUNT / 4.0, 8.0);
+  PIN(ibp) = AMP(ibp * 2.0 * ADC_OVER / ADC_COUNT / 4.0, 8.0);
+  PIN(ibn) = AMP(ibn * 2.0 * ADC_OVER / ADC_COUNT / 4.0, 8.0);
+  PIN(ip)  = ip * 2.0 * ADC_OVER / ADC_COUNT / 2.0 * 3.3 / ARES;
+  PIN(in)  = in * 2.0 * ADC_OVER / ADC_COUNT / 2.0 * 3.3 / ARES;
   PIN(ia)  = PIN(iap) - PIN(ian);
   PIN(ib)  = PIN(ibp) - PIN(ibn);
 
