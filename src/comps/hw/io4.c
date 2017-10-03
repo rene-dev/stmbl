@@ -25,20 +25,20 @@ HAL_PIN(fan);
 
 HAL_PIN(state);
 HAL_PIN(fault);
-HAL_PIN(brake);
 
+//outputs
 HAL_PIN(out0);
 HAL_PIN(out1);
 HAL_PIN(out2);
 
-HAL_PIN(in0);
-HAL_PIN(in1);
-HAL_PIN(ind0);
-HAL_PIN(ind1);
-HAL_PIN(ind0n);
-HAL_PIN(ind1n);
-HAL_PIN(th0);
-HAL_PIN(th1);
+HAL_PIN(in0);  //input 0, analog
+HAL_PIN(in1);  //input 1, analog
+HAL_PIN(ind0);  //input 0, digital
+HAL_PIN(ind1);  //input 1, digital
+HAL_PIN(ind0n);  //input 0 inverted
+HAL_PIN(ind1n);  //input 0 inverted
+HAL_PIN(th0);  //voltage threshold in0
+HAL_PIN(th1);  //voltage threshold in1
 
 HAL_PIN(CTX);
 HAL_PIN(CRX);
@@ -51,19 +51,15 @@ HAL_PIN(swd_remap);
 HAL_PIN(DIO);
 HAL_PIN(CK);
 
+//rj45 leds
 HAL_PIN(fb0g);
 HAL_PIN(fb0y);
 
 HAL_PIN(fb1g);
 HAL_PIN(fb1y);
 
-// HAL_PIN(cmdc);
-// HAL_PIN(cmdc_en);
-// HAL_PIN(cmdd);
-// HAL_PIN(cmdd_en);
 HAL_PIN(cmdg);
 HAL_PIN(cmdy);
-
 
 HAL_PIN(fb0);
 HAL_PIN(fb1);
@@ -74,7 +70,7 @@ HAL_PIN(fbd1n);
 HAL_PIN(fbth0);
 HAL_PIN(fbth1);
 
-
+//a,b,z inputs of fb0 and fb1
 HAL_PIN(fb0a);
 HAL_PIN(fb0b);
 HAL_PIN(fb0z);

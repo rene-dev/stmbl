@@ -64,8 +64,6 @@ struct hv_ctx_t {
   uint16_t timeout;
 };
 
-volatile uint32_t foobar;
-
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
