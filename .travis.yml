@@ -5,7 +5,7 @@ before_install:
 - sudo apt-get -qq update
 - sudo apt-get install gcc-arm-embedded
 script:
-- make
+- make deploy
 notifications:
   irc:
     channels:
@@ -18,7 +18,11 @@ deploy:
   skip_cleanup: true
   api_key:
     secure: L9ek7B1nN9zC/aTFjWam5ytBOL+yYDCr1ItSihxMZGFVODYg1Ng1YrpY2fMbQgH8/Bbw7zLiakkZ+Q/Ln3y/IHWI1QBaYHFaRcOLp556hSuI8G6j9EElrYQkBW9y/1mtXDbgmhmDJZMZLY4Iy7jXueQQNEzqZ02dkXTqzEIidS8G+x0DqyqHP/arumVb6X2iNUuB8gcCUgclT/nvfjML7N90FG5UUVL46BGsho25jtNGnINhK35eKqyVLF/GLk3t152i8kTTNb/p9xKplkC6WAshZDmv6UpSVkv6EinLUO0Ua/91tk1CgeckqO8vo0R7lgQFw3r7yvyhyPpEdIkb3f+nx2H8ZO4aoXiX7ZDQFMKTQ+jJsHm0Sie0KOL+yR2QKwCr3Hywbk/EqVa3BbJAFpvnrPhW21YkFPvJvlnWC2pCLbBQ79d9PGvi14vjJgyWMhmTOSs5drA5oXarNg+6uJDLE7I0aesYyrtpBTa0wIRZtT5BLQkudVUo0OtwmL624y4iUc4UOGjfs+XUlrdP+ze9yl0QI5cVPrJHZ5F0xA+olKb2xiao27bj6BnMPqAzHtnN9LFUZTp+poZyAkI3sQ9DlIFCJ2zdiaYO5PPQIIv7mUJL+7hVpLvZUYaYbmTwgR59hJ9EOIAGerkZXLnHC8C5NXWqd3gkkIRa+ycpJR0=
-  file: obj_app/stmbl.bin
+  file:
+     - obj_app/stmbl.bin
+     - obj_boot/blboot.bin
+     - obj_f3dfu/f3dfu.bin
+     - obj_hvf3/hvf3.bin
   on:
     tags: true
     all_branches: true
