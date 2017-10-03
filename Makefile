@@ -264,6 +264,11 @@ f3_flash:
 f3_btflash:
 	$(MAKE) -f stm32f303/Makefile btburn
 
+f3_boot:
+	$(MAKE) -f f3dfu/Makefile
+
+deploy: boot f3_boot f3 build
+
 format:
 	find src/ f3dfu/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ -iname *.h -o -iname *.c | xargs clang-format -i
 
@@ -302,7 +307,9 @@ clean:
 	rm -rf inc/commandslist.h
 	rm -rf src/conf_templates.c
 	@$(MAKE) -f bootloader/Makefile clean
+	@$(MAKE) -f f3dfu/Makefile clean
 	@$(MAKE) -f stm32f103/Makefile clean
+	@$(MAKE) -f stm32f303/Makefile clean
 
 # Include the base rules
 #
