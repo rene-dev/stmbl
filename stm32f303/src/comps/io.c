@@ -120,6 +120,8 @@ static void nrt_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
   //   ADC34_COMMON->CCR |= ADC34_CCR_MDMA_1;
 }
 
+uint8_t toggle = 0;
+
 static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
   struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
   struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
@@ -149,8 +151,13 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   PIN(udc_pwm) = PIN(udc) / 2.0;
 
   PIN(temp_v) = ADC(adc_34_buf[4] >> 16);
-  PIN(hv_temp) = r2temp(HV_R(ADC(adc_34_buf[4] >> 16))) * 0.01 + PIN(hv_temp) * 0.99; // 5.5u
-  PIN(mot_temp) = MOT_R(MOT_REF(ADC(adc_34_buf[0] >> 16))); // 1.4u
+  toggle = !toggle;
+  if (toggle) {
+    PIN(hv_temp) = r2temp(HV_R(ADC(adc_34_buf[4] >> 16))) * 0.01 + PIN(hv_temp) * 0.99; // 5.5u
+  }
+  else {
+    PIN(mot_temp) = r2temp(HV_R(ADC(adc_34_buf[1] >> 16))) * 0.01 + PIN(mot_temp) * 0.99; // 5.5u//MOT_R(MOT_REF(ADC(adc_34_buf[0] >> 16))); // 1.4u
+  }
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET); // 0.1u
 
   PIN(in0) = HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_8);

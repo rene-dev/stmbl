@@ -17,6 +17,7 @@ HAL_PIN(udc);
 HAL_PIN(iabs);
 
 HAL_PIN(hv_temp);
+HAL_PIN(mot_temp);
 
 //enable in
 HAL_PIN(en);
@@ -70,9 +71,35 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 #endif
 }
 
+uint8_t temp_error = 0;
+uint8_t mot_error = 0;
+
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
+
+  if(PIN(hv_temp) > 85.0) {
+    temp_error = 1;
+  }
+
+  if(PIN(hv_temp) < 55.0) {
+    temp_error = 0;
+  }
+
+  if(PIN(mot_temp) > 110.0) {
+    mot_error = 1;
+  }
+
+  if(PIN(mot_temp) < 85.0) {
+    mot_error = 0;
+  }
+
+  if(PIN(en) > 0.0 && !temp_error && !mot_error){
+    TIM8->BDTR |= TIM_BDTR_MOE; // on
+  }
+  else {
+    TIM8->BDTR &= ~TIM_BDTR_MOE; // off
+  }
 
   float udc = MAX(PIN(udc), 0.1);
   //convert voltages to PWM output compare values

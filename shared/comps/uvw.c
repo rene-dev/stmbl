@@ -22,9 +22,16 @@ HAL_PIN(p5);
 HAL_PIN(p6);
 HAL_PIN(p7);
 
+HAL_PIN(rpm);
+
 //rotor position output
 HAL_PIN(pos);
 HAL_PIN(rpos);
+
+uint16_t counter = 0;
+uint16_t speed = 0;
+uint8_t lastState = 0;
+
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct uvw_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
@@ -44,6 +51,15 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   // struct uvw_ctx_t * ctx = (struct uvw_ctx_t *)ctx_ptr;
   struct uvw_pin_ctx_t *pins = (struct uvw_pin_ctx_t *)pin_ptr;
 
+  if(PIN(u) > 0.0 && lastState == 0) {
+    lastState = 1;
+    speed++;
+  }
+
+  if(PIN(u) < 1.0 && lastState == 1) {
+    lastState = 0;
+  }
+
   uint32_t rpos = (PIN(u) > 0.0) * 1.0 + (PIN(v) > 0.0) * 2.0 + (PIN(w) > 0.0) * 4.0;
   PIN(led)      = (PIN(u) > 0.0) ^ (PIN(v) > 0.0) ^ (PIN(w) > 0.0);
   //TODO: make this const, fault output
@@ -58,6 +74,13 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   t[7]      = PIN(p7);
   PIN(rpos) = rpos;
   PIN(pos)  = mod((float)t[rpos] / 6.0 * 2.0 * M_PI);
+
+  counter++;
+  if (counter > 7500) {
+    PIN(rpm) = (speed / 15.0) * 120.0;
+    counter = 0;
+    speed = 0;
+  }
 }
 
 hal_comp_t uvw_comp_struct = {

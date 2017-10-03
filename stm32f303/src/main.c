@@ -282,6 +282,7 @@ int main(void) {
   hal_parse("hv0.w = svm0.sw");
   hal_parse("svm0.udc = io0.udc");
   hal_parse("hv0.hv_temp = io0.hv_temp");
+  hal_parse("hv0.mot_temp = io0.mot_temp");
   hal_parse("curpid0.id_fb = dq0.d");
   hal_parse("curpid0.iq_fb = dq0.q");
   hal_parse("ls0.d_fb = dq0.d");
@@ -326,6 +327,12 @@ int main(void) {
   hal_parse("curpid0.iq_cmd = uart0.current");
   hal_parse("hv0.en = uart0.en");
   hal_parse("curpid0.en = uart0.en");
+
+  hal_parse("uart0.rpm = uvw0.rpm");
+  hal_parse("uart0.iabs = curpid0.iq_fb");
+  hal_parse("uart0.udc = io0.udc");
+  hal_parse("uart0.temp = io0.hv_temp");
+  hal_parse("uart0.mot_temp = io0.mot_temp");
 
   // hal parse config
   // hal_init_nrt();

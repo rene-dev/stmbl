@@ -16,8 +16,13 @@ HAL_COMP(uart);
 
 HAL_PIN(current);
 HAL_PIN(en);
-HAL_PIN(crc_error)
+HAL_PIN(crc_error);
 
+HAL_PIN(rpm);
+HAL_PIN(iabs);
+HAL_PIN(udc);
+HAL_PIN(temp);
+HAL_PIN(mot_temp);
 
 
 typedef struct{
@@ -25,12 +30,24 @@ typedef struct{
    //uint32_t crc;
 } ottersequence;
 
+typedef struct{
+   float speed;
+   float current;
+   float voltage;
+   float temp;
+   float mot_temp;
+   //uint32_t crc;
+} tachosequence;
+
 struct uart_ctx_t{
    uint32_t timeout;
    volatile ottersequence ottersequence;
+   volatile tachosequence tachosequence;
 };
 
 uint8_t startup = 0;
+
+int16_t currentBuffer[11];
 
 
 // volatile packet_to_hv_t packet_to_hv;
@@ -102,6 +119,15 @@ static void hw_init(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr){
 
    __HAL_RCC_DMA1_CLK_ENABLE();
 
+     //TX DMA
+    DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
+    DMA1_Channel2->CPAR  = (uint32_t) & (USART3->TDR);
+    DMA1_Channel2->CMAR  = (uint32_t) & (ctx->tachosequence);
+    DMA1_Channel2->CNDTR = sizeof(tachosequence);
+    DMA1_Channel2->CCR   = DMA_CCR_MINC | DMA_CCR_DIR;  // | DMA_CCR_PL_0 | DMA_CCR_PL_1
+    DMA1->IFCR           = DMA_IFCR_CTCIF2 | DMA_IFCR_CHTIF2 | DMA_IFCR_CGIF2;
+
+
    //RX DMA
    DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
    DMA1_Channel3->CPAR = (uint32_t)&(USART3->RDR);
@@ -124,6 +150,10 @@ static void rt_start(volatile void * ctx_ptr, volatile hal_pin_inst_t * pin_ptr)
    ledRed(0);
    ledGreen(0);
    PIN(current) = 0;
+   for (int i = 0; i < 10; i++)
+   {
+     currentBuffer[i] = 0;
+   }
    ctx->ottersequence.current = 0;
    ctx->timeout = 0;
    PIN(en) = 0;
@@ -154,9 +184,39 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
       //if(crc == ctx->ottersequence.crc){
          ledBlue(1);
          ledGreen(0);
-         PIN(current) = ctx->ottersequence.current / 310.0;
+
+         currentBuffer[9] = currentBuffer[8];
+         currentBuffer[8] = currentBuffer[7];
+         currentBuffer[7] = currentBuffer[6];
+         currentBuffer[6] = currentBuffer[5];
+         currentBuffer[5] = currentBuffer[4];
+         currentBuffer[4] = currentBuffer[3];
+         currentBuffer[3] = currentBuffer[2];
+         currentBuffer[2] = currentBuffer[1];
+         currentBuffer[1] = currentBuffer[0];
+         currentBuffer[0] = ctx->ottersequence.current;
+
+         float current = 0;
+         for (int i = 0; i < 10; i++)
+         {
+           current += currentBuffer[i];
+         }
+         PIN(current) = (current / 10.0) / 310.0 ;
          PIN(en) = 1.0;
          ctx->timeout = 0;
+
+         // fill tx struct
+        ctx->tachosequence.speed  = PIN(rpm);
+        ctx->tachosequence.current  = PIN(iabs);
+        ctx->tachosequence.voltage  = PIN(udc);
+        ctx->tachosequence.temp  = PIN(temp);
+        ctx->tachosequence.mot_temp  = PIN(mot_temp);
+        //ctx->packet_from_hv.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_from_hv), sizeof(packet_from_hv_t) / 4 - 1);
+
+        // start tx DMA
+        DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
+        DMA1_Channel2->CNDTR = sizeof(tachosequence);
+        DMA1_Channel2->CCR |= DMA_CCR_EN;
       //}
       //else{
       //   PIN(crc_error)++;
