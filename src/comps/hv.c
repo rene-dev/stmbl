@@ -223,8 +223,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float d_cmd = PIN(d_cmd);
   float q_cmd = PIN(q_cmd);
 
-  if(PIN(rev) > 0.0) {  //TODO: rev DC
+  if(PIN(rev) > 0.0) {
     q_cmd *= -1.0;
+    pos = minus(0, pos);
   }
 
   if(e > 0.0) {
