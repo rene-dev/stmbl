@@ -359,6 +359,7 @@ int main(void) {
   load_comp(comp_by_name("vel"));
   load_comp(comp_by_name("vel"));
   load_comp(comp_by_name("ypid"));
+  load_comp(comp_by_name("trc"));
   load_comp(comp_by_name("hv"));
   load_comp(comp_by_name("curpid"));
 
@@ -370,6 +371,7 @@ int main(void) {
   hal_parse("pole0.rt_prio = 4.0");
   hal_parse("dq0.rt_prio = 5.0");
   hal_parse("ypid0.rt_prio = 6.0");
+  hal_parse("trc0.rt_prio = 6.5");
   hal_parse("curpid0.rt_prio = 7.0");
   hal_parse("idq0.rt_prio = 8.0");  
   hal_parse("hv0.rt_prio = 9.0");
@@ -404,11 +406,11 @@ int main(void) {
   hal_parse("curpid0.ld = 0.0038");
   hal_parse("curpid0.lq = 0.0038");
   hal_parse("curpid0.psi = 0.005");
-  hal_parse("curpid0.kp = 0.1");
-  hal_parse("curpid0.ki = 0.0001");
+  hal_parse("curpid0.kp = 0.6");
+  hal_parse("curpid0.ki = 0.0002");
   hal_parse("curpid0.ff = 1");
   hal_parse("curpid0.kind = 0");
-  hal_parse("curpid0.max_cur = 3.5");
+  hal_parse("curpid0.max_cur = 4");
   hal_parse("curpid0.pwm_volt = io0.dc_link");
 
   hal_parse("pole0.p = 50.0");
@@ -426,10 +428,14 @@ int main(void) {
   hal_parse("ypid0.pos_fb = map0.pos_out2");
   hal_parse("ypid0.vel_fb = vel1.vel");
   hal_parse("curpid0.iq_cmd = ypid0.out");
-
-  hal_parse("ypid0.max_vel = 30");
-  hal_parse("ypid0.max_acc = 200000");
-  hal_parse("ypid0.max_out = 3.5");
+  // hal_parse("trc0.in = ypid0.out");
+  // hal_parse("curpid0.iq_cmd = trc0.out");
+  // hal_parse("trc0.pos = map0.pos_out2");
+  // hal_parse("trc0.mult = 200");
+  
+  hal_parse("ypid0.max_vel = 50");
+  hal_parse("ypid0.max_acc = 10000");
+  hal_parse("ypid0.max_out = 4");
   hal_parse("ypid0.pos_p = 100");
   hal_parse("ypid0.vel_p = 0.1");
   hal_parse("ypid0.vel_i = 0.05");

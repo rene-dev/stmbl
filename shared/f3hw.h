@@ -1,5 +1,5 @@
 //stmbl
-#define AREF 3.338  // analog reference voltage
+#define AREF 3.3  // analog reference voltage
 
 #define VDIVUP 20000.0 * 2.0  //HV div pullup R1,R12
 #define VDIVDOWN 1000.0  //HV div pulldown R2,R9

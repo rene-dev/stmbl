@@ -162,28 +162,27 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     in1 += adc_12_buf[2 * i].in1 + adc_12_buf[2 * i + 1].in1;
     bemf0 += adc_12_buf[2 * i].bemf0 + adc_12_buf[2 * i + 1].bemf0;
     bemf1 += adc_12_buf[2 * i].bemf1 + adc_12_buf[2 * i + 1].bemf1;
-    ian += adc_34_buf[2 * i].shunt_a0 + adc_34_buf[2 * i].shunt_a1 + adc_34_buf[2 * i].shunt_a2 + adc_34_buf[2 * i].shunt_a3;
-    iap += adc_34_buf[2 * i + 1].shunt_a0 + adc_34_buf[2 * i + 1].shunt_a1 + adc_34_buf[2 * i + 1].shunt_a2 + adc_34_buf[2 * i + 1].shunt_a3;
-    ibn += adc_34_buf[2 * i].shunt_b0 + adc_34_buf[2 * i].shunt_b1 + adc_34_buf[2 * i].shunt_b2 + adc_34_buf[2 * i].shunt_b3;
-    ibp += adc_34_buf[2 * i + 1].shunt_b0 + adc_34_buf[2 * i + 1].shunt_b1 + adc_34_buf[2 * i + 1].shunt_b2 + adc_34_buf[2 * i + 1].shunt_b3;
-    in += adc_12_buf[2 * i].shunt_low0 + adc_12_buf[2 * i].shunt_low1;
-    ip += adc_12_buf[2 * i + 1].shunt_low0 + adc_12_buf[2 * i + 1].shunt_low1;
+    ian += adc_34_buf[2 * i].shunt_a0;// + adc_34_buf[2 * i].shunt_a1 + adc_34_buf[2 * i].shunt_a2 + adc_34_buf[2 * i].shunt_a3;
+    iap += adc_34_buf[2 * i + 1].shunt_a0;// + adc_34_buf[2 * i + 1].shunt_a1 + adc_34_buf[2 * i + 1].shunt_a2 + adc_34_buf[2 * i + 1].shunt_a3;
+    ibn += adc_34_buf[2 * i].shunt_b0;// + adc_34_buf[2 * i].shunt_b1 + adc_34_buf[2 * i].shunt_b2 + adc_34_buf[2 * i].shunt_b3;
+    ibp += adc_34_buf[2 * i + 1].shunt_b0;// + adc_34_buf[2 * i + 1].shunt_b1 + adc_34_buf[2 * i + 1].shunt_b2 + adc_34_buf[2 * i + 1].shunt_b3;
+    in += adc_12_buf[2 * i].shunt_low0;// + adc_12_buf[2 * i].shunt_low1;
+    ip += adc_12_buf[2 * i + 1].shunt_low0;// + adc_12_buf[2 * i + 1].shunt_low1;
   }
 
-
-  PIN(hv_temp) = r2temp(HV_R(ADC(hv_temp / 20.0)));//258.0 - hv_temp * 3.3 / ARES * 114.4 * ADC_OVER / ADC_COUNT;
+  PIN(hv_temp) = r2temp(HV_R(ADC(hv_temp * ADC_OVER / ADC_COUNT)));
   PIN(dc_link) = dc_link * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
   PIN(bemf0)   = bemf0 * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
   PIN(bemf1)   = bemf1 * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
   PIN(in0)     = in0 * 3.3 / ARES * (10.0 + 1.5) / 1.5 * ADC_OVER / ADC_COUNT;
   PIN(in1)     = in1 * 3.3 / ARES * (10.0 + 1.5) / 1.5 * ADC_OVER / ADC_COUNT;
 
-  PIN(iap) = AMP(iap * 2.0 * ADC_OVER / ADC_COUNT / 4.0, 8.0);
-  PIN(ian) = AMP(ian * 2.0 * ADC_OVER / ADC_COUNT / 4.0, 8.0);
-  PIN(ibp) = AMP(ibp * 2.0 * ADC_OVER / ADC_COUNT / 4.0, 8.0);
-  PIN(ibn) = AMP(ibn * 2.0 * ADC_OVER / ADC_COUNT / 4.0, 8.0);
-  PIN(ip)  = ip * 2.0 * ADC_OVER / ADC_COUNT / 2.0 * 3.3 / ARES;
-  PIN(in)  = in * 2.0 * ADC_OVER / ADC_COUNT / 2.0 * 3.3 / ARES;
+  PIN(iap) = AMP(iap * 2.0 * ADC_OVER / ADC_COUNT / 1.0, 8.0);
+  PIN(ian) = AMP(ian * 2.0 * ADC_OVER / ADC_COUNT / 1.0, 8.0);
+  PIN(ibp) = AMP(ibp * 2.0 * ADC_OVER / ADC_COUNT / 1.0, 8.0);
+  PIN(ibn) = AMP(ibn * 2.0 * ADC_OVER / ADC_COUNT / 1.0, 8.0);
+  PIN(ip)  = ip * ADC_OVER / ADC_COUNT * 3.3 / ARES;
+  PIN(in)  = in * ADC_OVER / ADC_COUNT * 3.3 / ARES;
   PIN(ia)  = PIN(iap) - PIN(ian);
   PIN(ib)  = PIN(ibp) - PIN(ibn);
 
