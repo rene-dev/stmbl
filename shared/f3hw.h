@@ -15,11 +15,11 @@
 #define PWM_W TIM8->CCR1
 
 #define PWM_DEADTIME 0
-#define PWM_FREQ 50000
-#define PWM_RES (72000000 * 2 / PWM_FREQ / 2) // 1440
-#define RT_FREQ 5000
-#define ADC_OVER 4
-#define ADC_COUNT (PWM_FREQ * 2 * ADC_OVER / RT_FREQ) // 80
+#define PWM_FREQ 100000.0
+#define PWM_RES (72000000.0 * 2.0 / PWM_FREQ / 2.0)
+#define RT_FREQ 5000.0
+#define ADC_OVER (PWM_FREQ * 2 / RT_FREQ)
+#define ADC_COUNT (ADC_OVER * 4)
 
 //io board
 #define USB_CONNECT_PIN GPIO_PIN_2

@@ -70,6 +70,7 @@ extern void Error_Handler(void);
 void MX_OPAMP1_Init(void);
 void MX_OPAMP2_Init(void);
 void MX_OPAMP3_Init(void);
+void MX_OPAMP4_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 

@@ -12,6 +12,9 @@ HAL_COMP(hv);
 HAL_PIN(a);
 HAL_PIN(b);
 
+HAL_PIN(a_fb);
+HAL_PIN(b_fb);
+
 //dclink input
 HAL_PIN(udc);
 
@@ -58,43 +61,30 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   float udc = MAX(PIN(udc), 0.1);
   //convert voltages to PWM output compare values
-  int32_t a = (int32_t)(LIMIT(PIN(a), udc) / udc * PWM_RES / 2) + PWM_RES / 2;
-  int32_t b = (int32_t)(LIMIT(PIN(b), udc) / udc * PWM_RES / 2) + PWM_RES / 2;
+  int32_t a = (int32_t)(PIN(a) / udc * PWM_RES / 2.0) + PWM_RES / 2;
+  int32_t b = (int32_t)(PIN(b) / udc * PWM_RES / 2.0) + PWM_RES / 2;
 
   //convert on and off times to PWM output compare values
-  int32_t min_on  = (int32_t)(PWM_RES * RT_FREQ * PIN(min_on) + 0.5);
+  int32_t min  = (int32_t)(PWM_RES * RT_FREQ * PIN(min_on) + 0.5);
   int32_t min_off = (int32_t)(PWM_RES * RT_FREQ * PIN(min_off) + 0.5);
 
-  if((a > 0 && a < min_on) || (b > 0 && b < min_on)) {
-    a += min_on;
-    b += min_on;
-  }
+  a = CLAMP(a, min, PWM_RES - min_off);
+  b = CLAMP(b, min, PWM_RES - min_off);
 
-  if((a > PWM_RES - min_off) || (b > PWM_RES - min_off)) {
-    a -= min_off;
-    b -= min_off;
-  }
-
-  // #ifdef PWM_INVERT
-  //   TIM1->CCR1 = 1440-CLAMP(a, 0, 1440 - min_off);
-  //   TIM1->CCR2 = 1440-CLAMP(b, 0, 1440 - min_off);
-  // #else
-  TIM1->CCR1 = CLAMP(a, 0, PWM_RES - min_off);
-  TIM1->CCR2 = CLAMP(b, 0, PWM_RES - min_off);
-  GPIOC->BSRR |= GPIO_PIN_15 << 16;
+  TIM1->CCR1 = a;
+  TIM1->CCR2 = b;
+  // GPIOC->BSRR |= GPIO_PIN_15 << 16;
   
-  // #endif
+  PIN(a_fb) = (a - PWM_RES / 2.0) * 2.0 * udc / PWM_RES;
+  PIN(b_fb) = (b - PWM_RES / 2.0) * 2.0 * udc / PWM_RES;
 
-  if(PIN(hv_temp) < 100.0 && PIN(en) > 0.0) {
+  if(PIN(udc) < 52.0 && PIN(hv_temp) < 100.0 && PIN(en) > 0.0) {
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, PIN(enb) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, PIN(ena) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
   } else {
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
   }
-
-  //TODO: check enable timing on fault pin
-  // PIN(fault) = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_7);
 }
 
 hal_comp_t hv_comp_struct = {

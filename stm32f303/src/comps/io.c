@@ -57,8 +57,8 @@ struct adc_34_t {
   uint16_t shunt_b3;
 };
 
-volatile struct adc_12_t adc_12_buf[ADC_COUNT / ADC_OVER];
-volatile struct adc_34_t adc_34_buf[ADC_COUNT / ADC_OVER];
+volatile struct adc_12_t adc_12_buf[(uint32_t)ADC_OVER];
+volatile struct adc_34_t adc_34_buf[(uint32_t)ADC_OVER];
 
 struct io_ctx_t {
   float u_offset;
@@ -152,10 +152,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   uint32_t ian     = 0;
   uint32_t ibp     = 0;
   uint32_t ibn     = 0;
-  uint32_t ip      = 0;
-  uint32_t in      = 0;
+  // uint32_t ip      = 0;
+  // uint32_t in      = 0;
 
-  for(int i = 0; i < ADC_COUNT / ADC_OVER / 2; i++) {
+  for(int i = 0; i < ADC_OVER / 2; i++) {
     dc_link += adc_12_buf[2 * i].dc_link + adc_12_buf[2 * i + 1].dc_link;
     hv_temp += adc_12_buf[2 * i].hv_temp + adc_12_buf[2 * i + 1].hv_temp;
     in0 += adc_12_buf[2 * i].in0 + adc_12_buf[2 * i + 1].in0;
@@ -166,25 +166,25 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     iap += adc_34_buf[2 * i + 1].shunt_a0;// + adc_34_buf[2 * i + 1].shunt_a1 + adc_34_buf[2 * i + 1].shunt_a2 + adc_34_buf[2 * i + 1].shunt_a3;
     ibn += adc_34_buf[2 * i].shunt_b0;// + adc_34_buf[2 * i].shunt_b1 + adc_34_buf[2 * i].shunt_b2 + adc_34_buf[2 * i].shunt_b3;
     ibp += adc_34_buf[2 * i + 1].shunt_b0;// + adc_34_buf[2 * i + 1].shunt_b1 + adc_34_buf[2 * i + 1].shunt_b2 + adc_34_buf[2 * i + 1].shunt_b3;
-    in += adc_12_buf[2 * i].shunt_low0;// + adc_12_buf[2 * i].shunt_low1;
-    ip += adc_12_buf[2 * i + 1].shunt_low0;// + adc_12_buf[2 * i + 1].shunt_low1;
+    // in += adc_12_buf[2 * i].shunt_low0;// + adc_12_buf[2 * i].shunt_low1;
+    // ip += adc_12_buf[2 * i + 1].shunt_low0;// + adc_12_buf[2 * i + 1].shunt_low1;
   }
 
-  PIN(hv_temp) = r2temp(HV_R(ADC(hv_temp * ADC_OVER / ADC_COUNT)));
-  PIN(dc_link) = dc_link * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
-  PIN(bemf0)   = bemf0 * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
-  PIN(bemf1)   = bemf1 * 3.3 / ARES * (20.0 + 1.0) / 1.0 * ADC_OVER / ADC_COUNT;
-  PIN(in0)     = in0 * 3.3 / ARES * (10.0 + 1.5) / 1.5 * ADC_OVER / ADC_COUNT;
-  PIN(in1)     = in1 * 3.3 / ARES * (10.0 + 1.5) / 1.5 * ADC_OVER / ADC_COUNT;
+  PIN(hv_temp) = r2temp(HV_R(ADC(hv_temp / ADC_OVER)));
+  PIN(dc_link) = ADC(dc_link / ADC_OVER) * (20.0 + 1.0) / 1.0;
+  PIN(bemf0)   = ADC(bemf0 / ADC_OVER) * (20.0 + 1.0) / 1.0;
+  PIN(bemf1)   = ADC(bemf1 / ADC_OVER) * (20.0 + 1.0) / 1.0;
+  PIN(in0)     = ADC(in0 / ADC_OVER) * (10.0 + 1.5) / 1.5;
+  PIN(in1)     = ADC(in1 / ADC_OVER) * (10.0 + 1.5) / 1.5;
 
-  PIN(iap) = AMP(iap * 2.0 * ADC_OVER / ADC_COUNT / 1.0, 8.0);
-  PIN(ian) = AMP(ian * 2.0 * ADC_OVER / ADC_COUNT / 1.0, 8.0);
-  PIN(ibp) = AMP(ibp * 2.0 * ADC_OVER / ADC_COUNT / 1.0, 8.0);
-  PIN(ibn) = AMP(ibn * 2.0 * ADC_OVER / ADC_COUNT / 1.0, 8.0);
-  PIN(ip)  = ip * ADC_OVER / ADC_COUNT * 3.3 / ARES;
-  PIN(in)  = in * ADC_OVER / ADC_COUNT * 3.3 / ARES;
-  PIN(ia)  = PIN(iap) - PIN(ian);
-  PIN(ib)  = PIN(ibp) - PIN(ibn);
+  PIN(iap) = AMP(iap * 2.0 / ADC_OVER, 8.0);
+  PIN(ian) = AMP(ian * 2.0 / ADC_OVER, 8.0);
+  PIN(ibp) = AMP(ibp * 2.0 / ADC_OVER, 8.0);
+  PIN(ibn) = AMP(ibn * 2.0 / ADC_OVER, 8.0);
+  // PIN(ip)  = ADC(ip / ADC_OVER);
+  // PIN(in)  = ADC(in / ADC_OVER);;
+  PIN(ia)  = (PIN(iap) - PIN(ian)) / 2.0;
+  PIN(ib)  = (PIN(ibp) - PIN(ibn)) / 2.0;
 
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, PIN(led) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET);  // 0.1u
 }

@@ -160,6 +160,8 @@ void hal_term_print_info(char *ptr) {
   printf("HAL_MAX_COMPS %lu/%i\n", hal.comp_inst_count, HAL_MAX_COMPS);
   printf("HAL_MAX_PINS %lu/%i\n", hal.pin_inst_count, HAL_MAX_PINS);
   printf("HAL_MAX_CTX %lu/%i\n", hal.ctx_count, HAL_MAX_CTX);
+  printf("hal struct start %lu\n", (uint32_t)&hal);
+  printf("hal struct size %lu\n", sizeof(hal));
   hal_term_print_state();
 
   // printf("link errors %lu\n", hal.link_errors);

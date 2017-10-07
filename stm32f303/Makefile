@@ -29,6 +29,7 @@ SOURCES += stm32f303/src/version.c
 
 SOURCES += stm32f303/src/hal_tbl.c
 
+CFLAGS += -DHAL_MAX_PINS=512
 CFLAGS += -DHAL_MAX_CTX=1024
 COMPS += stm32f303/src/comps/hv.c
 # COMPS += stm32f303/src/comps/hvdc.c
@@ -47,6 +48,8 @@ COMPS += shared/comps/pole.c
 COMPS += shared/comps/map.c
 # COMPS += shared/comps/rev.c
 COMPS += shared/comps/vel.c
+# COMPS += shared/comps/trc.c
+COMPS += shared/comps/rl.c
 # COMPS += shared/comps/hal_test.c
 # COMPS += shared/comps/dc.c
 COMPS += shared/comps/ypid.c

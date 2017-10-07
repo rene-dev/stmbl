@@ -72,7 +72,7 @@ static void MX_TIM1_Init(void) {
   htim1.Instance               = TIM1;
   htim1.Init.Prescaler         = 0;
   htim1.Init.CounterMode       = TIM_COUNTERMODE_CENTERALIGNED3;
-  htim1.Init.Period            = 1440;
+  htim1.Init.Period            = PWM_RES;
   htim1.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   // htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
@@ -85,7 +85,7 @@ static void MX_TIM1_Init(void) {
   HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig);
 
   sConfigOC.OCMode       = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse        = 720;
+  sConfigOC.Pulse        = PWM_RES / 2;
   sConfigOC.OCPolarity   = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCNPolarity  = TIM_OCNPOLARITY_HIGH;
   sConfigOC.OCFastMode   = TIM_OCFAST_DISABLE;
@@ -172,8 +172,8 @@ void Error_Handler(void);
 
 
 void DMA1_Channel1_IRQHandler() {
-  GPIOC->BSRR |= GPIO_PIN_14;
-  GPIOC->BSRR |= GPIO_PIN_15;
+  // GPIOC->BSRR |= GPIO_PIN_14;
+  // GPIOC->BSRR |= GPIO_PIN_15;
   //  __HAL_DMA_CLEAR_FLAG(&hdma1, DMA_FLAG_TC1);
   DMA1->IFCR = DMA_IFCR_CTCIF1;
   DMA2->IFCR = DMA_IFCR_CTCIF5;
@@ -183,7 +183,7 @@ void DMA1_Channel1_IRQHandler() {
   //     hal_stop();
   //     hal.hal_state = RT_TOO_LONG;
   //  }
-  GPIOC->BSRR |= GPIO_PIN_14 << 16;
+  // GPIOC->BSRR |= GPIO_PIN_14 << 16;
 }
 
 void bootloader(char *ptr) {
@@ -232,7 +232,7 @@ int main(void) {
   HAL_GPIO_WritePin(USB_DISCONNECT_PORT, USB_DISCONNECT_PIN, GPIO_PIN_RESET);
 #endif
 
-  MX_TIM8_Init();
+  // MX_TIM8_Init();
   MX_TIM1_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
@@ -359,7 +359,7 @@ int main(void) {
   load_comp(comp_by_name("vel"));
   load_comp(comp_by_name("vel"));
   load_comp(comp_by_name("ypid"));
-  load_comp(comp_by_name("trc"));
+  // load_comp(comp_by_name("rl"));
   load_comp(comp_by_name("hv"));
   load_comp(comp_by_name("curpid"));
 
@@ -374,6 +374,7 @@ int main(void) {
   hal_parse("trc0.rt_prio = 6.5");
   hal_parse("curpid0.rt_prio = 7.0");
   hal_parse("idq0.rt_prio = 8.0");  
+  hal_parse("rl0.rt_prio = 8.0");
   hal_parse("hv0.rt_prio = 9.0");
   
   hal_parse("term0.rt_prio = 10");
@@ -406,11 +407,11 @@ int main(void) {
   hal_parse("curpid0.ld = 0.0038");
   hal_parse("curpid0.lq = 0.0038");
   hal_parse("curpid0.psi = 0.005");
-  hal_parse("curpid0.kp = 0.6");
-  hal_parse("curpid0.ki = 0.0002");
+  hal_parse("curpid0.kp = 1.0");
+  hal_parse("curpid0.ki = 0.0005");
   hal_parse("curpid0.ff = 1");
   hal_parse("curpid0.kind = 0");
-  hal_parse("curpid0.max_cur = 4");
+  hal_parse("curpid0.max_cur = 3.1");
   hal_parse("curpid0.pwm_volt = io0.dc_link");
 
   hal_parse("pole0.p = 50.0");
@@ -435,9 +436,9 @@ int main(void) {
   
   hal_parse("ypid0.max_vel = 50");
   hal_parse("ypid0.max_acc = 10000");
-  hal_parse("ypid0.max_out = 4");
+  hal_parse("ypid0.max_out = 3");
   hal_parse("ypid0.pos_p = 100");
-  hal_parse("ypid0.vel_p = 0.1");
+  hal_parse("ypid0.vel_p = 0.05");
   hal_parse("ypid0.vel_i = 0.05");
   hal_parse("ypid0.vel_ff = 1.0");
   
@@ -455,6 +456,18 @@ int main(void) {
   hal_parse("curpid0.en = 1");
   hal_parse("hv0.en = 1");
 
+  hal_parse("rl0.ua_fb = hv0.a_fb");
+  hal_parse("rl0.ub_fb = hv0.b_fb");
+  hal_parse("rl0.ia_fb = io0.ia");
+  hal_parse("rl0.ib_fb = io0.ib");
+  hal_parse("term0.wave4 = rl0.ra");
+  hal_parse("term0.wave5 = rl0.rb");
+  hal_parse("term0.wave0 = rl0.t");
+  hal_parse("term0.wave1 = rl0.state");
+  
+  // hal_parse("hv0.a = rl0.ua");
+  // hal_parse("hv0.b = rl0.ub");
+  
   hal_parse("flashloadconf");
   hal_parse("loadconf");
   hal_parse("start");
