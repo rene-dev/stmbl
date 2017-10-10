@@ -62,6 +62,7 @@ COMPS += shared/comps/vel_int.c
 COMPS += shared/comps/linrev.c
 COMPS += shared/comps/psi.c
 COMPS += shared/comps/stp.c
+COMPS += shared/comps/uf.c
 
 SOURCES += $(COMPS)
 

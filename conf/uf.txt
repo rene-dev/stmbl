@@ -1,0 +1,19 @@
+link pid
+load uf
+uf0.rt_prio = 2
+uf0.un = 200
+uf0.fn = 500
+uf0.max_acc = 50
+uf0.min_acc = 10
+hv0.cmd_mode = 0
+hv0.phase_mode = 2
+hv0.pos = uf0.pos
+hv0.d_cmd = uf0.ud
+hv0.q_cmd = 0
+term0.wave0 = hv0.d_cmd
+term0.wave1 = hv0.d_fb
+term0.wave2 = uf0.f_cmd
+term0.wave3 = uf0.f_fb
+term0.gain0 = 1
+term0.gain2 = 1
+term0.gain3 = 1
