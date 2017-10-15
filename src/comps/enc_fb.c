@@ -26,12 +26,16 @@ HAL_PIN(qdiff);
 HAL_PIN(error);
 HAL_PIN(amp);
 HAL_PIN(ccr3);
+HAL_PIN(indexprint);
 
 
 struct enc_fb_ctx_t {
   int e_res;
   float absoffset;
 };
+
+int indexpos = 0;
+int indexprint = 0;
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;
@@ -184,8 +188,13 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(pos) = p;
 
   if(FB0_ENC_TIM->SR & TIM_SR_CC3IF){
+    int cc = FB0_ENC_TIM->CCR3;
     PIN(state) = 3.0;
-    ctx->absoffset = mod(FB0_ENC_TIM->CCR3 * 2.0f * M_PI / (float)ctx->e_res);
+    ctx->absoffset = mod(cc * 2.0f * M_PI / (float)ctx->e_res);
+    if(PIN(indexprint) > 0.0){
+      indexpos = cc;
+      indexprint = 1;
+    }
   }
   PIN(abs_pos) = minus(p, ctx->absoffset);
   PIN(index)  = GPIO_ReadInputDataBit(FB0_Z_PORT, FB0_Z_PIN);
@@ -207,9 +216,18 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 }
 
+static void nrt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;
+  struct enc_fb_pin_ctx_t *pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
+  if(indexprint == 1){
+    indexprint = 0;
+    printf("cnt = %i\n",indexpos);
+  }
+}
+
 const hal_comp_t enc_fb_comp_struct = {
     .name      = "enc_fb",
-    .nrt       = 0,
+    .nrt       = nrt_func,
     .rt        = rt_func,
     .frt       = 0,
     .nrt_init  = nrt_init,
