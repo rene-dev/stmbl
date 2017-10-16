@@ -163,8 +163,14 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 
   if(err_filter(&(ctx->hv_error), 3.0, 0.001, PIN(hv_error) > 0.0)) {
-    ctx->fault = HV_ERROR;
+    if(PIN(hv_error) > 1.0){
+      ctx->fault = HV_TIMEOUT_ERROR;
+    }
+    else{
+      ctx->fault = HV_CRC_ERROR;
+    }
     ctx->state = SOFT_FAULT;
+
   }
 
   if(ABS(PIN(pos_error)) > PIN(max_pos_error)) {
@@ -321,8 +327,12 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
             printf("saturation error\n");
             break;
 
-          case HV_ERROR:
-            printf("HV error\n");
+          case HV_CRC_ERROR:
+            printf("HV crc error\n");
+            break;
+
+          case HV_TIMEOUT_ERROR:
+            printf("HV timeout error\n");
             break;
 
           case HV_TEMP_ERROR:
