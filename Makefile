@@ -52,6 +52,8 @@ COMPS += shared/comps/spid.c
 COMPS += shared/comps/pe.c
 COMPS += shared/comps/pmsm_limits.c
 COMPS += shared/comps/pmsm_ttc.c
+COMPS += shared/comps/dc_limits.c
+COMPS += shared/comps/dc_ttc.c
 COMPS += shared/comps/acim_ttc.c
 COMPS += shared/comps/uvw.c
 COMPS += shared/comps/fanuc.c
@@ -63,6 +65,8 @@ COMPS += shared/comps/linrev.c
 COMPS += shared/comps/psi.c
 COMPS += shared/comps/stp.c
 COMPS += shared/comps/uf.c
+COMPS += shared/comps/ramp.c
+COMPS += shared/comps/scale.c
 
 SOURCES += $(COMPS)
 
