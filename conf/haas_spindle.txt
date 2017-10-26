@@ -1,0 +1,48 @@
+link pid
+link acim
+link enc_fb0
+link misc
+link sserial
+conf0.r = 1.4
+conf0.l = 0.0013
+conf0.j = 0.015
+conf0.max_force = 30
+conf0.max_vel = 800
+conf0.max_acc = 800
+conf0.max_ac_cur = 23
+conf0.mot_fb_res = 2000
+conf0.mot_fb_rev = 1
+conf0.cmd_res = 2000
+acim_ttc0.slip_n = 3
+acim_ttc0.cur_n = 23
+acim_ttc0.torque_n = 21
+acim_ttc0.mode = 1
+conf0.polecount = 2
+conf0.vel_p = 200
+conf0.vel_i = 10
+conf0.max_sat = 10
+conf0.cur_p = 1
+pe0.cap = 0.00136
+rev1.in = enc_fb0.ipos
+pid0.pos_en = 0
+conf0.max_dc_volt = 400
+conf0.high_dc_volt = 300
+load ramp
+load scale
+ramp0.rt_prio = 3.1
+scale0.rt_prio = 3
+ramp0.min = -400
+ramp0.max = 400
+ramp0.min_acc = 200
+ramp0.max_acc = 5
+ramp0.brake_scale = 0.65
+acim_ttc0.slip_n = 1
+pid0.max_torque = 30
+pid0.min_torque = -30
+pid0.vel_ext_cmd = ramp0.out
+ramp0.in = scale0.out0
+scale0.in0 = sserial0.pos_cmd
+scale0.scale = 0.1047197551
+scale0.in1 = vel1.vel
+sserail0.pos_fb = scale0.out1
+hv0.rt_prio = 16.5

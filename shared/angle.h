@@ -2,4 +2,5 @@
 
 float minus(float a, float b);
 float mod(float a);
+int quadrant(float a);
 void sincos_fast(float x, float *sin, float *cos);

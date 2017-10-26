@@ -211,10 +211,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     }
   }
 
-  if(ctx->timeout > 5) {
+  if(ctx->timeout > 3) {
     PIN(timeout)
     ++;
-    PIN(com_error) = 1.0;
+    PIN(com_error) = 2.0;
   }
   ctx->timeout++;
 
