@@ -83,7 +83,11 @@ void setup_res() {
   TIM_Cmd(TIM_SLAVE, ENABLE);
 
   /* ADC clock enable */
-  RCC_APB2PeriphClockCmd(FB0_SIN_ADC_RCC | FB0_COS_ADC_RCC | FB1_SIN_ADC_RCC | FB1_COS_ADC_RCC, ENABLE);
+  RCC_APB2PeriphClockCmd(FB0_SIN_ADC_RCC | FB0_COS_ADC_RCC, ENABLE);
+
+  #ifdef FB1
+  RCC_APB2PeriphClockCmd(FB1_SIN_ADC_RCC | FB1_COS_ADC_RCC, ENABLE);
+  #endif
 
   //Analog pin configuration
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -95,11 +99,13 @@ void setup_res() {
   GPIO_InitStructure.GPIO_Pin = FB0_COS_PIN;
   GPIO_Init(FB0_COS_PORT, &GPIO_InitStructure);
 
+  #ifdef FB1
   GPIO_InitStructure.GPIO_Pin = FB1_SIN_PIN;
   GPIO_Init(FB1_SIN_PORT, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = FB1_COS_PIN;
   GPIO_Init(FB1_COS_PORT, &GPIO_InitStructure);
+  #endif
 
   //ADC structure configuration
   ADC_DeInit();
@@ -127,10 +133,12 @@ void setup_res() {
     ADC_RegularChannelConfig(FB0_COS_ADC, FB0_COS_ADC_CHAN, i, RES_SampleTime);
   }
 
+  #ifdef FB1
   for(int i = ADC_OVER_FB0 + 1; i <= ADC_OVER_FB0 + ADC_OVER_FB1; i++) {
     ADC_RegularChannelConfig(FB1_SIN_ADC, FB1_SIN_ADC_CHAN, i, RES_SampleTime);
     ADC_RegularChannelConfig(FB1_COS_ADC, FB1_COS_ADC_CHAN, i, RES_SampleTime);
   }
+  #endif
 
   ADC_MultiModeDMARequestAfterLastTransferCmd(ENABLE);
 
