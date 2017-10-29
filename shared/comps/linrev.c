@@ -30,6 +30,8 @@ HAL_PIN(cmd_d_out);
 
 HAL_PIN(fb_in);
 HAL_PIN(fb_out);
+HAL_PIN(fb_d_in);
+HAL_PIN(fb_d_out);
 
 HAL_PIN(rev_clear);
 HAL_PIN(rev);
@@ -72,6 +74,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
   PIN(rev) = ctx->rev;
   PIN(fb_out) = ((PIN(fb_in) + ctx->rev * M_PI * 2.0) * scale) / (2.0 * M_PI);
+  PIN(fb_d_out) = (PIN(fb_d_in) * scale) / (2.0 * M_PI);
 }
 
 const hal_comp_t linrev_comp_struct = {
