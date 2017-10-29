@@ -39,7 +39,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(min_amp)               = 0.15;
 }
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
+  struct res_ctx_t *ctx = (struct res_ctx_t *)ctx_ptr;
   // struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
 
   ctx->abspos = 0;
@@ -128,10 +128,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float dpos = PIN(vel) * period / 2.0;
 
   if(a < PIN(min_amp)) {
-    PIN(error)   = 1.0;
+    PIN(error) = 1.0;
     PIN(state) = 0.0;
   } else {
-    PIN(error)   = 0.0;
+    PIN(error) = 0.0;
     PIN(state) = 3.0;
     if(p == 1.0f) {
       PIN(pos) = mod(pos + dpos);

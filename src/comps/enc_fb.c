@@ -34,7 +34,7 @@ struct enc_fb_ctx_t {
   float absoffset;
 };
 
-int indexpos = 0;
+int indexpos   = 0;
 int indexprint = 0;
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -84,7 +84,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_PinAFConfig(FB0_A_PORT, FB0_A_PIN_SOURCE, FB0_ENC_TIM_AF);
   GPIO_PinAFConfig(FB0_B_PORT, FB0_B_PIN_SOURCE, FB0_ENC_TIM_AF);
   GPIO_PinAFConfig(FB0_Z_PORT, FB0_Z_PIN_SOURCE, FB0_ENC_TIM_AF);
-  
+
   // enc res / turn
   TIM_SetAutoreload(FB0_ENC_TIM, ctx->e_res - 1);
 
@@ -92,8 +92,8 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   TIM_Cmd(FB0_ENC_TIM, DISABLE);
   TIM_EncoderInterfaceConfig(FB0_ENC_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Falling);
   TIM_Cmd(FB0_ENC_TIM, ENABLE);
-  FB0_ENC_TIM->CCMR2 |= TIM_CCMR2_CC3S_0;//CC3 channel is configured as input, IC3 is mapped on CH3
-  FB0_ENC_TIM->CCER  |= TIM_CCER_CC3E;//Capture enabled
+  FB0_ENC_TIM->CCMR2 |= TIM_CCMR2_CC3S_0;  //CC3 channel is configured as input, IC3 is mapped on CH3
+  FB0_ENC_TIM->CCER |= TIM_CCER_CC3E;  //Capture enabled
 }
 
 
@@ -184,21 +184,21 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   PIN(oquad) = q;
 
-  p = mod(tim * 2.0f * M_PI / (float)ctx->e_res);
+  p        = mod(tim * 2.0f * M_PI / (float)ctx->e_res);
   PIN(pos) = p;
 
-  if(FB0_ENC_TIM->SR & TIM_SR_CC3IF){
-    int cc = FB0_ENC_TIM->CCR3;
-    PIN(state) = 3.0;
+  if(FB0_ENC_TIM->SR & TIM_SR_CC3IF) {
+    int cc         = FB0_ENC_TIM->CCR3;
+    PIN(state)     = 3.0;
     ctx->absoffset = mod(cc * 2.0f * M_PI / (float)ctx->e_res);
-    if(PIN(indexprint) > 0.0){
-      indexpos = cc;
+    if(PIN(indexprint) > 0.0) {
+      indexpos   = cc;
       indexprint = 1;
     }
   }
   PIN(abs_pos) = minus(p, ctx->absoffset);
-  PIN(index)  = GPIO_ReadInputDataBit(FB0_Z_PORT, FB0_Z_PIN);
-  
+  PIN(index)   = GPIO_ReadInputDataBit(FB0_Z_PORT, FB0_Z_PIN);
+
 
   //TODO: fix EDGE
   if(a > 0.15 || EDGE(tim)) {
@@ -219,9 +219,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 static void nrt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;
   struct enc_fb_pin_ctx_t *pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
-  if(indexprint == 1){
+  if(indexprint == 1) {
     indexprint = 0;
-    printf("cnt = %i\n",indexpos);
+    printf("cnt = %i\n", indexpos);
   }
 }
 

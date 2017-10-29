@@ -8,7 +8,7 @@
 #define RES_SampleTime ADC_SampleTime_3Cycles
 
 // ADC_TIMER_FREQ / RES_TIMER_FREQ / ADC_TR_COUNT \in \N
-#define ADC_TR_COUNT 6 // ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) == 60
+#define ADC_TR_COUNT 6  // ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) == 60
 #define PID_WAVES 4
 #define ADC_OVER_FB0 10
 #define ADC_OVER_FB1 0
@@ -123,7 +123,7 @@
 #define RES_SampleTime ADC_SampleTime_3Cycles
 
 // ADC_TIMER_FREQ / RES_TIMER_FREQ / ADC_TR_COUNT \in \N
-#define ADC_TR_COUNT 6 // ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) == 60
+#define ADC_TR_COUNT 6  // ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) == 60
 #define PID_WAVES 4
 #define ADC_OVER_FB0 9
 #define ADC_OVER_FB1 1

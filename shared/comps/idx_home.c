@@ -22,29 +22,29 @@ struct idx_home_ctx_t {
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct idx_home_ctx_t *ctx      = (struct idx_home_ctx_t *)ctx_ptr;
   struct idx_home_pin_ctx_t *pins = (struct idx_home_pin_ctx_t *)pin_ptr;
-  
+
   uint8_t q = 0;
-  
-  if(PIN(index_en) > 0){
-    if(PIN(mot_state) == 3){
+
+  if(PIN(index_en) > 0) {
+    if(PIN(mot_state) == 3) {
       q = quadrant(PIN(fb_abs));
-      if(((q  == 1 && ctx->lastq == 4) || (q  == 4 && ctx->lastq == 1) ) || ctx->waitabs == 1){
+      if(((q == 1 && ctx->lastq == 4) || (q == 4 && ctx->lastq == 1)) || ctx->waitabs == 1) {
         PIN(index_clear) = 1;
-        ctx->state = 1;
+        ctx->state       = 1;
       }
       ctx->lastq = q;
-    }else{//index requested, but index not seen
+    } else {  //index requested, but index not seen
       ctx->waitabs = 1;
     }
   }
-  
-  if(!(PIN(index_en) > 0) && ctx->state == 1){
+
+  if(!(PIN(index_en) > 0) && ctx->state == 1) {
     PIN(index_clear) = 0;
   }
-  
-  if(ctx->state == 1){
+
+  if(ctx->state == 1) {
     PIN(pos_out) = PIN(fb_abs);
-  }else{
+  } else {
     PIN(pos_out) = PIN(fb);
   }
 }

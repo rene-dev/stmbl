@@ -49,7 +49,7 @@ void setup_res() {
   RCC_APB1PeriphClockCmd(TIM_MASTER_RCC, ENABLE);
   TIM_TimeBaseStructure.TIM_ClockDivision     = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode       = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Period            = ADC_TIMER_FREQ / RES_TIMER_FREQ / ADC_TR_COUNT - 1; // 240khz
+  TIM_TimeBaseStructure.TIM_Period            = ADC_TIMER_FREQ / RES_TIMER_FREQ / ADC_TR_COUNT - 1;  // 240khz
   TIM_TimeBaseStructure.TIM_Prescaler         = 0;
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
   TIM_TimeBaseInit(TIM_MASTER, &TIM_TimeBaseStructure);
@@ -85,9 +85,9 @@ void setup_res() {
   /* ADC clock enable */
   RCC_APB2PeriphClockCmd(FB0_SIN_ADC_RCC | FB0_COS_ADC_RCC, ENABLE);
 
-  #ifdef FB1
+#ifdef FB1
   RCC_APB2PeriphClockCmd(FB1_SIN_ADC_RCC | FB1_COS_ADC_RCC, ENABLE);
-  #endif
+#endif
 
   //Analog pin configuration
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -99,13 +99,13 @@ void setup_res() {
   GPIO_InitStructure.GPIO_Pin = FB0_COS_PIN;
   GPIO_Init(FB0_COS_PORT, &GPIO_InitStructure);
 
-  #ifdef FB1
+#ifdef FB1
   GPIO_InitStructure.GPIO_Pin = FB1_SIN_PIN;
   GPIO_Init(FB1_SIN_PORT, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = FB1_COS_PIN;
   GPIO_Init(FB1_COS_PORT, &GPIO_InitStructure);
-  #endif
+#endif
 
   //ADC structure configuration
   ADC_DeInit();
@@ -133,12 +133,12 @@ void setup_res() {
     ADC_RegularChannelConfig(FB0_COS_ADC, FB0_COS_ADC_CHAN, i, RES_SampleTime);
   }
 
-  #ifdef FB1
+#ifdef FB1
   for(int i = ADC_OVER_FB0 + 1; i <= ADC_OVER_FB0 + ADC_OVER_FB1; i++) {
     ADC_RegularChannelConfig(FB1_SIN_ADC, FB1_SIN_ADC_CHAN, i, RES_SampleTime);
     ADC_RegularChannelConfig(FB1_COS_ADC, FB1_COS_ADC_CHAN, i, RES_SampleTime);
   }
-  #endif
+#endif
 
   ADC_MultiModeDMARequestAfterLastTransferCmd(ENABLE);
 

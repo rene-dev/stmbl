@@ -103,9 +103,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     joint_offset *= -1.0;
   }
 
-  PIN(mot_fb_no_offset)   = mot_pos;
+  PIN(mot_fb_no_offset)     = mot_pos;
   PIN(mot_abs_fb_no_offset) = mot_abs_pos;
-  PIN(joint_fb_no_offset) = joint_pos;
+  PIN(joint_fb_no_offset)   = joint_pos;
 
   PIN(pos_fb) = mod(mot_pos + ctx->cmd_offset);
   PIN(vel_fb) = mot_pos;

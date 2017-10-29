@@ -69,11 +69,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   ctx->lastq = q;
 
-  if(PIN(rev_clear) > 0){
+  if(PIN(rev_clear) > 0) {
     ctx->rev = 0;
   }
-  PIN(rev) = ctx->rev;
-  PIN(fb_out) = ((PIN(fb_in) + ctx->rev * M_PI * 2.0) * scale) / (2.0 * M_PI);
+  PIN(rev)      = ctx->rev;
+  PIN(fb_out)   = ((PIN(fb_in) + ctx->rev * M_PI * 2.0) * scale) / (2.0 * M_PI);
   PIN(fb_d_out) = (PIN(fb_d_in) * scale) / (2.0 * M_PI);
 }
 

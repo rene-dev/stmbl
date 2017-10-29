@@ -87,11 +87,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     coi1 = 0;
     for(int j = 0; j < ADC_TR_COUNT; j++) {
       //ADC dual mode puts both channels in one word, right aligned.
-      for(int k = 0; k < ADC_OVER_FB0; k++){
+      for(int k = 0; k < ADC_OVER_FB0; k++) {
         sii0 += ADC_DMA_Buffer[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] & 0x0000ffff;
         coi0 += ADC_DMA_Buffer[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] >> 16;
       }
-      for(int k = ADC_OVER_FB0; k < ADC_OVER_FB0 + ADC_OVER_FB1; k++){
+      for(int k = ADC_OVER_FB0; k < ADC_OVER_FB0 + ADC_OVER_FB1; k++) {
         sii1 += ADC_DMA_Buffer[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] & 0x0000ffff;
         coi1 += ADC_DMA_Buffer[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] >> 16;
       }
@@ -172,7 +172,7 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
 hal_comp_t adc_comp_struct = {
     .name      = "adc",
-    .nrt       = 0,//nrt_func,
+    .nrt       = 0,  //nrt_func,
     .rt        = rt_func,
     .frt       = 0,
     .nrt_init  = nrt_init,

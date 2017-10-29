@@ -31,14 +31,14 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct uvw_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
   struct uvw_pin_ctx_t *pins = (struct uvw_pin_ctx_t *)pin_ptr;
 
-  PIN(p0) = 0;  //fault
-  PIN(p1) = 0;  //u      = 0
-  PIN(p2) = 2;  //v      = 2.094395
-  PIN(p3) = 1;  //u + v  = 1.047198
-  PIN(p4) = 4;  //w      = -2.094395
-  PIN(p5) = 5;  //u + w  = -1.047198
-  PIN(p6) = 3;  //v + w  = -3.141593
-  PIN(p7) = 0;  //fault
+  PIN(p0)    = 0;  //fault
+  PIN(p1)    = 0;  //u      = 0
+  PIN(p2)    = 2;  //v      = 2.094395
+  PIN(p3)    = 1;  //u + v  = 1.047198
+  PIN(p4)    = 4;  //w      = -2.094395
+  PIN(p5)    = 5;  //u + w  = -1.047198
+  PIN(p6)    = 3;  //v + w  = -3.141593
+  PIN(p7)    = 0;  //fault
   PIN(state) = 3.0;
 }
 
