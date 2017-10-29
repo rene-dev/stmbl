@@ -174,4 +174,5 @@ typedef struct {
   pd_metadata_t output_pins;
   pd_metadata_t fault;
   pd_metadata_t enable;
+  pd_metadata_t index_enable;
 } pd_table_t;
