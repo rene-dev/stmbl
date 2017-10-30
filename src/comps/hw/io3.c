@@ -1,11 +1,37 @@
+#include "commands.h"
+#include "hal.h"
+#include "defines.h"
+#include <stdio.h>
+#include <string.h>
+#include "stm32f4xx_conf.h"
+#include "hw/hw.h"
+#include "main.h"
+
+volatile uint64_t systime;
+#define BLINK(N)                           \
+  ({                                       \
+    int t = (systime / 300) % (2 * N + 2); \
+    if(t < 2) {                            \
+      t = 0;                               \
+    } else {                               \
+      t = t % 2;                           \
+    }                                      \
+    t;                                     \
+  })
+
 HAL_COMP(io);
 
-HAL_PIN(fan) = 0.0;
-HAL_PIN(state) = 0.0;
-HAL_PIN(fault) = 0.0;
-HAL_PIN(brake) = 0.0;
+HAL_PIN(fan);
+HAL_PIN(state);
+HAL_PIN(fault);
+HAL_PIN(brake);
 
-INIT(
+static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
+  struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
+
+    GPIO_InitTypeDef GPIO_InitStructure;
+
    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -16,6 +42,8 @@ INIT(
    GPIO_Init(GPIOC, &GPIO_InitStructure);
 
    //brake
+   TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+   TIM_OCInitTypeDef TIM_OCInitStructure;
    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV4;
    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
@@ -45,9 +73,11 @@ INIT(
    TIM_OC4PreloadConfig(TIM8, TIM_OCPreload_Enable);
    TIM_CtrlPWMOutputs(TIM8, ENABLE);
    
-);
+}
 
-NRT(
+static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
+  struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
    if(PIN(fan) > 0)
       GPIO_SetBits(GPIOC, GPIO_Pin_8);
    else
@@ -94,6 +124,19 @@ NRT(
       GPIO_SetBits(GPIOC, GPIO_Pin_11);
    else
       GPIO_ResetBits(GPIOC, GPIO_Pin_11);
-);
+  }
 
-ENDCOMP;
+  hal_comp_t io_comp_struct = {
+    .name      = "io",
+    .nrt       = 0,
+    .rt        = rt_func,
+    .frt       = 0,
+    .nrt_init  = 0,
+    .hw_init   = hw_init,
+    .rt_start  = 0,
+    .frt_start = 0,
+    .rt_stop   = 0,
+    .frt_stop  = 0,
+    .ctx_size  = 0,
+    .pin_count = sizeof(struct io_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+};

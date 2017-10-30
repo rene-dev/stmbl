@@ -60,10 +60,15 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
   struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
 
-  float si0[PID_WAVES * ADC_OVER_FB0], si1[PID_WAVES * ADC_OVER_FB1];
-  float co0[PID_WAVES * ADC_OVER_FB0], co1[PID_WAVES * ADC_OVER_FB1];
-  uint32_t sii0, sii1;
-  uint32_t coi0, coi1;
+  float si0[PID_WAVES * ADC_OVER_FB0];
+  float co0[PID_WAVES * ADC_OVER_FB0];
+  uint32_t sii0, coi0;
+
+  #ifdef FB1
+  float co1[PID_WAVES * ADC_OVER_FB1];
+  float si1[PID_WAVES * ADC_OVER_FB1];
+  uint32_t sii1, coi1;
+  #endif
 
   float s_o = PIN(sin_offset);
   float c_o = PIN(cos_offset);
@@ -83,18 +88,22 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   for(int i = 0; i < PID_WAVES; i++) {
     sii0 = 0;
     coi0 = 0;
+    #ifdef FB1
     sii1 = 0;
     coi1 = 0;
+    #endif
     for(int j = 0; j < ADC_TR_COUNT; j++) {
       //ADC dual mode puts both channels in one word, right aligned.
       for(int k = 0; k < ADC_OVER_FB0; k++) {
         sii0 += ADC_DMA_Buffer[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] & 0x0000ffff;
         coi0 += ADC_DMA_Buffer[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] >> 16;
       }
+      #ifdef FB1
       for(int k = ADC_OVER_FB0; k < ADC_OVER_FB0 + ADC_OVER_FB1; k++) {
         sii1 += ADC_DMA_Buffer[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] & 0x0000ffff;
         coi1 += ADC_DMA_Buffer[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] >> 16;
       }
+      #endif
       // if(ctx->send == 0) {  // TODO: move V_DIFF2 to nrt, this is too slow
       //   ctx->txbuf[0][ctx->txpos] = (((i == 0 || i == 2) && (PIN(res_en) > 0.0)) ? -1.0 : 1.0) * V_DIFF2(ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff);
       //   ctx->txbuf[1][ctx->txpos] = (((i == 0 || i == 2) && (PIN(res_en) > 0.0)) ? -1.0 : 1.0) * V_DIFF2(ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16);
@@ -103,8 +112,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     }
     si0[i] = s_g * V_DIFF(sii0, ADC_TR_COUNT * ADC_OVER_FB0) + s_o;
     co0[i] = c_g * V_DIFF(coi0, ADC_TR_COUNT * ADC_OVER_FB0) + c_o;
+    #ifdef FB1
     si1[i] = s_g * V_DIFF(sii1, ADC_TR_COUNT * ADC_OVER_FB1) + s_o;
     co1[i] = c_g * V_DIFF(coi1, ADC_TR_COUNT * ADC_OVER_FB1) + c_o;
+    #endif
   }
   // if(ctx->send == 0) {
   //   ctx->send  = 1;
@@ -113,10 +124,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   PIN(sin3) = si0[3];
   PIN(cos3) = co0[3];
-
+  #ifdef FB1
   PIN(sin1) = si1[3];
   PIN(cos1) = co1[3];
-
+  #endif
   if(PIN(res_en) > 0.0) {
     s = (si0[3] - si0[2] + si0[1] - si0[0]) / 4.0;
     c = (co0[3] - co0[2] + co0[1] - co0[0]) / 4.0;
