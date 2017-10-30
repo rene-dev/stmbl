@@ -28,8 +28,8 @@ HWVERSION = v4
 
 ifeq ($(HWVERSION),v3)
 	COMPS += src/comps/hw/io3.c
-	COMPS += src/comps/hvf1.c
-	CPPFLAGS += -DV3
+	#COMPS += src/comps/hvf1.c
+	CFLAGS += -DV3
 else
 	COMPS += src/comps/hw/io4.c
 	COMPS += src/comps/hv.c
@@ -37,7 +37,7 @@ else
 	COMPS += src/comps/enc_cmd.c
 	COMPS += src/comps/o_fb.c
 	COMPS += src/comps/sserial.c
-	CPPFLAGS += -DV4
+	CFLAGS += -DV4
 endif
 
 COMPS += src/comps/encm.c
