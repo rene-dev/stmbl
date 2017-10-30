@@ -28,7 +28,8 @@ HWVERSION = v4
 
 ifeq ($(HWVERSION),v3)
 	COMPS += src/comps/hw/io3.c
-	#COMPS += src/comps/hvf1.c
+	COMPS += src/comps/hvf1.c
+	SOURCES += shared/common_f1.c
 	CFLAGS += -DV3
 else
 	COMPS += src/comps/hw/io4.c
