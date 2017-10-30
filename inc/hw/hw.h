@@ -1,7 +1,5 @@
 #pragma once
 
-#define V4
-
 #ifdef V3
 
 //sample times for F4: 3,15,28,56,84,112,144,480

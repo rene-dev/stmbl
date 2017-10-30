@@ -24,16 +24,27 @@ SOURCES += src/usb_cdc.c
 # SOURCES += src/hal_conf.c
 SOURCES += src/hal_tbl.c
 
-COMPS += src/comps/hw/io4.c
+HWVERSION = v4
+
+ifeq ($(HWVERSION),v3)
+	COMPS += src/comps/hw/io3.c
+	COMPS += src/comps/hvf1.c
+	CPPFLAGS += -DV3
+else
+	COMPS += src/comps/hw/io4.c
+	COMPS += src/comps/hv.c
+	#TODO: need backport to v3
+	COMPS += src/comps/enc_cmd.c
+	COMPS += src/comps/o_fb.c
+	COMPS += src/comps/sserial.c
+	CPPFLAGS += -DV4
+endif
+
 COMPS += src/comps/encm.c
-COMPS += src/comps/hv.c
 COMPS += src/comps/adc.c
 COMPS += src/comps/enc_fb.c
-COMPS += src/comps/enc_cmd.c
-COMPS += src/comps/o_fb.c
 COMPS += src/comps/conf.c
 COMPS += src/comps/res.c
-COMPS += src/comps/sserial.c
 
 COMPS += shared/comps/sim.c
 COMPS += shared/comps/term.c
