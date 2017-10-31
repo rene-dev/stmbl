@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2
+EESchema Schematic File Version 3
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -1029,7 +1029,7 @@ F 3 "" H 10000 5650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Q_NMOS_GDS Q2
+L Q_NMOS_GSD Q2
 U 1 1 595A06A7
 P 9250 6050
 F 0 "Q2" H 9455 6096 50  0000 L CNN
@@ -1187,9 +1187,9 @@ Wire Wire Line
 	8450 4950 8600 4950
 Wire Wire Line
 	8450 5050 8600 5050
-Text GLabel 1300 4600 2    60   Input ~ 0
-swdio
 Text GLabel 1300 4400 2    60   Input ~ 0
+swdio
+Text GLabel 1300 4600 2    60   Input ~ 0
 swclk
 $Comp
 L GNDPWR #PWR010
@@ -1235,7 +1235,7 @@ $EndComp
 Wire Wire Line
 	9000 5600 9000 5650
 Wire Wire Line
-	9000 5950 9000 6050
+	9000 5950 9000 6200
 Connection ~ 9000 6050
 $Comp
 L D D7
@@ -1269,7 +1269,7 @@ Wire Wire Line
 Connection ~ 2500 1700
 Connection ~ 2300 1700
 $Comp
-L Q_NPN_BCE Q1
+L Q_NPN_BEC Q1
 U 1 1 595CEFC2
 P 3650 1850
 F 0 "Q1" H 3840 1896 50  0000 L CNN
@@ -1434,7 +1434,7 @@ F 1 "LTV-817" H 1650 874 50  0000 C CNN
 F 2 "Opto-Devices:Optocoupler_SMD_HandSoldering_KPC357_LTV35x_PC357_SingleChannel" H 1450 900 50  0001 L CIN
 F 3 "" H 1650 1000 50  0001 L CNN
 	1    1650 1100
-	1    0    0    1   
+	1    0    0    -1  
 $EndComp
 $Comp
 L LTV-817 U5
@@ -1501,42 +1501,12 @@ Wire Wire Line
 	2400 3250 2800 3250
 Wire Wire Line
 	3250 3250 2900 3250
-$Comp
-L R R22
-U 1 1 596AB29F
-P 9900 5250
-F 0 "R22" H 9970 5296 50  0000 L CNN
-F 1 "R" H 9970 5205 50  0000 L CNN
-F 2 "Diodes_ThroughHole:Diode_TO-247_Horizontal_largePads" V 9830 5250 50  0001 C CNN
-F 3 "" H 9900 5250 50  0001 C CNN
-	1    9900 5250
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	10100 5150 10200 5150
 Wire Wire Line
 	10100 5250 10100 5450
 Wire Wire Line
 	10100 5250 10200 5250
-Wire Wire Line
-	9750 5400 10100 5400
-Connection ~ 10100 5400
-Wire Wire Line
-	9750 5100 10100 5100
-Connection ~ 10100 5100
-$Comp
-L R R21
-U 1 1 596ABD94
-P 9750 5250
-F 0 "R21" H 9820 5296 50  0000 L CNN
-F 1 "R" H 9820 5205 50  0000 L CNN
-F 2 "Diodes_ThroughHole:Diode_TO-247_Horizontal_largePads" V 9680 5250 50  0001 C CNN
-F 3 "" H 9750 5250 50  0001 C CNN
-	1    9750 5250
-	1    0    0    -1  
-$EndComp
-Connection ~ 9900 5400
-Connection ~ 9900 5100
 Wire Wire Line
 	5300 2000 5300 2750
 Wire Wire Line
@@ -1605,17 +1575,6 @@ F 3 "" H 6300 7150 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L GNDPWR #PWR036
-U 1 1 596B727C
-P 6300 7450
-F 0 "#PWR036" H 6300 7250 50  0001 C CNN
-F 1 "GNDPWR" H 6300 7320 50  0000 C CNN
-F 2 "" H 6300 7400 60  0000 C CNN
-F 3 "" H 6300 7400 60  0000 C CNN
-	1    6300 7450
-	1    0    0    -1  
-$EndComp
-$Comp
 L R R25
 U 1 1 596B7282
 P 6300 6700
@@ -1645,15 +1604,10 @@ F 3 "" H 6300 6300 30  0000 C CNN
 $EndComp
 Wire Wire Line
 	6300 6050 6300 6150
-Text GLabel 6300 6050 1    60   Input ~ 0
+Text GLabel 6300 7450 2    60   Input ~ 0
 BRAKE
-Text GLabel 9500 5750 2    60   Input ~ 0
+Text GLabel 8950 6200 0    60   Input ~ 0
 BRAKE
-Wire Wire Line
-	9450 5650 9450 5750
-Wire Wire Line
-	9450 5750 9500 5750
-Connection ~ 9450 5650
 Connection ~ 2100 1000
 Connection ~ 5500 3500
 $Comp
@@ -1827,4 +1781,17 @@ Wire Wire Line
 	2000 6400 3650 6400
 Wire Wire Line
 	2400 6900 3650 6900
+Wire Wire Line
+	9000 6200 8950 6200
+$Comp
+L +3.3VP #PWR?
+U 1 1 59DFD3FA
+P 6300 6050
+F 0 "#PWR?" H 6450 6000 50  0001 C CNN
+F 1 "+3.3VP" H 6300 6150 50  0000 C CNN
+F 2 "" H 6300 6050 60  0000 C CNN
+F 3 "" H 6300 6050 60  0000 C CNN
+	1    6300 6050
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

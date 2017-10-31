@@ -75,17 +75,17 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct fault_ctx_t *ctx      = (struct fault_ctx_t *)ctx_ptr;
   struct fault_pin_ctx_t *pins = (struct fault_pin_ctx_t *)pin_ptr;
 
-  ctx->state            = DISABLED;
-  ctx->fault            = NO_ERROR;
-  PIN(min_dc_volt)      = 20.0;
-  PIN(high_dc_volt)     = 370.0;
-  PIN(max_dc_volt)      = 390.0;
-  PIN(max_hv_temp)      = 90.0;
-  PIN(max_mot_temp)     = 100.0;
-  PIN(high_hv_temp)     = 70.0;
-  PIN(high_mot_temp)    = 80.0;
-  PIN(fan_hv_temp)      = 60.0;
-  PIN(fan_mot_temp)     = 60.0;
+  ctx->state         = DISABLED;
+  ctx->fault         = NO_ERROR;
+  PIN(min_dc_volt)   = 20.0;
+  PIN(high_dc_volt)  = 370.0;
+  PIN(max_dc_volt)   = 390.0;
+  PIN(max_hv_temp)   = 90.0;
+  PIN(max_mot_temp)  = 100.0;
+  PIN(high_hv_temp)  = 70.0;
+  PIN(high_mot_temp) = 80.0;
+  PIN(fan_hv_temp)   = 60.0;
+  PIN(fan_mot_temp)  = 60.0;
 }
 
 float err_filter(float *ctx, float max, float dens, float err) {
@@ -123,7 +123,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
     case PHASING:
       if(PIN(fb_ready) > 0.0) {
-        ctx->state        = ENABLED;
+        ctx->state = ENABLED;
       }
 
       if(PIN(en) <= 0.0) {
@@ -148,29 +148,27 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 
   if(err_filter(&(ctx->mot_fb_error), 5.0, 0.001, PIN(mot_fb_error) > 0.0)) {
-    ctx->fault  = MOT_FB_ERROR;
-    ctx->state  = SOFT_FAULT;
+    ctx->fault = MOT_FB_ERROR;
+    ctx->state = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->com_fb_error), 5.0, 0.001, PIN(com_fb_error) > 0.0)) {
-    ctx->fault  = COM_FB_ERROR;
-    ctx->state  = SOFT_FAULT;
+    ctx->fault = COM_FB_ERROR;
+    ctx->state = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->joint_fb_error), 5.0, 0.001, PIN(joint_fb_error) > 0.0)) {
-    ctx->fault  = JOINT_FB_ERROR;
-    ctx->state  = SOFT_FAULT;
+    ctx->fault = JOINT_FB_ERROR;
+    ctx->state = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->hv_error), 3.0, 0.001, PIN(hv_error) > 0.0)) {
-    if(PIN(hv_error) > 1.0){
+    if(PIN(hv_error) > 1.0) {
       ctx->fault = HV_TIMEOUT_ERROR;
-    }
-    else{
+    } else {
       ctx->fault = HV_CRC_ERROR;
     }
     ctx->state = SOFT_FAULT;
-
   }
 
   if(ABS(PIN(pos_error)) > PIN(max_pos_error)) {
@@ -224,44 +222,44 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   switch(ctx->state) {
     case DISABLED:
-      PIN(mot_brake)   = 0.0;
-      PIN(en_out)      = 0.0;
-      PIN(en_fb)       = 0.0;
-      PIN(en_pid)      = 0.0;
-      ctx->fault       = NO_ERROR;
+      PIN(mot_brake) = 0.0;
+      PIN(en_out)    = 0.0;
+      PIN(en_fb)     = 0.0;
+      PIN(en_pid)    = 0.0;
+      ctx->fault     = NO_ERROR;
       // scale = 0.0;
       break;
 
     case ENABLED:
-      PIN(mot_brake)   = 1.0;
-      PIN(en_out)      = 1.0;
-      PIN(en_fb)       = 1.0;
-      PIN(en_pid)      = 1.0;
-      ctx->fault       = NO_ERROR;
+      PIN(mot_brake) = 1.0;
+      PIN(en_out)    = 1.0;
+      PIN(en_fb)     = 1.0;
+      PIN(en_pid)    = 1.0;
+      ctx->fault     = NO_ERROR;
       break;
 
     case PHASING:
-      PIN(mot_brake)   = 1.0;
-      ctx->fault       = NO_ERROR;
-      PIN(en_pid)      = 0.0;
-      PIN(en_fb)       = 1.0;
-      PIN(en_out)      = 1.0;
+      PIN(mot_brake) = 1.0;
+      ctx->fault     = NO_ERROR;
+      PIN(en_pid)    = 0.0;
+      PIN(en_fb)     = 1.0;
+      PIN(en_out)    = 1.0;
       break;
 
     case SOFT_FAULT:
-      PIN(mot_brake)   = 0.0;
-      PIN(en_out)      = 0.0;
-      PIN(en_fb)       = 0.0;
-      PIN(en_pid)      = 0.0;
+      PIN(mot_brake) = 0.0;
+      PIN(en_out)    = 0.0;
+      PIN(en_fb)     = 0.0;
+      PIN(en_pid)    = 0.0;
       // scale = 0.0;
       break;
 
     case LED_TEST:
     case HARD_FAULT:
-      PIN(mot_brake)   = 0.0;
-      PIN(en_out)      = 0.0;
-      PIN(en_fb)       = 0.0;
-      PIN(en_pid)      = 0.0;
+      PIN(mot_brake) = 0.0;
+      PIN(en_out)    = 0.0;
+      PIN(en_fb)     = 0.0;
+      PIN(en_pid)    = 0.0;
       // scale = 0.0;
       break;
   }

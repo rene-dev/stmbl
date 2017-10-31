@@ -1,10 +1,12 @@
 load sserial
 load vel_int
 load linrev
+load idx_home
 sserial0.rt_prio = 2.0
 sserial0.frt_prio = 2.0
 linrev0.rt_prio = 2.1
 vel_int0.rt_prio = 2.2
+idx_home0.rt_prio = 2.3
 linrev0.cmd_in = sserial0.pos_cmd
 linrev0.cmd_d_in = sserial0.pos_cmd_d
 vel_int0.pos_in = linrev0.cmd_out
@@ -13,7 +15,13 @@ fault0.en = sserial0.enable
 sserial0.fault = fault0.fault
 fault0.cmd_error = sserial0.error
 fault0.brake_release = sserial0.out0
-linrev0.fb_in = fb_switch0.mot_fb_no_offset
+linrev0.fb_in = idx_home0.pos_out
+idx_home0.fb = fb_switch0.mot_fb_no_offset
+idx_home0.fb_abs = fb_switch0.mot_abs_fb_no_offset
+idx_home0.index_en = sserial0.index_out
+idx_home0.mot_state = fb_switch0.mot_state
+sserial0.index_clear = idx_home0.index_clear
+linrev0.rev_clear = sserial0.index_clear
 sserial0.pos_fb = linrev0.fb_out
 rev0.in = vel_int0.pos_out
 rev0.in_d = vel_int0.vel_out

@@ -1,5 +1,5 @@
 #include "stm32f10x_conf.h"
-#include "common.h"
+#include "common_f1.h"
 #include "defines.h"
 #include "version.h"
 #include <math.h>

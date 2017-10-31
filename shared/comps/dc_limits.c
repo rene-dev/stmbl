@@ -40,10 +40,10 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct dc_limits_ctx_t * ctx = (struct dc_limits_ctx_t *)ctx_ptr;
   struct dc_limits_pin_ctx_t *pins = (struct dc_limits_pin_ctx_t *)pin_ptr;
 
-  PIN(psi)       = 0.01;
-  PIN(r)         = 1.0;
-  PIN(ld)        = 0.001;
-  PIN(lq)        = 0.001;
+  PIN(psi) = 0.01;
+  PIN(r)   = 1.0;
+  PIN(ld)  = 0.001;
+  PIN(lq)  = 0.001;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -58,7 +58,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float vel = PIN(vel);
 
   float indq = vel * psi;
-  
+
   float volt           = PIN(ac_volt);
   float abs_max_cur    = volt / r;
   float abs_max_vel    = volt / psi;

@@ -113,3 +113,19 @@ inline float mod(float a) {
     return fmodf(a + M_PI, M_PI * 2.0) - M_PI;
   }
 }
+
+int quadrant(float a) {
+  if(a >= 0) {
+    if(a < M_PI / 2.0) {
+      return 1;
+    } else {
+      return 2;
+    }
+  } else if(a < 0) {
+    if(a < -M_PI / 2.0) {
+      return 3;
+    } else {
+      return 4;
+    }
+  }
+}

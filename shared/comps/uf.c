@@ -19,15 +19,15 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   // struct uf_ctx_t * ctx = (struct uf_ctx_t *)ctx_ptr;
   struct uf_pin_ctx_t *pins = (struct uf_pin_ctx_t *)pin_ptr;
 
-  if(PIN(f_fb) < PIN(f_cmd)){
+  if(PIN(f_fb) < PIN(f_cmd)) {
     PIN(f_fb) += PIN(max_acc) * period;
   }
-  if(PIN(f_fb) > PIN(f_cmd)){
+  if(PIN(f_fb) > PIN(f_cmd)) {
     PIN(f_fb) -= PIN(min_acc) * period;
   }
   PIN(pos) += PIN(f_fb) * 2.0 * M_PI * period;
   PIN(pos) = mod(PIN(pos));
-  PIN(ud) = PIN(un) / MAX(PIN(fn), 1.0) * PIN(f_fb);
+  PIN(ud)  = PIN(un) / MAX(PIN(fn), 1.0) * PIN(f_fb);
 }
 
 hal_comp_t uf_comp_struct = {

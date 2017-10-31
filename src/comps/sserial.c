@@ -23,7 +23,6 @@
 #include "hal.h"
 #include "math.h"
 #include "defines.h"
-#include "angle.h"
 #include "stm32f4xx_conf.h"
 #include "hw/hw.h"
 #include "sserial.h"
@@ -34,15 +33,15 @@
 HAL_COMP(sserial);
 
 // pins
-HAL_PIN(dump_pd_vals);
 HAL_PIN(error);
-HAL_PIN(crc_error);  //counts crc errors
+HAL_PIN(crc_error);  //counts crc errors, is never reset
 HAL_PIN(connected);  //connection status TODO: not stable during startup, needs link to pd
 HAL_PIN(timeout);  // 20khz / 1khz * 2 reads = 40
 
 HAL_PIN(pos_cmd);
 HAL_PIN(pos_cmd_d);
 HAL_PIN(pos_fb);
+HAL_PIN(vel_fb);
 
 HAL_PIN(in0);
 HAL_PIN(in1);
@@ -55,6 +54,10 @@ HAL_PIN(out1);
 HAL_PIN(out2);
 HAL_PIN(out3);
 HAL_PIN(enable);
+HAL_PIN(index_clear);
+HAL_PIN(index_out);
+
+HAL_PIN(period);
 
 //TODO: move to ctx
 struct sserial_ctx_t {
@@ -62,19 +65,102 @@ struct sserial_ctx_t {
 };
 
 volatile uint8_t rxbuf[128];
-volatile uint8_t txbuf[20];
+volatile uint8_t txbuf[128];
 uint16_t address;  //current address pointer
 int rxpos;
-memory_t memory;
-uint8_t *heap_ptr;
+discovery_rpc_t discovery;
 uint32_t timeout;
-pd_table_t pd_table;
 float last_pos_cmd;
+float host_period;
 lbp_t lbp;
 char name[] = LBPCardName;
 int bufferpos;
 int available;
 unit_no_t unit;
+
+#pragma pack(1)
+//*****************************************************************************
+uint8_t sserial_slave[] = {
+    0x0A, 0x09, 0x63, 0x01, 0x7B, 0x01, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0xA0, 0x20, 0x10, 0x80,
+    0x00, 0x00, 0x80, 0xFF, 0x00, 0x00, 0x80, 0x7F,
+    0x08, 0x00, 0x72, 0x61, 0x64, 0x00, 0x70, 0x6F,
+    0x73, 0x5F, 0x63, 0x6D, 0x64, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0xA0, 0x20, 0x10, 0x80,
+    0x00, 0x00, 0x80, 0xFF, 0x00, 0x00, 0x80, 0x7F,
+    0x26, 0x00, 0x72, 0x61, 0x64, 0x00, 0x76, 0x65,
+    0x6C, 0x5F, 0x63, 0x6D, 0x64, 0x00, 0x00, 0x00,
+    0xA0, 0x04, 0x01, 0x80, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x80, 0x3F, 0x46, 0x00, 0x6E, 0x6F,
+    0x6E, 0x65, 0x00, 0x6F, 0x75, 0x74, 0x70, 0x75,
+    0x74, 0x5F, 0x70, 0x69, 0x6E, 0x73, 0x00, 0x00,
+    0xA0, 0x01, 0x07, 0x80, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x80, 0x3F, 0x67, 0x00, 0x6E, 0x6F,
+    0x6E, 0x65, 0x00, 0x65, 0x6E, 0x61, 0x62, 0x6C,
+    0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0xA0, 0x20, 0x10, 0x00, 0x00, 0x00, 0x80, 0xFF,
+    0x00, 0x00, 0x80, 0x7F, 0x82, 0x00, 0x72, 0x61,
+    0x64, 0x00, 0x70, 0x6F, 0x73, 0x5F, 0x66, 0x62,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0xA0, 0x20, 0x10, 0x00, 0x00, 0x00, 0x80, 0xFF,
+    0x00, 0x00, 0x80, 0x7F, 0xA1, 0x00, 0x72, 0x61,
+    0x64, 0x00, 0x76, 0x65, 0x6C, 0x5F, 0x66, 0x62,
+    0x00, 0x00, 0x00, 0x00, 0xA0, 0x04, 0x01, 0x00,
+    0x00, 0x00, 0xC8, 0xC2, 0x00, 0x00, 0xC8, 0x42,
+    0xC1, 0x00, 0x6E, 0x6F, 0x6E, 0x65, 0x00, 0x69,
+    0x6E, 0x70, 0x75, 0x74, 0x5F, 0x70, 0x69, 0x6E,
+    0x73, 0x00, 0x00, 0x00, 0xA0, 0x01, 0x07, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x3F,
+    0xE2, 0x00, 0x6E, 0x6F, 0x6E, 0x65, 0x00, 0x66,
+    0x61, 0x75, 0x6C, 0x74, 0x00, 0x00, 0x00, 0x00,
+    0xA0, 0x01, 0x07, 0x40, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x80, 0x3F, 0xFD, 0x00, 0x6E, 0x6F,
+    0x6E, 0x65, 0x00, 0x69, 0x6E, 0x64, 0x65, 0x78,
+    0x5F, 0x65, 0x6E, 0x61, 0x62, 0x6C, 0x65, 0x00,
+    0xB0, 0x00, 0x01, 0x00, 0x50, 0x6F, 0x73, 0x69,
+    0x74, 0x69, 0x6F, 0x6E, 0x20, 0x6D, 0x6F, 0x64,
+    0x65, 0x00, 0x00, 0x00, 0xA0, 0x02, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x32, 0x01, 0x00, 0x70, 0x61, 0x64, 0x64, 0x69,
+    0x6E, 0x67, 0x00, 0x00, 0xA0, 0x02, 0x00, 0x80,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x4B, 0x01, 0x00, 0x70, 0x61, 0x64, 0x64, 0x69,
+    0x6E, 0x67, 0x00, 0x0C, 0x00, 0x2C, 0x00, 0x48,
+    0x00, 0x68, 0x00, 0x88, 0x00, 0xA8, 0x00, 0xC4,
+    0x00, 0xE4, 0x00, 0x00, 0x01, 0x34, 0x01, 0x4C,
+    0x01, 0x00, 0x00, 0x20, 0x01, 0x00, 0x00,
+};
+uint16_t sserial_ptocp = 0x0163;
+uint16_t sserial_gtocp = 0x017B;
+
+typedef struct {
+  float pos_cmd;
+  float vel_cmd;
+  uint32_t output_pins_0 : 1;
+  uint32_t output_pins_1 : 1;
+  uint32_t output_pins_2 : 1;
+  uint32_t output_pins_3 : 1;
+  uint32_t enable : 1;
+  uint32_t index_enable : 1;
+  uint32_t padding : 2;
+} sserial_out_process_data_t;  //size:9 bytes
+_Static_assert(sizeof(sserial_out_process_data_t) == 9, "sserial_out_process_data_t size error!");
+
+typedef struct {
+  float pos_fb;
+  float vel_fb;
+  uint32_t input_pins_0 : 1;
+  uint32_t input_pins_1 : 1;
+  uint32_t input_pins_2 : 1;
+  uint32_t input_pins_3 : 1;
+  uint32_t fault : 1;
+  uint32_t index_enable : 1;
+  uint32_t padding : 2;
+} sserial_in_process_data_t;  //size:9 bytes
+_Static_assert(sizeof(sserial_in_process_data_t) == 9, "sserial_in_process_data_t size error!");
+//******************************************************************************
+sserial_out_process_data_t data_out;
+sserial_in_process_data_t data_in;
 
 uint8_t crc_reuest(uint8_t len) {
   uint8_t crc = crc8_init();
@@ -102,73 +188,6 @@ void send(uint8_t len, uint8_t docrc) {
   DMA_Cmd(DMA1_Stream4, DISABLE);
   DMA_ClearFlag(DMA1_Stream4, DMA_FLAG_TCIF4);
   DMA_Cmd(DMA1_Stream4, ENABLE);
-}
-
-
-uint16_t add_pd(char *name_string, char *unit_string, uint8_t data_size_in_bits, uint8_t data_type, uint8_t data_dir, float param_min, float param_max) {
-  process_data_descriptor_t pdr;
-  pdr.record_type    = RECORD_TYPE_PROCESS_DATA_RECORD;
-  pdr.data_size      = data_size_in_bits;
-  pdr.data_type      = data_type;
-  pdr.data_direction = data_dir;
-  pdr.param_min      = param_min;
-  pdr.param_max      = param_max;
-  pdr.data_addr      = MEMPTR(*heap_ptr);
-
-  heap_ptr += NUM_BYTES(data_size_in_bits);
-  // this aligns the heap pointer to 32bit.  Not doing this causes the floats in the pd to be misaligned, which crashes the arm.
-  if((uint32_t)heap_ptr % 4) {
-    heap_ptr += 4 - (uint32_t)heap_ptr % 4;
-  }
-
-  memcpy(heap_ptr, &pdr, sizeof(process_data_descriptor_t));
-  // note that we don't store the names in the struct anymore.  The fixed-length struct is copied into memory, and then the nmaes go in directly behind it, so they'll read out properly
-
-  uint16_t pd_ptr = MEMPTR(*heap_ptr);  // save off the ptr to return, before we modify the heap ptr
-
-  heap_ptr = (uint8_t *)&(((process_data_descriptor_t *)heap_ptr)->names);
-
-  // copy the strings in after the pd
-  strcpy((char *)heap_ptr, unit_string);
-  heap_ptr += strlen(unit_string) + 1;
-
-  strcpy((char *)heap_ptr, name_string);
-  heap_ptr += strlen(name_string) + 1;
-
-  // moved this up to before the pd record
-  /*
-   // this aligns the heap pointer to 32bit.  Not doing this causes the floats in the pd to be misaligned, which crashes the arm.
-   if((uint32_t)heap_ptr % 4){
-   heap_ptr += 4 - (uint32_t)heap_ptr % 4;
-   }
-   */
-
-  return pd_ptr;
-}
-
-uint16_t add_mode(char *name_string, uint8_t index, uint8_t type) {
-  mode_descriptor_t mdr;
-  mdr.record_type = RECORD_TYPE_MODE_DATA_RECORD;
-  mdr.index       = index;
-  mdr.type        = type;  //hw = 0, sw = 1
-  mdr.unused      = 0x00;
-
-  memcpy(heap_ptr, &mdr, sizeof(mode_descriptor_t));
-
-  uint16_t md_ptr = MEMPTR(*heap_ptr);
-
-  heap_ptr = (uint8_t *)&(((mode_descriptor_t *)heap_ptr)->names);
-
-  strcpy((char *)heap_ptr, name_string);
-  heap_ptr += strlen(name_string) + 1;
-
-  return md_ptr;
-}
-
-void metadata(pd_metadata_t *pdm, process_data_descriptor_t *ptr) {
-  pdm->ptr    = ptr;
-  pdm->range  = ptr->data_type == DATA_TYPE_SIGNED ? MAX(ABS(ptr->param_min), ABS(ptr->param_max)) * 2 : ptr->param_max;
-  pdm->bitmax = (1 << ptr->data_size) - 1;
 }
 
 //v3
@@ -301,221 +320,21 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   //generate unit number from 96bit unique chip ID
   unit.unit = U_ID[0] ^ U_ID[1] ^ U_ID[2];
 
-
   rxpos   = 0;
   timeout = 1000;  //make sure we start in timeout
 
-  heap_ptr = memory.heap;
-
-  uint16_t input_bits  = 8;  // this starts at 8 bits = 1 byte for the fault byte
-  uint16_t output_bits = 0;
-
-  // these are temp toc arrays that the macros will write pointers into.  the tocs get copied to main memory after everything else is written in
-  uint16_t ptoc[32];
-  uint16_t gtoc[32];
-
-  uint16_t *ptocp = ptoc;
-  uint16_t *gtocp = gtoc;
-  process_data_descriptor_t *last_pd;
-
-  ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));
-  metadata(&(pd_table.output_pins), last_pd);
-  ADD_PROCESS_VAR(("enable", "none", 1, DATA_TYPE_BOOLEAN, DATA_DIRECTION_OUTPUT, 0, 1));
-  metadata(&(pd_table.enable), last_pd);
-  ADD_PROCESS_VAR(("pos_cmd", "rad", 32, DATA_TYPE_FLOAT, DATA_DIRECTION_OUTPUT, -INFINITY, INFINITY));
-  metadata(&(pd_table.pos_cmd), last_pd);
-
-  ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, -100, 100));
-  metadata(&(pd_table.input_pins), last_pd);
-  ADD_PROCESS_VAR(("fault", "none", 1, DATA_TYPE_BOOLEAN, DATA_DIRECTION_INPUT, 0, 1));
-  metadata(&(pd_table.fault), last_pd);
-  ADD_PROCESS_VAR(("pos_fb", "rad", 32, DATA_TYPE_FLOAT, DATA_DIRECTION_INPUT, -INFINITY, INFINITY));
-  metadata(&(pd_table.pos_fb), last_pd);
-  //globals and modes are not working. https://github.com/LinuxCNC/linuxcnc/blob/2957cc5ad0a463c39fb35c10a0c14909c09a5fb7/src/hal/drivers/mesa-hostmot2/sserial.c#L1516
-  // - globals need write support
-  // - linuxcnc only supports globals of type DATA_TYPE_NONVOL_UNSIGNED or DATA_TYPE_NONVOL_SIGNED
-  //ADD_GLOBAL_VAR(("swr", "non", 8, DATA_TYPE_NONVOL_UNSIGNED, DATA_DIRECTION_OUTPUT, 0, 0));
-
-  //ADD_MODE(("foo", 0, 0));
-  ADD_MODE(("Position mode", 0, 1));
-
-  // automatically create padding pds based on the mod remainder of input/output bits
-  if(input_bits % 8)
-    ADD_PROCESS_VAR(("padding", "", 8 - (input_bits % 8), DATA_TYPE_PAD, DATA_DIRECTION_INPUT, 0, 0));
-  if(output_bits % 8)
-    ADD_PROCESS_VAR(("padding", "", 8 - (output_bits % 8), DATA_TYPE_PAD, DATA_DIRECTION_OUTPUT, 0, 0));
-
-  // now that all the toc entries have been added, write out the tocs to memory and set up the toc pointers
-
-  //calculate bytes from bits
-  memory.discovery.input  = input_bits >> 3;
-  memory.discovery.output = output_bits >> 3;
-
-  memory.discovery.ptocp = MEMPTR(*heap_ptr);
-
-  for(uint8_t i = 0; i < ptocp - ptoc; i++) {
-    *heap_ptr++ = ptoc[i] & 0x00FF;
-    *heap_ptr++ = (ptoc[i] & 0xFF00) >> 8;
-  }
-  // this is the ptoc end marker
-  *heap_ptr++ = 0x00;
-  *heap_ptr++ = 0x00;
-
-  memory.discovery.gtocp = MEMPTR(*heap_ptr);
-
-  for(uint8_t i = 0; i < gtocp - gtoc; i++) {
-    *heap_ptr++ = gtoc[i] & 0x00FF;
-    *heap_ptr++ = (gtoc[i] & 0xFF00) >> 8;
-  }
-  // this is the gtoc end marker
-  *heap_ptr++ = 0x00;
-  *heap_ptr++ = 0x00;
-}
-
-void process_data_rpc(uint8_t fault, volatile uint8_t *input, volatile uint8_t *output) {
-  uint16_t *ptocp      = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
-  uint32_t local_rxpos = rxpos;
-  *(input++)           = fault;
-  *input               = 0x00;
-
-  // data needs to be packed and unpacked based on its type and size
-  // input is a pointer to the data that gets sent back to the host
-  // need a bit pointer to keep track of partials
-
-  uint8_t output_bit_ptr = 0;
-  uint8_t input_bit_ptr  = 0;
-
-  while(*ptocp != 0x0000) {
-    process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
-
-    if(IS_INPUT(pd)) {
-      uint16_t data_addr   = pd->data_addr;
-      uint8_t data_size    = pd->data_size;
-      uint8_t data_bit_ptr = 0;
-      while(data_size > 0) {
-        uint8_t bits_to_pack = data_size < BITSLEFT(input_bit_ptr) ? data_size : BITSLEFT(input_bit_ptr);
-        if(BITSLEFT(data_bit_ptr) < bits_to_pack) {
-          bits_to_pack = BITSLEFT(data_bit_ptr);
-        }
-
-        uint8_t mask = ((1 << bits_to_pack) - 1) << (data_bit_ptr);
-
-        *input |= ((MEMU8(data_addr) & mask) >> data_bit_ptr) << input_bit_ptr;
-
-        input_bit_ptr += bits_to_pack;
-        data_bit_ptr += bits_to_pack;
-        data_size -= bits_to_pack;
-        if((input_bit_ptr %= 8) == 0)
-          *(++input) = 0x00;  // make sure we clear the input buffer whenever we increment bytes
-        if((data_bit_ptr %= 8) == 0)
-          data_addr++;
-      }
-    }
-    if(IS_OUTPUT(pd)) {
-      uint16_t data_addr = pd->data_addr;
-      uint8_t data_size  = pd->data_size;
-
-      uint8_t val_bits_remaining = 8;
-      uint8_t val                = 0x00;
-
-      while(data_size > 0) {
-        // the number of bits to unpack this iteration is the number of bits remaining in the pd, or the number of bits remaining in the output byte,
-        // whichever is smaller.  Then, it can be even smaller if we have less room in the current val.
-
-        uint8_t bits_to_unpack = data_size < BITSLEFT(output_bit_ptr) ? data_size : BITSLEFT(output_bit_ptr);
-        if(val_bits_remaining < bits_to_unpack) {
-          bits_to_unpack = val_bits_remaining;
-        }
-
-        // create a bitmask the width of the bits to read, shifted to the position in the output byte that we're pointing to
-        uint8_t mask = ((1 << bits_to_unpack) - 1) << (output_bit_ptr);
-
-        // val is what we get when we mask off output and then shift it to the proper place.
-        val = val | ((rxbuf[(local_rxpos + 1) % sizeof(rxbuf)] & mask) >> (output_bit_ptr)) << (8 - val_bits_remaining);
-
-        val_bits_remaining -= bits_to_unpack;
-        data_size -= bits_to_unpack;
-        output_bit_ptr += bits_to_unpack;
-        // rxpos is a ringbuf and wraps around
-        // note: this replaces the output argument
-        if((output_bit_ptr %= 8) == 0) {
-          local_rxpos++;
-          local_rxpos = local_rxpos % sizeof(rxbuf);
-        }
-
-
-        if(val_bits_remaining == 0 || data_size == 0) {
-          MEMU8(data_addr++) = val;
-          val_bits_remaining = 8;
-          val                = 0x00;
-        }
-      }
-      // now we've finished unpacking it and storing it in memory, but we have to fix up the high bits if it wasn't a byte-aligned datasize.
-      // for instance, if we receive 0xFFF in a 12 bit field, that is a negative number, but we stored it as 0x0FFF in memory.
-      // strategy is to set the most significant n bits of the MSB to the most significant bit of the output value, iff the pd is defined as signed.
-      if(SIGNED(pd) && pd->data_size % 8 != 0) {
-        //printf("in output fixup.  data_addr %h  data_size %i num_bytes %i\n", pd->data_addr, pd->data_size, NUM_BYTES(pd->data_size));
-        uint8_t msb_addr = pd->data_addr + NUM_BYTES(pd->data_size) - 1;
-        //printf("in output fixup.  MSB (at %h): %h\n", msb_addr, MEMU8(msb_addr));
-
-        // these two masks use data_size%8, this is the number of bits in the most significant byte, and since we tested for %8!=0 above, we know it's a partial byte
-        if(MEMU8(msb_addr) & 1 << (pd->data_size % 8 - 1)) {  // this test uses a mask that is 1 in the most significant bit position, we only need to fixup the val if it's 1 (ie negative)
-          // this mask is all the unused high bits set
-          uint8_t mask = 0xFF ^ ((1 << pd->data_size % 8) - 1);
-          //printf("applying mask: %h\n", mask);
-          MEMU8(msb_addr) |= mask;
-        }
-
-        //printf("fixed up val: %h\n", MEMU8(msb_addr));
-      }
-    }
-  }
-}
-
-//TODO: div by zero
-float scale_out(pd_metadata_t pd, int32_t val) {
-  return val * pd.range / (float)pd.bitmax;
-}
-//TODO: div by zero
-int32_t scale_in(pd_metadata_t pd, float val) {
-  return CLAMP(val, pd.ptr->param_min, pd.ptr->param_max) * pd.bitmax / pd.range;
-}
-
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  // struct res_ctx_t * ctx = (struct res_ctx_t *)ctx_ptr;
-  struct sserial_pin_ctx_t *pins = (struct sserial_pin_ctx_t *)pin_ptr;
-  // update all hal pins with values from their associated pds
-
-
-  // uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
-  // scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
-  PIN(pos_cmd)    = MEMFLOAT(pd_table.pos_cmd.ptr->data_addr);
-  uint8_t outpins = MEMU8(pd_table.output_pins.ptr->data_addr);
-  PIN(out0)       = outpins >> 0 & 1 ? 1.0 : 0.0;
-  PIN(out1)       = outpins >> 1 & 1 ? 1.0 : 0.0;
-  PIN(out2)       = outpins >> 2 & 1 ? 1.0 : 0.0;
-  PIN(out3)       = outpins >> 3 & 1 ? 1.0 : 0.0;
-  uint8_t enable  = MEMU8(pd_table.enable.ptr->data_addr);
-  PIN(enable)     = enable << 0 & 1 ? 1.0 : 0.0;
-  //TODO: how to handle bidirectional pins properly?
-
-  //*((uint16_t *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = (uint16_t)scale_in(pd_table.pos_fb, PIN(pos_fb));
-
-  //uint32_t tmp = MEMU32(ptr);*((float*)&tmp);}))
-
-  //MEMFLOAT(pd_table.pos_fb.ptr->data_addr) = PIN(pos_fb);
-  *((float *)&(memory.bytes[pd_table.pos_fb.ptr->data_addr])) = PIN(pos_fb);
-
-  MEMU8(pd_table.fault.ptr->data_addr)      = BOOLPIN(fault);
-  MEMU8(pd_table.input_pins.ptr->data_addr) = BOOLPIN(in0) << 0 | BOOLPIN(in1) << 1 | BOOLPIN(in2) << 2 | BOOLPIN(in3) << 3;
+  discovery.input  = sizeof(sserial_in_process_data_t) + 1;  //+1 for fault byte
+  discovery.output = sizeof(sserial_out_process_data_t);
+  discovery.ptocp  = sserial_ptocp;
+  discovery.gtocp  = sserial_gtocp;
 }
 
 
 static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct res_ctx_t * ctx = (struct res_ctx_t *)ctx_ptr;
   struct sserial_pin_ctx_t *pins = (struct sserial_pin_ctx_t *)pin_ptr;
-
-  for(int j = 0; j < 2; j++) {
+  host_period += period;
+  for(int j = 0; j < 15; j++) {
     //next received packet will be written to bufferpos
     bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
     //how many packets we have the the rx buffer for processing
@@ -571,25 +390,68 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           send(4, 1);
           rxpos += 2;
         } else if(lbp.byte == DiscoveryRPC && available >= 2) {  //discovery, cmd+crc = 2b
-          memcpy((void *)txbuf, ((uint8_t *)&memory.discovery), sizeof(memory.discovery));
-          send(sizeof(memory.discovery), 1);
+          memcpy((void *)txbuf, ((uint8_t *)&discovery), sizeof(discovery));
+          send(sizeof(discovery), 1);
           rxpos += 2;
-        } else if(lbp.byte == ProcessDataRPC && available >= memory.discovery.output + 2) {  //process data, requires cmd+output bytes+crc
-          //TODO: maybe packing and unpacking can be moved to RT
-          process_data_rpc(0x00, txbuf, &(rxbuf[rxpos + 1]));  // todo: send a proper fault byte?
-          send(memory.discovery.input, 1);
-          //uint16_t foo = MEMU16(pd_table.pos_cmd.ptr->data_addr);
-          //float p = scale_out(pd_table.pos_cmd, *(int16_t*)&foo);
-          float p        = MEMFLOAT(pd_table.pos_cmd.ptr->data_addr);
-          PIN(pos_cmd_d) = minus(p, last_pos_cmd) * 1000.0f;  //TODO: only valid for 1khz servo thread
-          last_pos_cmd   = p;
+        } else if(lbp.byte == ProcessDataRPC && available >= discovery.output + 2) {  //process data, requires cmd+output bytes+crc
+
+          //set input pins
+          data_in.pos_fb       = PIN(pos_fb);
+          data_in.vel_fb       = PIN(vel_fb);
+          data_in.input_pins_0 = (PIN(in0) > 0) ? 1 : 0;
+          data_in.input_pins_1 = (PIN(in1) > 0) ? 1 : 0;
+          data_in.input_pins_2 = (PIN(in2) > 0) ? 1 : 0;
+          data_in.input_pins_3 = (PIN(in3) > 0) ? 1 : 0;
+          data_in.fault        = (PIN(fault) > 0) ? 1 : 0;
+
+          //copy output pins from rx buffer
+          for(int i = 0; i < discovery.output; i++) {
+            ((uint8_t *)(&data_out))[i] = rxbuf[(rxpos + i + 1) % sizeof(rxbuf)];
+          }
+
+          //set bidirectional pins
+          PIN(index_out)       = data_out.index_enable;
+          data_in.index_enable = (PIN(index_clear) > 0) ? 0 : data_out.index_enable;
+
+          //copy input pins to tx buffer
+          txbuf[0] = 0x00;  //fault byte
+          for(int i = 0; i < (discovery.input - 1); i++) {
+            txbuf[i + 1] = ((uint8_t *)(&data_in))[i];
+          }
+
+          //send buffer
+          DMA_SetCurrDataCounter(DMA1_Stream4, discovery.input + 1);
+          DMA_Cmd(DMA1_Stream4, DISABLE);
+          DMA_ClearFlag(DMA1_Stream4, DMA_FLAG_TCIF4);
+          DMA_Cmd(DMA1_Stream4, ENABLE);
+          txbuf[discovery.input] = crc8((uint8_t *)txbuf, discovery.input);
+
+          timeout = 0;
+          //send(discovery.input, 1);
+
+          //set output pins
+          PIN(pos_cmd)   = data_out.pos_cmd;
+          PIN(pos_cmd_d) = data_out.vel_cmd;
+          PIN(out0)      = data_out.output_pins_0;
+          PIN(out1)      = data_out.output_pins_1;
+          PIN(out2)      = data_out.output_pins_2;
+          PIN(out3)      = data_out.output_pins_3;
+          PIN(enable)    = data_out.enable;
+
+          //calculate velocity
+          // if(host_period > 0.00005 && host_period < 0.02){
+          //   PIN(pos_cmd_d) = (data_out.pos_cmd - last_pos_cmd) * (1.0f / host_period);  //TODO: only valid for 1khz servo thread
+          // }
+          // PIN(period) = host_period;
+          // host_period = 0;
+          // last_pos_cmd   = data_out.pos_cmd;
           //we cannot send the reply based on crc, as this causes timeouts
           //instead we should check for errors in RT
-          if(!crc_reuest(memory.discovery.output + 1)) {
+          if(!crc_reuest(discovery.output + 1)) {
             PIN(crc_error)
             ++;
           }
-          rxpos += memory.discovery.output + 2;
+          rxpos += discovery.output + 2;
         } else {
           continue;
         }
@@ -607,7 +469,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
             rxpos += 2;
           }
           //TODO: check if address is valid
-          memcpy((void *)txbuf, &memory.bytes[address], (1 << lbp.ds));
+          memcpy((void *)txbuf, &sserial_slave[address], (1 << lbp.ds));
           send((1 << lbp.ds), 1);
           if(lbp.ai == 1) {  //auto increment address by datasize
             address += (1 << lbp.ds);
@@ -620,10 +482,16 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
       }
     }
 
-    timeout++;
     if(timeout > PIN(timeout)) {  //TODO: clamping
       PIN(connected) = 0;
       PIN(error)     = 1;
+      PIN(pos_cmd)   = 0;
+      PIN(pos_cmd_d) = 0;
+      PIN(out0)      = 0;
+      PIN(out1)      = 0;
+      PIN(out2)      = 0;
+      PIN(out3)      = 0;
+      PIN(enable)    = 0;
       rxpos          = bufferpos;
     } else {
       PIN(connected) = 1;
@@ -631,30 +499,13 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
     }
     rxpos = rxpos % sizeof(rxbuf);
   }
+  timeout++;
 }
-
-
-// NRT(
-//   if(PIN(dump_pd_vals) != 0.0) {
-//     if(PIN(error) != 0) {
-//       printf("Error count: %f\n", PIN(error));
-//     }
-//     PIN(dump_pd_vals) = 0.0;
-//
-//     printf("pos_cmd: %f\n", PIN(pos_cmd));
-//
-//     uint16_t *ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
-//     while(*ptocp != 0x0000) {
-//       process_data_descriptor_t *pd = (process_data_descriptor_t *)(memory.bytes + *ptocp++);
-//       printf("pd has data at %x with value %x\n", pd->data_addr, MEMU16(pd->data_addr));
-//     }
-//   }
-// );
 
 const hal_comp_t sserial_comp_struct = {
     .name      = "sserial",
     .nrt       = 0,
-    .rt        = rt_func,
+    .rt        = 0,
     .frt       = frt_func,
     .nrt_init  = 0,
     .hw_init   = hw_init,

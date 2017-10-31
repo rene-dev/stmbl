@@ -18,7 +18,7 @@ INCDIRS += shared
 
 SOURCES += stm32f103/src/main.c
 SOURCES += stm32f103/src/version.c
-SOURCES += shared/common.c
+SOURCES += shared/common_f1.c
 
 # Standard peripheral library
 CPPFLAGS += -DUSE_STDPERIPH_DRIVER
