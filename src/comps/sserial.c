@@ -332,7 +332,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   //bytes to wait before expected end of transmission to prevent timeouts
   block_bytes = 2;
   //calculate timeout in systicks for block_bytes
-  max_waste_ticks = (1.0/2500000.0) * 11.0 * (float)block_bytes / (1.0f/(float)hal_get_systick_freq());
+  max_waste_ticks = (1.0 / 2500000.0) * 11.0 * (float)block_bytes / (1.0f / (float)hal_get_systick_freq());
 }
 
 
@@ -400,20 +400,20 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           send(sizeof(discovery), 1);
           rxpos += 2;
         } else if(lbp.byte == ProcessDataRPC && available >= discovery.output + 2 - block_bytes) {  //process data, requires cmd+output bytes+crc
-          uint32_t t1 = hal_get_systick_value();
+          uint32_t t1         = hal_get_systick_value();
           uint32_t wait_ticks = 0;
           //wait with timeout until rest of process data is received
-          do{
+          do {
             uint32_t t2 = hal_get_systick_value();
             if(t1 < t2) {
               t1 += hal_get_systick_reload();
             }
-            wait_ticks = t1-t2;
+            wait_ticks = t1 - t2;
             //next received packet will be written to bufferpos
             bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
             //how many packets we have the the rx buffer for processing
             available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
-          }while(available < discovery.output + 2 && wait_ticks <= max_waste_ticks);
+          } while(available < discovery.output + 2 && wait_ticks <= max_waste_ticks);
           //TODO: fault handling on timeout...
           //set input pins
           data_in.pos_fb       = PIN(pos_fb) + PIN(vel_fb) * PIN(pos_advance);
@@ -448,7 +448,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           //send(discovery.input, 1);
 
           //we cannot send the reply based on crc, as this causes timeouts TODO: still valid?
-          if(crc_reuest(discovery.output + 1)){
+          if(crc_reuest(discovery.output + 1)) {
             timeout = 0;
             //set output pins
             PIN(pos_cmd)   = data_out.pos_cmd;
@@ -458,7 +458,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
             PIN(out2)      = data_out.output_pins_2;
             PIN(out3)      = data_out.output_pins_3;
             PIN(enable)    = data_out.enable;
-          }else{
+          } else {
             PIN(crc_error)
             ++;
             PIN(connected) = 0;
