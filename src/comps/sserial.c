@@ -56,6 +56,7 @@ HAL_PIN(out3);
 HAL_PIN(enable);
 HAL_PIN(index_clear);
 HAL_PIN(index_out);
+HAL_PIN(pos_advance);
 
 //TODO: move to ctx
 struct sserial_ctx_t {
@@ -415,7 +416,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           }while(available < discovery.output + 2 && wait_ticks <= max_waste_ticks);
           //TODO: fault handling on timeout...
           //set input pins
-          data_in.pos_fb       = PIN(pos_fb);
+          data_in.pos_fb       = PIN(pos_fb) + PIN(vel_fb) * PIN(pos_advance);
           data_in.vel_fb       = PIN(vel_fb);
           data_in.input_pins_0 = (PIN(in0) > 0) ? 1 : 0;
           data_in.input_pins_1 = (PIN(in1) > 0) ? 1 : 0;
