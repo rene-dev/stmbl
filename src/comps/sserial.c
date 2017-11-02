@@ -56,8 +56,7 @@ HAL_PIN(out3);
 HAL_PIN(enable);
 HAL_PIN(index_clear);
 HAL_PIN(index_out);
-
-HAL_PIN(period);
+HAL_PIN(pos_advance);
 
 //TODO: move to ctx
 struct sserial_ctx_t {
@@ -77,6 +76,8 @@ char name[] = LBPCardName;
 int bufferpos;
 int available;
 unit_no_t unit;
+uint32_t max_waste_ticks;
+uint32_t block_bytes;
 
 #pragma pack(1)
 //*****************************************************************************
@@ -327,6 +328,11 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   discovery.output = sizeof(sserial_out_process_data_t);
   discovery.ptocp  = sserial_ptocp;
   discovery.gtocp  = sserial_gtocp;
+
+  //bytes to wait before expected end of transmission to prevent timeouts
+  block_bytes = 2;
+  //calculate timeout in systicks for block_bytes
+  max_waste_ticks = (1.0 / 2500000.0) * 11.0 * (float)block_bytes / (1.0f / (float)hal_get_systick_freq());
 }
 
 
@@ -334,7 +340,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
   // struct res_ctx_t * ctx = (struct res_ctx_t *)ctx_ptr;
   struct sserial_pin_ctx_t *pins = (struct sserial_pin_ctx_t *)pin_ptr;
   host_period += period;
-  for(int j = 0; j < 15; j++) {
+  for(int j = 0; j < 1; j++) {
     //next received packet will be written to bufferpos
     bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
     //how many packets we have the the rx buffer for processing
@@ -393,10 +399,24 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           memcpy((void *)txbuf, ((uint8_t *)&discovery), sizeof(discovery));
           send(sizeof(discovery), 1);
           rxpos += 2;
-        } else if(lbp.byte == ProcessDataRPC && available >= discovery.output + 2) {  //process data, requires cmd+output bytes+crc
-
+        } else if(lbp.byte == ProcessDataRPC && available >= discovery.output + 2 - block_bytes) {  //process data, requires cmd+output bytes+crc
+          uint32_t t1         = hal_get_systick_value();
+          uint32_t wait_ticks = 0;
+          //wait with timeout until rest of process data is received
+          do {
+            uint32_t t2 = hal_get_systick_value();
+            if(t1 < t2) {
+              t1 += hal_get_systick_reload();
+            }
+            wait_ticks = t1 - t2;
+            //next received packet will be written to bufferpos
+            bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
+            //how many packets we have the the rx buffer for processing
+            available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
+          } while(available < discovery.output + 2 && wait_ticks <= max_waste_ticks);
+          //TODO: fault handling on timeout...
           //set input pins
-          data_in.pos_fb       = PIN(pos_fb);
+          data_in.pos_fb       = PIN(pos_fb) + PIN(vel_fb) * PIN(pos_advance);
           data_in.vel_fb       = PIN(vel_fb);
           data_in.input_pins_0 = (PIN(in0) > 0) ? 1 : 0;
           data_in.input_pins_1 = (PIN(in1) > 0) ? 1 : 0;
@@ -425,31 +445,31 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           DMA_ClearFlag(DMA1_Stream4, DMA_FLAG_TCIF4);
           DMA_Cmd(DMA1_Stream4, ENABLE);
           txbuf[discovery.input] = crc8((uint8_t *)txbuf, discovery.input);
-
-          timeout = 0;
           //send(discovery.input, 1);
 
-          //set output pins
-          PIN(pos_cmd)   = data_out.pos_cmd;
-          PIN(pos_cmd_d) = data_out.vel_cmd;
-          PIN(out0)      = data_out.output_pins_0;
-          PIN(out1)      = data_out.output_pins_1;
-          PIN(out2)      = data_out.output_pins_2;
-          PIN(out3)      = data_out.output_pins_3;
-          PIN(enable)    = data_out.enable;
-
-          //calculate velocity
-          // if(host_period > 0.00005 && host_period < 0.02){
-          //   PIN(pos_cmd_d) = (data_out.pos_cmd - last_pos_cmd) * (1.0f / host_period);  //TODO: only valid for 1khz servo thread
-          // }
-          // PIN(period) = host_period;
-          // host_period = 0;
-          // last_pos_cmd   = data_out.pos_cmd;
-          //we cannot send the reply based on crc, as this causes timeouts
-          //instead we should check for errors in RT
-          if(!crc_reuest(discovery.output + 1)) {
+          //we cannot send the reply based on crc, as this causes timeouts TODO: still valid?
+          if(crc_reuest(discovery.output + 1)) {
+            timeout = 0;
+            //set output pins
+            PIN(pos_cmd)   = data_out.pos_cmd;
+            PIN(pos_cmd_d) = data_out.vel_cmd;
+            PIN(out0)      = data_out.output_pins_0;
+            PIN(out1)      = data_out.output_pins_1;
+            PIN(out2)      = data_out.output_pins_2;
+            PIN(out3)      = data_out.output_pins_3;
+            PIN(enable)    = data_out.enable;
+          } else {
             PIN(crc_error)
             ++;
+            PIN(connected) = 0;
+            PIN(error)     = 1;
+            PIN(pos_cmd)   = 0;
+            PIN(pos_cmd_d) = 0;
+            PIN(out0)      = 0;
+            PIN(out1)      = 0;
+            PIN(out2)      = 0;
+            PIN(out3)      = 0;
+            PIN(enable)    = 0;
           }
           rxpos += discovery.output + 2;
         } else {

@@ -43,5 +43,3 @@ io0.out2 = sserial0.out2
 vel1.en = 1
 ramp0.in = linrev0.cmd_d_out
 linrev0.scale = 1
-sserial0.vel_fb = linrev0.fb_d_out
-linrev0.fb_d_in = vel1.vel
