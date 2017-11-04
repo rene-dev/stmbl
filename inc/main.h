@@ -24,6 +24,7 @@ typedef enum {
   HV_TIMEOUT_ERROR,
   HV_TEMP_ERROR,
   HV_VOLT_ERROR,
+  HV_FAULT_ERROR,
   MOT_TEMP_ERROR,
 } fault_t;
 

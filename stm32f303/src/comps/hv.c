@@ -12,14 +12,15 @@ HAL_COMP(hv);
 HAL_PIN(u);
 HAL_PIN(v);
 HAL_PIN(w);
+
 //dclink input
 HAL_PIN(udc);
-HAL_PIN(iabs);
-
+HAL_PIN(ac_current);
 HAL_PIN(hv_temp);
 
 //enable in
 HAL_PIN(en);
+
 //TODO: half bridge enable in
 HAL_PIN(enu);
 HAL_PIN(env);
@@ -40,6 +41,14 @@ HAL_PIN(cw);
 //master out enable
 HAL_PIN(moe_r);
 HAL_PIN(moe_w);
+
+struct hv_ctx_t{
+  uint32_t fault;
+  float overtemp_error;
+  float overvoltage_error;
+  float overcurrent_error;
+  float fault_pin_error;
+};
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
@@ -71,7 +80,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  // struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
+  struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
   float udc = MAX(PIN(udc), 0.1);
@@ -95,38 +104,62 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     w -= min_off;
   }
 
-#ifdef PWM_INVERT
-  PWM_U = PWM_RES - CLAMP(u, 0, PWM_RES - min_off);
-  PWM_V = PWM_RES - CLAMP(v, 0, PWM_RES - min_off);
-  PWM_W = PWM_RES - CLAMP(w, 0, PWM_RES - min_off);
-#else
-  PWM_U = CLAMP(u, 0, PWM_RES - min_off);
-  PWM_V = CLAMP(v, 0, PWM_RES - min_off);
-  PWM_W = CLAMP(w, 0, PWM_RES - min_off);
-#endif
+  #ifdef PWM_INVERT
+    PWM_U = PWM_RES - CLAMP(u, 0, PWM_RES - min_off);
+    PWM_V = PWM_RES - CLAMP(v, 0, PWM_RES - min_off);
+    PWM_W = PWM_RES - CLAMP(w, 0, PWM_RES - min_off);
+  #else
+    PWM_U = CLAMP(u, 0, PWM_RES - min_off);
+    PWM_V = CLAMP(v, 0, PWM_RES - min_off);
+    PWM_W = CLAMP(w, 0, PWM_RES - min_off);
+  #endif
 
-//temp 85.0
-//volt 380
-//soft current 25
-//hard current
-//fault in
+  float i = PIN(ac_current);
+  float t = PIN(hv_temp);
 
-// PIN(udc);
-// PIN(iabs);
-// PIN(hv_temp);
-
-#ifdef HV_EN_PIN
-  if(PIN(hv_temp) < 85.0) {
-    HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, PIN(en) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
-  } else {
-    HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
+  if(err_filter(&(ctx->overtemp_error), 5.0, 0.001, t > ABS_MAX_TEMP)) {
+    ctx->fault = 1;
   }
-#endif
+
+  if(err_filter(&(ctx->overvoltage_error), 5.0, 0.001, udc > ABS_MAX_VOLT)) {
+    ctx->fault = 2;
+  }
+
+  if(err_filter(&(ctx->overcurrent_error), 5.0, 0.001, i * i > MAX_CURRENT)) {
+    ctx->fault = 3;
+  }
+
+  if(i * i > ABS_MAX_CURRENT) {
+    ctx->fault = 4;
+  }
 
   // #ifdef HV_FAULT_PIN
   //   //TODO: check enable timing on fault pin
-  //   PIN(fault) = HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN);
+  //   if(err_filter(&(ctx->fault_pin_error), 45.0, 0.01, HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN) <= 0.0)){
+  //     //ctx->fault = 5;
+  //   }
   // #endif
+
+  PIN(fault) = ctx->fault;
+
+  if(PIN(en) > 0.0){
+    if(ctx->fault == 0){
+      #ifdef HV_EN_PIN
+        HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_SET);
+      #endif
+    }
+    else{
+      #ifdef HV_EN_PIN
+      HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
+      #endif
+    }
+  }
+  else{
+    ctx->fault = 0;
+    #ifdef HV_EN_PIN
+      HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
+    #endif
+  }
 
   //dac output for comperators
   DAC1->DHR12R1 = (uint32_t)PIN(dac);
@@ -154,6 +187,6 @@ hal_comp_t hv_comp_struct = {
     .frt_start = 0,
     .rt_stop   = 0,
     .frt_stop  = 0,
-    .ctx_size  = 0,
+    .ctx_size  = sizeof(struct hv_ctx_t),
     .pin_count = sizeof(struct hv_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
 };

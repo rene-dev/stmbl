@@ -6,6 +6,7 @@
 #include "stm32f4xx_conf.h"
 #include "hw/hw.h"
 #include "common.h"
+#include "main.h"
 
 
 HAL_COMP(hv);
@@ -202,19 +203,24 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       PIN(core_temp) = ctx->state.pins.core_temp;
       PIN(fault)     = ctx->state.pins.fault;
       PIN(y)         = ctx->state.pins.y;
-      PIN(com_error) = 0.0;  //TODO: link to fault
+      if(ctx->state.pins.fault > 0.0){
+        PIN(com_error) = HV_FAULT_ERROR;
+      }
+      else{
+        PIN(com_error) = 0.0;
+      }
       ctx->timeout   = 0;
     } else {
       PIN(crc_error)
       ++;
-      PIN(com_error) = 1.0;
+      PIN(com_error) = HV_CRC_ERROR;
     }
   }
 
   if(ctx->timeout > 3) {
     PIN(timeout)
     ++;
-    PIN(com_error) = 2.0;
+    PIN(com_error) = HV_TIMEOUT_ERROR;
   }
   ctx->timeout++;
 

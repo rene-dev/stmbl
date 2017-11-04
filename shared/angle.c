@@ -121,11 +121,27 @@ int quadrant(float a) {
     } else {
       return 2;
     }
-  } else if(a < 0) {
+  } else {
     if(a < -M_PI / 2.0) {
       return 3;
     } else {
       return 4;
     }
   }
+  return(0);
+}
+
+float err_filter(float *ctx, float max, float dens, float err) {
+  if(err > 0.0) {
+    *ctx += 1.0;
+  } else {
+    *ctx -= dens;
+  }
+
+  *ctx = CLAMP(*ctx, 0.0, max);
+
+  if(*ctx < max * 0.99) {
+    return (0.0);
+  }
+  return (1.0);
 }

@@ -88,22 +88,6 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(fan_mot_temp)  = 60.0;
 }
 
-float err_filter(float *ctx, float max, float dens, float err) {
-  if(err > 0.0) {
-    *ctx += 1.0;
-  } else {
-    *ctx -= dens;
-  }
-
-  *ctx = CLAMP(*ctx, 0.0, max);
-
-  if(*ctx < max * 0.99) {
-    return (0.0);
-  }
-  return (1.0);
-}
-
-
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct fault_ctx_t *ctx      = (struct fault_ctx_t *)ctx_ptr;
   struct fault_pin_ctx_t *pins = (struct fault_pin_ctx_t *)pin_ptr;
@@ -163,12 +147,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 
   if(err_filter(&(ctx->hv_error), 3.0, 0.001, PIN(hv_error) > 0.0)) {
-    if(PIN(hv_error) > 1.0) {
-      ctx->fault = HV_TIMEOUT_ERROR;
-    } else {
-      ctx->fault = HV_CRC_ERROR;
-    }
-    ctx->state = SOFT_FAULT;
+    ctx->fault = PIN(hv_error);
   }
 
   if(ABS(PIN(pos_error)) > PIN(max_pos_error)) {
@@ -339,6 +318,10 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
           case HV_VOLT_ERROR:
             printf("HV volt error\n");
+            break;
+
+          case HV_FAULT_ERROR:
+            printf("HV fault error\n");
             break;
 
           case MOT_TEMP_ERROR:

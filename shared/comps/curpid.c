@@ -19,6 +19,8 @@ HAL_PIN(iq_cmd);
 HAL_PIN(id_fb);
 HAL_PIN(iq_fb);
 
+HAL_PIN(ac_current);
+
 // voltage output
 HAL_PIN(ud);
 HAL_PIN(uq);
@@ -81,7 +83,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float kpq  = lq * PIN(kp) / period / 2.0;
   float kiq  = rq * PIN(ki) / lq;
 
-  //TODO curpid: sqrt(di^2+qi^2) auf max_ac_cur clampen
   float max_cur = MAX(PIN(max_cur), 0.0);
   float idc     = LIMIT(PIN(id_cmd), max_cur);
   float iqc     = LIMIT(PIN(iq_cmd), max_cur);
@@ -90,6 +91,16 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   float id = PIN(id_fb);
   float iq = PIN(iq_fb);
+
+  float ac_current = id * id + iq * iq;//sqrtf(id * id + iq * iq);
+  PIN(ac_current) = ac_current;
+
+  float k;
+  if(ac_current > max_cur * max_cur){
+    k = max_cur * max_cur / ac_current;
+    idc *= k;
+    iqc *= k;
+  }
 
   float vel   = PIN(vel);
   float psi_d = ld * id + PIN(psi);

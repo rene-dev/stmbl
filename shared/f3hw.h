@@ -20,6 +20,11 @@
 #define PWM_DEADTIME 0
 #define PWM_RES 4800
 
+#define ABS_MAX_TEMP 100.0
+#define ABS_MAX_VOLT 410.0
+#define MAX_CURRENT 29.0
+#define ABS_MAX_CURRENT 30.0
+
 //io board
 //#define USB_CONNECT_PIN GPIO_PIN_15
 //#define USB_CONNECT_PORT GPIOB
