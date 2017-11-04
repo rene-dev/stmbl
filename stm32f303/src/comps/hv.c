@@ -42,7 +42,7 @@ HAL_PIN(cw);
 HAL_PIN(moe_r);
 HAL_PIN(moe_w);
 
-struct hv_ctx_t{
+struct hv_ctx_t {
   uint32_t fault;
   float overtemp_error;
   float overvoltage_error;
@@ -80,7 +80,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
+  struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
   float udc = MAX(PIN(udc), 0.1);
@@ -104,15 +104,15 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     w -= min_off;
   }
 
-  #ifdef PWM_INVERT
-    PWM_U = PWM_RES - CLAMP(u, 0, PWM_RES - min_off);
-    PWM_V = PWM_RES - CLAMP(v, 0, PWM_RES - min_off);
-    PWM_W = PWM_RES - CLAMP(w, 0, PWM_RES - min_off);
-  #else
-    PWM_U = CLAMP(u, 0, PWM_RES - min_off);
-    PWM_V = CLAMP(v, 0, PWM_RES - min_off);
-    PWM_W = CLAMP(w, 0, PWM_RES - min_off);
-  #endif
+#ifdef PWM_INVERT
+  PWM_U = PWM_RES - CLAMP(u, 0, PWM_RES - min_off);
+  PWM_V = PWM_RES - CLAMP(v, 0, PWM_RES - min_off);
+  PWM_W = PWM_RES - CLAMP(w, 0, PWM_RES - min_off);
+#else
+  PWM_U = CLAMP(u, 0, PWM_RES - min_off);
+  PWM_V = CLAMP(v, 0, PWM_RES - min_off);
+  PWM_W = CLAMP(w, 0, PWM_RES - min_off);
+#endif
 
   float i = PIN(ac_current);
   float t = PIN(hv_temp);
@@ -142,23 +142,21 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   PIN(fault) = ctx->fault;
 
-  if(PIN(en) > 0.0){
-    if(ctx->fault == 0){
-      #ifdef HV_EN_PIN
-        HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_SET);
-      #endif
-    }
-    else{
-      #ifdef HV_EN_PIN
+  if(PIN(en) > 0.0) {
+    if(ctx->fault == 0) {
+#ifdef HV_EN_PIN
+      HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_SET);
+#endif
+    } else {
+#ifdef HV_EN_PIN
       HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
-      #endif
+#endif
     }
-  }
-  else{
+  } else {
     ctx->fault = 0;
-    #ifdef HV_EN_PIN
-      HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
-    #endif
+#ifdef HV_EN_PIN
+    HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
+#endif
   }
 
   //dac output for comperators

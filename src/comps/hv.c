@@ -203,13 +203,12 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       PIN(core_temp) = ctx->state.pins.core_temp;
       PIN(fault)     = ctx->state.pins.fault;
       PIN(y)         = ctx->state.pins.y;
-      if(ctx->state.pins.fault > 0.0){
+      if(ctx->state.pins.fault > 0.0) {
         PIN(com_error) = HV_FAULT_ERROR;
-      }
-      else{
+      } else {
         PIN(com_error) = 0.0;
       }
-      ctx->timeout   = 0;
+      ctx->timeout = 0;
     } else {
       PIN(crc_error)
       ++;

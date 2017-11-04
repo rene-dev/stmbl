@@ -155,29 +155,29 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 //   struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
 //   struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
 //   if(ctx->send_counter++ >= PIN(send_step) - 1 && PIN(send_step) > 0) {
-    // int tmp = 0;
-    // uint8_t buf[TERM_NUM_WAVES + 3];
+// int tmp = 0;
+// uint8_t buf[TERM_NUM_WAVES + 3];
 
-    // buf[0] = 255;
-    // for(int k = 0; k < PID_WAVES * ADC_ANZ; k++) {
-    //   for(int i = 0; i < TERM_NUM_WAVES; i++) {
-    //     tmp        = (ctx->txbuf[i][k] + PINA(offset, i)) * PINA(gain, i) + 128;
-    //     buf[i + 1] = CLAMP(tmp, 1, 254);
-    //   }
-    //   buf[8 + 1] = 0;
+// buf[0] = 255;
+// for(int k = 0; k < PID_WAVES * ADC_ANZ; k++) {
+//   for(int i = 0; i < TERM_NUM_WAVES; i++) {
+//     tmp        = (ctx->txbuf[i][k] + PINA(offset, i)) * PINA(gain, i) + 128;
+//     buf[i + 1] = CLAMP(tmp, 1, 254);
+//   }
+//   buf[8 + 1] = 0;
 
-    //   if(USB_CDC_is_connected()) {
-    //     USB_VCP_send_string(buf);
-    //   }
-    // }
+//   if(USB_CDC_is_connected()) {
+//     USB_VCP_send_string(buf);
+//   }
+// }
 
-    // buf[0] = 0xfe;  //trigger servoterm
-    // buf[1] = 0x00;
-    // if(USB_CDC_is_connected()) {
-    //   USB_VCP_send_string(buf);
-    // }
-    // ctx->send_counter = 0;
-    // ctx->send         = 0;
+// buf[0] = 0xfe;  //trigger servoterm
+// buf[1] = 0x00;
+// if(USB_CDC_is_connected()) {
+//   USB_VCP_send_string(buf);
+// }
+// ctx->send_counter = 0;
+// ctx->send         = 0;
 //   }
 // }
 

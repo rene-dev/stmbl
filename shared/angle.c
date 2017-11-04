@@ -128,7 +128,7 @@ int quadrant(float a) {
       return 4;
     }
   }
-  return(0);
+  return (0);
 }
 
 float err_filter(float *ctx, float max, float dens, float err) {

@@ -92,11 +92,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float id = PIN(id_fb);
   float iq = PIN(iq_fb);
 
-  float ac_current = id * id + iq * iq;//sqrtf(id * id + iq * iq);
-  PIN(ac_current) = ac_current;
+  float ac_current = id * id + iq * iq;  //sqrtf(id * id + iq * iq);
+  PIN(ac_current)  = ac_current;
 
   float k;
-  if(ac_current > max_cur * max_cur){
+  if(ac_current > max_cur * max_cur) {
     k = max_cur * max_cur / ac_current;
     idc *= k;
     iqc *= k;
