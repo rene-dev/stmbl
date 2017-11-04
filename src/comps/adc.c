@@ -57,7 +57,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
+  // struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
   struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
 
   float si0[PID_WAVES * ADC_OVER_FB0];
@@ -151,12 +151,12 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(cos) = c;
 }
 
-static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
-  struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
-  if(ctx->send_counter++ >= PIN(send_step) - 1 && PIN(send_step) > 0) {
-    int tmp = 0;
-    uint8_t buf[TERM_NUM_WAVES + 3];
+// static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+//   struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
+//   struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
+//   if(ctx->send_counter++ >= PIN(send_step) - 1 && PIN(send_step) > 0) {
+    // int tmp = 0;
+    // uint8_t buf[TERM_NUM_WAVES + 3];
 
     // buf[0] = 255;
     // for(int k = 0; k < PID_WAVES * ADC_ANZ; k++) {
@@ -178,8 +178,8 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
     // }
     // ctx->send_counter = 0;
     // ctx->send         = 0;
-  }
-}
+//   }
+// }
 
 hal_comp_t adc_comp_struct = {
     .name      = "adc",
