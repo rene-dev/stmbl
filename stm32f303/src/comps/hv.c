@@ -125,11 +125,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     ctx->fault = 2;
   }
 
-  if(err_filter(&(ctx->overcurrent_error), 5.0, 0.001, i * i > MAX_CURRENT)) {
+  if(err_filter(&(ctx->overcurrent_error), 5.0, 0.001, i > MAX_CURRENT * MAX_CURRENT)) {
     ctx->fault = 3;
   }
 
-  if(i * i > ABS_MAX_CURRENT) {
+  if(i > ABS_MAX_CURRENT * ABS_MAX_CURRENT) {
     ctx->fault = 4;
   }
 

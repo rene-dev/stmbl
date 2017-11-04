@@ -330,7 +330,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   discovery.gtocp  = sserial_gtocp;
 
   //bytes to wait before expected end of transmission to prevent timeouts
-  block_bytes = 2;
+  block_bytes = 3;
   //calculate timeout in systicks for block_bytes
   max_waste_ticks = (1.0 / 2500000.0) * 11.0 * (float)block_bytes / (1.0f / (float)hal_get_systick_freq());
 }

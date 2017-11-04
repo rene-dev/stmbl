@@ -267,7 +267,7 @@ boot_flash: boot
 hv_flash: boot
 	$(MAKE) -f stm32f103/Makefile flash
 
-boot_btflash: boot
+boot_btburn: boot
 	$(MAKE) -f bootloader/Makefile btflash
 
 hv:
@@ -279,7 +279,7 @@ f3:
 f3_flash:
 	$(MAKE) -f stm32f303/Makefile flash
 
-f3_btflash:
+f3_btburn:
 	$(MAKE) -f stm32f303/Makefile btburn
 
 f3_boot:
