@@ -144,21 +144,21 @@ static void rt_func(float period, volatile void * ctx_ptr, volatile hal_pin_inst
   PIN(iw) = -AMP((float)(a12 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->w_offset; // 1u
   PIN(iu) = -AMP((float)(a12 >> 16) / 5.0, SHUNT_GAIN) + ctx->u_offset;
   PIN(iv) = -AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->v_offset;
-  PIN(w) = VOLT(adc_12_buf[5] & 0xFFFF) * 0.05 + PIN(w) * 0.95; // 0.6u
-  PIN(v) = VOLT(adc_12_buf[5] >> 16) * 0.05 + PIN(v) * 0.95;
-  PIN(u) = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
+  //PIN(w) = VOLT(adc_12_buf[5] & 0xFFFF) * 0.05 + PIN(w) * 0.95; // 0.6u
+  //PIN(v) = VOLT(adc_12_buf[5] >> 16) * 0.05 + PIN(v) * 0.95;
+  //PIN(u) = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
   PIN(udc) = VOLT(adc_34_buf[5] >> 16) * 0.05 + PIN(udc) * 0.95;
   PIN(udc_pwm) = PIN(udc) / 2.0;
 
-  PIN(temp_v) = ADC(adc_34_buf[4] >> 16);
-  toggle = !toggle;
-  if (toggle) {
+  // PIN(temp_v) = ADC(adc_34_buf[4] >> 16);
+  // toggle = !toggle;
+  // if (toggle) {
     PIN(hv_temp) = r2temp(HV_R(ADC(adc_34_buf[4] >> 16))) * 0.01 + PIN(hv_temp) * 0.99; // 5.5u
-  }
-  else {
-    PIN(mot_temp) = r2temp(HV_R(ADC(adc_34_buf[1] >> 16))) * 0.01 + PIN(mot_temp) * 0.99; // 5.5u//MOT_R(MOT_REF(ADC(adc_34_buf[0] >> 16))); // 1.4u
-  }
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET); // 0.1u
+  // }
+  // else {
+  //   PIN(mot_temp) = r2temp(HV_R(ADC(adc_34_buf[1] >> 16))) * 0.01 + PIN(mot_temp) * 0.99; // 5.5u//MOT_R(MOT_REF(ADC(adc_34_buf[0] >> 16))); // 1.4u
+  // }
+  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET); // 0.1u
 
   PIN(in0) = HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_8);
   PIN(in1) = HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_9);

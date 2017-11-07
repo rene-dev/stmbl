@@ -86,13 +86,14 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     temp_error = 0;
   }
 
-  if(PIN(mot_temp) > 110.0) {
-    mot_error = 1;
-  }
-
-  if(PIN(mot_temp) < 85.0) {
-    mot_error = 0;
-  }
+  // if(PIN(mot_temp) > 110.0) {
+  //   mot_error = 1;
+  // }
+  // 
+  // if(PIN(mot_temp) < 85.0) {
+  //   mot_error = 0;
+  // }
+  mot_error = 0;
 
   if(PIN(en) > 0.0 && !temp_error && !mot_error){
     TIM8->BDTR |= TIM_BDTR_MOE; // on

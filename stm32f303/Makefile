@@ -31,11 +31,11 @@ SOURCES += stm32f303/src/hal_tbl.c
 
 CFLAGS += -DHAL_MAX_CTX=1024
 COMPS += stm32f303/src/comps/hv.c
-COMPS += stm32f303/src/comps/hvdc.c
+# COMPS += stm32f303/src/comps/hvdc.c
 COMPS += stm32f303/src/comps/io.c
-COMPS += stm32f303/src/comps/ls.c
-COMPS += stm32f303/src/comps/enc.c
-COMPS += stm32f303/src/comps/uart.c
+# COMPS += stm32f303/src/comps/ls.c
+COMPS += stm32f303/src/comps/ppm.c
+# COMPS += stm32f303/src/comps/uart.c
 
 COMPS += shared/comps/sim.c
 COMPS += shared/comps/term.c
@@ -242,7 +242,7 @@ showsize: build
 btburn: build showsize $(TARGET).dfu
 	@tools/bootloader.py
 	@sleep 1
-	@dfu-util -d 0483:df11 -a 0 -s 0x8004000:leave -D $(TARGET).dfu
+	@dfu-util -d 0483:df11 -a 0 -s 0x8000000:leave -D $(TARGET).dfu
 
 flash: $(TARGET).bin
 	st-flash --reset write $(TARGET).bin 0x8004000

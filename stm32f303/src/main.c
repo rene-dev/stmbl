@@ -227,10 +227,10 @@ int main(void) {
   load_comp(comp_by_name("hv"));
   load_comp(comp_by_name("uvw"));
   load_comp(comp_by_name("curpid"));
-  load_comp(comp_by_name("uart"));
+  load_comp(comp_by_name("ppm"));
 
   hal_parse("term0.rt_prio = 0.1");
-  hal_parse("uart0.rt_prio = 0.2");
+  hal_parse("ppm0.rt_prio = 0.2");
   hal_parse("ls0.rt_prio = 0.6");
 
   hal_parse("io0.rt_prio = 1.0");
@@ -251,7 +251,8 @@ int main(void) {
   hal_parse("term0.gain6 = 10.0");
   hal_parse("term0.gain7 = 10.0");
 
-  hal_parse("curpid0.max_cur = 100.0");
+  hal_parse("curpid0.max_cur = 80.0");
+  hal_parse("ppm0.gain = 80.0");
 
   //link LS
   hal_parse("ls0.mot_temp = io0.mot_temp");
@@ -324,9 +325,9 @@ int main(void) {
   hal_parse("idq0.mode = 2.0");
   hal_parse("dq0.mode = 2.0");
 
-  hal_parse("curpid0.iq_cmd = uart0.current");
-  hal_parse("hv0.en = uart0.en");
-  hal_parse("curpid0.en = uart0.en");
+  hal_parse("curpid0.iq_cmd = ppm0.out");
+  hal_parse("hv0.en = ppm0.en");
+  hal_parse("curpid0.en = ppm0.en");
 
   hal_parse("uart0.rpm = uvw0.rpm");
   hal_parse("uart0.iabs = curpid0.iq_fb");

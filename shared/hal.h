@@ -22,8 +22,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define HAL_CALC_TIME
-#define HAL_COMP_CALC_TIME
+//#define HAL_CALC_TIME
+//#define HAL_COMP_CALC_TIME
 //#define HAL_WATCHDOG
 
 #ifndef HAL_MAX_PINS
