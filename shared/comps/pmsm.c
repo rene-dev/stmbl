@@ -62,8 +62,8 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct pmsm_ctx_t *ctx      = (struct pmsm_ctx_t *)ctx_ptr;
   struct pmsm_pin_ctx_t *pins = (struct pmsm_pin_ctx_t *)pin_ptr;
 
-  ctx->id        = 0.0;
-  ctx->iq        = 0.0;
+  ctx->id = 0.0;
+  ctx->iq = 0.0;
 
   PIN(psi)       = 0.01;
   PIN(r)         = 1.0;
@@ -91,54 +91,54 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct pmsm_pin_ctx_t *pins = (struct pmsm_pin_ctx_t *)pin_ptr;
 
 
-    float p     = (int)MAX(PIN(polecount), 1.0);
-    float vel_e = PIN(vel) * p;
-    float ld    = MAX(PIN(ld), 0.0001);
-    float lq    = MAX(PIN(lq), 0.0001);
-    float ud    = PIN(ud);
-    float uq    = PIN(uq);
-    float psi_m = MAX(PIN(psi), 0.01);
-    float r     = MAX(PIN(r), 0.01);
+  float p     = (int)MAX(PIN(polecount), 1.0);
+  float vel_e = PIN(vel) * p;
+  float ld    = MAX(PIN(ld), 0.0001);
+  float lq    = MAX(PIN(lq), 0.0001);
+  float ud    = PIN(ud);
+  float uq    = PIN(uq);
+  float psi_m = MAX(PIN(psi), 0.01);
+  float r     = MAX(PIN(r), 0.01);
 
-    float psi_d = ld * ctx->id + psi_m;
-    float psi_q = lq * ctx->iq;
+  float psi_d = ld * ctx->id + psi_m;
+  float psi_q = lq * ctx->iq;
 
-    float indd = vel_e * psi_q; // todo redundant calculation
-    float indq = vel_e * psi_d;
+  float indd = vel_e * psi_q;  // todo redundant calculation
+  float indq = vel_e * psi_d;
 
-    float dropv = PIN(drop_v);
-    float drope = PIN(drop_exp);
-    float dropq = dropv * drop(ctx->iq, drope);
-    float dropd = dropv * drop(ctx->id, drope);
+  float dropv = PIN(drop_v);
+  float drope = PIN(drop_exp);
+  float dropq = dropv * drop(ctx->iq, drope);
+  float dropd = dropv * drop(ctx->id, drope);
 
-    uq -= dropq;
-    ud -= dropd;
+  uq -= dropq;
+  ud -= dropd;
 
 
-    ctx->id += (ud - r * ctx->id + indd) / ld * period / 4.0;
-    ctx->iq += (uq - r * ctx->iq - indq) / lq * period / 4.0;
+  ctx->id += (ud - r * ctx->id + indd) / ld * period / 4.0;
+  ctx->iq += (uq - r * ctx->iq - indq) / lq * period / 4.0;
 
-    ctx->id += (ud - r * ctx->id + indd) / ld * period / 4.0;
-    ctx->iq += (uq - r * ctx->iq - indq) / lq * period / 4.0;
+  ctx->id += (ud - r * ctx->id + indd) / ld * period / 4.0;
+  ctx->iq += (uq - r * ctx->iq - indq) / lq * period / 4.0;
 
-    ctx->id += (ud - r * ctx->id + indd) / ld * period / 4.0;
-    ctx->iq += (uq - r * ctx->iq - indq) / lq * period / 4.0;
+  ctx->id += (ud - r * ctx->id + indd) / ld * period / 4.0;
+  ctx->iq += (uq - r * ctx->iq - indq) / lq * period / 4.0;
 
-    ctx->id += (ud - r * ctx->id + indd) / ld * period / 4.0;
-    ctx->iq += (uq - r * ctx->iq - indq) / lq * period / 4.0;
+  ctx->id += (ud - r * ctx->id + indd) / ld * period / 4.0;
+  ctx->iq += (uq - r * ctx->iq - indq) / lq * period / 4.0;
 
-    float t = 3.0 / 2.0 * p * (psi_m * ctx->iq + (ld - lq) * ctx->id * ctx->iq);
+  float t = 3.0 / 2.0 * p * (psi_m * ctx->iq + (ld - lq) * ctx->id * ctx->iq);
 
-    PIN(id)     = ctx->id;
-    PIN(iq)     = ctx->iq;
-    PIN(indd)   = indd;
-    PIN(indq)   = indq;
-    PIN(psi_d)  = psi_d;
-    PIN(psi_q)  = psi_q;
-    PIN(torque) = t;
+  PIN(id)     = ctx->id;
+  PIN(iq)     = ctx->iq;
+  PIN(indd)   = indd;
+  PIN(indq)   = indq;
+  PIN(psi_d)  = psi_d;
+  PIN(psi_q)  = psi_q;
+  PIN(torque) = t;
 
-    PIN(drop_q) = dropq;
-    PIN(drop_d) = dropd;
+  PIN(drop_q) = dropq;
+  PIN(drop_d) = dropd;
 }
 
 hal_comp_t pmsm_comp_struct = {
