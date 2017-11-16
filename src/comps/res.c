@@ -45,9 +45,11 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   ctx->abspos = 0;
   ctx->lastq  = 0;
 
-  TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
   TIM_OCInitTypeDef TIM_OCInitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
+
+#ifdef V4
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 
   //timer init for v4, v3 uses slave timer
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
@@ -61,7 +63,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   TIM_ITRxExternalClockConfig(TIM4, TIM_TS_ITR2);  // clk = TIM_MASTER(TIM2) trigger out
   TIM_ARRPreloadConfig(TIM4, ENABLE);
   TIM_Cmd(TIM4, ENABLE);
-
+#endif
   // resolver reference signal OC
   TIM_OCInitStructure.TIM_OCMode       = TIM_OCMode_Toggle;
   TIM_OCInitStructure.TIM_OutputState  = TIM_OutputState_Enable;
@@ -72,18 +74,18 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   TIM_OCInitStructure.TIM_OCIdleState  = TIM_OCIdleState_Set;
   TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
   //ref is always OC3
-  TIM_OC3Init(TIM4, &TIM_OCInitStructure);
-  TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable);
-  TIM_CtrlPWMOutputs(TIM4, ENABLE);
+  TIM_OC3Init(TIM_SLAVE, &TIM_OCInitStructure);
+  TIM_OC3PreloadConfig(TIM_SLAVE, TIM_OCPreload_Enable);
+  TIM_CtrlPWMOutputs(TIM_SLAVE, ENABLE);
 
   //resolver ref signal generation
-  GPIO_InitStructure.GPIO_Pin   = FB0_Z_PIN;
+  GPIO_InitStructure.GPIO_Pin   = FB0_RES_REF_PIN;
   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-  GPIO_Init(FB0_Z_PORT, &GPIO_InitStructure);
-  GPIO_PinAFConfig(FB0_Z_PORT, FB0_Z_PIN_SOURCE, GPIO_AF_TIM4);
+  GPIO_Init(FB0_RES_REF_PORT, &GPIO_InitStructure);
+  GPIO_PinAFConfig(FB0_RES_REF_PORT, FB0_RES_REF_PIN_SOURCE, FB0_RES_REF_TIM_AF);
 
   // TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
   // TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
@@ -112,7 +114,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
   //TODO: arr can change!
-  TIM4->CCR3 = (int)CLAMP(PIN(tim_oc) * TIM4->ARR, 0, TIM4->ARR - 1);
+  FB0_RES_REF_TIM->CCR3 = (int)CLAMP(PIN(tim_oc) * FB0_RES_REF_TIM->ARR, 0, FB0_RES_REF_TIM->ARR - 1);
 
   float s = 0.0;
   float c = 0.0;

@@ -10,7 +10,6 @@ HAL_PIN(l);
 HAL_PIN(j);
 HAL_PIN(psi);
 HAL_PIN(polecount);
-HAL_PIN(mot_type);  //ac sync,async/dc,2phase
 HAL_PIN(out_rev);
 HAL_PIN(high_mot_temp);
 HAL_PIN(max_mot_temp);
@@ -38,21 +37,16 @@ HAL_PIN(com_fb_offset);
 HAL_PIN(com_fb_rev);
 HAL_PIN(com_fb_res);
 
-HAL_PIN(autophase);  //constant,cauto,hfi
-
 HAL_PIN(cmd_rev);
 HAL_PIN(cmd_res);
-//HAL_PIN(pos_static);//track pos in disabled and error condition TODO: not implemented
 
 HAL_PIN(max_dc_volt);
 HAL_PIN(max_hv_temp);
-HAL_PIN(max_core_temp);
 HAL_PIN(max_pos_error);
 HAL_PIN(high_dc_volt);
 HAL_PIN(low_dc_volt);
 HAL_PIN(high_hv_temp);
 HAL_PIN(fan_hv_temp);
-HAL_PIN(fan_core_temp);
 HAL_PIN(fan_mot_temp);
 
 HAL_PIN(g);

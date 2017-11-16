@@ -1,0 +1,71 @@
+load pmsm
+load pmsm_limits
+load pmsm_ttc
+load idq
+load curpid
+
+hv0.a = idq0.a
+hv0.b = idq0.b
+hv0.iq = pmsm0.iq
+hv0.enable = fault0.en_pid
+
+pmsm0.rt_prio = 11
+pmsm0.ud = curpid0.ud
+pmsm0.uq = curpid0.uq
+pmsm0.vel = net0.fb_d
+pmsm0.r = conf0.r
+pmsm0.ld = conf0.l
+pmsm0.lq = conf0.l
+pmsm0.psi = conf0.psi
+pmsm0.polecount = conf0.polecount
+
+idq0.rt_prio = 13.0
+idq0.mode = 2
+idq0.pos = vel2.pos_out
+idq0.polecount = 1
+idq0.d = curpid0.ud
+idq0.q = curpid0.uq
+
+curpid0.rt_prio = 10
+curpid0.en = fault0.en_pid
+curpid0.id_fb = pmsm0.id
+curpid0.iq_fb = pmsm0.iq
+curpid0.id_cmd = fb_switch0.id
+curpid0.iq_cmd = pmsm_ttc0.cur
+curpid0.dc_volt = hv0.dc_volt
+curpid0.ac_volt = hv0.ac_volt
+curpid0.rd = conf0.r
+curpid0.rq = conf0.r
+curpid0.ld = conf0.l
+curpid0.lq = conf0.l
+curpid0.ff = conf0.cur_ff
+curpid0.kp = conf0.cur_p
+curpid0.ki = conf0.cur_i
+curpid0.kind = conf0.cur_ind
+curpid0.cmd_mode = 1
+curpid0.pwm_volt = hv0.pwm_volt
+
+
+pmsm_ttc0.rt_prio = 9
+pmsm_ttc0.torque = pid0.torque_cor_cmd
+pmsm_ttc0.polecount = conf0.polecount
+pmsm_ttc0.psi = conf0.psi
+
+fb_switch0.phase_cur = conf0.phase_cur
+fb_switch0.phase_time = conf0.phase_time
+
+
+pid0.min_torque = pmsm_limits0.next_min_torque
+pid0.max_torque = pmsm_limits0.next_max_torque
+
+
+
+curpid0.max_cur = 5
+
+
+pid0.max_vel = conf0.
+pid0.max_torque = 5.000000
+pid0.min_torque = -5.000000
+pmsm0.vel = 
+curpid0.cmd_mode = 1 ? CURRENT_MODE
+
