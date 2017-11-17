@@ -28,7 +28,7 @@ HAL_PIN(brake);
 
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
-  struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
+  // struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
 
   GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -98,6 +98,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       red   = 0;
       break;
 
+    case LED_TEST:
     case PHASING:
       green = 1;
       red   = 1;
