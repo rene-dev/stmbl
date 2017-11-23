@@ -3,8 +3,8 @@
 #include <math.h>
 #include <inttypes.h>
 
-#include "sserial.h"
-#include "defines.h"
+#include "../inc/sserial.h"
+#include "../shared/defines.h"
 
 memory_t memory;
 uint8_t *heap_ptr;

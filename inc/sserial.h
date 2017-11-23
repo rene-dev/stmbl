@@ -170,6 +170,8 @@ typedef struct {
 typedef struct {
   pd_metadata_t pos_cmd;
   pd_metadata_t pos_fb;
+  pd_metadata_t vel_cmd;
+  pd_metadata_t vel_fb;
   pd_metadata_t input_pins;
   pd_metadata_t output_pins;
   pd_metadata_t fault;
