@@ -38,7 +38,7 @@ struct hv_ctx_t {
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
-  struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
+  // struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
   //setup uart to f1. uses DMA to transfer to_hv struct.
   GPIO_InitTypeDef GPIO_InitStruct;

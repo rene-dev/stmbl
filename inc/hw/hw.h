@@ -106,10 +106,6 @@
 #define FB0_ENC_TIM_AF GPIO_AF_TIM3
 #define FB0_ENC_TIM_RCC RCC_APB1Periph_TIM3
 
-#define FB0_RES_TIM TIM2
-#define FB0_RES_TIM_AF GPIO_AF_TIM2  //sync to slave timer for resolver
-#define FB0_RES_TIM_RCC RCC_APB1Periph_TIM2
-
 #define TIM_MASTER TIM4
 #define TIM_MASTER_RCC RCC_APB1Periph_TIM4
 #define TIM_MASTER_ADC_OC_INIT TIM_OC4Init
@@ -293,9 +289,6 @@
 #define FB0_ENC_TIM_AF GPIO_AF_TIM4
 #define FB0_ENC_TIM_RCC RCC_APB1Periph_TIM4
 
-#define FB0_RES_TIM TIM4
-#define FB0_RES_TIM_AF GPIO_AF_TIM4  //sync to slave timer for resolver
-#define FB0_RES_TIM_RCC RCC_APB1Periph_TIM4
 //FB1, TIM1
 #define FB1_A_PIN GPIO_Pin_9
 #define FB1_A_PIN_SOURCE GPIO_PinSource9

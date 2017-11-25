@@ -74,9 +74,9 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   TIM_OCInitStructure.TIM_OCIdleState  = TIM_OCIdleState_Set;
   TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
   //ref is always OC3
-  TIM_OC3Init(TIM_SLAVE, &TIM_OCInitStructure);
-  TIM_OC3PreloadConfig(TIM_SLAVE, TIM_OCPreload_Enable);
-  TIM_CtrlPWMOutputs(TIM_SLAVE, ENABLE);
+  TIM_OC3Init(FB0_RES_REF_TIM, &TIM_OCInitStructure);
+  TIM_OC3PreloadConfig(FB0_RES_REF_TIM, TIM_OCPreload_Enable);
+  TIM_CtrlPWMOutputs(FB0_RES_REF_TIM, ENABLE);
 
   //resolver ref signal generation
   GPIO_InitStructure.GPIO_Pin   = FB0_RES_REF_PIN;
@@ -86,19 +86,6 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(FB0_RES_REF_PORT, &GPIO_InitStructure);
   GPIO_PinAFConfig(FB0_RES_REF_PORT, FB0_RES_REF_PIN_SOURCE, FB0_RES_REF_TIM_AF);
-
-  // TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
-  // TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  // TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Disable;
-  // TIM_OCInitStructure.TIM_Pulse = 10;
-  // TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-  // TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
-  // TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
-  // TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCIdleState_Reset;
-  //
-  // TIM_OC3Init(TIM2, &TIM_OCInitStructure);
-  // TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Enable);
-  // TIM_CtrlPWMOutputs(TIM2, ENABLE);
 
   //txen
   GPIO_InitStructure.GPIO_Pin   = FB0_Z_TXEN_PIN;
