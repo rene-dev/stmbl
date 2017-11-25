@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name stmbl)(type KiCad)(uri ../lib/stmbl.pretty)(options "")(descr ""))
+  (lib (name d2pak_stmbl)(type KiCad)(uri "$(KIPRJMOD)/d2pak_stmbl.pretty")(options "")(descr ""))
+)
