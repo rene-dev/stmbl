@@ -1,40 +1,4 @@
-EESchema Schematic File Version 2
-LIBS:ethernet_bob-rescue
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:ksz8081
-LIBS:ESD_Protection
-LIBS:hr911105_rj45
-LIBS:stm32
-LIBS:crystal_smd
-LIBS:usblc
+EESchema Schematic File Version 4
 LIBS:ethernet_bob-cache
 EELAYER 26 0
 EELAYER END
@@ -65,6 +29,8 @@ $Comp
 L +3.3V #PWR020
 U 1 1 57FEA6EF
 P 6700 3100
+AR Path="/57FEA6EF" Ref="#PWR020"  Part="1" 
+AR Path="/57FEA2FD/57FEA6EF" Ref="#PWR020"  Part="1" 
 F 0 "#PWR020" H 6700 2950 50  0001 C CNN
 F 1 "+3.3V" H 6715 3273 50  0000 C CNN
 F 2 "" H 6700 3100 50  0000 C CNN
@@ -73,7 +39,7 @@ F 3 "" H 6700 3100 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5VP #PWR021
+L power:+5VP #PWR021
 U 1 1 57FEA707
 P 5900 3100
 F 0 "#PWR021" H 5900 2950 50  0001 C CNN
@@ -117,7 +83,7 @@ Connection ~ 6300 3400
 Connection ~ 6650 3100
 Connection ~ 5950 3100
 $Comp
-L NCP1117ST33T3G U3
+L ethernet_bob-rescue:NCP1117ST33T3G-RESCUE-ethernet_bob U3
 U 1 1 57FEECE5
 P 6300 3100
 F 0 "U3" H 6300 3367 50  0000 C CNN

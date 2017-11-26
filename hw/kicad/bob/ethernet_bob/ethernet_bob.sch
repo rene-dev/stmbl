@@ -1,40 +1,4 @@
-EESchema Schematic File Version 2
-LIBS:ethernet_bob-rescue
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:ksz8081
-LIBS:ESD_Protection
-LIBS:hr911105_rj45
-LIBS:stm32
-LIBS:crystal_smd
-LIBS:usblc
+EESchema Schematic File Version 4
 LIBS:ethernet_bob-cache
 EELAYER 26 0
 EELAYER END
@@ -123,7 +87,7 @@ F0 "rs485" 60
 F1 "rs485.sch" 60
 $EndSheet
 $Comp
-L CONN_01X01 J3
+L conn:CONN_01X01 J3
 U 1 1 59A7C874
 P 8050 2500
 F 0 "J3" V 8015 2412 50  0000 R CNN
@@ -134,7 +98,7 @@ F 3 "" H 8050 2500 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L CONN_01X01 J2
+L conn:CONN_01X01 J2
 U 1 1 59A81F51
 P 7950 4850
 F 0 "J2" V 7822 4928 50  0000 L CNN
@@ -184,4 +148,8 @@ Wire Wire Line
 	7950 4500 7950 4650
 Wire Wire Line
 	7700 3950 8150 3950
+Text GLabel 9750 3350 2    60   Input ~ 0
+LED2
+Wire Wire Line
+	9650 3350 9750 3350
 $EndSCHEMATC

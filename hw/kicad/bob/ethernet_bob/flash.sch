@@ -1,40 +1,4 @@
-EESchema Schematic File Version 2
-LIBS:ethernet_bob-rescue
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:ksz8081
-LIBS:ESD_Protection
-LIBS:hr911105_rj45
-LIBS:stm32
-LIBS:crystal_smd
-LIBS:usblc
+EESchema Schematic File Version 4
 LIBS:ethernet_bob-cache
 EELAYER 26 0
 EELAYER END
@@ -51,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L CAT250_EEPROM U4
+L memory:CAT250_EEPROM U4
 U 1 1 57FEAF7D
 P 5550 3950
 F 0 "U4" H 5550 4428 50  0000 C CNN
@@ -76,6 +40,8 @@ $Comp
 L +3.3V #PWR022
 U 1 1 57FEB05E
 P 7350 3750
+AR Path="/57FEB05E" Ref="#PWR022"  Part="1" 
+AR Path="/57FEAF27/57FEB05E" Ref="#PWR022"  Part="1" 
 F 0 "#PWR022" H 7350 3600 50  0001 C CNN
 F 1 "+3.3V" H 7365 3923 50  0000 C CNN
 F 2 "" H 7350 3750 50  0000 C CNN
@@ -115,6 +81,8 @@ $Comp
 L +3.3V #PWR025
 U 1 1 57FEB0B4
 P 5550 3600
+AR Path="/57FEB0B4" Ref="#PWR025"  Part="1" 
+AR Path="/57FEAF27/57FEB0B4" Ref="#PWR025"  Part="1" 
 F 0 "#PWR025" H 5550 3450 50  0001 C CNN
 F 1 "+3.3V" H 5565 3773 50  0000 C CNN
 F 2 "" H 5550 3600 50  0000 C CNN
