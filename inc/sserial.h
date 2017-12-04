@@ -177,4 +177,5 @@ typedef struct {
   pd_metadata_t fault;
   pd_metadata_t enable;
   pd_metadata_t index_enable;
+  pd_metadata_t current;
 } pd_table_t;

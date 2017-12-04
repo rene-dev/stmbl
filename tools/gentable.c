@@ -91,8 +91,18 @@ void print_pd(process_data_descriptor_t* pd){
       }
       break;
       case DATA_TYPE_UNSIGNED:
+            if(pd->data_size == 8){
+        printf("uint8_t %s;\n",name);
+      }else{
+        printf("warning: unsupported int size!\n");
+      }
+      break;
       case DATA_TYPE_SIGNED:
-      printf("sign/unsign\n");
+      if(pd->data_size == 8){
+        printf("int8_t %s;\n",name);
+      }else{
+        printf("warning: unsupported int size!\n");
+      }
       break;
       case DATA_TYPE_FLOAT:
       //TODO: check size
@@ -146,6 +156,8 @@ int main(){
      metadata(&(pd_table.pos_fb), last_pd);
      ADD_PROCESS_VAR(("vel_fb", "rad", 32, DATA_TYPE_FLOAT, DATA_DIRECTION_INPUT, -INFINITY, INFINITY));
      metadata(&(pd_table.vel_fb), last_pd);
+      ADD_PROCESS_VAR(("current", "A", 8, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -30, 30));
+     metadata(&(pd_table.current), last_pd);
      ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, -100, 100));
      metadata(&(pd_table.input_pins), last_pd);
      ADD_PROCESS_VAR(("fault", "none", 1, DATA_TYPE_BOOLEAN, DATA_DIRECTION_INPUT, 0, 1));
@@ -256,5 +268,4 @@ int main(){
     }
     printf("} sserial_in_process_data_t; //size:%u bytes\n",memory.discovery.input-1);
     printf("_Static_assert(sizeof(sserial_in_process_data_t) == %u, \"sserial_in_process_data_t size error!\");\n",memory.discovery.input-1);
-
 }
