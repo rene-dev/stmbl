@@ -69,8 +69,6 @@ uint16_t address;  //current address pointer
 int rxpos;
 discovery_rpc_t discovery;
 uint32_t timeout;
-float last_pos_cmd;
-float host_period;
 lbp_t lbp;
 char name[] = LBPCardName;
 int bufferpos;
@@ -198,13 +196,6 @@ void send(uint8_t len, uint8_t docrc) {
 //USART5 TX DMA1 stream7 channel4
 //USART1 RX DMA2 stream5 channel4
 
-//v4
-//normal enable: pb9
-//mesa pinout enable: pb7(requires jumper)
-//pa10 usart1 rx
-//pa9 usart1 tx
-//USART1 TX	DMA2 stream7 channel4
-//USART1 RX	DMA2 stream5 channel4
 //v4.1
 //pa0 usart4 tx DMA1 stream4 channel4
 //pa10 usart1 rx DMA2 stream5 channel4
@@ -339,7 +330,6 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct res_ctx_t * ctx = (struct res_ctx_t *)ctx_ptr;
   struct sserial_pin_ctx_t *pins = (struct sserial_pin_ctx_t *)pin_ptr;
-  host_period += period;
   for(int j = 0; j < 1; j++) {
     //next received packet will be written to bufferpos
     bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
