@@ -279,6 +279,7 @@ int main(void) {
   hal_parse("curpid0.iq_fb = dq0.q");
   hal_parse("ls0.d_fb = dq0.d");
   hal_parse("ls0.q_fb = dq0.q");
+  hal_parse("ls0.y = dq0.y");
   hal_parse("ls0.u_fb = io0.u");
   hal_parse("ls0.v_fb = io0.v");
   hal_parse("ls0.w_fb = io0.w");
