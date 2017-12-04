@@ -191,7 +191,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       PIN(q_fb)     = ctx->packet_from_hv.q_fb;
       PIN(dc_volt)  = ctx->packet_from_hv.dc_volt;
       PIN(pwm_volt) = ctx->packet_from_hv.pwm_volt;
-      PIN(abs_cur) = sqrtf(PIN(d_fb) * PIN(d_fb) + PIN(q_fb) * PIN(q_fb));
+      PIN(abs_cur)  = sqrtf(PIN(d_fb) * PIN(d_fb) + PIN(q_fb) * PIN(q_fb));
 
       uint16_t a         = ctx->packet_from_hv.addr;
       a                  = CLAMP(a, 0, sizeof(f3_state_data_t) / 4);

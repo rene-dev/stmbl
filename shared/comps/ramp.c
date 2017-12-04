@@ -22,19 +22,20 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   float vel_error = PIN(vel_ext_cmd) - PIN(vel_fb);
 
-  PIN(vel_cmd) = PIN(vel_fb) + LIMIT(vel_error, PIN(max_acc) * period) * LIMIT(5.0 * (1.0 - ABS(PIN(torque_fb)) / MAX(PIN(scale) * PIN(max_torque), 0.01)), 1.0);;
+  PIN(vel_cmd) = PIN(vel_fb) + LIMIT(vel_error, PIN(max_acc) * period) * LIMIT(5.0 * (1.0 - ABS(PIN(torque_fb)) / MAX(PIN(scale) * PIN(max_torque), 0.01)), 1.0);
+  ;
 }
 
 hal_comp_t ramp_comp_struct = {
-  .name      = "ramp",
-  .nrt       = 0,
-  .rt        = rt_func,
-  .frt       = 0,
-  .nrt_init  = 0,
-  .rt_start  = 0,
-  .frt_start = 0,
-  .rt_stop   = 0,
-  .frt_stop  = 0,
-  .ctx_size  = 0,
-  .pin_count = sizeof(struct ramp_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+    .name      = "ramp",
+    .nrt       = 0,
+    .rt        = rt_func,
+    .frt       = 0,
+    .nrt_init  = 0,
+    .rt_start  = 0,
+    .frt_start = 0,
+    .rt_stop   = 0,
+    .frt_stop  = 0,
+    .ctx_size  = 0,
+    .pin_count = sizeof(struct ramp_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
 };
