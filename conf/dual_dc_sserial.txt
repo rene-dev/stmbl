@@ -1,0 +1,17 @@
+link pid
+link sserial
+load move
+load move
+move0.rt_prio = 20
+move1.rt_prio = 20
+move0.scale = sserial0.pos_cmd_d
+move1.scale = sserial0.pos_cmd_d
+move0.fwd = sserial0.out0
+move0.rev = sserial0.out1
+move1.fwd = sserial0.out2
+move1.rev = sserial0.out3
+hv0.phase_mode = 0
+hv0.cmd_mode = 0
+hv0.d_cmd = move0.out
+hv0.q_cmd = move1.out
+hv0.en = 1
