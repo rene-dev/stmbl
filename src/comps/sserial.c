@@ -172,7 +172,7 @@ uint8_t crc_reuest(uint8_t len) {
   for(int i = rxpos; i < rxpos + len; i++) {
     crc = crc8_update(crc, (void *)&(rxbuf[i % sizeof(rxbuf)]), 1);
   }
-  crc8_finalize(crc);
+  crc = crc8_finalize(crc);
   return crc == rxbuf[(rxpos + len) % sizeof(rxbuf)];
 }
 
