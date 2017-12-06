@@ -492,10 +492,11 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           } else {  //address not included in command = cmd+crc
             rxpos += 2;
           }
-          if(address + (1 << lbp.ds) < sizeof(sserial_slave)) {  //check if address is valid
+          //TODO: causes timeouts...
+          //if((address + (1 << lbp.ds)) < ARRAY_SIZE(sserial_slave)) {  //check if address is valid
             memcpy((void *)txbuf, &sserial_slave[address], (1 << lbp.ds));
             send((1 << lbp.ds), 1);
-          }
+          //}
           if(lbp.ai) {  //auto increment address by datasize
             address += (1 << lbp.ds);
           }
@@ -518,7 +519,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
             rxpos += 1;
           }
           //TODO: check size
-          if(address + (1 << lbp.ds) < sizeof(sserial_slave)) {  //check if address is valid
+          if((address + (1 << lbp.ds)) < ARRAY_SIZE(sserial_slave)) {  //check if address is valid
             for(int i = 0; i < (1 << lbp.ds); i++) {
               sserial_slave[address + i] = rxbuf[(rxpos + i) % sizeof(rxbuf)];
             }
