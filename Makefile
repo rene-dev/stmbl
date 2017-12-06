@@ -290,7 +290,7 @@ f3_boot:
 deploy: boot f3_boot f3 build
 
 format:
-	find src/ f3dfu/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
+	find src/ f3dfu/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ tools/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
 
 # Display compiler version information
 #
