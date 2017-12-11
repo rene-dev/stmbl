@@ -10,12 +10,16 @@ HAL_COMP(pmsm_ttc);
 HAL_PIN(psi);
 HAL_PIN(polecount);
 
-HAL_PIN(ac);
-HAL_PIN(pc);
+//tc
+HAL_PIN(ac);//amplitude
+HAL_PIN(pc);//phase
 HAL_PIN(nc);
+
+//te
+HAL_PIN(ne);
 HAL_PIN(ae);
 HAL_PIN(pe);
-HAL_PIN(ne);
+
 HAL_PIN(pos);
 HAL_PIN(t);
 HAL_PIN(g);
@@ -42,8 +46,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float psi_m  = MAX(PIN(psi), 0.01);
   float torque = PIN(torque);
 
-  float tc = PIN(ac) * sinf(PIN(pc) + PIN(pos) * PIN(nc) * p);
-  float te = torque * PIN(ae) * sinf(PIN(pe) + PIN(pos) * PIN(ne) * p);
+  float tc = PIN(ac) * sinf(PIN(pc) + PIN(pos) * PIN(nc));
+  float te = torque * PIN(ae) * sinf(PIN(pe) + PIN(pos) * PIN(ne));
   PIN(t)   = tc + te;
   PIN(cur) = (torque + PIN(g) * (tc + te)) / 3.0 * 2.0 / p / psi_m;
 }
