@@ -38,6 +38,7 @@ else
 	COMPS += src/comps/enc_cmd.c
 	COMPS += src/comps/o_fb.c
 	COMPS += src/comps/sserial.c
+	COMPS += src/comps/yaskawa.c
 	CFLAGS += -DV4
 endif
 
