@@ -37,7 +37,7 @@ HAL_PIN(rev_clear);
 HAL_PIN(rev);
 
 struct linrev_ctx_t {
-  uint8_t lastq;  //last quadrant
+  int lastq;  //last quadrant
   int32_t rev;  //current multiturn
 };
 
@@ -50,14 +50,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     PIN(cmd_out)   = mod((PIN(cmd_in) / scale) * 2.0 * M_PI);
     PIN(cmd_d_out) = PIN(cmd_d_in) / scale * 2.0 * M_PI;
   }
-  uint8_t q = 0;
-
-  if(PIN(fb_in) > M_PI / 2.0) {
-    q = 2;
-  }
-  if(PIN(fb_in) < -M_PI / 2.0) {
-    q = 3;
-  }
+  int q = quadrant(PIN(fb_in));
 
   if(q != 0 && q == 3 && ctx->lastq == 2) {
     ctx->rev++;
