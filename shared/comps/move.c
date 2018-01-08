@@ -13,7 +13,7 @@ HAL_PIN(out);
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct move_pin_ctx_t *pins = (struct move_pin_ctx_t *)pin_ptr;
-  PIN(out) = PIN(scale) * PIN(fwd) + PIN(scale) * PIN(rev) * -1;
+  PIN(out)                    = PIN(scale) * PIN(fwd) + PIN(scale) * PIN(rev) * -1;
 }
 
 hal_comp_t move_comp_struct = {

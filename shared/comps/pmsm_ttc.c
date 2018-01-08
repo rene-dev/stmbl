@@ -11,8 +11,8 @@ HAL_PIN(psi);
 HAL_PIN(polecount);
 
 //tc
-HAL_PIN(ac);//amplitude
-HAL_PIN(pc);//phase
+HAL_PIN(ac);  //amplitude
+HAL_PIN(pc);  //phase
 HAL_PIN(nc);
 
 //te

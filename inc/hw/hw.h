@@ -278,10 +278,6 @@
 #define FB0_B_EN_PIN_SOURCE GPIO_PinSource10
 #define FB0_B_EN_PORT GPIOD
 
-#define FB0_Z_EN_PIN GPIO_Pin_15
-#define FB0_Z_EN_PIN_SOURCE GPIO_PinSource15
-#define FB0_Z_EN_PORT GPIOD
-
 #define FB0_Z_TXEN_PIN GPIO_Pin_15
 #define FB0_Z_TXEN_PORT GPIOD
 
