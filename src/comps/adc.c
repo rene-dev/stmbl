@@ -38,10 +38,11 @@ HAL_PINA(offset, 8);
 HAL_PINA(gain, 8);
 
 struct adc_ctx_t {
-  volatile float txbuf[8][PID_WAVES * ADC_TR_COUNT];
+  volatile float txbuf[8][ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1)];
+  volatile uint32_t txbuf_raw[ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1)];
   uint32_t txpos;
   uint32_t send_counter;  //send_step counter
-  uint32_t send;  //send buffer state
+  volatile uint32_t send;  //send buffer state 0=filling, 1=sending
 };
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -49,15 +50,17 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
   PINA(gain, 0)              = 200;
   PINA(gain, 1)              = 200;
+  PINA(gain, 2)              = 200;
+  PINA(gain, 3)              = 200;
   PIN(sin_gain)              = 1.0;
   PIN(cos_gain)              = 1.0;
   ctx->txpos                 = 0;
-  ctx->send_counter          = 0;  //send_step counter
-  ctx->send                  = 1;  //send buffer state
+  ctx->send_counter          = 0;
+  ctx->send                  = 0;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  // struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
+  struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
   struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
 
   float si0[PID_WAVES * ADC_OVER_FB0];
@@ -104,11 +107,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
         coi1 += ADC_DMA_Buffer[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] >> 16;
       }
 #endif
-      // if(ctx->send == 0) {  // TODO: move V_DIFF2 to nrt, this is too slow
-      //   ctx->txbuf[0][ctx->txpos] = (((i == 0 || i == 2) && (PIN(res_en) > 0.0)) ? -1.0 : 1.0) * V_DIFF2(ADC_DMA_Buffer[i * ADC_ANZ + j] & 0x0000ffff);
-      //   ctx->txbuf[1][ctx->txpos] = (((i == 0 || i == 2) && (PIN(res_en) > 0.0)) ? -1.0 : 1.0) * V_DIFF2(ADC_DMA_Buffer[i * ADC_ANZ + j] >> 16);
-      //   ctx->txpos++;
-      // }
     }
     si0[i] = s_g * V_DIFF(sii0, ADC_TR_COUNT * ADC_OVER_FB0) + s_o;
     co0[i] = c_g * V_DIFF(coi0, ADC_TR_COUNT * ADC_OVER_FB0) + c_o;
@@ -117,10 +115,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     co1[i] = c_g * V_DIFF(coi1, ADC_TR_COUNT * ADC_OVER_FB1) + c_o;
 #endif
   }
-  // if(ctx->send == 0) {
-  //   ctx->send  = 1;
-  //   ctx->txpos = 0;
-  // }
+  //copy dma buffer for plotting TODO: use dual mode, for zero copy
+  if(ctx->send == 0) {
+    memcpy(ctx->txbuf_raw, ADC_DMA_Buffer, ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1) * 4);
+    ctx->send = 1;
+  }
 
   PIN(sin3) = si0[3];
   PIN(cos3) = co0[3];
@@ -151,39 +150,59 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(cos) = c;
 }
 
-// static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-//   struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
-//   struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
-//   if(ctx->send_counter++ >= PIN(send_step) - 1 && PIN(send_step) > 0) {
-// int tmp = 0;
-// uint8_t buf[TERM_NUM_WAVES + 3];
+static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
+  struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
 
-// buf[0] = 255;
-// for(int k = 0; k < PID_WAVES * ADC_ANZ; k++) {
-//   for(int i = 0; i < TERM_NUM_WAVES; i++) {
-//     tmp        = (ctx->txbuf[i][k] + PINA(offset, i)) * PINA(gain, i) + 128;
-//     buf[i + 1] = CLAMP(tmp, 1, 254);
-//   }
-//   buf[8 + 1] = 0;
+  int tmp = 0;
+  uint8_t buf[TERM_NUM_WAVES + 3];
 
-//   if(USB_CDC_is_connected()) {
-//     USB_VCP_send_string(buf);
-//   }
-// }
+  if(ctx->send == 1 && ctx->send_counter++ >= PIN(send_step) - 1 && PIN(send_step) > 0) {
+    ctx->send_counter = 0;
+    for(int i = 0; i < PID_WAVES; i++) {
+      for(int j = 0; j < ADC_TR_COUNT; j++) {
+        for(int k = 0; k < ADC_OVER_FB0; k++) {
+          ctx->txbuf[0][ctx->txpos] = (((i == 0 || i == 2) && (PIN(res_en) > 0.0)) ? -1.0 : 1.0) * V_DIFF2(ctx->txbuf_raw[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] & 0x0000ffff);
+          ctx->txbuf[1][ctx->txpos] = (((i == 0 || i == 2) && (PIN(res_en) > 0.0)) ? -1.0 : 1.0) * V_DIFF2(ctx->txbuf_raw[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] >> 16);
+          ctx->txpos++;
+        }
+#ifdef FB1
+        for(int k = ADC_OVER_FB0; k < ADC_OVER_FB0 + ADC_OVER_FB1; k++) {
+          ctx->txbuf[2][ctx->txpos] = V_DIFF2(ctx->txbuf_raw[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] & 0x0000ffff);
+          ctx->txbuf[3][ctx->txpos] = V_DIFF2(ctx->txbuf_raw[i * ADC_TR_COUNT * (ADC_OVER_FB0 + ADC_OVER_FB1) + j * (ADC_OVER_FB0 + ADC_OVER_FB1) + k] >> 16);
+          ctx->txpos++;
+        }
+#endif
+      }
+    }
+    ctx->txpos = 0;
 
-// buf[0] = 0xfe;  //trigger servoterm
-// buf[1] = 0x00;
-// if(USB_CDC_is_connected()) {
-//   USB_VCP_send_string(buf);
-// }
-// ctx->send_counter = 0;
-// ctx->send         = 0;
-//   }
-// }
+    buf[0] = 255;
+    for(int k = 0; k < ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1); k++) {
+      for(int i = 0; i < TERM_NUM_WAVES; i++) {
+        tmp        = (ctx->txbuf[i][k] + PINA(offset, i)) * PINA(gain, i) + 128;
+        buf[i + 1] = CLAMP(tmp, 1, 254);
+      }
+      buf[8 + 1] = 0;
+
+      if(USB_CDC_is_connected()) {
+        USB_VCP_send_string(buf);
+      }
+    }
+
+    buf[0] = 0xfe;  //trigger servoterm
+    buf[1] = 0x00;
+    if(USB_CDC_is_connected()) {
+      USB_VCP_send_string(buf);
+    }
+
+    ctx->send = 0;
+  }
+}
 
 hal_comp_t adc_comp_struct = {
     .name      = "adc",
-    .nrt       = 0,  //nrt_func,
+    .nrt       = nrt_func,
     .rt        = rt_func,
     .frt       = 0,
     .nrt_init  = nrt_init,
