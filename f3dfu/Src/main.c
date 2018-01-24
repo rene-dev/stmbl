@@ -153,7 +153,7 @@ int main(void) {
     /* Initialize user application's Stack Pointer */
     __set_MSP(*(__IO uint32_t *)USBD_DFU_APP_DEFAULT_ADD);
 #ifdef USB_DISCONNECT_PIN
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(USB_DISCONNECT_PORT, USB_DISCONNECT_PIN, GPIO_PIN_SET);
     HAL_Delay(100);
 #endif
     JumpToApplication();
