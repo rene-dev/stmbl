@@ -66,6 +66,11 @@ typedef struct {
         PHASE_180_2PH,
         PHASE_180_3PH,
       } phase_type : 3;
+      enum packet_to_hv_opcode_t {
+        PACKET_TO_HV_OPCODE_NOP = 0,
+        PACKET_TO_HV_OPCODE_RESET,
+        PACKET_TO_HV_OPCODE_BOOTLOADER,
+      } opcode : 3;
     } flags;
     uint16_t padding;
   };
@@ -104,6 +109,26 @@ typedef union {
   } pins;
   float data[sizeof(struct f3_state_data_temp) / 4];
 } f3_state_data_t;
+
+typedef struct{
+  enum bootloader_opcode_t {
+    BOOTLOADER_OPCODE_READ = 0,
+    BOOTLOADER_OPCODE_WRITE,
+    BOOTLOADER_OPCODE_PAGEERASE,
+    BOOTLOADER_OPCODE_RESET,
+    BOOTLOADER_OPCODE_CRCCHECK,
+  } opcode : 8;
+  enum bootloader_state_t {
+    BOOTLOADER_STATE_OK = 0,
+    BOOTLOADER_STATE_NAK,
+  } state : 8;
+  uint16_t padding;
+  uint32_t addr;
+  uint32_t data;
+  uint32_t crc;
+} bootloader_t;
+
+_Static_assert(sizeof(bootloader_t) == 16, "bl struct size error");
 
 //check if structs can be send at 5kHz with DATABAUD
 _Static_assert(sizeof(packet_to_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "to_hv struct to large");

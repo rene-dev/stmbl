@@ -53,6 +53,8 @@ HAL_PIN(timeout);
 HAL_PIN(dma_pos);
 HAL_PIN(idle);
 
+//in main.c
+extern void bootloader(char *ptr);
 
 struct ls_ctx_t {
   uint32_t timeout;
@@ -159,6 +161,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   if(dma_pos == sizeof(packet_to_hv_t)) {
     uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
     if(crc == ctx->packet_to_hv.crc) {
+      if(ctx->packet_to_hv.flags.opcode == PACKET_TO_HV_OPCODE_BOOTLOADER){
+        bootloader(0);
+      }
       PIN(en)         = ctx->packet_to_hv.flags.enable;
       PIN(phase_mode) = ctx->packet_to_hv.flags.phase_type;
       PIN(cmd_mode)   = ctx->packet_to_hv.flags.cmd_type;
