@@ -258,8 +258,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 }
 
-static void nrt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct yaskawa_ctx_t *ctx      = (struct yaskawa_ctx_t *)ctx_ptr;
+static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  // struct yaskawa_ctx_t *ctx      = (struct yaskawa_ctx_t *)ctx_ptr;
   struct yaskawa_pin_ctx_t *pins = (struct yaskawa_pin_ctx_t *)pin_ptr;
   if(RISING_EDGE(PIN(dump))) {
     printf("%s\n", data);
