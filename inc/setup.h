@@ -18,7 +18,7 @@
 void setup(void);
 void setup_res(void);
 
-volatile uint32_t ADC_DMA_Buffer0[ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1)];
-volatile uint32_t ADC_DMA_Buffer1[ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1)];
+volatile uint32_t ADC_DMA_Buffer0[ADC_SAMPLES_IN_RT];  //240
+volatile uint32_t ADC_DMA_Buffer1[ADC_SAMPLES_IN_RT];
 
 RCC_ClocksTypeDef RCC_Clocks;
