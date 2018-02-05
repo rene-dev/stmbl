@@ -21,6 +21,7 @@ volatile uint32_t rxbuf[NUM_OF_SAMPLES_Y + 1];
 volatile uint32_t txbuf[128];
 int pos;
 char data[150];
+uint16_t tim_data[120];
 DMA_InitTypeDef DMA_InitStructurerx;
 
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -45,9 +46,17 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_InitStruct.GPIO_Pin   = FB0_Z_PIN;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(FB0_Z_PORT, &GPIO_InitStruct);
+  GPIO_PinAFConfig(FB0_Z_PORT, FB0_Z_PIN_SOURCE, FB0_ENC_TIM_AF);
+
+  RCC_APB1PeriphClockCmd(FB0_ENC_TIM_RCC, ENABLE);
+  FB0_ENC_TIM->CCMR2 |= TIM_CCMR2_CC3S_0;
+  FB0_ENC_TIM->CCER |= TIM_CCER_CC3E | TIM_CCER_CC3P | TIM_CCER_CC3NP;
+  FB0_ENC_TIM->ARR = 65535;
+  FB0_ENC_TIM->DIER |= TIM_DIER_CC3DE;
+
 
   //TIM8 triggers DMA for request and reply
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
@@ -141,8 +150,28 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   DMA_InitStructure.DMA_PeripheralBurst    = DMA_PeripheralBurst_Single;
   DMA_Init(DMA2_Stream1, &DMA_InitStructure);
 
+  DMA_Cmd(DMA1_Stream7, DISABLE);
+  DMA_DeInit(DMA1_Stream7);
+  DMA_InitStructure.DMA_Channel            = DMA_Channel_2;  //TIM8 ch1
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&FB0_ENC_TIM->CCR3;  //TODO: change
+  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t)&tim_data;
+  DMA_InitStructure.DMA_DIR                = DMA_DIR_PeripheralToMemory;
+  DMA_InitStructure.DMA_BufferSize         = ARRAY_SIZE(tim_data);
+  DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+  DMA_InitStructure.DMA_MemoryDataSize     = DMA_PeripheralDataSize_HalfWord;
+  DMA_InitStructure.DMA_Mode               = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority           = DMA_Priority_VeryHigh;
+  DMA_InitStructure.DMA_FIFOMode           = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold      = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_MemoryBurst        = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst    = DMA_PeripheralBurst_Single;
+  DMA_Init(DMA1_Stream7, &DMA_InitStructure);
+
   TIM8->ARR              = 20;  // 168 / (20 + 1) = 8MHz
   FB0_Z_TXEN_PORT->BSRRL = FB0_Z_TXEN_PIN;  //TX enable
+  FB0_Z_PORT->MODER &= ~GPIO_MODER_MODER14_1;
   FB0_Z_PORT->MODER |= GPIO_MODER_MODER14_0;  //set tx pin to output
   DMA_Cmd(DMA2_Stream1, DISABLE);
   DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
@@ -151,118 +180,173 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   while(!(DMA2->LISR & DMA_FLAG_TCIF1))
     ;  //wait for request
 
-  FB0_Z_PORT->MODER &= ~GPIO_MODER_MODER14_0;  //set tx pin to input
-  FB0_Z_TXEN_PORT->BSRRH = FB0_Z_TXEN_PIN;  //TX disable
-  //DMA2-Config
-  DMA_Cmd(DMA2_Stream1, DISABLE);
-  DMA_DeInit(DMA2_Stream1);
-  TIM8->ARR = 6;  // 168 / (6 + 1) = 24MHz
-  DMA_Init(DMA2_Stream1, &DMA_InitStructurerx);
+  
+  
 
-  uint32_t error = 0;
+  
+  
+  FB0_Z_TXEN_PORT->BSRRH = FB0_Z_TXEN_PIN;  //TX disable
+  FB0_Z_PORT->MODER &= ~GPIO_MODER_MODER14_0;  //set tx pin to af
+  FB0_Z_PORT->MODER |= GPIO_MODER_MODER14_1;
+  FB0_ENC_TIM->CR1 &= ~TIM_CR1_CEN; 
+  FB0_ENC_TIM->CNT = 0;
+  FB0_ENC_TIM->CCR3 = 0;
+  FB0_ENC_TIM->CR1 |= TIM_CR1_CEN; 
+  
+  DMA_Cmd(DMA1_Stream7, DISABLE);
+  DMA_ClearFlag(DMA1_Stream7, DMA_FLAG_TCIF7);
+  DMA_Cmd(DMA1_Stream7, ENABLE);
+
+  // pos = 0;
+  
+  // DMA_Cmd(DMA2_Stream1, DISABLE);
+  // DMA_DeInit(DMA2_Stream1);
+  // TIM8->ARR = 6;  // 168 / (6 + 1) = 24MHz
+  // DMA_Init(DMA2_Stream1, &DMA_InitStructurerx);
+
+  // uint32_t error = 0;
 
   //GPIOB->BSRRH = GPIO_Pin_3;  //messpin
   //start DMA
-  DMA_Cmd(DMA2_Stream1, DISABLE);
-  DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
-  DMA_Cmd(DMA2_Stream1, ENABLE);
-  //wait for DMA transfer complete
-  while(DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET)
-    ;
-  //GPIOB->BSRRL = GPIO_Pin_3;  //messpin
+  // DMA_Cmd(DMA2_Stream1, DISABLE);
+  // DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
+  // DMA_Cmd(DMA2_Stream1, ENABLE);
 
-  uint32_t current;
-  uint32_t last       = (rxbuf[0] & FB0_Z_PIN);
-  uint32_t first_edge = 0;
-  //find any edge
-  for(int j = 1; j < 20; j++) {
-    current = (rxbuf[j] & FB0_Z_PIN);
-    if(current != last) {
-      first_edge = j;
-      break;
-    }
-    last = current;
-  }
+  // while(DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET);
+  // DMA_Cmd(DMA2_Stream1, DISABLE);
+  // DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
+  // DMA_Cmd(DMA2_Stream1, ENABLE);
 
-  last = (rxbuf[first_edge] & FB0_Z_PIN);
-  //align edge
-  for(int j = first_edge + 3; j < 20; j += 3) {
-    current = (rxbuf[j] & FB0_Z_PIN);
-    if(current == last && last != 0) {
-      first_edge = j;
-      break;
-    }
-    last = current;
-  }
+// while(DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET){
+//   if(FB0_ENC_TIM->SR & TIM_SR_CC3IF){
+//     tim_data[pos++] = FB0_ENC_TIM->CCR3;
+//   }
+// }
+// int df = 0;
+// for(int i = 0; i < PIN(off); i++){
+//   if(FB0_ENC_TIM->SR & TIM_SR_CC3IF){
+//     tim_data[df++] = FB0_ENC_TIM->CCR3;
+//   }
+// }
+//     PIN(pos) = df;
 
-  if(first_edge == 0 || first_edge == 19) {
-    error++;
-  }
+while(FB0_ENC_TIM->CNT < 1600){
 
-  first_edge %= 6;
+}
+  DMA_Cmd(DMA1_Stream7, DISABLE);
 
-  uint32_t bit      = 0;  // 2 manchaster bits = 1 bit
-  uint32_t ones     = 0;  // received ones, needed for framing and unstuffing
-  uint32_t j        = 0;  // unstuffing and start offset
-  int pos_length    = PIN(len);  // position length
-  int pos_offset    = PIN(off);  // position offset
-  int decode_length = pos_length + pos_offset + 1;
-  //decode manchaster and unstuff
-  for(int i = j; i < (decode_length + j); i++) {
-    bit = 0;
-    if(rxbuf[i * 6 + first_edge + 1] & FB0_Z_PIN) {
-      bit += 2;
-    }
-    if(rxbuf[i * 6 + first_edge + 4] & FB0_Z_PIN) {
-      bit += 1;
-    }
-    switch(bit) {
-      case 1:  //01 -> manchaster encoded 0
-        if(ones == 5) {  // 0 after 5 ones => stuffed data
-          j++;
-        } else {
-          data[i - j] = '0';
-        }
-        ones = 0;
-        break;
-      case 2:  //10 -> manchaster encoded 1
-        if(ones == 5) {  // 1 after 5 ones => start of packet
-          j    = ++i;
-          ones = 0;
-        } else {
-          ones++;
-          data[i - j] = '1';
-        }
-        break;
-      case 0:  //00 -> manchaster alignment error
-      case 3:  //11 -> manchaster alignment error
-      default:  //obsolete
-        data[i - j] = 'X';
-        error++;
-        break;
-    }
-  }
-  data[100] = 0;  // terminate string
+PIN(pos) = DMA1_Stream7->NDTR;
 
-  uint32_t pos = 0;
-  //extract position data
-  for(int i = 0; i < pos_length; i++) {
-    pos += (data[i + pos_offset] == '1') << i;
-  }
 
-  if(error) {
-    PIN(error) = 1.0;
-  } else {
-    PIN(error) = 0.0;
-    PIN(pos)   = (float)pos / (float)(1 << pos_length) * M_PI * 2.0 - M_PI;
-  }
+
+  // //DMA2-Config
+  
+
+  // uint32_t error = 0;
+
+  // //GPIOB->BSRRH = GPIO_Pin_3;  //messpin
+  // //start DMA
+  
+  // //wait for DMA transfer complete
+  
+  // //GPIOB->BSRRL = GPIO_Pin_3;  //messpin
+
+  // uint32_t current;
+  // uint32_t last       = (rxbuf[0] & FB0_Z_PIN);
+  // uint32_t first_edge = 0;
+  // //find any edge
+  // for(int j = 1; j < 20; j++) {
+  //   current = (rxbuf[j] & FB0_Z_PIN);
+  //   if(current != last) {
+  //     first_edge = j;
+  //     break;
+  //   }
+  //   last = current;
+  // }
+
+  // last = (rxbuf[first_edge] & FB0_Z_PIN);
+  // //align edge
+  // for(int j = first_edge + 3; j < 20; j += 3) {
+  //   current = (rxbuf[j] & FB0_Z_PIN);
+  //   if(current == last && last != 0) {
+  //     first_edge = j;
+  //     break;
+  //   }
+  //   last = current;
+  // }
+
+  // if(first_edge == 0 || first_edge == 19) {
+  //   error++;
+  // }
+
+  // first_edge %= 6;
+
+  // uint32_t bit      = 0;  // 2 manchaster bits = 1 bit
+  // uint32_t ones     = 0;  // received ones, needed for framing and unstuffing
+  // uint32_t j        = 0;  // unstuffing and start offset
+  // int pos_length    = PIN(len);  // position length
+  // int pos_offset    = PIN(off);  // position offset
+  // int decode_length = pos_length + pos_offset + 1;
+  // //decode manchaster and unstuff
+  // for(int i = j; i < (decode_length + j); i++) {
+  //   bit = 0;
+  //   if(rxbuf[i * 6 + first_edge + 1] & FB0_Z_PIN) {
+  //     bit += 2;
+  //   }
+  //   if(rxbuf[i * 6 + first_edge + 4] & FB0_Z_PIN) {
+  //     bit += 1;
+  //   }
+  //   switch(bit) {
+  //     case 1:  //01 -> manchaster encoded 0
+  //       if(ones == 5) {  // 0 after 5 ones => stuffed data
+  //         j++;
+  //       } else {
+  //         data[i - j] = '0';
+  //       }
+  //       ones = 0;
+  //       break;
+  //     case 2:  //10 -> manchaster encoded 1
+  //       if(ones == 5) {  // 1 after 5 ones => start of packet
+  //         j    = ++i;
+  //         ones = 0;
+  //       } else {
+  //         ones++;
+  //         data[i - j] = '1';
+  //       }
+  //       break;
+  //     case 0:  //00 -> manchaster alignment error
+  //     case 3:  //11 -> manchaster alignment error
+  //     default:  //obsolete
+  //       data[i - j] = 'X';
+  //       error++;
+  //       break;
+  //   }
+  // }
+  // data[100] = 0;  // terminate string
+
+  // uint32_t pos = 0;
+  // //extract position data
+  // for(int i = 0; i < pos_length; i++) {
+  //   pos += (data[i + pos_offset] == '1') << i;
+  // }
+
+  // if(error) {
+  //   PIN(error) = 1.0;
+  // } else {
+  //   PIN(error) = 0.0;
+  //   //PIN(pos)   = (float)pos / (float)(1 << pos_length) * M_PI * 2.0 - M_PI;
+  // }
 }
 
 static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct yaskawa_ctx_t *ctx      = (struct yaskawa_ctx_t *)ctx_ptr;
   struct yaskawa_pin_ctx_t *pins = (struct yaskawa_pin_ctx_t *)pin_ptr;
   if(RISING_EDGE(PIN(dump))) {
-    printf("%s\n", data);
+    //printf("%s\n", data);
+    for(int i = 0; i < ARRAY_SIZE(tim_data) - 1; i++){
+      printf("%i, ", tim_data[i + 1] - tim_data[i]);
+    }
+    printf(";\n");
   }
 }
 
