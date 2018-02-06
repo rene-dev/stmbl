@@ -16,6 +16,19 @@ HAL_PIN(dump);
 HAL_PIN(len);
 HAL_PIN(off);
 
+HAL_PIN(len2);
+HAL_PIN(off2);
+HAL_PIN(probe2);
+
+HAL_PIN(len3);
+HAL_PIN(len4);
+HAL_PIN(len5);
+
+HAL_PIN(probe3);
+HAL_PIN(probe4);
+HAL_PIN(probe5);
+
+
 //TODO: use context
 volatile uint32_t rxbuf[NUM_OF_SAMPLES_Y + 1];
 volatile uint32_t txbuf[128];
@@ -29,9 +42,12 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct yaskawa_ctx_t *ctx = (struct yaskawa_ctx_t *)ctx_ptr;
   struct yaskawa_pin_ctx_t *pins = (struct yaskawa_pin_ctx_t *)pin_ptr;
 
-  PIN(len) = 13;
-  PIN(off) = 66;
-  data[0] = 'B';
+  PIN(len) = 15;
+  PIN(off) = 64;
+  PIN(len3) = 57;
+  PIN(len4) = 58;
+  PIN(len5) = 59;
+  
   data[1] = 0;
 
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -282,9 +298,19 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     for(int i = 0; i < PIN(len); i++) {
       pos += (m_data[i + (int)PIN(off)] == '1') << i;
     }
+
+    uint32_t probe = 0;
+    for(int i = 0; i < PIN(len2); i++) {
+      probe += (m_data[i + (int)PIN(off2)] == '1') << i;
+    }
     
     PIN(pos)   = (float)pos / (float)(1 << (int)PIN(len)) * M_PI * 2.0 - M_PI;
+    PIN(probe2) = probe;
 
+    PIN(probe3) = m_data[(int)PIN(len3)] == '1';
+    PIN(probe4) = m_data[(int)PIN(len4)] == '1';
+    PIN(probe5) = m_data[(int)PIN(len5)] == '1';
+    
   }
   else{
     PIN(error) = 1.0;
