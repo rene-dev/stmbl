@@ -20,16 +20,19 @@ HAL_PIN(off);
 volatile uint32_t rxbuf[NUM_OF_SAMPLES_Y + 1];
 volatile uint32_t txbuf[128];
 int pos;
-char data[150];
-uint16_t tim_data[120];
+volatile char data[150];
+volatile char m_data[150];
+volatile uint16_t tim_data[300];
 DMA_InitTypeDef DMA_InitStructurerx;
 
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct yaskawa_ctx_t *ctx = (struct yaskawa_ctx_t *)ctx_ptr;
   struct yaskawa_pin_ctx_t *pins = (struct yaskawa_pin_ctx_t *)pin_ptr;
 
-  PIN(len) = 16;
-  PIN(off) = 60;
+  PIN(len) = 13;
+  PIN(off) = 66;
+  data[0] = 'B';
+  data[1] = 0;
 
   GPIO_InitTypeDef GPIO_InitStruct;
 
@@ -37,7 +40,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_InitStruct.GPIO_Pin   = FB0_Z_TXEN_PIN;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_25MHz;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(FB0_Z_TXEN_PORT, &GPIO_InitStruct);
   GPIO_ResetBits(FB0_Z_TXEN_PORT, FB0_Z_TXEN_PIN);
@@ -179,12 +182,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   while(!(DMA2->LISR & DMA_FLAG_TCIF1))
     ;  //wait for request
-
-  
   
 
-  
-  
+
+
+
   FB0_Z_TXEN_PORT->BSRRH = FB0_Z_TXEN_PIN;  //TX disable
   FB0_Z_PORT->MODER &= ~GPIO_MODER_MODER14_0;  //set tx pin to af
   FB0_Z_PORT->MODER |= GPIO_MODER_MODER14_1;
@@ -197,156 +199,117 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   DMA_ClearFlag(DMA1_Stream7, DMA_FLAG_TCIF7);
   DMA_Cmd(DMA1_Stream7, ENABLE);
 
-  // pos = 0;
+
+
+  while(FB0_ENC_TIM->CNT < 3300){
+
+  }
+
+  FB0_Z_TXEN_PORT->BSRRL = FB0_Z_TXEN_PIN;
   
-  // DMA_Cmd(DMA2_Stream1, DISABLE);
-  // DMA_DeInit(DMA2_Stream1);
-  // TIM8->ARR = 6;  // 168 / (6 + 1) = 24MHz
-  // DMA_Init(DMA2_Stream1, &DMA_InitStructurerx);
-
-  // uint32_t error = 0;
-
-  //GPIOB->BSRRH = GPIO_Pin_3;  //messpin
-  //start DMA
-  // DMA_Cmd(DMA2_Stream1, DISABLE);
-  // DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
-  // DMA_Cmd(DMA2_Stream1, ENABLE);
-
-  // while(DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET);
-  // DMA_Cmd(DMA2_Stream1, DISABLE);
-  // DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
-  // DMA_Cmd(DMA2_Stream1, ENABLE);
-
-// while(DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET){
-//   if(FB0_ENC_TIM->SR & TIM_SR_CC3IF){
-//     tim_data[pos++] = FB0_ENC_TIM->CCR3;
-//   }
-// }
-// int df = 0;
-// for(int i = 0; i < PIN(off); i++){
-//   if(FB0_ENC_TIM->SR & TIM_SR_CC3IF){
-//     tim_data[df++] = FB0_ENC_TIM->CCR3;
-//   }
-// }
-//     PIN(pos) = df;
-
-while(FB0_ENC_TIM->CNT < 1600){
-
-}
+  int count = ARRAY_SIZE(tim_data) - DMA1_Stream7->NDTR;
   DMA_Cmd(DMA1_Stream7, DISABLE);
 
-PIN(pos) = DMA1_Stream7->NDTR;
+
+  uint16_t bit_time = 15;
+  FB0_Z_TXEN_PORT->BSRRH = FB0_Z_TXEN_PIN;
+
+  if(count > 80){
+    int pol = 0;
+    int read_counter = 0;
+    int write_counter = 0;
+    int counter = 0;
+
+    for(int i = 1; i < count; i++){
+      if(tim_data[i + 1] - tim_data[i] < bit_time){
+        counter++;
+      }
+      else if(counter == 10){
+        read_counter = i + 1;
+        pol = 0;
+        break;
+      }
+      else{
+        counter = 0;
+      }
+    }
+
+    for(int i = read_counter; i < count; i++){
+      if(tim_data[i + 1] - tim_data[i] < bit_time){
+        i++;
+        if(tim_data[i + 1] - tim_data[i] < bit_time){
+          data[write_counter++] = '0' + pol;
+        }
+        else{
+          //error
+          PIN(error) = 1.0;
+        }
+
+      }
+      else{
+        pol = 1 - pol;
+        data[write_counter++] = '0' + pol;
+      }
+    }
+    data[write_counter] = 0;
+
+    int write_counter2 = 0;
+    counter = 0;
+    for(int i = 0; i < write_counter; i++){
+      if(data[i] == '1'){
+        counter++;
+        m_data[write_counter2++] = '1';
+      }
+      else if(counter == 5){
+        counter = 0;
+        // unstuff
+      }
+      else if(counter == 6){
+        // hldc
+        m_data[write_counter2++] = 'H';
+        break;
+      }
+      else{
+        counter = 0;
+        m_data[write_counter2++] = '0';
+      }
+    }
+    m_data[write_counter2] = 0;
 
 
+    uint32_t pos = 0;
+    //extract position data
+    for(int i = 0; i < PIN(len); i++) {
+      pos += (m_data[i + (int)PIN(off)] == '1') << i;
+    }
+    
+    PIN(pos)   = (float)pos / (float)(1 << (int)PIN(len)) * M_PI * 2.0 - M_PI;
 
-  // //DMA2-Config
+  }
+  else{
+    PIN(error) = 1.0;
+    // error
+  }
+
+
   
-
-  // uint32_t error = 0;
-
-  // //GPIOB->BSRRH = GPIO_Pin_3;  //messpin
-  // //start DMA
-  
-  // //wait for DMA transfer complete
-  
-  // //GPIOB->BSRRL = GPIO_Pin_3;  //messpin
-
-  // uint32_t current;
-  // uint32_t last       = (rxbuf[0] & FB0_Z_PIN);
-  // uint32_t first_edge = 0;
-  // //find any edge
-  // for(int j = 1; j < 20; j++) {
-  //   current = (rxbuf[j] & FB0_Z_PIN);
-  //   if(current != last) {
-  //     first_edge = j;
-  //     break;
-  //   }
-  //   last = current;
-  // }
-
-  // last = (rxbuf[first_edge] & FB0_Z_PIN);
-  // //align edge
-  // for(int j = first_edge + 3; j < 20; j += 3) {
-  //   current = (rxbuf[j] & FB0_Z_PIN);
-  //   if(current == last && last != 0) {
-  //     first_edge = j;
-  //     break;
-  //   }
-  //   last = current;
-  // }
-
-  // if(first_edge == 0 || first_edge == 19) {
-  //   error++;
-  // }
-
-  // first_edge %= 6;
-
-  // uint32_t bit      = 0;  // 2 manchaster bits = 1 bit
-  // uint32_t ones     = 0;  // received ones, needed for framing and unstuffing
-  // uint32_t j        = 0;  // unstuffing and start offset
-  // int pos_length    = PIN(len);  // position length
-  // int pos_offset    = PIN(off);  // position offset
-  // int decode_length = pos_length + pos_offset + 1;
-  // //decode manchaster and unstuff
-  // for(int i = j; i < (decode_length + j); i++) {
-  //   bit = 0;
-  //   if(rxbuf[i * 6 + first_edge + 1] & FB0_Z_PIN) {
-  //     bit += 2;
-  //   }
-  //   if(rxbuf[i * 6 + first_edge + 4] & FB0_Z_PIN) {
-  //     bit += 1;
-  //   }
-  //   switch(bit) {
-  //     case 1:  //01 -> manchaster encoded 0
-  //       if(ones == 5) {  // 0 after 5 ones => stuffed data
-  //         j++;
-  //       } else {
-  //         data[i - j] = '0';
-  //       }
-  //       ones = 0;
-  //       break;
-  //     case 2:  //10 -> manchaster encoded 1
-  //       if(ones == 5) {  // 1 after 5 ones => start of packet
-  //         j    = ++i;
-  //         ones = 0;
-  //       } else {
-  //         ones++;
-  //         data[i - j] = '1';
-  //       }
-  //       break;
-  //     case 0:  //00 -> manchaster alignment error
-  //     case 3:  //11 -> manchaster alignment error
-  //     default:  //obsolete
-  //       data[i - j] = 'X';
-  //       error++;
-  //       break;
-  //   }
-  // }
-  // data[100] = 0;  // terminate string
-
-  // uint32_t pos = 0;
-  // //extract position data
-  // for(int i = 0; i < pos_length; i++) {
-  //   pos += (data[i + pos_offset] == '1') << i;
-  // }
-
-  // if(error) {
-  //   PIN(error) = 1.0;
-  // } else {
-  //   PIN(error) = 0.0;
-  //   //PIN(pos)   = (float)pos / (float)(1 << pos_length) * M_PI * 2.0 - M_PI;
-  // }
 }
 
 static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct yaskawa_ctx_t *ctx      = (struct yaskawa_ctx_t *)ctx_ptr;
   struct yaskawa_pin_ctx_t *pins = (struct yaskawa_pin_ctx_t *)pin_ptr;
   if(RISING_EDGE(PIN(dump))) {
-    //printf("%s\n", data);
-    for(int i = 0; i < ARRAY_SIZE(tim_data) - 1; i++){
-      printf("%i, ", tim_data[i + 1] - tim_data[i]);
+    for(int i = 0; i < 14; i++){
+      for(int j = 0; j < 8; j++){
+        printf("%c", m_data[i * 8 + j]);
+      }
+      printf("|");
     }
-    printf(";\n");
+    printf("\n");
+    // for(int i = 0; i < PIN(pos); i++){
+    //   printf("%i, ", tim_data[i + 1] - tim_data[i]);
+    // }
+    // printf(";\n");
   }
 }
 
