@@ -16,9 +16,9 @@
 | SPI3 RX | 1 | 2 | 0 |
 | USART6 TX | 2 | 6 | 5 |
 | USART6 RX | 2 | 1 | 5 |
-| TIM4 CH1 |  |  |  |
-| TIM4 CH2 |  |  |  |
-| TIM4 CH3 |  |  |  |
+| TIM4 CH1 | 1 | 0 | 2 |
+| TIM4 CH2 | (1) | (3) | (2) |
+| TIM4 CH3 | 1 | 7 | 2 |
 
 ### FB1 ###
 | periph | DMA | stream | channel |
@@ -27,9 +27,9 @@
 | SPI2 RX | 1 | 3 | 0 |
 | USART3 TX | 1 | 4 | 7 |
 | USART3 RX | 1 | 1 | 4 |
-| TIM1 CH1 |  |  |  |
-| TIM1 CH2 |  |  |  |
-| TIM1 CH3 |  |  |  |
+| TIM1 CH1 | 2 | 3 | 6 |
+| TIM1 CH2 | (2) | (2) | (6) |
+| TIM1 CH3 | (2) | (6) | (6) |
 
 ### HV ###
 | periph | DMA | stream | channel |
