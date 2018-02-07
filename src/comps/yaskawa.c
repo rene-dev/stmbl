@@ -27,10 +27,14 @@ HAL_PIN(probe3);
 HAL_PIN(probe4);
 HAL_PIN(probe5);
 
+HAL_PIN(send);
+
 //TODO: use context
 volatile uint32_t txbuf[128];
 int pos;
+int dfdf;
 volatile char m_data[150];
+volatile char m_data2[150];
 volatile uint16_t tim_data[300];
 DMA_InitTypeDef DMA_InitStructuretx;
 DMA_InitTypeDef DMA_InitStructurerx;
@@ -48,7 +52,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct yaskawa_ctx_t *ctx = (struct yaskawa_ctx_t *)ctx_ptr;
-  struct yaskawa_pin_ctx_t *pins = (struct yaskawa_pin_ctx_t *)pin_ptr;
+  // struct yaskawa_pin_ctx_t *pins = (struct yaskawa_pin_ctx_t *)pin_ptr;
   
   GPIO_InitTypeDef GPIO_InitStruct;
 
@@ -167,6 +171,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   DMA_Cmd(DMA2_Stream1, DISABLE);
   DMA_DeInit(DMA2_Stream1);
   DMA_Init(DMA2_Stream1, &DMA_InitStructuretx);
+  dfdf = 0;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -260,11 +265,20 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     PIN(probe4) = m_data[(int)PIN(len4)] == '1';
     PIN(probe5) = m_data[(int)PIN(len5)] == '1';
     PIN(error) = 0.0;
+
+    if(dfdf < 1){
+      for(int i = 0; i < ARRAY_SIZE(m_data2); i++){
+        m_data2[i] = m_data[i];
+      }
+      dfdf = 1;
+    }
   }
   else{
     PIN(error) = 1.0;
     // error
   }  
+
+  // PIN(send) = send;
 
   FB0_Z_TXEN_PORT->BSRRL = FB0_Z_TXEN_PIN;  //TX enable
   FB0_Z_PORT->MODER &= ~GPIO_MODER_MODER14_1;
@@ -315,11 +329,12 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   if(RISING_EDGE(PIN(dump))) {
     for(int i = 0; i < 14; i++){
       for(int j = 0; j < 8; j++){
-        printf("%c", m_data[i * 8 + j]);
+        printf("%c", m_data2[i * 8 + j]);
       }
       printf("|");
     }
     printf("\n");
+    dfdf = 0;
   }
 }
 
