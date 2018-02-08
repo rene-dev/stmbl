@@ -5,6 +5,7 @@
 #include "angle.h"
 #include "stm32f4xx_conf.h"
 #include "hw/hw.h"
+#include "yaskawa_crc16.h"
 
 HAL_COMP(yaskawa);
 
@@ -28,6 +29,8 @@ HAL_PIN(probe4);
 HAL_PIN(probe5);
 
 HAL_PIN(send);
+HAL_PIN(crc_ok);
+HAL_PIN(crc_error);
 
 //TODO: use context
 volatile uint32_t txbuf[128];
@@ -38,6 +41,8 @@ volatile char m_data2[150];
 volatile uint16_t tim_data[300];
 DMA_InitTypeDef DMA_InitStructuretx;
 DMA_InitTypeDef DMA_InitStructurerx;
+uint8_t yaskawa_reply[14];
+//uint8_t yaskara_reply_len;
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct yaskawa_ctx_t *ctx = (struct yaskawa_ctx_t *)ctx_ptr;
@@ -193,6 +198,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     int write_counter = 0;
     int counter = 0;
 
+    for(int i = 0;i < ARRAY_SIZE(yaskawa_reply);i++){
+      yaskawa_reply[i] = 0;
+    }
+
     for(int i = 1; i < count; i++){
       if(tim_data[i + 1] - tim_data[i] < bit_time){
         counter++;
@@ -228,7 +237,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
       if(pol == 1){
         counter++;
-        m_data[write_counter2++] = '1';
+        m_data[write_counter2] = '1';
+        yaskawa_reply[write_counter2/8] |= 1 << (7-(write_counter2%8));
+        write_counter2++;
       }
       else if(counter == 5){
         counter = 0;
@@ -243,6 +254,17 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
         counter = 0;
         m_data[write_counter2++] = '0';
       }
+    }
+
+    yaskawa_crc16_t crc;
+    yaskawa_crc16_t data = (yaskawa_reply[13] & 0xff) | (yaskawa_reply[12] << 8);
+    crc = yaskawa_crc16_init();
+    crc = yaskawa_crc16_update(crc, yaskawa_reply, 12);
+    crc = yaskawa_crc16_finalize(crc);
+    if(data == crc){
+      PIN(crc_ok)++;
+    }else{
+      PIN(crc_error)++;
     }
 
     m_data[write_counter2] = 0;

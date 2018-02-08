@@ -93,6 +93,7 @@ SOURCES += src/version.c
 SOURCES += src/syscalls.c
 
 SOURCES += shared/crc8.c
+SOURCES += shared/yaskawa_crc16.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/commands.c
