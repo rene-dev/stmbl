@@ -56,6 +56,14 @@ master timer up (1.2Mhz) ->
 
 
 ## F3 ##
+### timebase ###
+pwm timer: tim8  
+pwm mode: center aligned flat bottom  
+
+pwm timer up (30khz) ->
+- adc1/2/3/4 -> dma (6)
+- rt (15khz)
+
 ### HV ###
 | periph | DMA | channel |
 | --- | --- | --- |
