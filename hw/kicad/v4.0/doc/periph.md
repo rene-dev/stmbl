@@ -1,4 +1,14 @@
 ## F4 ##
+### timebase ###
+master timer: tim3  
+slave timer: tim5  
+resolver timer: tim4  
+
+master timer up (1.2Mhz) ->
+- adc1/2/3 scan, discon. -> dma tc (240) -> rt (5khz) 
+- slave timer up (20khz) -> frt 
+- resolver timer oc (5-30khz) + phase shift
+
 ### CMD ###
 | periph | DMA | stream | channel |
 | --- | --- | --- | --- |
