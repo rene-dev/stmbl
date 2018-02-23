@@ -10,19 +10,22 @@ HAL_COMP(pmsm_ttc);
 HAL_PIN(psi);
 HAL_PIN(polecount);
 
-//tc
-HAL_PIN(ac);  //amplitude
-HAL_PIN(pc);  //phase
-HAL_PIN(nc);
+// cogging torque ripple, constant
+HAL_PIN(ac); // amplitude
+HAL_PIN(pc); // phase
+HAL_PIN(nc); // frequency
 
-//te
-HAL_PIN(ne);
-HAL_PIN(ae);
-HAL_PIN(pe);
+// electrical torque ripple, linear with current
+HAL_PIN(ae); // amplitude
+HAL_PIN(pe); // phase
+HAL_PIN(ne); // frequency
 
-HAL_PIN(pos);
-HAL_PIN(t);
-HAL_PIN(g);
+HAL_PIN(pos_in);
+HAL_PIN(pos_out);
+HAL_PIN(t); // compensation torque
+HAL_PIN(g); // compensation gain
+HAL_PIN(block_gain); // block commutation gain
+
 
 // torque cmd in
 HAL_PIN(torque);
@@ -36,6 +39,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
   PIN(nc) = 1.0;
   PIN(ne) = 1.0;
+  PIN(block_gain) = 0.0;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -45,9 +49,12 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float p      = MAX(PIN(polecount), 1.0);
   float psi_m  = MAX(PIN(psi), 0.01);
   float torque = PIN(torque);
+  float pos = PIN(pos_in);
 
-  float tc = PIN(ac) * sinf(PIN(pc) + PIN(pos) * PIN(nc));
-  float te = torque * PIN(ae) * sinf(PIN(pe) + PIN(pos) * PIN(ne));
+  float tc = PIN(ac) * sinf(PIN(pc) + pos * PIN(nc));
+  float te = torque * PIN(ae) * sinf(PIN(pe) + pos * PIN(ne));
+
+  PIN(pos_out) = pos * (1.0 - PIN(block_gain)) + (((int)((pos / 2.0 / M_PI + 0.5) * 6 + 0.5)) / 6.0 * 2.0 * M_PI - M_PI) * PIN(block_gain);
   PIN(t)   = tc + te;
   PIN(cur) = (torque + PIN(g) * (tc + te)) / 3.0 * 2.0 / p / psi_m;
 }

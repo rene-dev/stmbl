@@ -10,3 +10,6 @@ $CRC --model crc-16        --algorithm table-driven --table-idx-width 8 --symbol
 #32bit crc for firmware
 $CRC --model crc-32	       --algorithm table-driven --table-idx-width 8 --symbol-prefix crc32_ --generate c -o crc32.c
 $CRC --model crc-32        --algorithm table-driven --table-idx-width 8 --symbol-prefix crc32_ --generate h -o crc32.h
+#yaskawa
+$CRC --algorithm table-driven --table-idx-width 8 --symbol-prefix yaskawa_crc16_ --width 16 --poly 0x1021 --reflect-in false --reflect-out false --xor-in 0xffff --xor-out 0xffff --generate c -o yaskawa_crc16.c 
+$CRC --algorithm table-driven --table-idx-width 8 --symbol-prefix yaskawa_crc16_ --width 16 --poly 0x1021 --reflect-in false --reflect-out false --xor-in 0xffff --xor-out 0xffff --generate h -o yaskawa_crc16.h

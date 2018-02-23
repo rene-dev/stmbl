@@ -81,7 +81,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_PinAFConfig(UART_DRV_TX_PORT, UART_DRV_TX_PIN_SOURCE, UART_DRV_TX_AF_SOURCE);
   GPIO_InitStruct.GPIO_Pin   = UART_DRV_TX_PIN;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_AF;
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_UP;
   GPIO_Init(UART_DRV_TX_PORT, &GPIO_InitStruct);
@@ -145,7 +145,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
   DMA_InitStructure.DMA_MemoryDataSize     = DMA_PeripheralDataSize_Byte;
   DMA_InitStructure.DMA_Mode               = DMA_Mode_Normal;
-  DMA_InitStructure.DMA_Priority           = DMA_Priority_High;
+  DMA_InitStructure.DMA_Priority           = DMA_Priority_Medium;
   DMA_InitStructure.DMA_FIFOMode           = DMA_FIFOMode_Disable;
   DMA_InitStructure.DMA_FIFOThreshold      = DMA_FIFOThreshold_HalfFull;
   DMA_InitStructure.DMA_MemoryBurst        = DMA_MemoryBurst_Single;
@@ -212,15 +212,13 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       }
       ctx->timeout = 0;
     } else {
-      PIN(crc_error)
-      ++;
+      PIN(crc_error)++;
       PIN(com_error) = HV_CRC_ERROR;
     }
   }
 
-  if(ctx->timeout > 3) {
-    PIN(timeout)
-    ++;
+  if(ctx->timeout > 2) {
+    PIN(timeout)++;
     PIN(com_error) = HV_TIMEOUT_ERROR;
   }
   ctx->timeout++;
