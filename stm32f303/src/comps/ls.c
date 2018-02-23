@@ -5,6 +5,7 @@
 #include "angle.h"
 #include "stm32f3xx_hal.h"
 #include "common.h"
+#include "f3hw.h"
 
 extern CRC_HandleTypeDef hcrc;
 
@@ -53,6 +54,11 @@ HAL_PIN(timeout);
 HAL_PIN(dma_pos);
 HAL_PIN(idle);
 
+HAL_PIN(dma_pos2);
+HAL_PIN(arr);
+HAL_PIN(dma_pos_cmd);
+HAL_PIN(inc);
+HAL_PIN(window);
 
 struct ls_ctx_t {
   uint32_t timeout;
@@ -132,7 +138,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   config.pins.max_y   = 0.0;
   config.pins.max_cur = 0.0;
 
-  USART3->RTOR = 16;  // 16 bits timeout
+  USART3->RTOR = 16;               // 16 bits timeout
   USART3->CR2 |= USART_CR2_RTOEN;  // timeout en
   USART3->ICR |= USART_ICR_RTOCF;  // timeout clear flag
 }
@@ -141,13 +147,16 @@ static void rt_start(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct ls_ctx_t *ctx      = (struct ls_ctx_t *)ctx_ptr;
   struct ls_pin_ctx_t *pins = (struct ls_pin_ctx_t *)pin_ptr;
 
-  ctx->timeout   = 0;
-  ctx->tx_addr   = 0;
-  ctx->send      = 0;
-  PIN(crc_error) = 0.0;
-  PIN(crc_ok)    = 0.0;
-  PIN(timeout)   = 0.0;
-  PIN(idle)      = 0.0;
+  ctx->timeout     = 0;
+  ctx->tx_addr     = 0;
+  ctx->send        = 0;
+  PIN(crc_error)   = 0.0;
+  PIN(crc_ok)      = 0.0;
+  PIN(timeout)     = 0.0;
+  PIN(idle)        = 0.0;
+  PIN(dma_pos_cmd) = 4;
+  PIN(inc)         = 10;
+  PIN(window)      = 1;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -155,6 +164,17 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct ls_pin_ctx_t *pins = (struct ls_pin_ctx_t *)pin_ptr;
 
   uint32_t dma_pos = sizeof(packet_to_hv_t) - DMA1_Channel3->CNDTR;
+
+  PIN(dma_pos2) = dma_pos;
+  PIN(arr)      = PWM_RES;
+
+  if(dma_pos > PIN(window) && dma_pos < sizeof(packet_to_hv_t) - PIN(window)) {
+    if(PIN(dma_pos_cmd) < dma_pos) {
+      PIN(arr) = PWM_RES - PIN(inc);
+    } else if(PIN(dma_pos_cmd) > dma_pos) {
+      PIN(arr) = PWM_RES + PIN(inc);
+    }
+  }
 
   if(dma_pos == sizeof(packet_to_hv_t)) {
     uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
@@ -191,7 +211,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     }
   }
 
-  if(USART3->ISR & USART_ISR_RTOF) {  // idle line
+  if(USART3->ISR & USART_ISR_RTOF) {                                    // idle line
     USART3->ICR |= USART_ICR_RTOCF | USART_ICR_FECF | USART_ICR_ORECF;  // timeout clear flag
     GPIOA->BSRR |= GPIO_PIN_10;
 
