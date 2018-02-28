@@ -43,13 +43,13 @@ In addition to motor control and feedback each STMBL drive has two
 
 == Anatomy of the STMBL
 
-The STMBL consists of two separate PCBs (though the PCB is assembled as
-a single panel and then split to be connected in the manner shown below) 
+The STMBL consists of two separate PCBs (though they are made as one,
+assembled and then split to be connected in the manner shown below. 
 The vertical (top) board is the Low Voltage (LV) board and this handles
 the command, feedback and configuration tasks. The STM32F4
 microprocessor is in charge of these tasks. 
-The lower board is the high-voltage (HV) board and this is where the
-power driver is situated.
+The lower board is the
+high-voltage (HV) board and this is where the power driver is situated.
 The only connection between the two boards is a serial connection
 through a 5kV isolation IC. To make this possible there is a second
 STM32 chip on the lower board. This is an STM32F3 and is referred to as
@@ -99,30 +99,26 @@ connectors which can accept core wires up to 1.6mm and overall cable
 diameters up to 9.0mm.
 
 Feedback 0 will typically be the encoder or resolver mounted on the
-motor. Feedback 1 is optional but can be used to connect Hall sensors
-for initial commutation or (potentially) scales mounted directly to the
+motor and feedback 1 can be used to connect either Hall sensors for
+initial commutation or (potentially) scales mounted directly to the
 axes. See the <<Pinouts>> section of this document for pin assigments
 and typical wiring colour codes. 
 
 The 6-way socket below the 24V logic power connector contains the three
 digital outputs. These are current-sinking (switch-to-GND) and each is
-adjacent to a 24V suppply pin. To operate a 24V load just wire + to the
-+24V pin and 0V to the DIO pin. DIO0 (nearest the top) is the one that is
-typically used to operate the holding brake on brake-equipped motors. 
-The outputs are rated for at least 2A and have fyback diodes, so can be
-used to directly control inductive loads such as relays, soilenoid
-valves or contactors. 
+adjacent to a 24V suppply pin. DIO0 (nearest the top) is the one that is
+typically used to operate the holding brake on motors so-equipped. 
 
-On the top of the drive are two +/-30V analogue inputs, with 0V and 24V
-on either side to that a potentiometer can be connected. These are
+On the top of the drive are two analogue inputs, with 0V and 24V on
+either side to that a potentiometer can be connected. These are
 typically used as variable-threshold digital inputs and are used, for
 example, for axis limit switches. However it is relatively simple to
-configure them for other uses in the HAL layer.
+configure them for other uses in the HAL layer. 
 
 Three LEDS on top of the unit indicate drive status. Red displays error
-codes (using <<Blink Codes,blink codes>>). Amber indicates that all is
-well but the drive is not enabled, and green shows that the drive is
-active and operating normally. 
+codes (using <<Blink Codes,blink codes>>). Amber indicates that all is well but the
+drive is not enabled, and green shows that the drive is active and
+operating normally. 
 
 If no LEDs on the top of the board are illuminated, and the green power
 LEDs near the power connectors _are_ illuminated then it is probably
@@ -135,7 +131,7 @@ firmware is loaded.
 STMBL uses a Hardware abstraction layer to configure the drive for
 different types of motor, feedback and operation mode.
 This is conceptually similar to the HAL in LinuxCNC but the format and
-commands are different. Also, all pins are floating point so no data
+cmmands are different. Also, all pins are floating point so no data
 conversion is needed. 
 
 An Application called <<Servoterm>> is used to interact with the HAL
@@ -148,32 +144,32 @@ and the <<Servoterm Commands,servoterm commands>>
 Assuming that there is already a motor connected to the drive and that
 the drive it powered up the <<Servoterm>> display should already be
 indicating the motor position feedback. Rotating the motor shaft by hand
-might produce something like the image below. (Though it equally well
-might not if the configuration is set up for a motor significantly
-different to the one connected)
+might produce something like:
 
-image::images/servoterm3.png[]. 
+image::images/servoterm3.png[]
+
+Though it equally well might not if the configuration is set up for a
+resolver and the motor has an encoder. 
 
 It should be possible to make the motor turn at this point without any
 further configuration. The commands that follow will set the hv0 module
-up to rotate the motor open-loop in direct-mode. (like a stepper motor)
-with an excitation current of 0.5A. This should be safe for most
+up to simply rotate the motor open-loop in direct-mode. (like a stepper
+motor) with an excitation current of 0.5A. This should be safe for most
 motors that the STMBL is a good match for, but you should choose your
 own value. For an explanation of direct and quadrature current see the
-section on <<Motor Control Basics>>
+section on <<Motor Basics#,motor control basics>>
 
-`hv0.pos = sim0.vel` +
-`hv0.d_cmd = 0.5` +
-`hv0.en = 1` +
+`hv0.pos = sim0.vel`
+`hv0.d_cmd = 0.5`
+`hv0.en = 1`
 
 The rotation speed can be altered by changing the sim0 frequency:
 
 `sim0.freq = 5`
 
 STMBL v4 HAL contains a number of components that have built-in linking
-behaviour. This very much simplifies the HAL setup, and much of the
-detail of individual HAL modules will not need to be considered to set
-up a typical motor. 
+behaviour. 
+
 
 === HAL modules
 The Servoterm command `show` will list all the HAL modules that can be
@@ -181,6 +177,7 @@ loaded (whereas `list` will show all those that currently are loaded)
 
 The modules available are as follows (the link will take you to the
 reference section for each component)
+
 
 <<HAL Reference#acim_ttc,acim_ttc>> - The module used for AC induction
 motors (cf pmsm) ttc is Torque to Current+
@@ -267,14 +264,15 @@ somewhat odd, but does provide for good cross-platform availability.
 Servoterm can be downloaded from https://github.com/STMBL/Servoterm-app[
 this link].
 Use the green button to download as a ZIP file and then extract on your
-PC (Linux / Mac / Windows). Open Google Chrome and click the three-dots icon
+PC (Linux / Mac / PC). Open Google Chrome and click the three-dots icon
 -> more-tools -> extensions.
 
 [width=600, border]
 image::images/Extensions.png[]
 
-Click "developer mode" and then "Load Unpacked Extension". Then navigate
-to the downloaded files and select the "Servoterm" folder. 
+Click
+"developer mode" and then "Load Unpacked Extension". Then navigate to
+the downloaded files and select the "Servoterm" folder. 
 You should then be presented with the following, including an option to
 launch the application.
 
@@ -305,7 +303,6 @@ file
 * Jog - when ticked the left-right arrow keys on the keyboard can be
 used to jog the motor. 
 * Trigger - stops the graph plot until the trigger condition is met.
-i.e when term0.wave0 crosses zero.
 * Trigger Status Indicator - not a button
 * Edit Config - Brings up a sub-window in which the basic system config
 can be edited. 
@@ -368,6 +365,175 @@ editor
 === Servoterm Connection Problems
 
 == Flashing Firmware
+
+=== Requirements to build/flash firmware
+
+The GCC cross-compiler for Arm:
+gcc-arm-none-eabi-gcc https://launchpad.net/gcc-arm-embedded/+download
+
+In order for the STMBL Makefiles to be able to find the gcc binaries
+you may need to edit the file toolchain.mak to point to the correct
+folder and version number.
+
+To flash the boards with USB you will need the dfu-utils package. 
+http://dfu-util.sourceforge.net
+
+stlink https://github.com/texane/stlink
+
+You will also need the STMBL source code, available from
+https://github.com/rene-dev/stmbl
+You can either clone this as a https://git-scm.com[git] archive or just
+download a current snapshot as a zip file. 
+
+For Windows only you will also need the STMBL Virtual Comport
+http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-stm32102.html
+
+The STM32 chips have a built-in ROM bootloader, this means that it
+should be impossible to "brick" the boards. Each of the two CPUs in the
+STMBL drive needs both a dedicated bootloader to start the STMBL firmware
+and the firmware itself. 
+
+=== Checking for Existing Firmware
+
+Before flashing firmware it is worth trying to figure out if your board
+is completely blank or has been pre-flashed with a bootloader or
+firmware. 
+If the board lights any LEDs other than the green power-good ones near
+to the power input connectors then there is likely to already be a
+firmware installed. 
+
+If the board is powered with 24V to the LV board and connected with USB
+to a PC then it will report as "STMBL Virtual ComPort:" in the Apple
+System Profiler, 
+"ID 0483:5740 STMicroelectronics STM32F407" in lsusb in Linux and 
+"STMBL Virtual COM Port" in the Windows device manager if
+there is a full firmware + STM32 bootloader installed. 
+
+Additionally, if the board will connect with Servoterm then it already
+has a firmware and STMBL bootloader. 
+
+If the board shows "STM32 BOOTLOADER" (Mac) 
+"0483:df11 STMicroelectronics STM Device in DFU Mode" (Linus lsusb) or
+"STM32 BOOTLOADER" (Windows Device Manager) when powered up (without
+using the boot pads) then this indicates that it already has an STMBL
+bootloader. (though no harm is done by re-flashing this)
+
+If the LV board does not show up at all on the USB bus then attempt to
+put it in ROM boot mode by shorting the boot pads together, you should
+see "STM32 Bootlader" (Mac), "STMicroelectronics STM Device in DFU Mode"
+(Linux lsusb) or "STM32 BOOTLOADER" (Windows Device Manager)
+In this case you will need to flash both the STMBL bootloader and the
+STMBL firmware. 
+
+With 24V to the HV board and a USB connection: 
+
+If the HV board has both an STMBL bootloader and an STMBL Firmware
+installed then it will illuminate only the green power LED and will
+ report as "STMBL Virtual Com Port" (Mac) 
+"0483:5740 STMicroelectronics STM32F407" (Linux, rather inaccurately) 
+and "Unknown Device" in the Windows Device Manager. 
+
+If the HV board has an STMBL bootloader installed then it will flash a
+red LED near to the USB connector and report as 
+"STM32 DownLoad Firmware Update:" (Mac) 
+"0483:df11 STMicroelectronics STM Device in DFU Mode" (Linux lsusb) and
+"Unknown Device" in the Windows Device Manager. 
+
+If the HV board does not show up at all on the USB bus then attempt to
+put it in ROM boot mode by shorting the boot pads together, you should
+see "STM32 Bootlader" (Mac), "STMicroelectronics STM Device in DFU Mode"
+(Linux lsusb) or "STM32 BOOTLOADER" (Windows Device Manager)
+In this case you will need to flash both the STMBL bootloader (F3
+version) and the STMBL firmware (F3 version). 
+
+The boards can also be flashed with a JTAG programmer, but that process
+is not documented here. 
+
+It can be convenient to flash the boards to test them before separating
+the halves and before installing the IRAM module and bus capacitors if
+you have a self-built or part-assembled board. 
+
+It is possible that in the future standalone binaries of the firmware
+will be made available. 
+
+Firmware flashing is handled by specifying a makefile target for each of
+the 4 firmware sections. 
+
+=== Flashing the F4 (low voltage) board
+
+Connect 24V to the low voltage board power cable and a USB cable to the
+computer where the source code has been downloaded to.
+To flash the initial boot formware it is necessary to put the STM32 CPU
+into ROM bootloader mode. You do this by shorting together the two pads
+marked "boot" on the larger of the two boards. For the exact location of
+these pads see the illustration in the <<Anatomy of the STMBL,Anatomy>>
+section. Typically a small screwdriver can be used for this purpose. 
+At this point the board should appear as an "STM32 Bootloader" in the 
+USB tree of the attached PC. It might be necessary to power-up the board
+with the pads shorted. 
+
+The commands to flash the firmwares should be issued from a command line
+after navigating to the root of the downloaded source code (ie the same
+directory as the "Makefile" file)
+
+The command to flash the F4 bootloader is:
+
+'make boot_btburn
+
+There should then be a quantity of text output culminating with a
+progress bar:
+
+'Downloading to address = 0x08000000, size = 2756
+'Download	[=========================] 100%         2756 bytes
+
+There may be several apparent errors reported during the process, but
+these can be ignored if the progress bar is seen.
+
+The next step is to flash the actual firmware. This will take rather
+longer as the firmware will need to be compiled. The command is:
+
+'make btburn
+
+Again, a progress bar should appear, indicating success. 
+
+=== Flashing the F3 (high voltage board)
+
+Connect an isolated 24V supply to the HV inputs of F3 board. The board
+can operate at up to 380V but for the flashing process 24V is much safer.
+
+Connect the USB cable to the HV board as with the LV board, and use the
+boot pads on the HV board to put it into bootloader mode. Again it
+should appear in the USB device tree. 
+
+The command to flash the bootloader for the F3 board does not have a
+makefile shortcut, it is:
+
+'make -f f3dfu/Makefile btburn
+
+Again a progress bar should be seen, after which the main F3 firmware
+can be flashed:
+
+'make f3_btburn
+
+If all is well the board should now appear connnect to servoterm if the
+USB cable is moved to the LV (F4) board and if 24V is supplied to both
+power connectors.  
+
+If you type "hv0" at the servoterm command line and see a bis voltage
+then this indicates that both STM32 ships have working firmware and that
+communication between them is functional. This might require as much as
+30V supply to the F3 board as 24V is a little marginal for one of the
+devices in the communication chain. 
+
+Example:
+
+'hv0
+
+
+'hv0.max_cur <= conf0.max_ac_cur = 30.000000
+'hv0.dc_volt = 33.513943
+'hv0.d_fb = -0.022181
+
 
 == Pinouts
 
