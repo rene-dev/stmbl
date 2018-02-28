@@ -494,8 +494,8 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           }
           //TODO: causes timeouts...
           //if((address + (1 << lbp.ds)) < ARRAY_SIZE(sserial_slave)) {  //check if address is valid
-            memcpy((void *)txbuf, &sserial_slave[address], (1 << lbp.ds));
-            send((1 << lbp.ds), 1);
+          memcpy((void *)txbuf, &sserial_slave[address], (1 << lbp.ds));
+          send((1 << lbp.ds), 1);
           //}
           if(lbp.ai) {  //auto increment address by datasize
             address += (1 << lbp.ds);

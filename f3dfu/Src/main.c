@@ -122,9 +122,8 @@ int main(void) {
   MX_CRC_Init();
   MX_RTC_Init();
 
-  GPIO_InitTypeDef GPIO_InitStruct;
-
 #ifdef USB_DISCONNECT_PIN
+  GPIO_InitTypeDef GPIO_InitStruct;
   GPIO_InitStruct.Pin   = USB_DISCONNECT_PIN;
   GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull  = GPIO_NOPULL;
@@ -134,6 +133,7 @@ int main(void) {
 #endif
 
 #ifdef USB_CONNECT_PIN
+  GPIO_InitTypeDef GPIO_InitStruct;
   GPIO_InitStruct.Pin   = USB_CONNECT_PIN;
   GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull  = GPIO_NOPULL;

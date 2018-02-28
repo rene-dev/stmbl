@@ -6,14 +6,8 @@
 HAL_COMP(stp);
 
 HAL_PIN(target);
-HAL_PIN(pos);
-
-HAL_PIN(pos_in);
 HAL_PIN(pos_out);
-
-HAL_PIN(vel_in);
 HAL_PIN(vel_out);
-
 HAL_PIN(acc_out);
 
 HAL_PIN(max_vel);
@@ -32,12 +26,6 @@ struct stp_ctx_t {
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct stp_ctx_t *ctx      = (struct stp_ctx_t *)ctx_ptr;
   struct stp_pin_ctx_t *pins = (struct stp_pin_ctx_t *)pin_ptr;
-
-  //float p = PIN(pos_in);
-  //float ctx->v0 = PIN(vel_in);
-
-  //ctx->p0 += minus(p, ctx->pold);
-  //ctx->pold = p;
 
   float p1 = PIN(target);
 

@@ -38,6 +38,7 @@ else
 	COMPS += src/comps/enc_cmd.c
 	COMPS += src/comps/o_fb.c
 	COMPS += src/comps/sserial.c
+	COMPS += src/comps/yaskawa.c
 	CFLAGS += -DV4
 endif
 
@@ -82,6 +83,7 @@ COMPS += shared/comps/ramp.c
 COMPS += shared/comps/scale.c
 COMPS += shared/comps/idx_home.c
 COMPS += shared/comps/move.c
+COMPS += shared/comps/ac.c
 
 SOURCES += $(COMPS)
 
@@ -91,6 +93,7 @@ SOURCES += src/version.c
 SOURCES += src/syscalls.c
 
 SOURCES += shared/crc8.c
+SOURCES += shared/yaskawa_crc16.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/commands.c

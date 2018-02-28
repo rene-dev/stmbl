@@ -59,14 +59,12 @@ void TIM_SLAVE_HANDLER(void) {
 //5 kHz interrupt for hal. at this point all ADCs have been sampled,
 //see setup_res() in setup.c if you are interested in the magic behind this.
 void DMA2_Stream0_IRQHandler(void) {
-  GPIOD->BSRRL |= GPIO_Pin_1;
   DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
   hal_run_rt();
   if(DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0) == SET) {
     hal_stop();
     hal.hal_state = RT_TOO_LONG;
   }
-  GPIOD->BSRRH |= GPIO_Pin_1;
 }
 
 void bootloader(char *ptr) {

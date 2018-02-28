@@ -305,6 +305,7 @@ int main(void) {
   hal_parse("curpid0.en = ls0.en");
   hal_parse("curpid0.cmd_mode = ls0.cmd_mode");
   hal_parse("hv0.ac_current = curpid0.ac_current");
+  hal_parse("hv0.arr = ls0.arr");
 
   // hal parse config
   // hal_init_nrt();
