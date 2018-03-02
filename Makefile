@@ -101,8 +101,6 @@ SOURCES += shared/commands.c
 SOURCES += shared/config.c
 SOURCES += src/conf_templates.c
 
-# SOURCES += shared/hal_term.c
-# SOURCES += shared/scanf.c
 SOURCES += shared/ringbuf.c
 
 USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
@@ -255,6 +253,7 @@ inc/hal_tbl.h: tbl
 src/hal_tbl.c: tbl
 src/conf_templates.c: tbl
 
+#generate hal and command tables
 tbl:
 	@echo Generating tables
 	@tools/create_hal_tbl.py . $(COMPS)
@@ -293,6 +292,13 @@ f3_boot:
 
 deploy: boot f3_boot f3 build
 
+binall:
+	cat obj_boot/blboot.bin /dev/zero | head -c 32768 > f4.bin
+	cat conf/festo.txt /dev/zero | head -c 32768 >> f4.bin
+	cat obj_app/stmbl.bin >> f4.bin
+	cat obj_f3dfu/f3dfu.bin /dev/zero | head -c 16384 > f3.bin
+	cat obj_hvf3/hvf3.bin >> f3.bin
+
 format:
 	find src/ f3dfu/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ tools/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
 
@@ -327,6 +333,7 @@ flash: $(TARGET).bin
 clean:
 	@echo Cleaning project:
 	# rm -rf hv_firmware.o
+	rm -rf f3.bin f4.bin
 	rm -rf $(OBJDIR)
 	rm -rf inc/commandslist.h
 	rm -rf src/conf_templates.c
