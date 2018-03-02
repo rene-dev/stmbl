@@ -2,8 +2,6 @@
   ******************************************************************************
   * @file    stm32f3xx_ll_tim.h
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
   * @brief   Header file of TIM LL module.
   ******************************************************************************
   * @attention
@@ -136,22 +134,22 @@ static const uint8_t SHIFT_TAB_OISx[] =
   */
 
 
-#define TIMx_OR_RMP_SHIFT ((uint32_t)16U)
-#define TIMx_OR_RMP_MASK ((uint32_t)0x0000FFFFU)
+#define TIMx_OR_RMP_SHIFT 16U
+#define TIMx_OR_RMP_MASK  0x0000FFFFU
 #if defined(TIM1)
-#define TIM1_OR_RMP_MASK ((uint32_t)(TIM1_OR_ETR_RMP << TIMx_OR_RMP_SHIFT))
+#define TIM1_OR_RMP_MASK   (TIM1_OR_ETR_RMP << TIMx_OR_RMP_SHIFT)
 #endif /* TIM1 */
 #if defined (TIM8)
-#define TIM8_OR_RMP_MASK ((uint32_t)(TIM8_OR_ETR_RMP << TIMx_OR_RMP_SHIFT))
+#define TIM8_OR_RMP_MASK   (TIM8_OR_ETR_RMP << TIMx_OR_RMP_SHIFT)
 #endif /* TIM8 */
 #if defined(TIM14)
-#define TIM14_OR_RMP_MASK  ((uint32_t)(TIM14_OR_TI1_RMP  << TIMx_OR_RMP_SHIFT))
+#define TIM14_OR_RMP_MASK  (TIM14_OR_TI1_RMP << TIMx_OR_RMP_SHIFT)
 #endif /* TIM14 */
 #if defined(TIM16)
-#define TIM16_OR_RMP_MASK  ((uint32_t)(TIM16_OR_TI1_RMP << TIMx_OR_RMP_SHIFT))
+#define TIM16_OR_RMP_MASK  (TIM16_OR_TI1_RMP << TIMx_OR_RMP_SHIFT)
 #endif /* TIM16 */
 #if defined(TIM20)
-#define TIM20_OR_RMP_MASK   ((uint32_t)(TIM20_OR_ETR_RMP << TIMx_OR_RMP_SHIFT))
+#define TIM20_OR_RMP_MASK  (TIM20_OR_ETR_RMP << TIMx_OR_RMP_SHIFT)
 #endif /* TIM20 */
 
 /* Mask used to set the TDG[x:0] of the DTG bits of the TIMx_BDTR register */
@@ -170,7 +168,6 @@ static const uint8_t SHIFT_TAB_OISx[] =
 /**
   * @}
   */
-
 
 /* Private macros ------------------------------------------------------------*/
 /** @defgroup TIM_LL_Private_Macros TIM Private Macros
@@ -248,7 +245,7 @@ typedef struct
 
                                    This feature can be modified afterwards using unitary function @ref LL_TIM_SetCounterMode().*/
 
-  uint32_t Autoreload;       /*!< Specifies the auto reload value to be loaded into the active
+  uint32_t Autoreload;        /*!< Specifies the auto reload value to be loaded into the active
                                    Auto-Reload Register at the next update event.
                                    This parameter must be a number between Min_Data=0x0000 and Max_Data=0xFFFF.
                                    Some timer instances may support 32 bits counters. In that case this parameter must be a number between 0x0000 and 0xFFFFFFFF.
@@ -305,6 +302,7 @@ typedef struct
                                This parameter can be a value of @ref TIM_LL_EC_OCPOLARITY.
 
                                This feature can be modified afterwards using unitary function @ref LL_TIM_OC_SetPolarity().*/
+
 
   uint32_t OCIdleState;   /*!< Specifies the TIM Output Compare pin state during Idle state.
                                This parameter can be a value of @ref TIM_LL_EC_OCIDLESTATE.
@@ -430,6 +428,93 @@ typedef struct
 } LL_TIM_HALLSENSOR_InitTypeDef;
 
 /**
+  * @brief  BDTR (Break and Dead Time) structure definition
+  */
+typedef struct
+{
+  uint32_t OSSRState;            /*!< Specifies the Off-State selection used in Run mode.
+                                      This parameter can be a value of @ref TIM_LL_EC_OSSR
+
+                                      This feature can be modified afterwards using unitary function @ref LL_TIM_SetOffStates()
+
+                                      @note This bit-field cannot be modified as long as LOCK level 2 has been programmed. */
+
+  uint32_t OSSIState;            /*!< Specifies the Off-State used in Idle state.
+                                      This parameter can be a value of @ref TIM_LL_EC_OSSI
+
+                                      This feature can be modified afterwards using unitary function @ref LL_TIM_SetOffStates()
+
+                                      @note This bit-field cannot be modified as long as LOCK level 2 has been programmed. */
+
+  uint32_t LockLevel;            /*!< Specifies the LOCK level parameters.
+                                      This parameter can be a value of @ref TIM_LL_EC_LOCKLEVEL
+
+                                      @note The LOCK bits can be written only once after the reset. Once the TIMx_BDTR register
+                                            has been written, their content is frozen until the next reset.*/
+
+  uint8_t DeadTime;              /*!< Specifies the delay time between the switching-off and the
+                                      switching-on of the outputs.
+                                      This parameter can be a number between Min_Data = 0x00 and Max_Data = 0xFF.
+
+                                      This feature can be modified afterwards using unitary function @ref LL_TIM_OC_SetDeadTime()
+
+                                      @note This bit-field can not be modified as long as LOCK level 1, 2 or 3 has been programmed. */
+
+  uint16_t BreakState;           /*!< Specifies whether the TIM Break input is enabled or not.
+                                      This parameter can be a value of @ref TIM_LL_EC_BREAK_ENABLE
+
+                                      This feature can be modified afterwards using unitary functions @ref LL_TIM_EnableBRK() or @ref LL_TIM_DisableBRK()
+
+                                      @note This bit-field can not be modified as long as LOCK level 1 has been programmed. */
+
+  uint32_t BreakPolarity;        /*!< Specifies the TIM Break Input pin polarity.
+                                      This parameter can be a value of @ref TIM_LL_EC_BREAK_POLARITY
+
+                                      This feature can be modified afterwards using unitary function @ref LL_TIM_ConfigBRK()
+
+                                      @note This bit-field can not be modified as long as LOCK level 1 has been programmed. */
+
+#if defined(TIM_BDTR_BKF)
+  uint32_t BreakFilter;          /*!< Specifies the TIM Break Filter.
+                                      This parameter can be a value of @ref TIM_LL_EC_BREAK_FILTER
+
+                                      This feature can be modified afterwards using unitary function @ref LL_TIM_ConfigBRK()
+
+                                      @note This bit-field can not be modified as long as LOCK level 1 has been programmed. */
+
+#endif /* TIM_BDTR_BKF */
+#if defined(TIM_BDTR_BK2E)
+  uint32_t Break2State;          /*!< Specifies whether the TIM Break2 input is enabled or not.
+                                      This parameter can be a value of @ref TIM_LL_EC_BREAK2_ENABLE
+
+                                      This feature can be modified afterwards using unitary functions @ref LL_TIM_EnableBRK2() or @ref LL_TIM_DisableBRK2()
+
+                                      @note This bit-field can not be modified as long as LOCK level 1 has been programmed. */
+
+  uint32_t Break2Polarity;        /*!< Specifies the TIM Break2 Input pin polarity.
+                                      This parameter can be a value of @ref TIM_LL_EC_BREAK2_POLARITY
+
+                                      This feature can be modified afterwards using unitary function @ref LL_TIM_ConfigBRK2()
+
+                                      @note This bit-field can not be modified as long as LOCK level 1 has been programmed. */
+
+  uint32_t Break2Filter;          /*!< Specifies the TIM Break2 Filter.
+                                      This parameter can be a value of @ref TIM_LL_EC_BREAK2_FILTER
+
+                                      This feature can be modified afterwards using unitary function @ref LL_TIM_ConfigBRK2()
+
+                                      @note This bit-field can not be modified as long as LOCK level 1 has been programmed. */
+
+#endif /* TIM_BDTR_BK2E */
+  uint32_t AutomaticOutput;      /*!< Specifies whether the TIM Automatic Output feature is enabled or not.
+                                      This parameter can be a value of @ref TIM_LL_EC_AUTOMATICOUTPUT_ENABLE
+
+                                      This feature can be modified afterwards using unitary functions @ref LL_TIM_EnableAutomaticOutput() or @ref LL_TIM_DisableAutomaticOutput()
+
+                                      @note This bit-field can not be modified as long as LOCK level 1 has been programmed. */
+} LL_TIM_BDTR_InitTypeDef;
+
+/**
   * @}
   */
 #endif /* USE_FULL_LL_DRIVER */
@@ -464,6 +549,37 @@ typedef struct
   * @}
   */
 
+#if defined(USE_FULL_LL_DRIVER)
+/** @defgroup TIM_LL_EC_BREAK_ENABLE Break Enable
+  * @{
+  */
+#define LL_TIM_BREAK_DISABLE            0x00000000U             /*!< Break function disabled */
+#define LL_TIM_BREAK_ENABLE             TIM_BDTR_BKE            /*!< Break function enabled */
+/**
+  * @}
+  */
+#if defined(TIM_BDTR_BK2E)
+
+/** @defgroup TIM_LL_EC_BREAK2_ENABLE Break2 Enable
+  * @{
+  */
+#define LL_TIM_BREAK2_DISABLE            0x00000000U              /*!< Break2 function disabled */
+#define LL_TIM_BREAK2_ENABLE             TIM_BDTR_BK2E            /*!< Break2 function enabled */
+/**
+  * @}
+  */
+#endif /* TIM_BDTR_BK2E */
+
+/** @defgroup TIM_LL_EC_AUTOMATICOUTPUT_ENABLE Automatic output enable
+  * @{
+  */
+#define LL_TIM_AUTOMATICOUTPUT_DISABLE         0x00000000U             /*!< MOE can be set only by software */
+#define LL_TIM_AUTOMATICOUTPUT_ENABLE          TIM_BDTR_AOE            /*!< MOE can be set by software or automatically at the next update event */
+/**
+  * @}
+  */
+#endif /* USE_FULL_LL_DRIVER */
+
 /** @defgroup TIM_LL_EC_IT IT Defines
   * @brief    IT defines which can be used with LL_TIM_ReadReg and  LL_TIM_WriteReg functions.
   * @{
@@ -483,8 +599,8 @@ typedef struct
 /** @defgroup TIM_LL_EC_UPDATESOURCE Update Source
   * @{
   */
-#define LL_TIM_UPDATESOURCE_REGULAR            ((uint32_t)0x00000000U) /*!< Counter overflow/underflow, Setting the UG bit or Update generation through the slave mode controller generates an update request */
-#define LL_TIM_UPDATESOURCE_COUNTER            TIM_CR1_URS            /*!< Only counter overflow/underflow generates an update request */
+#define LL_TIM_UPDATESOURCE_REGULAR            0x00000000U          /*!< Counter overflow/underflow, Setting the UG bit or Update generation through the slave mode controller generates an update request */
+#define LL_TIM_UPDATESOURCE_COUNTER            TIM_CR1_URS          /*!< Only counter overflow/underflow generates an update request */
 /**
   * @}
   */
@@ -492,8 +608,8 @@ typedef struct
 /** @defgroup TIM_LL_EC_ONEPULSEMODE One Pulse Mode
   * @{
   */
-#define LL_TIM_ONEPULSEMODE_SINGLE             TIM_CR1_OPM            /*!< Counter is not stopped at update event */
-#define LL_TIM_ONEPULSEMODE_REPETITIVE         ((uint32_t)0x00000000U) /*!< Counter stops counting at the next update event */
+#define LL_TIM_ONEPULSEMODE_SINGLE             TIM_CR1_OPM          /*!< Counter is not stopped at update event */
+#define LL_TIM_ONEPULSEMODE_REPETITIVE         0x00000000U          /*!< Counter stops counting at the next update event */
 /**
   * @}
   */
@@ -501,11 +617,11 @@ typedef struct
 /** @defgroup TIM_LL_EC_COUNTERMODE Counter Mode
   * @{
   */
-#define LL_TIM_COUNTERMODE_UP                  ((uint32_t)0x00000000U) /*!<Counter used as upcounter */
-#define LL_TIM_COUNTERMODE_DOWN                TIM_CR1_DIR             /*!< Counter used as downcounter */
-#define LL_TIM_COUNTERMODE_CENTER_UP           TIM_CR1_CMS_0           /*!< The counter counts up and down alternatively. Output compare interrupt flags of output channels  are set only when the counter is counting down. */
-#define LL_TIM_COUNTERMODE_CENTER_DOWN         TIM_CR1_CMS_1           /*!<The counter counts up and down alternatively. Output compare interrupt flags of output channels  are set only when the counter is counting up */
-#define LL_TIM_COUNTERMODE_CENTER_UP_DOWN      TIM_CR1_CMS             /*!< The counter counts up and down alternatively. Output compare interrupt flags of output channels  are set only when the counter is counting up or down. */
+#define LL_TIM_COUNTERMODE_UP                  0x00000000U          /*!<Counter used as upcounter */
+#define LL_TIM_COUNTERMODE_DOWN                TIM_CR1_DIR          /*!< Counter used as downcounter */
+#define LL_TIM_COUNTERMODE_CENTER_UP           TIM_CR1_CMS_0        /*!< The counter counts up and down alternatively. Output compare interrupt flags of output channels  are set only when the counter is counting down. */
+#define LL_TIM_COUNTERMODE_CENTER_DOWN         TIM_CR1_CMS_1        /*!<The counter counts up and down alternatively. Output compare interrupt flags of output channels  are set only when the counter is counting up */
+#define LL_TIM_COUNTERMODE_CENTER_UP_DOWN      TIM_CR1_CMS          /*!< The counter counts up and down alternatively. Output compare interrupt flags of output channels  are set only when the counter is counting up or down. */
 /**
   * @}
   */
@@ -513,9 +629,9 @@ typedef struct
 /** @defgroup TIM_LL_EC_CLOCKDIVISION Clock Division
   * @{
   */
-#define LL_TIM_CLOCKDIVISION_DIV1              ((uint32_t)0x00000000U) /*!< tDTS=tCK_INT */
-#define LL_TIM_CLOCKDIVISION_DIV2              TIM_CR1_CKD_0           /*!< tDTS=2*tCK_INT */
-#define LL_TIM_CLOCKDIVISION_DIV4              TIM_CR1_CKD_1           /*!< tDTS=4*tCK_INT */
+#define LL_TIM_CLOCKDIVISION_DIV1              0x00000000U          /*!< tDTS=tCK_INT */
+#define LL_TIM_CLOCKDIVISION_DIV2              TIM_CR1_CKD_0        /*!< tDTS=2*tCK_INT */
+#define LL_TIM_CLOCKDIVISION_DIV4              TIM_CR1_CKD_1        /*!< tDTS=4*tCK_INT */
 /**
   * @}
   */
@@ -523,8 +639,8 @@ typedef struct
 /** @defgroup TIM_LL_EC_COUNTERDIRECTION Counter Direction
   * @{
   */
-#define LL_TIM_COUNTERDIRECTION_UP             ((uint32_t)0x00000000U) /*!< Timer counter counts up */
-#define LL_TIM_COUNTERDIRECTION_DOWN           TIM_CR1_DIR             /*!< Timer counter counts down */
+#define LL_TIM_COUNTERDIRECTION_UP             0x00000000U          /*!< Timer counter counts up */
+#define LL_TIM_COUNTERDIRECTION_DOWN           TIM_CR1_DIR          /*!< Timer counter counts down */
 /**
   * @}
   */
@@ -532,8 +648,8 @@ typedef struct
 /** @defgroup TIM_LL_EC_CCUPDATESOURCE Capture Compare  Update Source
   * @{
   */
-#define LL_TIM_CCUPDATESOURCE_COMG_ONLY        ((uint32_t)0x00000000U) /*!< Capture/compare control bits are updated by setting the COMG bit only */
-#define LL_TIM_CCUPDATESOURCE_COMG_AND_TRGI    TIM_CR2_CCUS            /*!< Capture/compare control bits are updated by setting the COMG bit or when a rising edge occurs on trigger input (TRGI) */
+#define LL_TIM_CCUPDATESOURCE_COMG_ONLY        0x00000000U          /*!< Capture/compare control bits are updated by setting the COMG bit only */
+#define LL_TIM_CCUPDATESOURCE_COMG_AND_TRGI    TIM_CR2_CCUS         /*!< Capture/compare control bits are updated by setting the COMG bit or when a rising edge occurs on trigger input (TRGI) */
 /**
   * @}
   */
@@ -541,8 +657,8 @@ typedef struct
 /** @defgroup TIM_LL_EC_CCDMAREQUEST Capture Compare DMA Request
   * @{
   */
-#define LL_TIM_CCDMAREQUEST_CC                 ((uint32_t)0x00000000U) /*!< CCx DMA request sent when CCx event occurs */
-#define LL_TIM_CCDMAREQUEST_UPDATE             TIM_CR2_CCDS            /*!< CCx DMA requests sent when update event occurs */
+#define LL_TIM_CCDMAREQUEST_CC                 0x00000000U          /*!< CCx DMA request sent when CCx event occurs */
+#define LL_TIM_CCDMAREQUEST_UPDATE             TIM_CR2_CCDS         /*!< CCx DMA requests sent when update event occurs */
 /**
   * @}
   */
@@ -550,10 +666,10 @@ typedef struct
 /** @defgroup TIM_LL_EC_LOCKLEVEL Lock Level
   * @{
   */
-#define LL_TIM_LOCKLEVEL_OFF                   ((uint32_t)0x00000000U) /*!< LOCK OFF - No bit is write protected */
-#define LL_TIM_LOCKLEVEL_1                     TIM_BDTR_LOCK_0         /*!< LOCK Level 1 */
-#define LL_TIM_LOCKLEVEL_2                     TIM_BDTR_LOCK_1         /*!< LOCK Level 2 */
-#define LL_TIM_LOCKLEVEL_3                     TIM_BDTR_LOCK           /*!< LOCK Level 3 */
+#define LL_TIM_LOCKLEVEL_OFF                   0x00000000U          /*!< LOCK OFF - No bit is write protected */
+#define LL_TIM_LOCKLEVEL_1                     TIM_BDTR_LOCK_0      /*!< LOCK Level 1 */
+#define LL_TIM_LOCKLEVEL_2                     TIM_BDTR_LOCK_1      /*!< LOCK Level 2 */
+#define LL_TIM_LOCKLEVEL_3                     TIM_BDTR_LOCK        /*!< LOCK Level 3 */
 /**
   * @}
   */
@@ -588,7 +704,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_OCSTATE Output Configuration State
   * @{
   */
-#define LL_TIM_OCSTATE_DISABLE                 ((uint32_t)0x00000000U) /*!< OCx is not active */
+#define LL_TIM_OCSTATE_DISABLE                 0x00000000U             /*!< OCx is not active */
 #define LL_TIM_OCSTATE_ENABLE                  TIM_CCER_CC1E           /*!< OCx signal is output on the corresponding output pin */
 /**
   * @}
@@ -598,11 +714,11 @@ typedef struct
 /** @defgroup TIM_LL_EC_OCMODE Output Configuration Mode
   * @{
   */
-#define LL_TIM_OCMODE_FROZEN                   ((uint32_t)0x00000000U)                                  /*!<The comparison between the output compare register TIMx_CCRy and the counter TIMx_CNT has no effect on the output channel level */
+#define LL_TIM_OCMODE_FROZEN                   0x00000000U                                              /*!<The comparison between the output compare register TIMx_CCRy and the counter TIMx_CNT has no effect on the output channel level */
 #define LL_TIM_OCMODE_ACTIVE                   TIM_CCMR1_OC1M_0                                         /*!<OCyREF is forced high on compare match*/
 #define LL_TIM_OCMODE_INACTIVE                 TIM_CCMR1_OC1M_1                                         /*!<OCyREF is forced low on compare match*/
 #define LL_TIM_OCMODE_TOGGLE                   (TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0)                    /*!<OCyREF toggles on compare match*/
-#define LL_TIM_OCMODE_FORCED_INACTIVE          (TIM_CCMR1_OC1M_2)                                       /*!<OCyREF is forced low*/
+#define LL_TIM_OCMODE_FORCED_INACTIVE          TIM_CCMR1_OC1M_2                                       /*!<OCyREF is forced low*/
 #define LL_TIM_OCMODE_FORCED_ACTIVE            (TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0)                    /*!<OCyREF is forced high*/
 #define LL_TIM_OCMODE_PWM1                     (TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1)                    /*!<In upcounting, channel y is active as long as TIMx_CNT<TIMx_CCRy else inactive.  In downcounting, channel y is inactive as long as TIMx_CNT>TIMx_CCRy else active.*/
 #define LL_TIM_OCMODE_PWM2                     (TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0) /*!<In upcounting, channel y is inactive as long as TIMx_CNT<TIMx_CCRy else active.  In downcounting, channel y is active as long as TIMx_CNT>TIMx_CCRy else inactive*/
@@ -625,7 +741,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_OCPOLARITY Output Configuration Polarity
   * @{
   */
-#define LL_TIM_OCPOLARITY_HIGH                 ((uint32_t)0x00000000U)     /*!< OCxactive high*/
+#define LL_TIM_OCPOLARITY_HIGH                 0x00000000U                 /*!< OCxactive high*/
 #define LL_TIM_OCPOLARITY_LOW                  TIM_CCER_CC1P               /*!< OCxactive low*/
 /**
   * @}
@@ -634,7 +750,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_OCIDLESTATE Output Configuration Idle State
   * @{
   */
-#define LL_TIM_OCIDLESTATE_LOW                 ((uint32_t)0x00000000U) /*!<OCx=0 (after a dead-time if OC is implemented) when MOE=0*/
+#define LL_TIM_OCIDLESTATE_LOW                 0x00000000U             /*!<OCx=0 (after a dead-time if OC is implemented) when MOE=0*/
 #define LL_TIM_OCIDLESTATE_HIGH                TIM_CR2_OIS1            /*!<OCx=1 (after a dead-time if OC is implemented) when MOE=0*/
 /**
   * @}
@@ -644,7 +760,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_GROUPCH5 GROUPCH5
   * @{
   */
-#define LL_TIM_GROUPCH5_NONE                   (uint32_t)0x00000000U /*!< No effect of OC5REF on OC1REFC, OC2REFC and OC3REFC */
+#define LL_TIM_GROUPCH5_NONE                   0x00000000U           /*!< No effect of OC5REF on OC1REFC, OC2REFC and OC3REFC */
 #define LL_TIM_GROUPCH5_OC1REFC                TIM_CCR5_GC5C1        /*!< OC1REFC is the logical AND of OC1REFC and OC5REF */
 #define LL_TIM_GROUPCH5_OC2REFC                TIM_CCR5_GC5C2        /*!< OC2REFC is the logical AND of OC2REFC and OC5REF */
 #define LL_TIM_GROUPCH5_OC3REFC                TIM_CCR5_GC5C3        /*!< OC3REFC is the logical AND of OC3REFC and OC5REF */
@@ -656,9 +772,9 @@ typedef struct
 /** @defgroup TIM_LL_EC_ACTIVEINPUT Active Input Selection
   * @{
   */
-#define LL_TIM_ACTIVEINPUT_DIRECTTI            (uint32_t)(TIM_CCMR1_CC1S_0 << 16U) /*!< ICx is mapped on TIx */
-#define LL_TIM_ACTIVEINPUT_INDIRECTTI          (uint32_t)(TIM_CCMR1_CC1S_1 << 16U) /*!< ICx is mapped on TIy */
-#define LL_TIM_ACTIVEINPUT_TRC                 (uint32_t)(TIM_CCMR1_CC1S << 16U)   /*!< ICx is mapped on TRC */
+#define LL_TIM_ACTIVEINPUT_DIRECTTI            (TIM_CCMR1_CC1S_0 << 16U) /*!< ICx is mapped on TIx */
+#define LL_TIM_ACTIVEINPUT_INDIRECTTI          (TIM_CCMR1_CC1S_1 << 16U) /*!< ICx is mapped on TIy */
+#define LL_TIM_ACTIVEINPUT_TRC                 (TIM_CCMR1_CC1S << 16U)   /*!< ICx is mapped on TRC */
 /**
   * @}
   */
@@ -666,10 +782,10 @@ typedef struct
 /** @defgroup TIM_LL_EC_ICPSC Input Configuration Prescaler
   * @{
   */
-#define LL_TIM_ICPSC_DIV1                      ((uint32_t)0x00000000U) /*!< No prescaler, capture is done each time an edge is detected on the capture input */
-#define LL_TIM_ICPSC_DIV2                      (uint32_t)(TIM_CCMR1_IC1PSC_0 << 16U)    /*!< Capture is done once every 2 events */
-#define LL_TIM_ICPSC_DIV4                      (uint32_t)(TIM_CCMR1_IC1PSC_1 << 16U)    /*!< Capture is done once every 4 events */
-#define LL_TIM_ICPSC_DIV8                      (uint32_t)(TIM_CCMR1_IC1PSC << 16U)      /*!< Capture is done once every 8 events */
+#define LL_TIM_ICPSC_DIV1                      0x00000000U                              /*!< No prescaler, capture is done each time an edge is detected on the capture input */
+#define LL_TIM_ICPSC_DIV2                      (TIM_CCMR1_IC1PSC_0 << 16U)    /*!< Capture is done once every 2 events */
+#define LL_TIM_ICPSC_DIV4                      (TIM_CCMR1_IC1PSC_1 << 16U)    /*!< Capture is done once every 4 events */
+#define LL_TIM_ICPSC_DIV8                      (TIM_CCMR1_IC1PSC << 16U)      /*!< Capture is done once every 8 events */
 /**
   * @}
   */
@@ -677,22 +793,22 @@ typedef struct
 /** @defgroup TIM_LL_EC_IC_FILTER Input Configuration Filter
   * @{
   */
-#define LL_TIM_IC_FILTER_FDIV1                 ((uint32_t)0x00000000U)                                         /*!< No filter, sampling is done at fDTS */
-#define LL_TIM_IC_FILTER_FDIV1_N2              (uint32_t)(TIM_CCMR1_IC1F_0 << 16U)                                          /*!< fSAMPLING=fCK_INT, N=2 */
-#define LL_TIM_IC_FILTER_FDIV1_N4              (uint32_t)(TIM_CCMR1_IC1F_1 << 16U)                                          /*!< fSAMPLING=fCK_INT, N=4 */
-#define LL_TIM_IC_FILTER_FDIV1_N8              (uint32_t)((TIM_CCMR1_IC1F_1 | TIM_CCMR1_IC1F_0) << 16U)                     /*!< fSAMPLING=fCK_INT, N=8 */
-#define LL_TIM_IC_FILTER_FDIV2_N6              (uint32_t)(TIM_CCMR1_IC1F_2 << 16U)                                          /*!< fSAMPLING=fDTS/2, N=6 */
-#define LL_TIM_IC_FILTER_FDIV2_N8              (uint32_t)((TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_0) << 16U)                     /*!< fSAMPLING=fDTS/2, N=8 */
-#define LL_TIM_IC_FILTER_FDIV4_N6              (uint32_t)((TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_1) << 16U)                     /*!< fSAMPLING=fDTS/4, N=6 */
-#define LL_TIM_IC_FILTER_FDIV4_N8              (uint32_t)((TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_1 | TIM_CCMR1_IC1F_0) << 16U)  /*!< fSAMPLING=fDTS/4, N=8 */
-#define LL_TIM_IC_FILTER_FDIV8_N6              (uint32_t)(TIM_CCMR1_IC1F_3 << 16U)                                          /*!< fSAMPLING=fDTS/8, N=6 */
-#define LL_TIM_IC_FILTER_FDIV8_N8              (uint32_t)((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_0) << 16U)                     /*!< fSAMPLING=fDTS/8, N=8 */
-#define LL_TIM_IC_FILTER_FDIV16_N5             (uint32_t)((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_1) << 16U)                     /*!< fSAMPLING=fDTS/16, N=5 */
-#define LL_TIM_IC_FILTER_FDIV16_N6             (uint32_t)((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_1 | TIM_CCMR1_IC1F_0) << 16U)  /*!< fSAMPLING=fDTS/16, N=6 */
-#define LL_TIM_IC_FILTER_FDIV16_N8             (uint32_t)((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_2) << 16U)                     /*!< fSAMPLING=fDTS/16, N=8 */
-#define LL_TIM_IC_FILTER_FDIV32_N5             (uint32_t)((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_0) << 16U)  /*!< fSAMPLING=fDTS/32, N=5 */
-#define LL_TIM_IC_FILTER_FDIV32_N6             (uint32_t)((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_1) << 16U)  /*!< fSAMPLING=fDTS/32, N=6 */
-#define LL_TIM_IC_FILTER_FDIV32_N8             (uint32_t)(TIM_CCMR1_IC1F << 16U)                                            /*!< fSAMPLING=fDTS/32, N=8 */
+#define LL_TIM_IC_FILTER_FDIV1                 0x00000000U                                                        /*!< No filter, sampling is done at fDTS */
+#define LL_TIM_IC_FILTER_FDIV1_N2              (TIM_CCMR1_IC1F_0 << 16U)                                          /*!< fSAMPLING=fCK_INT, N=2 */
+#define LL_TIM_IC_FILTER_FDIV1_N4              (TIM_CCMR1_IC1F_1 << 16U)                                          /*!< fSAMPLING=fCK_INT, N=4 */
+#define LL_TIM_IC_FILTER_FDIV1_N8              ((TIM_CCMR1_IC1F_1 | TIM_CCMR1_IC1F_0) << 16U)                     /*!< fSAMPLING=fCK_INT, N=8 */
+#define LL_TIM_IC_FILTER_FDIV2_N6              (TIM_CCMR1_IC1F_2 << 16U)                                          /*!< fSAMPLING=fDTS/2, N=6 */
+#define LL_TIM_IC_FILTER_FDIV2_N8              ((TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_0) << 16U)                     /*!< fSAMPLING=fDTS/2, N=8 */
+#define LL_TIM_IC_FILTER_FDIV4_N6              ((TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_1) << 16U)                     /*!< fSAMPLING=fDTS/4, N=6 */
+#define LL_TIM_IC_FILTER_FDIV4_N8              ((TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_1 | TIM_CCMR1_IC1F_0) << 16U)  /*!< fSAMPLING=fDTS/4, N=8 */
+#define LL_TIM_IC_FILTER_FDIV8_N6              (TIM_CCMR1_IC1F_3 << 16U)                                          /*!< fSAMPLING=fDTS/8, N=6 */
+#define LL_TIM_IC_FILTER_FDIV8_N8              ((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_0) << 16U)                     /*!< fSAMPLING=fDTS/8, N=8 */
+#define LL_TIM_IC_FILTER_FDIV16_N5             ((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_1) << 16U)                     /*!< fSAMPLING=fDTS/16, N=5 */
+#define LL_TIM_IC_FILTER_FDIV16_N6             ((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_1 | TIM_CCMR1_IC1F_0) << 16U)  /*!< fSAMPLING=fDTS/16, N=6 */
+#define LL_TIM_IC_FILTER_FDIV16_N8             ((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_2) << 16U)                     /*!< fSAMPLING=fDTS/16, N=8 */
+#define LL_TIM_IC_FILTER_FDIV32_N5             ((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_0) << 16U)  /*!< fSAMPLING=fDTS/32, N=5 */
+#define LL_TIM_IC_FILTER_FDIV32_N6             ((TIM_CCMR1_IC1F_3 | TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_1) << 16U)  /*!< fSAMPLING=fDTS/32, N=6 */
+#define LL_TIM_IC_FILTER_FDIV32_N8             (TIM_CCMR1_IC1F << 16U)                                            /*!< fSAMPLING=fDTS/32, N=8 */
 /**
   * @}
   */
@@ -700,7 +816,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_IC_POLARITY Input Configuration Polarity
   * @{
   */
-#define LL_TIM_IC_POLARITY_RISING              ((uint32_t)0x00000000U)          /*!< The circuit is sensitive to TIxFP1 rising edge, TIxFP1 is not inverted */
+#define LL_TIM_IC_POLARITY_RISING              0x00000000U                      /*!< The circuit is sensitive to TIxFP1 rising edge, TIxFP1 is not inverted */
 #define LL_TIM_IC_POLARITY_FALLING             TIM_CCER_CC1P                    /*!< The circuit is sensitive to TIxFP1 falling edge, TIxFP1 is inverted */
 #define LL_TIM_IC_POLARITY_BOTHEDGE            (TIM_CCER_CC1P | TIM_CCER_CC1NP) /*!< The circuit is sensitive to both TIxFP1 rising and falling edges, TIxFP1 is not inverted */
 /**
@@ -710,9 +826,9 @@ typedef struct
 /** @defgroup TIM_LL_EC_CLOCKSOURCE Clock Source
   * @{
   */
-#define LL_TIM_CLOCKSOURCE_INTERNAL            ((uint32_t)0x00000000U)                              /*!< The timer is clocked by the internal clock provided from the RCC */
-#define LL_TIM_CLOCKSOURCE_EXT_MODE1           (TIM_SMCR_SMS_2 | TIM_SMCR_SMS_1 | TIM_SMCR_SMS_0 ) /*!< Counter counts at each rising or falling edge on a selected inpu t*/
-#define LL_TIM_CLOCKSOURCE_EXT_MODE2           TIM_SMCR_ECE                                        /*!< Counter counts at each rising or falling edge on the external trigger input ETR */
+#define LL_TIM_CLOCKSOURCE_INTERNAL            0x00000000U                                          /*!< The timer is clocked by the internal clock provided from the RCC */
+#define LL_TIM_CLOCKSOURCE_EXT_MODE1           (TIM_SMCR_SMS_2 | TIM_SMCR_SMS_1 | TIM_SMCR_SMS_0)   /*!< Counter counts at each rising or falling edge on a selected inpu t*/
+#define LL_TIM_CLOCKSOURCE_EXT_MODE2           TIM_SMCR_ECE                                         /*!< Counter counts at each rising or falling edge on the external trigger input ETR */
 /**
   * @}
   */
@@ -730,7 +846,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_TRGO Trigger Output
   * @{
   */
-#define LL_TIM_TRGO_RESET                      ((uint32_t)0x00000000U)                         /*!< UG bit from the TIMx_EGR register is used as trigger output */
+#define LL_TIM_TRGO_RESET                      0x00000000U                                     /*!< UG bit from the TIMx_EGR register is used as trigger output */
 #define LL_TIM_TRGO_ENABLE                     TIM_CR2_MMS_0                                   /*!< Counter Enable signal (CNT_EN) is used as trigger output */
 #define LL_TIM_TRGO_UPDATE                     TIM_CR2_MMS_1                                   /*!< Update event is used as trigger output */
 #define LL_TIM_TRGO_CC1IF                      (TIM_CR2_MMS_1 | TIM_CR2_MMS_0)                 /*!< CC1 capture or a compare match is used as trigger output */
@@ -746,7 +862,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_TRGO2 Trigger Output 2
   * @{
   */
-#define LL_TIM_TRGO2_RESET                     ((uint32_t)0x00000000U)                                             /*!< UG bit from the TIMx_EGR register is used as trigger output 2 */
+#define LL_TIM_TRGO2_RESET                     0x00000000U                                                         /*!< UG bit from the TIMx_EGR register is used as trigger output 2 */
 #define LL_TIM_TRGO2_ENABLE                    TIM_CR2_MMS2_0                                                      /*!< Counter Enable signal (CNT_EN) is used as trigger output 2 */
 #define LL_TIM_TRGO2_UPDATE                    TIM_CR2_MMS2_1                                                      /*!< Update event is used as trigger output 2 */
 #define LL_TIM_TRGO2_CC1F                      (TIM_CR2_MMS2_1 | TIM_CR2_MMS2_0)                                   /*!< CC1 capture or a compare match is used as trigger output 2 */
@@ -770,7 +886,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_SLAVEMODE Slave Mode
   * @{
   */
-#define LL_TIM_SLAVEMODE_DISABLED              ((uint32_t)0x00000000U)             /*!< Slave mode disabled */
+#define LL_TIM_SLAVEMODE_DISABLED              0x00000000U                         /*!< Slave mode disabled */
 #define LL_TIM_SLAVEMODE_RESET                 TIM_SMCR_SMS_2                      /*!< Reset Mode - Rising edge of the selected trigger input (TRGI) reinitializes the counter */
 #define LL_TIM_SLAVEMODE_GATED                 (TIM_SMCR_SMS_2 | TIM_SMCR_SMS_0)   /*!< Gated Mode - The counter clock is enabled when the trigger input (TRGI) is high */
 #define LL_TIM_SLAVEMODE_TRIGGER               (TIM_SMCR_SMS_2 | TIM_SMCR_SMS_1)   /*!< Trigger Mode - The counter starts at a rising edge of the trigger TRGI */
@@ -784,14 +900,14 @@ typedef struct
 /** @defgroup TIM_LL_EC_TS Trigger Selection
   * @{
   */
-#define LL_TIM_TS_ITR0                         ((uint32_t)0x00000000U)         /*!< Internal Trigger 0 (ITR0) is used as trigger input */
-#define LL_TIM_TS_ITR1                         TIM_SMCR_TS_0                   /*!< Internal Trigger 1 (ITR1) is used as trigger input */
-#define LL_TIM_TS_ITR2                         TIM_SMCR_TS_1                   /*!< Internal Trigger 2 (ITR2) is used as trigger input */
-#define LL_TIM_TS_ITR3                         (TIM_SMCR_TS_0 | TIM_SMCR_TS_1) /*!< Internal Trigger 3 (ITR3) is used as trigger input */
-#define LL_TIM_TS_TI1F_ED                      TIM_SMCR_TS_2                   /*!< TI1 Edge Detector (TI1F_ED) is used as trigger input */
-#define LL_TIM_TS_TI1FP1                       (TIM_SMCR_TS_2 | TIM_SMCR_TS_0) /*!< Filtered Timer Input 1 (TI1FP1) is used as trigger input */
-#define LL_TIM_TS_TI2FP2                       (TIM_SMCR_TS_2 | TIM_SMCR_TS_1) /*!< Filtered Timer Input 2 (TI12P2) is used as trigger input */
-#define LL_TIM_TS_ETRF                         TIM_SMCR_TS                     /*!< Filtered external Trigger (ETRF) is used as trigger input */
+#define LL_TIM_TS_ITR0                         0x00000000U                                      /*!< Internal Trigger 0 (ITR0) is used as trigger input */
+#define LL_TIM_TS_ITR1                         TIM_SMCR_TS_0                                    /*!< Internal Trigger 1 (ITR1) is used as trigger input */
+#define LL_TIM_TS_ITR2                         TIM_SMCR_TS_1                                    /*!< Internal Trigger 2 (ITR2) is used as trigger input */
+#define LL_TIM_TS_ITR3                         (TIM_SMCR_TS_0 | TIM_SMCR_TS_1)                  /*!< Internal Trigger 3 (ITR3) is used as trigger input */
+#define LL_TIM_TS_TI1F_ED                      TIM_SMCR_TS_2                                    /*!< TI1 Edge Detector (TI1F_ED) is used as trigger input */
+#define LL_TIM_TS_TI1FP1                       (TIM_SMCR_TS_2 | TIM_SMCR_TS_0)                  /*!< Filtered Timer Input 1 (TI1FP1) is used as trigger input */
+#define LL_TIM_TS_TI2FP2                       (TIM_SMCR_TS_2 | TIM_SMCR_TS_1)                  /*!< Filtered Timer Input 2 (TI12P2) is used as trigger input */
+#define LL_TIM_TS_ETRF                         (TIM_SMCR_TS_2 | TIM_SMCR_TS_1 | TIM_SMCR_TS_0)  /*!< Filtered external Trigger (ETRF) is used as trigger input */
 /**
   * @}
   */
@@ -799,7 +915,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_ETR_POLARITY External Trigger Polarity
   * @{
   */
-#define LL_TIM_ETR_POLARITY_NONINVERTED        ((uint32_t)0x00000000U) /*!< ETR is non-inverted, active at high level or rising edge */
+#define LL_TIM_ETR_POLARITY_NONINVERTED        0x00000000U             /*!< ETR is non-inverted, active at high level or rising edge */
 #define LL_TIM_ETR_POLARITY_INVERTED           TIM_SMCR_ETP            /*!< ETR is inverted, active at low level or falling edge */
 /**
   * @}
@@ -808,7 +924,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_ETR_PRESCALER External Trigger Prescaler
   * @{
   */
-#define LL_TIM_ETR_PRESCALER_DIV1              ((uint32_t)0x00000000U) /*!< ETR prescaler OFF */
+#define LL_TIM_ETR_PRESCALER_DIV1              0x00000000U             /*!< ETR prescaler OFF */
 #define LL_TIM_ETR_PRESCALER_DIV2              TIM_SMCR_ETPS_0         /*!< ETR frequency is divided by 2 */
 #define LL_TIM_ETR_PRESCALER_DIV4              TIM_SMCR_ETPS_1         /*!< ETR frequency is divided by 4 */
 #define LL_TIM_ETR_PRESCALER_DIV8              TIM_SMCR_ETPS           /*!< ETR frequency is divided by 8 */
@@ -819,21 +935,21 @@ typedef struct
 /** @defgroup TIM_LL_EC_ETR_FILTER External Trigger Filter
   * @{
   */
-#define LL_TIM_ETR_FILTER_FDIV1                ((uint32_t)0x00000000U)                              /*!< No filter, sampling is done at fDTS */
+#define LL_TIM_ETR_FILTER_FDIV1                0x00000000U                                          /*!< No filter, sampling is done at fDTS */
 #define LL_TIM_ETR_FILTER_FDIV1_N2             TIM_SMCR_ETF_0                                       /*!< fSAMPLING=fCK_INT, N=2 */
 #define LL_TIM_ETR_FILTER_FDIV1_N4             TIM_SMCR_ETF_1                                       /*!< fSAMPLING=fCK_INT, N=4 */
 #define LL_TIM_ETR_FILTER_FDIV1_N8             (TIM_SMCR_ETF_1 | TIM_SMCR_ETF_0)                    /*!< fSAMPLING=fCK_INT, N=8 */
 #define LL_TIM_ETR_FILTER_FDIV2_N6             TIM_SMCR_ETF_2                                       /*!< fSAMPLING=fDTS/2, N=6 */
 #define LL_TIM_ETR_FILTER_FDIV2_N8             (TIM_SMCR_ETF_2 | TIM_SMCR_ETF_0)                    /*!< fSAMPLING=fDTS/2, N=8 */
-#define LL_TIM_ETR_FILTER_FDIV4_N6             (TIM_SMCR_ETF_2 | TIM_SMCR_ETF_1 )                   /*!< fSAMPLING=fDTS/4, N=6 */
+#define LL_TIM_ETR_FILTER_FDIV4_N6             (TIM_SMCR_ETF_2 | TIM_SMCR_ETF_1)                    /*!< fSAMPLING=fDTS/4, N=6 */
 #define LL_TIM_ETR_FILTER_FDIV4_N8             (TIM_SMCR_ETF_2 | TIM_SMCR_ETF_1 | TIM_SMCR_ETF_0)   /*!< fSAMPLING=fDTS/4, N=8 */
 #define LL_TIM_ETR_FILTER_FDIV8_N6             TIM_SMCR_ETF_3                                       /*!< fSAMPLING=fDTS/8, N=8 */
 #define LL_TIM_ETR_FILTER_FDIV8_N8             (TIM_SMCR_ETF_3 | TIM_SMCR_ETF_0)                    /*!< fSAMPLING=fDTS/16, N=5 */
-#define LL_TIM_ETR_FILTER_FDIV16_N5            (TIM_SMCR_ETF_3 | TIM_SMCR_ETF_1 )                   /*!< fSAMPLING=fDTS/16, N=6 */
+#define LL_TIM_ETR_FILTER_FDIV16_N5            (TIM_SMCR_ETF_3 | TIM_SMCR_ETF_1)                    /*!< fSAMPLING=fDTS/16, N=6 */
 #define LL_TIM_ETR_FILTER_FDIV16_N6            (TIM_SMCR_ETF_3 | TIM_SMCR_ETF_1 | TIM_SMCR_ETF_0)   /*!< fSAMPLING=fDTS/16, N=8 */
-#define LL_TIM_ETR_FILTER_FDIV16_N8            (TIM_SMCR_ETF_3 | TIM_SMCR_ETF_2 )                   /*!< fSAMPLING=fDTS/16, N=5 */
-#define LL_TIM_ETR_FILTER_FDIV32_N5            (TIM_SMCR_ETF_3 | TIM_SMCR_ETF_2  | TIM_SMCR_ETF_0)  /*!< fSAMPLING=fDTS/32, N=5 */
-#define LL_TIM_ETR_FILTER_FDIV32_N6            (TIM_SMCR_ETF_3 | TIM_SMCR_ETF_2  | TIM_SMCR_ETF_1)  /*!< fSAMPLING=fDTS/32, N=6 */
+#define LL_TIM_ETR_FILTER_FDIV16_N8            (TIM_SMCR_ETF_3 | TIM_SMCR_ETF_2)                    /*!< fSAMPLING=fDTS/16, N=5 */
+#define LL_TIM_ETR_FILTER_FDIV32_N5            (TIM_SMCR_ETF_3 | TIM_SMCR_ETF_2 | TIM_SMCR_ETF_0)   /*!< fSAMPLING=fDTS/32, N=5 */
+#define LL_TIM_ETR_FILTER_FDIV32_N6            (TIM_SMCR_ETF_3 | TIM_SMCR_ETF_2 | TIM_SMCR_ETF_1)   /*!< fSAMPLING=fDTS/32, N=6 */
 #define LL_TIM_ETR_FILTER_FDIV32_N8            TIM_SMCR_ETF                                         /*!< fSAMPLING=fDTS/32, N=8 */
 /**
   * @}
@@ -843,32 +959,32 @@ typedef struct
 /** @defgroup TIM_LL_EC_BREAK_POLARITY break polarity
   * @{
   */
-#define LL_TIM_BREAK_POLARITY_LOW              ((uint32_t)0x00000000U)   /*!< Break input BRK is active low */
+#define LL_TIM_BREAK_POLARITY_LOW              0x00000000U               /*!< Break input BRK is active low */
 #define LL_TIM_BREAK_POLARITY_HIGH             TIM_BDTR_BKP              /*!< Break input BRK is active high */
 /**
   * @}
   */
 
-#if  defined(TIM_BDTR_BKF)
+#if defined(TIM_BDTR_BKF)
 /** @defgroup TIM_LL_EC_BREAK_FILTER break filter
   * @{
   */
-#define LL_TIM_BREAK_FILTER_FDIV1              ((uint32_t)0x00000000U)   /*!< No filter, BRK acts asynchronously */
-#define LL_TIM_BREAK_FILTER_FDIV1_N2           ((uint32_t)0x00010000U)   /*!< fSAMPLING=fCK_INT, N=2 */
-#define LL_TIM_BREAK_FILTER_FDIV1_N4           ((uint32_t)0x00020000U)   /*!< fSAMPLING=fCK_INT, N=4 */
-#define LL_TIM_BREAK_FILTER_FDIV1_N8           ((uint32_t)0x00030000U)   /*!< fSAMPLING=fCK_INT, N=8 */
-#define LL_TIM_BREAK_FILTER_FDIV2_N6           ((uint32_t)0x00040000U)   /*!< fSAMPLING=fDTS/2, N=6 */
-#define LL_TIM_BREAK_FILTER_FDIV2_N8           ((uint32_t)0x00050000U)   /*!< fSAMPLING=fDTS/2, N=8 */
-#define LL_TIM_BREAK_FILTER_FDIV4_N6           ((uint32_t)0x00060000U)   /*!< fSAMPLING=fDTS/4, N=6 */
-#define LL_TIM_BREAK_FILTER_FDIV4_N8           ((uint32_t)0x00070000U)   /*!< fSAMPLING=fDTS/4, N=8 */
-#define LL_TIM_BREAK_FILTER_FDIV8_N6           ((uint32_t)0x00080000U)   /*!< fSAMPLING=fDTS/8, N=6 */
-#define LL_TIM_BREAK_FILTER_FDIV8_N8           ((uint32_t)0x00090000U)   /*!< fSAMPLING=fDTS/8, N=8 */
-#define LL_TIM_BREAK_FILTER_FDIV16_N5          ((uint32_t)0x000A0000U)   /*!< fSAMPLING=fDTS/16, N=5 */
-#define LL_TIM_BREAK_FILTER_FDIV16_N6          ((uint32_t)0x000B0000U)   /*!< fSAMPLING=fDTS/16, N=6 */
-#define LL_TIM_BREAK_FILTER_FDIV16_N8          ((uint32_t)0x000C0000U)   /*!< fSAMPLING=fDTS/16, N=8 */
-#define LL_TIM_BREAK_FILTER_FDIV32_N5          ((uint32_t)0x000D0000U)   /*!< fSAMPLING=fDTS/32, N=5 */
-#define LL_TIM_BREAK_FILTER_FDIV32_N6          ((uint32_t)0x000E0000U)   /*!< fSAMPLING=fDTS/32, N=6 */
-#define LL_TIM_BREAK_FILTER_FDIV32_N8          ((uint32_t)0x000F0000U)   /*!< fSAMPLING=fDTS/32, N=8 */
+#define LL_TIM_BREAK_FILTER_FDIV1              0x00000000U   /*!< No filter, BRK acts asynchronously */
+#define LL_TIM_BREAK_FILTER_FDIV1_N2           0x00010000U   /*!< fSAMPLING=fCK_INT, N=2 */
+#define LL_TIM_BREAK_FILTER_FDIV1_N4           0x00020000U   /*!< fSAMPLING=fCK_INT, N=4 */
+#define LL_TIM_BREAK_FILTER_FDIV1_N8           0x00030000U   /*!< fSAMPLING=fCK_INT, N=8 */
+#define LL_TIM_BREAK_FILTER_FDIV2_N6           0x00040000U   /*!< fSAMPLING=fDTS/2, N=6 */
+#define LL_TIM_BREAK_FILTER_FDIV2_N8           0x00050000U   /*!< fSAMPLING=fDTS/2, N=8 */
+#define LL_TIM_BREAK_FILTER_FDIV4_N6           0x00060000U   /*!< fSAMPLING=fDTS/4, N=6 */
+#define LL_TIM_BREAK_FILTER_FDIV4_N8           0x00070000U   /*!< fSAMPLING=fDTS/4, N=8 */
+#define LL_TIM_BREAK_FILTER_FDIV8_N6           0x00080000U   /*!< fSAMPLING=fDTS/8, N=6 */
+#define LL_TIM_BREAK_FILTER_FDIV8_N8           0x00090000U   /*!< fSAMPLING=fDTS/8, N=8 */
+#define LL_TIM_BREAK_FILTER_FDIV16_N5          0x000A0000U   /*!< fSAMPLING=fDTS/16, N=5 */
+#define LL_TIM_BREAK_FILTER_FDIV16_N6          0x000B0000U   /*!< fSAMPLING=fDTS/16, N=6 */
+#define LL_TIM_BREAK_FILTER_FDIV16_N8          0x000C0000U   /*!< fSAMPLING=fDTS/16, N=8 */
+#define LL_TIM_BREAK_FILTER_FDIV32_N5          0x000D0000U   /*!< fSAMPLING=fDTS/32, N=5 */
+#define LL_TIM_BREAK_FILTER_FDIV32_N6          0x000E0000U   /*!< fSAMPLING=fDTS/32, N=6 */
+#define LL_TIM_BREAK_FILTER_FDIV32_N8          0x000F0000U   /*!< fSAMPLING=fDTS/32, N=8 */
 /**
   * @}
   */
@@ -878,7 +994,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_BREAK2_POLARITY BREAK2 POLARITY
   * @{
   */
-#define LL_TIM_BREAK2_POLARITY_LOW             ((uint32_t)0x00000000U) /*!< Break input BRK2 is active low */
+#define LL_TIM_BREAK2_POLARITY_LOW             0x00000000U             /*!< Break input BRK2 is active low */
 #define LL_TIM_BREAK2_POLARITY_HIGH            TIM_BDTR_BK2P           /*!< Break input BRK2 is active high */
 /**
   * @}
@@ -889,22 +1005,22 @@ typedef struct
 /** @defgroup TIM_LL_EC_BREAK2_FILTER BREAK2 FILTER
   * @{
   */
-#define LL_TIM_BREAK2_FILTER_FDIV1             ((uint32_t)0x00000000U)   /*!< No filter, BRK acts asynchronously */
-#define LL_TIM_BREAK2_FILTER_FDIV1_N2          ((uint32_t)0x00100000U)   /*!< fSAMPLING=fCK_INT, N=2 */
-#define LL_TIM_BREAK2_FILTER_FDIV1_N4          ((uint32_t)0x00200000U)   /*!< fSAMPLING=fCK_INT, N=4 */
-#define LL_TIM_BREAK2_FILTER_FDIV1_N8          ((uint32_t)0x00300000U)   /*!< fSAMPLING=fCK_INT, N=8 */
-#define LL_TIM_BREAK2_FILTER_FDIV2_N6          ((uint32_t)0x00400000U)   /*!< fSAMPLING=fDTS/2, N=6 */
-#define LL_TIM_BREAK2_FILTER_FDIV2_N8          ((uint32_t)0x00500000U)   /*!< fSAMPLING=fDTS/2, N=8 */
-#define LL_TIM_BREAK2_FILTER_FDIV4_N6          ((uint32_t)0x00600000U)   /*!< fSAMPLING=fDTS/4, N=6 */
-#define LL_TIM_BREAK2_FILTER_FDIV4_N8          ((uint32_t)0x00700000U)   /*!< fSAMPLING=fDTS/4, N=8 */
-#define LL_TIM_BREAK2_FILTER_FDIV8_N6          ((uint32_t)0x00800000U)   /*!< fSAMPLING=fDTS/8, N=6 */
-#define LL_TIM_BREAK2_FILTER_FDIV8_N8          ((uint32_t)0x00900000U)   /*!< fSAMPLING=fDTS/8, N=8 */
-#define LL_TIM_BREAK2_FILTER_FDIV16_N5         ((uint32_t)0x00A00000U)   /*!< fSAMPLING=fDTS/16, N=5 */
-#define LL_TIM_BREAK2_FILTER_FDIV16_N6         ((uint32_t)0x00B00000U)   /*!< fSAMPLING=fDTS/16, N=6 */
-#define LL_TIM_BREAK2_FILTER_FDIV16_N8         ((uint32_t)0x00C00000U)   /*!< fSAMPLING=fDTS/16, N=8 */
-#define LL_TIM_BREAK2_FILTER_FDIV32_N5         ((uint32_t)0x00D00000U)   /*!< fSAMPLING=fDTS/32, N=5 */
-#define LL_TIM_BREAK2_FILTER_FDIV32_N6         ((uint32_t)0x00E00000U)   /*!< fSAMPLING=fDTS/32, N=6 */
-#define LL_TIM_BREAK2_FILTER_FDIV32_N8         ((uint32_t)0x00F00000U)   /*!< fSAMPLING=fDTS/32, N=8 */
+#define LL_TIM_BREAK2_FILTER_FDIV1             0x00000000U   /*!< No filter, BRK acts asynchronously */
+#define LL_TIM_BREAK2_FILTER_FDIV1_N2          0x00100000U   /*!< fSAMPLING=fCK_INT, N=2 */
+#define LL_TIM_BREAK2_FILTER_FDIV1_N4          0x00200000U   /*!< fSAMPLING=fCK_INT, N=4 */
+#define LL_TIM_BREAK2_FILTER_FDIV1_N8          0x00300000U   /*!< fSAMPLING=fCK_INT, N=8 */
+#define LL_TIM_BREAK2_FILTER_FDIV2_N6          0x00400000U   /*!< fSAMPLING=fDTS/2, N=6 */
+#define LL_TIM_BREAK2_FILTER_FDIV2_N8          0x00500000U   /*!< fSAMPLING=fDTS/2, N=8 */
+#define LL_TIM_BREAK2_FILTER_FDIV4_N6          0x00600000U   /*!< fSAMPLING=fDTS/4, N=6 */
+#define LL_TIM_BREAK2_FILTER_FDIV4_N8          0x00700000U   /*!< fSAMPLING=fDTS/4, N=8 */
+#define LL_TIM_BREAK2_FILTER_FDIV8_N6          0x00800000U   /*!< fSAMPLING=fDTS/8, N=6 */
+#define LL_TIM_BREAK2_FILTER_FDIV8_N8          0x00900000U   /*!< fSAMPLING=fDTS/8, N=8 */
+#define LL_TIM_BREAK2_FILTER_FDIV16_N5         0x00A00000U   /*!< fSAMPLING=fDTS/16, N=5 */
+#define LL_TIM_BREAK2_FILTER_FDIV16_N6         0x00B00000U   /*!< fSAMPLING=fDTS/16, N=6 */
+#define LL_TIM_BREAK2_FILTER_FDIV16_N8         0x00C00000U   /*!< fSAMPLING=fDTS/16, N=8 */
+#define LL_TIM_BREAK2_FILTER_FDIV32_N5         0x00D00000U   /*!< fSAMPLING=fDTS/32, N=5 */
+#define LL_TIM_BREAK2_FILTER_FDIV32_N6         0x00E00000U   /*!< fSAMPLING=fDTS/32, N=6 */
+#define LL_TIM_BREAK2_FILTER_FDIV32_N8         0x00F00000U   /*!< fSAMPLING=fDTS/32, N=8 */
 /**
   * @}
   */
@@ -913,7 +1029,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_OSSI OSSI
   * @{
   */
-#define LL_TIM_OSSI_DISABLE                    ((uint32_t)0x00000000U) /*!< When inactive, OCx/OCxN outputs are disabled */
+#define LL_TIM_OSSI_DISABLE                    0x00000000U             /*!< When inactive, OCx/OCxN outputs are disabled */
 #define LL_TIM_OSSI_ENABLE                     TIM_BDTR_OSSI           /*!< When inactive, OxC/OCxN outputs are first forced with their inactive level then forced to their idle level after the deadtime */
 /**
   * @}
@@ -922,7 +1038,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_OSSR OSSR
   * @{
   */
-#define LL_TIM_OSSR_DISABLE                    ((uint32_t)0x00000000U) /*!< When inactive, OCx/OCxN outputs are disabled */
+#define LL_TIM_OSSR_DISABLE                    0x00000000U             /*!< When inactive, OCx/OCxN outputs are disabled */
 #define LL_TIM_OSSR_ENABLE                     TIM_BDTR_OSSR           /*!< When inactive, OC/OCN outputs are enabled with their inactive level as soon as CCxE=1 or CCxNE=1 */
 /**
   * @}
@@ -932,7 +1048,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_DMABURST_BASEADDR DMA Burst Base Address
   * @{
   */
-#define LL_TIM_DMABURST_BASEADDR_CR1           ((uint32_t)0x00000000U)                                          /*!< TIMx_CR1 register is the DMA base address for DMA burst */
+#define LL_TIM_DMABURST_BASEADDR_CR1           0x00000000U                                                      /*!< TIMx_CR1 register is the DMA base address for DMA burst */
 #define LL_TIM_DMABURST_BASEADDR_CR2           TIM_DCR_DBA_0                                                    /*!< TIMx_CR2 register is the DMA base address for DMA burst */
 #define LL_TIM_DMABURST_BASEADDR_SMCR          TIM_DCR_DBA_1                                                    /*!< TIMx_SMCR register is the DMA base address for DMA burst */
 #define LL_TIM_DMABURST_BASEADDR_DIER          (TIM_DCR_DBA_1 |  TIM_DCR_DBA_0)                                 /*!< TIMx_DIER register is the DMA base address for DMA burst */
@@ -963,7 +1079,7 @@ typedef struct
 /** @defgroup TIM_LL_EC_DMABURST_LENGTH DMA Burst Length
   * @{
   */
-#define LL_TIM_DMABURST_LENGTH_1TRANSFER       ((uint32_t)0x00000000U)                                         /*!< Transfer is done to 1 register starting from the DMA burst base address */
+#define LL_TIM_DMABURST_LENGTH_1TRANSFER       0x00000000U                                                     /*!< Transfer is done to 1 register starting from the DMA burst base address */
 #define LL_TIM_DMABURST_LENGTH_2TRANSFERS      TIM_DCR_DBL_0                                                   /*!< Transfer is done to 2 registers starting from the DMA burst base address */
 #define LL_TIM_DMABURST_LENGTH_3TRANSFERS      TIM_DCR_DBL_1                                                   /*!< Transfer is done to 3 registers starting from the DMA burst base address */
 #define LL_TIM_DMABURST_LENGTH_4TRANSFERS      (TIM_DCR_DBL_1 |  TIM_DCR_DBL_0)                                /*!< Transfer is done to 4 registers starting from the DMA burst base address */
@@ -987,33 +1103,33 @@ typedef struct
 
 #if defined(TIM1)
 /** @defgroup TIM_LL_EC_TIM1_ETR_ADC1_RMP  TIM1 External Trigger ADC1 Remap
-* @{
-*/
-#define LL_TIM_TIM1_ETR_ADC1_RMP_NC   ((uint32_t)0x00000000U | TIM1_OR_RMP_MASK)   /*!< TIM1_ETR is not connected to ADC1 analog watchdog x */
-#define LL_TIM_TIM1_ETR_ADC1_RMP_AWD1 (TIM1_OR_ETR_RMP_0 | TIM1_OR_RMP_MASK) /*!< TIM1_ETR is connected to ADC1 analog watchdog 1 */
-#define LL_TIM_TIM1_ETR_ADC1_RMP_AWD2 (TIM1_OR_ETR_RMP_1 | TIM1_OR_RMP_MASK) /*!< TIM1_ETR is connected to ADC1 analog watchdog 2 */
+  * @{
+  */
+#define LL_TIM_TIM1_ETR_ADC1_RMP_NC   TIM1_OR_RMP_MASK                                            /*!< TIM1_ETR is not connected to ADC1 analog watchdog x */
+#define LL_TIM_TIM1_ETR_ADC1_RMP_AWD1 (TIM1_OR_ETR_RMP_0 | TIM1_OR_RMP_MASK)                      /*!< TIM1_ETR is connected to ADC1 analog watchdog 1 */
+#define LL_TIM_TIM1_ETR_ADC1_RMP_AWD2 (TIM1_OR_ETR_RMP_1 | TIM1_OR_RMP_MASK)                      /*!< TIM1_ETR is connected to ADC1 analog watchdog 2 */
 #define LL_TIM_TIM1_ETR_ADC1_RMP_AWD3 (TIM1_OR_ETR_RMP_0 | TIM1_OR_ETR_RMP_1| TIM1_OR_RMP_MASK)   /*!< TIM1_ETR is connected to ADC1 analog watchdog 3 */
 /**
   * @}
   */
 #if defined(ADC4)
-/** @defgroup TIM_LL_EC_TIM1_ETR_ADC3_RMP  TIM1 External Trigger ADC4 Remap
-* @{
-*/
-#define LL_TIM_TIM1_ETR_ADC4_RMP_NC   ((uint32_t)0x00000000U | TIM1_OR_RMP_MASK)   /*!< TIM1_ETR is not connected to ADC4 analog watchdog  x*/
-#define LL_TIM_TIM1_ETR_ADC4_RMP_AWD1 (TIM1_OR_ETR_RMP_2 | TIM1_OR_RMP_MASK) /*!< TIM1_ETR is connected to ADC4 analog watchdog 1 */
-#define LL_TIM_TIM1_ETR_ADC4_RMP_AWD2 (TIM1_OR_ETR_RMP_3 | TIM1_OR_RMP_MASK) /*!< TIM1_ETR is connected to ADC4 analog watchdog 2 */
+/** @defgroup TIM_LL_EC_TIM1_ETR_ADC4_RMP  TIM1 External Trigger ADC4 Remap
+  * @{
+  */
+#define LL_TIM_TIM1_ETR_ADC4_RMP_NC   TIM1_OR_RMP_MASK                                             /*!< TIM1_ETR is not connected to ADC4 analog watchdog  x*/
+#define LL_TIM_TIM1_ETR_ADC4_RMP_AWD1 (TIM1_OR_ETR_RMP_2 | TIM1_OR_RMP_MASK)                       /*!< TIM1_ETR is connected to ADC4 analog watchdog 1 */
+#define LL_TIM_TIM1_ETR_ADC4_RMP_AWD2 (TIM1_OR_ETR_RMP_3 | TIM1_OR_RMP_MASK)                       /*!< TIM1_ETR is connected to ADC4 analog watchdog 2 */
 #define LL_TIM_TIM1_ETR_ADC4_RMP_AWD3 (TIM1_OR_ETR_RMP_3 | TIM1_OR_ETR_RMP_2 | TIM1_OR_RMP_MASK)   /*!< TIM1_ETR is connected to ADC4 analog watchdog 3 */
 /**
   * @}
   */
 #else
 /** @defgroup TIM_LL_EC_TIM1_ETR_ADC2_RMP  TIM1 External Trigger ADC3 Remap
-* @{
-*/
-#define LL_TIM_TIM1_ETR_ADC2_RMP_NC   ((uint32_t)0x00000000U | TIM1_OR_RMP_MASK)   /*!< TIM1_ETR is not connected to ADC2 analog watchdog  x*/
-#define LL_TIM_TIM1_ETR_ADC2_RMP_AWD1 (TIM1_OR_ETR_RMP_2 | TIM1_OR_RMP_MASK) /*!< TIM1_ETR is connected to ADC2 analog watchdog 1 */
-#define LL_TIM_TIM1_ETR_ADC2_RMP_AWD2 (TIM1_OR_ETR_RMP_3 | TIM1_OR_RMP_MASK) /*!< TIM1_ETR is connected to ADC2 analog watchdog 2 */
+  * @{
+  */
+#define LL_TIM_TIM1_ETR_ADC2_RMP_NC   TIM1_OR_RMP_MASK                                             /*!< TIM1_ETR is not connected to ADC2 analog watchdog  x*/
+#define LL_TIM_TIM1_ETR_ADC2_RMP_AWD1 (TIM1_OR_ETR_RMP_2 | TIM1_OR_RMP_MASK)                       /*!< TIM1_ETR is connected to ADC2 analog watchdog 1 */
+#define LL_TIM_TIM1_ETR_ADC2_RMP_AWD2 (TIM1_OR_ETR_RMP_3 | TIM1_OR_RMP_MASK)                       /*!< TIM1_ETR is connected to ADC2 analog watchdog 2 */
 #define LL_TIM_TIM1_ETR_ADC2_RMP_AWD3 (TIM1_OR_ETR_RMP_3 | TIM1_OR_ETR_RMP_2 | TIM1_OR_RMP_MASK)   /*!< TIM1_ETR is connected to ADC2 analog watchdog 3 */
 /**
   * @}
@@ -1022,22 +1138,22 @@ typedef struct
 #endif /* TIM1 */
 #if defined(TIM8)
 /** @defgroup TIM_LL_EC_TIM8_ETR_ADC2_RMP  TIM8 External Trigger ADC2 Remap
-* @{
-*/
-#define LL_TIM_TIM8_ETR_ADC2_RMP_NC   ((uint32_t)0x00000000U | TIM8_OR_RMP_MASK)   /*!< TIM8_ETR is not connected to ADC2 analog watchdog x */
-#define LL_TIM_TIM8_ETR_ADC2_RMP_AWD1 (TIM8_OR_ETR_RMP_0 | TIM8_OR_RMP_MASK) /*!< TIM8_ETR is connected to ADC2 analog watchdog */
-#define LL_TIM_TIM8_ETR_ADC2_RMP_AWD2 (TIM8_OR_ETR_RMP_1 | TIM8_OR_RMP_MASK) /*!< TIM8_ETR is connected to ADC2 analog watchdog 2 */
+  * @{
+  */
+#define LL_TIM_TIM8_ETR_ADC2_RMP_NC   TIM8_OR_RMP_MASK                                             /*!< TIM8_ETR is not connected to ADC2 analog watchdog x */
+#define LL_TIM_TIM8_ETR_ADC2_RMP_AWD1 (TIM8_OR_ETR_RMP_0 | TIM8_OR_RMP_MASK)                       /*!< TIM8_ETR is connected to ADC2 analog watchdog */
+#define LL_TIM_TIM8_ETR_ADC2_RMP_AWD2 (TIM8_OR_ETR_RMP_1 | TIM8_OR_RMP_MASK)                       /*!< TIM8_ETR is connected to ADC2 analog watchdog 2 */
 #define LL_TIM_TIM8_ETR_ADC2_RMP_AWD3 (TIM8_OR_ETR_RMP_0 | TIM8_OR_ETR_RMP_1 | TIM8_OR_RMP_MASK)   /*!< TIM8_ETR is connected to ADC2 analog watchdog 3 */
 /**
   * @}
   */
 
 /** @defgroup TIM_LL_EC_TIM8_ETR_ADC3_RMP  TIM8 External Trigger ADC3 Remap
-* @{
-*/
-#define LL_TIM_TIM8_ETR_ADC3_RMP_NC   ((uint32_t)0x00000000U | TIM8_OR_RMP_MASK)   /*!< TIM8_ETR is not connected to ADC3 analog watchdog x */
-#define LL_TIM_TIM8_ETR_ADC3_RMP_AWD1 (TIM8_OR_ETR_RMP_2 | TIM8_OR_RMP_MASK) /*!< TIM8_ETR is connected to ADC3 analog watchdog 1 */
-#define LL_TIM_TIM8_ETR_ADC3_RMP_AWD2 (TIM8_OR_ETR_RMP_3 | TIM8_OR_RMP_MASK) /*!< TIM8_ETR is connected to ADC3 analog watchdog 2 */
+  * @{
+  */
+#define LL_TIM_TIM8_ETR_ADC3_RMP_NC   TIM8_OR_RMP_MASK                                             /*!< TIM8_ETR is not connected to ADC3 analog watchdog x */
+#define LL_TIM_TIM8_ETR_ADC3_RMP_AWD1 (TIM8_OR_ETR_RMP_2 | TIM8_OR_RMP_MASK)                       /*!< TIM8_ETR is connected to ADC3 analog watchdog 1 */
+#define LL_TIM_TIM8_ETR_ADC3_RMP_AWD2 (TIM8_OR_ETR_RMP_3 | TIM8_OR_RMP_MASK)                       /*!< TIM8_ETR is connected to ADC3 analog watchdog 2 */
 #define LL_TIM_TIM8_ETR_ADC3_RMP_AWD3 (TIM8_OR_ETR_RMP_2 | TIM8_OR_ETR_RMP_3 | TIM8_OR_RMP_MASK)   /*!< TIM8_ETR is connected to ADC3 analog watchdog 3 */
 /**
   * @}
@@ -1045,34 +1161,34 @@ typedef struct
 #endif /* TIM8 */
 #if defined(TIM16)
 /** @defgroup TIM_LL_EC_TIM16_TI1_RMP  TIM16 External Input Ch1 Remap
-* @{
-*/
-#define LL_TIM_TIM16_TI1_RMP_GPIO ((uint32_t)0x00000000U)                                          /*!< TIM16 input capture 1 is connected to GPIO */
-#define LL_TIM_TIM16_TI1_RMP_LSI  (TIM16_OR_TI1_RMP_0 | TIM16_OR_RMP_MASK)                          /*!< TIM16 input capture 1 is connected to LSI */
-#define LL_TIM_TIM16_TI1_RMP_LSE  (TIM16_OR_TI1_RMP_1 | TIM16_OR_RMP_MASK)                          /*!< TIM16 input capture 1 is connected to LSE */
-#define LL_TIM_TIM16_TI1_RMP_RTC  (TIM16_OR_TI1_RMP_1 | TIM16_OR_TI1_RMP_0 | TIM16_OR_RMP_MASK)    /*!< TIM16 input capture 1 is connected to RTC wakeup interrupt */
+  * @{
+  */
+#define LL_TIM_TIM16_TI1_RMP_GPIO    0x00000000U                                                   /*!< TIM16 input capture 1 is connected to GPIO */
+#define LL_TIM_TIM16_TI1_RMP_RTC     (TIM16_OR_TI1_RMP_0 | TIM16_OR_RMP_MASK)                      /*!< TIM16 input capture 1 is connected to RTC wakeup interrupt */
+#define LL_TIM_TIM16_TI1_RMP_HSE_32  (TIM16_OR_TI1_RMP_1 | TIM16_OR_RMP_MASK)                      /*!< TIM16 input capture 1 is connected to HSE/32 clock */
+#define LL_TIM_TIM16_TI1_RMP_MCO     (TIM16_OR_TI1_RMP_1 | TIM16_OR_TI1_RMP_0 | TIM16_OR_RMP_MASK) /*!< TIM16 input capture 1 is connected to MCO */
 /**
   * @}
   */
 #endif /* TIM16 */
 #if defined(TIM20)
 /** @defgroup TIM_LL_EC_TIM20_ETR_ADC3_RMP  TIM20 External Trigger ADC3 Remap
-* @{
-*/
-#define LL_TIM_TIM20_ETR_ADC3_RMP_NC   ((uint32_t)0x00000000U | TIM20_OR_RMP_MASK)   /*!< TIM20_ETR is not connected to ADC3 analog watchdog x */
-#define LL_TIM_TIM20_ETR_ADC3_RMP_AWD1 (TIM20_OR_ETR_RMP_0 | TIM20_OR_RMP_MASK) /*!< TIM20_ETR is connected to ADC3 analog watchdog */
-#define LL_TIM_TIM20_ETR_ADC3_RMP_AWD2 (TIM20_OR_ETR_RMP_1 | TIM20_OR_RMP_MASK) /*!< TIM20_ETR is connected to ADC3 analog watchdog 2 */
+  * @{
+  */
+#define LL_TIM_TIM20_ETR_ADC3_RMP_NC   TIM20_OR_RMP_MASK                                               /*!< TIM20_ETR is not connected to ADC3 analog watchdog x */
+#define LL_TIM_TIM20_ETR_ADC3_RMP_AWD1 (TIM20_OR_ETR_RMP_0 | TIM20_OR_RMP_MASK)                        /*!< TIM20_ETR is connected to ADC3 analog watchdog */
+#define LL_TIM_TIM20_ETR_ADC3_RMP_AWD2 (TIM20_OR_ETR_RMP_1 | TIM20_OR_RMP_MASK)                        /*!< TIM20_ETR is connected to ADC3 analog watchdog 2 */
 #define LL_TIM_TIM20_ETR_ADC3_RMP_AWD3 (TIM20_OR_ETR_RMP_0 | TIM20_OR_ETR_RMP_1 | TIM20_OR_RMP_MASK)   /*!< TIM20_ETR is connected to ADC3 analog watchdog 3 */
 /**
   * @}
   */
 
 /** @defgroup TIM_LL_EC_TIM20_ETR_ADC4_RMP  TIM20 External Trigger ADC4 Remap
-* @{
-*/
-#define LL_TIM_TIM20_ETR_ADC4_RMP_NC   ((uint32_t)0x00000000U | TIM20_OR_RMP_MASK)   /*!< TIM20_ETR is not connected to ADC4 analog watchdog x */
-#define LL_TIM_TIM20_ETR_ADC4_RMP_AWD1 (TIM20_OR_ETR_RMP_2 | TIM20_OR_RMP_MASK) /*!< TIM20_ETR is connected to ADC4 analog watchdog 1 */
-#define LL_TIM_TIM20_ETR_ADC4_RMP_AWD2 (TIM20_OR_ETR_RMP_3 | TIM20_OR_RMP_MASK) /*!< TIM20_ETR is connected to ADC4 analog watchdog 2 */
+  * @{
+  */
+#define LL_TIM_TIM20_ETR_ADC4_RMP_NC   TIM20_OR_RMP_MASK                                               /*!< TIM20_ETR is not connected to ADC4 analog watchdog x */
+#define LL_TIM_TIM20_ETR_ADC4_RMP_AWD1 (TIM20_OR_ETR_RMP_2 | TIM20_OR_RMP_MASK)                        /*!< TIM20_ETR is connected to ADC4 analog watchdog 1 */
+#define LL_TIM_TIM20_ETR_ADC4_RMP_AWD2 (TIM20_OR_ETR_RMP_3 | TIM20_OR_RMP_MASK)                        /*!< TIM20_ETR is connected to ADC4 analog watchdog 2 */
 #define LL_TIM_TIM20_ETR_ADC4_RMP_AWD3 (TIM20_OR_ETR_RMP_2 | TIM20_OR_ETR_RMP_3 | TIM20_OR_RMP_MASK)   /*!< TIM20_ETR is connected to ADC4 analog watchdog 3 */
 /**
   * @}
@@ -1080,26 +1196,27 @@ typedef struct
 #endif /* TIM20 */
 #if defined(TIM14)
 /** @defgroup TIM_LL_EC_TIM14_TI1_RMP  TIM14 Timer Input1 Remap
-* @{
-*/
-#define LL_TIM_TIM14_TI1_RMP_GPIO   ((uint32_t)0x00000000U | TIM14_OR_RMP_MASK)   /*!< TIM14_TI1 is connected to GPIO */
-#define LL_TIM_TIM14_TI1_RMP_RTC_CLK (TIM14_OR_TI1_RMP_0 | TIM14_OR_RMP_MASK) /*!< TIM14_TI1 is connected to RTC Clock */
-#define LL_TIM_TIM14_TI1_RMP_HSE (TIM14_OR_TI1_RMP_1 | TIM14_OR_RMP_MASK) /*!< TIM14_TI1 is connected to HSE/32 */
-#define LL_TIM_TIM14_TI1_RMP_MCO (TIM14_OR_TI1_RMP_0 | TIM14_OR_TI1_RMP_1 | TIM14_OR_RMP_MASK)   /*!< TIM14_TI1 is connected to MCO */
+  * @{
+  */
+#define LL_TIM_TIM14_TI1_RMP_GPIO    TIM14_OR_RMP_MASK                                               /*!< TIM14_TI1 is connected to GPIO */
+#define LL_TIM_TIM14_TI1_RMP_RTC_CLK (TIM14_OR_TI1_RMP_0 | TIM14_OR_RMP_MASK)                        /*!< TIM14_TI1 is connected to RTC Clock */
+#define LL_TIM_TIM14_TI1_RMP_HSE     (TIM14_OR_TI1_RMP_1 | TIM14_OR_RMP_MASK)                        /*!< TIM14_TI1 is connected to HSE/32 */
+#define LL_TIM_TIM14_TI1_RMP_MCO     (TIM14_OR_TI1_RMP_0 | TIM14_OR_TI1_RMP_1 | TIM14_OR_RMP_MASK)   /*!< TIM14_TI1 is connected to MCO */
 /**
   * @}
   */
 #endif /* TIM14 */
 
+#if defined(TIM_SMCR_OCCS)
 /** @defgroup TIM_LL_EC_OCREF_CLR_INT OCREF clear input selection
   * @{
   */
-#define LL_TIM_OCREF_CLR_INT_OCREF_CLR     ((uint32_t)0x00000000U ) /*!< OCREF_CLR_INT is connected to the OCREF_CLR input */
-#define LL_TIM_OCREF_CLR_INT_ETR           TIM_SMCR_OCCS            /*!< OCREF_CLR_INT is connected to ETRF */
+#define LL_TIM_OCREF_CLR_INT_OCREF_CLR     0x00000000U         /*!< OCREF_CLR_INT is connected to the OCREF_CLR input */
+#define LL_TIM_OCREF_CLR_INT_ETR           TIM_SMCR_OCCS       /*!< OCREF_CLR_INT is connected to ETRF */
 /**
   * @}
   */
-
+#endif /* TIM_SMCR_OCCS*/
 
 /**
   * @}
@@ -1222,7 +1339,7 @@ typedef struct
   * @retval Input capture prescaler ratio (1, 2, 4 or 8)
   */
 #define __LL_TIM_GET_ICPSC_RATIO(__ICPSC__)  \
-   ((uint32_t)((uint32_t)0x01U << (((__ICPSC__) >> 16U) >> TIM_CCMR1_IC1PSC_Pos)))
+   ((uint32_t)(0x01U << (((__ICPSC__) >> 16U) >> TIM_CCMR1_IC1PSC_Pos)))
 
 
 /**
@@ -1283,7 +1400,7 @@ __STATIC_INLINE uint32_t LL_TIM_IsEnabledCounter(TIM_TypeDef *TIMx)
   */
 __STATIC_INLINE void LL_TIM_EnableUpdateEvent(TIM_TypeDef *TIMx)
 {
-  SET_BIT(TIMx->CR1, TIM_CR1_UDIS);
+  CLEAR_BIT(TIMx->CR1, TIM_CR1_UDIS);
 }
 
 /**
@@ -1294,7 +1411,7 @@ __STATIC_INLINE void LL_TIM_EnableUpdateEvent(TIM_TypeDef *TIMx)
   */
 __STATIC_INLINE void LL_TIM_DisableUpdateEvent(TIM_TypeDef *TIMx)
 {
-  CLEAR_BIT(TIMx->CR1, TIM_CR1_UDIS);
+  SET_BIT(TIMx->CR1, TIM_CR1_UDIS);
 }
 
 /**
@@ -1861,7 +1978,7 @@ __STATIC_INLINE uint32_t LL_TIM_CC_IsEnabledChannel(TIM_TypeDef *TIMx, uint32_t 
   * @param  Configuration This parameter must be a combination of all the following values:
   *         @arg @ref LL_TIM_OCPOLARITY_HIGH or @ref LL_TIM_OCPOLARITY_LOW
   *         @arg @ref LL_TIM_OCIDLESTATE_LOW or @ref LL_TIM_OCIDLESTATE_HIGH
-  * @note   CH5 and CH6 channels are not available for all F3 devices
+  * @note   CH3 CH4 CH5 and CH6 channels are not available for all F3 devices
   * @retval None
   */
 __STATIC_INLINE void LL_TIM_OC_ConfigOutput(TIM_TypeDef *TIMx, uint32_t Channel, uint32_t Configuration)
@@ -3400,7 +3517,13 @@ __STATIC_INLINE void LL_TIM_ConfigETR(TIM_TypeDef *TIMx, uint32_t ETRPolarity, u
   */
 __STATIC_INLINE void LL_TIM_EnableBRK(TIM_TypeDef *TIMx)
 {
+  __IO uint32_t tmpreg; 
+
   SET_BIT(TIMx->BDTR, TIM_BDTR_BKE);
+
+  /* Note: Any write operation to this bit takes a delay of 1 APB clock cycle to become effective. */
+  tmpreg = READ_REG(TIMx->BDTR);
+  (void)(tmpreg);
 }
 
 /**
@@ -3413,10 +3536,16 @@ __STATIC_INLINE void LL_TIM_EnableBRK(TIM_TypeDef *TIMx)
   */
 __STATIC_INLINE void LL_TIM_DisableBRK(TIM_TypeDef *TIMx)
 {
+  __IO uint32_t tmpreg;
+
   CLEAR_BIT(TIMx->BDTR, TIM_BDTR_BKE);
+
+  /* Note: Any write operation to this bit takes a delay of 1 APB clock cycle to become effective. */
+  tmpreg = READ_REG(TIMx->BDTR);
+  (void)(tmpreg);
 }
 
-#if  defined(TIM_BDTR_BKF)
+#if defined(TIM_BDTR_BKF)
 /**
   * @brief  Configure the break input.
   * @note Macro @ref IS_TIM_BREAK_INSTANCE(TIMx) can be used to check whether or not
@@ -3465,7 +3594,13 @@ __STATIC_INLINE void LL_TIM_ConfigBRK(TIM_TypeDef *TIMx, uint32_t BreakPolarity,
   */
 __STATIC_INLINE void LL_TIM_ConfigBRK(TIM_TypeDef *TIMx, uint32_t BreakPolarity)
 {
+  __IO uint32_t tmpreg;
+
   MODIFY_REG(TIMx->BDTR, TIM_BDTR_BKP, BreakPolarity);
+
+  /* Note: Any write operation to this bit takes a delay of 1 APB clock cycle to become effective. */
+  tmpreg = READ_REG(TIMx->BDTR);
+  (void)(tmpreg);
 }
 
 #endif /* TIM_BDTR_BKF */
@@ -3802,10 +3937,10 @@ __STATIC_INLINE void LL_TIM_SetRemap(TIM_TypeDef *TIMx, uint32_t Remap)
   * @{
   */
 /**
-  * @brief  Set the OCREF clear source
+  * @brief  Set the OCREF clear input source
   * @note The OCxREF signal of a given channel can be cleared when a high level is applied on the OCREF_CLR_INPUT
   * @note This function can only be used in Output compare and PWM modes.
-  * @rmtoll SMCR          OCCS           LL_TIM_SetOCRefClearInputSource
+  * @rmtoll SMCR          OCCS                LL_TIM_SetOCRefClearInputSource
   * @param  TIMx Timer instance
   * @param  OCRefClearInputSource This parameter can be one of the following values:
   *         @arg @ref LL_TIM_OCREF_CLR_INT_OCREF_CLR
@@ -3819,8 +3954,8 @@ __STATIC_INLINE void LL_TIM_SetOCRefClearInputSource(TIM_TypeDef *TIMx, uint32_t
 /**
   * @}
   */
-
 #endif /* TIM_SMCR_OCCS */
+
 /** @defgroup TIM_LL_EF_FLAG_Management FLAG-Management
   * @{
   */
@@ -4797,6 +4932,8 @@ void LL_TIM_ENCODER_StructInit(LL_TIM_ENCODER_InitTypeDef *TIM_EncoderInitStruct
 ErrorStatus LL_TIM_ENCODER_Init(TIM_TypeDef *TIMx, LL_TIM_ENCODER_InitTypeDef *TIM_EncoderInitStruct);
 void LL_TIM_HALLSENSOR_StructInit(LL_TIM_HALLSENSOR_InitTypeDef *TIM_HallSensorInitStruct);
 ErrorStatus LL_TIM_HALLSENSOR_Init(TIM_TypeDef *TIMx, LL_TIM_HALLSENSOR_InitTypeDef *TIM_HallSensorInitStruct);
+void LL_TIM_BDTR_StructInit(LL_TIM_BDTR_InitTypeDef *TIM_BDTRInitStruct);
+ErrorStatus LL_TIM_BDTR_Init(TIM_TypeDef *TIMx, LL_TIM_BDTR_InitTypeDef *TIM_BDTRInitStruct);
 /**
   * @}
   */
@@ -4821,5 +4958,4 @@ ErrorStatus LL_TIM_HALLSENSOR_Init(TIM_TypeDef *TIMx, LL_TIM_HALLSENSOR_InitType
 #endif
 
 #endif /* __STM32F3xx_LL_TIM_H */
-
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

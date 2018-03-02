@@ -2,8 +2,6 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_pwr.h
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
   * @brief   Header file of PWR HAL module.
   ******************************************************************************
   * @attention
@@ -64,9 +62,9 @@
   * @{
   */
 
-#define PWR_WAKEUP_PIN1                 ((uint32_t)PWR_CSR_EWUP1)   /*!< Wakeup pin 1 */
-#define PWR_WAKEUP_PIN2                 ((uint32_t)PWR_CSR_EWUP2)   /*!< Wakeup pin 2 */
-#define PWR_WAKEUP_PIN3                 ((uint32_t)PWR_CSR_EWUP3)   /*!< Wakeup pin 3 */
+#define PWR_WAKEUP_PIN1                 ((uint32_t)PWR_CSR_EWUP1)   /*!< Wakeup pin 1U */
+#define PWR_WAKEUP_PIN2                 ((uint32_t)PWR_CSR_EWUP2)   /*!< Wakeup pin 2U */
+#define PWR_WAKEUP_PIN3                 ((uint32_t)PWR_CSR_EWUP3)   /*!< Wakeup pin 3U */
 /**
   * @}
   */
@@ -74,7 +72,7 @@
 /** @defgroup PWR_Regulator_state_in_STOP_mode PWR Regulator state in STOP mode
   * @{
   */
-#define PWR_MAINREGULATOR_ON         ((uint32_t)0x00000000) /*!< Voltage regulator on during STOP mode                */
+#define PWR_MAINREGULATOR_ON         (0x00000000U) /*!< Voltage regulator on during STOP mode                */
 #define PWR_LOWPOWERREGULATOR_ON     PWR_CR_LPDS            /*!< Voltage regulator in low-power mode during STOP mode */
 /**
   * @}
@@ -83,8 +81,8 @@
 /** @defgroup PWR_SLEEP_mode_entry PWR SLEEP mode entry
   * @{
   */
-#define PWR_SLEEPENTRY_WFI              ((uint8_t)0x01)   /*!< Wait For Interruption instruction to enter SLEEP mode */
-#define PWR_SLEEPENTRY_WFE              ((uint8_t)0x02)   /*!< Wait For Event instruction to enter SLEEP mode        */
+#define PWR_SLEEPENTRY_WFI              ((uint8_t)0x01U)   /*!< Wait For Interruption instruction to enter SLEEP mode */
+#define PWR_SLEEPENTRY_WFE              ((uint8_t)0x02U)   /*!< Wait For Event instruction to enter SLEEP mode        */
 /**
   * @}
   */
@@ -92,8 +90,8 @@
 /** @defgroup PWR_STOP_mode_entry PWR STOP mode entry
   * @{
   */
-#define PWR_STOPENTRY_WFI               ((uint8_t)0x01)   /*!< Wait For Interruption instruction to enter STOP mode */
-#define PWR_STOPENTRY_WFE               ((uint8_t)0x02)   /*!< Wait For Event instruction to enter STOP mode        */
+#define PWR_STOPENTRY_WFI               ((uint8_t)0x01U)   /*!< Wait For Interruption instruction to enter STOP mode */
+#define PWR_STOPENTRY_WFE               ((uint8_t)0x02U)   /*!< Wait For Event instruction to enter STOP mode        */
 /**
   * @}
   */
@@ -119,7 +117,7 @@
   */
 
 /** @brief  Check PWR flag is set or not.
-  * @param  __FLAG__: specifies the flag to check.
+  * @param  __FLAG__ specifies the flag to check.
   *           This parameter can be one of the following values:
   *            @arg PWR_FLAG_WU: Wake Up flag. This flag indicates that a wakeup event
   *                  was received from the WKUP pin or from the RTC alarm (Alarm A
@@ -139,12 +137,12 @@
 #define __HAL_PWR_GET_FLAG(__FLAG__) ((PWR->CSR & (__FLAG__)) == (__FLAG__))
 
 /** @brief  Clear the PWR's pending flags.
-  * @param  __FLAG__: specifies the flag to clear.
+  * @param  __FLAG__ specifies the flag to clear.
   *          This parameter can be one of the following values:
   *            @arg PWR_FLAG_WU: Wake Up flag
   *            @arg PWR_FLAG_SB: StandBy flag
   */
-#define __HAL_PWR_CLEAR_FLAG(__FLAG__) (PWR->CR |=  (__FLAG__) << 2)
+#define __HAL_PWR_CLEAR_FLAG(__FLAG__) (PWR->CR |=  (__FLAG__) << 2U)
 
 /**
   * @}

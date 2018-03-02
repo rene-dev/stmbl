@@ -2,8 +2,6 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_uart_ex.c
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
   * @brief   Extended UART HAL module driver.
   *          This file provides firmware functions to manage the following extended
   *          functionalities of the Universal Asynchronous Receiver Transmitter Peripheral (UART).
@@ -153,16 +151,16 @@
 /**
   * @brief Initialize the RS485 Driver enable feature according to the specified
   *         parameters in the UART_InitTypeDef and creates the associated handle.
-  * @param huart: UART handle.
-  * @param Polarity: select the driver enable polarity.
+  * @param huart UART handle.
+  * @param Polarity select the driver enable polarity.
   *        This parameter can be one of the following values:
-  *          @arg UART_DE_POLARITY_HIGH: DE signal is active high
-  *          @arg UART_DE_POLARITY_LOW: DE signal is active low
-  * @param AssertionTime: Driver Enable assertion time:
+  *          @arg @ref UART_DE_POLARITY_HIGH DE signal is active high
+  *          @arg @ref UART_DE_POLARITY_LOW  DE signal is active low
+  * @param AssertionTime Driver Enable assertion time:
   *                         5-bit value defining the time between the activation of the DE (Driver Enable)
   *                         signal and the beginning of the start bit. It is expressed in sample time
   *                         units (1/8 or 1/16 bit time, depending on the oversampling rate)
-  * @param DeassertionTime: Driver Enable deassertion time:
+  * @param DeassertionTime Driver Enable deassertion time:
   *                         5-bit value defining the time between the end of the last stop bit, in a
   *                         transmitted message, and the de-activation of the DE (Driver Enable) signal.
   *                         It is expressed in sample time units (1/8 or 1/16 bit time, depending on the
@@ -171,7 +169,7 @@
   */
 HAL_StatusTypeDef HAL_RS485Ex_Init(UART_HandleTypeDef *huart, uint32_t Polarity, uint32_t AssertionTime, uint32_t DeassertionTime)
 {
-  uint32_t temp = 0x0;
+  uint32_t temp = 0x0U;
 
   /* Check the UART handle allocation */
   if(huart == NULL)
@@ -258,18 +256,18 @@ HAL_StatusTypeDef HAL_RS485Ex_Init(UART_HandleTypeDef *huart, uint32_t Polarity,
 
 
 /**
-  * @brief  UART wakeup from Stop mode callback
-  * @param  huart: UART handle
+  * @brief  UART wakeup from Stop mode callback.
+  * @param  huart UART handle.
   * @retval None
   */
- __weak void HAL_UARTEx_WakeupCallback(UART_HandleTypeDef *huart)
+__weak void HAL_UARTEx_WakeupCallback(UART_HandleTypeDef *huart)
 {
   /* Prevent unused argument(s) compilation warning */
   UNUSED(huart);
 
   /* NOTE : This function should not be modified, when the callback is needed,
-            the HAL_UARTEx_WakeupCallback can be implemented in the user file
-   */ 
+            the HAL_UARTEx_WakeupCallback can be implemented in the user file.
+   */
 }
 
 /**
@@ -280,10 +278,10 @@ HAL_StatusTypeDef HAL_RS485Ex_Init(UART_HandleTypeDef *huart, uint32_t Polarity,
 /** @defgroup UARTEx_Exported_Functions_Group3 Extended Peripheral Control functions
   * @brief    Extended Peripheral Control functions
   *
-@verbatim   
+@verbatim
  ===============================================================================
-                      ##### Peripheral Control function #####
- ===============================================================================  
+                      ##### Peripheral Control functions #####
+ ===============================================================================
     [..]
     This subsection provides extended functions allowing to control the UART.         
      (+) HAL_UARTEx_StopModeWakeUpSourceConfig() API sets Wakeup from Stop mode interrupt flag selection
@@ -298,17 +296,18 @@ HAL_StatusTypeDef HAL_RS485Ex_Init(UART_HandleTypeDef *huart, uint32_t Polarity,
 
 /**
   * @brief Set Wakeup from Stop mode interrupt flag selection.
-  * @param huart: UART handle.
-  * @param WakeUpSelection: address match, Start Bit detection or RXNE bit status.
+  * @param huart UART handle.
+  * @param WakeUpSelection address match, Start Bit detection or RXNE bit status.
   * This parameter can be one of the following values:
-  *      @arg UART_WAKEUP_ON_ADDRESS
-  *      @arg UART_WAKEUP_ON_STARTBIT
-  *      @arg UART_WAKEUP_ON_READDATA_NONEMPTY
+  *      @arg @ref UART_WAKEUP_ON_ADDRESS
+  *      @arg @ref UART_WAKEUP_ON_STARTBIT
+  *      @arg @ref UART_WAKEUP_ON_READDATA_NONEMPTY
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UARTEx_StopModeWakeUpSourceConfig(UART_HandleTypeDef *huart, UART_WakeUpTypeDef WakeUpSelection)
 {
   HAL_StatusTypeDef status = HAL_OK;
+  uint32_t tickstart = 0U;
 
   /* check the wake-up from stop mode UART instance */
   assert_param(IS_UART_WAKEUP_FROMSTOP_INSTANCE(huart->Instance));
@@ -334,8 +333,11 @@ HAL_StatusTypeDef HAL_UARTEx_StopModeWakeUpSourceConfig(UART_HandleTypeDef *huar
   /* Enable the Peripheral */
   __HAL_UART_ENABLE(huart);
 
+  /* Init tickstart for timeout managment*/
+  tickstart = HAL_GetTick();
+
   /* Wait until REACK flag is set */
-  if(UART_WaitOnFlagUntilTimeout(huart, USART_ISR_REACK, RESET, HAL_UART_TIMEOUT_VALUE) != HAL_OK)
+  if(UART_WaitOnFlagUntilTimeout(huart, USART_ISR_REACK, RESET, tickstart, HAL_UART_TIMEOUT_VALUE) != HAL_OK)
   {
     status = HAL_TIMEOUT;
   }
@@ -355,7 +357,7 @@ HAL_StatusTypeDef HAL_UARTEx_StopModeWakeUpSourceConfig(UART_HandleTypeDef *huar
 /**
   * @brief Enable UART Stop Mode.
   * @note  The UART is able to wake up the MCU from Stop mode as long as UART clock is HSI or LSE.
-  * @param huart: UART handle.
+  * @param huart UART handle.
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UARTEx_EnableStopMode(UART_HandleTypeDef *huart)
@@ -381,7 +383,7 @@ HAL_StatusTypeDef HAL_UARTEx_EnableStopMode(UART_HandleTypeDef *huart)
 
 /**
   * @brief Disable UART Stop Mode.
-  * @param huart: UART handle.
+  * @param huart UART handle.
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UARTEx_DisableStopMode(UART_HandleTypeDef *huart)
@@ -412,10 +414,10 @@ HAL_StatusTypeDef HAL_UARTEx_DisableStopMode(UART_HandleTypeDef *huart)
   *        long).
   * @note  Addresses detection lengths are: 6-bit address detection in 7-bit data mode, 
   *        7-bit address detection in 8-bit data mode, 8-bit address detection in 9-bit data mode.
-  * @param huart: UART handle.
-  * @param AddressLength: this parameter can be one of the following values:
-  *          @arg UART_ADDRESS_DETECT_4B: 4-bit long address
-  *          @arg UART_ADDRESS_DETECT_7B: 6-, 7- or 8-bit long address
+  * @param huart UART handle.
+  * @param AddressLength this parameter can be one of the following values:
+  *          @arg @ref UART_ADDRESS_DETECT_4B 4-bit long address
+  *          @arg @ref UART_ADDRESS_DETECT_7B 6-, 7- or 8-bit long address
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_MultiProcessorEx_AddressLength_Set(UART_HandleTypeDef *huart, uint32_t AddressLength)
