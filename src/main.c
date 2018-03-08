@@ -79,7 +79,7 @@ void nv_reset(char *ptr) {
 COMMAND("reset", nv_reset, "reset STMBL");
 
 
-char config[15 * 1024];
+char config[15 * 1024] __attribute__((section(".ram")));
 const char *config_ro = (char *)0x08008000;
 
 

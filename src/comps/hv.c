@@ -57,9 +57,10 @@ HAL_PIN(crc_error);
 HAL_PIN(timeout);
 HAL_PIN(scale);
 
+static volatile packet_to_hv_t packet_to_hv __attribute__((section(".ram")));
+static volatile packet_from_hv_t packet_from_hv __attribute__((section(".ram")));
+
 struct hv_ctx_t {
-  volatile packet_to_hv_t packet_to_hv;
-  volatile packet_from_hv_t packet_from_hv;
   f3_config_data_t config;
   f3_state_data_t state;
   uint16_t addr;
@@ -110,7 +111,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // DMA2-Config
   DMA_InitStructure.DMA_Channel            = UART_DRV_TX_DMA_CHAN;
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) & (UART_DRV->DR);
-  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t) & (ctx->packet_to_hv);
+  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t) & (packet_to_hv);
   DMA_InitStructure.DMA_DIR                = DMA_DIR_MemoryToPeripheral;
   DMA_InitStructure.DMA_BufferSize         = sizeof(packet_to_hv_t);
   DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
@@ -137,7 +138,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // DMA2-Config
   DMA_InitStructure.DMA_Channel            = UART_DRV_RX_DMA_CHAN;
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) & (UART_DRV->DR);
-  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t) & (ctx->packet_from_hv);
+  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t) & (packet_from_hv);
   DMA_InitStructure.DMA_DIR                = DMA_DIR_PeripheralToMemory;
   DMA_InitStructure.DMA_BufferSize         = sizeof(packet_from_hv_t);
   DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
@@ -184,18 +185,18 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   uint32_t dma_pos = DMA_GetCurrDataCounter(UART_DRV_RX_DMA);
   if(dma_pos == 0) {
     CRC_ResetDR();
-    uint32_t crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_from_hv), sizeof(packet_from_hv_t) / 4 - 1);
+    uint32_t crc = CRC_CalcBlockCRC((uint32_t *)&(packet_from_hv), sizeof(packet_from_hv_t) / 4 - 1);
 
-    if(crc == ctx->packet_from_hv.crc) {
-      PIN(d_fb)     = ctx->packet_from_hv.d_fb;
-      PIN(q_fb)     = ctx->packet_from_hv.q_fb;
-      PIN(dc_volt)  = ctx->packet_from_hv.dc_volt;
-      PIN(pwm_volt) = ctx->packet_from_hv.pwm_volt;
+    if(crc == packet_from_hv.crc) {
+      PIN(d_fb)     = packet_from_hv.d_fb;
+      PIN(q_fb)     = packet_from_hv.q_fb;
+      PIN(dc_volt)  = packet_from_hv.dc_volt;
+      PIN(pwm_volt) = packet_from_hv.pwm_volt;
       PIN(abs_cur)  = sqrtf(PIN(d_fb) * PIN(d_fb) + PIN(q_fb) * PIN(q_fb));
 
-      uint16_t a         = ctx->packet_from_hv.addr;
+      uint16_t a         = packet_from_hv.addr;
       a                  = CLAMP(a, 0, sizeof(f3_state_data_t) / 4);
-      ctx->state.data[a] = ctx->packet_from_hv.value;
+      ctx->state.data[a] = packet_from_hv.value;
 
       PIN(u_fb)      = ctx->state.pins.u_fb;
       PIN(v_fb)      = ctx->state.pins.v_fb;
@@ -232,24 +233,24 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 
   if(e > 0.0) {
-    ctx->packet_to_hv.d_cmd        = d_cmd;
-    ctx->packet_to_hv.q_cmd        = q_cmd;
-    ctx->packet_to_hv.flags.enable = 1;
+    packet_to_hv.d_cmd        = d_cmd;
+    packet_to_hv.q_cmd        = q_cmd;
+    packet_to_hv.flags.enable = 1;
   } else {
-    ctx->packet_to_hv.d_cmd        = 0.0;
-    ctx->packet_to_hv.q_cmd        = 0.0;
-    ctx->packet_to_hv.flags.enable = 0;
+    packet_to_hv.d_cmd        = 0.0;
+    packet_to_hv.q_cmd        = 0.0;
+    packet_to_hv.flags.enable = 0;
   }
-  ctx->packet_to_hv.flags.cmd_type   = PIN(cmd_mode);
-  ctx->packet_to_hv.flags.phase_type = PIN(phase_mode);
-  ctx->packet_to_hv.pos              = pos;
-  ctx->packet_to_hv.vel              = vel;
-  ctx->packet_to_hv.addr             = ctx->addr;
-  ctx->packet_to_hv.value            = ctx->config.data[ctx->addr++];
+  packet_to_hv.flags.cmd_type   = PIN(cmd_mode);
+  packet_to_hv.flags.phase_type = PIN(phase_mode);
+  packet_to_hv.pos              = pos;
+  packet_to_hv.vel              = vel;
+  packet_to_hv.addr             = ctx->addr;
+  packet_to_hv.value            = ctx->config.data[ctx->addr++];
   ctx->addr %= sizeof(f3_config_data_t) / 4;
 
   CRC_ResetDR();
-  ctx->packet_to_hv.crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
+  packet_to_hv.crc = CRC_CalcBlockCRC((uint32_t *)&(packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
 
   PIN(uart_sr) = UART_DRV->SR;
   PIN(uart_dr) = UART_DRV->DR;

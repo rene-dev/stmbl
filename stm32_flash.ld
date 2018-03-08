@@ -33,7 +33,7 @@
 ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
-_estack = 0x20020000;    /* end of 128K RAM on AHB bus*/
+_estack = ORIGIN(CCM) + LENGTH(CCM);    /* end of 64K CMM RAM*/
 
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0;      /* required amount of heap  */
@@ -130,10 +130,10 @@ SECTIONS
   } >FLASH
 
   /* used by the startup to initialize data */
-  _sidata = .;
+  _sidata = LOADADDR(.data);
 
   /* Initialized data sections goes into RAM, load LMA copy after code */
-  .data : AT ( _sidata )
+  .data : 
   {
     . = ALIGN(4);
     _sdata = .;        /* create a global symbol at data start */
@@ -142,8 +142,28 @@ SECTIONS
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
-  } >RAM
+  } >CCM AT> FLASH
 
+  _siccmram = LOADADDR(.ram);
+
+  /* CCM-RAM section 
+  * 
+  * IMPORTANT NOTE! 
+  * If initialized variables will be placed in this section, 
+  * the startup code needs to be modified to copy the init-values.  
+  */
+  .ram :
+  {
+    . = ALIGN(4);
+    _sram = .;       /* create a global symbol at ccmram start */
+    *(.ram)
+    *(.ram*)
+    
+    . = ALIGN(4);
+    _eram = .;       /* create a global symbol at ccmram end */
+  } >RAM AT> FLASH
+
+  
   /* Uninitialized data section */
   . = ALIGN(4);
   .bss :
@@ -158,7 +178,7 @@ SECTIONS
     . = ALIGN(4);
     _ebss = .;         /* define a global symbol at bss end */
     __bss_end__ = _ebss;
-  } >RAM
+  } >CCM
 
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :
@@ -169,7 +189,7 @@ SECTIONS
     . = . + _Min_Heap_Size;
     . = . + _Min_Stack_Size;
     . = ALIGN(4);
-  } >RAM
+  } >CCM
 
   /* MEMORY_bank1 section, code must be located here explicitly            */
   /* Example: extern int foo(void) __attribute__ ((section (".mb1text"))); */

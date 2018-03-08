@@ -9,6 +9,9 @@
 #include "setup.h"
 #include "usbd_cdc_if.h"
 
+volatile uint32_t ADC_DMA_Buffer0 [ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1)] __attribute__((section(".ram")));
+volatile uint32_t ADC_DMA_Buffer1 [ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1)] __attribute__((section(".ram")));
+
 void setup() {
   //Enable clocks
   //TODO: small f4 does not have GPIOE

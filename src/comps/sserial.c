@@ -65,8 +65,9 @@ struct sserial_ctx_t {
   uint32_t foo;
 };
 
-volatile uint8_t rxbuf[128];
-volatile uint8_t txbuf[128];
+static volatile uint8_t rxbuf[128] __attribute__((section(".ram")));
+static volatile uint8_t txbuf[128] __attribute__((section(".ram")));
+
 uint16_t address;  //current address pointer
 int rxpos;
 discovery_rpc_t discovery;
