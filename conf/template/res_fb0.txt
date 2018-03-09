@@ -1,7 +1,7 @@
 load res
 res0.rt_prio = 2
-res0.sin = adc0.sin
-res0.cos = adc0.cos
+res0.sin = adc0.sin0
+res0.cos = adc0.cos0
 adc0.res_mode = res0.res_mode
 res0.quad = adc0.quad
 res0.poles = conf0.mot_fb_polecount

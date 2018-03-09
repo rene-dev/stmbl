@@ -161,7 +161,7 @@ void setup_res() {
   DMA_InitTypeDef DMA_InitStructure;
   DMA_InitStructure.DMA_Channel            = DMA_Channel_0;
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC->CDR;
-  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t)&ADC_DMA_Buffer0;
+  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t)ADC_DMA_Buffer0;
   DMA_InitStructure.DMA_DIR                = DMA_DIR_PeripheralToMemory;
   DMA_InitStructure.DMA_BufferSize         = ARRAY_SIZE(ADC_DMA_Buffer0);
   DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
@@ -174,9 +174,9 @@ void setup_res() {
   DMA_InitStructure.DMA_FIFOThreshold      = DMA_FIFOThreshold_HalfFull;
   DMA_InitStructure.DMA_MemoryBurst        = DMA_MemoryBurst_Single;
   DMA_InitStructure.DMA_PeripheralBurst    = DMA_PeripheralBurst_Single;
-  //TODO: use double buffer
-  //DMA_DoubleBufferModeConfig(DMA2_Stream0, (uint32_t)ADC_DMA_Buffer1, DMA_Memory_0);
-  //DMA_DoubleBufferModeCmd(DMA2_Stream0, ENABLE);
+
+  DMA_DoubleBufferModeConfig(DMA2_Stream0, (uint32_t)ADC_DMA_Buffer1, DMA_Memory_0);
+  DMA_DoubleBufferModeCmd(DMA2_Stream0, ENABLE);
   DMA_Init(DMA2_Stream0, &DMA_InitStructure);
 
   NVIC_InitTypeDef NVIC_InitStructure;
