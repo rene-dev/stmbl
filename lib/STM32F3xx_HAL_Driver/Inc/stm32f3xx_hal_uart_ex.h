@@ -2,9 +2,7 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_uart_ex.h
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
-  * @brief   Header file of UART HAL Extension module.
+  * @brief   Header file of UART HAL Extended module.
   ******************************************************************************
   * @attention
   *
@@ -66,12 +64,12 @@
 #if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx) || \
     defined(STM32F303x8) || defined(STM32F334x8) || defined(STM32F328xx) || \
     defined(STM32F301x8) || defined(STM32F302x8) || defined(STM32F318xx)
-#define UART_WORDLENGTH_7B                  ((uint32_t)USART_CR1_M1)
-#define UART_WORDLENGTH_8B                  ((uint32_t)0x00000000)
-#define UART_WORDLENGTH_9B                  ((uint32_t)USART_CR1_M0)
+#define UART_WORDLENGTH_7B                  ((uint32_t)USART_CR1_M1)   /*!< 7-bit long UART frame */
+#define UART_WORDLENGTH_8B                  (0x00000000U)              /*!< 8-bit long UART frame */
+#define UART_WORDLENGTH_9B                  ((uint32_t)USART_CR1_M0)   /*!< 9-bit long UART frame */
 #else
-#define UART_WORDLENGTH_8B                  ((uint32_t)0x00000000)
-#define UART_WORDLENGTH_9B                  ((uint32_t)USART_CR1_M)
+#define UART_WORDLENGTH_8B                  (0x00000000U)              /*!< 8-bit long UART frame */
+#define UART_WORDLENGTH_9B                  ((uint32_t)USART_CR1_M)    /*!< 9-bit long UART frame */
 #endif /* STM32F302xE || STM32F303xE || STM32F398xx || */
        /* STM32F303x8 || STM32F334x8 || STM32F328xx || */
        /* STM32F301x8 || STM32F302x8 || STM32F318xx   */
@@ -100,15 +98,7 @@ HAL_StatusTypeDef HAL_RS485Ex_Init(UART_HandleTypeDef *huart, uint32_t Polarity,
   * @}
   */
 
-/** @addtogroup UARTEx_Exported_Functions_Group2
-  * @{
-  */
-
 /* IO operation functions *****************************************************/
-void HAL_UARTEx_WakeupCallback(UART_HandleTypeDef *huart);
-/**
-  * @}
-  */
 
 /** @addtogroup UARTEx_Exported_Functions_Group3
   * @{
@@ -119,6 +109,8 @@ HAL_StatusTypeDef HAL_UARTEx_StopModeWakeUpSourceConfig(UART_HandleTypeDef *huar
 HAL_StatusTypeDef HAL_UARTEx_EnableStopMode(UART_HandleTypeDef *huart);
 HAL_StatusTypeDef HAL_UARTEx_DisableStopMode(UART_HandleTypeDef *huart);
 HAL_StatusTypeDef HAL_MultiProcessorEx_AddressLength_Set(UART_HandleTypeDef *huart, uint32_t AddressLength);
+void HAL_UARTEx_WakeupCallback(UART_HandleTypeDef *huart);
+
 /**
   * @}
   */
@@ -133,13 +125,13 @@ HAL_StatusTypeDef HAL_MultiProcessorEx_AddressLength_Set(UART_HandleTypeDef *hua
   */
 
 /** @brief  Report the UART clock source.
-  * @param  __HANDLE__: specifies the UART Handle.
-  * @param  __CLOCKSOURCE__: output variable.
+  * @param  __HANDLE__ specifies the UART Handle.
+  * @param  __CLOCKSOURCE__ output variable.
   * @retval UART clocking source, written in __CLOCKSOURCE__.
   */
 #if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx) || \
     defined(STM32F302xC) || defined(STM32F303xC) || defined(STM32F358xx)
-#define UART_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__) \
+#define UART_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__)       \
   do {                                                        \
     if((__HANDLE__)->Instance == USART1)                      \
     {                                                         \
@@ -250,10 +242,10 @@ HAL_StatusTypeDef HAL_MultiProcessorEx_AddressLength_Set(UART_HandleTypeDef *hua
     {                                                         \
       (__CLOCKSOURCE__) = UART_CLOCKSOURCE_UNDEFINED;         \
     }                                                         \
-  } while(0)
+  } while(0U)
 #elif defined(STM32F303x8) || defined(STM32F334x8) || defined(STM32F328xx) || \
       defined(STM32F301x8) || defined(STM32F302x8) || defined(STM32F318xx)
-#define UART_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__) \
+#define UART_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__)       \
   do {                                                        \
     if((__HANDLE__)->Instance == USART1)                      \
     {                                                         \
@@ -288,9 +280,9 @@ HAL_StatusTypeDef HAL_MultiProcessorEx_AddressLength_Set(UART_HandleTypeDef *hua
     {                                                         \
       (__CLOCKSOURCE__) = UART_CLOCKSOURCE_UNDEFINED;         \
     }                                                         \
-  } while(0)
+  } while(0U)
 #else
-#define UART_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__) \
+#define UART_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__)       \
   do {                                                        \
     if((__HANDLE__)->Instance == USART1)                      \
     {                                                         \
@@ -359,7 +351,7 @@ HAL_StatusTypeDef HAL_MultiProcessorEx_AddressLength_Set(UART_HandleTypeDef *hua
     {                                                         \
       (__CLOCKSOURCE__) = UART_CLOCKSOURCE_UNDEFINED;         \
     }                                                         \
-  } while(0)
+  } while(0U)
 #endif /* STM32F302xE || STM32F303xE || STM32F398xx || */
        /* STM32F302xC || STM32F303xC || STM32F358xx    */
 
@@ -370,7 +362,7 @@ HAL_StatusTypeDef HAL_MultiProcessorEx_AddressLength_Set(UART_HandleTypeDef *hua
   *         by the reception API().
   *         This masking operation is not carried out in the case of
   *         DMA transfers.
-  * @param  __HANDLE__: specifies the UART Handle.
+  * @param  __HANDLE__ specifies the UART Handle.
   * @retval None, the mask to apply to UART RDR register is stored in (__HANDLE__)->Mask field.
   */
 #if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx) || \
@@ -382,36 +374,36 @@ HAL_StatusTypeDef HAL_MultiProcessorEx_AddressLength_Set(UART_HandleTypeDef *hua
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == UART_PARITY_NONE)               \
      {                                                                \
-        (__HANDLE__)->Mask = 0x01FF ;                                 \
+        (__HANDLE__)->Mask = 0x01FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
   }                                                                   \
   else if ((__HANDLE__)->Init.WordLength == UART_WORDLENGTH_8B)       \
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == UART_PARITY_NONE)               \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x007F ;                                 \
+        (__HANDLE__)->Mask = 0x007FU ;                                \
      }                                                                \
   }                                                                   \
   else if ((__HANDLE__)->Init.WordLength == UART_WORDLENGTH_7B)       \
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == UART_PARITY_NONE)               \
      {                                                                \
-        (__HANDLE__)->Mask = 0x007F ;                                 \
+        (__HANDLE__)->Mask = 0x007FU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x003F ;                                 \
+        (__HANDLE__)->Mask = 0x003FU ;                                \
      }                                                                \
   }                                                                   \
-} while(0)
+} while(0U)
 #else
 #define UART_MASK_COMPUTATION(__HANDLE__)                             \
   do {                                                                \
@@ -419,32 +411,32 @@ HAL_StatusTypeDef HAL_MultiProcessorEx_AddressLength_Set(UART_HandleTypeDef *hua
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == UART_PARITY_NONE)               \
      {                                                                \
-        (__HANDLE__)->Mask = 0x01FF ;                                 \
+        (__HANDLE__)->Mask = 0x01FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
   }                                                                   \
   else if ((__HANDLE__)->Init.WordLength == UART_WORDLENGTH_8B)       \
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == UART_PARITY_NONE)               \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x007F ;                                 \
+        (__HANDLE__)->Mask = 0x007FU ;                                \
      }                                                                \
   }                                                                   \
-} while(0)
+} while(0U)
 #endif /* STM32F302xE || STM32F303xE || STM32F398xx || */
        /* STM32F303x8 || STM32F334x8 || STM32F328xx || */
        /* STM32F301x8 || STM32F302x8 || STM32F318xx    */
 
 /**
   * @brief Ensure that UART frame length is valid.
-  * @param __LENGTH__: UART frame length. 
+  * @param __LENGTH__ UART frame length. 
   * @retval SET (__LENGTH__ is valid) or RESET (__LENGTH__ is invalid)
   */
 #if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx) || \

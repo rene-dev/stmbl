@@ -2,9 +2,7 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_irda_ex.h
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
-  * @brief   Header file of IRDA HAL Extension module.
+  * @brief   Header file of IRDA HAL Extended module.
   ******************************************************************************
   * @attention
   *
@@ -50,8 +48,7 @@
   * @{
   */
 
-/** @defgroup IRDAEx IRDAEx
-  * @brief IRDA Extension HAL module driver.
+/** @addtogroup IRDAEx
   * @{
   */
 
@@ -68,10 +65,10 @@
     defined(STM32F334x8)                                                 || \
     defined(STM32F301x8) || defined(STM32F302x8) || defined(STM32F318xx)
 #define IRDA_WORDLENGTH_7B                  ((uint32_t)USART_CR1_M1)   /*!< 7-bit long frame */
-#define IRDA_WORDLENGTH_8B                  ((uint32_t)0x00000000)     /*!< 8-bit long frame */
+#define IRDA_WORDLENGTH_8B                  (0x00000000U)              /*!< 8-bit long frame */
 #define IRDA_WORDLENGTH_9B                  ((uint32_t)USART_CR1_M0)   /*!< 9-bit long frame */
 #else
-#define IRDA_WORDLENGTH_8B                  ((uint32_t)0x00000000)     /*!< 8-bit long frame */
+#define IRDA_WORDLENGTH_8B                  (0x00000000U)              /*!< 8-bit long frame */
 #define IRDA_WORDLENGTH_9B                  ((uint32_t)USART_CR1_M)    /*!< 9-bit long frame */
 #endif /* STM32F302xE || STM32F303xE || STM32F398xx || */
        /* STM32F334x8                               || */
@@ -83,7 +80,7 @@
 /**
   * @}
   */  
-  
+
 /* Exported macros -----------------------------------------------------------*/
 /* Exported functions --------------------------------------------------------*/
 
@@ -94,13 +91,13 @@
   */
 
 /** @brief  Report the IRDA clock source.
-  * @param  __HANDLE__: specifies the IRDA Handle.
-  * @param  __CLOCKSOURCE__: output variable.
+  * @param  __HANDLE__ specifies the IRDA Handle.
+  * @param  __CLOCKSOURCE__ output variable.
   * @retval IRDA clocking source, written in __CLOCKSOURCE__.
   */
 #if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx) || \
     defined(STM32F302xC) || defined(STM32F303xC) || defined(STM32F358xx)
-#define IRDA_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__) \
+#define IRDA_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__)       \
   do {                                                        \
     if((__HANDLE__)->Instance == USART1)                      \
     {                                                         \
@@ -211,10 +208,10 @@
     {                                                         \
       (__CLOCKSOURCE__) = IRDA_CLOCKSOURCE_UNDEFINED;         \
     }                                                         \
-  } while(0)
+  } while(0U)
 #elif defined(STM32F303x8) || defined(STM32F334x8) || defined(STM32F328xx) || \
       defined(STM32F301x8) || defined(STM32F302x8) || defined(STM32F318xx)
-#define IRDA_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__) \
+#define IRDA_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__)       \
   do {                                                        \
     if((__HANDLE__)->Instance == USART1)                      \
     {                                                         \
@@ -249,7 +246,7 @@
     {                                                         \
       (__CLOCKSOURCE__) = IRDA_CLOCKSOURCE_UNDEFINED;         \
     }                                                         \
-  } while(0)
+  } while(0U)
 #else
 #define IRDA_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__)       \
   do {                                                        \
@@ -320,7 +317,7 @@
     {                                                         \
       (__CLOCKSOURCE__) = IRDA_CLOCKSOURCE_UNDEFINED;         \
     }                                                         \
-  } while(0)
+  } while(0U)
 #endif /* STM32F302xE || STM32F303xE || STM32F398xx || */
        /* STM32F302xC || STM32F303xC || STM32F358xx || */
 
@@ -331,80 +328,80 @@
   *         by the reception API().
   *         This masking operation is not carried out in the case of
   *         DMA transfers.
-  * @param  __HANDLE__: specifies the IRDA Handle
-  * @retval None, the mask to apply to IRDA RDR register is stored in (__HANDLE__)->Mask field.
+  * @param  __HANDLE__ specifies the IRDA Handle.
+  * @retval None, the mask to apply to the associated UART RDR register is stored in (__HANDLE__)->Mask field.
   */
 #if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx) || \
     defined(STM32F301x8) || defined(STM32F302x8) || defined(STM32F318xx) || \
     defined(STM32F334x8)
-#define IRDA_MASK_COMPUTATION(__HANDLE__)                       \
+#define IRDA_MASK_COMPUTATION(__HANDLE__)                             \
   do {                                                                \
   if ((__HANDLE__)->Init.WordLength == IRDA_WORDLENGTH_9B)            \
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == IRDA_PARITY_NONE)               \
      {                                                                \
-        (__HANDLE__)->Mask = 0x01FF ;                                 \
+        (__HANDLE__)->Mask = 0x01FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
   }                                                                   \
   else if ((__HANDLE__)->Init.WordLength == IRDA_WORDLENGTH_8B)       \
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == IRDA_PARITY_NONE)               \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x007F ;                                 \
+        (__HANDLE__)->Mask = 0x007FU ;                                \
      }                                                                \
   }                                                                   \
   else if ((__HANDLE__)->Init.WordLength == IRDA_WORDLENGTH_7B)       \
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == IRDA_PARITY_NONE)               \
      {                                                                \
-        (__HANDLE__)->Mask = 0x007F ;                                 \
+        (__HANDLE__)->Mask = 0x007FU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x003F ;                                 \
+        (__HANDLE__)->Mask = 0x003FU ;                                \
      }                                                                \
   }                                                                   \
-} while(0)
+} while(0U)
 #else
-#define IRDA_MASK_COMPUTATION(__HANDLE__)                       \
+#define IRDA_MASK_COMPUTATION(__HANDLE__)                             \
   do {                                                                \
   if ((__HANDLE__)->Init.WordLength == IRDA_WORDLENGTH_9B)            \
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == IRDA_PARITY_NONE)               \
      {                                                                \
-        (__HANDLE__)->Mask = 0x01FF ;                                 \
+        (__HANDLE__)->Mask = 0x01FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
   }                                                                   \
   else if ((__HANDLE__)->Init.WordLength == IRDA_WORDLENGTH_8B)       \
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == IRDA_PARITY_NONE)               \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x007F ;                                 \
+        (__HANDLE__)->Mask = 0x007FU ;                                \
      }                                                                \
   }                                                                   \
-} while(0)
+} while(0U)
 #endif /* STM32F302xE || STM32F303xE || STM32F398xx || */
        /* STM32F301x8 || STM32F302x8 || STM32F318xx || */
        /* STM32F334x8                                  */
 /**
   * @brief Ensure that IRDA frame length is valid.
-  * @param __LENGTH__: IRDA frame length. 
+  * @param __LENGTH__ IRDA frame length. 
   * @retval SET (__LENGTH__ is valid) or RESET (__LENGTH__ is invalid)
   */ 
 #if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx) || \

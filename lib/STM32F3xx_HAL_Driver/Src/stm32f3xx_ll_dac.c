@@ -2,8 +2,6 @@
   ******************************************************************************
   * @file    stm32f3xx_ll_dac.c
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
   * @brief   DAC LL module driver
   ******************************************************************************
   * @attention
@@ -40,7 +38,7 @@
 #include "stm32f3xx_ll_dac.h"
 #include "stm32f3xx_ll_bus.h"
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
   #include "stm32_assert.h"
 #else
   #define assert_param(expr) ((void)0U)
@@ -232,7 +230,6 @@ ErrorStatus LL_DAC_DeInit(DAC_TypeDef *DACx)
     LL_APB1_GRP1_ReleaseReset(LL_APB1_GRP1_PERIPH_DAC2);
   }
 #endif
-  
   return SUCCESS;
 }
 

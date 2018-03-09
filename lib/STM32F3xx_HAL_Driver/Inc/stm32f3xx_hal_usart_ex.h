@@ -2,9 +2,7 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_usart_ex.h
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
-  * @brief   Header file of USART HAL Extension module.
+  * @brief   Header file of USART HAL Extended module.
   ******************************************************************************
   * @attention
   *
@@ -50,9 +48,9 @@
   * @{
   */
 
-/** @defgroup USARTEx USARTEx 
+/** @addtogroup USARTEx
   * @{
-  */ 
+  */
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
@@ -66,19 +64,18 @@
 #if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx) || \
     defined(STM32F334x8)                                                 || \
     defined(STM32F301x8) || defined(STM32F302x8) || defined(STM32F318xx)
-#define USART_WORDLENGTH_7B                  ((uint32_t)USART_CR1_M1)   /*!< 7-bit long USART frame */ 
-#define USART_WORDLENGTH_8B                  ((uint32_t)0x00000000)     /*!< 8-bit long USART frame */ 
-#define USART_WORDLENGTH_9B                  ((uint32_t)USART_CR1_M0)   /*!< 9-bit long USART frame */ 
+#define USART_WORDLENGTH_7B                  ((uint32_t)USART_CR1_M1)   /*!< 7-bit long USART frame */
+#define USART_WORDLENGTH_8B                  (0x00000000U)              /*!< 8-bit long USART frame */
+#define USART_WORDLENGTH_9B                  ((uint32_t)USART_CR1_M0)   /*!< 9-bit long USART frame */
 #else
-#define USART_WORDLENGTH_8B                  ((uint32_t)0x00000000)     /*!< 8-bit long USART frame */ 
-#define USART_WORDLENGTH_9B                  ((uint32_t)USART_CR1_M)    /*!< 9-bit long USART frame */ 
+#define USART_WORDLENGTH_8B                  (0x00000000U)              /*!< 8-bit long USART frame */
+#define USART_WORDLENGTH_9B                  ((uint32_t)USART_CR1_M)    /*!< 9-bit long USART frame */
 #endif /* STM32F302xE || STM32F303xE || STM32F398xx || */
        /* STM32F334x8                               || */
        /* STM32F301x8 || STM32F302x8 || STM32F318xx    */
 /**
   * @}
   */
-
 
 /**
   * @}
@@ -89,14 +86,14 @@
   * @{
   */
 
-/** @brief  Reports the USART clock source.
-  * @param  __HANDLE__: specifies the USART Handle
-  * @param  __CLOCKSOURCE__ : output variable   
+/** @brief  Report the USART clock source.
+  * @param  __HANDLE__ specifies the USART Handle.
+  * @param  __CLOCKSOURCE__ output variable.
   * @retval the USART clocking source, written in __CLOCKSOURCE__.
   */
 #if defined(STM32F303x8) || defined(STM32F334x8) || defined(STM32F328xx) || \
     defined(STM32F301x8) || defined(STM32F302x8) || defined(STM32F318xx)
-#define USART_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__) \
+#define USART_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__)       \
   do {                                                         \
     if((__HANDLE__)->Instance == USART1)                       \
     {                                                          \
@@ -131,9 +128,9 @@
     {                                                          \
       (__CLOCKSOURCE__) = USART_CLOCKSOURCE_UNDEFINED;         \
     }                                                          \
-  } while(0)
-#else 
-#define USART_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__) \
+  } while(0U)
+#else
+#define USART_GETCLOCKSOURCE(__HANDLE__,__CLOCKSOURCE__)       \
   do {                                                         \
     if((__HANDLE__)->Instance == USART1)                       \
     {                                                          \
@@ -202,7 +199,7 @@
     {                                                          \
       (__CLOCKSOURCE__) = USART_CLOCKSOURCE_UNDEFINED;         \
     }                                                          \
-  } while(0)  
+  } while(0U)  
 #endif /* STM32F303x8 || STM32F334x8 || STM32F328xx */
 
 /** @brief  Compute the USART mask to apply to retrieve the received data
@@ -211,7 +208,7 @@
   *         by the reception API().
   *         This masking operation is not carried out in the case of
   *         DMA transfers.
-  * @param  __HANDLE__: specifies the USART Handle.
+  * @param  __HANDLE__ specifies the USART Handle.
   * @retval None, the mask to apply to USART RDR register is stored in (__HANDLE__)->Mask field.
   */
 #if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx) || \
@@ -223,36 +220,36 @@
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == USART_PARITY_NONE)              \
      {                                                                \
-        (__HANDLE__)->Mask = 0x01FF ;                                 \
+        (__HANDLE__)->Mask = 0x01FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
   }                                                                   \
   else if ((__HANDLE__)->Init.WordLength == USART_WORDLENGTH_8B)      \
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == USART_PARITY_NONE)              \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x007F ;                                 \
+        (__HANDLE__)->Mask = 0x007FU ;                                \
      }                                                                \
   }                                                                   \
   else if ((__HANDLE__)->Init.WordLength == USART_WORDLENGTH_7B)      \
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == USART_PARITY_NONE)              \
      {                                                                \
-        (__HANDLE__)->Mask = 0x007F ;                                 \
+        (__HANDLE__)->Mask = 0x007FU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x003F ;                                 \
+        (__HANDLE__)->Mask = 0x003FU ;                                \
      }                                                                \
   }                                                                   \
-} while(0)
+} while(0U)
 #else
 #define USART_MASK_COMPUTATION(__HANDLE__)                            \
   do {                                                                \
@@ -260,25 +257,25 @@
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == USART_PARITY_NONE)              \
      {                                                                \
-        (__HANDLE__)->Mask = 0x01FF ;                                 \
+        (__HANDLE__)->Mask = 0x01FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
   }                                                                   \
   else if ((__HANDLE__)->Init.WordLength == USART_WORDLENGTH_8B)      \
   {                                                                   \
      if ((__HANDLE__)->Init.Parity == USART_PARITY_NONE)              \
      {                                                                \
-        (__HANDLE__)->Mask = 0x00FF ;                                 \
+        (__HANDLE__)->Mask = 0x00FFU ;                                \
      }                                                                \
      else                                                             \
      {                                                                \
-        (__HANDLE__)->Mask = 0x007F ;                                 \
+        (__HANDLE__)->Mask = 0x007FU ;                                \
      }                                                                \
   }                                                                   \
-} while(0)
+} while(0U)
 #endif /* STM32F302xE || STM32F303xE || STM32F398xx || */
        /* STM32F334x8                               || */
        /* STM32F301x8 || STM32F302x8 || STM32F318xx    */
@@ -286,7 +283,7 @@
 
 /**
   * @brief Ensure that USART frame length is valid.
-  * @param __LENGTH__: USART frame length. 
+  * @param __LENGTH__ USART frame length. 
   * @retval SET (__LENGTH__ is valid) or RESET (__LENGTH__ is invalid)
   */
 #if defined(STM32F302xE) || defined(STM32F303xE) || defined(STM32F398xx) || \
@@ -306,11 +303,6 @@
   */
 
 /* Exported functions --------------------------------------------------------*/
-/* Initialization and de-initialization functions  ****************************/
-/* IO operation functions *****************************************************/
-/* Peripheral Control functions ***********************************************/
-/* Peripheral State and Error functions ***************************************/
-
 
 /**
   * @}

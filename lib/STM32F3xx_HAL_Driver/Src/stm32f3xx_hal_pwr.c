@@ -2,8 +2,6 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_pwr.c
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
   * @brief   PWR HAL module driver.
   *          This file provides firmware functions to manage the following
   *          functionalities of the Power Controller (PWR) peripheral:
@@ -243,7 +241,7 @@ void HAL_PWR_DisableBkUpAccess(void)
     (+) Comparator auto-wakeup (AWU) from the Stop mode
 
       (++) To wake up from the Stop mode with a comparator wakeup event, it is necessary to:
-           (+++) Configure the EXTI Line associated with the comparator (example EXTI Line 22 for comparator 2) 
+           (+++) Configure the EXTI Line associated with the comparator (example EXTI Line 22 for comparator 2U) 
                  to be sensitive to to the selected edges (falling, rising or falling 
                  and rising) (Interrupt or Event modes) using the EXTI_Init() function.
            (+++) Configure the comparator to generate the event.      
@@ -253,9 +251,9 @@ void HAL_PWR_DisableBkUpAccess(void)
 
 /**
   * @brief Enables the WakeUp PINx functionality.
-  * @param WakeUpPinx: Specifies the Power Wake-Up pin to enable.
+  * @param WakeUpPinx Specifies the Power Wake-Up pin to enable.
   *         This parameter can be value of :
-  *           @ref PWREx_WakeUp_Pins
+  *           @ref PWR_WakeUp_Pins
   * @retval None
   */
 void HAL_PWR_EnableWakeUpPin(uint32_t WakeUpPinx)
@@ -268,9 +266,9 @@ void HAL_PWR_EnableWakeUpPin(uint32_t WakeUpPinx)
 
 /**
   * @brief Disables the WakeUp PINx functionality.
-  * @param WakeUpPinx: Specifies the Power Wake-Up pin to disable.
+  * @param WakeUpPinx Specifies the Power Wake-Up pin to disable.
   *         This parameter can be values of :
-  *           @ref PWREx_WakeUp_Pins
+  *           @ref PWR_WakeUp_Pins
   * @retval None
   */
 void HAL_PWR_DisableWakeUpPin(uint32_t WakeUpPinx)
@@ -284,13 +282,13 @@ void HAL_PWR_DisableWakeUpPin(uint32_t WakeUpPinx)
 /**
   * @brief Enters Sleep mode.
   * @note  In Sleep mode, all I/O pins keep the same state as in Run mode.
-  * @param Regulator: Specifies the regulator state in SLEEP mode.
+  * @param Regulator Specifies the regulator state in SLEEP mode.
   *          This parameter can be one of the following values:
   *            @arg PWR_MAINREGULATOR_ON: SLEEP mode with regulator ON
   *            @arg PWR_LOWPOWERREGULATOR_ON: SLEEP mode with low power regulator ON
   * @note This parameter has no effect in F3 family and is just maintained to 
   *       offer full portability of other STM32 families softwares.
-  * @param SLEEPEntry: Specifies if SLEEP mode is entered with WFI or WFE instruction.
+  * @param SLEEPEntry Specifies if SLEEP mode is entered with WFI or WFE instruction.
   *           When WFI entry is used, tick interrupt have to be disabled if not desired as 
   *           the interrupt wake up source.
   *           This parameter can be one of the following values:
@@ -330,11 +328,11 @@ void HAL_PWR_EnterSLEEPMode(uint32_t Regulator, uint8_t SLEEPEntry)
   *         startup delay is incurred when waking up from Stop mode.
   *         By keeping the internal regulator ON during Stop mode, the consumption
   *         is higher although the startup time is reduced.
-  * @param Regulator: Specifies the regulator state in STOP mode.
+  * @param Regulator Specifies the regulator state in STOP mode.
   *          This parameter can be one of the following values:
   *            @arg PWR_MAINREGULATOR_ON: STOP mode with regulator ON
   *            @arg PWR_LOWPOWERREGULATOR_ON: STOP mode with low power regulator ON
-  * @param STOPEntry: specifies if STOP mode in entered with WFI or WFE instruction.
+  * @param STOPEntry specifies if STOP mode in entered with WFI or WFE instruction.
   *          This parameter can be one of the following values:
   *            @arg PWR_STOPENTRY_WFI:Enter STOP mode with WFI instruction
   *            @arg PWR_STOPENTRY_WFE: Enter STOP mode with WFE instruction
@@ -342,7 +340,7 @@ void HAL_PWR_EnterSLEEPMode(uint32_t Regulator, uint8_t SLEEPEntry)
   */
 void HAL_PWR_EnterSTOPMode(uint32_t Regulator, uint8_t STOPEntry)
 {
-  uint32_t tmpreg = 0;
+  uint32_t tmpreg = 0U;
 
   /* Check the parameters */
   assert_param(IS_PWR_REGULATOR(Regulator));

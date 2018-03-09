@@ -444,17 +444,14 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           for(int i = 0; i < (discovery.input - 1); i++) {
             txbuf[i + 1] = ((uint8_t *)(&data_in))[i];
           }
-
-          //send buffer
-          DMA_SetCurrDataCounter(DMA1_Stream4, discovery.input + 1);
-          DMA_Cmd(DMA1_Stream4, DISABLE);
-          DMA_ClearFlag(DMA1_Stream4, DMA_FLAG_TCIF4);
-          DMA_Cmd(DMA1_Stream4, ENABLE);
-          txbuf[discovery.input] = crc8((uint8_t *)txbuf, discovery.input);
-          //send(discovery.input, 1);
-
-          //we cannot send the reply based on crc, as this causes timeouts TODO: still valid?
           if(crc_reuest(discovery.output + 1)) {
+            //send buffer
+            DMA_SetCurrDataCounter(DMA1_Stream4, discovery.input + 1);
+            DMA_Cmd(DMA1_Stream4, DISABLE);
+            DMA_ClearFlag(DMA1_Stream4, DMA_FLAG_TCIF4);
+            DMA_Cmd(DMA1_Stream4, ENABLE);
+            txbuf[discovery.input] = crc8((uint8_t *)txbuf, discovery.input);
+            //send(discovery.input, 1);
             timeout = 0;
             //set output pins
             PIN(pos_cmd)   = data_out.pos_cmd;

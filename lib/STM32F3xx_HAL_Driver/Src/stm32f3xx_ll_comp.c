@@ -2,8 +2,6 @@
   ******************************************************************************
   * @file    stm32f3xx_ll_comp.c
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
   * @brief   COMP LL module driver
   ******************************************************************************
   * @attention
@@ -55,7 +53,7 @@
 /*         (comparator output blanking, ...) (refer to reference manual).     */
 /*       - STM32F37x:                                                         */
 /*         COMP IP with 2 instances                                           */
-/*       This file contains the drivers of these ADC IP, located in 2 area    */
+/*       This file contains the drivers of these COMP IP, located in 2 area    */
 /*       delimited by compilation switches.                                   */
 
 #if defined(COMP_V1_3_0_0)
@@ -131,17 +129,7 @@
   ((__INPUT_PLUS__) == LL_COMP_INPUT_PLUS_IO1)
 #endif
 
-#if defined(STM32F301x8) || defined(STM32F318xx)
-#define IS_LL_COMP_INPUT_MINUS(__COMP_INSTANCE__, __INPUT_MINUS__)             \
-  (   ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_1_4VREFINT)                    \
-   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_1_2VREFINT)                    \
-   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_3_4VREFINT)                    \
-   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_VREFINT)                       \
-   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_DAC1_CH1)                      \
-   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_DAC1_CH2)                      \
-   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO2)                           \
-  )
-#else
+#if defined(STM32F303xC) || defined(STM32F358xx) || defined(STM32F303xE) || defined(STM32F398xx)
 #define IS_LL_COMP_INPUT_MINUS(__COMP_INSTANCE__, __INPUT_MINUS__)             \
   (   ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_1_4VREFINT)                    \
    || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_1_2VREFINT)                    \
@@ -151,6 +139,44 @@
    || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_DAC1_CH2)                      \
    || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO1)                           \
    || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO2)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO3)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO4)                           \
+  )
+#elif defined(STM32F303x8) || defined(STM32F328xx) || defined(STM32F334x8)
+#define IS_LL_COMP_INPUT_MINUS(__COMP_INSTANCE__, __INPUT_MINUS__)             \
+  (   ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_1_4VREFINT)                    \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_1_2VREFINT)                    \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_3_4VREFINT)                    \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_VREFINT)                       \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_DAC1_CH1)                      \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_DAC1_CH2)                      \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO1)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO2)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO4)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_DAC2_CH1)                      \
+  )
+#elif defined(STM32F302xC) || defined(STM32F302xE)
+#define IS_LL_COMP_INPUT_MINUS(__COMP_INSTANCE__, __INPUT_MINUS__)             \
+  (   ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_1_4VREFINT)                    \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_1_2VREFINT)                    \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_3_4VREFINT)                    \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_VREFINT)                       \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_DAC1_CH1)                      \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO1)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO2)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO3)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO4)                           \
+  )
+#else /* STM32F301x8 || STM32F318xx || STM32F302x8 */
+#define IS_LL_COMP_INPUT_MINUS(__COMP_INSTANCE__, __INPUT_MINUS__)             \
+  (   ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_1_4VREFINT)                    \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_1_2VREFINT)                    \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_3_4VREFINT)                    \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_VREFINT)                       \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_DAC1_CH1)                      \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO1)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO2)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO4)                           \
   )
 #endif
 
@@ -179,7 +205,7 @@
       (((__COMP_INSTANCE__) == COMP2)                                          \
         ? (                                                                    \
               ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_IC1_COMP2)        \
-           || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_IC4_COMP2)        \
+           || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_IC4_COMP2)        \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_OCCLR_COMP2)      \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_OCCLR_COMP2)      \
           )                                                                    \
@@ -213,7 +239,7 @@
         ? (                                                                    \
               ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_OCCLR_COMP2_4)    \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_IC1_COMP2)        \
-           || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_IC4_COMP2)        \
+           || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_IC4_COMP2)        \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_OCCLR_COMP2)      \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_OCCLR_COMP2)      \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_IC1_COMP2)        \
@@ -250,7 +276,7 @@
         ? (                                                                       \
               ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_OCCLR_COMP1_2_4)     \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_IC1_COMP1_2)         \
-           || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_IC4_COMP1_2)         \
+           || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_IC4_COMP1_2)         \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_OCCLR_COMP1_2)       \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_OCCLR_COMP1_2)       \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_IC1_COMP1_2)         \
@@ -293,7 +319,7 @@
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_OCCLR_COMP1_2_3)                    \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_OCCLR_COMP1_2_4_5)                  \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_IC1_COMP1_2)                        \
-           || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_IC4_COMP1_2)                        \
+           || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_IC4_COMP1_2)                        \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_IC1_COMP1_2)                        \
           )                                                                                      \
           :                                                                                      \
@@ -370,7 +396,7 @@
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_OCCLR_COMP1_2_3)                    \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_OCCLR_COMP1_2_4_5)                  \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_IC1_COMP1_2)                        \
-           || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM1_IC4_COMP1_2)                        \
+           || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_IC4_COMP1_2)                        \
            || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_IC1_COMP1_2)                        \
            || (((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM20_OCCLR_COMP2)                      \
                && ((__COMP_INSTANCE__) == COMP2)                     )                           \
@@ -694,7 +720,7 @@ ErrorStatus LL_COMP_Init(COMP_TypeDef *COMPx, LL_COMP_InitTypeDef *COMP_InitStru
 
 /**
   * @brief Set each @ref LL_COMP_InitTypeDef field to default value.
-  * @param COMP_InitStruct: pointer to a @ref LL_COMP_InitTypeDef structure
+  * @param COMP_InitStruct pointer to a @ref LL_COMP_InitTypeDef structure
   *                         whose fields will be set to default values.
   * @retval None
   */
@@ -782,6 +808,10 @@ void LL_COMP_StructInit(LL_COMP_InitTypeDef *COMP_InitStruct)
    || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_DAC1_CH1)                      \
    || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_DAC1_CH2)                      \
    || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO1)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO2)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO3)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_IO4)                           \
+   || ((__INPUT_MINUS__) == LL_COMP_INPUT_MINUS_DAC2_CH1)                      \
   )
 
 #define IS_LL_COMP_INPUT_HYSTERESIS(__INPUT_HYSTERESIS__)                      \
@@ -791,6 +821,9 @@ void LL_COMP_StructInit(LL_COMP_InitTypeDef *COMP_InitStruct)
    || ((__INPUT_HYSTERESIS__) == LL_COMP_HYSTERESIS_HIGH)                      \
   )
 
+/* Note: Output redirection is specific to COMP instances but is checked      */
+/*       with literals of instance COMP2 (no differentiation possible since   */
+/*       literals of COMP1 and COMP2 share the same values range).            */
 #define IS_LL_COMP_OUTPUT_SELECTION(__OUTPUT_SELECTION__)                      \
   (   ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_NONE)                          \
    || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM16_BKIN)                    \
@@ -798,8 +831,8 @@ void LL_COMP_StructInit(LL_COMP_InitTypeDef *COMP_InitStruct)
    || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM4_OCCLR)                    \
    || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_IC4)                      \
    || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM2_OCCLR)                    \
-   || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_IC1)                      \
-   || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_OCCLR)                    \
+   || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_IC1_COMP2)                \
+   || ((__OUTPUT_SELECTION__) == LL_COMP_OUTPUT_TIM3_OCCLR_COMP2)              \
   )
 
 #define IS_LL_COMP_OUTPUT_POLARITY(__POLARITY__)                               \
@@ -977,7 +1010,7 @@ ErrorStatus LL_COMP_Init(COMP_TypeDef *COMPx, LL_COMP_InitTypeDef *COMP_InitStru
 
 /**
   * @brief Set each @ref LL_COMP_InitTypeDef field to default value.
-  * @param COMP_InitStruct: pointer to a @ref LL_COMP_InitTypeDef structure
+  * @param COMP_InitStruct pointer to a @ref LL_COMP_InitTypeDef structure
   *                         whose fields will be set to default values.
   * @retval None
   */
