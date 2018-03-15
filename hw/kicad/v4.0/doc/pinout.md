@@ -38,7 +38,7 @@
 | io_canrx | pd0 | can1_rx |
 | io_spimosi | pb5, pa9 | spi1_mosi, usart1_tx, (tim3_ch2, tim1_ch2, spi3_mosi) |
 | io_spimiso | pb4, pa10, pa15 | spi1_miso, usart1_rx, tim2_ch1, (tim3_ch1, tim1_ch3, spi3_miso) |
-| io_spisck | pb3, pa8 | spi1_sck, sw_o usart1_ck, tim2_ch2, (tim1_ch1, spi3_sck) |
+| io_spisck | pb3, pa8, pa0 | spi1_sck, sw_o usart1_ck, tim2_ch2, (tim1_ch1, spi3_sck) |
 | io_swclk | pa14 | sw_clk |
 | io_swdio | pa13 | sw_dio |
 | io_rst | nrst | nrst |
