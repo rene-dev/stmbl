@@ -119,8 +119,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   //TODO: arr can change!
   uint32_t mult = CLAMP(PIN(freq) / RT_FREQ + 0.5, 1, 4);
   PIN(freq) = RT_FREQ * mult;
-  FB0_RES_REF_TIM->CCR3 = (int)CLAMP(PIN(phase) * FB0_RES_REF_TIM->ARR, 0, FB0_RES_REF_TIM->ARR - 1);
   FB0_RES_REF_TIM->ARR  = ADC_TRIGGER_FREQ / 2 / (RT_FREQ * mult) - 1;
+  FB0_RES_REF_TIM->CCR3 = (int)CLAMP(PIN(phase) * FB0_RES_REF_TIM->ARR, 0, FB0_RES_REF_TIM->ARR - 1);
   PIN(res_mode)         = ADC_GROUPS / 2 / mult;
   float s               = 0.0;
   float c               = 0.0;
