@@ -70,8 +70,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   uint32_t sii0;
   uint32_t coi0;
   //scaled, all groups
-  float sin0all;
-  float cos0all;
+  float sin0all = 0.0;
+  float cos0all = 0.0;
 #ifdef FB1
   float co1[ADC_GROUPS];
   float si1[ADC_GROUPS];
