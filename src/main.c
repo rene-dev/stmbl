@@ -68,8 +68,35 @@ void DMA2_Stream0_IRQHandler(void) {
 }
 
 void bootloader(char *ptr) {
-  *((unsigned long *)0x2001C000) = 0xDEADBEEF;  //set bootloader trigger
-  NVIC_SystemReset();
+  hal_stop();
+
+  NVIC_DisableIRQ(TIM_SLAVE_IRQ);
+  NVIC_DisableIRQ(DMA2_Stream0_IRQn);
+  NVIC_DisableIRQ(SysTick_IRQn);
+
+  void (*SysMemBootJump)(void);
+  volatile uint32_t addr = 0x1FFF0000;
+
+  RCC_DeInit();
+  SysTick->CTRL = 0;
+  SysTick->LOAD = 0;
+  SysTick->VAL = 0;
+  
+  RCC->AHB1RSTR = 0x22E017FF;
+  RCC->AHB1RSTR = 0;
+  RCC->AHB2RSTR = 0xF1;
+  RCC->AHB2RSTR = 0;
+  RCC->AHB3RSTR = 0x1;
+  RCC->AHB3RSTR = 0;
+  RCC->APB1RSTR = 0xF6FEC9FF;
+  RCC->APB1RSTR = 0;
+  RCC->APB2RSTR = 0x4777933;
+  RCC->APB2RSTR = 0;
+
+  SYSCFG->MEMRMP = 0x01;
+  SysMemBootJump = (void (*)(void)) (*((uint32_t *)(addr + 4)));
+  __set_MSP(*(uint32_t *)addr);
+  SysMemBootJump();
 }
 COMMAND("bootloader", bootloader, "enter bootloader");
 
@@ -77,74 +104,6 @@ void nv_reset(char *ptr) {
   NVIC_SystemReset();
 }
 COMMAND("reset", nv_reset, "reset STMBL");
-
-
-char config[15 * 1024] __attribute__((section(".ram")));
-const char *config_ro = (char *)0x08008000;
-
-
-void confcrc(char *ptr) {
-  uint32_t len = strnlen(config, sizeof(config) - 1);
-  CRC_ResetDR();
-  uint32_t crc = CRC_CalcBlockCRC((uint32_t *)config, len / 4);
-  for(int i = 0; i < len; i++) {
-    printf("%x ", config[i]);
-  }
-  printf("\n");
-  printf("size: %lu words: %lu crc:%lx\n", len, len / 4, crc);
-}
-COMMAND("confcrc", confcrc, "foo");
-
-void flashloadconf(char *ptr) {
-  strncpy(config, config_ro, sizeof(config));
-}
-COMMAND("flashloadconf", flashloadconf, "load config from flash");
-
-void flashsaveconf(char *ptr) {
-  printf("erasing flash page...\n");
-  FLASH_Unlock();
-  if(FLASH_EraseSector(FLASH_Sector_2, VoltageRange_3) != FLASH_COMPLETE) {
-    printf("error!\n");
-    FLASH_Lock();
-    return;
-  }
-  printf("saving conf\n");
-  int i   = 0;
-  int ret = 0;
-  do {
-    ret = FLASH_ProgramByte((uint32_t)(config_ro + i), config[i]) != FLASH_COMPLETE;
-    if(ret) {
-      printf("error writing %i\n", ret);
-      break;
-    }
-  } while(config[i++] != 0);
-  printf("OK %i bytes written\n", i);
-  FLASH_Lock();
-}
-COMMAND("flashsaveconf", flashsaveconf, "save config to flash");
-
-void loadconf(char *ptr) {
-  hal_parse(config);
-}
-COMMAND("loadconf", loadconf, "parse config");
-
-void showconf(char *ptr) {
-  printf("%s", config_ro);
-}
-COMMAND("showconf", showconf, "show config");
-
-void appendconf(char *ptr) {
-  printf("adding %s\n", ptr);
-  strncat(config, ptr, sizeof(config) - 1);
-  strncat(config, "\n", sizeof(config) - 1);
-}
-COMMAND("appendconf", appendconf, "append string to config");
-
-void deleteconf(char *ptr) {
-  config[0] = '\0';
-}
-COMMAND("deleteconf", deleteconf, "delete config");
-
 
 int main(void) {
   // Relocate interrupt vectors

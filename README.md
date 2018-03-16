@@ -20,7 +20,9 @@ This software is released under the GPLv3.
 stmbl
 =====
 There is a wiki. https://github.com/rene-dev/stmbl/wiki
-There will be documentation.
+
+Documentation is starting to be written. See the .adoc files here: https://github.com/rene-dev/stmbl/tree/master/docs/src
+
 
 **IRC: #stmbl on irc.hackint.eu**
 https://webirc.hackint.org/#stmbl
