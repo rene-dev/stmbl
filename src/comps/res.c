@@ -43,7 +43,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 }
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
-  struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
+  // struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
 
   ctx->abspos = 0;
   ctx->lastq  = 0;
