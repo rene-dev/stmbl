@@ -65,118 +65,117 @@ struct sserial_ctx_t {
   uint32_t foo;
 };
 
-volatile uint8_t rxbuf[128];
-volatile uint8_t txbuf[128];
+volatile uint8_t rxbuf[128];//rx dma buffer
+volatile uint8_t txbuf[128];//tx dma buffer
 uint16_t address;  //current address pointer
-int rxpos;
-discovery_rpc_t discovery;
+int rxpos;//read pointer for rx ringbuffer
 uint32_t timeout;
 lbp_t lbp;
-char name[] = LBPCardName;
-int bufferpos;
-int available;
+const char name[] = LBPCardName;
 unit_no_t unit;
 uint32_t max_waste_ticks;
 uint32_t block_bytes;
-int printdebug;
-uint8_t printbuf[16];
 
 #pragma pack(1)
 //*****************************************************************************
 uint8_t sserial_slave[] = {
-    0x0B, 0x09, 0x9B, 0x01, 0xB5, 0x01, 0x00, 0x00,  // 0..7
-    0x00, 0x00, 0x00, 0x00, 0xA0, 0x20, 0x10, 0x80,  // 8..15
-    0x00, 0x00, 0x80, 0xFF, 0x00, 0x00, 0x80, 0x7F,  // 16..23
-    0x08, 0x00, 0x72, 0x61, 0x64, 0x00, 0x70, 0x6F,  // 24..31
-    0x73, 0x5F, 0x63, 0x6D, 0x64, 0x00, 0x00, 0x00,  // 32..39
-    0x00, 0x00, 0x00, 0x00, 0xA0, 0x20, 0x10, 0x80,  // 40..47
-    0x00, 0x00, 0x80, 0xFF, 0x00, 0x00, 0x80, 0x7F,  // 48..55
-    0x26, 0x00, 0x72, 0x61, 0x64, 0x00, 0x76, 0x65,  // 56..63
-    0x6C, 0x5F, 0x63, 0x6D, 0x64, 0x00, 0x00, 0x00,  // 64..71
-    0xA0, 0x04, 0x01, 0x80, 0x00, 0x00, 0x00, 0x00,  // 72..79
-    0x00, 0x00, 0x80, 0x3F, 0x46, 0x00, 0x6E, 0x6F,  // 80..87
-    0x6E, 0x65, 0x00, 0x6F, 0x75, 0x74, 0x70, 0x75,  // 88..95
-    0x74, 0x5F, 0x70, 0x69, 0x6E, 0x73, 0x00, 0x00,  // 96..103
-    0xA0, 0x01, 0x07, 0x80, 0x00, 0x00, 0x00, 0x00,  // 104..111
-    0x00, 0x00, 0x80, 0x3F, 0x67, 0x00, 0x6E, 0x6F,  // 112..119
-    0x6E, 0x65, 0x00, 0x65, 0x6E, 0x61, 0x62, 0x6C,  // 120..127
-    0x65, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // 128..135
-    0xA0, 0x20, 0x10, 0x00, 0x00, 0x00, 0x80, 0xFF,  // 136..143
-    0x00, 0x00, 0x80, 0x7F, 0x82, 0x00, 0x72, 0x61,  // 144..151
-    0x64, 0x00, 0x70, 0x6F, 0x73, 0x5F, 0x66, 0x62,  // 152..159
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // 160..167
-    0xA0, 0x20, 0x10, 0x00, 0x00, 0x00, 0x80, 0xFF,  // 168..175
-    0x00, 0x00, 0x80, 0x7F, 0xA1, 0x00, 0x72, 0x61,  // 176..183
-    0x64, 0x00, 0x76, 0x65, 0x6C, 0x5F, 0x66, 0x62,  // 184..191
-    0x00, 0x00, 0x00, 0x00, 0xA0, 0x08, 0x03, 0x00,  // 192..199
-    0x00, 0x00, 0xF0, 0xC1, 0x00, 0x00, 0xF0, 0x41,  // 200..207
-    0xC1, 0x00, 0x41, 0x00, 0x63, 0x75, 0x72, 0x72,  // 208..215
-    0x65, 0x6E, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00,  // 216..223
-    0xA0, 0x04, 0x01, 0x00, 0x00, 0x00, 0xC8, 0xC2,  // 224..231
-    0x00, 0x00, 0xC8, 0x42, 0xDC, 0x00, 0x6E, 0x6F,  // 232..239
-    0x6E, 0x65, 0x00, 0x69, 0x6E, 0x70, 0x75, 0x74,  // 240..247
-    0x5F, 0x70, 0x69, 0x6E, 0x73, 0x00, 0x00, 0x00,  // 248..255
-    0xA0, 0x01, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00,  // 256..263
-    0x00, 0x00, 0x80, 0x3F, 0xFE, 0x00, 0x6E, 0x6F,  // 264..271
-    0x6E, 0x65, 0x00, 0x66, 0x61, 0x75, 0x6C, 0x74,  // 272..279
-    0x00, 0x00, 0x00, 0x00, 0xA0, 0x01, 0x07, 0x40,  // 280..287
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x3F,  // 288..295
-    0x19, 0x01, 0x6E, 0x6F, 0x6E, 0x65, 0x00, 0x69,  // 296..303
-    0x6E, 0x64, 0x65, 0x78, 0x5F, 0x65, 0x6E, 0x61,  // 304..311
-    0x62, 0x6C, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00,  // 312..319
-    0xA0, 0x20, 0x10, 0x80, 0x00, 0x00, 0x80, 0xFF,  // 320..327
-    0x00, 0x00, 0x80, 0x7F, 0x3C, 0x01, 0x6E, 0x6F,  // 328..335
-    0x6E, 0x65, 0x00, 0x73, 0x63, 0x61, 0x6C, 0x65,  // 336..343
-    0x00, 0xB0, 0x00, 0x01, 0x00, 0x50, 0x6F, 0x73,  // 344..351
-    0x69, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x6D, 0x6F,  // 352..359
-    0x64, 0x65, 0x00, 0x00, 0xA0, 0x02, 0x00, 0x00,  // 360..367
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // 368..375
-    0x6B, 0x01, 0x00, 0x70, 0x61, 0x64, 0x64, 0x69,  // 376..383
-    0x6E, 0x67, 0x00, 0x00, 0xA0, 0x02, 0x00, 0x80,  // 384..391
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // 392..399
-    0x83, 0x01, 0x00, 0x70, 0x61, 0x64, 0x64, 0x69,  // 400..407
-    0x6E, 0x67, 0x00, 0x0C, 0x00, 0x2C, 0x00, 0x48,  // 408..415
-    0x00, 0x68, 0x00, 0x88, 0x00, 0xA8, 0x00, 0xC4,  // 416..423
-    0x00, 0xE0, 0x00, 0x00, 0x01, 0x1C, 0x01, 0x6C,  // 424..431
-    0x01, 0x84, 0x01, 0x00, 0x00, 0x40, 0x01, 0x59,  // 432..439
-    0x01, 0x00, 0x00,
+  0x0B,0x09,0x8B,0x01,0xA5,0x01,0x00,0x00,// 0..7
+  0x00,0x00,0x00,0x00,0xA0,0x20,0x10,0x80,// 8..15
+  0x00,0x00,0x80,0xFF,0x00,0x00,0x80,0x7F,// 16..23
+  0x08,0x00,0x72,0x61,0x64,0x00,0x70,0x6F,// 24..31
+  0x73,0x5F,0x63,0x6D,0x64,0x00,0x00,0x00,// 32..39
+  0x00,0x00,0x00,0x00,0xA0,0x20,0x10,0x80,// 40..47
+  0x00,0x00,0x80,0xFF,0x00,0x00,0x80,0x7F,// 48..55
+  0x26,0x00,0x72,0x61,0x64,0x00,0x76,0x65,// 56..63
+  0x6C,0x5F,0x63,0x6D,0x64,0x00,0x00,0x00,// 64..71
+  0xA0,0x04,0x01,0x80,0x00,0x00,0x00,0x00,// 72..79
+  0x00,0x00,0x80,0x3F,0x46,0x00,0x6E,0x6F,// 80..87
+  0x6E,0x65,0x00,0x6F,0x75,0x74,0x00,0x00,// 88..95
+  0xA0,0x01,0x07,0x80,0x00,0x00,0x00,0x00,// 96..103
+  0x00,0x00,0x80,0x3F,0x5F,0x00,0x6E,0x6F,// 104..111
+  0x6E,0x65,0x00,0x65,0x6E,0x61,0x62,0x6C,// 112..119
+  0x65,0x00,0x00,0x00,0x00,0x00,0x00,0x00,// 120..127
+  0xA0,0x20,0x10,0x00,0x00,0x00,0x80,0xFF,// 128..135
+  0x00,0x00,0x80,0x7F,0x7A,0x00,0x72,0x61,// 136..143
+  0x64,0x00,0x70,0x6F,0x73,0x5F,0x66,0x62,// 144..151
+  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,// 152..159
+  0xA0,0x20,0x10,0x00,0x00,0x00,0x80,0xFF,// 160..167
+  0x00,0x00,0x80,0x7F,0x99,0x00,0x72,0x61,// 168..175
+  0x64,0x00,0x76,0x65,0x6C,0x5F,0x66,0x62,// 176..183
+  0x00,0x00,0x00,0x00,0xA0,0x08,0x03,0x00,// 184..191
+  0x00,0x00,0xF0,0xC1,0x00,0x00,0xF0,0x41,// 192..199
+  0xB9,0x00,0x41,0x00,0x63,0x75,0x72,0x72,// 200..207
+  0x65,0x6E,0x74,0x00,0x00,0x00,0x00,0x00,// 208..215
+  0xA0,0x04,0x01,0x00,0x00,0x00,0xC8,0xC2,// 216..223
+  0x00,0x00,0xC8,0x42,0xD4,0x00,0x6E,0x6F,// 224..231
+  0x6E,0x65,0x00,0x69,0x6E,0x00,0x00,0x00,// 232..239
+  0xA0,0x01,0x07,0x00,0x00,0x00,0x00,0x00,// 240..247
+  0x00,0x00,0x80,0x3F,0xEE,0x00,0x6E,0x6F,// 248..255
+  0x6E,0x65,0x00,0x66,0x61,0x75,0x6C,0x74,// 256..263
+  0x00,0x00,0x00,0x00,0xA0,0x01,0x07,0x40,// 264..271
+  0x00,0x00,0x00,0x00,0x00,0x00,0x80,0x3F,// 272..279
+  0x09,0x01,0x6E,0x6F,0x6E,0x65,0x00,0x69,// 280..287
+  0x6E,0x64,0x65,0x78,0x5F,0x65,0x6E,0x61,// 288..295
+  0x62,0x6C,0x65,0x00,0x00,0x00,0x00,0x00,// 296..303
+  0xA0,0x20,0x10,0x80,0x00,0x00,0x80,0xFF,// 304..311
+  0x00,0x00,0x80,0x7F,0x2C,0x01,0x6E,0x6F,// 312..319
+  0x6E,0x65,0x00,0x73,0x63,0x61,0x6C,0x65,// 320..327
+  0x00,0xB0,0x00,0x01,0x00,0x50,0x6F,0x73,// 328..335
+  0x69,0x74,0x69,0x6F,0x6E,0x20,0x6D,0x6F,// 336..343
+  0x64,0x65,0x00,0x00,0xA0,0x02,0x00,0x00,// 344..351
+  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,// 352..359
+  0x5B,0x01,0x00,0x70,0x61,0x64,0x64,0x69,// 360..367
+  0x6E,0x67,0x00,0x00,0xA0,0x02,0x00,0x80,// 368..375
+  0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,// 376..383
+  0x73,0x01,0x00,0x70,0x61,0x64,0x64,0x69,// 384..391
+  0x6E,0x67,0x00,0x0C,0x00,0x2C,0x00,0x48,// 392..399
+  0x00,0x60,0x00,0x80,0x00,0xA0,0x00,0xBC,// 400..407
+  0x00,0xD8,0x00,0xF0,0x00,0x0C,0x01,0x5C,// 408..415
+  0x01,0x74,0x01,0x00,0x00,0x30,0x01,0x49,// 416..423
+  0x01,0x00,0x00,
 };
-uint16_t sserial_ptocp = 0x019B;
-uint16_t sserial_gtocp = 0x01B5;
+
+const discovery_rpc_t discovery = {
+  .ptocp = 0x018B,
+  .gtocp = 0x01A5,
+  .input = 11,
+  .output = 9,
+};
 
 typedef struct {
   float pos_cmd;
   float vel_cmd;
-  uint32_t output_pins_0 : 1;
-  uint32_t output_pins_1 : 1;
-  uint32_t output_pins_2 : 1;
-  uint32_t output_pins_3 : 1;
+  uint32_t out_0 : 1;
+  uint32_t out_1 : 1;
+  uint32_t out_2 : 1;
+  uint32_t out_3 : 1;
   uint32_t enable : 1;
   uint32_t index_enable : 1;
   uint32_t padding : 2;
-} sserial_out_process_data_t;  //size:9 bytes
+} sserial_out_process_data_t; //size:9 bytes
 _Static_assert(sizeof(sserial_out_process_data_t) == 9, "sserial_out_process_data_t size error!");
 
 typedef struct {
   float pos_fb;
   float vel_fb;
   int8_t current;
-  uint32_t input_pins_0 : 1;
-  uint32_t input_pins_1 : 1;
-  uint32_t input_pins_2 : 1;
-  uint32_t input_pins_3 : 1;
+  uint32_t in_0 : 1;
+  uint32_t in_1 : 1;
+  uint32_t in_2 : 1;
+  uint32_t in_3 : 1;
   uint32_t fault : 1;
   uint32_t index_enable : 1;
   uint32_t padding : 2;
-} sserial_in_process_data_t;  //size:10 bytes
+} sserial_in_process_data_t; //size:10 bytes
 _Static_assert(sizeof(sserial_in_process_data_t) == 10, "sserial_in_process_data_t size error!");
-//global name:scale addr:0x13c size:32 dir:0x80
-#define scale_address 316
+//global name:scale addr:0x12c size:32 dir:0x80
+#define scale_address 300
 //******************************************************************************
-sserial_out_process_data_t data_out;
-sserial_in_process_data_t data_in;
 
-uint8_t crc_reuest(uint8_t len) {
+static sserial_out_process_data_t data_out;
+static sserial_in_process_data_t data_in;
+
+static uint8_t crc_reuest(uint8_t len) {
   uint8_t crc = crc8_init();
   for(int i = rxpos; i < rxpos + len; i++) {
     crc = crc8_update(crc, (void *)&(rxbuf[i % sizeof(rxbuf)]), 1);
@@ -185,13 +184,13 @@ uint8_t crc_reuest(uint8_t len) {
   return crc == rxbuf[(rxpos + len) % sizeof(rxbuf)];
 }
 
-uint8_t crc8(uint8_t *addr, uint8_t len) {
+static uint8_t crc8(uint8_t *addr, uint8_t len) {
   uint8_t crc = crc8_init();
   crc         = crc8_update(crc, addr, len);
   return crc8_finalize(crc);
 }
 
-void send(uint8_t len, uint8_t docrc) {
+static void send(uint8_t len, uint8_t docrc) {
   timeout = 0;
   if(docrc) {
     txbuf[len] = crc8((uint8_t *)txbuf, len);
@@ -251,12 +250,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   USART_Init(USART1, &USART_InitStruct);
   USART_InitStruct.USART_Mode = USART_Mode_Tx;
   USART_Init(UART4, &USART_InitStruct);
-  //USART_HalfDuplexCmd(USART1,ENABLE);
 
-  //USART_InitStruct.USART_Mode = USART_Mode_Tx;
-  //USART_Init(USART1, &USART_InitStruct);
-
-  //USART_Cmd(USART1, ENABLE);
   USART_Cmd(USART1, ENABLE);
   USART_Cmd(UART4, ENABLE);
 
@@ -310,8 +304,6 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   DMA_InitStructure.DMA_PeripheralBurst    = DMA_PeripheralBurst_Single;
   DMA_Init(DMA1_Stream4, &DMA_InitStructure);
 
-  //DMA_Cmd(DMA1_Stream7, ENABLE);
-
   USART_DMACmd(UART4, USART_DMAReq_Tx, ENABLE);
 
   //tx enable
@@ -330,11 +322,6 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   rxpos   = 0;
   timeout = 1000;  //make sure we start in timeout
 
-  discovery.input  = sizeof(sserial_in_process_data_t) + 1;  //+1 for fault byte
-  discovery.output = sizeof(sserial_out_process_data_t);
-  discovery.ptocp  = sserial_ptocp;
-  discovery.gtocp  = sserial_gtocp;
-
   //bytes to wait before expected end of transmission to prevent timeouts
   block_bytes = 4;
   //calculate timeout in systicks for block_bytes
@@ -343,240 +330,202 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
 
 static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  // struct res_ctx_t * ctx = (struct res_ctx_t *)ctx_ptr;
   struct sserial_pin_ctx_t *pins = (struct sserial_pin_ctx_t *)pin_ptr;
-  for(int j = 0; j < 1; j++) {
-    //next received packet will be written to bufferpos
-    bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
-    //how many packets we have the the rx buffer for processing
-    available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
+  //next received packet will be written to bufferpos
+  uint32_t bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
+  //how many packets we have the the rx buffer for processing
+  uint32_t available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
 
-    if(available >= 1) {
-      lbp.byte = rxbuf[rxpos];
+  if(available >= 1) {
+    lbp.byte = rxbuf[rxpos];
 
-      if(lbp.ct == CT_LOCAL && lbp.wr == 0) {  //local read, cmd+crc = 2b
-        timeout = 0;
-        if(available >= 2) {
-          switch(lbp.byte) {
-            case LBPCookieCMD:
-              txbuf[0] = LBPCookie;
-              break;
-            case LBPStatusCMD:  //TODO: return status
-              txbuf[0] = 0x00;
-              break;
-            case LBPCardName0Cmd ... LBPCardName3Cmd:
-              txbuf[0] = name[lbp.byte - LBPCardName0Cmd];
-              break;
-            default:  //TODO: handle unknown command condition
-              txbuf[0] = 0x00;
-          }
-          send(1, 1);
-          rxpos += 2;
-        } else {
-          continue;
+    if(lbp.ct == CT_LOCAL && lbp.wr == 0) {  //local read, cmd+crc = 2b
+      timeout = 0;
+      if(available >= 2) {
+        switch(lbp.byte) {
+          case LBPCookieCMD:
+            txbuf[0] = LBPCookie;
+            break;
+          case LBPStatusCMD:  //TODO: return status
+            txbuf[0] = 0x00;
+            break;
+          case LBPCardName0Cmd ... LBPCardName3Cmd:
+            txbuf[0] = name[lbp.byte - LBPCardName0Cmd];
+            break;
+          default:  //TODO: handle unknown command condition
+            txbuf[0] = 0x00;
         }
-      } else if(lbp.ct == CT_LOCAL && lbp.wr == 1) {  //local write, cmd+data+crc = 3b
-        timeout = 0;
-        //0xFF and 0xFC are not followed by crc
-        if(rxbuf[rxpos] == 0xFF) {
-          // reset parser
-          rxpos += 1;
-        } else if(rxbuf[rxpos] == 0xFC) {
-          // todo
-          rxpos += 1;
-        } else if(available >= 3) {  //writes do not expect crc in reply
-          txbuf[0] = 0x00;
-          send(1, 0);
-          rxpos += 3;
-        } else {
-          continue;
-        }
-      } else if(lbp.ct == CT_RPC) {  //RPC TODO: check for ct should not required for rpc
-        timeout = 0;
-        if(lbp.byte == UnitNumberRPC && available >= 2) {  //unit number, cmd+crc = 2b
-          txbuf[0] = unit.byte[0];
-          txbuf[1] = unit.byte[1];
-          txbuf[2] = unit.byte[2];
-          txbuf[3] = unit.byte[3];
-          send(4, 1);
-          rxpos += 2;
-        } else if(lbp.byte == DiscoveryRPC && available >= 2) {  //discovery, cmd+crc = 2b
-          memcpy((void *)txbuf, ((uint8_t *)&discovery), sizeof(discovery));
-          send(sizeof(discovery), 1);
-          rxpos += 2;
-        } else if(lbp.byte == ProcessDataRPC && available >= discovery.output + 2 - block_bytes) {  //process data, requires cmd+output bytes+crc
-          uint32_t t1         = hal_get_systick_value();
-          uint32_t wait_ticks = 0;
-          //wait with timeout until rest of process data is received
-          do {
-            uint32_t t2 = hal_get_systick_value();
-            if(t1 < t2) {
-              t1 += hal_get_systick_reload();
-            }
-            wait_ticks = t1 - t2;
-            //next received packet will be written to bufferpos
-            bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
-            //how many packets we have the the rx buffer for processing
-            available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
-          } while(available < discovery.output + 2 && wait_ticks <= max_waste_ticks);
-          //TODO: fault handling on timeout...
-          //set input pins
-          data_in.pos_fb       = PIN(pos_fb) + PIN(vel_fb) * PIN(pos_advance);
-          data_in.vel_fb       = PIN(vel_fb);
-          data_in.current      = CLAMP(PIN(current) / (30.0f / 128.0f), -127, 127);
-          data_in.input_pins_0 = (PIN(in0) > 0) ? 1 : 0;
-          data_in.input_pins_1 = (PIN(in1) > 0) ? 1 : 0;
-          data_in.input_pins_2 = (PIN(in2) > 0) ? 1 : 0;
-          data_in.input_pins_3 = (PIN(in3) > 0) ? 1 : 0;
-          data_in.fault        = (PIN(fault) > 0) ? 1 : 0;
-
-          //copy output pins from rx buffer
-          for(int i = 0; i < discovery.output; i++) {
-            ((uint8_t *)(&data_out))[i] = rxbuf[(rxpos + i + 1) % sizeof(rxbuf)];
-          }
-
-          //set bidirectional pins
-          PIN(index_out)       = data_out.index_enable;
-          data_in.index_enable = (PIN(index_clear) > 0) ? 0 : data_out.index_enable;
-
-          //copy input pins to tx buffer
-          txbuf[0] = 0x00;  //fault byte
-          for(int i = 0; i < (discovery.input - 1); i++) {
-            txbuf[i + 1] = ((uint8_t *)(&data_in))[i];
-          }
-          if(crc_reuest(discovery.output + 1)) {
-            //send buffer
-            DMA_SetCurrDataCounter(DMA1_Stream4, discovery.input + 1);
-            DMA_Cmd(DMA1_Stream4, DISABLE);
-            DMA_ClearFlag(DMA1_Stream4, DMA_FLAG_TCIF4);
-            DMA_Cmd(DMA1_Stream4, ENABLE);
-            txbuf[discovery.input] = crc8((uint8_t *)txbuf, discovery.input);
-            //send(discovery.input, 1);
-            timeout = 0;
-            //set output pins
-            PIN(pos_cmd)   = data_out.pos_cmd;
-            PIN(pos_cmd_d) = data_out.vel_cmd;
-            PIN(out0)      = data_out.output_pins_0;
-            PIN(out1)      = data_out.output_pins_1;
-            PIN(out2)      = data_out.output_pins_2;
-            PIN(out3)      = data_out.output_pins_3;
-            PIN(enable)    = data_out.enable;
-          } else {
-            PIN(crc_error)
-            ++;
-            PIN(connected) = 0;
-            PIN(error)     = 1;
-            PIN(pos_cmd)   = 0;
-            PIN(pos_cmd_d) = 0;
-            PIN(out0)      = 0;
-            PIN(out1)      = 0;
-            PIN(out2)      = 0;
-            PIN(out3)      = 0;
-            PIN(enable)    = 0;
-          }
-          rxpos += discovery.output + 2;
-        } else {
-          continue;
-        }
-      } else if(lbp.ct == CT_RW && lbp.wr == 0) {  //read
-        //size = 1 + 2*lbp.as  + 1
-        int size = 2 * lbp.as + 2;
-        timeout  = 0;
-        if(available >= size) {
-          if(lbp.as) {  //address included in command = cmd+addr+addr+crc
-            address = rxbuf[(rxpos + 1) % sizeof(rxbuf)] + (rxbuf[(rxpos + 2) % sizeof(rxbuf)] << 8);
-            rxpos += 4;
-          } else {  //address not included in command = cmd+crc
-            rxpos += 2;
-          }
-          //TODO: causes timeouts...
-          //if((address + (1 << lbp.ds)) < ARRAY_SIZE(sserial_slave)) {  //check if address is valid
-          memcpy((void *)txbuf, &sserial_slave[address], (1 << lbp.ds));
-          send((1 << lbp.ds), 1);
-          //}
-          if(lbp.ai) {  //auto increment address by datasize
-            address += (1 << lbp.ds);
-          }
-        } else {
-          continue;
-        }
-      } else if(lbp.ct == CT_RW && lbp.wr == 1) {  // lbp (addr1 addr2) data0, data1,...
-        //size = 1 + 2*ai +ds +crc
-        int size = 2 * lbp.as + (1 << lbp.ds) + 2;
-        timeout  = 0;
-        if(available >= size) {
-          // for(int i = 0; i < size; i++) {
-          //   printbuf[i] = rxbuf[(rxpos + i) % sizeof(rxbuf)];
-          // }
-          // printdebug = size;
-          if(lbp.as) {  //address included in command = cmd+addr+addr+crc
-            address = rxbuf[(rxpos + 1) % sizeof(rxbuf)] + (rxbuf[(rxpos + 2) % sizeof(rxbuf)] << 8);
-            rxpos += 3;
-          } else {  //address not included in command = cmd+crc
-            rxpos += 1;
-          }
-          //TODO: check size
-          if((address + (1 << lbp.ds)) < ARRAY_SIZE(sserial_slave)) {  //check if address is valid
-            for(int i = 0; i < (1 << lbp.ds); i++) {
-              sserial_slave[address + i] = rxbuf[(rxpos + i) % sizeof(rxbuf)];
-            }
-          }
-          rxpos += (1 << lbp.ds) + 1;
-          //update globals
-          float tmp;
-          memcpy(&tmp, &sserial_slave[scale_address], 4);
-          PIN(scale) = tmp;
-          if(lbp.ai) {  //auto increment address by datasize
-            address += (1 << lbp.ds);
-          }
-        } else {
-          continue;
-        }
-      } else {
-        //TODO: handle unkown packet
+        send(1, 1);
+        rxpos += 2;
       }
-    }
+    } else if(lbp.ct == CT_LOCAL && lbp.wr == 1) {  //local write, cmd+data+crc = 3b
+      timeout = 0;
+      //0xFF and 0xFC are not followed by crc
+      if(rxbuf[rxpos] == 0xFF) {
+        // reset parser
+        rxpos += 1;
+      } else if(rxbuf[rxpos] == 0xFC) {
+        // todo
+        rxpos += 1;
+      } else if(available >= 3) {  //writes do not expect crc in reply
+        txbuf[0] = 0x00;
+        send(1, 0);
+        rxpos += 3;
+      }
+    } else if(lbp.ct == CT_RPC) {  //RPC TODO: check for ct should not required for rpc
+      timeout = 0;
+      if(lbp.byte == UnitNumberRPC && available >= 2) {  //unit number, cmd+crc = 2b
+        txbuf[0] = unit.byte[0];
+        txbuf[1] = unit.byte[1];
+        txbuf[2] = unit.byte[2];
+        txbuf[3] = unit.byte[3];
+        send(4, 1);
+        rxpos += 2;
+      } else if(lbp.byte == DiscoveryRPC && available >= 2) {  //discovery, cmd+crc = 2b
+        memcpy((void *)txbuf, ((uint8_t *)&discovery), sizeof(discovery));
+        send(sizeof(discovery), 1);
+        rxpos += 2;
+      } else if(lbp.byte == ProcessDataRPC && available >= discovery.output + 2 - block_bytes) {  //process data, requires cmd+output bytes+crc
+        uint32_t t1         = hal_get_systick_value();
+        uint32_t wait_ticks = 0;
+        //wait with timeout until rest of process data is received
+        do {
+          uint32_t t2 = hal_get_systick_value();
+          if(t1 < t2) {
+            t1 += hal_get_systick_reload();
+          }
+          wait_ticks = t1 - t2;
+          //next received packet will be written to bufferpos
+          bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
+          //how many packets we have the the rx buffer for processing
+          available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
+        } while(available < discovery.output + 2 && wait_ticks <= max_waste_ticks);
+        //TODO: fault handling on timeout...
+        //set input pins
+        data_in.pos_fb       = PIN(pos_fb) + PIN(vel_fb) * PIN(pos_advance);
+        data_in.vel_fb       = PIN(vel_fb);
+        data_in.current      = CLAMP(PIN(current) / (30.0f / 128.0f), -127, 127);
+        data_in.in_0 = (PIN(in0) > 0) ? 1 : 0;
+        data_in.in_1 = (PIN(in1) > 0) ? 1 : 0;
+        data_in.in_2 = (PIN(in2) > 0) ? 1 : 0;
+        data_in.in_3 = (PIN(in3) > 0) ? 1 : 0;
+        data_in.fault        = (PIN(fault) > 0) ? 1 : 0;
 
-    if(timeout > PIN(timeout)) {  //TODO: clamping
-      PIN(connected) = 0;
-      PIN(error)     = 1;
-      PIN(pos_cmd)   = 0;
-      PIN(pos_cmd_d) = 0;
-      PIN(out0)      = 0;
-      PIN(out1)      = 0;
-      PIN(out2)      = 0;
-      PIN(out3)      = 0;
-      PIN(enable)    = 0;
-      rxpos          = bufferpos;
+        //copy output pins from rx buffer
+        for(int i = 0; i < discovery.output; i++) {
+          ((uint8_t *)(&data_out))[i] = rxbuf[(rxpos + i + 1) % sizeof(rxbuf)];
+        }
+
+        //set bidirectional pins
+        PIN(index_out)       = data_out.index_enable;
+        data_in.index_enable = (PIN(index_clear) > 0) ? 0 : data_out.index_enable;
+
+        //copy input pins to tx buffer
+        txbuf[0] = 0x00;  //fault byte
+        for(int i = 0; i < (discovery.input - 1); i++) {
+          txbuf[i + 1] = ((uint8_t *)(&data_in))[i];
+        }
+        if(crc_reuest(discovery.output + 1)) {
+          //send buffer
+          DMA_SetCurrDataCounter(DMA1_Stream4, discovery.input + 1);
+          DMA_Cmd(DMA1_Stream4, DISABLE);
+          DMA_ClearFlag(DMA1_Stream4, DMA_FLAG_TCIF4);
+          DMA_Cmd(DMA1_Stream4, ENABLE);
+          txbuf[discovery.input] = crc8((uint8_t *)txbuf, discovery.input);
+          //send(discovery.input, 1);
+          timeout = 0;
+          //set output pins
+          PIN(pos_cmd)   = data_out.pos_cmd;
+          PIN(pos_cmd_d) = data_out.vel_cmd;
+          PIN(out0)      = data_out.out_0;
+          PIN(out1)      = data_out.out_1;
+          PIN(out2)      = data_out.out_2;
+          PIN(out3)      = data_out.out_3;
+          PIN(enable)    = data_out.enable;
+        } else {
+          PIN(crc_error)
+          ++;
+          PIN(connected) = 0;
+          PIN(error)     = 1;
+          PIN(pos_cmd)   = 0;
+          PIN(pos_cmd_d) = 0;
+          PIN(out0)      = 0;
+          PIN(out1)      = 0;
+          PIN(out2)      = 0;
+          PIN(out3)      = 0;
+          PIN(enable)    = 0;
+        }
+        rxpos += discovery.output + 2;
+      }
+    } else if(lbp.ct == CT_RW && lbp.wr == 0) {  //read
+      //size = 1 + 2*lbp.as  + 1
+      int size = 2 * lbp.as + 2;
+      timeout  = 0;
+      if(available >= size) {
+        if(lbp.as) {  //address included in command = cmd+addr+addr+crc
+          address = rxbuf[(rxpos + 1) % sizeof(rxbuf)] + (rxbuf[(rxpos + 2) % sizeof(rxbuf)] << 8);
+          rxpos += 4;
+        } else {  //address not included in command = cmd+crc
+          rxpos += 2;
+        }
+        //TODO: causes timeouts...
+        //if((address + (1 << lbp.ds)) < ARRAY_SIZE(sserial_slave)) {  //check if address is valid
+        memcpy((void *)txbuf, &sserial_slave[address], (1 << lbp.ds));
+        send((1 << lbp.ds), 1);
+        //}
+        if(lbp.ai) {  //auto increment address by datasize
+          address += (1 << lbp.ds);
+        }
+      }
+    } else if(lbp.ct == CT_RW && lbp.wr == 1) {  // lbp (addr1 addr2) data0, data1,...
+      //size = 1 + 2*ai +ds +crc
+      int size = 2 * lbp.as + (1 << lbp.ds) + 2;
+      timeout  = 0;
+      if(available >= size) {
+        if(lbp.as) {  //address included in command = cmd+addr+addr+crc
+          address = rxbuf[(rxpos + 1) % sizeof(rxbuf)] + (rxbuf[(rxpos + 2) % sizeof(rxbuf)] << 8);
+          rxpos += 3;
+        } else {  //address not included in command = cmd+crc
+          rxpos += 1;
+        }
+        //TODO: check size
+        if((address + (1 << lbp.ds)) < ARRAY_SIZE(sserial_slave)) {  //check if address is valid
+          for(int i = 0; i < (1 << lbp.ds); i++) {
+            sserial_slave[address + i] = rxbuf[(rxpos + i) % sizeof(rxbuf)];
+          }
+        }
+        rxpos += (1 << lbp.ds) + 1;
+        //update globals
+        float tmp;
+        memcpy(&tmp, &sserial_slave[scale_address], 4);
+        PIN(scale) = tmp;
+        if(lbp.ai) {  //auto increment address by datasize
+          address += (1 << lbp.ds);
+        }
+      }
     } else {
-      PIN(connected) = 1;
-      PIN(error)     = 0;
+      //TODO: handle unkown packet
     }
-    rxpos = rxpos % sizeof(rxbuf);
   }
+
+  if(timeout > PIN(timeout)) {  //TODO: clamping
+    PIN(connected) = 0;
+    PIN(error)     = 1;
+    PIN(pos_cmd)   = 0;
+    PIN(pos_cmd_d) = 0;
+    PIN(out0)      = 0;
+    PIN(out1)      = 0;
+    PIN(out2)      = 0;
+    PIN(out3)      = 0;
+    PIN(enable)    = 0;
+    rxpos          = bufferpos;
+  } else {
+    PIN(connected) = 1;
+    PIN(error)     = 0;
+  }
+  rxpos = rxpos % sizeof(rxbuf);
   timeout++;
 }
-
-// static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-//   struct sserial_ctx_t *ctx      = (struct sserial_ctx_t *)ctx_ptr;
-//   struct sserial_pin_ctx_t *pins = (struct sserial_pin_ctx_t *)pin_ptr;
-//   if(printdebug) {
-//     printf("write: ");
-//     for(int i = 0; i < printdebug; i++) {
-//       printf("0x%x ", printbuf[i]);
-//     }
-//     printf("\n");
-//     printf("sserial_slave @316: ");
-//     for(int i = 0; i < 4; i++) {
-//       printf("0x%x ", sserial_slave[i + 316]);
-//     }
-//     printf("\n");
-//     float foo;
-//     memcpy(&foo, &sserial_slave[316], 4);
-//     printf("value: %f\n", foo);
-//     printdebug = 0;
-//   }
-// }
 
 const hal_comp_t sserial_comp_struct = {
     .name      = "sserial",
