@@ -181,6 +181,8 @@ CFLAGS += -std=gnu11
 CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
 CFLAGS += -Wall
+CFLAGS += -Wmaybe-uninitialized
+CFLAGS += -Wuninitialized
 CFLAGS += -fno-builtin ## from old
 CFLAGS += -nostartfiles
 CFLAGS += -Wfatal-errors
