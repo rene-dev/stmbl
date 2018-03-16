@@ -2,8 +2,6 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_flash_ex.c
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
   * @brief   Extended FLASH HAL module driver.
   *    
   *          This file provides firmware functions to manage the following 
@@ -177,7 +175,7 @@ static uint8_t           FLASH_OB_GetUser(void);
 HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *PageError)
 {
   HAL_StatusTypeDef status = HAL_ERROR;
-  uint32_t address = 0;
+  uint32_t address = 0U;
 
   /* Process Locked */
   __HAL_LOCK(&pFlash);
@@ -482,7 +480,7 @@ void HAL_FLASHEx_OBGetConfig(FLASH_OBProgramInitTypeDef *pOBInit)
   */
 uint32_t HAL_FLASHEx_OBGetUserData(uint32_t DATAAdress)
 {
-  uint32_t value = 0;
+  uint32_t value = 0U;
   
   if (DATAAdress == OB_DATA_ADDRESS_DATA0)
   {
@@ -539,15 +537,15 @@ static void FLASH_MassErase(void)
 static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
 {
   HAL_StatusTypeDef status = HAL_OK;
-  uint16_t WRP0_Data = 0xFFFF;
+  uint16_t WRP0_Data = 0xFFFFU;
 #if defined(OB_WRP1_WRP1)
-  uint16_t WRP1_Data = 0xFFFF;
+  uint16_t WRP1_Data = 0xFFFFU;
 #endif /* OB_WRP1_WRP1 */
 #if defined(OB_WRP2_WRP2)
-  uint16_t WRP2_Data = 0xFFFF;
+  uint16_t WRP2_Data = 0xFFFFU;
 #endif /* OB_WRP2_WRP2 */
 #if defined(OB_WRP3_WRP3)
-  uint16_t WRP3_Data = 0xFFFF;
+  uint16_t WRP3_Data = 0xFFFFU;
 #endif /* OB_WRP3_WRP3 */
   
   /* Check the parameters */
@@ -561,17 +559,17 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP_PAGES0TO31MASK */
   
 #if defined(OB_WRP_PAGES16TO31MASK)
-  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES16TO31MASK) >> 8);
+  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES16TO31MASK) >> 8U);
 #endif /* OB_WRP_PAGES32TO63MASK */
  
 #if defined(OB_WRP_PAGES32TO47MASK)
-  WRP2_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO47MASK) >> 16);
+  WRP2_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO47MASK) >> 16U);
 #endif /* OB_WRP_PAGES32TO47MASK */
 
 #if defined(OB_WRP_PAGES48TO127MASK)
-  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO127MASK) >> 24); 
+  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO127MASK) >> 24U); 
 #elif defined(OB_WRP_PAGES48TO255MASK)
-  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO255MASK) >> 24); 
+  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO255MASK) >> 24U); 
 #endif /* OB_WRP_PAGES48TO63MASK */
   
   /* Wait for last operation to be completed */
@@ -590,7 +588,7 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
       SET_BIT(FLASH->CR, FLASH_CR_OPTPG);
 
 #if defined(OB_WRP0_WRP0)
-      if(WRP0_Data != 0xFF)
+      if(WRP0_Data != 0xFFU)
       {
         OB->WRP0 &= WRP0_Data;
         
@@ -600,7 +598,7 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP0_WRP0 */
 
 #if defined(OB_WRP1_WRP1)
-      if((status == HAL_OK) && (WRP1_Data != 0xFF))
+      if((status == HAL_OK) && (WRP1_Data != 0xFFU))
       {
         OB->WRP1 &= WRP1_Data;
         
@@ -610,7 +608,7 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP1_WRP1 */
 
 #if defined(OB_WRP2_WRP2)
-      if((status == HAL_OK) && (WRP2_Data != 0xFF))
+      if((status == HAL_OK) && (WRP2_Data != 0xFFU))
       {
         OB->WRP2 &= WRP2_Data;
         
@@ -620,7 +618,7 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP2_WRP2 */
 
 #if defined(OB_WRP3_WRP3)
-      if((status == HAL_OK) && (WRP3_Data != 0xFF))
+      if((status == HAL_OK) && (WRP3_Data != 0xFFU))
       {
         OB->WRP3 &= WRP3_Data;
         
@@ -651,15 +649,15 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
 static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
 {
   HAL_StatusTypeDef status = HAL_OK;
-  uint16_t WRP0_Data = 0xFFFF;
+  uint16_t WRP0_Data = 0xFFFFU;
 #if defined(OB_WRP1_WRP1)
-  uint16_t WRP1_Data = 0xFFFF;
+  uint16_t WRP1_Data = 0xFFFFU;
 #endif /* OB_WRP1_WRP1 */
 #if defined(OB_WRP2_WRP2)
-  uint16_t WRP2_Data = 0xFFFF;
+  uint16_t WRP2_Data = 0xFFFFU;
 #endif /* OB_WRP2_WRP2 */
 #if defined(OB_WRP3_WRP3)
-  uint16_t WRP3_Data = 0xFFFF;
+  uint16_t WRP3_Data = 0xFFFFU;
 #endif /* OB_WRP3_WRP3 */
   
   /* Check the parameters */
@@ -673,17 +671,17 @@ static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP_PAGES0TO31MASK */
   
 #if defined(OB_WRP_PAGES16TO31MASK)
-  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES16TO31MASK) >> 8);
+  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES16TO31MASK) >> 8U);
 #endif /* OB_WRP_PAGES32TO63MASK */
  
 #if defined(OB_WRP_PAGES32TO47MASK)
-  WRP2_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO47MASK) >> 16);
+  WRP2_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO47MASK) >> 16U);
 #endif /* OB_WRP_PAGES32TO47MASK */
 
 #if defined(OB_WRP_PAGES48TO127MASK)
-  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO127MASK) >> 24); 
+  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO127MASK) >> 24U); 
 #elif defined(OB_WRP_PAGES48TO255MASK)
-  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO255MASK) >> 24); 
+  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO255MASK) >> 24U); 
 #endif /* OB_WRP_PAGES48TO63MASK */
 
     
@@ -702,7 +700,7 @@ static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
       SET_BIT(FLASH->CR, FLASH_CR_OPTPG);
 
 #if defined(OB_WRP0_WRP0)
-      if(WRP0_Data != 0xFF)
+      if(WRP0_Data != 0xFFU)
       {
         OB->WRP0 |= WRP0_Data;
         
@@ -712,7 +710,7 @@ static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP0_WRP0 */
 
 #if defined(OB_WRP1_WRP1)
-      if((status == HAL_OK) && (WRP1_Data != 0xFF))
+      if((status == HAL_OK) && (WRP1_Data != 0xFFU))
       {
         OB->WRP1 |= WRP1_Data;
         
@@ -722,7 +720,7 @@ static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP1_WRP1 */
 
 #if defined(OB_WRP2_WRP2)
-      if((status == HAL_OK) && (WRP2_Data != 0xFF))
+      if((status == HAL_OK) && (WRP2_Data != 0xFFU))
       {
         OB->WRP2 |= WRP2_Data;
         
@@ -732,7 +730,7 @@ static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP2_WRP2 */
 
 #if defined(OB_WRP3_WRP3)
-      if((status == HAL_OK) && (WRP3_Data != 0xFF))
+      if((status == HAL_OK) && (WRP3_Data != 0xFFU))
       {
         OB->WRP3 |= WRP3_Data;
         
@@ -836,9 +834,9 @@ static HAL_StatusTypeDef FLASH_OB_UserConfig(uint8_t UserConfig)
     SET_BIT(FLASH->CR, FLASH_CR_OPTPG); 
  
 #if   defined(FLASH_OBR_SDADC12_VDD_MONITOR)
-    OB->USER = (UserConfig | 0x08);
+    OB->USER = (UserConfig | 0x08U);
 #else
-    OB->USER = (UserConfig | 0x88);
+    OB->USER = (UserConfig | 0x88U);
 #endif
 
     /* Wait for last operation to be completed */
@@ -912,8 +910,7 @@ static uint32_t FLASH_OB_GetWRP(void)
   */
 static uint32_t FLASH_OB_GetRDP(void)
 {
-  uint32_t readstatus = OB_RDP_LEVEL_0;
-  uint32_t tmp_reg = 0;
+  uint32_t tmp_reg = 0U;
   
   /* Read RDP level bits */
 #if defined(FLASH_OBR_RDPRT)
@@ -930,7 +927,7 @@ static uint32_t FLASH_OB_GetRDP(void)
   if (tmp_reg == FLASH_OBR_LEVEL1_PROT)
 #endif /* FLASH_OBR_LEVEL1_PROT */
   {
-    readstatus = OB_RDP_LEVEL_1;
+    return OB_RDP_LEVEL_1;
   }
 #if   defined(FLASH_OBR_RDPRT)
   else if (tmp_reg == FLASH_OBR_RDPRT_2)
@@ -938,14 +935,12 @@ static uint32_t FLASH_OB_GetRDP(void)
   else if (tmp_reg == FLASH_OBR_LEVEL2_PROT)
 #endif
   {
-    readstatus = OB_RDP_LEVEL_2;
+    return OB_RDP_LEVEL_2;
   }
   else 
   {
-    readstatus = OB_RDP_LEVEL_0;
+    return OB_RDP_LEVEL_0;
   }
-
-  return readstatus;
 }
 
 /**

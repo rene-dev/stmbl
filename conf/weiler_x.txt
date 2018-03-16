@@ -1,0 +1,17 @@
+link pid
+link pmsm
+link enc_fb0
+link misc
+link sserial
+linrev0.scale = -3.5483870968
+conf0.r = 0.4
+conf0.l = 0.01
+conf0.j = 0.00015
+conf0.polecount = 2
+conf0.max_force = 10
+conf0.max_ac_cur = 10
+conf0.mot_fb_res = 16384
+conf0.mot_fb_offset = -2.842850
+fb_switch0.phase_cur = 7
+fb_switch0.phase_time = 1
+fb_switch0.mot_state = 1

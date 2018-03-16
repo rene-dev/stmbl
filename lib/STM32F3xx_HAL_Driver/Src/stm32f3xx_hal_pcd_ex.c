@@ -2,8 +2,6 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_pcd_ex.c
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
   * @brief   Extended PCD HAL module driver.
   *          This file provides firmware functions to manage the following 
   *          functionalities of the USB Peripheral Controller:
@@ -85,12 +83,12 @@
 
 /**
   * @brief Configure PMA for EP
-  * @param  hpcd: PCD handle
-  * @param  ep_addr: endpoint address
-  * @param  ep_kind: endpoint Kind
+  * @param  hpcd PCD handle
+  * @param  ep_addr endpoint address
+  * @param  ep_kind endpoint Kind
   *                @arg USB_SNG_BUF: Single Buffer used
   *                @arg USB_DBL_BUF: Double Buffer used
-  * @param  pmaadress: EP address in The PMA: In case of single buffer endpoint
+  * @param  pmaadress EP address in The PMA: In case of single buffer endpoint
   *                   this parameter is 16-bit value providing the address
   *                   in PMA allocated to endpoint.
   *                   In case of double buffer endpoint this parameter
@@ -109,9 +107,9 @@ HAL_StatusTypeDef  HAL_PCDEx_PMAConfig(PCD_HandleTypeDef *hpcd,
   PCD_EPTypeDef *ep;
   
   /* initialize ep structure*/
-  if ((0x80 & ep_addr) == 0x80)
+  if ((0x80U & ep_addr) == 0x80U)
   {
-    ep = &hpcd->IN_ep[ep_addr & 0x7F];
+    ep = &hpcd->IN_ep[ep_addr & 0x7FU];
   }
   else
   {
@@ -122,7 +120,7 @@ HAL_StatusTypeDef  HAL_PCDEx_PMAConfig(PCD_HandleTypeDef *hpcd,
   if (ep_kind == PCD_SNG_BUF)
   {
     /*Single Buffer*/
-    ep->doublebuffer = 0;
+    ep->doublebuffer = 0U;
     /*Configure the PMA*/
     ep->pmaadress = (uint16_t)pmaadress;
   }
@@ -131,8 +129,8 @@ HAL_StatusTypeDef  HAL_PCDEx_PMAConfig(PCD_HandleTypeDef *hpcd,
     /*Double Buffer Endpoint*/
     ep->doublebuffer = 1;
     /*Configure the PMA*/
-    ep->pmaaddr0 =  pmaadress & 0xFFFF;
-    ep->pmaaddr1 =  (pmaadress & 0xFFFF0000U) >> 16;
+    ep->pmaaddr0 =  pmaadress & 0xFFFFU;
+    ep->pmaaddr1 =  (pmaadress & 0xFFFF0000U) >> 16U;
   }
   
   return HAL_OK; 
@@ -164,15 +162,17 @@ HAL_StatusTypeDef  HAL_PCDEx_PMAConfig(PCD_HandleTypeDef *hpcd,
   */
 void PCD_WritePMA(USB_TypeDef  *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
 {
-  uint32_t n = (wNBytes + 1) >> 1;   /* n = (wNBytes + 1) / 2 */
+  uint32_t n =  ((uint32_t)((uint32_t)wNBytes + 1U)) >> 1U;
+  
   uint32_t i, temp1, temp2;
   uint16_t *pdwVal;
-  pdwVal = (uint16_t *)(wPMABufAddr * 2 + (uint32_t)USBx + 0x400);
+  pdwVal = (uint16_t *)((uint32_t)(wPMABufAddr * 2 + (uint32_t)USBx + 0x400U));
+  
   for (i = n; i != 0; i--)
   {
     temp1 = (uint16_t) * pbUsrBuf;
     pbUsrBuf++;
-    temp2 = temp1 | (uint16_t) * pbUsrBuf << 8;
+    temp2 = temp1 | ((uint16_t)((uint16_t)  * pbUsrBuf << 8U)) ;
     *pdwVal++ = temp2;
     pdwVal++;
     pbUsrBuf++;
@@ -189,14 +189,24 @@ void PCD_WritePMA(USB_TypeDef  *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, u
   */
 void PCD_ReadPMA(USB_TypeDef  *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
 {
-  uint32_t n = (wNBytes + 1) >> 1;/* /2*/
+  uint32_t n = (uint32_t)wNBytes >> 1U;
   uint32_t i;
-  uint32_t *pdwVal;
-  pdwVal = (uint32_t *)(wPMABufAddr * 2 + (uint32_t)USBx + 0x400);
-  for (i = n; i != 0; i--)
+  uint16_t *pdwVal;
+  uint32_t temp;
+  pdwVal = (uint16_t *)((uint32_t)(wPMABufAddr * 2 + (uint32_t)USBx + 0x400U));
+  
+  for (i = n; i != 0U; i--)
   {
-    *(uint16_t*)pbUsrBuf++ = *pdwVal++;
-    pbUsrBuf++;
+    temp = *pdwVal++;
+    *pbUsrBuf++ = ((temp >> 0) & 0xFF);
+    *pbUsrBuf++ = ((temp >> 8) & 0xFF);
+    pdwVal++;
+  }
+
+  if (wNBytes % 2)
+  {
+    temp = *pdwVal++;
+    *pbUsrBuf++ = ((temp >> 0) & 0xFF);
   }
 }
 #endif /* STM32F303xC                || */
@@ -216,17 +226,16 @@ void PCD_ReadPMA(USB_TypeDef  *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, ui
   */
 void PCD_WritePMA(USB_TypeDef  *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
 {
-  uint32_t n = (wNBytes + 1) >> 1; 
+  uint32_t n =  ((uint32_t)((uint32_t)wNBytes + 1U)) >> 1U;
   uint32_t i;
   uint16_t temp1, temp2;
   uint16_t *pdwVal;
-  pdwVal = (uint16_t *)(wPMABufAddr + (uint32_t)USBx + 0x400);
-  
-  for (i = n; i != 0; i--)
+  pdwVal = (uint16_t *)((uint32_t)(wPMABufAddr + (uint32_t)USBx + 0x400U));  
+  for (i = n; i != 0U; i--)
   {
     temp1 = (uint16_t) * pbUsrBuf;
     pbUsrBuf++;
-    temp2 = temp1 | (uint16_t) * pbUsrBuf << 8;
+    temp2 = temp1 | ((uint16_t)((uint16_t)  * pbUsrBuf << 8U)) ;
     *pdwVal++ = temp2;
     pbUsrBuf++;
   }
@@ -242,14 +251,23 @@ void PCD_WritePMA(USB_TypeDef  *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, u
   */
 void PCD_ReadPMA(USB_TypeDef  *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, uint16_t wNBytes)
 {
-  uint32_t n = (wNBytes + 1) >> 1;
+  uint32_t n = (uint32_t)wNBytes >> 1U;
   uint32_t i;
   uint16_t *pdwVal;
-  pdwVal = (uint16_t *)(wPMABufAddr + (uint32_t)USBx + 0x400);
-  for (i = n; i != 0; i--)
+  uint32_t temp;
+  pdwVal = (uint16_t *)((uint32_t)(wPMABufAddr + (uint32_t)USBx + 0x400U));
+
+  for (i = n; i != 0U; i--)
   {
-    *(uint16_t*)pbUsrBuf++ = *pdwVal++;
-    pbUsrBuf++;
+    temp = *pdwVal++;
+    *pbUsrBuf++ = ((temp >> 0) & 0xFF);
+    *pbUsrBuf++ = ((temp >> 8) & 0xFF);
+  }
+
+  if (wNBytes % 2)
+  {
+    temp = *pdwVal++;
+    *pbUsrBuf++ = ((temp >> 0) & 0xFF);
   }
 }
 #endif /* STM32F302xE || STM32F303xE || */
@@ -269,8 +287,8 @@ void PCD_ReadPMA(USB_TypeDef  *USBx, uint8_t *pbUsrBuf, uint16_t wPMABufAddr, ui
   */
 /**
   * @brief  Software Device Connection
-  * @param  hpcd: PCD handle
-  * @param  state: Device state
+  * @param  hpcd PCD handle
+  * @param  state Device state
   * @retval None
   */
  __weak void HAL_PCDEx_SetConnectionState(PCD_HandleTypeDef *hpcd, uint8_t state)
