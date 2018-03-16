@@ -21,6 +21,7 @@ SOURCES += src/stm32f4xx_it.c
 SOURCES += src/system_stm32f4xx.c #TODO: update this, system file from cmsis
 SOURCES += src/setup.c
 SOURCES += src/usb_cdc.c
+SOURCES += src/config.c
 # SOURCES += src/hal_conf.c
 SOURCES += src/hal_tbl.c
 
