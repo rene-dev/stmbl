@@ -68,8 +68,35 @@ void DMA2_Stream0_IRQHandler(void) {
 }
 
 void bootloader(char *ptr) {
-  *((unsigned long *)0x2001C000) = 0xDEADBEEF;  //set bootloader trigger
-  NVIC_SystemReset();
+  hal_stop();
+
+  NVIC_DisableIRQ(TIM_SLAVE_IRQ);
+  NVIC_DisableIRQ(DMA2_Stream0_IRQn);
+  NVIC_DisableIRQ(SysTick_IRQn);
+
+  void (*SysMemBootJump)(void);
+  volatile uint32_t addr = 0x1FFF0000;
+
+  RCC_DeInit();
+  SysTick->CTRL = 0;
+  SysTick->LOAD = 0;
+  SysTick->VAL = 0;
+  
+  RCC->AHB1RSTR = 0x22E017FF;
+  RCC->AHB1RSTR = 0;
+  RCC->AHB2RSTR = 0xF1;
+  RCC->AHB2RSTR = 0;
+  RCC->AHB3RSTR = 0x1;
+  RCC->AHB3RSTR = 0;
+  RCC->APB1RSTR = 0xF6FEC9FF;
+  RCC->APB1RSTR = 0;
+  RCC->APB2RSTR = 0x4777933;
+  RCC->APB2RSTR = 0;
+
+  SYSCFG->MEMRMP = 0x01;
+  SysMemBootJump = (void (*)(void)) (*((uint32_t *)(addr + 4)));
+  __set_MSP(*(uint32_t *)addr);
+  SysMemBootJump();
 }
 COMMAND("bootloader", bootloader, "enter bootloader");
 
