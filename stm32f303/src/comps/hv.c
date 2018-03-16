@@ -87,7 +87,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
-  ctx->pwm_res = CLAMP(PIN(arr), PWM_RES * 0.9, PWM_RES * 1.1);
+  ctx->pwm_res = (uint32_t)CLAMP(PIN(arr), PWM_RES * 0.9, PWM_RES * 1.1);
   TIM8->ARR    = ctx->pwm_res;
 
   float udc = MAX(PIN(udc), 0.1);
