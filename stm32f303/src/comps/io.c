@@ -19,10 +19,20 @@ HAL_PIN(u);
 HAL_PIN(v);
 HAL_PIN(w);
 HAL_PIN(udc);
-HAL_PIN(udc_pwm);
 
 HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
+
+HAL_PIN(uo);
+HAL_PIN(vo);
+HAL_PIN(wo);
+
+//enable in
+HAL_PIN(hv_en);
+
+//fault output
+HAL_PIN(fault);
+
 
 uint32_t adc_12_buf[6];
 uint32_t adc_34_buf[6];
@@ -31,6 +41,12 @@ struct io_ctx_t {
   float u_offset;
   float v_offset;
   float w_offset;
+  uint32_t offset_count;
+  uint32_t fault;
+  float overtemp_error;
+  float overvoltage_error;
+  float overcurrent_error;
+  // float fault_pin_error;
 };
 
 #define ARES 4096.0  // analog resolution, 12 bit
@@ -68,11 +84,11 @@ float r2temp(float r) {
       return (-(r - b) / (a - b) * step + i * step + start);
     }
   }
-  return (temp[ARRAY_SIZE(temp)] + step);
+  return (temp[ARRAY_SIZE(temp)] + step); // TODO fix
 }
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
+  struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
   // struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
   //LED
@@ -101,6 +117,31 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   DMA2_Channel5->CCR |= DMA_CCR_EN;
 
   //   ADC34_COMMON->CCR |= ADC34_CCR_MDMA_1;
+
+  ctx->offset_count = 0;
+  ctx->u_offset = 0.0;
+  ctx->v_offset = 0.0;
+  ctx->w_offset = 0.0;
+  ctx->fault = HV_NO_FAULT;
+  ctx->overtemp_error = 0;
+  ctx->overvoltage_error = 0;
+  ctx->overcurrent_error = 0;
+  // ctx->fault_pin_error = 0;
+
+#ifdef HV_EN_PIN
+  GPIO_InitStruct.Pin   = HV_EN_PIN;
+  GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull  = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(HV_EN_PORT, &GPIO_InitStruct);
+#endif
+
+#ifdef HV_FAULT_PIN
+  GPIO_InitStruct.Pin  = HV_FAULT_PIN;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(HV_FAULT_PORT, &GPIO_InitStruct);
+#endif
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -118,24 +159,81 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   uint32_t a12 = adc_12_buf[0] + adc_12_buf[1] + adc_12_buf[2] + adc_12_buf[3] + adc_12_buf[4];
   uint32_t a34 = adc_34_buf[0] + adc_34_buf[1] + adc_34_buf[2] + adc_34_buf[3] + adc_34_buf[4];
 
-  if(ctx->u_offset == 0) {
-    ctx->w_offset = AMP((float)(a12 & 0xFFFF) / 5.0, SHUNT_GAIN);
-    ctx->u_offset = AMP((float)(a12 >> 16) / 5.0, SHUNT_GAIN);
-    ctx->v_offset = AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN);
+  if(ctx->offset_count < 100) {
+    ctx->offset_count++;
   }
+  else if(ctx->offset_count < 100 + 100){
+    ctx->w_offset += AMP((float)(a12 & 0xFFFF) / 5.0, SHUNT_GAIN) / 100.0;
+    ctx->u_offset += AMP((float)(a12 >> 16) / 5.0, SHUNT_GAIN) / 100.0;
+    ctx->v_offset += AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN) / 100.0;
+    ctx->offset_count++;
+  }
+  else if(ctx->offset_count < 100 + 100 + 1){
+    if(ABS(ctx->u_offset) > 5.0 || ABS(ctx->v_offset) > 5.0 || ABS(ctx->w_offset) > 5.0){
+      // fault
+    }
+  }
+  else{
+    PIN(uo) = ctx->u_offset;
+    PIN(vo) = ctx->v_offset;
+    PIN(wo) = ctx->w_offset;
+    PIN(iw)       = -AMP((float)(a12 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->w_offset;  // 1u
+    PIN(iu)       = -AMP((float)(a12 >> 16) / 5.0, SHUNT_GAIN) + ctx->u_offset;
+    PIN(iv)       = -AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->v_offset;
+    PIN(w)        = VOLT(adc_12_buf[5] & 0xFFFF) * 0.05 + PIN(w) * 0.95;  // 0.6u
+    PIN(v)        = VOLT(adc_12_buf[5] >> 16) * 0.05 + PIN(v) * 0.95;
+    PIN(u)        = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
+    PIN(udc)      = VOLT(adc_34_buf[5] >> 16) * 0.05 + PIN(udc) * 0.95;
+    PIN(iabs)     = MAX3(ABS(PIN(iu)), PIN(iv), PIN(iw));
+    PIN(hv_temp)  = r2temp(HV_R(ADC(adc_34_buf[0] >> 16))) * 0.01 + PIN(hv_temp) * 0.99;  // 5.5u
+    PIN(mot_temp) = MOT_R(MOT_REF(ADC(adc_34_buf[3] >> 16)));                             // 1.4u
+    HAL_GPIO_WritePin(LED_PORT, LED_PIN, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);   // 0.1u
 
-  PIN(iw)       = -AMP((float)(a12 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->w_offset;  // 1u
-  PIN(iu)       = -AMP((float)(a12 >> 16) / 5.0, SHUNT_GAIN) + ctx->u_offset;
-  PIN(iv)       = -AMP((float)(a34 & 0xFFFF) / 5.0, SHUNT_GAIN) + ctx->v_offset;
-  PIN(w)        = VOLT(adc_12_buf[5] & 0xFFFF) * 0.05 + PIN(w) * 0.95;  // 0.6u
-  PIN(v)        = VOLT(adc_12_buf[5] >> 16) * 0.05 + PIN(v) * 0.95;
-  PIN(u)        = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
-  PIN(udc)      = VOLT(adc_34_buf[5] >> 16) * 0.05 + PIN(udc) * 0.95;
-  PIN(udc_pwm)  = PIN(udc) / 2.0;
-  PIN(iabs)     = MAX3(ABS(PIN(iu)), PIN(iv), PIN(iw));
-  PIN(hv_temp)  = r2temp(HV_R(ADC(adc_34_buf[0] >> 16))) * 0.01 + PIN(hv_temp) * 0.99;  // 5.5u
-  PIN(mot_temp) = MOT_R(MOT_REF(ADC(adc_34_buf[3] >> 16)));  // 1.4u
-  HAL_GPIO_WritePin(LED_PORT, LED_PIN, PIN(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);  // 0.1u
+    // mot temp fault
+    // f4 hv fault = max(f4 fault, f3 fault)
+
+    if(err_filter(&(ctx->overtemp_error), 5.0, 0.001, PIN(hv_temp) > ABS_MAX_TEMP)) {
+      ctx->fault = HV_OVERTEMP;
+    }
+
+    if(err_filter(&(ctx->overvoltage_error), 5.0, 0.001, PIN(udc) > ABS_MAX_VOLT)) {
+      ctx->fault = HV_OVERVOLT;
+    }
+
+    if(err_filter(&(ctx->overcurrent_error), 5.0, 0.001, PIN(iabs) > ABS_MAX_CURRENT * 0.95)) {
+      ctx->fault = HV_OVERCURRENT_RMS;
+    }
+
+    if(PIN(iabs) > ABS_MAX_CURRENT) {
+      ctx->fault = HV_OVERCURRENT_PEAK;
+    }
+
+#ifdef HV_FAULT_PIN
+    // if(err_filter(&(ctx->fault_pin_error), 45.0, 0.01, HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN) <= 0.0)){
+    if(PIN(udc) > 0.0 && HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN) == HV_FAULT_POLARITY){
+      ctx->fault = HV_HV_FAULT;
+    }
+#endif
+
+    PIN(fault) = ctx->fault;
+
+    if(PIN(hv_en) > 0.0) {
+      if(ctx->fault == HV_NO_FAULT) {
+#ifdef HV_EN_PIN
+        HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_SET);
+#endif
+      } else {
+#ifdef HV_EN_PIN
+        HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
+#endif
+      }
+    } else {
+      ctx->fault = HV_NO_FAULT;
+#ifdef HV_EN_PIN
+      HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
+#endif
+    }
+  }
 }
 
 hal_comp_t io_comp_struct = {

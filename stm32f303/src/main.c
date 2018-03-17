@@ -250,14 +250,14 @@ int main(void) {
   hal_parse("ls0.mot_temp = io0.mot_temp");
   hal_parse("ls0.dc_volt = io0.udc");
   hal_parse("ls0.hv_temp = io0.hv_temp");
-  hal_parse("ls0.fault = hv0.fault");
+  hal_parse("ls0.fault = io0.fault");
   hal_parse("curpid0.id_cmd = ls0.d_cmd");
   hal_parse("curpid0.iq_cmd = ls0.q_cmd");
   hal_parse("idq0.pos = ls0.pos");
   hal_parse("idq0.mode = ls0.phase_mode");
   hal_parse("dq0.pos = ls0.pos");
   hal_parse("dq0.mode = ls0.phase_mode");
-  hal_parse("hv0.en = ls0.en");
+  hal_parse("io0.hv_en = ls0.en");
 
   //ADC TEST
   hal_parse("term0.wave3 = io0.udc");
@@ -272,9 +272,7 @@ int main(void) {
   hal_parse("hv0.u = svm0.su");
   hal_parse("hv0.v = svm0.sv");
   hal_parse("hv0.w = svm0.sw");
-  hal_parse("hv0.iabs = io0.iabs");
   hal_parse("svm0.udc = io0.udc");
-  hal_parse("hv0.hv_temp = io0.hv_temp");
   hal_parse("curpid0.id_fb = dq0.d");
   hal_parse("curpid0.iq_fb = dq0.q");
   hal_parse("ls0.d_fb = dq0.d");
@@ -304,7 +302,6 @@ int main(void) {
   hal_parse("curpid0.vel = ls0.vel");
   hal_parse("curpid0.en = ls0.en");
   hal_parse("curpid0.cmd_mode = ls0.cmd_mode");
-  hal_parse("hv0.ac_current = curpid0.ac_current");
   hal_parse("hv0.arr = ls0.arr");
 
   // hal parse config
