@@ -373,11 +373,6 @@ void SystemClock_Config(void) {
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
-//Delay implementation for hal_term.c
-void Wait(uint32_t ms) {
-  HAL_Delay(ms);
-}
-
 /**
   * @brief  This function is executed in case of error occurrence.
   * @param  None

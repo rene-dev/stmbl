@@ -31,7 +31,6 @@ SOURCES += stm32f303/src/hal_tbl.c
 
 CFLAGS += -DHAL_MAX_CTX=1024
 COMPS += stm32f303/src/comps/hv.c
-COMPS += stm32f303/src/comps/hvdc.c
 COMPS += stm32f303/src/comps/io.c
 COMPS += stm32f303/src/comps/ls.c
 COMPS += stm32f303/src/comps/enc.c
