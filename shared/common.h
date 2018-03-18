@@ -38,6 +38,7 @@ typedef struct {
   uint16_t addr;  //config data address from f3_state_data_t
   union {
     uint16_t fault : 1;
+    uint8_t buf;
     uint16_t padding;
   } flags;
   uint32_t crc;
@@ -66,6 +67,7 @@ typedef struct {
         PHASE_180_2PH,
         PHASE_180_3PH,
       } phase_type : 3;
+      uint8_t buf;
     } flags;
     uint16_t padding;
   };

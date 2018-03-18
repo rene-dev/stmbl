@@ -24,17 +24,21 @@
 #include "dac.h"
 #include "opamp.h"
 #include "tim.h"
-#include "usb_device.h"
 
 #include <math.h>
 #include "defines.h"
 #include "hal.h"
 #include "angle.h"
-#include "usbd_cdc_if.h"
+
 #include "version.h"
 #include "common.h"
 #include "commands.h"
 #include "f3hw.h"
+
+#include "usbd_cdc_if.h"
+#ifdef USB_TERM
+#include "usb_device.h"
+#endif
 
 uint32_t systick_freq;
 CRC_HandleTypeDef hcrc;
@@ -125,7 +129,10 @@ int main(void) {
   MX_OPAMP2_Init();
   MX_OPAMP3_Init();
   // MX_USART1_UART_Init();
+
+#ifdef USB_TERM
   MX_USB_DEVICE_Init();
+#endif
 
 #ifdef USB_CONNECT_PIN
   GPIO_InitStruct.Pin   = USB_CONNECT_PIN;
@@ -236,7 +243,7 @@ int main(void) {
   hal_parse("svm0.rt_prio = 5.0");
   hal_parse("hv0.rt_prio = 6.0");
 
-  hal_parse("term0.send_step = 100.0");
+  hal_parse("term0.send_step = 0.0");
   hal_parse("term0.gain0 = 10.0");
   hal_parse("term0.gain1 = 10.0");
   hal_parse("term0.gain2 = 10.0");
@@ -349,6 +356,7 @@ void SystemClock_Config(void) {
     Error_Handler();
   }
 
+  //TODO: usb optional
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB | RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART3 | RCC_PERIPHCLK_TIM8 | RCC_PERIPHCLK_ADC12 | RCC_PERIPHCLK_ADC34 | RCC_PERIPHCLK_RTC;
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
   PeriphClkInit.Usart3ClockSelection = RCC_USART3CLKSOURCE_SYSCLK;

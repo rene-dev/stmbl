@@ -41,7 +41,9 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+#ifdef USB_TERM
 extern PCD_HandleTypeDef hpcd_USB_FS;
+#endif
 /******************************************************************************/
 /*            Cortex-M4 Processor Interruption and Exception Handlers         */
 /******************************************************************************/
@@ -151,7 +153,9 @@ void USB_LP_CAN_RX0_IRQHandler(void) {
   //GPIOA->BSRR |= GPIO_PIN_10;
 
   /* USER CODE END USB_LP_CAN_RX0_IRQn 0 */
+  #ifdef USB_TERM
   HAL_PCD_IRQHandler(&hpcd_USB_FS);
+  #endif
   /* USER CODE BEGIN USB_LP_CAN_RX0_IRQn 1 */
   //GPIOA->BSRR |= GPIO_PIN_10 << 16;
   /* USER CODE END USB_LP_CAN_RX0_IRQn 1 */

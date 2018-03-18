@@ -6,6 +6,7 @@
 #include "stm32f3xx_hal.h"
 #include "common.h"
 #include "f3hw.h"
+#include "ringbuf.h"
 
 extern CRC_HandleTypeDef hcrc;
 
@@ -189,6 +190,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       uint8_t a       = ctx->packet_to_hv.addr;
       a               = CLAMP(a, 0, sizeof(config) / 4);
       config.data[a]  = ctx->packet_to_hv.value;  // TODO: first enable after complete update
+      if(ctx->packet_to_hv.flags.buf != 0xff){
+        extern struct ringbuf rx_buf;
+        rb_write(&rx_buf, (void*)&(ctx->packet_to_hv.flags.buf), 1);
+      }
 
       PIN(r)       = config.pins.r;
       PIN(l)       = config.pins.l;
@@ -254,6 +259,14 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     ctx->packet_from_hv.addr     = ctx->tx_addr;
     ctx->packet_from_hv.value    = state.data[ctx->tx_addr++];
     ctx->tx_addr %= sizeof(state) / 4;
+
+    extern struct ringbuf tx_buf;
+    uint8_t buf[1];
+    if(rb_read(&tx_buf, buf, 1)){
+      ctx->packet_from_hv.flags.buf = buf[0];
+    }else{
+      ctx->packet_from_hv.flags.buf = 0xff;
+    }
     ctx->packet_from_hv.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_from_hv), sizeof(packet_from_hv_t) / 4 - 1);
 
     // start tx DMA
