@@ -46,7 +46,7 @@ struct io_ctx_t {
   float overtemp_error;
   float overvoltage_error;
   float overcurrent_error;
-  // float fault_pin_error;
+  float fault_pin_error;
 };
 
 #define ARES 4096.0  // analog resolution, 12 bit
@@ -126,7 +126,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   ctx->overtemp_error = 0;
   ctx->overvoltage_error = 0;
   ctx->overcurrent_error = 0;
-  // ctx->fault_pin_error = 0;
+  ctx->fault_pin_error = 0;
 
 #ifdef HV_EN_PIN
   GPIO_InitStruct.Pin   = HV_EN_PIN;
@@ -170,8 +170,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
   else if(ctx->offset_count < 100 + 100 + 1){
     if(ABS(ctx->u_offset) > 5.0 || ABS(ctx->v_offset) > 5.0 || ABS(ctx->w_offset) > 5.0){
-      // fault
+      ctx->fault = HV_CURRENT_OFFSET_FAULT;
     }
+    ctx->offset_count++;
   }
   else{
     PIN(uo) = ctx->u_offset;
@@ -208,12 +209,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       ctx->fault = HV_OVERCURRENT_PEAK;
     }
 
-#ifdef HV_FAULT_PIN
-    // if(err_filter(&(ctx->fault_pin_error), 45.0, 0.01, HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN) <= 0.0)){
-    if(PIN(udc) > 0.0 && HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN) == HV_FAULT_POLARITY){
-      ctx->fault = HV_HV_FAULT;
-    }
-#endif
+
 
     PIN(fault) = ctx->fault;
 
@@ -222,7 +218,13 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 #ifdef HV_EN_PIN
         HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_SET);
 #endif
+#ifdef HV_FAULT_PIN
+        if(err_filter(&(ctx->fault_pin_error), 5.0, 0.01, HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN) == HV_FAULT_POLARITY)){
+          ctx->fault = HV_HV_FAULT;
+        }
+#endif
       } else {
+        ctx->fault_pin_error = 0;
 #ifdef HV_EN_PIN
         HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
 #endif
