@@ -20,6 +20,7 @@
 
 #pragma once
 #include <math.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,6 +50,18 @@ extern "C" {
 
 #define STRINGIFY_(x) #x
 #define STRINGIFY(x) STRINGIFY_(x)
+
+extern volatile uint64_t systime;
+#define BLINK(N)                           \
+  ({                                       \
+    int t = (systime / 300) % (2 * (unsigned int)(N) + 2); \
+    if(t < 2) {                            \
+      t = 0;                               \
+    } else {                               \
+      t = t % 2;                           \
+    }                                      \
+    t;                                     \
+  })
 
 //TODO: change type to typeof()
 //TODO: change __old_val__ to something more useful

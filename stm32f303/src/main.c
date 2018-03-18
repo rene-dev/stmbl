@@ -40,6 +40,19 @@
 #include "usb_device.h"
 #endif
 
+volatile uint64_t systime = 0;
+
+void SysTick_Handler(void) {
+  /* USER CODE BEGIN SysTick_IRQn 0 */
+  systime++;
+  /* USER CODE END SysTick_IRQn 0 */
+  HAL_IncTick();
+  HAL_SYSTICK_IRQHandler();
+  /* USER CODE BEGIN SysTick_IRQn 1 */
+
+  /* USER CODE END SysTick_IRQn 1 */
+}
+
 uint32_t systick_freq;
 CRC_HandleTypeDef hcrc;
 
@@ -257,7 +270,8 @@ int main(void) {
   hal_parse("ls0.mot_temp = io0.mot_temp");
   hal_parse("ls0.dc_volt = io0.udc");
   hal_parse("ls0.hv_temp = io0.hv_temp");
-  hal_parse("ls0.fault = io0.fault");
+  hal_parse("ls0.fault_in = io0.fault");
+  hal_parse("io0.led = ls0.fault");
   hal_parse("curpid0.id_cmd = ls0.d_cmd");
   hal_parse("curpid0.iq_cmd = ls0.q_cmd");
   hal_parse("idq0.pos = ls0.pos");
@@ -294,7 +308,6 @@ int main(void) {
   hal_parse("term0.wave1 = curpid0.iq_cmd");
   hal_parse("term0.wave2 = curpid0.id_fb");
   hal_parse("term0.wave3 = curpid0.iq_fb");
-  hal_parse("io0.led = term0.con");
   hal_parse("curpid0.rd = ls0.r");
   hal_parse("curpid0.rq = ls0.r");
   hal_parse("curpid0.ld = ls0.l");

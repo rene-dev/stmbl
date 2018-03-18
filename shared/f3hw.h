@@ -33,6 +33,7 @@ enum hv_fault_t{
     HV_OVERCURRENT_PEAK,
     HV_HV_FAULT,
     HV_CURRENT_OFFSET_FAULT,
+    HV_COMM_FAULT,
 };
 
 //io board

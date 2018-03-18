@@ -41,7 +41,7 @@ HAL_PIN(q_fb);
 HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
 HAL_PIN(core_temp);
-HAL_PIN(fault);
+HAL_PIN(fault_in);
 HAL_PIN(y);
 HAL_PIN(u_fb);
 HAL_PIN(v_fb);
@@ -54,6 +54,7 @@ HAL_PIN(crc_ok);
 HAL_PIN(timeout);
 HAL_PIN(dma_pos);
 HAL_PIN(idle);
+HAL_PIN(fault);
 
 HAL_PIN(dma_pos2);
 HAL_PIN(arr);
@@ -177,6 +178,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     }
   }
 
+  uint32_t fault = 0;
+
   if(dma_pos == sizeof(packet_to_hv_t)) {
     uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
     if(crc == ctx->packet_to_hv.crc) {
@@ -213,8 +216,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     } else {
       PIN(crc_error)
       ++;
+      fault = HV_COMM_FAULT;
     }
   }
+
 
   if(USART3->ISR & USART_ISR_RTOF) {                                    // idle line
     USART3->ICR |= USART_ICR_RTOCF | USART_ICR_FECF | USART_ICR_ORECF;  // timeout clear flag
@@ -248,7 +253,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     state.pins.hv_temp   = PIN(hv_temp);
     state.pins.mot_temp  = PIN(mot_temp);
     state.pins.core_temp = PIN(core_temp);
-    state.pins.fault     = PIN(fault);
+    state.pins.fault     = PIN(fault_in);
     state.pins.y         = PIN(y);
 
     // fill tx struct
@@ -280,8 +285,12 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     PIN(en) = 0.0;
     PIN(timeout)
     ++;
+    fault = HV_COMM_FAULT;
   }
   ctx->timeout++;
+
+  PIN(fault) = MAX(fault, PIN(fault_in));
+
 
   // TODO: sin = 0.5
   switch((uint16_t)PIN(phase_mode)) {
