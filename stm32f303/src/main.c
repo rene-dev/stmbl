@@ -248,7 +248,7 @@ int main(void) {
   hal_parse("load hv");
   hal_parse("load curpid");
 
-  hal_parse("term0.rt_prio = 0.1");
+  // hal_parse("term0.rt_prio = 0.1");
   hal_parse("ls0.rt_prio = 0.6");
   hal_parse("io0.rt_prio = 1.0");
   hal_parse("dq0.rt_prio = 2.0");
