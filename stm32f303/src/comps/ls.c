@@ -157,7 +157,7 @@ static void rt_start(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(timeout)     = 0.0;
   PIN(idle)        = 0.0;
   PIN(dma_pos_cmd) = 4;
-  PIN(inc)         = 10;
+  PIN(inc)         = 5;
   PIN(window)      = 1;
 }
 

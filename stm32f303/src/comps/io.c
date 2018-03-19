@@ -47,6 +47,8 @@ struct io_ctx_t {
   float overvoltage_error;
   float overcurrent_error;
   float fault_pin_error;
+  uint32_t hv_temp;
+  uint32_t mot_temp;
 };
 
 #define ARES 4096.0  // analog resolution, 12 bit
@@ -127,6 +129,9 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   ctx->overvoltage_error = 0;
   ctx->overcurrent_error = 0;
   ctx->fault_pin_error = 0;
+  ctx->hv_temp = 0;
+  ctx->mot_temp = 0;
+  
 
 #ifdef HV_EN_PIN
   GPIO_InitStruct.Pin   = HV_EN_PIN;
@@ -186,13 +191,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     PIN(u)        = VOLT(adc_34_buf[5] & 0xFFFF) * 0.05 + PIN(u) * 0.95;
     PIN(udc)      = VOLT(adc_34_buf[5] >> 16) * 0.05 + PIN(udc) * 0.95;
     PIN(iabs)     = MAX3(ABS(PIN(iu)), PIN(iv), PIN(iw));
-    PIN(hv_temp)  = r2temp(HV_R(ADC(adc_34_buf[0] >> 16))) * 0.01 + PIN(hv_temp) * 0.99;  // 5.5u
-    PIN(mot_temp) = MOT_R(MOT_REF(ADC(adc_34_buf[3] >> 16)));                             // 1.4u
-    HAL_GPIO_WritePin(LED_PORT, LED_PIN, BLINK(PIN(led)) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);   // 0.1u
-
-    // mot temp fault
-    // f4 hv fault = max(f4 fault, f3 fault)
-
+    ctx->hv_temp = adc_34_buf[0];
+    ctx->mot_temp = adc_34_buf[3];
+    
     if(err_filter(&(ctx->overtemp_error), 5.0, 0.001, PIN(hv_temp) > ABS_MAX_TEMP)) {
       ctx->fault = HV_OVERTEMP;
     }
@@ -238,9 +239,25 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 }
 
+void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  struct io_ctx_t *ctx      = (struct io_ctx_t *)ctx_ptr;
+  struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
+
+  uint32_t led = PIN(led);
+
+  if(hal.hal_state != HAL_OK2){
+    led = HV_HAL_FAULT;
+  }
+
+  HAL_GPIO_WritePin(LED_PORT, LED_PIN, BLINK(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+
+  PIN(hv_temp)  = r2temp(HV_R(ADC(ctx->hv_temp >> 16))) * 0.01 + PIN(hv_temp) * 0.99;
+  PIN(mot_temp) = MOT_R(MOT_REF(ADC(ctx->mot_temp >> 16))); 
+}
+
 hal_comp_t io_comp_struct = {
     .name      = "io",
-    .nrt       = 0,
+    .nrt       = nrt_func,
     .rt        = rt_func,
     .frt       = 0,
     .nrt_init  = nrt_init,

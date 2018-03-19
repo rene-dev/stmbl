@@ -237,15 +237,16 @@ int main(void) {
 
   hal_init(1.0 / 15000.0, 0.0);
   // hal load comps
-  load_comp(comp_by_name("term"));
+  hal_parse("debug_level 1");
+  hal_parse("load term");
   // load_comp(comp_by_name("sim"));
-  load_comp(comp_by_name("io"));
-  load_comp(comp_by_name("ls"));
-  load_comp(comp_by_name("dq"));
-  load_comp(comp_by_name("idq"));
-  load_comp(comp_by_name("svm"));
-  load_comp(comp_by_name("hv"));
-  load_comp(comp_by_name("curpid"));
+  hal_parse("load io");
+  hal_parse("load ls");
+  hal_parse("load dq");
+  hal_parse("load idq");
+  hal_parse("load svm");
+  hal_parse("load hv");
+  hal_parse("load curpid");
 
   hal_parse("term0.rt_prio = 0.1");
   hal_parse("ls0.rt_prio = 0.6");
@@ -323,6 +324,7 @@ int main(void) {
   hal_parse("curpid0.en = ls0.en");
   hal_parse("curpid0.cmd_mode = ls0.cmd_mode");
   hal_parse("hv0.arr = ls0.arr");
+  hal_parse("debug_level 0");
 
   // hal parse config
   // hal_init_nrt();
