@@ -243,7 +243,7 @@ void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct io_ctx_t *ctx      = (struct io_ctx_t *)ctx_ptr;
   struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
 
-  uint32_t led = PIN(led);
+  uint32_t led = (uint32_t)PIN(led);
 
   if(hal.hal_state != HAL_OK2){
     led = HV_HAL_FAULT;
