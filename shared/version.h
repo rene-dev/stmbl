@@ -2,9 +2,8 @@
 
 #include <stdint.h>
 
-struct version_info {  //TODO: typedef
+typedef struct{
   // set at link-time by add-version-info.py
-  //
   uint32_t image_crc;
   uint32_t image_size;
 
@@ -21,6 +20,6 @@ struct version_info {  //TODO: typedef
   int major;
   int minor;
   int patch;
-};
+} version_info_t;
 
-extern volatile const struct version_info version_info __attribute__((section(".version_info")));
+extern volatile const version_info_t version_info;

@@ -160,7 +160,7 @@ LDSCRIPT = stm32_flash.ld
 
 #============================================================================
 OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
-# OBJECTS += hv_firmware.o
+OBJECTS += hv_firmware.o
 CPPFLAGS += $(addprefix -I,$(INCDIRS))
 
 #---------------- Preprocessor Options ----------------
@@ -242,13 +242,13 @@ LDFLAGS  += $(CPU)
 
 # Default target
 #
-all:  gccversion boot build showsize
+all:  gccversion tbl boot build showsize
 
 build: tbl elf hex bin lss sym
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
-bin: $(TARGET).bin
+bin: tbl $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
@@ -297,6 +297,9 @@ f3_boot:
 f3_boot_btburn:
 	$(MAKE) -f f3dfu/Makefile btburn
 
+hv_firmware.o:
+	$(MAKE) -f stm32f303/Makefile hv_firmware.o
+
 deploy: boot f3_boot f3 build
 
 binall:
@@ -339,7 +342,7 @@ flash: $(TARGET).bin
 #
 clean:
 	@echo Cleaning project:
-	# rm -rf hv_firmware.o
+	rm -rf hv_firmware.o
 	rm -rf f3.bin f4.bin
 	rm -rf $(OBJDIR)
 	rm -rf inc/commandslist.h

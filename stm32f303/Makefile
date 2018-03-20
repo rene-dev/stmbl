@@ -182,7 +182,7 @@ build: tbl elf hex bin lss sym
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
-bin: $(TARGET).bin
+bin: tbl $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
@@ -201,6 +201,9 @@ tbl:
 
 gccversion:
 	@$(CC) --version
+
+hv_firmware.o: bin
+	$(OBJCOPY) --rename-section .data=.hv_firmware -I binary obj_hvf3/hvf3.bin -B arm -O elf32-littlearm hv_firmware.o
 
 # Show the final program size
 #

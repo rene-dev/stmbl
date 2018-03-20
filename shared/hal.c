@@ -909,43 +909,6 @@ void fault(char *ptr) {
 
 COMMAND("fault", fault, "trigger fault");
 
-void about(char *ptr) {
-  printf("######## software info ########\n");
-  printf(
-      "%s v%i.%i.%i %s\n",
-      version_info.product_name,
-      version_info.major,
-      version_info.minor,
-      version_info.patch,
-      version_info.git_version);
-  printf("Branch %s\n", version_info.git_branch);
-  printf("Compiled %s %s ", version_info.build_date, version_info.build_time);
-  printf("by %s on %s\n", version_info.build_user, version_info.build_host);
-  printf("GCC        %s\n", __VERSION__);
-  printf("newlib     %s\n", _NEWLIB_VERSION);
-  // printf("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
-  // printf("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
-  // printf("CPU ID     %lx %lx %lx\n",U_ID[0], U_ID[1], U_ID[2]);
-  printf("size: %lu crc:%lx\n", version_info.image_size, version_info.image_crc);
-
-  // printf("######## Bootloader info ########\n");
-  // printf(
-  //    "%s v%i.%i.%i %s\n",
-  //    bt_version_info->product_name,
-  //    bt_version_info->major,
-  //    bt_version_info->minor,
-  //    bt_version_info->patch,
-  //    bt_version_info->git_version
-  // );
-  // printf("Branch %s\n",bt_version_info->git_branch);
-  // printf("Compiled %s %s ",bt_version_info->build_date, bt_version_info->build_time);
-  // printf("by %s on %s\n",bt_version_info->build_user, bt_version_info->build_host);
-  //
-  // printf("start:%p ,size:%p ,end%p \n",&_binary_obj_hv_hv_bin_start,&_binary_obj_hv_hv_bin_size,&_binary_obj_hv_hv_bin_end);
-}
-
-COMMAND("about", about, "show system infos");
-
 void hal_set_debug_level(uint32_t debug_level){
   hal.debug_level = debug_level;
 }

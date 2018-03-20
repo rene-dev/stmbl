@@ -82,6 +82,33 @@ void TIM8_UP_IRQHandler() {
   GPIOA->BSRR |= GPIO_PIN_9 << 16;
 }
 
+void about(char *ptr) {
+  printf("######## software info ########\n");
+  printf(
+      "%s v%i.%i.%i %s\n",
+      version_info.product_name,
+      version_info.major,
+      version_info.minor,
+      version_info.patch,
+      version_info.git_version);
+  printf("Branch %s\n", version_info.git_branch);
+  printf("Compiled %s %s ", version_info.build_date, version_info.build_time);
+  printf("by %s on %s\n", version_info.build_user, version_info.build_host);
+  printf("GCC        %s\n", __VERSION__);
+  printf("newlib     %s\n", _NEWLIB_VERSION);
+  #ifdef __CM4_CMSIS_VERSION
+  printf("CMSIS      %i.%i\n",__CM4_CMSIS_VERSION_MAIN,__CM4_CMSIS_VERSION_SUB);
+  #endif
+  #ifdef __STM32F4XX_STDPERIPH_VERSION
+  printf("StdPeriph  %i.%i.%i\n",__STM32F4XX_STDPERIPH_VERSION_MAIN,__STM32F4XX_STDPERIPH_VERSION_SUB1,__STM32F4XX_STDPERIPH_VERSION_SUB2);
+  #endif
+  #ifdef __STM32F3xx_HAL_VERSION
+  printf("HAL lib... TODO: print version\n");
+  #endif
+}
+
+COMMAND("about", about, "show system infos");
+
 void bootloader(char *ptr) {
 #ifdef USB_DISCONNECT_PIN
   HAL_GPIO_WritePin(USB_DISCONNECT_PORT, USB_DISCONNECT_PIN, GPIO_PIN_SET);
