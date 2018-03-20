@@ -24,17 +24,34 @@
 #include "dac.h"
 #include "opamp.h"
 #include "tim.h"
-#include "usb_device.h"
 
 #include <math.h>
 #include "defines.h"
 #include "hal.h"
 #include "angle.h"
-#include "usbd_cdc_if.h"
+
 #include "version.h"
 #include "common.h"
 #include "commands.h"
 #include "f3hw.h"
+
+#include "usbd_cdc_if.h"
+#ifdef USB_TERM
+#include "usb_device.h"
+#endif
+
+volatile uint64_t systime = 0;
+
+void SysTick_Handler(void) {
+  /* USER CODE BEGIN SysTick_IRQn 0 */
+  systime++;
+  /* USER CODE END SysTick_IRQn 0 */
+  HAL_IncTick();
+  HAL_SYSTICK_IRQHandler();
+  /* USER CODE BEGIN SysTick_IRQn 1 */
+
+  /* USER CODE END SysTick_IRQn 1 */
+}
 
 uint32_t systick_freq;
 CRC_HandleTypeDef hcrc;
@@ -125,7 +142,10 @@ int main(void) {
   MX_OPAMP2_Init();
   MX_OPAMP3_Init();
   // MX_USART1_UART_Init();
+
+#ifdef USB_TERM
   MX_USB_DEVICE_Init();
+#endif
 
 #ifdef USB_CONNECT_PIN
   GPIO_InitStruct.Pin   = USB_CONNECT_PIN;
@@ -217,17 +237,18 @@ int main(void) {
 
   hal_init(1.0 / 15000.0, 0.0);
   // hal load comps
-  load_comp(comp_by_name("term"));
+  hal_parse("debug_level 1");
+  hal_parse("load term");
   // load_comp(comp_by_name("sim"));
-  load_comp(comp_by_name("io"));
-  load_comp(comp_by_name("ls"));
-  load_comp(comp_by_name("dq"));
-  load_comp(comp_by_name("idq"));
-  load_comp(comp_by_name("svm"));
-  load_comp(comp_by_name("hv"));
-  load_comp(comp_by_name("curpid"));
+  hal_parse("load io");
+  hal_parse("load ls");
+  hal_parse("load dq");
+  hal_parse("load idq");
+  hal_parse("load svm");
+  hal_parse("load hv");
+  hal_parse("load curpid");
 
-  hal_parse("term0.rt_prio = 0.1");
+  // hal_parse("term0.rt_prio = 0.1");
   hal_parse("ls0.rt_prio = 0.6");
   hal_parse("io0.rt_prio = 1.0");
   hal_parse("dq0.rt_prio = 2.0");
@@ -236,7 +257,7 @@ int main(void) {
   hal_parse("svm0.rt_prio = 5.0");
   hal_parse("hv0.rt_prio = 6.0");
 
-  hal_parse("term0.send_step = 100.0");
+  hal_parse("term0.send_step = 0.0");
   hal_parse("term0.gain0 = 10.0");
   hal_parse("term0.gain1 = 10.0");
   hal_parse("term0.gain2 = 10.0");
@@ -250,14 +271,15 @@ int main(void) {
   hal_parse("ls0.mot_temp = io0.mot_temp");
   hal_parse("ls0.dc_volt = io0.udc");
   hal_parse("ls0.hv_temp = io0.hv_temp");
-  hal_parse("ls0.fault = hv0.fault");
+  hal_parse("ls0.fault_in = io0.fault");
+  hal_parse("io0.led = ls0.fault");
   hal_parse("curpid0.id_cmd = ls0.d_cmd");
   hal_parse("curpid0.iq_cmd = ls0.q_cmd");
   hal_parse("idq0.pos = ls0.pos");
   hal_parse("idq0.mode = ls0.phase_mode");
   hal_parse("dq0.pos = ls0.pos");
   hal_parse("dq0.mode = ls0.phase_mode");
-  hal_parse("hv0.en = ls0.en");
+  hal_parse("io0.hv_en = ls0.en");
 
   //ADC TEST
   hal_parse("term0.wave3 = io0.udc");
@@ -272,9 +294,7 @@ int main(void) {
   hal_parse("hv0.u = svm0.su");
   hal_parse("hv0.v = svm0.sv");
   hal_parse("hv0.w = svm0.sw");
-  hal_parse("hv0.iabs = io0.iabs");
   hal_parse("svm0.udc = io0.udc");
-  hal_parse("hv0.hv_temp = io0.hv_temp");
   hal_parse("curpid0.id_fb = dq0.d");
   hal_parse("curpid0.iq_fb = dq0.q");
   hal_parse("ls0.d_fb = dq0.d");
@@ -289,7 +309,6 @@ int main(void) {
   hal_parse("term0.wave1 = curpid0.iq_cmd");
   hal_parse("term0.wave2 = curpid0.id_fb");
   hal_parse("term0.wave3 = curpid0.iq_fb");
-  hal_parse("io0.led = term0.con");
   hal_parse("curpid0.rd = ls0.r");
   hal_parse("curpid0.rq = ls0.r");
   hal_parse("curpid0.ld = ls0.l");
@@ -304,8 +323,8 @@ int main(void) {
   hal_parse("curpid0.vel = ls0.vel");
   hal_parse("curpid0.en = ls0.en");
   hal_parse("curpid0.cmd_mode = ls0.cmd_mode");
-  hal_parse("hv0.ac_current = curpid0.ac_current");
   hal_parse("hv0.arr = ls0.arr");
+  hal_parse("debug_level 0");
 
   // hal parse config
   // hal_init_nrt();
@@ -352,6 +371,7 @@ void SystemClock_Config(void) {
     Error_Handler();
   }
 
+  //TODO: usb optional
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB | RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART3 | RCC_PERIPHCLK_TIM8 | RCC_PERIPHCLK_ADC12 | RCC_PERIPHCLK_ADC34 | RCC_PERIPHCLK_RTC;
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
   PeriphClkInit.Usart3ClockSelection = RCC_USART3CLKSOURCE_SYSCLK;
@@ -374,11 +394,6 @@ void SystemClock_Config(void) {
 
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
-}
-
-//Delay implementation for hal_term.c
-void Wait(uint32_t ms) {
-  HAL_Delay(ms);
 }
 
 /**

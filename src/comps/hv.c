@@ -7,7 +7,7 @@
 #include "hw/hw.h"
 #include "common.h"
 #include "main.h"
-
+#include "ringbuf.h"
 
 HAL_COMP(hv);
 
@@ -66,6 +66,17 @@ struct hv_ctx_t {
   uint16_t timeout;
   uint8_t frt_slot;
 };
+
+struct ringbuf hv_rx_buf = RINGBUF(128);
+struct ringbuf hv_tx_buf = RINGBUF(128);
+
+void hv_send(char *ptr) {
+  if(ptr){//TODO: check connection status
+    rb_write(&hv_tx_buf, ptr, strlen(ptr));
+    rb_write(&hv_tx_buf, "\n", 1);
+  }
+}
+COMMAND("hv", hv_send, "send command to hv board");
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
@@ -218,6 +229,9 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           PIN(com_error) = 0.0;
         }
         ctx->timeout = 0;
+        if(ctx->packet_from_hv.flags.buf != 0xff){
+          rb_write(&hv_rx_buf, (void*)&(ctx->packet_from_hv.flags.buf), 1);
+        }
       } else {
         PIN(crc_error)++;
         PIN(com_error) = HV_CRC_ERROR;
@@ -254,6 +268,12 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
     ctx->packet_to_hv.addr             = ctx->addr;
     ctx->packet_to_hv.value            = ctx->config.data[ctx->addr++];
     ctx->addr %= sizeof(f3_config_data_t) / 4;
+    uint8_t buf[1];
+    if(rb_read(&hv_tx_buf, buf, 1)){
+      ctx->packet_to_hv.flags.buf = buf[0];
+    }else{
+      ctx->packet_to_hv.flags.buf = 0xff;
+    }
 
     CRC_ResetDR();
     ctx->packet_to_hv.crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
@@ -279,10 +299,18 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
   // }
 }
 
+static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  // struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
+  // struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
+  char c;
+  while(rb_getc(&hv_rx_buf, &c)){
+    printf("%c",c);
+  }
+}
 
 hal_comp_t hv_comp_struct = {
     .name      = "hv",
-    .nrt       = 0,
+    .nrt       = nrt_func,
     .rt        = rt_func,
     .frt       = frt_func,
     .nrt_init  = nrt_init,

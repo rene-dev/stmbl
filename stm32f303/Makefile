@@ -21,20 +21,16 @@ SOURCES += stm32f303/src/opamp.c
 SOURCES += stm32f303/src/stm32f3xx_hal_msp.c
 SOURCES += stm32f303/src/tim.c
 SOURCES += stm32f303/src/stm32f3xx_it.c
-SOURCES += stm32f303/src/usb_device.c
 SOURCES += stm32f303/src/usbd_cdc_if.c
-SOURCES += stm32f303/src/usbd_conf.c
-SOURCES += stm32f303/src/usbd_desc.c
 SOURCES += stm32f303/src/version.c
 
 SOURCES += stm32f303/src/hal_tbl.c
 
 CFLAGS += -DHAL_MAX_CTX=1024
 COMPS += stm32f303/src/comps/hv.c
-COMPS += stm32f303/src/comps/hvdc.c
 COMPS += stm32f303/src/comps/io.c
 COMPS += stm32f303/src/comps/ls.c
-COMPS += stm32f303/src/comps/enc.c
+#COMPS += stm32f303/src/comps/enc.c
 
 COMPS += shared/comps/sim.c
 COMPS += shared/comps/term.c
@@ -56,20 +52,6 @@ SOURCES += shared/crc8.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/commands.c
-#SOURCES += shared/hal_term.c
-
-#USB Driver
-USB_DEVICE_DIR = lib/STM32_USB_Device_Library-2.4.2
-
-#USB class
-INCDIRS += $(USB_DEVICE_DIR)/Class/CDC/Inc/
-SOURCES += $(USB_DEVICE_DIR)/Class/CDC/Src/usbd_cdc.c
-
-#USB core
-INCDIRS += $(USB_DEVICE_DIR)/Core/Inc/
-SOURCES += $(USB_DEVICE_DIR)/Core/Src/usbd_core.c
-SOURCES += $(USB_DEVICE_DIR)/Core/Src/usbd_ctlreq.c
-SOURCES += $(USB_DEVICE_DIR)/Core/Src/usbd_ioreq.c
 
 #CMSIS
 CPPFLAGS += -DSTM32F303xC
@@ -89,18 +71,9 @@ SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_cortex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_crc.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dac_ex.c
-# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dma.c
-# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash.c
-# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_gpio.c
-# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c.c
-# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_i2c_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_opamp.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_opamp_ex.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pcd.c
-SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pcd_ex.c
-# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pwr.c
-# SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_pwr_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_rcc.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_rcc_ex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_tim.c

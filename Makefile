@@ -86,6 +86,7 @@ COMPS += shared/comps/scale.c
 COMPS += shared/comps/idx_home.c
 COMPS += shared/comps/move.c
 COMPS += shared/comps/ac.c
+COMPS += shared/comps/jog.c
 
 SOURCES += $(COMPS)
 
@@ -292,6 +293,9 @@ f3_btburn:
 
 f3_boot:
 	$(MAKE) -f f3dfu/Makefile
+
+f3_boot_btburn:
+	$(MAKE) -f f3dfu/Makefile btburn
 
 deploy: boot f3_boot f3 build
 
