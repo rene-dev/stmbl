@@ -38,7 +38,7 @@ void MX_TIM8_Init(void) {
   htim8.Instance           = TIM8;
   htim8.Init.Prescaler     = 0;
   htim8.Init.CounterMode   = TIM_COUNTERMODE_CENTERALIGNED3;
-  htim8.Init.Period        = PWM_RES;
+  htim8.Init.Period        = PWM_RES / 2;
   htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 #ifdef PWM_INVERT
   htim8.Init.RepetitionCounter = 1;

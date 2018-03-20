@@ -1,7 +1,8 @@
 # Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
 #
-OPT = -O3 -flto
+OPT = -g
+# -flto
 # OPT = -O1         # for debugging
 
 # Object files directory
@@ -38,6 +39,7 @@ INCDIRS += $(HAL_DRV_DIR)/Inc
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_cortex.c
 SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_crc.c
+SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_crc_ex.c
 
 # SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_dma.c
 # SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_flash.c
