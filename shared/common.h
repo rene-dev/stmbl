@@ -68,32 +68,25 @@ typedef struct {
 //process data from f3 to f4
 #pragma pack(1)
 typedef struct {
+  stmbl_talk_header_t header;
   float d_fb;
   float q_fb;
-  float dc_volt;
-  float pwm_volt;
-  float value;  //config data value
-  uint16_t addr;  //config data address from f3_state_data_t
-  union {
-    uint16_t fault : 1;
-    uint8_t buf;
-    uint16_t padding;
-  } flags;
-  uint32_t crc;
+  uint8_t fault;
+  uint8_t buf;
+  uint16_t padding;
 } packet_from_hv_t;
 
 //process data from f4 to f3
 #pragma pack(1)
 typedef struct {
+  stmbl_talk_header_t header;
   float d_cmd;
   float q_cmd;
   float pos;
   float vel;
-  float value;  //status data value
-  uint16_t addr;  //status data address from f3_config_data_t
   union {
     struct {
-      uint16_t enable : 1;
+      uint8_t enable : 1;
       enum packet_to_hv_cmd_type_t {
         VOLT_MODE = 0,
         CURRENT_MODE,
@@ -112,9 +105,8 @@ typedef struct {
       } opcode : 3;
       uint8_t buf;
     } flags;
-    uint16_t padding;
+    uint32_t padding;
   };
-  uint32_t crc;
 } packet_to_hv_t;
 
 //config data for f3
@@ -144,7 +136,8 @@ typedef union {
     float hv_temp;
     float mot_temp;
     float core_temp;
-    float fault;
+    float dc_volt;
+    float pwm_volt;
     float y;
   } pins;
   float data[sizeof(struct f3_state_data_temp) / 4];

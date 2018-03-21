@@ -56,9 +56,6 @@ HAL_PIN(dma_pos);
 HAL_PIN(idle);
 HAL_PIN(fault);
 
-//in main.c
-extern void bootloader(char *ptr);
-
 HAL_PIN(dma_pos2);
 HAL_PIN(arr);
 HAL_PIN(dma_pos_cmd);
@@ -146,6 +143,12 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   USART3->RTOR = 16;               // 16 bits timeout
   USART3->CR2 |= USART_CR2_RTOEN;  // timeout en
   USART3->ICR |= USART_ICR_RTOCF;  // timeout clear flag
+
+  ctx->packet_from_hv.header.len = (sizeof(packet_from_hv_t) - sizeof(stmbl_talk_header_t)) / 4;
+  ctx->packet_from_hv.header.flags.write_to_conf = 1;
+  ctx->packet_from_hv.header.flags.incr_read_addr = 1;
+  ctx->packet_from_hv.header.flags.error = 0;
+  ctx->packet_from_hv.header.slave_addr = 0;
 }
 
 static void rt_start(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -184,11 +187,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   uint32_t fault = 0;
 
   if(dma_pos == sizeof(packet_to_hv_t)) {
-    uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
-    if(crc == ctx->packet_to_hv.crc) {
-      if(ctx->packet_to_hv.flags.opcode == PACKET_TO_HV_OPCODE_BOOTLOADER){
-        bootloader(0);
-      }
+    uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_to_hv.header.slave_addr), sizeof(packet_to_hv_t) / 4 - 1);
+    if(ctx->packet_to_hv.header.slave_addr == 0 && ctx->packet_to_hv.header.len == (sizeof(packet_to_hv_t) - sizeof(stmbl_talk_header_t)) / 4 && crc == ctx->packet_to_hv.header.crc) {
+      // 
       PIN(en)         = ctx->packet_to_hv.flags.enable;
       PIN(phase_mode) = ctx->packet_to_hv.flags.phase_type;
       PIN(cmd_mode)   = ctx->packet_to_hv.flags.cmd_type;
@@ -196,9 +197,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       PIN(q_cmd)      = ctx->packet_to_hv.q_cmd;
       PIN(pos)        = ctx->packet_to_hv.pos;
       PIN(vel)        = ctx->packet_to_hv.vel;
-      uint8_t a       = ctx->packet_to_hv.addr;
+      uint8_t a       = ctx->packet_to_hv.header.conf_addr;
       a               = CLAMP(a, 0, sizeof(config) / 4);
-      config.data[a]  = ctx->packet_to_hv.value;  // TODO: first enable after complete update
+      config.data[a]  = ctx->packet_to_hv.header.config.f32;  // TODO: first enable after complete update
       if(ctx->packet_to_hv.flags.buf != 0xff){
         extern struct ringbuf rx_buf;
         rb_write(&rx_buf, (void*)&(ctx->packet_to_hv.flags.buf), 1);
@@ -259,26 +260,26 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     state.pins.hv_temp   = PIN(hv_temp);
     state.pins.mot_temp  = PIN(mot_temp);
     state.pins.core_temp = PIN(core_temp);
-    state.pins.fault     = PIN(fault_in);
     state.pins.y         = PIN(y);
+    state.pins.dc_volt   = PIN(dc_volt);
+    state.pins.pwm_volt  = PIN(pwm_volt);
 
     // fill tx struct
-    ctx->packet_from_hv.dc_volt  = PIN(dc_volt);
-    ctx->packet_from_hv.pwm_volt = PIN(pwm_volt);
+    ctx->packet_from_hv.fault     = (uint8_t)PIN(fault_in);
     ctx->packet_from_hv.d_fb     = PIN(d_fb);
     ctx->packet_from_hv.q_fb     = PIN(q_fb);
-    ctx->packet_from_hv.addr     = ctx->tx_addr;
-    ctx->packet_from_hv.value    = state.data[ctx->tx_addr++];
+    ctx->packet_from_hv.header.conf_addr     = ctx->tx_addr;
+    ctx->packet_from_hv.header.config.f32    = state.data[ctx->tx_addr++];
     ctx->tx_addr %= sizeof(state) / 4;
 
     extern struct ringbuf tx_buf;
     uint8_t buf[1];
     if(rb_read(&tx_buf, buf, 1)){
-      ctx->packet_from_hv.flags.buf = buf[0];
+      ctx->packet_from_hv.buf = buf[0];
     }else{
-      ctx->packet_from_hv.flags.buf = 0xff;
+      ctx->packet_from_hv.buf = 0xff;
     }
-    ctx->packet_from_hv.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_from_hv), sizeof(packet_from_hv_t) / 4 - 1);
+    ctx->packet_from_hv.header.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_from_hv.header.slave_addr), sizeof(packet_from_hv_t) / 4 - 1);
 
     // start tx DMA
     DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);

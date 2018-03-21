@@ -202,35 +202,36 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
     uint32_t dma_pos = DMA_GetCurrDataCounter(UART_DRV_RX_DMA);
     if(dma_pos == 0) {
       CRC_ResetDR();
-      uint32_t crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_from_hv), sizeof(packet_from_hv_t) / 4 - 1);
+      uint32_t crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_from_hv.header.slave_addr), sizeof(packet_from_hv_t) / 4 - 1);
 
-      if(crc == ctx->packet_from_hv.crc) {
+      if(crc == ctx->packet_from_hv.header.crc) {
         PIN(d_fb)     = ctx->packet_from_hv.d_fb;
         PIN(q_fb)     = ctx->packet_from_hv.q_fb;
-        PIN(dc_volt)  = ctx->packet_from_hv.dc_volt;
-        PIN(pwm_volt) = ctx->packet_from_hv.pwm_volt;
+        PIN(fault)     = ctx->packet_from_hv.fault;
+
         PIN(abs_cur)  = sqrtf(PIN(d_fb) * PIN(d_fb) + PIN(q_fb) * PIN(q_fb));
 
-        uint16_t a         = ctx->packet_from_hv.addr;
+        uint16_t a         = ctx->packet_from_hv.header.conf_addr;
         a                  = CLAMP(a, 0, sizeof(f3_state_data_t) / 4);
-        ctx->state.data[a] = ctx->packet_from_hv.value;
+        ctx->state.data[a] = ctx->packet_from_hv.header.config.f32;
 
+        PIN(dc_volt)  = ctx->state.pins.dc_volt;
+        PIN(pwm_volt) = ctx->state.pins.pwm_volt;
         PIN(u_fb)      = ctx->state.pins.u_fb;
         PIN(v_fb)      = ctx->state.pins.v_fb;
         PIN(w_fb)      = ctx->state.pins.w_fb;
         PIN(hv_temp)   = ctx->state.pins.hv_temp;
         PIN(mot_temp)  = ctx->state.pins.mot_temp;
         PIN(core_temp) = ctx->state.pins.core_temp;
-        PIN(fault)     = ctx->state.pins.fault;
         PIN(y)         = ctx->state.pins.y;
-        if(ctx->state.pins.fault > 0.0) {
+        if(ctx->packet_from_hv.fault > 0.0) {
           PIN(com_error) = HV_FAULT_ERROR;
         } else {
           PIN(com_error) = 0.0;
         }
         ctx->timeout = 0;
-        if(ctx->packet_from_hv.flags.buf != 0xff){
-          rb_write(&hv_rx_buf, (void*)&(ctx->packet_from_hv.flags.buf), 1);
+        if(ctx->packet_from_hv.buf != 0xff){
+          rb_write(&hv_rx_buf, (void*)&(ctx->packet_from_hv.buf), 1);
         }
       } else {
         PIN(crc_error)++;
@@ -265,8 +266,12 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
     ctx->packet_to_hv.flags.phase_type = PIN(phase_mode);
     ctx->packet_to_hv.pos              = pos;
     ctx->packet_to_hv.vel              = vel;
-    ctx->packet_to_hv.addr             = ctx->addr;
-    ctx->packet_to_hv.value            = ctx->config.data[ctx->addr++];
+
+    ctx->packet_to_hv.header.slave_addr = 0;
+    ctx->packet_to_hv.header.len = (sizeof(packet_to_hv_t) - sizeof(stmbl_talk_header_t)) / 4;
+    ctx->packet_to_hv.header.conf_addr = ctx->addr;
+    ctx->packet_to_hv.header.config.f32 = ctx->config.data[ctx->addr++];
+
     ctx->addr %= sizeof(f3_config_data_t) / 4;
     uint8_t buf[1];
     if(rb_read(&hv_tx_buf, buf, 1)){
@@ -276,7 +281,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
     }
 
     CRC_ResetDR();
-    ctx->packet_to_hv.crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_to_hv), sizeof(packet_to_hv_t) / 4 - 1);
+    ctx->packet_to_hv.header.crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_to_hv.header.slave_addr), sizeof(packet_to_hv_t) / 4 - 1);
 
     PIN(uart_sr) = UART_DRV->SR;
     PIN(uart_dr) = UART_DRV->DR;

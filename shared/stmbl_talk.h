@@ -17,5 +17,6 @@ typedef struct{
     union{
       float f32;
       uint32_t u32;
+      int32_t i32;
     } config;
 } stmbl_talk_header_t;

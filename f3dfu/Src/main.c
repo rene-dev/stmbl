@@ -77,7 +77,7 @@ static void MX_RTC_Init(void);
 #define APP_END 0x08020000
 #define APP_RANGE_VALID(a, s) (!(((a) | (s)) & 3) && (a) >= APP_START && ((a) + (s)) <= APP_END)
 #define VERSION_INFO_OFFSET 0x188
-static volatile const struct version_info *app_info = (void *)(APP_START + VERSION_INFO_OFFSET);
+static volatile const version_info_t *app_info = (void *)(APP_START + VERSION_INFO_OFFSET);
 
 static int app_ok(void) {
   if(!APP_RANGE_VALID(APP_START, app_info->image_size)) {

@@ -56,32 +56,22 @@ void TIM8_UP_IRQHandler() {
   }
 
   if(dma_count == 0){
-    if(rx_buf.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4 && rx_buf.header.crc == HAL_CRC_Calculate(&hcrc, (uint32_t *)&(rx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1)){
+    if(rx_buf.header.slave_addr == 255 && rx_buf.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4 && rx_buf.header.crc == HAL_CRC_Calculate(&hcrc, (uint32_t *)&(rx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1)){
       //do stuff
       //tx_buf.state = do_stuff();
       tx_buf.value = *((uint32_t *)(rx_buf.addr));
       tx_buf.addr = rx_buf.addr;
       tx_buf.cmd = rx_buf.cmd;
       tx_buf.header.flags.error = 0;
-    }
-    else{
-      tx_buf.header.flags.error = 1;
-    }
+      tx_buf.header.flags.counter = rx_buf.header.flags.counter;
+      tx_buf.header.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(tx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1);
 
-    tx_buf.header.flags.counter = rx_buf.header.flags.counter;
-    tx_buf.header.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(tx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1);
-
-    // start tx DMA
-    DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
-    DMA1_Channel2->CNDTR = sizeof(packet_bootloader_t);
-    DMA1_Channel2->CCR |= DMA_CCR_EN;
+      // start tx DMA
+      DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
+      DMA1_Channel2->CNDTR = sizeof(packet_bootloader_t);
+      DMA1_Channel2->CCR |= DMA_CCR_EN;
+    }
   }
-
-  // last_dma_count = sizeof(packet_bootloader_t);
-  // // start rx DMA
-  // DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
-  // DMA1_Channel3->CNDTR = sizeof(packet_bootloader_t);
-  // DMA1_Channel3->CCR |= DMA_CCR_EN;
 }
 
 void uart_init(){
@@ -179,7 +169,7 @@ int main(void) {
 
 
 
-  tx_buf.header.slave_addr = 0;
+  tx_buf.header.slave_addr = 255;
   tx_buf.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
   tx_buf.header.flags.packet_to_master = 1;
   tx_buf.header.conf_addr = 0;
