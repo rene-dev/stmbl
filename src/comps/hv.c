@@ -204,7 +204,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
       CRC_ResetDR();
       uint32_t crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_from_hv.header.slave_addr), sizeof(packet_from_hv_t) / 4 - 1);
 
-      if(crc == ctx->packet_from_hv.header.crc) {
+      if(ctx->packet_from_hv.header.slave_addr == 0 && ctx->packet_from_hv.header.len == (sizeof(packet_from_hv_t) - sizeof(stmbl_talk_header_t)) / 4 && crc == ctx->packet_from_hv.header.crc) {
         PIN(d_fb)     = ctx->packet_from_hv.d_fb;
         PIN(q_fb)     = ctx->packet_from_hv.q_fb;
         PIN(fault)     = ctx->packet_from_hv.fault;
