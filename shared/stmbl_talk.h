@@ -28,6 +28,9 @@ conf[0]
 .
 .
 .
+conf[] uint32_t protocol_features {
+
+}
 conf[] uint32_t api_key = hash(descr)
 conf[] uint32_t *descr = {
     enum {
@@ -56,5 +59,25 @@ conf[] uint32_t *descr = {
         WRITE = "w",
     }  read_write : 8;
     char name[32];
+}
+conf[] uint32_t conf {
+    uint8_t min_addr;
+    uint8_t max_addr;
+    uint4_t reply_div;
+    uint4_t reply_phase;
+    uint8_t max_reply_len;
+}
+conf[] uint32_t error {
+    enum {
+        NO_ERROR,
+        API_KEY_MISMATCH,
+        LEN_MISMATCH,
+        FW_ERROR,
+    } error_type : 8;
+    uint16_t fw_error;
+}
+conf[] = cmd{
+    RESET,
+    START_BOOTLOADER,
 }
 */

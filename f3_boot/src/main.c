@@ -36,6 +36,24 @@ volatile packet_bootloader_t tx_buf;
 void SystemClock_Config(void);
 void Error_Handler(void);
 
+#define APP_START 0x08004000
+#define APP_END 0x08020000
+#define APP_RANGE_VALID(a, s) (!(((a) | (s)) & 3) && (a) >= APP_START && ((a) + (s)) <= APP_END)
+#define VERSION_INFO_OFFSET 0x188
+static volatile const version_info_t *app_info = (void *)(APP_START + VERSION_INFO_OFFSET);
+
+static int app_ok(void) {
+  if(!APP_RANGE_VALID(APP_START, app_info->image_size)) {
+    return 0;
+  }
+  uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)APP_START, app_info->image_size / 4);
+
+  if(crc != 0) {
+    return 0;
+  }
+  return 1;
+}
+
 void TIM8_UP_IRQHandler() {
   
 
@@ -60,24 +78,63 @@ void TIM8_UP_IRQHandler() {
     if(rx_buf.header.slave_addr == 255 && rx_buf.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4 && rx_buf.header.crc == HAL_CRC_Calculate(&hcrc, (uint32_t *)&(rx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1)){
       //do stuff
       //tx_buf.state = do_stuff();
+      HAL_StatusTypeDef status = HAL_OK;
       switch(rx_buf.cmd){
         case BOOTLOADER_OPCODE_READ:
-          // tx_buf.value = *((uint32_t *)(rx_buf.addr));
-          // tx_buf.addr = rx_buf.addr + 1;
-          // tx_buf.value = rx_buf.header.flags.counter;
+          tx_buf.value = *(uint32_t *)rx_buf.addr;
+          tx_buf.addr = rx_buf.addr;
           break;
+
         case BOOTLOADER_OPCODE_WRITE:
+          if(*(uint32_t *)rx_buf.addr != rx_buf.value) {
+            status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, rx_buf.addr, rx_buf.value);
+          }
+          if(*(uint32_t *)rx_buf.addr != rx_buf.value) {
+            status = HAL_ERROR;
+          }
+          tx_buf.value = *(uint32_t *)rx_buf.addr;
+          tx_buf.addr = rx_buf.addr;
+          break;
+
         case BOOTLOADER_OPCODE_PAGEERASE:
+          HAL_FLASH_Unlock();
+          uint32_t NbOfPages = 0;
+          uint32_t PageError = 0;
+          /* Variable contains Flash operation status */
+          FLASH_EraseInitTypeDef eraseinitstruct;
+          //TODO: only erase APP pages
+          /* Get the number of sector to erase from 1st sector*/
+          NbOfPages = (APP_END - APP_START) / FLASH_PAGE_SIZE;
+          //NbOfPages                 = 1;
+          eraseinitstruct.TypeErase = FLASH_TYPEERASE_PAGES;
+          //eraseinitstruct.PageAddress = USBD_DFU_APP_DEFAULT_ADD;
+          eraseinitstruct.PageAddress = APP_START;
+          eraseinitstruct.NbPages     = NbOfPages;
+          status                      = HAL_FLASHEx_Erase(&eraseinitstruct, &PageError);
+          break;
+
         case BOOTLOADER_OPCODE_RESET:
+          HAL_FLASH_Lock();
           HAL_NVIC_SystemReset();
           break;
+
         case BOOTLOADER_OPCODE_CRCCHECK:
-          tx_buf.value = 0;
-          tx_buf.addr = 0;
+          if(app_ok()){
+            status = HAL_OK;
+          }
+          else{
+            status = HAL_ERROR;
+          }
+      }
+
+      if(status != HAL_OK){
+        tx_buf.header.flags.error = 1;
+      }
+      else{
+        tx_buf.header.flags.error = 0;
       }
       
       tx_buf.cmd = rx_buf.cmd;
-      tx_buf.header.flags.error = 0;
       tx_buf.header.flags.counter = rx_buf.header.flags.counter;
       tx_buf.header.slave_addr = 255;
       tx_buf.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
@@ -170,25 +227,6 @@ static void MX_RTC_Init(void) {
     Error_Handler();
   }
 }
-
-#define APP_START 0x08004000
-#define APP_END 0x08020000
-#define APP_RANGE_VALID(a, s) (!(((a) | (s)) & 3) && (a) >= APP_START && ((a) + (s)) <= APP_END)
-#define VERSION_INFO_OFFSET 0x188
-static volatile const version_info_t *app_info = (void *)(APP_START + VERSION_INFO_OFFSET);
-
-static int app_ok(void) {
-  if(!APP_RANGE_VALID(APP_START, app_info->image_size)) {
-    return 0;
-  }
-  uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)APP_START, app_info->image_size / 4);
-
-  if(crc != 0) {
-    return 0;
-  }
-  return 1;
-}
-
 
 int main(void) {
   // Relocate interrupt vectors
