@@ -125,6 +125,7 @@ void TIM8_UP_IRQHandler() {
           else{
             status = HAL_ERROR;
           }
+          break;
       }
 
       if(status != HAL_OK){

@@ -304,11 +304,11 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
             case SEND_APP:
               if(ctx->from_hv.packet_from_hv.header.slave_addr == 255 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4){
                 // from f3 bootloader
-                if(ctx->from_hv.packet_from_hv_bootloader.header.flags.error == 0 && ctx->from_hv.packet_from_hv_bootloader.cmd == BOOTLOADER_OPCODE_WRITE && ctx->from_hv.packet_from_hv_bootloader.addr == 0x08004000 + ctx->addr * 4 && ctx->from_hv.packet_from_hv_bootloader.value == ((uint32_t *)&_binary_obj_hvf3_hvf3_bin_start)[ctx->addr]){
+                if(ctx->from_hv.packet_from_hv_bootloader.header.flags.error == 0 && ctx->from_hv.packet_from_hv_bootloader.cmd == BOOTLOADER_OPCODE_WRITE && ctx->from_hv.packet_from_hv_bootloader.addr == 0x08004000 + ctx->addr * 4 && ctx->from_hv.packet_from_hv_bootloader.value == ((uint32_t *)&(_binary_obj_hvf3_hvf3_bin_start))[ctx->addr]){
                   ctx->timeout = 0;
                   ctx->addr++;
                 }
-                if(ctx->addr > _binary_obj_hvf3_hvf3_bin_size / 4){
+                if(ctx->addr > ((uint32_t)&(_binary_obj_hvf3_hvf3_bin_size)) / 4){
                   flash_state = CRC_CHECK;
                 }
               }
@@ -443,13 +443,14 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
         ctx->to_hv.packet_to_hv_bootloader.addr = 0;
         ctx->to_hv.packet_to_hv_bootloader.value = 0;
         ctx->to_hv.packet_to_hv_bootloader.cmd = BOOTLOADER_OPCODE_PAGEERASE;
-        ctx->to_hv.packet_to_hv_bootloader.cmd = BOOTLOADER_STATE_OK;
 
         tx_size = sizeof(packet_bootloader_t);
 
         ctx->addr = 0;
 
-        if(ctx->timeout > 100){
+        // flash_state = SLAVE_IN_APP;
+
+        if(ctx->timeout > 20000){
           ctx->timeout = 0;
           flash_state = FLASH_FAILED;
         }
@@ -464,7 +465,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
 
         tx_size = sizeof(packet_bootloader_t);
 
-        if(ctx->timeout > 10){
+        if(ctx->timeout > 1000){
           ctx->timeout = 0;
           flash_state = FLASH_FAILED;
         }
@@ -477,7 +478,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
 
         tx_size = sizeof(packet_bootloader_t);
 
-        if(ctx->timeout > 10){
+        if(ctx->timeout > 1000){
           ctx->timeout = 0;
           flash_state = FLASH_FAILED;
         }
@@ -489,7 +490,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
 
         tx_size = sizeof(packet_bootloader_t);
 
-        if(ctx->timeout > 10){
+        if(ctx->timeout > 1000){
           ctx->timeout = 0;
           flash_state = SLAVE_IN_APP;
         }
@@ -503,23 +504,25 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
 
     }
 
-    CRC_ResetDR();
-    ctx->to_hv.packet_to_hv.header.crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->to_hv.packet_to_hv.header.slave_addr), tx_size / 4 - 1);
+    if(tx_size){
+      CRC_ResetDR();
+      ctx->to_hv.packet_to_hv.header.crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->to_hv.packet_to_hv.header.slave_addr), tx_size / 4 - 1);
 
-    //start DMA TX transfer
-    DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
-    DMA_ClearFlag(UART_DRV_TX_DMA, UART_DRV_TX_DMA_TCIF);
-    UART_DRV_TX_DMA->NDTR = tx_size;
-    DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
+      //start DMA TX transfer
+      DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
+      DMA_ClearFlag(UART_DRV_TX_DMA, UART_DRV_TX_DMA_TCIF);
+      UART_DRV_TX_DMA->NDTR = tx_size;
+      DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
 
-    // clear uart faults
-    PIN(uart_sr) = UART_DRV->SR;
-    PIN(uart_dr) = UART_DRV->DR;
+      // clear uart faults
+      PIN(uart_sr) = UART_DRV->SR;
+      PIN(uart_dr) = UART_DRV->DR;
 
-    //start DMA RX transfer
-    DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
-    DMA_ClearFlag(UART_DRV_RX_DMA, UART_DRV_RX_DMA_TCIF);
-    DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
+      //start DMA RX transfer
+      DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
+      DMA_ClearFlag(UART_DRV_RX_DMA, UART_DRV_RX_DMA_TCIF);
+      DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
+    }
   }
 
   PIN(state) = flash_state;
@@ -531,7 +534,7 @@ void send_boot(char *ptr){
 COMMAND("hv_update", send_boot, "try hv update");
 
 static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  // struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
+  struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
   // struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
   char c;
   while(rb_getc(&hv_rx_buf, &c)){
@@ -542,28 +545,35 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   if(last_flash_state != flash_state){
     switch(flash_state){
       case SLAVE_IN_APP:
-        printf("hv: SLAVE_IN_APP\n");
+        printf("hv: SLAVE_IN_APP addr: %lu\n", ctx->addr * 4);
       break;
       case SEND_TO_BOOTLOADER:
-        printf("hv: SEND_TO_BOOTLOADER\n");
+        printf("hv: SEND_TO_BOOTLOADER addr: %lu\n", ctx->addr * 4);
       break;
       case ERASE_FLASH:
-        printf("hv: ERASE_FLASH\n");
+        printf("hv: ERASE_FLASH addr: %lu\n", ctx->addr * 4);
       break;
       case SEND_APP:
-        printf("hv: SEND_APP\n");
+        printf("hv: SEND_APP addr: %lu\n", ctx->addr * 4);
       break;
       case CRC_CHECK:
-        printf("hv: CRC_CHECK\n");
+        printf("hv: CRC_CHECK addr: %lu\n", ctx->addr * 4);
       break;
       case SEND_TO_APP:
-        printf("hv: SEND_TO_APP\n");
+        printf("hv: SEND_TO_APP addr: %lu\n", ctx->addr * 4);
       break;
       case FLASH_FAILED:
-        printf("hv: FLASH_FAILED\n");
+        printf("hv: FLASH_FAILED addr: %lu\n", ctx->addr * 4);
       break;
     }
     last_flash_state = flash_state;
+
+    static uint32_t last_addr = 0;
+    if(ctx->addr >= last_addr + 1024 / 4){
+      printf("hv: addr: %lu\n", ctx->addr * 4);
+      last_addr = ctx->addr;
+    }
+    
   }
 }
 
