@@ -542,6 +542,8 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   }
 
   static flash_state_t last_flash_state = SLAVE_IN_APP;
+  static uint32_t last_addr = 0;
+  
   if(last_flash_state != flash_state){
     switch(flash_state){
       case SLAVE_IN_APP:
@@ -549,31 +551,35 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
       break;
       case SEND_TO_BOOTLOADER:
         printf("hv: SEND_TO_BOOTLOADER addr: %lu\n", ctx->addr * 4);
+        last_addr = 0;
       break;
       case ERASE_FLASH:
         printf("hv: ERASE_FLASH addr: %lu\n", ctx->addr * 4);
+        last_addr = 0;
       break;
       case SEND_APP:
         printf("hv: SEND_APP addr: %lu\n", ctx->addr * 4);
       break;
       case CRC_CHECK:
         printf("hv: CRC_CHECK addr: %lu\n", ctx->addr * 4);
+        last_addr = 0;
       break;
       case SEND_TO_APP:
         printf("hv: SEND_TO_APP addr: %lu\n", ctx->addr * 4);
+        last_addr = 0;
       break;
       case FLASH_FAILED:
         printf("hv: FLASH_FAILED addr: %lu\n", ctx->addr * 4);
+        last_addr = 0;
       break;
     }
     last_flash_state = flash_state;
-
-    static uint32_t last_addr = 0;
-    if(ctx->addr >= last_addr + 1024 / 4){
-      printf("hv: addr: %lu\n", ctx->addr * 4);
-      last_addr = ctx->addr;
-    }
     
+  }
+
+  if(ctx->addr >= last_addr + 1024 / 4){
+    printf("hv: addr: %lu\n", ctx->addr * 4);
+    last_addr = ctx->addr;
   }
 }
 
