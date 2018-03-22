@@ -146,7 +146,8 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
   ctx->packet_from_hv.header.len = (sizeof(packet_from_hv_t) - sizeof(stmbl_talk_header_t)) / 4;
   ctx->packet_from_hv.header.flags.write_to_conf = 1;
-  ctx->packet_from_hv.header.flags.incr_read_addr = 1;
+  ctx->packet_from_hv.header.flags.read_same_addr = 1;
+  ctx->packet_from_hv.header.flags.packet_to_master = 1;
   ctx->packet_from_hv.header.flags.error = 0;
   ctx->packet_from_hv.header.slave_addr = 0;
 }

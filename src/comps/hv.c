@@ -57,9 +57,20 @@ HAL_PIN(crc_error);
 HAL_PIN(timeout);
 HAL_PIN(scale);
 
+HAL_PIN(send_boot);
+HAL_PIN(addr);
+HAL_PIN(value);
+HAL_PIN(send_reset);
+
 struct hv_ctx_t {
-  volatile packet_to_hv_t packet_to_hv;
-  volatile packet_from_hv_t packet_from_hv;
+  union{
+    volatile packet_to_hv_t packet_to_hv;
+    volatile packet_bootloader_t packet_to_hv_bootloader;
+  } to_hv;
+  union{
+    volatile packet_from_hv_t packet_from_hv;
+    volatile packet_bootloader_t packet_from_hv_bootloader;
+  } from_hv;
   f3_config_data_t config;
   f3_state_data_t state;
   uint16_t addr;
@@ -122,9 +133,9 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // DMA2-Config
   DMA_InitStructure.DMA_Channel            = UART_DRV_TX_DMA_CHAN;
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) & (UART_DRV->DR);
-  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t) & (ctx->packet_to_hv);
+  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t) & (ctx->to_hv.packet_to_hv);
   DMA_InitStructure.DMA_DIR                = DMA_DIR_MemoryToPeripheral;
-  DMA_InitStructure.DMA_BufferSize         = sizeof(packet_to_hv_t);
+  DMA_InitStructure.DMA_BufferSize         = MAX(sizeof(packet_to_hv_t), sizeof(packet_bootloader_t));
   DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
@@ -149,9 +160,9 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // DMA2-Config
   DMA_InitStructure.DMA_Channel            = UART_DRV_RX_DMA_CHAN;
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) & (UART_DRV->DR);
-  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t) & (ctx->packet_from_hv);
+  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t) & (ctx->from_hv.packet_from_hv);
   DMA_InitStructure.DMA_DIR                = DMA_DIR_PeripheralToMemory;
-  DMA_InitStructure.DMA_BufferSize         = sizeof(packet_from_hv_t);
+  DMA_InitStructure.DMA_BufferSize         = MAX(sizeof(packet_from_hv_t), sizeof(packet_bootloader_t));
   DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
@@ -199,43 +210,74 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
     ctx->config.pins.max_y   = PIN(max_y);
     ctx->config.pins.max_cur = PIN(max_cur) * PIN(scale);
 
-    uint32_t dma_pos = DMA_GetCurrDataCounter(UART_DRV_RX_DMA);
-    if(dma_pos == 0) {
-      CRC_ResetDR();
-      uint32_t crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_from_hv.header.slave_addr), sizeof(packet_from_hv_t) / 4 - 1);
+    uint32_t dma_count = MAX(sizeof(packet_from_hv_t), sizeof(packet_bootloader_t)) - DMA_GetCurrDataCounter(UART_DRV_RX_DMA);
+    
+    PIN(value) = 0.0;
+    // PIN(addr) = dma_count;
 
-      if(ctx->packet_from_hv.header.slave_addr == 0 && ctx->packet_from_hv.header.len == (sizeof(packet_from_hv_t) - sizeof(stmbl_talk_header_t)) / 4 && crc == ctx->packet_from_hv.header.crc) {
-        PIN(d_fb)     = ctx->packet_from_hv.d_fb;
-        PIN(q_fb)     = ctx->packet_from_hv.q_fb;
-        PIN(fault)     = ctx->packet_from_hv.fault;
+    if(dma_count >= sizeof(stmbl_talk_header_t)){
+      // PIN(value) = 0.5;
+      if(dma_count >= sizeof(stmbl_talk_header_t) + ctx->from_hv.packet_from_hv.header.len * 4){
+        PIN(value) = 0.75;
 
-        PIN(abs_cur)  = sqrtf(PIN(d_fb) * PIN(d_fb) + PIN(q_fb) * PIN(q_fb));
+        CRC_ResetDR();
+        uint32_t crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->from_hv.packet_from_hv.header.slave_addr), sizeof(stmbl_talk_header_t) / 4 + ctx->from_hv.packet_from_hv.header.len - 1);
+        if(ctx->from_hv.packet_from_hv.header.crc == crc){
+          if(ctx->from_hv.packet_from_hv.header.slave_addr == 0 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_from_hv_t) - sizeof(stmbl_talk_header_t)) / 4){
+            // from f3 app
+            PIN(d_fb)     = ctx->from_hv.packet_from_hv.d_fb;
+            PIN(q_fb)     = ctx->from_hv.packet_from_hv.q_fb;
+            PIN(fault)     = ctx->from_hv.packet_from_hv.fault;
+            PIN(abs_cur)  = sqrtf(PIN(d_fb) * PIN(d_fb) + PIN(q_fb) * PIN(q_fb));
 
-        uint16_t a         = ctx->packet_from_hv.header.conf_addr;
-        a                  = CLAMP(a, 0, sizeof(f3_state_data_t) / 4);
-        ctx->state.data[a] = ctx->packet_from_hv.header.config.f32;
+            uint16_t a         = ctx->from_hv.packet_from_hv.header.conf_addr;
+            a                  = CLAMP(a, 0, sizeof(f3_state_data_t) / 4);
+            ctx->state.data[a] = ctx->from_hv.packet_from_hv.header.config.f32;
 
-        PIN(dc_volt)  = ctx->state.pins.dc_volt;
-        PIN(pwm_volt) = ctx->state.pins.pwm_volt;
-        PIN(u_fb)      = ctx->state.pins.u_fb;
-        PIN(v_fb)      = ctx->state.pins.v_fb;
-        PIN(w_fb)      = ctx->state.pins.w_fb;
-        PIN(hv_temp)   = ctx->state.pins.hv_temp;
-        PIN(mot_temp)  = ctx->state.pins.mot_temp;
-        PIN(core_temp) = ctx->state.pins.core_temp;
-        PIN(y)         = ctx->state.pins.y;
-        if(ctx->packet_from_hv.fault > 0.0) {
-          PIN(com_error) = HV_FAULT_ERROR;
-        } else {
-          PIN(com_error) = 0.0;
+            PIN(dc_volt)  = ctx->state.pins.dc_volt;
+            PIN(pwm_volt) = ctx->state.pins.pwm_volt;
+            PIN(u_fb)      = ctx->state.pins.u_fb;
+            PIN(v_fb)      = ctx->state.pins.v_fb;
+            PIN(w_fb)      = ctx->state.pins.w_fb;
+            PIN(hv_temp)   = ctx->state.pins.hv_temp;
+            PIN(mot_temp)  = ctx->state.pins.mot_temp;
+            PIN(core_temp) = ctx->state.pins.core_temp;
+            PIN(y)         = ctx->state.pins.y;
+
+            if(ctx->from_hv.packet_from_hv.fault > 0.0) {
+              PIN(com_error) = HV_FAULT_ERROR;
+            } else {
+              PIN(com_error) = 0.0;
+            }
+
+            PIN(value) = 1.0;
+
+            ctx->timeout = 0;
+
+            if(ctx->from_hv.packet_from_hv.buf != 0xff){
+              rb_write(&hv_rx_buf, (void*)&(ctx->from_hv.packet_from_hv.buf), 1);
+            }
+          }
+          else if(ctx->from_hv.packet_from_hv.header.slave_addr == 255 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4){
+            // from f3 bootloader
+            // PIN(value) = ctx->from_hv.packet_from_hv_bootloader.value;
+            PIN(addr) = ctx->from_hv.packet_from_hv_bootloader.header.flags.counter;
+            PIN(com_error) = 0.0;
+            ctx->timeout = 0;
+            PIN(value) = 2.0;
+          }
+          else{
+            // wrong packet len or slave addr
+            PIN(com_error) = -1;
+            PIN(value) = 3.0;
+          }
         }
-        ctx->timeout = 0;
-        if(ctx->packet_from_hv.buf != 0xff){
-          rb_write(&hv_rx_buf, (void*)&(ctx->packet_from_hv.buf), 1);
+        else{
+          // CRC fault
+          PIN(crc_error)++;
+          PIN(com_error) = HV_CRC_ERROR;
+          // PIN(value) = 4.0;
         }
-      } else {
-        PIN(crc_error)++;
-        PIN(com_error) = HV_CRC_ERROR;
       }
     }
 
@@ -253,47 +295,97 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
       pos = minus(0, pos);
     }
 
-    if(e > 0.0) {
-      ctx->packet_to_hv.d_cmd        = d_cmd;
-      ctx->packet_to_hv.q_cmd        = q_cmd;
-      ctx->packet_to_hv.flags.enable = 1;
-    } else {
-      ctx->packet_to_hv.d_cmd        = 0.0;
-      ctx->packet_to_hv.q_cmd        = 0.0;
-      ctx->packet_to_hv.flags.enable = 0;
+
+
+    if(PIN(send_boot) > 0.0){
+      ctx->to_hv.packet_to_hv.header.slave_addr = 255;
+      ctx->to_hv.packet_to_hv.header.flags.packet_to_master = 0;
+      ctx->to_hv.packet_to_hv.header.flags.read_same_addr = 0;
+      ctx->to_hv.packet_to_hv.header.flags.write_to_conf = 0;
+      ctx->to_hv.packet_to_hv.header.flags.error = 0;
+      ctx->to_hv.packet_to_hv.header.flags.counter++;
+      ctx->to_hv.packet_to_hv.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
+      ctx->to_hv.packet_to_hv.header.conf_addr = 0;
+      ctx->to_hv.packet_to_hv.header.config.f32 = 0;
+      ctx->to_hv.packet_to_hv_bootloader.addr = 0x80000000 + (uint32_t)PIN(addr);
+      ctx->to_hv.packet_to_hv_bootloader.value = 0;
+      ctx->to_hv.packet_to_hv_bootloader.cmd = BOOTLOADER_OPCODE_READ;
+      ctx->to_hv.packet_to_hv_bootloader.cmd = BOOTLOADER_STATE_OK;
+
+      if(PIN(send_reset) > 0.0){
+              ctx->to_hv.packet_to_hv_bootloader.cmd = BOOTLOADER_OPCODE_RESET;
+      }
+
+      CRC_ResetDR();
+      ctx->to_hv.packet_to_hv.header.crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->to_hv.packet_to_hv.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1);
+      
+      // UART_DRV_TX_DMA->CR &= (uint16_t)(~DMA_SxCR_EN);
+      DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
+      DMA_ClearFlag(UART_DRV_TX_DMA, UART_DRV_TX_DMA_TCIF);
+      UART_DRV_TX_DMA->NDTR = sizeof(packet_bootloader_t);
+      // UART_DRV_TX_DMA->CR |= (uint16_t)(DMA_SxCR_EN);
+      // DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
     }
-    ctx->packet_to_hv.flags.cmd_type   = PIN(cmd_mode);
-    ctx->packet_to_hv.flags.phase_type = PIN(phase_mode);
-    ctx->packet_to_hv.pos              = pos;
-    ctx->packet_to_hv.vel              = vel;
+    else{
+      if(e > 0.0) {
+        ctx->to_hv.packet_to_hv.d_cmd        = d_cmd;
+        ctx->to_hv.packet_to_hv.q_cmd        = q_cmd;
+        ctx->to_hv.packet_to_hv.flags.enable = 1;
+      } else {
+        ctx->to_hv.packet_to_hv.d_cmd        = 0.0;
+        ctx->to_hv.packet_to_hv.q_cmd        = 0.0;
+        ctx->to_hv.packet_to_hv.flags.enable = 0;
+      }
+      ctx->to_hv.packet_to_hv.flags.cmd_type   = PIN(cmd_mode);
+      ctx->to_hv.packet_to_hv.flags.phase_type = PIN(phase_mode);
+      ctx->to_hv.packet_to_hv.pos              = pos;
+      ctx->to_hv.packet_to_hv.vel              = vel;
 
-    ctx->packet_to_hv.header.slave_addr = 0;
-    ctx->packet_to_hv.header.len = (sizeof(packet_to_hv_t) - sizeof(stmbl_talk_header_t)) / 4;
-    ctx->packet_to_hv.header.conf_addr = ctx->addr;
-    ctx->packet_to_hv.header.config.f32 = ctx->config.data[ctx->addr++];
+      ctx->to_hv.packet_to_hv.header.slave_addr = 0;
+      ctx->to_hv.packet_to_hv.header.flags.packet_to_master = 0;
+      ctx->to_hv.packet_to_hv.header.flags.error = 0;
+      ctx->to_hv.packet_to_hv.header.flags.read_same_addr = 0;
+      ctx->to_hv.packet_to_hv.header.len = (sizeof(packet_to_hv_t) - sizeof(stmbl_talk_header_t)) / 4;
+      ctx->to_hv.packet_to_hv.header.conf_addr = ctx->addr;
+      ctx->to_hv.packet_to_hv.header.config.f32 = ctx->config.data[ctx->addr++];
 
-    ctx->addr %= sizeof(f3_config_data_t) / 4;
-    uint8_t buf[1];
-    if(rb_read(&hv_tx_buf, buf, 1)){
-      ctx->packet_to_hv.flags.buf = buf[0];
-    }else{
-      ctx->packet_to_hv.flags.buf = 0xff;
+      uint8_t buf[1];
+      if(rb_read(&hv_tx_buf, buf, 1)){
+        ctx->to_hv.packet_to_hv.flags.buf = buf[0];
+      }else{
+        ctx->to_hv.packet_to_hv.flags.buf = 0xff;
+      }
+
+      CRC_ResetDR();
+      ctx->to_hv.packet_to_hv.header.crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->to_hv.packet_to_hv.header.slave_addr), sizeof(packet_to_hv_t) / 4 - 1);
+
+      // UART_DRV_TX_DMA->CR &= (uint16_t)(~DMA_SxCR_EN);
+      DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
+      DMA_ClearFlag(UART_DRV_TX_DMA, UART_DRV_TX_DMA_TCIF);
+      UART_DRV_TX_DMA->NDTR = sizeof(packet_to_hv_t);
+      // UART_DRV_TX_DMA->CR |= (uint16_t)(DMA_SxCR_EN);
+      // DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
+
+      ctx->addr %= sizeof(f3_config_data_t) / 4;
+
     }
 
-    CRC_ResetDR();
-    ctx->packet_to_hv.header.crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->packet_to_hv.header.slave_addr), sizeof(packet_to_hv_t) / 4 - 1);
-
+    
+    // clear uart faults
     PIN(uart_sr) = UART_DRV->SR;
     PIN(uart_dr) = UART_DRV->DR;
+
     //start DMA RX transfer
     DMA_Cmd(UART_DRV_RX_DMA, DISABLE);
     DMA_ClearFlag(UART_DRV_RX_DMA, UART_DRV_RX_DMA_TCIF);
     DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
 
     //start DMA TX transfer
-    DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
-    DMA_ClearFlag(UART_DRV_TX_DMA, UART_DRV_TX_DMA_TCIF);
     DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
+
+    // DMA_Cmd(UART_DRV_TX_DMA, DISABLE);
+    // DMA_ClearFlag(UART_DRV_TX_DMA, UART_DRV_TX_DMA_TCIF);
+    // DMA_Cmd(UART_DRV_TX_DMA, ENABLE);
   }
   // PIN(power) = PIN(dc_cur) * PIN(dc_volt);
   // if(PIN(pwm_volt) > 0.0){

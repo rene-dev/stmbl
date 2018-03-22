@@ -47,23 +47,6 @@ typedef struct {
   uint16_t padding;
 } packet_bootloader_t;
 
-// #pragma pack(1)
-// typedef struct {
-//   stmbl_talk_header_t header;
-//   uint32_t addr;
-//   uint32_t value;
-//   enum{
-//     BOOTLOADER_OPCODE_READ = 0, // value = MEM[addr]
-//     BOOTLOADER_OPCODE_WRITE, // value = MEM[addr]
-//     BOOTLOADER_OPCODE_PAGEERASE,
-//     BOOTLOADER_OPCODE_RESET,
-//     BOOTLOADER_OPCODE_CRCCHECK, // state = CRC(APP) != 0
-//   } cmd : 8; // same as request
-//   enum {
-//     BOOTLOADER_STATE_OK = 0,
-//     BOOTLOADER_STATE_NAK,
-//   } state;
-// } packet_to_bootloader_t; 
 
 //process data from f3 to f4
 #pragma pack(1)

@@ -27,6 +27,7 @@
 
 uint32_t systick_freq;
 CRC_HandleTypeDef hcrc;
+RTC_HandleTypeDef hrtc;
 
 volatile packet_bootloader_t rx_buf;
 volatile packet_bootloader_t tx_buf;
@@ -36,7 +37,7 @@ void SystemClock_Config(void);
 void Error_Handler(void);
 
 void TIM8_UP_IRQHandler() {
-  __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
+  
 
   static uint32_t last_dma_count = 0;
 
@@ -59,12 +60,35 @@ void TIM8_UP_IRQHandler() {
     if(rx_buf.header.slave_addr == 255 && rx_buf.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4 && rx_buf.header.crc == HAL_CRC_Calculate(&hcrc, (uint32_t *)&(rx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1)){
       //do stuff
       //tx_buf.state = do_stuff();
-      tx_buf.value = *((uint32_t *)(rx_buf.addr));
-      tx_buf.addr = rx_buf.addr;
+      switch(rx_buf.cmd){
+        case BOOTLOADER_OPCODE_READ:
+          // tx_buf.value = *((uint32_t *)(rx_buf.addr));
+          // tx_buf.addr = rx_buf.addr + 1;
+          // tx_buf.value = rx_buf.header.flags.counter;
+          break;
+        case BOOTLOADER_OPCODE_WRITE:
+        case BOOTLOADER_OPCODE_PAGEERASE:
+        case BOOTLOADER_OPCODE_RESET:
+          HAL_NVIC_SystemReset();
+          break;
+        case BOOTLOADER_OPCODE_CRCCHECK:
+          tx_buf.value = 0;
+          tx_buf.addr = 0;
+      }
+      
       tx_buf.cmd = rx_buf.cmd;
       tx_buf.header.flags.error = 0;
       tx_buf.header.flags.counter = rx_buf.header.flags.counter;
+      tx_buf.header.slave_addr = 255;
+      tx_buf.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
+      tx_buf.header.flags.packet_to_master = 1;
+      tx_buf.header.conf_addr = 0;
+      tx_buf.header.config.u32 = 0;
+      tx_buf.header.flags.read_same_addr = 0;
+      tx_buf.header.flags.write_to_conf = 0;
       tx_buf.header.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(tx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1);
+
+      rx_buf.header.crc = 0;
 
       // start tx DMA
       DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
@@ -72,6 +96,8 @@ void TIM8_UP_IRQHandler() {
       DMA1_Channel2->CCR |= DMA_CCR_EN;
     }
   }
+
+  __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
 }
 
 void uart_init(){
@@ -129,6 +155,41 @@ void uart_init(){
   USART3->ICR |= USART_ICR_RTOCF;  // timeout clear flag
 }
 
+/* RTC init function */
+static void MX_RTC_Init(void) {
+  /**Initialize RTC Only 
+    */
+  hrtc.Instance            = RTC;
+  hrtc.Init.HourFormat     = RTC_HOURFORMAT_24;
+  hrtc.Init.AsynchPrediv   = 127;
+  hrtc.Init.SynchPrediv    = 255;
+  hrtc.Init.OutPut         = RTC_OUTPUT_DISABLE;
+  hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+  hrtc.Init.OutPutType     = RTC_OUTPUT_TYPE_OPENDRAIN;
+  if(HAL_RTC_Init(&hrtc) != HAL_OK) {
+    Error_Handler();
+  }
+}
+
+#define APP_START 0x08004000
+#define APP_END 0x08020000
+#define APP_RANGE_VALID(a, s) (!(((a) | (s)) & 3) && (a) >= APP_START && ((a) + (s)) <= APP_END)
+#define VERSION_INFO_OFFSET 0x188
+static volatile const version_info_t *app_info = (void *)(APP_START + VERSION_INFO_OFFSET);
+
+static int app_ok(void) {
+  if(!APP_RANGE_VALID(APP_START, app_info->image_size)) {
+    return 0;
+  }
+  uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)APP_START, app_info->image_size / 4);
+
+  if(crc != 0) {
+    return 0;
+  }
+  return 1;
+}
+
+
 int main(void) {
   // Relocate interrupt vectors
   extern void *g_pfnVectors;
@@ -146,8 +207,6 @@ int main(void) {
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
 
-  GPIO_InitTypeDef GPIO_InitStruct;
-
   __HAL_RCC_DMA1_CLK_ENABLE();
   __HAL_RCC_DMA2_CLK_ENABLE();
   __HAL_RCC_RTC_ENABLE();
@@ -159,36 +218,78 @@ int main(void) {
   hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
   hcrc.InputDataFormat              = CRC_INPUTDATA_FORMAT_WORDS;
 
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : LED_PIN */
+  GPIO_InitStruct.Pin   = LED_PIN;
+  GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull  = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LED_PORT, &GPIO_InitStruct);
+
   __HAL_RCC_CRC_CLK_ENABLE();
 
   if(HAL_CRC_Init(&hcrc) != HAL_OK) {
     Error_Handler();
   }
 
-  uart_init();
+  MX_RTC_Init();
 
 
+  if(app_ok() && RTC->BKP0R == 0x00000000) {
+    // SCB->VTOR = APP_START;
+    /* Jump to user application */
+    void (*JumpToApplication)(void);
+    uint32_t JumpAddress = *(__IO uint32_t *)(APP_START + 4);
+    JumpToApplication    = (void *)JumpAddress;
 
-  tx_buf.header.slave_addr = 255;
-  tx_buf.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
-  tx_buf.header.flags.packet_to_master = 1;
-  tx_buf.header.conf_addr = 0;
-  tx_buf.header.config.u32 = 0;
-  tx_buf.header.flags.incr_read_addr = 0;
-  tx_buf.header.flags.write_to_conf = 0;
-
-  // start rx DMA
-  DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
-  DMA1_Channel3->CNDTR = sizeof(packet_bootloader_t);
-  DMA1_Channel3->CCR |= DMA_CCR_EN;
-
-  MX_TIM8_Init();
-  if(HAL_TIM_Base_Start_IT(&htim8) != HAL_OK) {
-    Error_Handler();
+    /* Initialize user application's Stack Pointer */
+    __set_MSP(*(__IO uint32_t *)APP_START);
+    JumpToApplication();
+    while(1){
+    }
   }
+  else{
+    uart_init();
 
+    tx_buf.header.slave_addr = 255;
+    tx_buf.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
+    tx_buf.header.flags.packet_to_master = 1;
+    tx_buf.header.conf_addr = 0;
+    tx_buf.header.config.u32 = 0;
+    tx_buf.header.flags.read_same_addr = 0;
+    tx_buf.header.flags.write_to_conf = 0;
+
+    // start rx DMA
+    DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
+    DMA1_Channel3->CNDTR = sizeof(packet_bootloader_t);
+    DMA1_Channel3->CCR |= DMA_CCR_EN;
+
+    MX_TIM8_Init();
+    if(HAL_TIM_Base_Start_IT(&htim8) != HAL_OK) {
+      Error_Handler();
+    }
+  }
+  RTC->BKP0R = 0x00000000;
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
   while(1) {
-    
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+    HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_SET);
+    HAL_Delay(50);
+    HAL_GPIO_WritePin(LED_PORT, LED_PIN, GPIO_PIN_RESET);
+    HAL_Delay(50);
   }
 }
 
@@ -201,7 +302,7 @@ void SystemClock_Config(void) {
 
   /**Initializes the CPU, AHB and APB busses clocks 
     */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState       = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState       = RCC_HSI_ON;
@@ -225,12 +326,8 @@ void SystemClock_Config(void) {
     Error_Handler();
   }
 
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB | RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_USART3 | RCC_PERIPHCLK_TIM8 | RCC_PERIPHCLK_ADC12 | RCC_PERIPHCLK_ADC34 | RCC_PERIPHCLK_RTC;
-  PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART3 | RCC_PERIPHCLK_TIM8 | RCC_PERIPHCLK_RTC;
   PeriphClkInit.Usart3ClockSelection = RCC_USART3CLKSOURCE_SYSCLK;
-  PeriphClkInit.Adc12ClockSelection  = RCC_ADC12PLLCLK_DIV1;
-  PeriphClkInit.Adc34ClockSelection  = RCC_ADC34PLLCLK_DIV1;
-  PeriphClkInit.USBClockSelection    = RCC_USBCLKSOURCE_PLL_DIV1_5;
   PeriphClkInit.Tim8ClockSelection   = RCC_TIM8CLK_PLLCLK;
   PeriphClkInit.RTCClockSelection    = RCC_RTCCLKSOURCE_LSI;
   if(HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {

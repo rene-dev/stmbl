@@ -3,16 +3,16 @@
 
 #pragma pack(1)
 typedef struct{
-    uint32_t crc;   // can be 0 for eth comm
+    uint32_t crc; // can be 0 for eth comm
     uint8_t slave_addr;   // calc from uid, overwrite in config
-    uint8_t len;    // #data in byte
+    uint8_t len; // #data in byte
     uint8_t conf_addr;
     struct {
-        uint8_t incr_read_addr : 1;
+        uint8_t read_same_addr : 1;
         uint8_t write_to_conf : 1;
         uint8_t packet_to_master : 1;
-        uint8_t error : 1;  // mosi: clear error, miso: error set
-        uint8_t counter : 4;    // packet counter, mosi: ++, miso: same as request
+        uint8_t error : 1;
+        uint8_t counter : 4; // packet counter, mosi: ++, miso: same as request
     } flags;
     union{
       float f32;
@@ -20,3 +20,41 @@ typedef struct{
       int32_t i32;
     } config;
 } stmbl_talk_header_t;
+
+
+
+/*
+conf[0]
+.
+.
+.
+conf[] uint32_t api_key = hash(descr)
+conf[] uint32_t *descr = {
+    enum {
+        FLOAT = "f",
+        UINT = "u",
+        INT = "i",
+    } type : 8;
+    enum {
+        SIZE_32 = "5",
+        SIZE_16 = "4",
+        SIZE_8 = "3",
+        SIZE_4 = "2",
+        SIZE_2 = "1",
+        SIZE_1 = "0",
+    } size : 8;
+    enum {
+        COUNT_32 = "5",
+        COUNT_16 = "4",
+        COUNT_8 = "3",
+        COUNT_4 = "2",
+        COUNT_2 = "1",
+        COUNT_1 = "0",
+    } count : 8;
+    enum {
+        READ = "r",
+        WRITE = "w",
+    }  read_write : 8;
+    char name[32];
+}
+*/
