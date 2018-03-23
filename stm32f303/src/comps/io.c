@@ -10,22 +10,37 @@ HAL_COMP(io);
 
 HAL_PIN(led);
 
+//phase current
 HAL_PIN(iu);
 HAL_PIN(iv);
 HAL_PIN(iw);
+//total current
 HAL_PIN(iabs);
 
+//phase voltage
 HAL_PIN(u);
 HAL_PIN(v);
 HAL_PIN(w);
+//dclink voltage
 HAL_PIN(udc);
 
+//driver temoerature
 HAL_PIN(hv_temp);
+//motor temperature
 HAL_PIN(mot_temp);
 
+//ADC offset outputs
 HAL_PIN(uo);
 HAL_PIN(vo);
 HAL_PIN(wo);
+
+//DAC value for comperators
+HAL_PIN(dac);
+
+//comperator outputs
+HAL_PIN(cu);
+HAL_PIN(cv);
+HAL_PIN(cw);
 
 //enable in
 HAL_PIN(hv_en);
@@ -41,14 +56,15 @@ struct io_ctx_t {
   float u_offset;
   float v_offset;
   float w_offset;
-  uint32_t offset_count;
-  uint32_t fault;
   float overtemp_error;
   float overvoltage_error;
   float overcurrent_error;
   float fault_pin_error;
+  uint32_t offset_count;
   uint32_t hv_temp;
   uint32_t mot_temp;
+  hv_fault_t fault;
+  uint32_t enabled;
 };
 
 #define ARES 4096.0  // analog resolution, 12 bit
@@ -91,7 +107,7 @@ float r2temp(float r) {
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
-  // struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
+  struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
   //LED
   GPIO_InitStruct.Pin   = LED_PIN;
@@ -131,6 +147,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   ctx->fault_pin_error = 0;
   ctx->hv_temp = 0;
   ctx->mot_temp = 0;
+  ctx->enabled = 0;
   
 
 #ifdef HV_EN_PIN
@@ -147,6 +164,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(HV_FAULT_PORT, &GPIO_InitStruct);
 #endif
+  PIN(dac) = 0;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -210,33 +228,54 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       ctx->fault = HV_OVERCURRENT_PEAK;
     }
 
-
-
     PIN(fault) = ctx->fault;
 
     if(PIN(hv_en) > 0.0) {
-      if(ctx->fault == HV_NO_FAULT) {
+      if(!ctx->enabled){//rising edge of enable
+        //set timer master out enable
+        TIM8->BDTR |= TIM_BDTR_MOE;
 #ifdef HV_EN_PIN
+        //set driver enable pin
         HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_SET);
 #endif
+        ctx->enabled = 1;
+      }
+      if(ctx->fault == HV_NO_FAULT) {
 #ifdef HV_FAULT_PIN
+        //read fault pin from driver
         if(err_filter(&(ctx->fault_pin_error), 5.0, 0.01, HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN) == HV_FAULT_POLARITY)){
           ctx->fault = HV_HV_FAULT;
         }
 #endif
+        //Master out enable is cleared by timer break input.
+        //Timer break input is connected to comperators
+        if(!(TIM8->BDTR & TIM_BDTR_MOE)){
+          ctx->fault = HV_OVERCURRENT_HW;
+        }
       } else {
         ctx->fault_pin_error = 0;
 #ifdef HV_EN_PIN
+        //clear driver enable pin
         HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
 #endif
       }
     } else {
+      ctx->enabled = 0;
       ctx->fault = HV_NO_FAULT;
 #ifdef HV_EN_PIN
+      //clear driver enable pin
       HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
 #endif
     }
   }
+
+  //dac output for comperators
+  DAC1->DHR12R1 = CLAMP((uint32_t)PIN(dac),0,4095);
+
+  //comperator outputs for debugging
+  PIN(cu) = (COMP1->CSR & COMP_CSR_COMPxOUT) > 0;
+  PIN(cv) = (COMP2->CSR & COMP_CSR_COMPxOUT) > 0;
+  PIN(cw) = (COMP4->CSR & COMP_CSR_COMPxOUT) > 0;
 }
 
 void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {

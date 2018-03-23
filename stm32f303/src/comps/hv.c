@@ -8,11 +8,12 @@
 
 HAL_COMP(hv);
 
-//U V W input
+//U V W input in Volt
 HAL_PIN(u);
 HAL_PIN(v);
 HAL_PIN(w);
 
+//dclink in, to scale pwm
 HAL_PIN(udc);
 
 //TODO: half bridge enable in
@@ -22,16 +23,6 @@ HAL_PIN(enw);
 
 HAL_PIN(min_on);   // min on time [s]
 HAL_PIN(min_off);  // min off time [s]
-
-HAL_PIN(dac);
-
-//comperator outputs
-HAL_PIN(cu);
-HAL_PIN(cv);
-HAL_PIN(cw);
-//master out enable
-HAL_PIN(moe_r);
-HAL_PIN(moe_w);
 
 HAL_PIN(arr);
 
@@ -48,7 +39,6 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(enw)     = 1.0;
   PIN(min_on)  = 0.00000035;
   PIN(min_off) = 0.000005;
-  PIN(dac)     = 1100;
   PIN(arr)     = PWM_RES;
 }
 
@@ -89,21 +79,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PWM_V = CLAMP(v, 0, ctx->pwm_res - min_off);
   PWM_W = CLAMP(w, 0, ctx->pwm_res - min_off);
 #endif
-
-  //dac output for comperators
-  DAC1->DHR12R1 = (uint32_t)PIN(dac);
-
-  //comperator outputs for debugging
-  PIN(cu) = (COMP1->CSR & COMP_CSR_COMPxOUT) > 0;
-  PIN(cv) = (COMP2->CSR & COMP_CSR_COMPxOUT) > 0;
-  PIN(cw) = (COMP4->CSR & COMP_CSR_COMPxOUT) > 0;
-
-  //master out enable
-  PIN(moe_r) = (TIM8->BDTR & TIM_BDTR_MOE) > 0;
-  if(PIN(moe_w) > 0.0) {
-    PIN(moe_w) = 0.0;
-    TIM8->BDTR |= TIM_BDTR_MOE;
-  }
 }
 
 hal_comp_t hv_comp_struct = {

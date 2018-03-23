@@ -30,6 +30,7 @@ HAL_PIN(cur_ff);
 HAL_PIN(cur_ind);
 HAL_PIN(max_y);
 HAL_PIN(max_cur);
+HAL_PIN(dac);
 
 // process data to LS
 HAL_PIN(dc_volt);
@@ -41,7 +42,7 @@ HAL_PIN(abs_cur);
 HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
 HAL_PIN(core_temp);
-HAL_PIN(fault);
+HAL_PIN(fault);//fault from hv
 HAL_PIN(y);
 HAL_PIN(u_fb);
 HAL_PIN(v_fb);
@@ -203,6 +204,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
   ctx->timeout = 0;
   PIN(timeout) = 0;
+  PIN(dac) = 1560;
   send_to_bootloader = 0;
   flash_state = SLAVE_IN_APP;
 }
@@ -230,6 +232,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
     ctx->config.pins.cur_ind = PIN(cur_ind);
     ctx->config.pins.max_y   = PIN(max_y);
     ctx->config.pins.max_cur = PIN(max_cur) * PIN(scale);
+    ctx->config.pins.dac     = PIN(dac);
 
     uint32_t dma_count = MAX(sizeof(packet_from_hv_t), sizeof(packet_bootloader_t)) - DMA_GetCurrDataCounter(UART_DRV_RX_DMA);
     

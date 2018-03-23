@@ -31,6 +31,7 @@ HAL_PIN(cur_ff);
 HAL_PIN(cur_ind);
 HAL_PIN(max_y);
 HAL_PIN(max_cur);
+HAL_PIN(dac);
 
 // process data to LS
 HAL_PIN(dc_volt);
@@ -139,6 +140,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   config.pins.cur_ind = 0.0;
   config.pins.max_y   = 0.0;
   config.pins.max_cur = 0.0;
+  config.pins.dac     = 0.0;
 
   USART3->RTOR = 16;               // 16 bits timeout
   USART3->CR2 |= USART_CR2_RTOEN;  // timeout en
@@ -215,6 +217,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       PIN(cur_ind) = config.pins.cur_ind;
       PIN(max_y)   = config.pins.max_y;
       PIN(max_cur) = config.pins.max_cur;
+      PIN(dac)     = config.pins.dac;
       ctx->timeout = 0;
       PIN(crc_ok)
       ++;

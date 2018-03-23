@@ -88,9 +88,9 @@ void MX_TIM8_Init(void) {
   sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
   sBreakDeadTimeConfig.LockLevel        = TIM_LOCKLEVEL_OFF;
   sBreakDeadTimeConfig.DeadTime         = PWM_DEADTIME;
-  sBreakDeadTimeConfig.BreakState       = TIM_BREAK_DISABLE;
+  sBreakDeadTimeConfig.BreakState       = TIM_BREAK_ENABLE;
   sBreakDeadTimeConfig.BreakPolarity    = TIM_BREAKPOLARITY_HIGH;
-  sBreakDeadTimeConfig.BreakFilter      = 0;
+  sBreakDeadTimeConfig.BreakFilter      = 0xa;//0.55uS
   sBreakDeadTimeConfig.Break2State      = TIM_BREAK2_DISABLE;
   sBreakDeadTimeConfig.Break2Polarity   = TIM_BREAK2POLARITY_HIGH;
   sBreakDeadTimeConfig.Break2Filter     = 0;
