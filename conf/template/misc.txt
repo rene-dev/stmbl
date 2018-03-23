@@ -1,4 +1,4 @@
-term0.wave0 = vel0.pos_out
+term0.wave0 = reslimit0.pos_out
 term0.wave1 = fb_switch0.pos_fb
 term0.wave2 = vel0.vel
 term0.wave3 = vel1.vel
