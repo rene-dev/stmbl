@@ -21,6 +21,7 @@ SOURCES += src/stm32f4xx_it.c
 SOURCES += src/system_stm32f4xx.c #TODO: update this, system file from cmsis
 SOURCES += src/setup.c
 SOURCES += src/usb_cdc.c
+SOURCES += src/config.c
 # SOURCES += src/hal_conf.c
 SOURCES += src/hal_tbl.c
 
@@ -39,6 +40,7 @@ else
 	COMPS += src/comps/o_fb.c
 	COMPS += src/comps/sserial.c
 	COMPS += src/comps/yaskawa.c
+	COMPS += src/comps/encs.c
 	CFLAGS += -DV4
 endif
 
@@ -84,6 +86,7 @@ COMPS += shared/comps/scale.c
 COMPS += shared/comps/idx_home.c
 COMPS += shared/comps/move.c
 COMPS += shared/comps/ac.c
+COMPS += shared/comps/jog.c
 
 SOURCES += $(COMPS)
 
@@ -100,8 +103,6 @@ SOURCES += shared/commands.c
 SOURCES += shared/config.c
 SOURCES += src/conf_templates.c
 
-# SOURCES += shared/hal_term.c
-# SOURCES += shared/scanf.c
 SOURCES += shared/ringbuf.c
 
 USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
@@ -181,6 +182,8 @@ CFLAGS += -std=gnu11
 CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
 CFLAGS += -Wall
+CFLAGS += -Wmaybe-uninitialized
+CFLAGS += -Wuninitialized
 CFLAGS += -fno-builtin ## from old
 CFLAGS += -nostartfiles
 CFLAGS += -Wfatal-errors
@@ -254,6 +257,7 @@ inc/hal_tbl.h: tbl
 src/hal_tbl.c: tbl
 src/conf_templates.c: tbl
 
+#generate hal and command tables
 tbl:
 	@echo Generating tables
 	@tools/create_hal_tbl.py . $(COMPS)
@@ -290,7 +294,17 @@ f3_btburn:
 f3_boot:
 	$(MAKE) -f f3dfu/Makefile
 
+f3_boot_btburn:
+	$(MAKE) -f f3dfu/Makefile btburn
+
 deploy: boot f3_boot f3 build
+
+binall:
+	cat obj_boot/blboot.bin /dev/zero | head -c 32768 > f4.bin
+	cat conf/festo.txt /dev/zero | head -c 32768 >> f4.bin
+	cat obj_app/stmbl.bin >> f4.bin
+	cat obj_f3dfu/f3dfu.bin /dev/zero | head -c 16384 > f3.bin
+	cat obj_hvf3/hvf3.bin >> f3.bin
 
 format:
 	find src/ f3dfu/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ tools/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
@@ -326,6 +340,7 @@ flash: $(TARGET).bin
 clean:
 	@echo Cleaning project:
 	# rm -rf hv_firmware.o
+	rm -rf f3.bin f4.bin
 	rm -rf $(OBJDIR)
 	rm -rf inc/commandslist.h
 	rm -rf src/conf_templates.c

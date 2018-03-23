@@ -22,12 +22,14 @@ HAL_PIN(cos);
 HAL_PIN(enable);
 HAL_PIN(error);
 HAL_PIN(state);
-HAL_PIN(tim_oc);
+HAL_PIN(phase);//phase adjust
+HAL_PIN(res_mode);//resolver mode output, calculated form frequency
+HAL_PIN(freq);
 
 // TODO: in hal stop, reset adc dma
 
 struct res_ctx_t {
-  int lastq;  // last quadrant
+  int lastq;   // last quadrant
   int abspos;  // multiturn position
 };
 
@@ -35,11 +37,12 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
   PIN(poles)                 = 1.0;
-  PIN(tim_oc)                = 0.85;
+  PIN(phase)                = 0.85;
   PIN(min_amp)               = 0.15;
+  PIN(freq)              = 10000;
 }
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct res_ctx_t *ctx = (struct res_ctx_t *)ctx_ptr;
+  struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   // struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
 
   ctx->abspos = 0;
@@ -55,15 +58,28 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
   TIM_TimeBaseStructure.TIM_ClockDivision     = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode       = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Period            = ADC_TR_COUNT - 1;  // 20kHz
+  TIM_TimeBaseStructure.TIM_Period            = ADC_TRIGGER_FREQ / FRT_FREQ - 1;  // 20kHz
   TIM_TimeBaseStructure.TIM_Prescaler         = 0;
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
   TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
   TIM_SelectSlaveMode(TIM4, TIM_SlaveMode_External1);  // Rising edges of the selected trigger (TRGI) clock the counter
-  TIM_ITRxExternalClockConfig(TIM4, TIM_TS_ITR2);  // clk = TIM_MASTER(TIM2) trigger out
+  TIM_ITRxExternalClockConfig(TIM4, TIM_TS_ITR2);      // clk = TIM_MASTER(TIM2) trigger out
   TIM_ARRPreloadConfig(TIM4, ENABLE);
   TIM_Cmd(TIM4, ENABLE);
 #endif
+
+
+  //12-1 40khz
+  //15-1 35khz
+  //20-1 30khz 2
+  //24-1 25khz
+  //30-1 20khz 3
+  //40-1 15khz 4
+  //60-1 10khz 6 default
+  //120-1 5khz 12
+  //res_en = ADC_GROUPS/2/(res_freq/rt_freq)
+  //arr = ADC_TRIGGER_FREQ/2/res_freq
+
   // resolver reference signal OC
   TIM_OCInitStructure.TIM_OCMode       = TIM_OCMode_Toggle;
   TIM_OCInitStructure.TIM_OutputState  = TIM_OutputState_Enable;
@@ -101,11 +117,14 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
   //TODO: arr can change!
-  FB0_RES_REF_TIM->CCR3 = (int)CLAMP(PIN(tim_oc) * FB0_RES_REF_TIM->ARR, 0, FB0_RES_REF_TIM->ARR - 1);
-
-  float s = 0.0;
-  float c = 0.0;
-  float a = 0.0;
+  uint32_t mult = CLAMP(PIN(freq) / RT_FREQ + 0.5, 1, 4);
+  PIN(freq) = RT_FREQ * mult;
+  FB0_RES_REF_TIM->ARR  = ADC_TRIGGER_FREQ / 2 / (RT_FREQ * mult) - 1;
+  FB0_RES_REF_TIM->CCR3 = (int)CLAMP(PIN(phase) * FB0_RES_REF_TIM->ARR, 0, FB0_RES_REF_TIM->ARR - 1);
+  PIN(res_mode)         = ADC_GROUPS / 2 / mult;
+  float s               = 0.0;
+  float c               = 0.0;
+  float a               = 0.0;
 
   s = PIN(sin);
   c = PIN(cos);

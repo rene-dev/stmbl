@@ -2,8 +2,6 @@
   ******************************************************************************
   * @file    stm32f3xx_hal.h
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
   * @brief   This file contains all the functions prototypes for the HAL 
   *          module driver.
   ******************************************************************************
@@ -80,9 +78,9 @@
 #define SYSCFG_OFFSET                (SYSCFG_BASE - PERIPH_BASE)
 /* --- CFGR2 Register ---*/
 /* Alias word address of BYP_ADDR_PAR bit */
-#define CFGR2_OFFSET                 (SYSCFG_OFFSET + 0x18)
-#define BYPADDRPAR_BitNumber          0x04
-#define CFGR2_BYPADDRPAR_BB          (PERIPH_BB_BASE + (CFGR2_OFFSET * 32) + (BYPADDRPAR_BitNumber * 4))
+#define CFGR2_OFFSET                 (SYSCFG_OFFSET + 0x18U)
+#define BYPADDRPAR_BitNumber          0x04U
+#define CFGR2_BYPADDRPAR_BB          (PERIPH_BB_BASE + (CFGR2_OFFSET * 32U) + (BYPADDRPAR_BitNumber * 4U))
 /**
   * @}
   */
@@ -96,53 +94,53 @@
   *                 - 01: CFGR3 register in SYSCFG (not available on STM32F373xC/STM32F378xx devices)
   * @{
   */
-#define HAL_REMAPDMA_ADC24_DMA2_CH34         ((uint32_t)0x00000100) /*!< ADC24 DMA remap (STM32F303xB/C/E, STM32F358xx and STM32F398xx devices)
+#define HAL_REMAPDMA_ADC24_DMA2_CH34         (0x00000100U) /*!< ADC24 DMA remap (STM32F303xB/C/E, STM32F358xx and STM32F398xx devices)
                                                                           1: Remap (ADC24 DMA requests mapped on DMA2 channels 3 and 4) */
-#define HAL_REMAPDMA_TIM16_DMA1_CH6          ((uint32_t)0x00000800) /*!< TIM16 DMA request remap
+#define HAL_REMAPDMA_TIM16_DMA1_CH6          (0x00000800U) /*!< TIM16 DMA request remap
                                                                          1: Remap (TIM16_CH1 and TIM16_UP DMA requests mapped on DMA1 channel 6) */
-#define HAL_REMAPDMA_TIM17_DMA1_CH7          ((uint32_t)0x00001000) /*!< TIM17 DMA request remap
+#define HAL_REMAPDMA_TIM17_DMA1_CH7          (0x00001000U) /*!< TIM17 DMA request remap
                                                                          1: Remap (TIM17_CH1 and TIM17_UP DMA requests mapped on DMA1 channel 7) */
-#define HAL_REMAPDMA_TIM6_DAC1_CH1_DMA1_CH3  ((uint32_t)0x00002000) /*!< TIM6 and DAC channel1 DMA remap (STM32F303xB/C/E, STM32F358xx and STM32F398xx devices)
+#define HAL_REMAPDMA_TIM6_DAC1_CH1_DMA1_CH3  (0x00002000U) /*!< TIM6 and DAC channel1 DMA remap (STM32F303xB/C/E, STM32F358xx and STM32F398xx devices)
                                                                          1: Remap (TIM6_UP and DAC_CH1 DMA requests mapped on DMA1 channel 3) */
-#define HAL_REMAPDMA_TIM7_DAC1_CH2_DMA1_CH4  ((uint32_t)0x00004000) /*!< TIM7 and DAC channel2 DMA remap (STM32F303xB/C/E, STM32F358xx and STM32F398xx devices)
+#define HAL_REMAPDMA_TIM7_DAC1_CH2_DMA1_CH4  (0x00004000U) /*!< TIM7 and DAC channel2 DMA remap (STM32F303xB/C/E, STM32F358xx and STM32F398xx devices)
                                                                          1: Remap (TIM7_UP and DAC_CH2 DMA requests mapped on DMA1 channel 4) */
-#define HAL_REMAPDMA_DAC2_CH1_DMA1_CH5       ((uint32_t)0x00008000) /*!< DAC2 channel1 DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_DAC2_CH1_DMA1_CH5       (0x00008000U) /*!< DAC2 channel1 DMA remap (STM32F303x4/6/8 devices only)
                                                                          1: Remap (DAC2_CH1 DMA requests mapped on DMA1 channel 5) */
-#define HAL_REMAPDMA_TIM18_DAC2_CH1_DMA1_CH5 ((uint32_t)0x00008000) /*!< DAC2 channel1 DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_TIM18_DAC2_CH1_DMA1_CH5 (0x00008000U) /*!< DAC2 channel1 DMA remap (STM32F303x4/6/8 devices only)
                                                                          1: Remap (DAC2_CH1 DMA requests mapped on DMA1 channel 5) */
 #if defined(SYSCFG_CFGR3_DMA_RMP)
 #if !defined(HAL_REMAP_CFGR3_MASK) 
-#define HAL_REMAP_CFGR3_MASK                 ((uint32_t)0x01000000)
+#define HAL_REMAP_CFGR3_MASK                 (0x01000000U)
 #endif
 
-#define HAL_REMAPDMA_SPI1_RX_DMA1_CH2        ((uint32_t)0x01000003) /*!< SPI1_RX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_SPI1_RX_DMA1_CH2        (0x01000003U) /*!< SPI1_RX DMA remap (STM32F303x4/6/8 devices only)
                                                                          11: Map on DMA1 channel 2 */
-#define HAL_REMAPDMA_SPI1_RX_DMA1_CH4        ((uint32_t)0x01000001) /*!< SPI1_RX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_SPI1_RX_DMA1_CH4        (0x01000001U) /*!< SPI1_RX DMA remap (STM32F303x4/6/8 devices only)
                                                                          01: Map on DMA1 channel 4 */
-#define HAL_REMAPDMA_SPI1_RX_DMA1_CH6        ((uint32_t)0x01000002) /*!< SPI1_RX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_SPI1_RX_DMA1_CH6        (0x01000002U) /*!< SPI1_RX DMA remap (STM32F303x4/6/8 devices only)
                                                                          10: Map on DMA1 channel 6 */
-#define HAL_REMAPDMA_SPI1_TX_DMA1_CH3        ((uint32_t)0x0100000C) /*!< SPI1_TX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_SPI1_TX_DMA1_CH3        (0x0100000CU) /*!< SPI1_TX DMA remap (STM32F303x4/6/8 devices only)
                                                                          11: Map on DMA1 channel 3 */
-#define HAL_REMAPDMA_SPI1_TX_DMA1_CH5        ((uint32_t)0x01000004) /*!< SPI1_TX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_SPI1_TX_DMA1_CH5        (0x01000004U) /*!< SPI1_TX DMA remap (STM32F303x4/6/8 devices only)
                                                                          01: Map on DMA1 channel 5 */
-#define HAL_REMAPDMA_SPI1_TX_DMA1_CH7        ((uint32_t)0x01000008) /*!< SPI1_TX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_SPI1_TX_DMA1_CH7        (0x01000008U) /*!< SPI1_TX DMA remap (STM32F303x4/6/8 devices only)
                                                                          10: Map on DMA1 channel 7 */
-#define HAL_REMAPDMA_I2C1_RX_DMA1_CH7        ((uint32_t)0x01000030) /*!< I2C1_RX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_I2C1_RX_DMA1_CH7        (0x01000030U) /*!< I2C1_RX DMA remap (STM32F303x4/6/8 devices only)
                                                                          11: Map on DMA1 channel 7 */
-#define HAL_REMAPDMA_I2C1_RX_DMA1_CH3        ((uint32_t)0x01000010) /*!< I2C1_RX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_I2C1_RX_DMA1_CH3        (0x01000010U) /*!< I2C1_RX DMA remap (STM32F303x4/6/8 devices only)
                                                                          01: Map on DMA1 channel 3 */
-#define HAL_REMAPDMA_I2C1_RX_DMA1_CH5        ((uint32_t)0x01000020) /*!< I2C1_RX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_I2C1_RX_DMA1_CH5        (0x01000020U) /*!< I2C1_RX DMA remap (STM32F303x4/6/8 devices only)
                                                                          10: Map on DMA1 channel 5 */
-#define HAL_REMAPDMA_I2C1_TX_DMA1_CH6        ((uint32_t)0x010000C0) /*!< I2C1_TX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_I2C1_TX_DMA1_CH6        (0x010000C0U) /*!< I2C1_TX DMA remap (STM32F303x4/6/8 devices only)
                                                                          11: Map on DMA1 channel 6 */
-#define HAL_REMAPDMA_I2C1_TX_DMA1_CH2        ((uint32_t)0x01000040) /*!< I2C1_TX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_I2C1_TX_DMA1_CH2        (0x01000040U) /*!< I2C1_TX DMA remap (STM32F303x4/6/8 devices only)
                                                                          01: Map on DMA1 channel 2 */
-#define HAL_REMAPDMA_I2C1_TX_DMA1_CH4        ((uint32_t)0x01000080) /*!< I2C1_TX DMA remap (STM32F303x4/6/8 devices only)
+#define HAL_REMAPDMA_I2C1_TX_DMA1_CH4        (0x01000080U) /*!< I2C1_TX DMA remap (STM32F303x4/6/8 devices only)
                                                                          10: Map on DMA1 channel 4 */
-#define HAL_REMAPDMA_ADC2_DMA1_CH2           ((uint32_t)0x01000100) /*!< ADC2 DMA remap
+#define HAL_REMAPDMA_ADC2_DMA1_CH2           (0x01000100U) /*!< ADC2 DMA remap
                                                                          x0: No remap (ADC2 on DMA2)
                                                                          10: Map on DMA1 channel 2 */
-#define HAL_REMAPDMA_ADC2_DMA1_CH4           ((uint32_t)0x01000300) /*!< ADC2 DMA remap
+#define HAL_REMAPDMA_ADC2_DMA1_CH4           (0x01000300U) /*!< ADC2 DMA remap
                                                                          11: Map on DMA1 channel 4 */
 #endif /* SYSCFG_CFGR3_DMA_RMP */
 
@@ -190,20 +188,20 @@
   *                 - 01: CFGR3 register in SYSCFG
   * @{
   */
-#define HAL_REMAPTRIGGER_DAC1_TRIG         ((uint32_t)0x00000080)  /*!< DAC trigger remap (when TSEL = 001 on STM32F303xB/C and STM32F358xx devices)
+#define HAL_REMAPTRIGGER_DAC1_TRIG         (0x00000080U)  /*!< DAC trigger remap (when TSEL = 001 on STM32F303xB/C and STM32F358xx devices)
                                                                         0: No remap (DAC trigger is TIM8_TRGO)
                                                                         1: Remap (DAC trigger is TIM3_TRGO) */
-#define HAL_REMAPTRIGGER_TIM1_ITR3         ((uint32_t)0x00000040)  /*!< TIM1 ITR3 trigger remap
+#define HAL_REMAPTRIGGER_TIM1_ITR3         (0x00000040U)  /*!< TIM1 ITR3 trigger remap
                                                                         0: No remap
                                                                         1: Remap (TIM1_TRG3 = TIM17_OC) */
 #if defined(SYSCFG_CFGR3_TRIGGER_RMP)
 #if !defined(HAL_REMAP_CFGR3_MASK) 
-#define HAL_REMAP_CFGR3_MASK               ((uint32_t)0x01000000)
+#define HAL_REMAP_CFGR3_MASK               (0x01000000U)
 #endif
-#define HAL_REMAPTRIGGER_DAC1_TRIG3        ((uint32_t)0x01010000)  /*!< DAC1_CH1 / DAC1_CH2 Trigger remap
+#define HAL_REMAPTRIGGER_DAC1_TRIG3        (0x01010000U)  /*!< DAC1_CH1 / DAC1_CH2 Trigger remap
                                                                         0: Remap (DAC trigger is TIM15_TRGO)
                                                                         1: Remap (DAC trigger is HRTIM1_DAC1_TRIG1) */
-#define HAL_REMAPTRIGGER_DAC1_TRIG5        ((uint32_t)0x01020000)  /*!< DAC1_CH1 / DAC1_CH2 Trigger remap
+#define HAL_REMAPTRIGGER_DAC1_TRIG5        (0x01020000U)  /*!< DAC1_CH1 / DAC1_CH2 Trigger remap
                                                                         0: No remap
                                                                         1: Remap (DAC trigger is HRTIM1_DAC1_TRIG2) */
 #define IS_HAL_REMAPTRIGGER(RMP) ((((RMP) & HAL_REMAPTRIGGER_DAC1)       == HAL_REMAPTRIGGER_DAC1)       || \
@@ -379,11 +377,11 @@
 #endif /* SYSCFG_RCR_PAGE8 */
 
 #if defined(SYSCFG_RCR_PAGE8)
-#define IS_HAL_SYSCFG_WP_PAGE(__PAGE__)        (((__PAGE__) > 0) && ((__PAGE__) <= (uint32_t)0xFFFF))
+#define IS_HAL_SYSCFG_WP_PAGE(__PAGE__)        (((__PAGE__) > 0U) && ((__PAGE__) <= 0xFFFFU))
 #elif defined(SYSCFG_RCR_PAGE4)
-#define IS_HAL_SYSCFG_WP_PAGE(__PAGE__)        (((__PAGE__) > 0) && ((__PAGE__) <= (uint32_t)0x00FF))
+#define IS_HAL_SYSCFG_WP_PAGE(__PAGE__)        (((__PAGE__) > 0U) && ((__PAGE__) <= 0x00FFU))
 #else
-#define IS_HAL_SYSCFG_WP_PAGE(__PAGE__)        (((__PAGE__) > 0) && ((__PAGE__) <= (uint32_t)0x000F))
+#define IS_HAL_SYSCFG_WP_PAGE(__PAGE__)        (((__PAGE__) > 0U) && ((__PAGE__) <= 0x000FU))
 #endif /* SYSCFG_RCR_PAGE8 */      
 /**
   * @}
@@ -571,7 +569,7 @@
   */
 #define __HAL_SYSCFG_REMAPMEMORY_SYSTEMFLASH()  do {SYSCFG->CFGR1 &= ~(SYSCFG_CFGR1_MEM_MODE); \
                                              SYSCFG->CFGR1 |= SYSCFG_CFGR1_MEM_MODE_0;  \
-                                            }while(0)
+                                            }while(0U)
 #endif /* SYSCFG_CFGR1_MEM_MODE_0 */
 
 #if defined(SYSCFG_CFGR1_MEM_MODE_0) && defined(SYSCFG_CFGR1_MEM_MODE_1)
@@ -579,13 +577,13 @@
   */
 #define __HAL_SYSCFG_REMAPMEMORY_SRAM()         do {SYSCFG->CFGR1 &= ~(SYSCFG_CFGR1_MEM_MODE); \
                                              SYSCFG->CFGR1 |= (SYSCFG_CFGR1_MEM_MODE_0 | SYSCFG_CFGR1_MEM_MODE_1); \
-                                            }while(0)
+                                            }while(0U)
 #endif /* SYSCFG_CFGR1_MEM_MODE_0 && SYSCFG_CFGR1_MEM_MODE_1 */
 
 #if defined(SYSCFG_CFGR1_MEM_MODE_2)
 #define __HAL_SYSCFG_FMC_BANK()         do {SYSCFG->CFGR1 &= ~(SYSCFG_CFGR1_MEM_MODE); \
                                      SYSCFG->CFGR1 |= (SYSCFG_CFGR1_MEM_MODE_2); \
-                                    }while(0)
+                                    }while(0U)
 #endif /* SYSCFG_CFGR1_MEM_MODE_2 */
 /**
  * @}
@@ -605,7 +603,7 @@
   */
 #define __HAL_REMAPENCODER_TIM2()        do {SYSCFG->CFGR1 &= ~(SYSCFG_CFGR1_ENCODER_MODE); \
                                              SYSCFG->CFGR1 |= SYSCFG_CFGR1_ENCODER_MODE_0;  \
-                                            }while(0)
+                                            }while(0U)
 #endif /* SYSCFG_CFGR1_ENCODER_MODE_0 */
 
 #if defined(SYSCFG_CFGR1_ENCODER_MODE_1)
@@ -613,7 +611,7 @@
   */
 #define __HAL_REMAPENCODER_TIM3()        do {SYSCFG->CFGR1 &= ~(SYSCFG_CFGR1_ENCODER_MODE); \
                                              SYSCFG->CFGR1 |= SYSCFG_CFGR1_ENCODER_MODE_1;  \
-                                            }while(0)
+                                            }while(0U)
 #endif /* SYSCFG_CFGR1_ENCODER_MODE_1 */
 
 #if defined(SYSCFG_CFGR1_ENCODER_MODE_0) && defined(SYSCFG_CFGR1_ENCODER_MODE_1)
@@ -621,7 +619,7 @@
   */
 #define __HAL_REMAPENCODER_TIM4()        do {SYSCFG->CFGR1 &= ~(SYSCFG_CFGR1_ENCODER_MODE); \
                                              SYSCFG->CFGR1 |= (SYSCFG_CFGR1_ENCODER_MODE_0 | SYSCFG_CFGR1_ENCODER_MODE_1);  \
-                                            }while(0)
+                                            }while(0U)
 #endif /* SYSCFG_CFGR1_ENCODER_MODE_0 && SYSCFG_CFGR1_ENCODER_MODE_1 */
 /**
  * @}
@@ -632,28 +630,28 @@
   */
 #if defined(SYSCFG_CFGR3_DMA_RMP) && defined(SYSCFG_CFGR1_DMA_RMP)
 /** @brief  DMA remapping enable/disable macros
-  * @param __DMA_REMAP__: This parameter can be a value of @ref HAL_DMA_Remapping
+  * @param __DMA_REMAP__ This parameter can be a value of @ref HAL_DMA_Remapping
   */
 #define __HAL_DMA_REMAP_CHANNEL_ENABLE(__DMA_REMAP__)   do {assert_param(IS_DMA_REMAP((__DMA_REMAP__)));                  \
                                                            (((__DMA_REMAP__) & HAL_REMAP_CFGR3_MASK) ?                      \
                                                              (SYSCFG->CFGR3 |= ((__DMA_REMAP__) & ~HAL_REMAP_CFGR3_MASK)) : \
                                                              (SYSCFG->CFGR1 |= (__DMA_REMAP__)));                           \
-                                                         }while(0)
+                                                         }while(0U)
 #define __HAL_DMA_REMAP_CHANNEL_DISABLE(__DMA_REMAP__)  do {assert_param(IS_DMA_REMAP((__DMA_REMAP__)));                  \
                                                            (((__DMA_REMAP__) & HAL_REMAP_CFGR3_MASK) ?                      \
                                                              (SYSCFG->CFGR3 &= (~(__DMA_REMAP__) | HAL_REMAP_CFGR3_MASK)) : \
                                                              (SYSCFG->CFGR1 &= ~(__DMA_REMAP__)));                          \
-                                                         }while(0)
+                                                         }while(0U)
 #elif defined(SYSCFG_CFGR1_DMA_RMP)
 /** @brief  DMA remapping enable/disable macros
-  * @param __DMA_REMAP__: This parameter can be a value of @ref HAL_DMA_Remapping
+  * @param __DMA_REMAP__ This parameter can be a value of @ref HAL_DMA_Remapping
   */
 #define __HAL_DMA_REMAP_CHANNEL_ENABLE(__DMA_REMAP__)   do {assert_param(IS_DMA_REMAP((__DMA_REMAP__)));                  \
                                                            SYSCFG->CFGR1 |= (__DMA_REMAP__);                                \
-                                                         }while(0)
+                                                         }while(0U)
 #define __HAL_DMA_REMAP_CHANNEL_DISABLE(__DMA_REMAP__)  do {assert_param(IS_DMA_REMAP((__DMA_REMAP__)));                  \
                                                            SYSCFG->CFGR1 &= ~(__DMA_REMAP__);                               \
-                                                         }while(0)
+                                                         }while(0U)
 #endif /* SYSCFG_CFGR3_DMA_RMP || SYSCFG_CFGR1_DMA_RMP */
 /**
  * @}
@@ -663,16 +661,16 @@
   * @{
   */
 /** @brief  Fast-mode Plus driving capability enable/disable macros
-  * @param __FASTMODEPLUS__: This parameter can be a value of @ref SYSCFG_FastModePlus_GPIO values.
+  * @param __FASTMODEPLUS__ This parameter can be a value of @ref SYSCFG_FastModePlus_GPIO values.
   *                          That you can find above these macros.
   */
 #define __HAL_SYSCFG_FASTMODEPLUS_ENABLE(__FASTMODEPLUS__)  do {assert_param(IS_SYSCFG_FASTMODEPLUS((__FASTMODEPLUS__)));\
                                                                 SET_BIT(SYSCFG->CFGR1, (__FASTMODEPLUS__));\
-                                                               }while(0)
+                                                               }while(0U)
 
 #define __HAL_SYSCFG_FASTMODEPLUS_DISABLE(__FASTMODEPLUS__) do {assert_param(IS_SYSCFG_FASTMODEPLUS((__FASTMODEPLUS__)));\
                                                                 CLEAR_BIT(SYSCFG->CFGR1, (__FASTMODEPLUS__));\
-                                                               }while(0)
+                                                               }while(0U)
 /**
  * @}
  */
@@ -681,15 +679,15 @@
   * @{
   */
 /** @brief  SYSCFG interrupt enable/disable macros
-  * @param __INTERRUPT__: This parameter can be a value of @ref HAL_SYSCFG_Interrupts
+  * @param __INTERRUPT__ This parameter can be a value of @ref HAL_SYSCFG_Interrupts
   */
 #define __HAL_SYSCFG_INTERRUPT_ENABLE(__INTERRUPT__)        do {assert_param(IS_HAL_SYSCFG_INTERRUPT((__INTERRUPT__))); \
                                                                 SYSCFG->CFGR1 |= (__INTERRUPT__);                       \
-                                                               }while(0)
+                                                               }while(0U)
 
 #define __HAL_SYSCFG_INTERRUPT_DISABLE(__INTERRUPT__)       do {assert_param(IS_HAL_SYSCFG_INTERRUPT((__INTERRUPT__))); \
                                                                 SYSCFG->CFGR1 &= ~(__INTERRUPT__);                      \
-                                                               }while(0)
+                                                               }while(0U)
 /**
  * @}
  */
@@ -730,7 +728,7 @@
   */
 #define __HAL_SYSCFG_BREAK_LOCKUP_LOCK()   do {SYSCFG->CFGR2 &= ~(SYSCFG_CFGR2_LOCKUP_LOCK); \
                                                SYSCFG->CFGR2 |= SYSCFG_CFGR2_LOCKUP_LOCK;    \
-                                              }while(0)
+                                              }while(0U)
 /**
  * @}
  */
@@ -746,7 +744,7 @@
   */
 #define __HAL_SYSCFG_BREAK_PVD_LOCK()      do {SYSCFG->CFGR2 &= ~(SYSCFG_CFGR2_PVD_LOCK); \
                                                SYSCFG->CFGR2 |= SYSCFG_CFGR2_PVD_LOCK;    \
-                                              }while(0)
+                                              }while(0U)
 /**
  * @}
  */
@@ -762,7 +760,7 @@
   */
 #define __HAL_SYSCFG_BREAK_SRAMPARITY_LOCK() do {SYSCFG->CFGR2 &= ~(SYSCFG_CFGR2_SRAM_PARITY_LOCK); \
                                                  SYSCFG->CFGR2 |= SYSCFG_CFGR2_SRAM_PARITY_LOCK;    \
-                                                }while(0)
+                                                }while(0U)
 /**
  * @}
  */
@@ -773,28 +771,28 @@
   */
 #if defined(SYSCFG_CFGR3_TRIGGER_RMP)
 /** @brief  Trigger remapping enable/disable macros
-  * @param __TRIGGER_REMAP__: This parameter can be a value of @ref HAL_Trigger_Remapping
+  * @param __TRIGGER_REMAP__ This parameter can be a value of @ref HAL_Trigger_Remapping
   */
 #define __HAL_REMAPTRIGGER_ENABLE(__TRIGGER_REMAP__)   do {assert_param(IS_HAL_REMAPTRIGGER((__TRIGGER_REMAP__)));             \
                                                            (((__TRIGGER_REMAP__) & HAL_REMAP_CFGR3_MASK) ?                     \
                                                              (SYSCFG->CFGR3 |= ((__TRIGGER_REMAP__) & ~HAL_REMAP_CFGR3_MASK)) : \
                                                              (SYSCFG->CFGR1 |= (__TRIGGER_REMAP__)));                           \
-                                                         }while(0)
+                                                         }while(0U)
 #define __HAL_REMAPTRIGGER_DISABLE(__TRIGGER_REMAP__)  do {assert_param(IS_HAL_REMAPTRIGGER((__TRIGGER_REMAP__)));             \
                                                            (((__TRIGGER_REMAP__) & HAL_REMAP_CFGR3_MASK) ?                     \
                                                              (SYSCFG->CFGR3 &= (~(__TRIGGER_REMAP__) | HAL_REMAP_CFGR3_MASK)) : \
                                                              (SYSCFG->CFGR1 &= ~(__TRIGGER_REMAP__)));                          \
-                                                         }while(0)
+                                                         }while(0U)
 #else
 /** @brief  Trigger remapping enable/disable macros
-  * @param __TRIGGER_REMAP__: This parameter can be a value of @ref HAL_Trigger_Remapping
+  * @param __TRIGGER_REMAP__ This parameter can be a value of @ref HAL_Trigger_Remapping
   */
 #define __HAL_REMAPTRIGGER_ENABLE(__TRIGGER_REMAP__)   do {assert_param(IS_HAL_REMAPTRIGGER((__TRIGGER_REMAP__)));             \
                                                            (SYSCFG->CFGR1 |= (__TRIGGER_REMAP__));                           \
-                                                         }while(0)
+                                                         }while(0U)
 #define __HAL_REMAPTRIGGER_DISABLE(__TRIGGER_REMAP__)  do {assert_param(IS_HAL_REMAPTRIGGER((__TRIGGER_REMAP__)));             \
                                                            (SYSCFG->CFGR1 &= ~(__TRIGGER_REMAP__));                          \
-                                                         }while(0)
+                                                         }while(0U)
 #endif /* SYSCFG_CFGR3_TRIGGER_RMP */
 /**
  * @}
@@ -805,14 +803,14 @@
   * @{
   */
 /** @brief  ADC trigger remapping enable/disable macros
-  * @param __ADCTRIGGER_REMAP__: This parameter can be a value of @ref HAL_ADC_Trigger_Remapping
+  * @param __ADCTRIGGER_REMAP__ This parameter can be a value of @ref HAL_ADC_Trigger_Remapping
   */
 #define __HAL_REMAPADCTRIGGER_ENABLE(__ADCTRIGGER_REMAP__)   do {assert_param(IS_HAL_REMAPADCTRIGGER((__ADCTRIGGER_REMAP__)));   \
                                                              (SYSCFG->CFGR4 |= (__ADCTRIGGER_REMAP__));                          \
-                                                         }while(0)
+                                                         }while(0U)
 #define __HAL_REMAPADCTRIGGER_DISABLE(__ADCTRIGGER_REMAP__)  do {assert_param(IS_HAL_REMAPADCTRIGGER((__ADCTRIGGER_REMAP__)));   \
                                                              (SYSCFG->CFGR4 &= ~(__ADCTRIGGER_REMAP__));                         \
-                                                         }while(0)
+                                                         }while(0U)
 /**
  * @}
  */
@@ -827,7 +825,7 @@
   * @note   Disabling the parity check on RAM locks the configuration bit.
   *         To re-enable the parity check on RAM perform a system reset.
   */
-#define __HAL_SYSCFG_RAM_PARITYCHECK_DISABLE()         (*(__IO uint32_t *) CFGR2_BYPADDRPAR_BB = (uint32_t)0x00000001)
+#define __HAL_SYSCFG_RAM_PARITYCHECK_DISABLE()         (*(__IO uint32_t *) CFGR2_BYPADDRPAR_BB = 0x00000001U)
 /**
  * @}
  */
@@ -838,12 +836,12 @@
   * @{
   */
 /** @brief  CCM RAM page write protection enable macro
-  * @param __PAGE_WP__: This parameter can be a value of @ref HAL_Page_Write_Protection
+  * @param __PAGE_WP__ This parameter can be a value of @ref HAL_Page_Write_Protection
   * @note   write protection can only be disabled by a system reset
   */
 #define __HAL_SYSCFG_SRAM_WRP_ENABLE(__PAGE_WP__)      do {assert_param(IS_HAL_SYSCFG_WP_PAGE((__PAGE_WP__))); \
                                                            SYSCFG->RCR |= (__PAGE_WP__);                       \
-                                                          }while(0)
+                                                          }while(0U)
 /**
  * @}
  */
@@ -884,6 +882,9 @@ uint32_t HAL_GetTick(void);
 uint32_t HAL_GetHalVersion(void);
 uint32_t HAL_GetREVID(void);
 uint32_t HAL_GetDEVID(void);
+uint32_t HAL_GetUIDw0(void);
+uint32_t HAL_GetUIDw1(void);
+uint32_t HAL_GetUIDw2(void);
 void     HAL_DBGMCU_EnableDBGSleepMode(void);
 void     HAL_DBGMCU_DisableDBGSleepMode(void);
 void     HAL_DBGMCU_EnableDBGStopMode(void);

@@ -16,9 +16,6 @@ HAL_PINA(offset, 8);
 HAL_PINA(gain, 8);
 HAL_PIN(send_step);
 HAL_PIN(con);
-HAL_PIN(jogvel);
-HAL_PIN(jogpos);
-HAL_PIN(jogmpos);
 
 struct term_ctx_t {
   float wave_buf[TERM_BUF_SIZE][TERM_NUM_WAVES];
@@ -27,48 +24,21 @@ struct term_ctx_t {
   uint32_t read_pos;
 };
 
-volatile float jog_timeout = 0;
-volatile float jog_en      = 0;
+
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct term_ctx_t * ctx = (struct sim_ctx_t *)ctx_ptr;
   struct term_pin_ctx_t *pins = (struct term_pin_ctx_t *)pin_ptr;
 
   PIN(send_step) = 50;
-  PIN(jogvel)    = 10;
   for(int i = 0; i < TERM_NUM_WAVES; i++) {
     PINA(gain, i) = 10;
   }
 }
 
-void jog_left(char *ptr) {
-  jog_en      = -1.0;
-  jog_timeout = 0.0;
-}
-
-void jog_right(char *ptr) {
-  jog_en      = 1.0;
-  jog_timeout = 0.0;
-}
-
-void jog_stop(char *ptr) {
-  jog_en = 0.0;
-}
-
-COMMAND("jogl", jog_left, "Jog left");
-COMMAND("jogr", jog_right, "Jog right");
-COMMAND("jogx", jog_stop, "Stop jog");
-
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct term_ctx_t *ctx      = (struct term_ctx_t *)ctx_ptr;
   struct term_pin_ctx_t *pins = (struct term_pin_ctx_t *)pin_ptr;
-
-  if(jog_timeout < 0.5) {
-    jog_timeout += period;
-    float jpos   = PIN(jogpos) + jog_en * PIN(jogvel) * period;
-    PIN(jogpos)  = jpos;
-    PIN(jogmpos) = mod(jpos);
-  }
 
   if(ctx->send_counter++ >= PIN(send_step) - 1) {
     for(int i = 0; i < TERM_NUM_WAVES; i++) {

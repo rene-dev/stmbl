@@ -160,6 +160,12 @@ typedef struct {
   volatile float frt_period;
 
   hal_error_t error_info;
+  
+  volatile enum {
+    PRINT_ALL,
+    PRINT_ERRORS,
+    NO_PRINT,
+  } debug_level;
 } hal_t;
 
 extern hal_t hal;
@@ -183,5 +189,6 @@ void hal_run_frt();
 void hal_run_nrt();
 uint32_t hal_parse(char *cmd);
 void hal_error(uint32_t error_handler);
+void hal_set_debug_level(uint32_t debug_level);
 
 #include "hal_tbl.h"

@@ -6,6 +6,8 @@
 HAL_COMP(stp);
 
 HAL_PIN(target);
+HAL_PIN(jog);
+
 HAL_PIN(pos_out);
 HAL_PIN(vel_out);
 HAL_PIN(acc_out);
@@ -23,9 +25,24 @@ struct stp_ctx_t {
   float vold;
 };
 
+static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  struct stp_ctx_t *ctx      = (struct stp_ctx_t *)ctx_ptr;
+  struct stp_pin_ctx_t *pins = (struct stp_pin_ctx_t *)pin_ptr;
+  ctx->p0 = 0.0;
+  ctx->p = 0.0;
+  ctx->v0 = 0.0;
+  ctx->pold = 0.0;
+  ctx->vold = 0.0;
+  PIN(target) = 0.0;
+  PIN(max_vel) = 1.0 * 2.0 * M_PI;
+  PIN(max_acc) = 10.0 * 2.0 * M_PI;
+}
+
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct stp_ctx_t *ctx      = (struct stp_ctx_t *)ctx_ptr;
   struct stp_pin_ctx_t *pins = (struct stp_pin_ctx_t *)pin_ptr;
+
+  PIN(target) += LIMIT(PIN(jog), 1.0) * PIN(max_vel) * period;
 
   float p1 = PIN(target);
 
@@ -62,7 +79,7 @@ const hal_comp_t stp_comp_struct = {
     .nrt       = 0,
     .rt        = rt_func,
     .frt       = 0,
-    .nrt_init  = 0,
+    .nrt_init  = nrt_init,
     .hw_init   = 0,
     .rt_start  = 0,
     .frt_start = 0,

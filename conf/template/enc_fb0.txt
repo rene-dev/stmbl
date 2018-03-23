@@ -1,8 +1,8 @@
 load enc_fb
 enc_fb0.rt_prio = 2
 enc_fb0.res = conf0.mot_fb_res
-enc_fb0.sin = adc0.sin3
-enc_fb0.cos = adc0.cos3
+enc_fb0.sin = adc0.sin0l
+enc_fb0.cos = adc0.cos0l
 enc_fb0.quad = adc0.quad
 fb_switch0.mot_pos = enc_fb0.pos
 fb_switch0.mot_abs_pos = enc_fb0.abs_pos

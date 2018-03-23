@@ -4,12 +4,13 @@
 #define HV_EN_PORT GPIOA
 #define HV_FAULT_PIN GPIO_PIN_7
 #define HV_FAULT_PORT GPIOB
+#define HV_FAULT_POLARITY GPIO_PIN_RESET
 #define LED_PIN GPIO_PIN_8
 #define LED_PORT GPIOA
 
 #define VDIVUP 249000.0 * 2.0  //HV div pullup R1,R12
-#define VDIVDOWN 3900.0  //HV div pulldown R2,R9
-#define SHUNT 0.003  //shunt
+#define VDIVDOWN 3900.0        //HV div pulldown R2,R9
+#define SHUNT 0.003            //shunt
 #define SHUNT_PULLUP 15000.0
 #define SHUNT_SERIE 470.0
 
@@ -22,8 +23,19 @@
 
 #define ABS_MAX_TEMP 100.0
 #define ABS_MAX_VOLT 410.0
-#define MAX_CURRENT 29.0
 #define ABS_MAX_CURRENT 30.0
+
+enum hv_fault_t{
+    HV_NO_FAULT = 0,
+    HV_OVERTEMP,
+    HV_OVERVOLT,
+    HV_OVERCURRENT_RMS,
+    HV_OVERCURRENT_PEAK,
+    HV_HV_FAULT,
+    HV_CURRENT_OFFSET_FAULT,
+    HV_COMM_FAULT,
+    HV_HAL_FAULT,
+};
 
 //io board
 //#define USB_CONNECT_PIN GPIO_PIN_15

@@ -8,6 +8,7 @@
 
 #include "setup.h"
 #include "usbd_cdc_if.h"
+#include "defines.h"
 
 void setup() {
   //Enable clocks
@@ -49,7 +50,7 @@ void setup_res() {
   RCC_APB1PeriphClockCmd(TIM_MASTER_RCC, ENABLE);
   TIM_TimeBaseStructure.TIM_ClockDivision     = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode       = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Period            = ADC_TIMER_FREQ / RES_TIMER_FREQ / ADC_TR_COUNT - 1;  // 240khz
+  TIM_TimeBaseStructure.TIM_Period            = ADC_TIMER_FREQ / ADC_TRIGGER_FREQ - 1;  //70 1.2MHz
   TIM_TimeBaseStructure.TIM_Prescaler         = 0;
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
   TIM_TimeBaseInit(TIM_MASTER, &TIM_TimeBaseStructure);
@@ -68,16 +69,16 @@ void setup_res() {
   TIM_MASTER_ADC_OC_PRELOAD(TIM_MASTER, TIM_OCPreload_Enable);
   TIM_CtrlPWMOutputs(TIM_MASTER, ENABLE);
 
-  //slave timer
+  //slave timer triggers frt
   RCC_APB1PeriphClockCmd(TIM_SLAVE_RCC, ENABLE);
   TIM_TimeBaseStructure.TIM_ClockDivision     = TIM_CKD_DIV1;
   TIM_TimeBaseStructure.TIM_CounterMode       = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Period            = ADC_TR_COUNT - 1;  // 20kHz
+  TIM_TimeBaseStructure.TIM_Period            = ADC_TRIGGER_FREQ / FRT_FREQ - 1;  //60 20kHz
   TIM_TimeBaseStructure.TIM_Prescaler         = 0;
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
   TIM_TimeBaseInit(TIM_SLAVE, &TIM_TimeBaseStructure);
   TIM_SelectSlaveMode(TIM_SLAVE, TIM_SlaveMode_External1);  //Rising edges of the selected trigger (TRGI) clock the counter
-  TIM_ITRxExternalClockConfig(TIM_SLAVE, TIM_SLAVE_ITR);  // clk = TIM_MASTER trigger out
+  TIM_ITRxExternalClockConfig(TIM_SLAVE, TIM_SLAVE_ITR);    // clk = TIM_MASTER trigger out
   TIM_ARRPreloadConfig(TIM_SLAVE, ENABLE);
 
   TIM_Cmd(TIM_SLAVE, ENABLE);
@@ -111,13 +112,13 @@ void setup_res() {
   ADC_DeInit();
   ADC_InitTypeDef ADC_InitStructure;
   ADC_InitStructure.ADC_DataAlign            = ADC_DataAlign_Right;  //data converted will be shifted to right
-  ADC_InitStructure.ADC_Resolution           = ADC_Resolution_12b;  //Input voltage is converted into a 12bit number giving a maximum value of 4096
-  ADC_InitStructure.ADC_ContinuousConvMode   = DISABLE;  //the conversion is continuous, the input data is converted more than once
-  ADC_InitStructure.ADC_ExternalTrigConv     = TIM_MASTER_ADC;  //trigger on rising edge of TIM_MASTER oc
+  ADC_InitStructure.ADC_Resolution           = ADC_Resolution_12b;   //Input voltage is converted into a 12bit number giving a maximum value of 4096
+  ADC_InitStructure.ADC_ContinuousConvMode   = DISABLE;              //the conversion is continuous, the input data is converted more than once
+  ADC_InitStructure.ADC_ExternalTrigConv     = TIM_MASTER_ADC;       //trigger on rising edge of TIM_MASTER oc
   ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
   ADC_InitStructure.ADC_NbrOfConversion      = ADC_OVER_FB0 + ADC_OVER_FB1;  //I think this one is clear :p
-  ADC_InitStructure.ADC_ScanConvMode         = ENABLE;  //The scan is configured in one channel
-  ADC_Init(FB0_SIN_ADC, &ADC_InitStructure);  //Initialize ADC with the previous configuration
+  ADC_InitStructure.ADC_ScanConvMode         = ENABLE;                       //The scan is configured in one channel
+  ADC_Init(FB0_SIN_ADC, &ADC_InitStructure);                                 //Initialize ADC with the previous configuration
   ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
   ADC_Init(FB0_COS_ADC, &ADC_InitStructure);  //Initialize ADC with the previous configuration
 
@@ -140,6 +141,12 @@ void setup_res() {
   }
 #endif
 
+
+  ADC_DiscModeChannelCountConfig(ADC1, 1);
+  ADC_DiscModeChannelCountConfig(ADC2, 1);
+  ADC_DiscModeCmd(ADC1, ENABLE);
+  ADC_DiscModeCmd(ADC2, ENABLE);
+
   ADC_MultiModeDMARequestAfterLastTransferCmd(ENABLE);
 
   //Enable ADC conversion
@@ -154,9 +161,9 @@ void setup_res() {
   DMA_InitTypeDef DMA_InitStructure;
   DMA_InitStructure.DMA_Channel            = DMA_Channel_0;
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC->CDR;
-  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t)&ADC_DMA_Buffer0;
+  DMA_InitStructure.DMA_Memory0BaseAddr    = (uint32_t)ADC_DMA_Buffer0;
   DMA_InitStructure.DMA_DIR                = DMA_DIR_PeripheralToMemory;
-  DMA_InitStructure.DMA_BufferSize         = ADC_TR_COUNT * PID_WAVES * (ADC_OVER_FB0 + ADC_OVER_FB1);
+  DMA_InitStructure.DMA_BufferSize         = ARRAY_SIZE(ADC_DMA_Buffer0);
   DMA_InitStructure.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_MemoryInc          = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;
@@ -167,9 +174,9 @@ void setup_res() {
   DMA_InitStructure.DMA_FIFOThreshold      = DMA_FIFOThreshold_HalfFull;
   DMA_InitStructure.DMA_MemoryBurst        = DMA_MemoryBurst_Single;
   DMA_InitStructure.DMA_PeripheralBurst    = DMA_PeripheralBurst_Single;
-  //TODO: use double buffer
-  //DMA_DoubleBufferModeConfig(DMA2_Stream0, (uint32_t)ADC_DMA_Buffer1, DMA_Memory_0);
-  //DMA_DoubleBufferModeCmd(DMA2_Stream0, ENABLE);
+
+  DMA_DoubleBufferModeConfig(DMA2_Stream0, (uint32_t)ADC_DMA_Buffer1, DMA_Memory_0);
+  DMA_DoubleBufferModeCmd(DMA2_Stream0, ENABLE);
   DMA_Init(DMA2_Stream0, &DMA_InitStructure);
 
   NVIC_InitTypeDef NVIC_InitStructure;

@@ -143,7 +143,7 @@ int main() {
   metadata(&(pd_table.pos_cmd), last_pd);
   ADD_PROCESS_VAR(("vel_cmd", "rad", 32, DATA_TYPE_FLOAT, DATA_DIRECTION_OUTPUT, -INFINITY, INFINITY));
   metadata(&(pd_table.vel_cmd), last_pd);
-  ADD_PROCESS_VAR(("output_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));
+  ADD_PROCESS_VAR(("out", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_OUTPUT, 0, 1));
   metadata(&(pd_table.output_pins), last_pd);
   ADD_PROCESS_VAR(("enable", "none", 1, DATA_TYPE_BOOLEAN, DATA_DIRECTION_OUTPUT, 0, 1));
   metadata(&(pd_table.enable), last_pd);
@@ -154,7 +154,7 @@ int main() {
   metadata(&(pd_table.vel_fb), last_pd);
   ADD_PROCESS_VAR(("current", "A", 8, DATA_TYPE_SIGNED, DATA_DIRECTION_INPUT, -30, 30));
   metadata(&(pd_table.current), last_pd);
-  ADD_PROCESS_VAR(("input_pins", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, -100, 100));
+  ADD_PROCESS_VAR(("in", "none", 4, DATA_TYPE_BITS, DATA_DIRECTION_INPUT, -100, 100));
   metadata(&(pd_table.input_pins), last_pd);
   ADD_PROCESS_VAR(("fault", "none", 1, DATA_TYPE_BOOLEAN, DATA_DIRECTION_INPUT, 0, 1));
   metadata(&(pd_table.fault), last_pd);
@@ -212,10 +212,15 @@ int main() {
       printf("// %i..%i\n", i - 7, i);
     }
   }
-  printf("\n};\n");
-  printf("uint16_t sserial_ptocp = 0x%04X;\n", memory.discovery.ptocp);
-  printf("uint16_t sserial_gtocp = 0x%04X;\n", memory.discovery.gtocp);
-  printf("\n");
+  printf("\n};\n\n");
+
+  printf("const discovery_rpc_t discovery = {\n");
+  printf("  .ptocp = 0x%04X,\n", memory.discovery.ptocp);
+  printf("  .gtocp = 0x%04X,\n", memory.discovery.gtocp);
+  printf("  .input = %u,\n", memory.discovery.input);
+  printf("  .output = %u,\n", memory.discovery.output);
+  printf("};\n\n");
+
   printf("typedef struct {\n");
   ptocp = (uint16_t *)(memory.bytes + memory.discovery.ptocp);
   gtocp = (uint16_t *)(memory.bytes + memory.discovery.gtocp);

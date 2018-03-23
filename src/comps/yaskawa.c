@@ -195,7 +195,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   if(count > 80){
     int pol = 0;
     int read_counter = 0;
-    int write_counter = 0;
     int counter = 0;
 
     for(int i = 0;i < ARRAY_SIZE(yaskawa_reply);i++){

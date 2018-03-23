@@ -268,20 +268,28 @@ COMMAND("hal", hal_term_print_info, "print HAL stats");
 
 uint32_t load_comp(hal_comp_t *comp) {
   if(!comp) {
-    printf("<font color=\"FireBrick\">load_comp: not found</font>\n");
+    if(hal.debug_level < 2){
+      printf("<font color=\"FireBrick\">load_comp: not found</font>\n");
+    }
     return (0);
   }
   if(hal.comp_inst_count >= HAL_MAX_COMPS - 1) {
-    printf("<font color=\"FireBrick\">load_comp: not enough space to load comp: %s</font>\n", comp->name);
+    if(hal.debug_level < 2){
+      printf("<font color=\"FireBrick\">load_comp: not enough space to load comp: %s</font>\n", comp->name);
+    }
     return (0);
   }
   if(hal.pin_inst_count + comp->pin_count >= HAL_MAX_PINS - 1) {
-    printf("<font color=\"FireBrick\">load_comp: not enough space to load comp pins: %s</font>\n", comp->name);
+    if(hal.debug_level < 2){
+      printf("<font color=\"FireBrick\">load_comp: not enough space to load comp pins: %s</font>\n", comp->name);
+    }
     return (0);
   }
   uint32_t ctx_size = ((uint32_t)ceil((comp->ctx_size / 4.0))) * 4;
   if(hal.ctx_count + ctx_size >= HAL_MAX_CTX - 1) {
-    printf("<font color=\"FireBrick\">load_comp: not enough space to load comp ctx: %s</font>\n", comp->name);
+    if(hal.debug_level < 2){
+      printf("<font color=\"FireBrick\">load_comp: not enough space to load comp ctx: %s</font>\n", comp->name);
+    }
     return (0);
   }
 
@@ -503,7 +511,6 @@ void hal_init_hw() {
 
 
 void load(char *ptr) {
-  printf("load :%s:\n", ptr);
   load_comp(comp_by_name(ptr));
 }
 
@@ -806,12 +813,16 @@ uint32_t hal_parse_(char *cmd) {
     case 1:  // search comps
       for(int i = 0; i < hal.comp_inst_count; i++) {
         if(!strncmp(hal.comp_insts[i].comp->name, sinkc, strlen(sinkc))) {
-          printf("%s%lu\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance);
+          if(hal.debug_level < 1){
+            printf("%s%lu\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance);
+          }
           found = 1;
         }
       }
       if(!found) {
-        printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
+        if(hal.debug_level < 2){
+          printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
+        }
       }
       break;
     case 2:  // search comps + instance
@@ -826,7 +837,9 @@ uint32_t hal_parse_(char *cmd) {
         }
       }
       if(!found) {
-        printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
+        if(hal.debug_level < 2){
+          printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
+        }
       }
       break;
     case 3:
@@ -836,12 +849,17 @@ uint32_t hal_parse_(char *cmd) {
         source = pin_inst_by_name(sourcec, sourcei, sourcep);
         if(sink && source) {
           sink->source = source;
-          printf("OK %s%lu.%s <= %s%lu.%s = %f\n", sinkc, sinki, sinkp, sourcec, sourcei, sourcep, source->source->value);
-
+          if(hal.debug_level < 1){
+            printf("OK %s%lu.%s <= %s%lu.%s = %f\n", sinkc, sinki, sinkp, sourcec, sourcei, sourcep, source->source->value);
+          }
         } else if(sink) {
-          printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sourcec, sourcei, sourcep);
+          if(hal.debug_level < 2){
+            printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sourcec, sourcei, sourcep);
+          }
         } else {
-          printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sinkc, sinki, sinkp);
+          if(hal.debug_level < 2){
+            printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sinkc, sinki, sinkp);
+          }
         }
       } else {  // search comps + instance + pin
         for(int i = 0; i < hal.comp_inst_count; i++) {
@@ -857,7 +875,9 @@ uint32_t hal_parse_(char *cmd) {
           }
         }
         if(!found) {
-          printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
+          if(hal.debug_level < 2){
+            printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
+          }
         }
       }
       break;
@@ -866,13 +886,19 @@ uint32_t hal_parse_(char *cmd) {
       if(sink) {
         sink->value  = value;
         sink->source = sink;
-        printf("OK %s%lu.%s = %f\n", sinkc, sinki, sinkp, value);
+        if(hal.debug_level < 1){
+          printf("OK %s%lu.%s = %f\n", sinkc, sinki, sinkp, value);
+        }
       } else {
-        printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sinkc, sinki, sinkp);
+        if(hal.debug_level < 2){
+          printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sinkc, sinki, sinkp);
+        }
       }
       break;
     default:
-      printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
+      if(hal.debug_level < 2){
+        printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
+      }
   }
   return (0);
 }
@@ -886,15 +912,15 @@ void hal_error(uint32_t error_handler) {
   hal.hal_state = MISC_ERROR;
 }
 
-void fault() {
+void fault(char *ptr) {
   printf("trigger fault handler\n");
-  volatile uint32_t *ptr = (uint32_t *)0x08010000;
-  ptr[0]                 = 1;
+  volatile uint32_t *p = (uint32_t *)0x08010000;
+  p[0]                 = 1;
 }
 
 COMMAND("fault", fault, "trigger fault");
 
-void about() {
+void about(char *ptr) {
   printf("######## software info ########\n");
   printf(
       "%s v%i.%i.%i %s\n",
@@ -930,3 +956,19 @@ void about() {
 }
 
 COMMAND("about", about, "show system infos");
+
+void hal_set_debug_level(uint32_t debug_level){
+  hal.debug_level = debug_level;
+}
+
+void debug_level(char *ptr){
+  int debug_level = 0;
+  if(ptr){
+    sscanf(ptr, "%i", &debug_level);
+  }
+  
+  hal_set_debug_level(CLAMP(debug_level, 0, 2));
+}
+
+COMMAND("debug_level", debug_level, "set hal debug level, 0 = print all, 1 = print errors, 2 = no output");
+

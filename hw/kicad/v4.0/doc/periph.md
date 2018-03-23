@@ -1,4 +1,14 @@
 ## F4 ##
+### timebase ###
+master timer: tim3  
+slave timer: tim5  
+resolver timer: tim4  
+
+master timer up (1.2Mhz) ->
+- adc1/2/3 scan, discon. -> dma tc (240) -> rt (5khz) 
+- slave timer up (20khz) -> frt 
+- resolver timer oc (5-30khz) + phase shift
+
 ### CMD ###
 | periph | DMA | stream | channel |
 | --- | --- | --- | --- |
@@ -46,6 +56,14 @@
 
 
 ## F3 ##
+### timebase ###
+pwm timer: tim8  
+pwm mode: center aligned flat bottom  
+
+pwm timer up (30khz) ->
+- adc1/2/3/4 -> dma (6)
+- rt (15khz)
+
 ### HV ###
 | periph | DMA | channel |
 | --- | --- | --- |

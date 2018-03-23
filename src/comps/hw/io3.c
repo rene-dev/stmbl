@@ -7,17 +7,6 @@
 #include "hw/hw.h"
 #include "main.h"
 
-volatile uint64_t systime;
-#define BLINK(N)                           \
-  ({                                       \
-    int t = (systime / 300) % (2 * N + 2); \
-    if(t < 2) {                            \
-      t = 0;                               \
-    } else {                               \
-      t = t % 2;                           \
-    }                                      \
-    t;                                     \
-  })
 
 HAL_COMP(io);
 

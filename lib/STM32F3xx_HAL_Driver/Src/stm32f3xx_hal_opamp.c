@@ -2,8 +2,6 @@
   ******************************************************************************
   * @file    stm32f3xx_hal_opamp.c
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    01-July-2016
   * @brief   OPAMP HAL module driver.
   *          This file provides firmware functions to manage the following 
   *          functionalities of the operational amplifiers (OPAMP1,...OPAMP4) 
@@ -37,7 +35,7 @@
            handled by HAL_OPAMP_SelfCalibrate, HAL_OPAMPEx_SelfCalibrateAll
        (++) HAL_OPAMP_SelfCalibrate:
        (++) Runs automatically the calibration in 2 steps. 
-            (90% of VDDA for NMOS transistors, 10% of VDDA for PMOS transistors).
+            (90U% of VDDA for NMOS transistors, 10U% of VDDA for PMOS transistors).
             (As OPAMP is Rail-to-rail input/output, these 2 steps calibration is 
             appropriate and enough in most cases).
        (++) Enables the user trimming mode
@@ -71,7 +69,7 @@
            (Resistor feedback output)
        (++) The OPAMP(s) output(s) can be internally connected to resistor feedback
            output.
-       (++) OPAMP gain is either 2, 4, 8 or 16.
+       (++) OPAMP gain is either 2U, 4U, 8 or 16.
         
       
             ##### How to use this driver #####
@@ -213,7 +211,7 @@
  * @{
  */
 /* CSR register reset value */ 
-#define OPAMP_CSR_RESET_VALUE             ((uint32_t)0x00000000)
+#define OPAMP_CSR_RESET_VALUE             (0x00000000U)
 /**
   * @}
   */
@@ -245,7 +243,7 @@
   *         parameters in the OPAMP_InitTypeDef and create the associated handle.
   * @note   If the selected opamp is locked, initialization can't be performed.
   *         To unlock the configuration, perform a system reset.
-  * @param  hopamp: OPAMP handle
+  * @param  hopamp OPAMP handle
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_OPAMP_Init(OPAMP_HandleTypeDef *hopamp)
@@ -376,7 +374,7 @@ HAL_StatusTypeDef HAL_OPAMP_Init(OPAMP_HandleTypeDef *hopamp)
   * @brief  DeInitializes the OPAMP peripheral 
   * @note   Deinitialization can't be performed if the OPAMP configuration is locked.
   *         To unlock the configuration, perform a system reset.
-  * @param  hopamp: OPAMP handle
+  * @param  hopamp OPAMP handle
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_OPAMP_DeInit(OPAMP_HandleTypeDef *hopamp)
@@ -416,17 +414,17 @@ HAL_StatusTypeDef HAL_OPAMP_DeInit(OPAMP_HandleTypeDef *hopamp)
 
       /* The OPAMP state is NOT updated */      
     }
+
+    /* Process unlocked */
+    __HAL_UNLOCK(hopamp);
   }
-  
-  /* Process unlocked */
-  __HAL_UNLOCK(hopamp);
   
   return status;
 }
 
 /**
   * @brief  Initializes the OPAMP MSP.
-  * @param  hopamp: OPAMP handle
+  * @param  hopamp OPAMP handle
   * @retval None
   */
 __weak void HAL_OPAMP_MspInit(OPAMP_HandleTypeDef *hopamp)
@@ -443,7 +441,7 @@ __weak void HAL_OPAMP_MspInit(OPAMP_HandleTypeDef *hopamp)
 
 /**
   * @brief  DeInitializes OPAMP MSP.
-  * @param  hopamp: OPAMP handle
+  * @param  hopamp OPAMP handle
   * @retval None
   */
 __weak void HAL_OPAMP_MspDeInit(OPAMP_HandleTypeDef *hopamp)
@@ -479,7 +477,7 @@ __weak void HAL_OPAMP_MspDeInit(OPAMP_HandleTypeDef *hopamp)
 
 /**
   * @brief  Start the opamp
-  * @param  hopamp: OPAMP handle
+  * @param  hopamp OPAMP handle
   * @retval HAL status
   */
 
@@ -520,7 +518,7 @@ HAL_StatusTypeDef HAL_OPAMP_Start(OPAMP_HandleTypeDef *hopamp)
 
 /**
   * @brief  Stop the opamp 
-  * @param  hopamp: OPAMP handle
+  * @param  hopamp OPAMP handle
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_OPAMP_Stop(OPAMP_HandleTypeDef *hopamp)
@@ -570,8 +568,8 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
 
   HAL_StatusTypeDef status = HAL_OK;
   
-  uint32_t trimmingvaluen = 0;
-  uint32_t trimmingvaluep = 0;
+  uint32_t trimmingvaluen = 0U;
+  uint32_t trimmingvaluep = 0U;
   uint32_t delta;
   
   /* Check the OPAMP handle allocation */
@@ -600,7 +598,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
       SET_BIT (hopamp->Instance->CSR, OPAMP_CSR_CALON);
   
       /* 1st calibration - N */
-      /* Select 90% VREF */
+      /* Select 90U% VREF */
       MODIFY_REG(hopamp->Instance->CSR, OPAMP_CSR_CALSEL, OPAMP_VREF_90VDDA);
       
       /* Enable the selected opamp */
@@ -608,10 +606,10 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
       
       /* Init trimming counter */    
       /* Medium value */
-      trimmingvaluen = 16; 
-      delta = 8;
+      trimmingvaluen = 16U; 
+      delta = 8U;
       
-      while (delta != 0)
+      while (delta != 0U)
       {
         /* Set candidate trimming */
         MODIFY_REG(hopamp->Instance->CSR, OPAMP_CSR_TRIMOFFSETN, trimmingvaluen<<OPAMP_INPUT_INVERTING);
@@ -619,7 +617,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
         /* OFFTRIMmax delay 2 ms as per datasheet (electrical characteristics */ 
         /* Offset trim time: during calibration, minimum time needed between */
         /* two steps to have 1 mV accuracy */
-        HAL_Delay(2);
+        HAL_Delay(2U);
 
         if ((hopamp->Instance->CSR & OPAMP_CSR_OUTCAL) != RESET)
         { 
@@ -632,7 +630,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
           trimmingvaluen -= delta;
         }
                       
-        delta >>= 1;
+        delta >>= 1U;
       }
 
       /* Still need to check if righ calibration is current value or un step below */
@@ -642,7 +640,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
        /* OFFTRIMmax delay 2 ms as per datasheet (electrical characteristics */ 
        /* Offset trim time: during calibration, minimum time needed between */
        /* two steps to have 1 mV accuracy */
-       HAL_Delay(2);
+       HAL_Delay(2U);
       
       if ((hopamp->Instance->CSR & OPAMP_CSR_OUTCAL) != RESET) 
       { 
@@ -653,15 +651,15 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
       }
        
       /* 2nd calibration - P */
-      /* Select 10% VREF */
+      /* Select 10U% VREF */
       MODIFY_REG(hopamp->Instance->CSR, OPAMP_CSR_CALSEL, OPAMP_VREF_10VDDA);
       
       /* Init trimming counter */    
       /* Medium value */
-      trimmingvaluep = 16; 
-      delta = 8;
+      trimmingvaluep = 16U; 
+      delta = 8U;
       
-      while (delta != 0)
+      while (delta != 0U)
       {
         /* Set candidate trimming */
         MODIFY_REG(hopamp->Instance->CSR, OPAMP_CSR_TRIMOFFSETP, trimmingvaluep<<OPAMP_INPUT_NONINVERTING);
@@ -669,7 +667,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
         /* OFFTRIMmax delay 2 ms as per datasheet (electrical characteristics */ 
         /* Offset trim time: during calibration, minimum time needed between */
         /* two steps to have 1 mV accuracy */
-        HAL_Delay(2);
+        HAL_Delay(2U);
 
         if ((hopamp->Instance->CSR & OPAMP_CSR_OUTCAL) != RESET) 
         { 
@@ -681,18 +679,18 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
           trimmingvaluep -= delta;
         }
                       
-        delta >>= 1;
+        delta >>= 1U;
       }
       
       /* Still need to check if righ calibration is current value or un step below */
-      /* Indeed the first value that causes the OUTCAL bit to change from 1 to 0 */
+      /* Indeed the first value that causes the OUTCAL bit to change from 1 to 0U */
       /* Set candidate trimming */
       MODIFY_REG(hopamp->Instance->CSR, OPAMP_CSR_TRIMOFFSETP, trimmingvaluep<<OPAMP_INPUT_NONINVERTING);
 
        /* OFFTRIMmax delay 2 ms as per datasheet (electrical characteristics */ 
        /* Offset trim time: during calibration, minimum time needed between */
        /* two steps to have 1 mV accuracy */
-       HAL_Delay(2);
+       HAL_Delay(2U);
       
       if ((hopamp->Instance->CSR & OPAMP_CSR_OUTCAL) != RESET)
       { 
@@ -760,7 +758,7 @@ HAL_StatusTypeDef HAL_OPAMP_SelfCalibrate(OPAMP_HandleTypeDef *hopamp)
 
 /**
   * @brief  Lock the selected opamp configuration. 
-  * @param  hopamp: OPAMP handle
+  * @param  hopamp OPAMP handle
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_OPAMP_Lock(OPAMP_HandleTypeDef *hopamp)
@@ -815,7 +813,7 @@ HAL_StatusTypeDef HAL_OPAMP_Lock(OPAMP_HandleTypeDef *hopamp)
 
 /**
   * @brief  Return the OPAMP state
-  * @param  hopamp: OPAMP handle
+  * @param  hopamp OPAMP handle
   * @retval HAL state
   */
 HAL_OPAMP_StateTypeDef HAL_OPAMP_GetState(OPAMP_HandleTypeDef *hopamp)
@@ -834,16 +832,16 @@ HAL_OPAMP_StateTypeDef HAL_OPAMP_GetState(OPAMP_HandleTypeDef *hopamp)
 
 /**
   * @brief  Return the OPAMP factory trimming value
-  * @param  hopamp: OPAMP handle
-  * @param  trimmingoffset: Trimming offset (P or N)
+  * @param  hopamp OPAMP handle
+  * @param  trimmingoffset Trimming offset (P or N)
   * @retval Trimming value (P or N): range: 0->31
   *         or OPAMP_FACTORYTRIMMING_DUMMY if trimming value is not available
  */
 
 OPAMP_TrimmingValueTypeDef HAL_OPAMP_GetTrimOffset (OPAMP_HandleTypeDef *hopamp, uint32_t trimmingoffset)
 {
-  uint32_t oldusertrimming = 0;
-  OPAMP_TrimmingValueTypeDef  oldtrimmingvaluep = 0, oldtrimmingvaluen = 0, trimmingvalue = 0;
+  uint32_t oldusertrimming = 0U;
+  OPAMP_TrimmingValueTypeDef  oldtrimmingvaluep = 0U, oldtrimmingvaluen = 0U, trimmingvalue = 0U;
   
   /* Check the OPAMP handle allocation */
   /* Value can be retrieved in HAL_OPAMP_STATE_READY state */
