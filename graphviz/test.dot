@@ -1,0 +1,721 @@
+digraph G {
+ rankdir = LR;
+ ranksep = 2.0;
+ splines = spline;
+ overlap = false;
+ nodesep = 0.5;
+ adc0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> adc0</td></tr>
+  <tr><td port="cos" border = "1"> cos = 8.4e-05 </td></tr>
+  <tr><td port="cos1" border = "1"> cos1 = -0.003665 </td></tr>
+  <tr><td port="cos3" border = "1"> cos3 = 0.000344 </td></tr>
+  <tr><td port="cos_gain" border = "1"> cos_gain = 1 </td></tr>
+  <tr><td port="cos_offset" border = "1"> cos_offset = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="gain0" border = "1"> gain0 = 200 </td></tr>
+  <tr><td port="gain1" border = "1"> gain1 = 200 </td></tr>
+  <tr><td port="gain2" border = "1"> gain2 = 200 </td></tr>
+  <tr><td port="gain3" border = "1"> gain3 = 200 </td></tr>
+  <tr><td port="gain4" border = "1"> gain4 = 0 </td></tr>
+  <tr><td port="gain5" border = "1"> gain5 = 0 </td></tr>
+  <tr><td port="gain6" border = "1"> gain6 = 0 </td></tr>
+  <tr><td port="gain7" border = "1"> gain7 = 0 </td></tr>
+  <tr><td port="offset0" border = "1"> offset0 = 0 </td></tr>
+  <tr><td port="offset1" border = "1"> offset1 = 0 </td></tr>
+  <tr><td port="offset2" border = "1"> offset2 = 0 </td></tr>
+  <tr><td port="offset3" border = "1"> offset3 = 0 </td></tr>
+  <tr><td port="offset4" border = "1"> offset4 = 0 </td></tr>
+  <tr><td port="offset5" border = "1"> offset5 = 0 </td></tr>
+  <tr><td port="offset6" border = "1"> offset6 = 0 </td></tr>
+  <tr><td port="offset7" border = "1"> offset7 = 0 </td></tr>
+  <tr><td port="quad" border = "1"> quad = 4 </td></tr>
+  <tr><td port="res_en" border = "1"> res_en = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 1 </td></tr>
+  <tr><td port="send_step" border = "1"> send_step = 0 </td></tr>
+  <tr><td port="sin" border = "1"> sin = -0.001777 </td></tr>
+  <tr><td port="sin1" border = "1"> sin1 = -0.002071 </td></tr>
+  <tr><td port="sin3" border = "1"> sin3 = -0.001613 </td></tr>
+  <tr><td port="sin_gain" border = "1"> sin_gain = 1 </td></tr>
+  <tr><td port="sin_offset" border = "1"> sin_offset = 0 </td></tr>
+ </table>>];
+ conf0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> conf0</td></tr>
+  <tr><td port="cmd_res" border = "1"> cmd_res = 10000 </td></tr>
+  <tr><td port="cmd_rev" border = "1"> cmd_rev = 0 </td></tr>
+  <tr><td port="com_fb_offset" border = "1"> com_fb_offset = 0 </td></tr>
+  <tr><td port="com_fb_polecount" border = "1"> com_fb_polecount = 5 </td></tr>
+  <tr><td port="com_fb_res" border = "1"> com_fb_res = 16384 </td></tr>
+  <tr><td port="com_fb_rev" border = "1"> com_fb_rev = 0 </td></tr>
+  <tr><td port="cur_ff" border = "1"> cur_ff = 0 </td></tr>
+  <tr><td port="cur_i" border = "1"> cur_i = 0.0001 </td></tr>
+  <tr><td port="cur_ind" border = "1"> cur_ind = 0 </td></tr>
+  <tr><td port="cur_p" border = "1"> cur_p = 0.2 </td></tr>
+  <tr><td port="fan_hv_temp" border = "1"> fan_hv_temp = 50 </td></tr>
+  <tr><td port="fan_mot_temp" border = "1"> fan_mot_temp = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="g" border = "1"> g = 0.99 </td></tr>
+  <tr><td port="high_dc_volt" border = "1"> high_dc_volt = 350 </td></tr>
+  <tr><td port="high_hv_temp" border = "1"> high_hv_temp = 70 </td></tr>
+  <tr><td port="high_mot_temp" border = "1"> high_mot_temp = 0 </td></tr>
+  <tr><td port="j" border = "1"> j = 5.6e-05 </td></tr>
+  <tr><td port="joint_fb_offset" border = "1"> joint_fb_offset = 0 </td></tr>
+  <tr><td port="joint_fb_polecount" border = "1"> joint_fb_polecount = 1 </td></tr>
+  <tr><td port="joint_fb_res" border = "1"> joint_fb_res = 16384 </td></tr>
+  <tr><td port="joint_fb_rev" border = "1"> joint_fb_rev = 0 </td></tr>
+  <tr><td port="l" border = "1"> l = 0.005 </td></tr>
+  <tr><td port="low_dc_volt" border = "1"> low_dc_volt = 24 </td></tr>
+  <tr><td port="max_ac_cur" border = "1"> max_ac_cur = 5 </td></tr>
+  <tr><td port="max_acc" border = "1"> max_acc = 80000 </td></tr>
+  <tr><td port="max_dc_cur" border = "1"> max_dc_cur = 15 </td></tr>
+  <tr><td port="max_dc_volt" border = "1"> max_dc_volt = 380 </td></tr>
+  <tr><td port="max_force" border = "1"> max_force = 5.7 </td></tr>
+  <tr><td port="max_hv_temp" border = "1"> max_hv_temp = 90 </td></tr>
+  <tr><td port="max_mot_temp" border = "1"> max_mot_temp = 100 </td></tr>
+  <tr><td port="max_pos_error" border = "1"> max_pos_error = 1.5 </td></tr>
+  <tr><td port="max_sat" border = "1"> max_sat = 0.2 </td></tr>
+  <tr><td port="max_vel" border = "1"> max_vel = 800 </td></tr>
+  <tr><td port="mot_fb_offset" border = "1"> mot_fb_offset = 0 </td></tr>
+  <tr><td port="mot_fb_polecount" border = "1"> mot_fb_polecount = 1 </td></tr>
+  <tr><td port="mot_fb_res" border = "1"> mot_fb_res = 10000 </td></tr>
+  <tr><td port="mot_fb_rev" border = "1"> mot_fb_rev = 1 </td></tr>
+  <tr><td port="out_rev" border = "1"> out_rev = 0 </td></tr>
+  <tr><td port="phase_cur" border = "1"> phase_cur = 1 </td></tr>
+  <tr><td port="phase_time" border = "1"> phase_time = 0.5 </td></tr>
+  <tr><td port="polecount" border = "1"> polecount = 5 </td></tr>
+  <tr><td port="pos_p" border = "1"> pos_p = 100 </td></tr>
+  <tr><td port="psi" border = "1"> psi = 0.055 </td></tr>
+  <tr><td port="r" border = "1"> r = 1.6 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 0 </td></tr>
+  <tr><td port="vel_g" border = "1"> vel_g = 1 </td></tr>
+  <tr><td port="vel_i" border = "1"> vel_i = 5 </td></tr>
+  <tr><td port="vel_p" border = "1"> vel_p = 2000 </td></tr>
+ </table>>];
+ enc_fb0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> enc_fb0</td></tr>
+  <tr><td port="a" border = "1"> a = 0 </td></tr>
+  <tr><td port="abs_pos" border = "1"> abs_pos = 0.000628 </td></tr>
+  <tr><td port="amp" border = "1"> amp = 0.001946 </td></tr>
+  <tr><td port="b" border = "1"> b = 0 </td></tr>
+  <tr><td port="ccr3" border = "1"> ccr3 = 0 </td></tr>
+  <tr><td port="cos" border = "1"> cos = 0.000302 </td></tr>
+  <tr><td port="error" border = "1"> error = 1 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="index" border = "1"> index = 1 </td></tr>
+  <tr><td port="indexprint" border = "1"> indexprint = 0 </td></tr>
+  <tr><td port="ipos" border = "1"> ipos = 0.000448 </td></tr>
+  <tr><td port="ires" border = "1"> ires = 1024 </td></tr>
+  <tr><td port="oquad" border = "1"> oquad = 3 </td></tr>
+  <tr><td port="oquadoff" border = "1"> oquadoff = 0 </td></tr>
+  <tr><td port="pos" border = "1"> pos = 0 </td></tr>
+  <tr><td port="qdiff" border = "1"> qdiff = 1 </td></tr>
+  <tr><td port="quad" border = "1"> quad = 4 </td></tr>
+  <tr><td port="res" border = "1"> res = 10000 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 2 </td></tr>
+  <tr><td port="sin" border = "1"> sin = -0.001874 </td></tr>
+  <tr><td port="state" border = "1"> state = 1 </td></tr>
+ </table>>];
+ fault0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> fault0</td></tr>
+  <tr><td port="brake_release" border = "1"> brake_release = 0 </td></tr>
+  <tr><td port="cmd_error" border = "1"> cmd_error = 0 </td></tr>
+  <tr><td port="com_fb_error" border = "1"> com_fb_error = 0 </td></tr>
+  <tr><td port="dc_brake" border = "1"> dc_brake = 1 </td></tr>
+  <tr><td port="dc_cur" border = "1"> dc_cur = 0 </td></tr>
+  <tr><td port="dc_volt" border = "1"> dc_volt = 0 </td></tr>
+  <tr><td port="en" border = "1"> en = 0 </td></tr>
+  <tr><td port="en_fb" border = "1"> en_fb = 0 </td></tr>
+  <tr><td port="en_out" border = "1"> en_out = 0 </td></tr>
+  <tr><td port="en_pid" border = "1"> en_pid = 0 </td></tr>
+  <tr><td port="fan_hv_temp" border = "1"> fan_hv_temp = 50 </td></tr>
+  <tr><td port="fan_mot_temp" border = "1"> fan_mot_temp = 0 </td></tr>
+  <tr><td port="fault" border = "1"> fault = 10 </td></tr>
+  <tr><td port="fb_ready" border = "1"> fb_ready = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="high_dc_cur" border = "1"> high_dc_cur = 0 </td></tr>
+  <tr><td port="high_dc_volt" border = "1"> high_dc_volt = 380 </td></tr>
+  <tr><td port="high_hv_temp" border = "1"> high_hv_temp = 70 </td></tr>
+  <tr><td port="high_mot_temp" border = "1"> high_mot_temp = 0 </td></tr>
+  <tr><td port="hv_error" border = "1"> hv_error = 8 </td></tr>
+  <tr><td port="hv_fan" border = "1"> hv_fan = 0 </td></tr>
+  <tr><td port="hv_temp" border = "1"> hv_temp = 0 </td></tr>
+  <tr><td port="joint_fb_error" border = "1"> joint_fb_error = 0 </td></tr>
+  <tr><td port="max_dc_cur" border = "1"> max_dc_cur = 15 </td></tr>
+  <tr><td port="max_dc_volt" border = "1"> max_dc_volt = 380 </td></tr>
+  <tr><td port="max_hv_temp" border = "1"> max_hv_temp = 90 </td></tr>
+  <tr><td port="max_mot_temp" border = "1"> max_mot_temp = 100 </td></tr>
+  <tr><td port="max_pos_error" border = "1"> max_pos_error = 1.5 </td></tr>
+  <tr><td port="max_sat" border = "1"> max_sat = 0.2 </td></tr>
+  <tr><td port="min_dc_volt" border = "1"> min_dc_volt = 20 </td></tr>
+  <tr><td port="mot_brake" border = "1"> mot_brake = 0 </td></tr>
+  <tr><td port="mot_fan" border = "1"> mot_fan = 1 </td></tr>
+  <tr><td port="mot_fb_error" border = "1"> mot_fb_error = 1 </td></tr>
+  <tr><td port="mot_temp" border = "1"> mot_temp = 0 </td></tr>
+  <tr><td port="pos_error" border = "1"> pos_error = 0 </td></tr>
+  <tr><td port="print" border = "1"> print = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 10 </td></tr>
+  <tr><td port="sat" border = "1"> sat = 0 </td></tr>
+  <tr><td port="scale" border = "1"> scale = 1 </td></tr>
+  <tr><td port="state" border = "1"> state = 3 </td></tr>
+ </table>>];
+ fb_switch0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> fb_switch0</td></tr>
+  <tr><td port="cmd_pos" border = "1"> cmd_pos = 0 </td></tr>
+  <tr><td port="com_abs_pos" border = "1"> com_abs_pos = -3.14159 </td></tr>
+  <tr><td port="com_fb" border = "1"> com_fb = 0 </td></tr>
+  <tr><td port="com_offset" border = "1"> com_offset = 0 </td></tr>
+  <tr><td port="com_polecount" border = "1"> com_polecount = 5 </td></tr>
+  <tr><td port="com_pos" border = "1"> com_pos = -3.14159 </td></tr>
+  <tr><td port="com_rev" border = "1"> com_rev = 0 </td></tr>
+  <tr><td port="com_state" border = "1"> com_state = 3 </td></tr>
+  <tr><td port="current_com_pos" border = "1"> current_com_pos = 0 </td></tr>
+  <tr><td port="en" border = "1"> en = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="id" border = "1"> id = 0 </td></tr>
+  <tr><td port="joint_abs_pos" border = "1"> joint_abs_pos = 0 </td></tr>
+  <tr><td port="joint_fb" border = "1"> joint_fb = 0 </td></tr>
+  <tr><td port="joint_fb_no_offset" border = "1"> joint_fb_no_offset = 0 </td></tr>
+  <tr><td port="joint_offset" border = "1"> joint_offset = 0 </td></tr>
+  <tr><td port="joint_pos" border = "1"> joint_pos = 0 </td></tr>
+  <tr><td port="joint_rev" border = "1"> joint_rev = 0 </td></tr>
+  <tr><td port="joint_state" border = "1"> joint_state = 0 </td></tr>
+  <tr><td port="mot_abs_fb_no_offset" border = "1"> mot_abs_fb_no_offset = -0.000628 </td></tr>
+  <tr><td port="mot_abs_pos" border = "1"> mot_abs_pos = 0 </td></tr>
+  <tr><td port="mot_fb_no_offset" border = "1"> mot_fb_no_offset = -0.000628 </td></tr>
+  <tr><td port="mot_joint_ratio" border = "1"> mot_joint_ratio = 0 </td></tr>
+  <tr><td port="mot_offset" border = "1"> mot_offset = 0 </td></tr>
+  <tr><td port="mot_polecount" border = "1"> mot_polecount = 1 </td></tr>
+  <tr><td port="mot_pos" border = "1"> mot_pos = 0.000628 </td></tr>
+  <tr><td port="mot_rev" border = "1"> mot_rev = 1 </td></tr>
+  <tr><td port="mot_state" border = "1"> mot_state = 0 </td></tr>
+  <tr><td port="phase_cur" border = "1"> phase_cur = 1 </td></tr>
+  <tr><td port="phase_time" border = "1"> phase_time = 1 </td></tr>
+  <tr><td port="polecount" border = "1"> polecount = 5 </td></tr>
+  <tr><td port="pos_fb" border = "1"> pos_fb = -0.000628 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 5 </td></tr>
+  <tr><td port="state" border = "1"> state = 0 </td></tr>
+  <tr><td port="vel_fb" border = "1"> vel_fb = -0.000628 </td></tr>
+ </table>>];
+ hv0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> hv0</td></tr>
+  <tr><td port="abs_cur" border = "1"> abs_cur = 0 </td></tr>
+  <tr><td port="cmd_mode" border = "1"> cmd_mode = 1 </td></tr>
+  <tr><td port="com_error" border = "1"> com_error = 8 </td></tr>
+  <tr><td port="core_temp" border = "1"> core_temp = 0 </td></tr>
+  <tr><td port="crc_error" border = "1"> crc_error = 0 </td></tr>
+  <tr><td port="cur_ff" border = "1"> cur_ff = 0 </td></tr>
+  <tr><td port="cur_i" border = "1"> cur_i = 0.0001 </td></tr>
+  <tr><td port="cur_ind" border = "1"> cur_ind = 0 </td></tr>
+  <tr><td port="cur_p" border = "1"> cur_p = 0.2 </td></tr>
+  <tr><td port="d_cmd" border = "1"> d_cmd = 0 </td></tr>
+  <tr><td port="d_fb" border = "1"> d_fb = 0 </td></tr>
+  <tr><td port="dc_volt" border = "1"> dc_volt = 0 </td></tr>
+  <tr><td port="en" border = "1"> en = 0 </td></tr>
+  <tr><td port="fault" border = "1"> fault = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="hv_temp" border = "1"> hv_temp = 0 </td></tr>
+  <tr><td port="l" border = "1"> l = 0.005 </td></tr>
+  <tr><td port="max_cur" border = "1"> max_cur = 5 </td></tr>
+  <tr><td port="max_y" border = "1"> max_y = 0 </td></tr>
+  <tr><td port="mot_temp" border = "1"> mot_temp = 0 </td></tr>
+  <tr><td port="phase_mode" border = "1"> phase_mode = 2 </td></tr>
+  <tr><td port="pos" border = "1"> pos = 0 </td></tr>
+  <tr><td port="psi" border = "1"> psi = 0.055 </td></tr>
+  <tr><td port="pwm_volt" border = "1"> pwm_volt = 0 </td></tr>
+  <tr><td port="q_cmd" border = "1"> q_cmd = 0 </td></tr>
+  <tr><td port="q_fb" border = "1"> q_fb = 0 </td></tr>
+  <tr><td port="r" border = "1"> r = 1.6 </td></tr>
+  <tr><td port="rev" border = "1"> rev = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 11 </td></tr>
+  <tr><td port="scale" border = "1"> scale = 1 </td></tr>
+  <tr><td port="timeout" border = "1"> timeout = 21171 </td></tr>
+  <tr><td port="u_fb" border = "1"> u_fb = 0 </td></tr>
+  <tr><td port="uart_dr" border = "1"> uart_dr = 0 </td></tr>
+  <tr><td port="uart_sr" border = "1"> uart_sr = 192 </td></tr>
+  <tr><td port="v_fb" border = "1"> v_fb = 0 </td></tr>
+  <tr><td port="vel" border = "1"> vel = 0 </td></tr>
+  <tr><td port="w_fb" border = "1"> w_fb = 0 </td></tr>
+  <tr><td port="y" border = "1"> y = 0 </td></tr>
+ </table>>];
+ iit0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> iit0</td></tr>
+  <tr><td port="air_temp" border = "1"> air_temp = 20 </td></tr>
+  <tr><td port="brake" border = "1"> brake = 2 </td></tr>
+  <tr><td port="brake_r" border = "1"> brake_r = 50 </td></tr>
+  <tr><td port="flow" border = "1"> flow = 22.4183 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="id" border = "1"> id = 0 </td></tr>
+  <tr><td port="iq" border = "1"> iq = 0 </td></tr>
+  <tr><td port="mot_air_res" border = "1"> mot_air_res = 16.5254 </td></tr>
+  <tr><td port="mot_cap" border = "1"> mot_cap = 18.1538 </td></tr>
+  <tr><td port="mot_cont_cur" border = "1"> mot_cont_cur = 2.15 </td></tr>
+  <tr><td port="mot_max_temp" border = "1"> mot_max_temp = 130 </td></tr>
+  <tr><td port="mot_psi" border = "1"> mot_psi = 1 </td></tr>
+  <tr><td port="mot_real_psi" border = "1"> mot_real_psi = 0.986646 </td></tr>
+  <tr><td port="mot_real_res" border = "1"> mot_real_res = 1.04109 </td></tr>
+  <tr><td port="mot_res" border = "1"> mot_res = 1 </td></tr>
+  <tr><td port="mot_tau" border = "1"> mot_tau = 300 </td></tr>
+  <tr><td port="mot_temp" border = "1"> mot_temp = 30.2712 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 12 </td></tr>
+ </table>>];
+ io0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> io0</td></tr>
+  <tr><td port="C12" border = "1"> C12 = 1 </td></tr>
+  <tr><td port="C36" border = "1"> C36 = 1 </td></tr>
+  <tr><td port="C54" border = "1"> C54 = 1 </td></tr>
+  <tr><td port="CK" border = "1"> CK = 0 </td></tr>
+  <tr><td port="CRX" border = "1"> CRX = 0 </td></tr>
+  <tr><td port="CTX" border = "1"> CTX = 0 </td></tr>
+  <tr><td port="DIO" border = "1"> DIO = 0 </td></tr>
+  <tr><td port="cmd_remap" border = "1"> cmd_remap = 0 </td></tr>
+  <tr><td port="cmdg" border = "1"> cmdg = 0 </td></tr>
+  <tr><td port="cmdy" border = "1"> cmdy = 0 </td></tr>
+  <tr><td port="fan" border = "1"> fan = 0 </td></tr>
+  <tr><td port="fault" border = "1"> fault = 10 </td></tr>
+  <tr><td port="fb0" border = "1"> fb0 = 4.99834 </td></tr>
+  <tr><td port="fb0a" border = "1"> fb0a = 0 </td></tr>
+  <tr><td port="fb0b" border = "1"> fb0b = 0 </td></tr>
+  <tr><td port="fb0g" border = "1"> fb0g = 1 </td></tr>
+  <tr><td port="fb0y" border = "1"> fb0y = 1 </td></tr>
+  <tr><td port="fb0z" border = "1"> fb0z = 1 </td></tr>
+  <tr><td port="fb1" border = "1"> fb1 = 5.0072 </td></tr>
+  <tr><td port="fb1a" border = "1"> fb1a = 0 </td></tr>
+  <tr><td port="fb1b" border = "1"> fb1b = 0 </td></tr>
+  <tr><td port="fb1g" border = "1"> fb1g = 1 </td></tr>
+  <tr><td port="fb1y" border = "1"> fb1y = 0 </td></tr>
+  <tr><td port="fb1z" border = "1"> fb1z = 0 </td></tr>
+  <tr><td port="fbd0" border = "1"> fbd0 = 1 </td></tr>
+  <tr><td port="fbd0n" border = "1"> fbd0n = 0 </td></tr>
+  <tr><td port="fbd1" border = "1"> fbd1 = 1 </td></tr>
+  <tr><td port="fbd1n" border = "1"> fbd1n = 0 </td></tr>
+  <tr><td port="fbsd" border = "1"> fbsd = 0 </td></tr>
+  <tr><td port="fbth0" border = "1"> fbth0 = 2.5 </td></tr>
+  <tr><td port="fbth1" border = "1"> fbth1 = 2.5 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="in0" border = "1"> in0 = 1.48081 </td></tr>
+  <tr><td port="in1" border = "1"> in1 = 1.71768 </td></tr>
+  <tr><td port="ind0" border = "1"> ind0 = 0 </td></tr>
+  <tr><td port="ind0n" border = "1"> ind0n = 1 </td></tr>
+  <tr><td port="ind1" border = "1"> ind1 = 0 </td></tr>
+  <tr><td port="ind1n" border = "1"> ind1n = 1 </td></tr>
+  <tr><td port="out0" border = "1"> out0 = 0 </td></tr>
+  <tr><td port="out1" border = "1"> out1 = 0 </td></tr>
+  <tr><td port="out2" border = "1"> out2 = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 7 </td></tr>
+  <tr><td port="state" border = "1"> state = 3 </td></tr>
+  <tr><td port="swd_remap" border = "1"> swd_remap = 0 </td></tr>
+  <tr><td port="th0" border = "1"> th0 = 12 </td></tr>
+  <tr><td port="th1" border = "1"> th1 = 12 </td></tr>
+ </table>>];
+ pe0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> pe0</td></tr>
+  <tr><td port="cap" border = "1"> cap = 0.00054 </td></tr>
+  <tr><td port="e_el" border = "1"> e_el = 0 </td></tr>
+  <tr><td port="e_kin" border = "1"> e_kin = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="id" border = "1"> id = 0 </td></tr>
+  <tr><td port="idc" border = "1"> idc = 0 </td></tr>
+  <tr><td port="iq" border = "1"> iq = 0 </td></tr>
+  <tr><td port="j" border = "1"> j = 5.6e-05 </td></tr>
+  <tr><td port="p_el_ac" border = "1"> p_el_ac = 0 </td></tr>
+  <tr><td port="p_el_dc" border = "1"> p_el_dc = 0 </td></tr>
+  <tr><td port="p_m" border = "1"> p_m = 0 </td></tr>
+  <tr><td port="p_t" border = "1"> p_t = 0 </td></tr>
+  <tr><td port="r" border = "1"> r = 1.6 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 15 </td></tr>
+  <tr><td port="torque" border = "1"> torque = 0 </td></tr>
+  <tr><td port="ud" border = "1"> ud = 0 </td></tr>
+  <tr><td port="udc" border = "1"> udc = 0 </td></tr>
+  <tr><td port="uq" border = "1"> uq = 0 </td></tr>
+  <tr><td port="vel" border = "1"> vel = 0 </td></tr>
+ </table>>];
+ pid0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> pid0</td></tr>
+  <tr><td port="acc_cmd" border = "1"> acc_cmd = 0 </td></tr>
+  <tr><td port="acc_en" border = "1"> acc_en = 1 </td></tr>
+  <tr><td port="acc_ext_cmd" border = "1"> acc_ext_cmd = 0 </td></tr>
+  <tr><td port="acc_g" border = "1"> acc_g = 1 </td></tr>
+  <tr><td port="acc_sat" border = "1"> acc_sat = 0 </td></tr>
+  <tr><td port="damping" border = "1"> damping = 0 </td></tr>
+  <tr><td port="enable" border = "1"> enable = 0 </td></tr>
+  <tr><td port="friction" border = "1"> friction = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="g" border = "1"> g = 0.99 </td></tr>
+  <tr><td port="j" border = "1"> j = 5.6e-05 </td></tr>
+  <tr><td port="load" border = "1"> load = 0 </td></tr>
+  <tr><td port="max_torque" border = "1"> max_torque = 0 </td></tr>
+  <tr><td port="max_usr_acc" border = "1"> max_usr_acc = 80000 </td></tr>
+  <tr><td port="max_usr_torque" border = "1"> max_usr_torque = 5.7 </td></tr>
+  <tr><td port="max_usr_vel" border = "1"> max_usr_vel = 800 </td></tr>
+  <tr><td port="max_vel" border = "1"> max_vel = 0 </td></tr>
+  <tr><td port="min_torque" border = "1"> min_torque = -0 </td></tr>
+  <tr><td port="pos_en" border = "1"> pos_en = 1 </td></tr>
+  <tr><td port="pos_error" border = "1"> pos_error = 0 </td></tr>
+  <tr><td port="pos_ext_cmd" border = "1"> pos_ext_cmd = 0 </td></tr>
+  <tr><td port="pos_fb" border = "1"> pos_fb = -0.000628 </td></tr>
+  <tr><td port="pos_p" border = "1"> pos_p = 100 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 8 </td></tr>
+  <tr><td port="saturated" border = "1"> saturated = 0 </td></tr>
+  <tr><td port="torque_cmd" border = "1"> torque_cmd = 0 </td></tr>
+  <tr><td port="torque_cor_cmd" border = "1"> torque_cor_cmd = 0 </td></tr>
+  <tr><td port="torque_en" border = "1"> torque_en = 1 </td></tr>
+  <tr><td port="torque_ext_cmd" border = "1"> torque_ext_cmd = 0 </td></tr>
+  <tr><td port="torque_sat" border = "1"> torque_sat = 0 </td></tr>
+  <tr><td port="torque_sum" border = "1"> torque_sum = 0 </td></tr>
+  <tr><td port="vel_cmd" border = "1"> vel_cmd = 0 </td></tr>
+  <tr><td port="vel_en" border = "1"> vel_en = 1 </td></tr>
+  <tr><td port="vel_error" border = "1"> vel_error = 0 </td></tr>
+  <tr><td port="vel_ext_cmd" border = "1"> vel_ext_cmd = 0 </td></tr>
+  <tr><td port="vel_fb" border = "1"> vel_fb = 0 </td></tr>
+  <tr><td port="vel_g" border = "1"> vel_g = 1 </td></tr>
+  <tr><td port="vel_i" border = "1"> vel_i = 5 </td></tr>
+  <tr><td port="vel_p" border = "1"> vel_p = 2000 </td></tr>
+  <tr><td port="vel_sat" border = "1"> vel_sat = 0 </td></tr>
+ </table>>];
+ pmsm_limits0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> pmsm_limits0</td></tr>
+  <tr><td port="abs_max_cur" border = "1"> abs_max_cur = 0 </td></tr>
+  <tr><td port="abs_max_torque" border = "1"> abs_max_torque = 0 </td></tr>
+  <tr><td port="abs_max_vel" border = "1"> abs_max_vel = 0 </td></tr>
+  <tr><td port="ac_volt" border = "1"> ac_volt = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="indq" border = "1"> indq = 0 </td></tr>
+  <tr><td port="iq" border = "1"> iq = 0 </td></tr>
+  <tr><td port="ld" border = "1"> ld = 0.005 </td></tr>
+  <tr><td port="lq" border = "1"> lq = 0.005 </td></tr>
+  <tr><td port="max_cur" border = "1"> max_cur = 0 </td></tr>
+  <tr><td port="max_torque" border = "1"> max_torque = 0 </td></tr>
+  <tr><td port="min_cur" border = "1"> min_cur = -0 </td></tr>
+  <tr><td port="min_torque" border = "1"> min_torque = -0 </td></tr>
+  <tr><td port="next_max_cur" border = "1"> next_max_cur = 0 </td></tr>
+  <tr><td port="next_max_torque" border = "1"> next_max_torque = 0 </td></tr>
+  <tr><td port="next_min_cur" border = "1"> next_min_cur = 0 </td></tr>
+  <tr><td port="next_min_torque" border = "1"> next_min_torque = 0 </td></tr>
+  <tr><td port="polecount" border = "1"> polecount = 5 </td></tr>
+  <tr><td port="psi" border = "1"> psi = 0.055 </td></tr>
+  <tr><td port="r" border = "1"> r = 1.6 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 7 </td></tr>
+ </table>>];
+ pmsm_ttc0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> pmsm_ttc0</td></tr>
+  <tr><td port="ac" border = "1"> ac = 0 </td></tr>
+  <tr><td port="ae" border = "1"> ae = 0 </td></tr>
+  <tr><td port="block_gain" border = "1"> block_gain = 0 </td></tr>
+  <tr><td port="cur" border = "1"> cur = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="g" border = "1"> g = 0 </td></tr>
+  <tr><td port="nc" border = "1"> nc = 1 </td></tr>
+  <tr><td port="ne" border = "1"> ne = 1 </td></tr>
+  <tr><td port="pc" border = "1"> pc = 0 </td></tr>
+  <tr><td port="pe" border = "1"> pe = 0 </td></tr>
+  <tr><td port="polecount" border = "1"> polecount = 5 </td></tr>
+  <tr><td port="pos_in" border = "1"> pos_in = 0 </td></tr>
+  <tr><td port="pos_out" border = "1"> pos_out = 0 </td></tr>
+  <tr><td port="psi" border = "1"> psi = 0.055 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 9 </td></tr>
+  <tr><td port="t" border = "1"> t = 0 </td></tr>
+  <tr><td port="torque" border = "1"> torque = 0 </td></tr>
+ </table>>];
+ reslimit0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> reslimit0</td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="pos_in" border = "1"> pos_in = 0 </td></tr>
+  <tr><td port="pos_out" border = "1"> pos_out = 0 </td></tr>
+  <tr><td port="res" border = "1"> res = 10000 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 3 </td></tr>
+ </table>>];
+ rev0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> rev0</td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="in" border = "1"> in = 0 </td></tr>
+  <tr><td port="in_d" border = "1"> in_d = 0 </td></tr>
+  <tr><td port="out" border = "1"> out = 0 </td></tr>
+  <tr><td port="out_d" border = "1"> out_d = 0 </td></tr>
+  <tr><td port="rev" border = "1"> rev = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 4 </td></tr>
+ </table>>];
+ rev1[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> rev1</td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="in" border = "1"> in = 0 </td></tr>
+  <tr><td port="in_d" border = "1"> in_d = 0 </td></tr>
+  <tr><td port="out" border = "1"> out = 0 </td></tr>
+  <tr><td port="out_d" border = "1"> out_d = 0 </td></tr>
+  <tr><td port="rev" border = "1"> rev = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 0 </td></tr>
+ </table>>];
+ rev2[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> rev2</td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="in" border = "1"> in = 0 </td></tr>
+  <tr><td port="in_d" border = "1"> in_d = 0 </td></tr>
+  <tr><td port="out" border = "1"> out = 0 </td></tr>
+  <tr><td port="out_d" border = "1"> out_d = 0 </td></tr>
+  <tr><td port="rev" border = "1"> rev = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 0 </td></tr>
+ </table>>];
+ rev3[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> rev3</td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="in" border = "1"> in = 0 </td></tr>
+  <tr><td port="in_d" border = "1"> in_d = 0 </td></tr>
+  <tr><td port="out" border = "1"> out = 0 </td></tr>
+  <tr><td port="out_d" border = "1"> out_d = 0 </td></tr>
+  <tr><td port="rev" border = "1"> rev = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 0 </td></tr>
+ </table>>];
+ sim0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> sim0</td></tr>
+  <tr><td port="amp" border = "1"> amp = 3.1 </td></tr>
+  <tr><td port="freq" border = "1"> freq = 1 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="msin" border = "1"> msin = 3.08322 </td></tr>
+  <tr><td port="msin2" border = "1"> msin2 = 0.49091 </td></tr>
+  <tr><td port="msin3" border = "1"> msin3 = 0.07815 </td></tr>
+  <tr><td port="offset" border = "1"> offset = 0 </td></tr>
+  <tr><td port="res" border = "1"> res = 100000 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 13 </td></tr>
+  <tr><td port="sin" border = "1"> sin = 3.08282 </td></tr>
+  <tr><td port="sin2" border = "1"> sin2 = 0.490851 </td></tr>
+  <tr><td port="sin3" border = "1"> sin3 = 0.078144 </td></tr>
+  <tr><td port="square" border = "1"> square = 3.09984 </td></tr>
+  <tr><td port="vel" border = "1"> vel = 0.264882 </td></tr>
+ </table>>];
+ stp0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> stp0</td></tr>
+  <tr><td port="acc_out" border = "1"> acc_out = 0 </td></tr>
+  <tr><td port="dtg" border = "1"> dtg = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="max_acc" border = "1"> max_acc = 0 </td></tr>
+  <tr><td port="max_vel" border = "1"> max_vel = 0 </td></tr>
+  <tr><td port="pos_out" border = "1"> pos_out = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 14 </td></tr>
+  <tr><td port="target" border = "1"> target = 0 </td></tr>
+  <tr><td port="vel_out" border = "1"> vel_out = 0 </td></tr>
+ </table>>];
+ term0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> term0</td></tr>
+  <tr><td port="con" border = "1"> con = 1 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="gain0" border = "1"> gain0 = 20 </td></tr>
+  <tr><td port="gain1" border = "1"> gain1 = 20 </td></tr>
+  <tr><td port="gain2" border = "1"> gain2 = 1 </td></tr>
+  <tr><td port="gain3" border = "1"> gain3 = 1 </td></tr>
+  <tr><td port="gain4" border = "1"> gain4 = 10 </td></tr>
+  <tr><td port="gain5" border = "1"> gain5 = 10 </td></tr>
+  <tr><td port="gain6" border = "1"> gain6 = 10 </td></tr>
+  <tr><td port="gain7" border = "1"> gain7 = 10 </td></tr>
+  <tr><td port="jogmpos" border = "1"> jogmpos = 0 </td></tr>
+  <tr><td port="jogpos" border = "1"> jogpos = 0 </td></tr>
+  <tr><td port="jogvel" border = "1"> jogvel = 10 </td></tr>
+  <tr><td port="offset0" border = "1"> offset0 = 0 </td></tr>
+  <tr><td port="offset1" border = "1"> offset1 = 0 </td></tr>
+  <tr><td port="offset2" border = "1"> offset2 = 0 </td></tr>
+  <tr><td port="offset3" border = "1"> offset3 = 0 </td></tr>
+  <tr><td port="offset4" border = "1"> offset4 = 0 </td></tr>
+  <tr><td port="offset5" border = "1"> offset5 = 0 </td></tr>
+  <tr><td port="offset6" border = "1"> offset6 = 0 </td></tr>
+  <tr><td port="offset7" border = "1"> offset7 = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 16 </td></tr>
+  <tr><td port="send_step" border = "1"> send_step = 50 </td></tr>
+  <tr><td port="wave0" border = "1"> wave0 = 0 </td></tr>
+  <tr><td port="wave1" border = "1"> wave1 = -0.000628 </td></tr>
+  <tr><td port="wave2" border = "1"> wave2 = 0 </td></tr>
+  <tr><td port="wave3" border = "1"> wave3 = 0 </td></tr>
+  <tr><td port="wave4" border = "1"> wave4 = 0 </td></tr>
+  <tr><td port="wave5" border = "1"> wave5 = 0 </td></tr>
+  <tr><td port="wave6" border = "1"> wave6 = 0 </td></tr>
+  <tr><td port="wave7" border = "1"> wave7 = 0 </td></tr>
+ </table>>];
+ uvw0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> uvw0</td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="led" border = "1"> led = 0 </td></tr>
+  <tr><td port="p0" border = "1"> p0 = 3 </td></tr>
+  <tr><td port="p1" border = "1"> p1 = 2 </td></tr>
+  <tr><td port="p2" border = "1"> p2 = 2 </td></tr>
+  <tr><td port="p3" border = "1"> p3 = 1 </td></tr>
+  <tr><td port="p4" border = "1"> p4 = 4 </td></tr>
+  <tr><td port="p5" border = "1"> p5 = 6 </td></tr>
+  <tr><td port="p6" border = "1"> p6 = 5 </td></tr>
+  <tr><td port="p7" border = "1"> p7 = 0 </td></tr>
+  <tr><td port="pos" border = "1"> pos = -3.14159 </td></tr>
+  <tr><td port="rpos" border = "1"> rpos = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 2 </td></tr>
+  <tr><td port="state" border = "1"> state = 3 </td></tr>
+  <tr><td port="u" border = "1"> u = 0 </td></tr>
+  <tr><td port="v" border = "1"> v = 0 </td></tr>
+  <tr><td port="w" border = "1"> w = 0 </td></tr>
+ </table>>];
+ vel0[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> vel0</td></tr>
+  <tr><td port="acc" border = "1"> acc = 0 </td></tr>
+  <tr><td port="d" border = "1"> d = 0.9 </td></tr>
+  <tr><td port="en" border = "1"> en = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="g" border = "1"> g = 1 </td></tr>
+  <tr><td port="h" border = "1"> h = 1 </td></tr>
+  <tr><td port="j" border = "1"> j = 1e-05 </td></tr>
+  <tr><td port="lp" border = "1"> lp = 50 </td></tr>
+  <tr><td port="pos_error" border = "1"> pos_error = 0 </td></tr>
+  <tr><td port="pos_in" border = "1"> pos_in = 0 </td></tr>
+  <tr><td port="pos_out" border = "1"> pos_out = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 6 </td></tr>
+  <tr><td port="torque" border = "1"> torque = 0 </td></tr>
+  <tr><td port="vel" border = "1"> vel = 0 </td></tr>
+  <tr><td port="vel_ff" border = "1"> vel_ff = 0 </td></tr>
+  <tr><td port="w" border = "1"> w = 1000 </td></tr>
+ </table>>];
+ vel1[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> vel1</td></tr>
+  <tr><td port="acc" border = "1"> acc = 0 </td></tr>
+  <tr><td port="d" border = "1"> d = 0.9 </td></tr>
+  <tr><td port="en" border = "1"> en = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="g" border = "1"> g = 1 </td></tr>
+  <tr><td port="h" border = "1"> h = 1 </td></tr>
+  <tr><td port="j" border = "1"> j = 5.6e-05 </td></tr>
+  <tr><td port="lp" border = "1"> lp = 50 </td></tr>
+  <tr><td port="pos_error" border = "1"> pos_error = 0 </td></tr>
+  <tr><td port="pos_in" border = "1"> pos_in = -0.000628 </td></tr>
+  <tr><td port="pos_out" border = "1"> pos_out = -0.000628 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 6 </td></tr>
+  <tr><td port="torque" border = "1"> torque = 0 </td></tr>
+  <tr><td port="vel" border = "1"> vel = 0 </td></tr>
+  <tr><td port="vel_ff" border = "1"> vel_ff = 0 </td></tr>
+  <tr><td port="w" border = "1"> w = 1000 </td></tr>
+ </table>>];
+ vel2[shape = "none", label = <<table border="2" cellspacing="0">
+  <tr><td border="1" bgcolor="#FFD08E"> vel2</td></tr>
+  <tr><td port="acc" border = "1"> acc = 0 </td></tr>
+  <tr><td port="d" border = "1"> d = 0.9 </td></tr>
+  <tr><td port="en" border = "1"> en = 0 </td></tr>
+  <tr><td port="frt_prio" border = "1"> frt_prio = 0 </td></tr>
+  <tr><td port="g" border = "1"> g = 1 </td></tr>
+  <tr><td port="h" border = "1"> h = 1 </td></tr>
+  <tr><td port="j" border = "1"> j = 5.6e-05 </td></tr>
+  <tr><td port="lp" border = "1"> lp = 50 </td></tr>
+  <tr><td port="pos_error" border = "1"> pos_error = 0 </td></tr>
+  <tr><td port="pos_in" border = "1"> pos_in = 0 </td></tr>
+  <tr><td port="pos_out" border = "1"> pos_out = 0 </td></tr>
+  <tr><td port="rt_prio" border = "1"> rt_prio = 6 </td></tr>
+  <tr><td port="torque" border = "1"> torque = 0 </td></tr>
+  <tr><td port="vel" border = "1"> vel = 0 </td></tr>
+  <tr><td port="vel_ff" border = "1"> vel_ff = 0 </td></tr>
+  <tr><td port="w" border = "1"> w = 1000 </td></tr>
+ </table>>];
+ conf0:polecount -> conf0:com_fb_polecount [spines = "ortho"];
+ adc0:cos3 -> enc_fb0:cos [spines = "ortho"];
+ adc0:quad -> enc_fb0:quad [spines = "ortho"];
+ conf0:mot_fb_res -> enc_fb0:res [spines = "ortho"];
+ adc0:sin3 -> enc_fb0:sin [spines = "ortho"];
+ hv0:dc_volt -> fault0:dc_volt [spines = "ortho"];
+ conf0:fan_hv_temp -> fault0:fan_hv_temp [spines = "ortho"];
+ conf0:fan_mot_temp -> fault0:fan_mot_temp [spines = "ortho"];
+ fb_switch0:state -> fault0:fb_ready [spines = "ortho"];
+ conf0:max_dc_volt -> fault0:high_dc_volt [spines = "ortho"];
+ conf0:high_hv_temp -> fault0:high_hv_temp [spines = "ortho"];
+ conf0:high_mot_temp -> fault0:high_mot_temp [spines = "ortho"];
+ hv0:com_error -> fault0:hv_error [spines = "ortho"];
+ hv0:hv_temp -> fault0:hv_temp [spines = "ortho"];
+ conf0:max_dc_cur -> fault0:max_dc_cur [spines = "ortho"];
+ conf0:max_dc_volt -> fault0:max_dc_volt [spines = "ortho"];
+ conf0:max_hv_temp -> fault0:max_hv_temp [spines = "ortho"];
+ conf0:max_mot_temp -> fault0:max_mot_temp [spines = "ortho"];
+ conf0:max_pos_error -> fault0:max_pos_error [spines = "ortho"];
+ conf0:max_sat -> fault0:max_sat [spines = "ortho"];
+ enc_fb0:error -> fault0:mot_fb_error [spines = "ortho"];
+ pid0:pos_error -> fault0:pos_error [spines = "ortho"];
+ pid0:saturated -> fault0:sat [spines = "ortho"];
+ reslimit0:pos_out -> fb_switch0:cmd_pos [spines = "ortho"];
+ uvw0:pos -> fb_switch0:com_abs_pos [spines = "ortho"];
+ conf0:com_fb_offset -> fb_switch0:com_offset [spines = "ortho"];
+ conf0:polecount -> fb_switch0:com_polecount [spines = "ortho"];
+ uvw0:pos -> fb_switch0:com_pos [spines = "ortho"];
+ conf0:com_fb_rev -> fb_switch0:com_rev [spines = "ortho"];
+ uvw0:state -> fb_switch0:com_state [spines = "ortho"];
+ fault0:en_fb -> fb_switch0:en [spines = "ortho"];
+ conf0:joint_fb_offset -> fb_switch0:joint_offset [spines = "ortho"];
+ conf0:joint_fb_rev -> fb_switch0:joint_rev [spines = "ortho"];
+ enc_fb0:abs_pos -> fb_switch0:mot_abs_pos [spines = "ortho"];
+ conf0:mot_fb_offset -> fb_switch0:mot_offset [spines = "ortho"];
+ enc_fb0:pos -> fb_switch0:mot_pos [spines = "ortho"];
+ conf0:mot_fb_rev -> fb_switch0:mot_rev [spines = "ortho"];
+ enc_fb0:state -> fb_switch0:mot_state [spines = "ortho"];
+ conf0:polecount -> fb_switch0:polecount [spines = "ortho"];
+ conf0:cur_ff -> hv0:cur_ff [spines = "ortho"];
+ conf0:cur_i -> hv0:cur_i [spines = "ortho"];
+ conf0:cur_ind -> hv0:cur_ind [spines = "ortho"];
+ conf0:cur_p -> hv0:cur_p [spines = "ortho"];
+ fb_switch0:id -> hv0:d_cmd [spines = "ortho"];
+ fault0:en_out -> hv0:en [spines = "ortho"];
+ conf0:l -> hv0:l [spines = "ortho"];
+ conf0:max_ac_cur -> hv0:max_cur [spines = "ortho"];
+ pmsm_ttc0:pos_out -> hv0:pos [spines = "ortho"];
+ conf0:psi -> hv0:psi [spines = "ortho"];
+ pmsm_ttc0:cur -> hv0:q_cmd [spines = "ortho"];
+ conf0:r -> hv0:r [spines = "ortho"];
+ conf0:out_rev -> hv0:rev [spines = "ortho"];
+ fault0:scale -> hv0:scale [spines = "ortho"];
+ vel2:vel -> hv0:vel [spines = "ortho"];
+ fault0:hv_fan -> io0:fan [spines = "ortho"];
+ fault0:fault -> io0:fault [spines = "ortho"];
+ enc_fb0:error -> io0:fb0y [spines = "ortho"];
+ uvw0:led -> io0:fb1y [spines = "ortho"];
+ fault0:state -> io0:state [spines = "ortho"];
+ hv0:d_fb -> pe0:id [spines = "ortho"];
+ hv0:q_fb -> pe0:iq [spines = "ortho"];
+ conf0:j -> pe0:j [spines = "ortho"];
+ conf0:r -> pe0:r [spines = "ortho"];
+ pid0:torque_cor_cmd -> pe0:torque [spines = "ortho"];
+ hv0:dc_volt -> pe0:udc [spines = "ortho"];
+ vel1:vel -> pe0:vel [spines = "ortho"];
+ fault0:en_pid -> pid0:enable [spines = "ortho"];
+ conf0:g -> pid0:g [spines = "ortho"];
+ conf0:j -> pid0:j [spines = "ortho"];
+ pmsm_limits0:max_torque -> pid0:max_torque [spines = "ortho"];
+ conf0:max_acc -> pid0:max_usr_acc [spines = "ortho"];
+ conf0:max_force -> pid0:max_usr_torque [spines = "ortho"];
+ conf0:max_vel -> pid0:max_usr_vel [spines = "ortho"];
+ pmsm_limits0:abs_max_vel -> pid0:max_vel [spines = "ortho"];
+ pmsm_limits0:min_torque -> pid0:min_torque [spines = "ortho"];
+ reslimit0:pos_out -> pid0:pos_ext_cmd [spines = "ortho"];
+ fb_switch0:pos_fb -> pid0:pos_fb [spines = "ortho"];
+ conf0:pos_p -> pid0:pos_p [spines = "ortho"];
+ vel0:vel -> pid0:vel_ext_cmd [spines = "ortho"];
+ vel1:vel -> pid0:vel_fb [spines = "ortho"];
+ conf0:vel_g -> pid0:vel_g [spines = "ortho"];
+ conf0:vel_i -> pid0:vel_i [spines = "ortho"];
+ conf0:vel_p -> pid0:vel_p [spines = "ortho"];
+ hv0:pwm_volt -> pmsm_limits0:ac_volt [spines = "ortho"];
+ hv0:q_fb -> pmsm_limits0:iq [spines = "ortho"];
+ conf0:l -> pmsm_limits0:ld [spines = "ortho"];
+ conf0:l -> pmsm_limits0:lq [spines = "ortho"];
+ conf0:polecount -> pmsm_limits0:polecount [spines = "ortho"];
+ conf0:psi -> pmsm_limits0:psi [spines = "ortho"];
+ conf0:r -> pmsm_limits0:r [spines = "ortho"];
+ conf0:polecount -> pmsm_ttc0:polecount [spines = "ortho"];
+ vel2:pos_out -> pmsm_ttc0:pos_in [spines = "ortho"];
+ conf0:psi -> pmsm_ttc0:psi [spines = "ortho"];
+ pid0:torque_cor_cmd -> pmsm_ttc0:torque [spines = "ortho"];
+ rev0:out -> reslimit0:pos_in [spines = "ortho"];
+ conf0:mot_fb_res -> reslimit0:res [spines = "ortho"];
+ vel0:vel -> rev0:in_d [spines = "ortho"];
+ conf0:cmd_rev -> rev0:rev [spines = "ortho"];
+ vel0:pos_out -> term0:wave0 [spines = "ortho"];
+ fb_switch0:pos_fb -> term0:wave1 [spines = "ortho"];
+ vel0:vel -> term0:wave2 [spines = "ortho"];
+ vel1:vel -> term0:wave3 [spines = "ortho"];
+ io0:fb1a -> uvw0:u [spines = "ortho"];
+ io0:fb1b -> uvw0:v [spines = "ortho"];
+ io0:fb1z -> uvw0:w [spines = "ortho"];
+ fault0:en_fb -> vel0:en [spines = "ortho"];
+ rev0:out -> vel0:pos_in [spines = "ortho"];
+ fault0:en_fb -> vel1:en [spines = "ortho"];
+ conf0:j -> vel1:j [spines = "ortho"];
+ fb_switch0:vel_fb -> vel1:pos_in [spines = "ortho"];
+ pid0:torque_cor_cmd -> vel1:torque [spines = "ortho"];
+ fault0:en_fb -> vel2:en [spines = "ortho"];
+ conf0:j -> vel2:j [spines = "ortho"];
+ fb_switch0:com_fb -> vel2:pos_in [spines = "ortho"];
+ pid0:torque_cor_cmd -> vel2:torque [spines = "ortho"];
+}
