@@ -18,6 +18,7 @@ HAL_PIN(state);
 HAL_PIN(turns);
 HAL_PIN(com_pos);
 HAL_PIN(index);
+HAL_PIN(req_len);
 
 volatile uint16_t tim_data[160];
 
@@ -46,10 +47,11 @@ union {
 } data;
 
 int32_t pos_offset;
+uint32_t state_counter;
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx = (struct encf_ctx_t *)ctx_ptr;
-  // struct encf_pin_ctx_t * pins = (struct encf_pin_ctx_t *)pin_ptr;
+  struct encf_pin_ctx_t * pins = (struct encf_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
 
   //TX enable
@@ -125,6 +127,8 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_SetBits(GPIOD, GPIO_Pin_15);  //tx enable
 
   pos_offset = 0;
+  PIN(req_len) = 2046;
+  state_counter = 0;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -158,14 +162,21 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     pos = data.fanuc.pos_lo + (data.fanuc.pos_hi << 6);
     PIN(index) = data.fanuc.no_index;
 
-    PIN(abs_pos) = ((float)pos * 2.0 * M_PI / (1<<22)) - M_PI;
+    PIN(abs_pos) = mod((float)pos * 2.0 * M_PI / (1<<22));
 
     if(PIN(index) > 0.0){
       pos_offset = pos;
       PIN(pos) = PIN(abs_pos);
       PIN(state) = 1;
+      state_counter = 1;
+    }
+    else if(state_counter == 1){
+      state_counter = 2;
+      pos_offset = pos;
+      PIN(pos) = PIN(abs_pos);
     }
     else{
+      state_counter = 3;
       PIN(pos) = mod((float)(pos + pos_offset) * 2.0 * M_PI / (1<<22));
       PIN(state) = 3;
     }
@@ -173,10 +184,12 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     
     PIN(turns) = data.fanuc.turns;
     pos = data.fanuc.com_pos;
-    PIN(com_pos) = (pos * 2.0 * M_PI / 1024) - M_PI;
+    PIN(com_pos) = mod(pos * 2.0 * M_PI / 1024);
     PIN(error) = 0;
   }else{
     PIN(error) = 1;
+    PIN(state) = 1;
+    state_counter = 0;
   }
   //reset timer
   FB0_ENC_TIM->CNT = 0;
@@ -184,7 +197,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   FB0_ENC_TIM->CR1 |= TIM_CR1_CEN; // enable tim
 
   //send request, 1/(42e6/32)*11 = 8.4uS
-  SPI3->DR = 0xffe;
+  SPI3->DR = PIN(req_len);
   //start DMA
   DMA_Cmd(DMA1_Stream0, DISABLE);
   DMA_ClearFlag(DMA1_Stream0, DMA_FLAG_TCIF0);
