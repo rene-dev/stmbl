@@ -99,10 +99,10 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   //SPI is used to generate request
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3, ENABLE);
   SPI_InitTypeDef SPI_InitTypeDefStruct;
-  SPI_InitTypeDefStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_64;
+  SPI_InitTypeDefStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32;
   SPI_InitTypeDefStruct.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
   SPI_InitTypeDefStruct.SPI_Mode = SPI_Mode_Master;
-  SPI_InitTypeDefStruct.SPI_DataSize = SPI_DataSize_8b;
+  SPI_InitTypeDefStruct.SPI_DataSize = SPI_DataSize_16b;
   SPI_InitTypeDefStruct.SPI_NSS = SPI_NSS_Soft;
   SPI_InitTypeDefStruct.SPI_FirstBit = SPI_FirstBit_MSB;
   SPI_InitTypeDefStruct.SPI_CPOL = SPI_CPOL_High;
@@ -164,7 +164,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   FB0_ENC_TIM->CR1 |= TIM_CR1_CEN; // enable tim
 
   //send request
-  SPI3->DR = 0x7c;
+  SPI3->DR = 0xffe;
   //start DMA
   DMA_Cmd(DMA1_Stream0, DISABLE);
   DMA_ClearFlag(DMA1_Stream0, DMA_FLAG_TCIF0);
