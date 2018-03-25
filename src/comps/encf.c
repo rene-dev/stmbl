@@ -163,7 +163,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   FB0_ENC_TIM->CCR1 = 0;
   FB0_ENC_TIM->CR1 |= TIM_CR1_CEN; // enable tim
 
-  //send request
+  //send request, 1/(42e6/32)*11 = 8.4uS
   SPI3->DR = 0xffe;
   //start DMA
   DMA_Cmd(DMA1_Stream0, DISABLE);
