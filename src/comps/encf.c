@@ -13,6 +13,8 @@ HAL_PIN(dma);  //dma transfers
 HAL_PIN(dump);
 
 HAL_PIN(pos);
+HAL_PIN(abs_pos);
+HAL_PIN(state);
 HAL_PIN(turns);
 HAL_PIN(com_pos);
 HAL_PIN(index);
@@ -42,6 +44,8 @@ union {
   uint8_t enc_data[10];
   fanuc_t fanuc;
 } data;
+
+int32_t pos_offset;
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx = (struct encf_ctx_t *)ctx_ptr;
@@ -119,6 +123,8 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   SPI_Cmd(SPI3, ENABLE);
 
   GPIO_SetBits(GPIOD, GPIO_Pin_15);  //tx enable
+
+  pos_offset = 0;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -147,13 +153,27 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     bits_sum += bits;
   }
   if(bits_sum > 50){
-    uint32_t pos;
+    int32_t pos;
+
     pos = data.fanuc.pos_lo + (data.fanuc.pos_hi << 6);
-    PIN(pos) = ((float)pos * 2.0 * M_PI / (1<<22)) - M_PI;
+    PIN(index) = data.fanuc.no_index;
+
+    PIN(abs_pos) = ((float)pos * 2.0 * M_PI / (1<<22)) - M_PI;
+
+    if(PIN(index) > 0.0){
+      pos_offset = pos;
+      PIN(pos) = PIN(abs_pos);
+      PIN(state) = 1;
+    }
+    else{
+      PIN(pos) = mod((float)(pos + pos_offset) * 2.0 * M_PI / (1<<22));
+      PIN(state) = 3;
+    }
+
+    
     PIN(turns) = data.fanuc.turns;
     pos = data.fanuc.com_pos;
     PIN(com_pos) = (pos * 2.0 * M_PI / 1024) - M_PI;
-    PIN(index) = data.fanuc.no_index;
     PIN(error) = 0;
   }else{
     PIN(error) = 1;
