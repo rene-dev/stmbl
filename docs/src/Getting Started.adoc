@@ -557,14 +557,14 @@ Example:
 |===
 |Pin |Colour |Resolver |Encoder |1Vpp |Mitsubishi |Sanyo-Denki |Yaskawa |Omron
 
-|1 |Orange Stripe |Sin+ |A+  |Sin+ |A+  |    |      |  
-|2 |Orange        |Sin- |A-  |Sin- |A-  |    |      |  
-|3 |Green Stripe  |Cos+ |B+  |Cos+ |B+  |    |      |  
-|4 |Blue          |Ref- |Z-  |     |    |2   |Blue  |  
-|5 |Blue Stripe   |Ref+ |Z+  |     |    |1   |Brown |5 
-|6 |Green         |Cos- |B-  |Cos- |B-  |    |      |4 
-|7 |Brown Stripe  |AIN  |VCC |VCC  |VCC |VCC |Red   |1 
-|8 |Brown         |GND  |GND |GND  |GND |GND |Black |2 
+|1 |Orange Stripe |Sin+ |A+  |Sin+ |    |      |  |
+|2 |Orange        |Sin- |A-  |Sin- |    |      |  |
+|3 |Green Stripe  |Cos+ |B+  |Cos+ |    |      |  |
+|4 |Blue          |Ref- |Z-  |     |2   |Blue  |6 |4 
+|5 |Blue Stripe   |Ref+ |Z+  |     |1   |Brown |5 |7 
+|6 |Green         |Cos- |B-  |Cos- |    |      |  |
+|7 |Brown Stripe  |AIN  |VCC |VCC  |VCC |Red   |1 |6 
+|8 |Brown         |GND  |GND |GND  |GND |Black |2 |3 
 |===
 
 === Connector wiring - serial protocols
