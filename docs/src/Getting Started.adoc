@@ -545,11 +545,11 @@ Example:
 |1 |Orange Stripe |RX+ |Step+ |A+
 |2 |Orange        |RX- |Step- |A-
 |3 |Green Stripe  |    |Dir-  |B-
-|4 |Blue          |TX+ |      |   
-|5 |Blue Stripe   |TX- |      |   
+|4 |Blue          |TX+ |Err-  |   
+|5 |Blue Stripe   |TX- |Err+  |   
 |6 |Green         |    |Dir+  |B+ 
-|7 |Brown Stripe  |VCC |VCC   |VCC
-|8 |Brown         |GND |GND   |GND
+|7 |Brown Stripe  |VCC |Enbl+ |VCC
+|8 |Brown         |GND |Enbl- |GND
 |===
 
 === Feedback connector wiring - encoders etc
