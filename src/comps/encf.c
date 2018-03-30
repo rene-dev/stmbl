@@ -5,12 +5,12 @@
 #include "angle.h"
 #include "stm32f4xx_conf.h"
 #include "hw/hw.h"
+#include <string.h>
 
 HAL_COMP(encf);
 
 HAL_PIN(error);
 HAL_PIN(dma);  //dma transfers
-HAL_PIN(dump);
 
 HAL_PIN(pos);
 HAL_PIN(abs_pos);
@@ -20,6 +20,12 @@ HAL_PIN(com_pos);
 HAL_PIN(index);
 HAL_PIN(req_len);
 
+HAL_PIN(send_step);
+HAL_PIN(crc_ok);
+HAL_PIN(crc_er);
+
+volatile uint32_t sendf;
+uint32_t send_counterf;
 volatile uint16_t tim_data[160];
 
 #pragma pack(1)
@@ -41,10 +47,50 @@ typedef struct{
   uint32_t flag7 : 3; // 000
 } fanuc_t;
 
+/*
+http://freeby.mesanet.com/regmap
+
+Fanuc data format (76 bits): So far just for Aa64 (860-360-TXXX)
+bits 0..4 	constant : = 0b00101
+bit  5     	1=battery fail
+bits 6,7	unknown = 0b10,a860-360 0b00,a860-370 
+bit  8		1=un-indexed
+bits 9..17	unknown, perhaps for higher res encoders
+bits 18..33	16 bit absolute encoder data (0..65535 for one turn)
+bits 34..35     unknown = 0b01
+bits 36..51	16 bit absolute turns count
+bits 52,53	unknown = 0b01
+bits 54..63	10 bit absolute commutation encoder (four 0.1023 cycles per turn)
+bits 64..70	unknown = 0b1100000
+bits 71..75	ITU CRC-5 (calculated MSB first)
+
+Note: Aa1000 (860-370-TXXX) is similar with bits 10..15 being 
+additional lower order count bits (only 12..15 being of much use)
+extending the 16 bit count from bits 18..33 with bits 12..15  
+gives a resolution of 1048576 counts/turn
+
+These encoders are absolute if the battery backup is maintained since the 
+last homing. This can be determined by the status of the un-indexed bit, 
+at least until the encoder crosses index. 
+
+Surprisingly (well it surprised me anyway) the encoders maintain position 
+and count with battery power alone. It appears that they keep the LEDS/
+processor alive with a few 10s of uA of battery power (probably low duty 
+cycle LED pulsing/analog circuits power cycling). 
+
+This can be verified by reading the battery current and then moving the 
+encoder, it goes from a few 10s of uA to many mA with a slow encoder move.
+
+The commutation track is always absolute so can be used for commutation 
+data regardless of the index status. Note that the commutation track
+seems to be interpolated so is not better than maybe 1% accuracy
+*/
+
 union {
   uint8_t enc_data[10];
   fanuc_t fanuc;
 } data;
+uint8_t print_buf[10];
 
 int32_t pos_offset;
 uint32_t state_counter;
@@ -141,7 +187,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   for(int i = 0; i < 10; i++){
     data.enc_data[i] = 0;
   }
-  
+
   uint8_t bits_sum = 0;
   for(int i = 1; i < count; i++){//each capture form dma
     //1 bit = 82 ticks (1.024e-6)/(1/82e6)
@@ -156,7 +202,40 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     }
     bits_sum += bits;
   }
+  //set remaining bits to 1
+  for(int j = bits_sum; j < 77; j++){
+    data.enc_data[j/8] |= (1 << j%8);
+  }
+
+  if(!sendf){
+    memcpy((void *)print_buf, (void *)data.enc_data, 10);
+    sendf = 1;
+  }
   if(bits_sum > 50){
+
+    //check crc. TODO: use result, change to word/byte algorithm
+    //http://freeby.mesanet.com/fabsread.pas
+    uint8_t crc[5] = {0,0,0,0,0};
+    uint8_t oldcrc[5] = {0,0,0,0,0};
+    for(uint8_t i = 76; i >= 1; i--){
+      uint8_t bit = (data.enc_data[i/8] & (1 << i%8))?1:0;
+      crc[0] = oldcrc[4] ^ bit;
+      crc[1] = oldcrc[0];
+      crc[2] = oldcrc[1] ^ bit ^ oldcrc[4];
+      crc[3] = oldcrc[2];
+      crc[4] = oldcrc[3] ^ bit ^ oldcrc[4];
+      oldcrc[0] = crc[0];
+      oldcrc[1] = crc[1];
+      oldcrc[2] = crc[2];
+      oldcrc[3] = crc[3];
+      oldcrc[4] = crc[4];
+    }
+    if(crc[0] == 0 && crc[1] == 0 && crc[2] == 0 && crc[3] == 0 && crc[4] == 0){
+      PIN(crc_ok)++;
+    }else{
+      PIN(crc_er)++;
+    }
+
     int32_t pos;
 
     pos = data.fanuc.pos_lo + (data.fanuc.pos_hi << 6);
@@ -207,15 +286,18 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx = (struct encf_ctx_t *)ctx_ptr;
   struct encf_pin_ctx_t * pins = (struct encf_pin_ctx_t *)pin_ptr;
-  if(RISING_EDGE(PIN(dump))) {
-    for(int i = 0; i < 80; i++){
-      if(data.enc_data[i/8] & (1 << i%8)){
+
+  if(sendf == 1 && send_counterf++ >= PIN(send_step) - 1 && PIN(send_step) >= 50) {
+    send_counterf = 0;
+    for(int i = 1; i < 77; i++){
+      if(print_buf[i/8] & (1 << i%8)){
         printf("1");
       }else{
         printf("0");
       }
     }
     printf("\n");
+    sendf = 0;
   }
 }
 
