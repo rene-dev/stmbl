@@ -151,6 +151,7 @@ SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_pwr.c
 SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_rcc.c
 SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_tim.c
 SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_usart.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_spi.c
 SOURCES += $(PERIPH_DRV_DIR)/src/misc.c
 
 SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s

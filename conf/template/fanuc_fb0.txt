@@ -1,0 +1,15 @@
+load encf
+encf0.rt_prio = 1
+fb_switch0.com_pos = encf0.com_pos
+fb_switch0.com_abs_pos = encf0.com_pos
+fb_switch0.com_state = 3
+fb_switch0.com_polecount = conf0.com_fb_polecount
+conf0.com_fb_polecount = conf0.polecount
+fb_switch0.mot_pos = encf0.pos
+fb_switch0.mot_abs_pos = encf0.abs_pos
+fb_switch0.mot_state = encf0.state
+fault0.mot_fb_error = encf0.error
+fb_switch0.mot_polecount = 1
+conf0.mot_fb_res = 1048576
+io0.fb0y = encf0.error
+io0.fb0g = 1
