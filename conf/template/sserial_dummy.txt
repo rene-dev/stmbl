@@ -1,0 +1,25 @@
+load sserial
+load vel_int
+load linrev
+load idx_home
+sserial0.rt_prio = 2.0
+sserial0.frt_prio = 2.0
+linrev0.rt_prio = 2.1
+vel_int0.rt_prio = 2.2
+idx_home0.rt_prio = 2.3
+linrev0.cmd_in = sserial0.pos_cmd
+linrev0.cmd_d_in = sserial0.pos_cmd_d
+vel_int0.pos_in = linrev0.cmd_out
+vel_int0.vel_in = linrev0.cmd_d_out
+linrev0.fb_in = linrev0.cmd_out
+linrev0.fb_d_in = linrev0.cmd_d_out
+sserial0.index_clear = idx_home0.index_clear
+linrev0.rev_clear = sserial0.index_clear
+sserial0.pos_fb = linrev0.fb_out
+sserial0.vel_fb = linrev0.fb_d_out
+sserial0.pos_advance = 0.0008
+pid0.vel_ext_cmd = rev0.out_d
+vel_int0.wd = 0.002
+io0.cmdy = sserial0.error
+io0.cmdg = 1
+linrev0.scale = 6
