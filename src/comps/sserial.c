@@ -323,7 +323,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   timeout = 1000;  //make sure we start in timeout
 
   //bytes to wait before expected end of transmission to prevent timeouts
-  block_bytes = 4;
+  block_bytes = 5;
   //calculate timeout in systicks for block_bytes
   max_waste_ticks = (1.0 / 2500000.0) * 11.0 * (float)block_bytes / (1.0f / (float)hal_get_systick_freq());
 }

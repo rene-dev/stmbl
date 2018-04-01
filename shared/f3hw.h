@@ -2,9 +2,10 @@
 #define AREF 3.338  // analog reference voltage
 #define HV_EN_PIN GPIO_PIN_15
 #define HV_EN_PORT GPIOA
-#define HV_FAULT_PIN GPIO_PIN_7
-#define HV_FAULT_PORT GPIOB
-#define HV_FAULT_POLARITY GPIO_PIN_RESET
+//fault pin cannot be used, as it is sometimes reset by the iram due to 15v ripple
+//#define HV_FAULT_PIN GPIO_PIN_7
+//#define HV_FAULT_PORT GPIOB
+//#define HV_FAULT_POLARITY GPIO_PIN_RESET
 #define LED_PIN GPIO_PIN_8
 #define LED_PORT GPIOA
 
