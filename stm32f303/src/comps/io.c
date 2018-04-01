@@ -34,8 +34,8 @@ HAL_PIN(hv_en);
 HAL_PIN(fault);
 
 
-uint32_t adc_12_buf[6];
-uint32_t adc_34_buf[6];
+volatile uint32_t adc_12_buf[6];
+volatile uint32_t adc_34_buf[6];
 
 struct io_ctx_t {
   float u_offset;
