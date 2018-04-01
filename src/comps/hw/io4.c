@@ -33,7 +33,7 @@ HAL_PIN(CRX);
 HAL_PIN(C12);
 HAL_PIN(C36);
 HAL_PIN(C54);
-HAL_PIN(C78)
+HAL_PIN(C78);
 HAL_PIN(cmd_remap);
 
 HAL_PIN(swd_remap);
