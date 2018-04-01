@@ -33,6 +33,7 @@ HAL_PIN(CRX);
 HAL_PIN(C12);
 HAL_PIN(C36);
 HAL_PIN(C54);
+HAL_PIN(C78)
 HAL_PIN(cmd_remap);
 
 HAL_PIN(swd_remap);
@@ -450,6 +451,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(C12) = GPIO_ReadInputDataBit(CMD_A_PORT, CMD_A_PIN);
   PIN(C36) = GPIO_ReadInputDataBit(CMD_B_PORT, CMD_B_PIN);
   PIN(C54) = GPIO_ReadInputDataBit(CMD_C_PORT, CMD_C_PIN);
+  PIN(C78) = GPIO_ReadInputDataBit(CMD_D_PORT, CMD_D_PIN);
 
   PIN(fb0a) = GPIO_ReadInputDataBit(FB0_A_PORT, FB0_A_PIN);
   PIN(fb0b) = GPIO_ReadInputDataBit(FB0_B_PORT, FB0_B_PIN);
