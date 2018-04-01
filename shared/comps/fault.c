@@ -66,6 +66,7 @@ struct fault_ctx_t {
   float mot_fb_error;
   float com_fb_error;
   float joint_fb_error;
+  float hv_error;
   float hv_temp_error;
   float dc_volt_error;
   float mot_temp_error;
