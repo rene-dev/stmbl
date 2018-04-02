@@ -540,31 +540,31 @@ Example:
 === Command connector wiring:
 
 |===
-|Pin |Colour|Smart Serial |Step/Dir |Quadrature
+|Pin |Colour |Smart Serial |Step/Dir |Quadrature
 
 |1 |Orange Stripe |RX+ |Step+ |A+
 |2 |Orange        |RX- |Step- |A-
-|3 |Green Stripe  |    |Dir-  |B-
-|4 |Blue          |TX+ |      |   
-|5 |Blue Stripe   |TX- |      |   
-|6 |Green         |    |Dir+  |B+ 
-|7 |Brown Stripe  |VCC |VCC   |VCC
-|8 |Brown         |GND |GND   |GND
+|3 |Green Stripe  |TX+ |Dir+  |B+
+|4 |Blue          |    |Err-  |   
+|5 |Blue Stripe   |    |Err+  |   
+|6 |Green         |TX- |Dir-  |B- 
+|7 |Brown Stripe  |    |Enbl+ | 
+|8 |Brown         |    |Enbl- | 
 |===
 
 === Feedback connector wiring - encoders etc
 
 |===
-|Pin |Colour |Resolver |Encoder |1Vpp |Mitsubishi |Sanyo-Denki |Yaskawa |Omron
+|Pin |Colour |Resolver |Encoder |1Vpp |UVW |Mitsubishi |Sanyo-Denki |Yaskawa |Omron 
 
-|1 |Orange Stripe |Sin+ |A+  |Sin+ |A+  |    |      |  
-|2 |Orange        |Sin- |A-  |Sin- |A-  |    |      |  
-|3 |Green Stripe  |Cos- |B-  |Cos- |B-  |    |      |  
-|4 |Blue          |Ref- |Z-  |     |    |2   |Blue  |  
-|5 |Blue Stripe   |Ref+ |Z+  |     |    |1   |Brown |5 
-|6 |Green         |Cos+ |B+  |Cos+ |B+  |    |      |4 
-|7 |Brown Stripe  |     |VCC |VCC  |VCC |VCC |Red   |1 
-|8 |Brown         |GND  |GND |GND  |GND |GND |Black |2 
+|1 |Orange Stripe |Sin+ |A+  |Sin+ |U+  |    |      |  |
+|2 |Orange        |Sin- |A-  |Sin- |U-  |    |      |  |
+|3 |Green Stripe  |Cos+ |B+  |Cos+ |V+  |    |      |  |
+|4 |Blue          |Ref- |Z-  |     |W-  |2   |Blue  |6 |4 
+|5 |Blue Stripe   |Ref+ |Z+  |     |W+  |1   |Brown |5 |7 
+|6 |Green         |Cos- |B-  |Cos- |V-  |    |      |  |
+|7 |Brown Stripe  |AIN  |VCC |VCC  |VCC |VCC |Red   |1 |6 
+|8 |Brown         |GND  |GND |GND  |GND |GND |Black |2 |3 
 |===
 
 === Connector wiring - serial protocols

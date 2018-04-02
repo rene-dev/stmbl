@@ -41,6 +41,7 @@ else
 	COMPS += src/comps/sserial.c
 	COMPS += src/comps/yaskawa.c
 	COMPS += src/comps/encs.c
+	COMPS += src/comps/encf.c
 	CFLAGS += -DV4
 endif
 
@@ -150,6 +151,7 @@ SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_pwr.c
 SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_rcc.c
 SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_tim.c
 SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_usart.c
+SOURCES += $(PERIPH_DRV_DIR)/src/stm32f4xx_spi.c
 SOURCES += $(PERIPH_DRV_DIR)/src/misc.c
 
 SOURCES += lib/CMSIS/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
@@ -292,10 +294,10 @@ f3_btburn:
 	$(MAKE) -f stm32f303/Makefile btburn
 
 f3_boot:
-	$(MAKE) -f f3dfu/Makefile
+	$(MAKE) -f f3_boot/Makefile
 
 f3_boot_btburn:
-	$(MAKE) -f f3dfu/Makefile btburn
+	$(MAKE) -f f3_boot/Makefile btburn
 
 hv_firmware.o:
 	$(MAKE) -f stm32f303/Makefile hv_firmware.o
@@ -306,11 +308,11 @@ binall:
 	cat obj_boot/blboot.bin /dev/zero | head -c 32768 > f4.bin
 	cat conf/festo.txt /dev/zero | head -c 32768 >> f4.bin
 	cat obj_app/stmbl.bin >> f4.bin
-	cat obj_f3dfu/f3dfu.bin /dev/zero | head -c 16384 > f3.bin
+	cat obj_f3_boot/f3_boot.bin /dev/zero | head -c 16384 > f3.bin
 	cat obj_hvf3/hvf3.bin >> f3.bin
 
 format:
-	find src/ f3dfu/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ tools/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
+	find src/ f3_boot/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ tools/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
 
 # Display compiler version information
 #
@@ -348,7 +350,7 @@ clean:
 	rm -rf inc/commandslist.h
 	rm -rf src/conf_templates.c
 	@$(MAKE) -f bootloader/Makefile clean
-	@$(MAKE) -f f3dfu/Makefile clean
+	@$(MAKE) -f f3_boot/Makefile clean
 	@$(MAKE) -f stm32f103/Makefile clean
 	@$(MAKE) -f stm32f303/Makefile clean
 

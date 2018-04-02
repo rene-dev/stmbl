@@ -10,6 +10,7 @@ HAL_COMP(fault);
 HAL_PIN(en);
 HAL_PIN(state);
 HAL_PIN(fault);
+HAL_PIN(last_fault);
 HAL_PIN(en_out);
 HAL_PIN(en_fb);
 HAL_PIN(en_pid);
@@ -65,6 +66,7 @@ struct fault_ctx_t {
   float mot_fb_error;
   float com_fb_error;
   float joint_fb_error;
+  float hv_error;
   float hv_temp_error;
   float dc_volt_error;
   float mot_temp_error;
@@ -76,6 +78,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
   ctx->state         = DISABLED;
   ctx->fault         = NO_ERROR;
+  PIN(last_fault)    = NO_ERROR;
   PIN(min_dc_volt)   = 20.0;
   PIN(high_dc_volt)  = 370.0;
   PIN(max_dc_volt)   = 390.0;
@@ -127,51 +130,62 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   if(err_filter(&(ctx->cmd_error), 5.0, 0.001, PIN(cmd_error) > 0.0)) {
     ctx->fault = CMD_ERROR;
+    PIN(last_fault) = ctx->fault;
     ctx->state = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->mot_fb_error), 5.0, 0.001, PIN(mot_fb_error) > 0.0)) {
     ctx->fault = MOT_FB_ERROR;
+    PIN(last_fault) = ctx->fault;
     ctx->state = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->com_fb_error), 5.0, 0.001, PIN(com_fb_error) > 0.0)) {
     ctx->fault = COM_FB_ERROR;
+    PIN(last_fault) = ctx->fault;
     ctx->state = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->joint_fb_error), 5.0, 0.001, PIN(joint_fb_error) > 0.0)) {
     ctx->fault = JOINT_FB_ERROR;
+    PIN(last_fault) = ctx->fault;
     ctx->state = SOFT_FAULT;
   }
-  float hv_error = PIN(hv_error);
-  if(hv_error > 0.0) {
-    ctx->fault = hv_error;
+
+  if(err_filter(&(ctx->hv_error), 3.0, 0.001, PIN(hv_error) > 0.0)) {
+    //TODO: pass error, move filter to hv comp
+    ctx->fault = HV_FAULT_ERROR;
+    PIN(last_fault) = ctx->fault;
     ctx->state = SOFT_FAULT;
   }
 
   if(ABS(PIN(pos_error)) > PIN(max_pos_error)) {
     ctx->fault = POS_ERROR;
+    PIN(last_fault) = ctx->fault;
     ctx->state = SOFT_FAULT;
   }
 
   if(PIN(sat) > PIN(max_sat)) {
     ctx->fault = SAT_ERROR;
+    PIN(last_fault) = ctx->fault;
     ctx->state = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->hv_temp_error), 5.0, 0.001, PIN(hv_temp) > PIN(max_hv_temp))) {
     ctx->fault = HV_TEMP_ERROR;
+    PIN(last_fault) = ctx->fault;
     ctx->state = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->dc_volt_error), 5.0, 0.001, PIN(dc_volt) > PIN(max_dc_volt) || PIN(dc_volt) < PIN(min_dc_volt))) {
     ctx->fault = HV_VOLT_ERROR;
+    PIN(last_fault) = ctx->fault;
     ctx->state = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->mot_temp_error), 5.0, 0.001, PIN(mot_temp) > PIN(max_mot_temp))) {
     ctx->fault = MOT_TEMP_ERROR;
+    PIN(last_fault) = ctx->fault;
     ctx->state = SOFT_FAULT;
   }
 
@@ -215,6 +229,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       PIN(en_fb)     = 1.0;
       PIN(en_pid)    = 1.0;
       ctx->fault     = NO_ERROR;
+      PIN(last_fault) = NO_ERROR;
       break;
 
     case PHASING:

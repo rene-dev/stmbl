@@ -1,0 +1,14 @@
+link pid
+link pmsm
+link misc
+link fanuc_fb0
+link jog_cmd
+conf0.r = 1
+conf0.l = 0.005
+conf0.j = 0.000025
+conf0.polecount = 4
+conf0.max_ac_cur = 18
+conf0.max_vel = 250
+conf0.max_acc = 20000
+conf0.max_force = 20
+conf0.cur_i = 0.0001

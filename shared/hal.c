@@ -561,6 +561,17 @@ void list(char *ptr) {
 }
 COMMAND("list", list, "show comp instances");
 
+void show_hal(char *ptr) {
+  for(int i = 0; i < hal.comp_inst_count; i++) {
+    for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++) {
+      volatile hal_comp_inst_t *comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
+      printf("%s%lu.%s <= %s%lu.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
+    }
+  }
+}
+COMMAND("show_hal", show_hal, "show hal structure");
+
+
 void sort_rt() {
   float min     = INFINITY;
   int min_index = -1;
