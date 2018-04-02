@@ -1,83 +1,6 @@
-EESchema Schematic File Version 2
-LIBS:transistors
-LIBS:stm32
-LIBS:conn
-LIBS:power
-LIBS:74xgxx
-LIBS:74xx
-LIBS:ac-dc
-LIBS:actel
-LIBS:adc-dac
-LIBS:Altera
-LIBS:analog_devices
-LIBS:analog_switches
-LIBS:atmel
-LIBS:audio
-LIBS:brooktre
-LIBS:cmos_ieee
-LIBS:cmos4000
-LIBS:contrib
-LIBS:cypress
-LIBS:dc-dc
-LIBS:device
-LIBS:digital-audio
-LIBS:diode
-LIBS:display
-LIBS:dsp
-LIBS:elec-unifil
-LIBS:ESD_Protection
-LIBS:ftdi
-LIBS:gennum
-LIBS:graphic
-LIBS:hc11
-LIBS:intel
-LIBS:interface
-LIBS:ir
-LIBS:Lattice
-LIBS:linear
-LIBS:logo
-LIBS:maxim
-LIBS:memory
-LIBS:microchip_dspic33dsc
-LIBS:microchip_pic10mcu
-LIBS:microchip_pic12mcu
-LIBS:microchip_pic16mcu
-LIBS:microchip_pic18mcu
-LIBS:microchip_pic32mcu
-LIBS:microchip
-LIBS:microcontrollers
-LIBS:motor_drivers
-LIBS:motorola
-LIBS:msp430
-LIBS:nordicsemi
-LIBS:nxp_armmcu
-LIBS:onsemi
-LIBS:opto
-LIBS:Oscillators
-LIBS:philips
-LIBS:Power_Management
-LIBS:powerint
-LIBS:pspice
-LIBS:references
-LIBS:regul
-LIBS:relays
-LIBS:rfcom
-LIBS:sensors
-LIBS:silabs
-LIBS:siliconi
-LIBS:stm8
-LIBS:supertex
-LIBS:switches
-LIBS:texas
-LIBS:transf
-LIBS:ttl_ieee
-LIBS:valves
-LIBS:video
-LIBS:Xicor
-LIBS:xilinx
-LIBS:Zilog
+EESchema Schematic File Version 4
 LIBS:stmbl_4.0-cache
-EELAYER 25 0
+EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -111,4 +34,70 @@ Wire Wire Line
 	4950 2500 5500 2500
 Wire Wire Line
 	4950 2600 5500 2600
+$Comp
+L stmbl1:non_plated U33
+U 1 1 5AC37C2D
+P 4600 4100
+F 0 "U33" H 4600 3750 60  0000 C CNN
+F 1 "non_plated" H 4650 4350 60  0000 C CNN
+F 2 "stmbl:non_plated_1mm" H 4600 4100 60  0001 C CNN
+F 3 "" H 4600 4100 60  0001 C CNN
+	1    4600 4100
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl1:non_plated U35
+U 1 1 5AC37C5C
+P 5200 4100
+F 0 "U35" H 5200 3750 60  0000 C CNN
+F 1 "non_plated" H 5250 4350 60  0000 C CNN
+F 2 "stmbl:non_plated_1mm" H 5200 4100 60  0001 C CNN
+F 3 "" H 5200 4100 60  0001 C CNN
+	1    5200 4100
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl1:non_plated U34
+U 1 1 5AC37CB2
+P 4600 4800
+F 0 "U34" H 4600 4450 60  0000 C CNN
+F 1 "non_plated" H 4650 5050 60  0000 C CNN
+F 2 "stmbl:non_plated_1mm" H 4600 4800 60  0001 C CNN
+F 3 "" H 4600 4800 60  0001 C CNN
+	1    4600 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl1:non_plated U36
+U 1 1 5AC37CB8
+P 5200 4800
+F 0 "U36" H 5200 4450 60  0000 C CNN
+F 1 "non_plated" H 5250 5050 60  0000 C CNN
+F 2 "stmbl:non_plated_1mm" H 5200 4800 60  0001 C CNN
+F 3 "" H 5200 4800 60  0001 C CNN
+	1    5200 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl1:non_plated U37
+U 1 1 5AC37D5D
+P 5750 4100
+F 0 "U37" H 5750 3750 60  0000 C CNN
+F 1 "non_plated" H 5800 4350 60  0000 C CNN
+F 2 "stmbl:non_plated_1mm" H 5750 4100 60  0001 C CNN
+F 3 "" H 5750 4100 60  0001 C CNN
+	1    5750 4100
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl1:non_plated U39
+U 1 1 5AC37D64
+P 5750 4800
+F 0 "U39" H 5750 4450 60  0000 C CNN
+F 1 "non_plated" H 5800 5050 60  0000 C CNN
+F 2 "stmbl:non_plated_1mm" H 5750 4800 60  0001 C CNN
+F 3 "" H 5750 4800 60  0001 C CNN
+	1    5750 4800
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

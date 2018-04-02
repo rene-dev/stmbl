@@ -1,4 +1,4 @@
-update=2017 May 10, Wednesday 21:33:53
+update=2018 April 02, Monday 17:56:10
 version=1
 last_client=kicad
 [pcbnew]
@@ -34,10 +34,8 @@ SpiceForceRefPrefix=0
 SpiceUseNetNumbers=0
 LabSize=60
 ERC_TestSimilarLabels=1
-[eeschema]
-version=1
-LibDir=../lib
-[eeschema/libraries]
-LibName1=stmbl
 [general]
 version=1
+[eeschema]
+version=1
+LibDir=

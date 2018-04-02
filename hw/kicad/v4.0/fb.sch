@@ -1,83 +1,6 @@
-EESchema Schematic File Version 2
-LIBS:transistors
-LIBS:stm32
-LIBS:conn
-LIBS:power
-LIBS:74xgxx
-LIBS:74xx
-LIBS:ac-dc
-LIBS:actel
-LIBS:adc-dac
-LIBS:Altera
-LIBS:analog_devices
-LIBS:analog_switches
-LIBS:atmel
-LIBS:audio
-LIBS:brooktre
-LIBS:cmos_ieee
-LIBS:cmos4000
-LIBS:contrib
-LIBS:cypress
-LIBS:dc-dc
-LIBS:device
-LIBS:digital-audio
-LIBS:diode
-LIBS:display
-LIBS:dsp
-LIBS:elec-unifil
-LIBS:ESD_Protection
-LIBS:ftdi
-LIBS:gennum
-LIBS:graphic
-LIBS:hc11
-LIBS:intel
-LIBS:interface
-LIBS:ir
-LIBS:Lattice
-LIBS:linear
-LIBS:logo
-LIBS:maxim
-LIBS:memory
-LIBS:microchip_dspic33dsc
-LIBS:microchip_pic10mcu
-LIBS:microchip_pic12mcu
-LIBS:microchip_pic16mcu
-LIBS:microchip_pic18mcu
-LIBS:microchip_pic32mcu
-LIBS:microchip
-LIBS:microcontrollers
-LIBS:motor_drivers
-LIBS:motorola
-LIBS:msp430
-LIBS:nordicsemi
-LIBS:nxp_armmcu
-LIBS:onsemi
-LIBS:opto
-LIBS:Oscillators
-LIBS:philips
-LIBS:Power_Management
-LIBS:powerint
-LIBS:pspice
-LIBS:references
-LIBS:regul
-LIBS:relays
-LIBS:rfcom
-LIBS:sensors
-LIBS:silabs
-LIBS:siliconi
-LIBS:stm8
-LIBS:supertex
-LIBS:switches
-LIBS:texas
-LIBS:transf
-LIBS:ttl_ieee
-LIBS:valves
-LIBS:video
-LIBS:Xicor
-LIBS:xilinx
-LIBS:Zilog
+EESchema Schematic File Version 4
 LIBS:stmbl_4.0-cache
-EELAYER 25 0
+EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -92,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L LM358 U7
+L stmbl1:LM358 U7
 U 1 1 5659192C
 P 5000 4500
 AR Path="/56590966/565F7162/5659192C" Ref="U7"  Part="1" 
@@ -105,11 +28,12 @@ F 3 "" H 5000 4500 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L SP3485EN U15
+L stmbl_4.0-rescue:SP3485EN-RESCUE-stmbl_4.0 U15
 U 1 1 565DFE81
 P 8150 1250
 AR Path="/56590966/565F7162/565DFE81" Ref="U15"  Part="1" 
 AR Path="/56590966/5659191C/565DFE81" Ref="U14"  Part="1" 
+AR Path="/565DFE81" Ref="U15"  Part="1" 
 F 0 "U15" H 7850 1600 50  0000 L CNN
 F 1 "SN65176B" H 8250 1600 50  0000 L CNN
 F 2 "stmbl:SOIC-8-N" H 8150 1250 50  0000 C CIN
@@ -118,7 +42,7 @@ F 3 "" H 8150 1250 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L RJ45_LED J1
+L stmbl1:RJ45_LED J1
 U 1 1 565DFE88
 P 1700 3350
 AR Path="/56590966/565F7162/565DFE88" Ref="J1"  Part="1" 
@@ -131,7 +55,7 @@ F 3 "" H 1700 3300 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L R R110
+L stmbl1:R R110
 U 1 1 565DFE8F
 P 7600 1250
 AR Path="/56590966/565F7162/565DFE8F" Ref="R110"  Part="1" 
@@ -144,7 +68,7 @@ F 3 "" H 7600 1250 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C71
+L stmbl1:C C71
 U 1 1 565DFE96
 P 9200 1250
 AR Path="/56590966/565F7162/565DFE96" Ref="C71"  Part="1" 
@@ -157,7 +81,7 @@ F 3 "" H 9200 1250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR0125
+L stmbl1:GND #PWR0125
 U 1 1 565DFE9D
 P 8150 1750
 AR Path="/56590966/565F7162/565DFE9D" Ref="#PWR0125"  Part="1" 
@@ -174,11 +98,12 @@ D12
 Text HLabel 8650 1250 2    60   Input ~ 0
 E12
 $Comp
-L SP3485EN U16
+L stmbl_4.0-rescue:SP3485EN-RESCUE-stmbl_4.0 U16
 U 1 1 565DFEAC
 P 8150 2650
 AR Path="/56590966/565F7162/565DFEAC" Ref="U16"  Part="1" 
 AR Path="/56590966/5659191C/565DFEAC" Ref="U17"  Part="1" 
+AR Path="/565DFEAC" Ref="U16"  Part="1" 
 F 0 "U16" H 7850 3000 50  0000 L CNN
 F 1 "SN65176B" H 8250 3000 50  0000 L CNN
 F 2 "stmbl:SOIC-8-N" H 8150 2650 50  0000 C CIN
@@ -187,7 +112,7 @@ F 3 "" H 8150 2650 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L R R112
+L stmbl1:R R112
 U 1 1 565DFEB3
 P 7600 2650
 AR Path="/56590966/565F7162/565DFEB3" Ref="R112"  Part="1" 
@@ -200,7 +125,7 @@ F 3 "" H 7600 2650 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C73
+L stmbl1:C C73
 U 1 1 565DFEBA
 P 9200 2650
 AR Path="/56590966/565F7162/565DFEBA" Ref="C73"  Part="1" 
@@ -213,7 +138,7 @@ F 3 "" H 9200 2650 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR0126
+L stmbl1:GND #PWR0126
 U 1 1 565DFEC1
 P 8150 3150
 AR Path="/56590966/565F7162/565DFEC1" Ref="#PWR0126"  Part="1" 
@@ -230,11 +155,12 @@ D36
 Text HLabel 8650 2650 2    60   Input ~ 0
 E36
 $Comp
-L SP3485EN U19
+L stmbl_4.0-rescue:SP3485EN-RESCUE-stmbl_4.0 U19
 U 1 1 565DFED0
 P 8150 4050
 AR Path="/56590966/565F7162/565DFED0" Ref="U19"  Part="1" 
 AR Path="/56590966/5659191C/565DFED0" Ref="U18"  Part="1" 
+AR Path="/565DFED0" Ref="U19"  Part="1" 
 F 0 "U19" H 7850 4400 50  0000 L CNN
 F 1 "SN65176B" H 8250 4400 50  0000 L CNN
 F 2 "stmbl:SOIC-8-N" H 8150 4050 50  0000 C CIN
@@ -243,7 +169,7 @@ F 3 "" H 8150 4050 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L R R113
+L stmbl1:R R113
 U 1 1 565DFED7
 P 7600 4050
 AR Path="/56590966/565F7162/565DFED7" Ref="R113"  Part="1" 
@@ -256,7 +182,7 @@ F 3 "" H 7600 4050 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C76
+L stmbl1:C C76
 U 1 1 565DFEDE
 P 9200 4050
 AR Path="/56590966/565F7162/565DFEDE" Ref="C76"  Part="1" 
@@ -269,7 +195,7 @@ F 3 "" H 9200 4050 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR0127
+L stmbl1:GND #PWR0127
 U 1 1 565DFEE5
 P 8150 4550
 AR Path="/56590966/565F7162/565DFEE5" Ref="#PWR0127"  Part="1" 
@@ -286,7 +212,7 @@ D45
 Text HLabel 8650 4050 2    60   Input ~ 0
 E45
 $Comp
-L GND #PWR0128
+L stmbl1:GND #PWR0128
 U 1 1 565DFF98
 P 800 3800
 AR Path="/56590966/565F7162/565DFF98" Ref="#PWR0128"  Part="1" 
@@ -299,7 +225,7 @@ F 3 "" H 800 3800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR0129
+L stmbl1:GND #PWR0129
 U 1 1 565DFF9E
 P 800 3100
 AR Path="/56590966/565F7162/565DFF9E" Ref="#PWR0129"  Part="1" 
@@ -312,7 +238,7 @@ F 3 "" H 800 3100 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R4
+L stmbl1:R R4
 U 1 1 565DFFA4
 P 1000 3050
 AR Path="/56590966/565F7162/565DFFA4" Ref="R4"  Part="1" 
@@ -325,7 +251,7 @@ F 3 "" H 1000 3050 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R5
+L stmbl1:R R5
 U 1 1 565DFFAB
 P 1000 3750
 AR Path="/56590966/565F7162/565DFFAB" Ref="R5"  Part="1" 
@@ -342,7 +268,7 @@ L1
 Text HLabel 1150 3650 0    60   Input ~ 0
 L2
 $Comp
-L GND #PWR0130
+L stmbl1:GND #PWR0130
 U 1 1 565E0460
 P 4900 6050
 AR Path="/56590966/565F7162/565E0460" Ref="#PWR0130"  Part="1" 
@@ -355,7 +281,7 @@ F 3 "" H 4900 6050 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R41
+L stmbl1:R R41
 U 1 1 565E07F5
 P 4150 4350
 AR Path="/56590966/565F7162/565E07F5" Ref="R41"  Part="1" 
@@ -368,7 +294,7 @@ F 3 "" H 4150 4350 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R43
+L stmbl1:R R43
 U 1 1 565E0878
 P 4150 4650
 AR Path="/56590966/565F7162/565E0878" Ref="R43"  Part="1" 
@@ -381,7 +307,7 @@ F 3 "" H 4150 4650 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R48
+L stmbl1:R R48
 U 1 1 565E0919
 P 4350 4100
 AR Path="/56590966/565F7162/565E0919" Ref="R48"  Part="1" 
@@ -394,7 +320,7 @@ F 3 "" H 4350 4100 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R54
+L stmbl1:R R54
 U 1 1 565E098D
 P 4600 4850
 AR Path="/56590966/565F7162/565E098D" Ref="R54"  Part="1" 
@@ -407,7 +333,7 @@ F 3 "" H 4600 4850 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R87
+L stmbl1:R R87
 U 1 1 565E236D
 P 5850 4500
 AR Path="/56590966/565F7162/565E236D" Ref="R87"  Part="1" 
@@ -420,7 +346,7 @@ F 3 "" H 5850 4500 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R94
+L stmbl1:R R94
 U 1 1 565E23EB
 P 6200 4750
 AR Path="/56590966/565F7162/565E23EB" Ref="R94"  Part="1" 
@@ -433,7 +359,7 @@ F 3 "" H 6200 4750 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C46
+L stmbl1:C C46
 U 1 1 565E24CA
 P 6000 4750
 AR Path="/56590966/565F7162/565E24CA" Ref="C46"  Part="1" 
@@ -446,7 +372,7 @@ F 3 "" H 6000 4750 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR0131
+L stmbl1:GND #PWR0131
 U 1 1 565E2823
 P 6100 5000
 AR Path="/56590966/565F7162/565E2823" Ref="#PWR0131"  Part="1" 
@@ -461,7 +387,7 @@ $EndComp
 Text HLabel 6200 4500 2    60   Input ~ 0
 A12
 $Comp
-L R R37
+L stmbl1:R R37
 U 1 1 565E2D07
 P 4050 5450
 AR Path="/56590966/565F7162/565E2D07" Ref="R37"  Part="1" 
@@ -474,7 +400,7 @@ F 3 "" H 4050 5450 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R38
+L stmbl1:R R38
 U 1 1 565E2D0D
 P 4050 5750
 AR Path="/56590966/565F7162/565E2D0D" Ref="R38"  Part="1" 
@@ -487,7 +413,7 @@ F 3 "" H 4050 5750 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R49
+L stmbl1:R R49
 U 1 1 565E2D13
 P 4300 5200
 AR Path="/56590966/565F7162/565E2D13" Ref="R49"  Part="1" 
@@ -500,7 +426,7 @@ F 3 "" H 4300 5200 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R57
+L stmbl1:R R57
 U 1 1 565E2D19
 P 4600 5950
 AR Path="/56590966/565F7162/565E2D19" Ref="R57"  Part="1" 
@@ -513,7 +439,7 @@ F 3 "" H 4600 5950 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R88
+L stmbl1:R R88
 U 1 1 565E32C5
 P 5850 5600
 AR Path="/56590966/565F7162/565E32C5" Ref="R88"  Part="1" 
@@ -526,7 +452,7 @@ F 3 "" H 5850 5600 30  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R96
+L stmbl1:R R96
 U 1 1 565E32CB
 P 6200 5850
 AR Path="/56590966/565F7162/565E32CB" Ref="R96"  Part="1" 
@@ -539,7 +465,7 @@ F 3 "" H 6200 5850 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C49
+L stmbl1:C C49
 U 1 1 565E32D1
 P 6000 5850
 AR Path="/56590966/565F7162/565E32D1" Ref="C49"  Part="1" 
@@ -552,7 +478,7 @@ F 3 "" H 6000 5850 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR0132
+L stmbl1:GND #PWR0132
 U 1 1 565E32DB
 P 6100 6100
 AR Path="/56590966/565F7162/565E32DB" Ref="#PWR0132"  Part="1" 
@@ -567,7 +493,7 @@ $EndComp
 Text HLabel 6200 5600 2    60   Input ~ 0
 A35
 $Comp
-L GND #PWR0133
+L stmbl1:GND #PWR0133
 U 1 1 565E3A5A
 P 2600 7150
 AR Path="/56590966/565F7162/565E3A5A" Ref="#PWR0133"  Part="1" 
@@ -580,7 +506,7 @@ F 3 "" H 2600 7150 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R23
+L stmbl1:R R23
 U 1 1 565E3AE9
 P 2500 5900
 AR Path="/56590966/565F7162/565E3AE9" Ref="R23"  Part="1" 
@@ -593,7 +519,7 @@ F 3 "" H 2500 5900 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R26
+L stmbl1:R R26
 U 1 1 565E3BA8
 P 2500 6800
 AR Path="/56590966/565F7162/565E3BA8" Ref="R26"  Part="1" 
@@ -606,7 +532,7 @@ F 3 "" H 2500 6800 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C12
+L stmbl1:C C12
 U 1 1 565E3C38
 P 2700 6800
 AR Path="/56590966/565F7162/565E3C38" Ref="C12"  Part="1" 
@@ -619,7 +545,7 @@ F 3 "" H 2700 6800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C37
+L stmbl1:C C37
 U 1 1 565E1292
 P 3100 5750
 AR Path="/56590966/565F7162/565E1292" Ref="C37"  Part="1" 
@@ -632,7 +558,7 @@ F 3 "" H 3100 5750 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L C C24
+L stmbl1:C C24
 U 1 1 565E18D1
 P 4300 5600
 AR Path="/56590966/565F7162/565E18D1" Ref="C24"  Part="1" 
@@ -645,7 +571,7 @@ F 3 "" H 4300 5600 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR0134
+L stmbl1:GND #PWR0134
 U 1 1 565F7D3D
 P 2300 4250
 AR Path="/56590966/565F7162/565F7D3D" Ref="#PWR0134"  Part="1" 
@@ -660,23 +586,23 @@ $EndComp
 Wire Wire Line
 	8550 1150 8600 1150
 Wire Wire Line
-	8600 1150 8600 1350
+	8600 1150 8600 1250
 Wire Wire Line
 	8600 1350 8550 1350
 Wire Wire Line
-	8150 1650 8150 1750
+	8150 1650 8150 1700
 Wire Wire Line
 	7750 1150 7700 1150
 Wire Wire Line
 	7700 1150 7700 1100
 Wire Wire Line
-	7700 1100 6300 1100
+	7700 1100 7600 1100
 Wire Wire Line
 	7750 1350 7700 1350
 Wire Wire Line
 	7700 1350 7700 1400
 Wire Wire Line
-	7700 1400 6400 1400
+	7700 1400 7600 1400
 Wire Wire Line
 	9200 1400 9200 1700
 Wire Wire Line
@@ -684,10 +610,10 @@ Wire Wire Line
 Wire Wire Line
 	9200 1100 9200 800 
 Wire Wire Line
-	8150 800  10000 800 
+	8150 800  9200 800 
 Connection ~ 8150 1700
 Wire Wire Line
-	8550 1050 8950 1050
+	8550 1050 8900 1050
 Wire Wire Line
 	8600 1250 8650 1250
 Connection ~ 8600 1250
@@ -696,23 +622,23 @@ Wire Wire Line
 Wire Wire Line
 	8550 2550 8600 2550
 Wire Wire Line
-	8600 2550 8600 2750
+	8600 2550 8600 2650
 Wire Wire Line
 	8600 2750 8550 2750
 Wire Wire Line
-	8150 3050 8150 3150
+	8150 3050 8150 3100
 Wire Wire Line
 	7750 2550 7700 2550
 Wire Wire Line
 	7700 2550 7700 2500
 Wire Wire Line
-	7700 2500 6500 2500
+	7700 2500 7600 2500
 Wire Wire Line
 	7750 2750 7700 2750
 Wire Wire Line
 	7700 2750 7700 2800
 Wire Wire Line
-	7700 2800 6600 2800
+	7700 2800 7600 2800
 Wire Wire Line
 	9200 2800 9200 3100
 Wire Wire Line
@@ -720,10 +646,10 @@ Wire Wire Line
 Wire Wire Line
 	9200 2500 9200 2200
 Wire Wire Line
-	8150 2200 9900 2200
+	8150 2200 9200 2200
 Connection ~ 8150 3100
 Wire Wire Line
-	8550 2450 8950 2450
+	8550 2450 8900 2450
 Wire Wire Line
 	8600 2650 8650 2650
 Connection ~ 8600 2650
@@ -732,23 +658,23 @@ Wire Wire Line
 Wire Wire Line
 	8550 3950 8600 3950
 Wire Wire Line
-	8600 3950 8600 4150
+	8600 3950 8600 4050
 Wire Wire Line
 	8600 4150 8550 4150
 Wire Wire Line
-	8150 4450 8150 4550
+	8150 4450 8150 4500
 Wire Wire Line
 	7750 3950 7700 3950
 Wire Wire Line
 	7700 3950 7700 3900
 Wire Wire Line
-	7700 3900 6800 3900
+	7700 3900 7600 3900
 Wire Wire Line
 	7750 4150 7700 4150
 Wire Wire Line
 	7700 4150 7700 4200
 Wire Wire Line
-	7700 4200 6700 4200
+	7700 4200 7600 4200
 Wire Wire Line
 	9200 4200 9200 4500
 Wire Wire Line
@@ -756,32 +682,32 @@ Wire Wire Line
 Wire Wire Line
 	9200 3900 9200 3600
 Wire Wire Line
-	9900 3600 8150 3600
+	9900 3600 9200 3600
 Connection ~ 8150 4500
 Wire Wire Line
-	8550 3850 8950 3850
+	8550 3850 8900 3850
 Wire Wire Line
 	8600 4050 8650 4050
 Connection ~ 8600 4050
 Wire Wire Line
 	8900 4250 8550 4250
 Wire Wire Line
-	2200 2950 6300 2950
+	2200 2950 3900 2950
 Wire Wire Line
 	6300 2950 6300 1100
 Connection ~ 7600 1100
 Wire Wire Line
 	6400 1400 6400 3050
 Wire Wire Line
-	6400 3050 2200 3050
+	6400 3050 3800 3050
 Connection ~ 7600 1400
 Wire Wire Line
 	6500 2500 6500 3150
 Wire Wire Line
-	6500 3150 2200 3150
+	6500 3150 3700 3150
 Connection ~ 7600 2500
 Wire Wire Line
-	2200 3550 6600 3550
+	2200 3550 3600 3550
 Wire Wire Line
 	6600 3550 6600 2800
 Connection ~ 7600 2800
@@ -804,7 +730,7 @@ Wire Wire Line
 Wire Wire Line
 	5600 4850 5600 4500
 Wire Wire Line
-	5300 4500 5700 4500
+	5300 4500 5600 4500
 Wire Wire Line
 	3800 3050 3800 4650
 Wire Wire Line
@@ -812,16 +738,16 @@ Wire Wire Line
 Wire Wire Line
 	4350 3950 4350 3900
 Wire Wire Line
-	6000 4600 6200 4600
+	6000 4600 6100 4600
 Connection ~ 6100 4600
 Wire Wire Line
-	6000 4900 6200 4900
+	6000 4900 6100 4900
 Connection ~ 5600 4500
 Wire Wire Line
 	6100 5000 6100 4900
 Connection ~ 6100 4900
 Wire Wire Line
-	6000 4500 6200 4500
+	6000 4500 6100 4500
 Connection ~ 6100 4500
 Wire Wire Line
 	4300 5050 4300 5000
@@ -830,17 +756,17 @@ Wire Wire Line
 Wire Wire Line
 	5600 5600 5600 5950
 Wire Wire Line
-	5300 5600 5700 5600
+	5300 5600 5600 5600
 Wire Wire Line
-	6000 5700 6200 5700
+	6000 5700 6100 5700
 Connection ~ 6100 5700
 Wire Wire Line
-	6000 6000 6200 6000
+	6000 6000 6100 6000
 Wire Wire Line
 	6100 6100 6100 6000
 Connection ~ 6100 6000
 Wire Wire Line
-	6000 5600 6200 5600
+	6000 5600 6100 5600
 Connection ~ 6100 5600
 Connection ~ 5600 5600
 Wire Wire Line
@@ -848,11 +774,11 @@ Wire Wire Line
 Wire Wire Line
 	2500 6950 2500 7050
 Wire Wire Line
-	2500 6050 2500 6250
+	2500 6050 2500 6150
 Wire Wire Line
 	2500 5250 2500 5350
 Wire Wire Line
-	3500 6150 2500 6150
+	3500 6150 2700 6150
 Connection ~ 2700 6150
 Connection ~ 2500 6150
 Wire Wire Line
@@ -864,9 +790,9 @@ Connection ~ 8900 1050
 Connection ~ 8900 2450
 Connection ~ 8900 3850
 Wire Wire Line
-	4200 5750 4600 5750
+	4200 5750 4300 5750
 Wire Wire Line
-	4200 5450 4600 5450
+	4200 5450 4300 5450
 Wire Wire Line
 	4300 5450 4300 5350
 Wire Wire Line
@@ -879,7 +805,7 @@ Wire Wire Line
 	4450 5950 4450 5750
 Connection ~ 4450 5750
 $Comp
-L C C26
+L stmbl1:C C26
 U 1 1 565FB16C
 P 4350 4500
 AR Path="/56590966/565F7162/565FB16C" Ref="C26"  Part="1" 
@@ -894,14 +820,14 @@ $EndComp
 Wire Wire Line
 	4600 4350 4600 4400
 Wire Wire Line
-	4300 4350 4600 4350
+	4300 4350 4350 4350
 Wire Wire Line
 	4350 4350 4350 4250
 Connection ~ 4350 4350
 Wire Wire Line
 	4600 4650 4600 4600
 Wire Wire Line
-	4300 4650 4600 4650
+	4300 4650 4350 4650
 Connection ~ 4350 4650
 Wire Wire Line
 	3900 4350 3900 2950
@@ -923,7 +849,7 @@ Connection ~ 3600 3550
 Text Notes 6350 5200 0    60   ~ 0
 LM358 max. output: 4.94V - 1.5V = 3.44V\nSTM32 max. input: 3.44V / (22 + 470) * 470 = 3.28V
 $Comp
-L R R124
+L stmbl1:R R124
 U 1 1 57756B74
 P 9550 1450
 AR Path="/56590966/565F7162/57756B74" Ref="R124"  Part="1" 
@@ -938,7 +864,7 @@ $EndComp
 Text HLabel 9600 1250 2    60   Input ~ 0
 E12
 $Comp
-L GND #PWR0115
+L stmbl1:GND #PWR0115
 U 1 1 57756CDC
 P 9550 1650
 AR Path="/56590966/5659191C/57756CDC" Ref="#PWR0115"  Part="1" 
@@ -957,7 +883,7 @@ Wire Wire Line
 Wire Wire Line
 	9550 1600 9550 1650
 $Comp
-L R R125
+L stmbl1:R R125
 U 1 1 57757310
 P 9550 2850
 AR Path="/56590966/5659191C/57757310" Ref="R125"  Part="1" 
@@ -970,7 +896,7 @@ F 3 "" H 9550 2850 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR0116
+L stmbl1:GND #PWR0116
 U 1 1 57757316
 P 9550 3050
 AR Path="/56590966/5659191C/57757316" Ref="#PWR0116"  Part="1" 
@@ -989,7 +915,7 @@ Wire Wire Line
 Wire Wire Line
 	9550 3000 9550 3050
 $Comp
-L R R128
+L stmbl1:R R128
 U 1 1 57757D9E
 P 9550 4250
 AR Path="/56590966/5659191C/57757D9E" Ref="R128"  Part="1" 
@@ -1002,7 +928,7 @@ F 3 "" H 9550 4250 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR0117
+L stmbl1:GND #PWR0117
 U 1 1 57757DA4
 P 9550 4450
 AR Path="/56590966/5659191C/57757DA4" Ref="#PWR0117"  Part="1" 
@@ -1041,9 +967,9 @@ Wire Wire Line
 Wire Wire Line
 	6100 5600 6100 5700
 Wire Wire Line
-	1700 7050 3100 7050
+	1700 7050 2500 7050
 $Comp
-L INDUCTOR L8
+L stmbl1:INDUCTOR L8
 U 1 1 57ADE969
 P 2100 5250
 AR Path="/56590966/5659191C/57ADE969" Ref="L8"  Part="1" 
@@ -1056,18 +982,18 @@ F 3 "" H 2100 5250 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	1700 5150 1700 5350
+	1700 5150 1700 5250
 Wire Wire Line
 	1700 5250 1800 5250
 Wire Wire Line
-	2400 5250 4700 5250
+	2400 5250 2500 5250
 Wire Wire Line
 	4700 5250 4700 5100
 Wire Wire Line
 	4700 5100 4900 5100
 Connection ~ 2500 5250
 $Comp
-L C C116
+L stmbl1:C C116
 U 1 1 57ADFEE4
 P 1700 5500
 AR Path="/56590966/565F7162/57ADFEE4" Ref="C116"  Part="1" 
@@ -1084,7 +1010,7 @@ Wire Wire Line
 Connection ~ 2500 7050
 Connection ~ 1700 5250
 $Comp
-L INDUCTOR L11
+L stmbl1:INDUCTOR L11
 U 1 1 57AE2C95
 P 10300 800
 AR Path="/56590966/565F7162/57AE2C95" Ref="L11"  Part="1" 
@@ -1097,11 +1023,11 @@ F 3 "" H 10300 800 50  0000 C CNN
 	0    1    -1   0   
 $EndComp
 Wire Wire Line
-	10700 700  10700 900 
+	10700 700  10700 800 
 Wire Wire Line
 	10700 800  10600 800 
 $Comp
-L C C118
+L stmbl1:C C118
 U 1 1 57AE2C9D
 P 10700 1050
 AR Path="/56590966/565F7162/57AE2C9D" Ref="C118"  Part="1" 
@@ -1116,13 +1042,13 @@ $EndComp
 Connection ~ 10700 800 
 Connection ~ 9200 800 
 Wire Wire Line
-	9900 800  9900 3600
+	9900 800  9900 2200
 Connection ~ 9200 2200
 Connection ~ 9900 800 
 Connection ~ 9900 2200
 Connection ~ 9200 3600
 $Comp
-L GND #PWR0138
+L stmbl1:GND #PWR0138
 U 1 1 57AE38CA
 P 10700 1300
 AR Path="/56590966/565F7162/57AE38CA" Ref="#PWR0138"  Part="1" 
@@ -1137,7 +1063,7 @@ $EndComp
 Wire Wire Line
 	10700 1300 10700 1200
 $Comp
-L R R130
+L stmbl1:R R130
 U 1 1 57B0307F
 P 2500 5500
 AR Path="/56590966/5659191C/57B0307F" Ref="R130"  Part="1" 
@@ -1152,11 +1078,11 @@ $EndComp
 Wire Wire Line
 	2500 5650 2500 5750
 Wire Wire Line
-	2200 3650 2950 3650
+	2200 3650 2500 3650
 Wire Wire Line
-	2300 3750 2300 4250
+	2300 3750 2300 4150
 $Comp
-L C C117
+L stmbl1:C C117
 U 1 1 57B0D6F6
 P 2500 3900
 AR Path="/56590966/565F7162/57B0D6F6" Ref="C117"  Part="1" 
@@ -1177,7 +1103,7 @@ Wire Wire Line
 	2500 4150 2300 4150
 Connection ~ 2300 4150
 $Comp
-L +5F #PWR0119
+L stmbl1:+5F #PWR0119
 U 1 1 57D7260E
 P 10700 700
 AR Path="/56590966/5659191C/57D7260E" Ref="#PWR0119"  Part="1" 
@@ -1190,7 +1116,7 @@ F 3 "" H 10700 700 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +12V #PWR0120
+L stmbl1:+12V #PWR0120
 U 1 1 57D5E0C8
 P 3200 3750
 AR Path="/56590966/5659191C/57D5E0C8" Ref="#PWR0120"  Part="1" 
@@ -1203,7 +1129,7 @@ F 3 "" H 3200 3750 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5F #PWR0121
+L stmbl1:+5F #PWR0121
 U 1 1 57D5E166
 P 3200 4450
 AR Path="/56590966/5659191C/57D5E166" Ref="#PWR0121"  Part="1" 
@@ -1218,13 +1144,13 @@ $EndComp
 Wire Wire Line
 	3200 3750 3200 3850
 Wire Wire Line
-	3200 4350 3200 4450
+	3200 4350 3200 4400
 Wire Wire Line
 	2950 3650 2950 4100
 Wire Wire Line
-	2750 4100 3100 4100
+	2750 4100 2950 4100
 $Comp
-L R R137
+L stmbl1:R R137
 U 1 1 57D5E6AA
 P 2950 4250
 AR Path="/56590966/5659191C/57D5E6AA" Ref="R137"  Part="1" 
@@ -1241,7 +1167,7 @@ Wire Wire Line
 Connection ~ 3200 4400
 Connection ~ 2950 4100
 $Comp
-L R R135
+L stmbl1:R R135
 U 1 1 57D5F156
 P 2750 4250
 AR Path="/56590966/5659191C/57D5F156" Ref="R135"  Part="1" 
@@ -1254,7 +1180,7 @@ F 3 "" H 2750 4250 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R136
+L stmbl1:R R136
 U 1 1 57D5F335
 P 2750 4750
 AR Path="/56590966/5659191C/57D5F335" Ref="R136"  Part="1" 
@@ -1267,9 +1193,9 @@ F 3 "" H 2750 4750 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2750 4400 2750 4600
+	2750 4400 2750 4500
 $Comp
-L GND #PWR0122
+L stmbl1:GND #PWR0122
 U 1 1 57D5F4E8
 P 2750 5000
 AR Path="/56590966/5659191C/57D5F4E8" Ref="#PWR0122"  Part="1" 
@@ -1286,10 +1212,10 @@ Wire Wire Line
 Text HLabel 2350 4500 0    60   Input ~ 0
 A78
 Wire Wire Line
-	2350 4500 2750 4500
+	2350 4500 2450 4500
 Connection ~ 2750 4500
 $Comp
-L C C125
+L stmbl1:C C125
 U 1 1 57D74C8F
 P 2450 4750
 AR Path="/56590966/5659191C/57D74C8F" Ref="C125"  Part="1" 
@@ -1322,7 +1248,7 @@ Wire Wire Line
 Wire Wire Line
 	4600 5700 4600 5750
 $Comp
-L LM358 U7
+L stmbl1:LM358 U7
 U 2 1 56591955
 P 5000 5600
 AR Path="/56590966/565F7162/56591955" Ref="U7"  Part="2" 
@@ -1343,7 +1269,7 @@ Wire Wire Line
 	3100 7050 3100 5900
 Connection ~ 2700 7050
 $Comp
-L GNDD #PWR0143
+L stmbl1:GNDD #PWR0143
 U 1 1 57F83665
 P 1700 4100
 AR Path="/56590966/565F7162/57F83665" Ref="#PWR0143"  Part="1" 
@@ -1358,7 +1284,7 @@ $EndComp
 Wire Wire Line
 	1700 4100 1700 4000
 $Comp
-L R R147
+L stmbl1:R R147
 U 1 1 5810D912
 P 2500 6400
 AR Path="/56590966/5659191C/5810D912" Ref="R147"  Part="1" 
@@ -1377,7 +1303,7 @@ Text Notes 3200 6500 0    60   ~ 0
 Wire Wire Line
 	4350 3900 3500 3900
 Wire Wire Line
-	3500 3900 3500 6150
+	3500 3900 3500 5000
 Wire Wire Line
 	4300 5000 3500 5000
 Connection ~ 3500 5000
@@ -1396,7 +1322,7 @@ Wire Wire Line
 Wire Wire Line
 	800  3750 850  3750
 $Comp
-L JUMPER3_NC JP2
+L stmbl1:JUMPER3_NC JP2
 U 1 1 583384DA
 P 3200 4100
 AR Path="/56590966/5659191C/583384DA" Ref="JP2"  Part="1" 
@@ -1409,7 +1335,7 @@ F 3 "" H 3200 4100 50  0000 C CNN
 	0    1    -1   0   
 $EndComp
 $Comp
-L +5VA #PWR0124
+L stmbl1:+5VA #PWR0124
 U 1 1 5832987B
 P 1700 5150
 AR Path="/56590966/5659191C/5832987B" Ref="#PWR0124"  Part="1" 
@@ -1421,4 +1347,112 @@ F 3 "" H 1700 5150 50  0000 C CNN
 	1    1700 5150
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	8150 1700 8150 1750
+Wire Wire Line
+	8600 1250 8600 1350
+Wire Wire Line
+	8150 3100 8150 3150
+Wire Wire Line
+	8600 2650 8600 2750
+Wire Wire Line
+	8150 4500 8150 4550
+Wire Wire Line
+	8600 4050 8600 4150
+Wire Wire Line
+	7600 1100 6300 1100
+Wire Wire Line
+	7600 1400 6400 1400
+Wire Wire Line
+	7600 2500 6500 2500
+Wire Wire Line
+	7600 2800 6600 2800
+Wire Wire Line
+	7600 4200 6700 4200
+Wire Wire Line
+	7600 3900 6800 3900
+Wire Wire Line
+	6100 4600 6200 4600
+Wire Wire Line
+	5600 4500 5700 4500
+Wire Wire Line
+	6100 4900 6200 4900
+Wire Wire Line
+	6100 4500 6200 4500
+Wire Wire Line
+	6100 5700 6200 5700
+Wire Wire Line
+	6100 6000 6200 6000
+Wire Wire Line
+	6100 5600 6200 5600
+Wire Wire Line
+	5600 5600 5700 5600
+Wire Wire Line
+	2700 6150 2500 6150
+Wire Wire Line
+	2500 6150 2500 6250
+Wire Wire Line
+	2600 7050 2700 7050
+Wire Wire Line
+	8900 1050 8950 1050
+Wire Wire Line
+	8900 2450 8950 2450
+Wire Wire Line
+	8900 3850 8950 3850
+Wire Wire Line
+	4300 5750 4450 5750
+Wire Wire Line
+	4300 5450 4600 5450
+Wire Wire Line
+	4450 5750 4600 5750
+Wire Wire Line
+	4350 4350 4600 4350
+Wire Wire Line
+	4350 4650 4450 4650
+Wire Wire Line
+	4450 4650 4600 4650
+Wire Wire Line
+	3900 2950 6300 2950
+Wire Wire Line
+	3800 3050 2200 3050
+Wire Wire Line
+	3700 3150 2200 3150
+Wire Wire Line
+	3600 3550 6600 3550
+Wire Wire Line
+	2500 5250 3100 5250
+Wire Wire Line
+	2500 7050 2600 7050
+Wire Wire Line
+	1700 5250 1700 5350
+Wire Wire Line
+	10700 800  10700 900 
+Wire Wire Line
+	9200 800  9900 800 
+Wire Wire Line
+	9200 2200 9900 2200
+Wire Wire Line
+	9900 800  10000 800 
+Wire Wire Line
+	9900 2200 9900 3600
+Wire Wire Line
+	9200 3600 8150 3600
+Wire Wire Line
+	2500 3650 2950 3650
+Wire Wire Line
+	2300 4150 2300 4250
+Wire Wire Line
+	3200 4400 3200 4450
+Wire Wire Line
+	2950 4100 3100 4100
+Wire Wire Line
+	2750 4500 2750 4600
+Wire Wire Line
+	2450 4500 2750 4500
+Wire Wire Line
+	3100 5250 4700 5250
+Wire Wire Line
+	2700 7050 3100 7050
+Wire Wire Line
+	3500 5000 3500 6150
 $EndSCHEMATC

@@ -1,83 +1,6 @@
-EESchema Schematic File Version 2
-LIBS:transistors
-LIBS:stm32
-LIBS:conn
-LIBS:power
-LIBS:74xgxx
-LIBS:74xx
-LIBS:ac-dc
-LIBS:actel
-LIBS:adc-dac
-LIBS:Altera
-LIBS:analog_devices
-LIBS:analog_switches
-LIBS:atmel
-LIBS:audio
-LIBS:brooktre
-LIBS:cmos_ieee
-LIBS:cmos4000
-LIBS:contrib
-LIBS:cypress
-LIBS:dc-dc
-LIBS:device
-LIBS:digital-audio
-LIBS:diode
-LIBS:display
-LIBS:dsp
-LIBS:elec-unifil
-LIBS:ESD_Protection
-LIBS:ftdi
-LIBS:gennum
-LIBS:graphic
-LIBS:hc11
-LIBS:intel
-LIBS:interface
-LIBS:ir
-LIBS:Lattice
-LIBS:linear
-LIBS:logo
-LIBS:maxim
-LIBS:memory
-LIBS:microchip_dspic33dsc
-LIBS:microchip_pic10mcu
-LIBS:microchip_pic12mcu
-LIBS:microchip_pic16mcu
-LIBS:microchip_pic18mcu
-LIBS:microchip_pic32mcu
-LIBS:microchip
-LIBS:microcontrollers
-LIBS:motor_drivers
-LIBS:motorola
-LIBS:msp430
-LIBS:nordicsemi
-LIBS:nxp_armmcu
-LIBS:onsemi
-LIBS:opto
-LIBS:Oscillators
-LIBS:philips
-LIBS:Power_Management
-LIBS:powerint
-LIBS:pspice
-LIBS:references
-LIBS:regul
-LIBS:relays
-LIBS:rfcom
-LIBS:sensors
-LIBS:silabs
-LIBS:siliconi
-LIBS:stm8
-LIBS:supertex
-LIBS:switches
-LIBS:texas
-LIBS:transf
-LIBS:ttl_ieee
-LIBS:valves
-LIBS:video
-LIBS:Xicor
-LIBS:xilinx
-LIBS:Zilog
+EESchema Schematic File Version 4
 LIBS:stmbl_4.0-cache
-EELAYER 25 0
+EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -270,7 +193,7 @@ Wire Wire Line
 Wire Wire Line
 	1600 1800 1650 1800
 $Comp
-L +3.3V #PWR070
+L stmbl1:+3.3V #PWR070
 U 1 1 578427DC
 P 1650 1550
 F 0 "#PWR070" H 1650 1400 50  0001 C CNN
@@ -285,7 +208,7 @@ Wire Wire Line
 Wire Wire Line
 	1650 1600 1600 1600
 $Comp
-L GND #PWR071
+L stmbl1:GND #PWR071
 U 1 1 57848EA2
 P 1650 1950
 F 0 "#PWR071" H 1650 1700 50  0001 C CNN
@@ -300,7 +223,7 @@ Wire Wire Line
 Wire Wire Line
 	1650 1900 1650 1950
 $Comp
-L CONN_01X04 P14
+L stmbl1:CONN_01X04 P14
 U 1 1 57AEB2FC
 P 1400 1750
 F 0 "P14" H 1400 2000 50  0000 C CNN
@@ -395,7 +318,7 @@ Wire Wire Line
 Wire Wire Line
 	3100 1750 2900 1750
 $Comp
-L non_plated U32
+L stmbl1:non_plated U32
 U 1 1 5830D361
 P 6450 1250
 F 0 "U32" H 6450 900 60  0000 C CNN
@@ -406,7 +329,7 @@ F 3 "" H 6450 1250 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L OPEN_HARDWARE_1 LOGO1
+L stmbl1:OPEN_HARDWARE_1 LOGO1
 U 1 1 58341DA7
 P 2400 5400
 F 0 "LOGO1" H 2400 5675 50  0000 C CNN
