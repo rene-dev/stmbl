@@ -1,0 +1,9 @@
+(module non_plated_1mm (layer F.Cu) (tedit 5AC29B94)
+  (fp_text reference U24 (at 0 4.75) (layer F.SilkS) hide
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value non_plated (at 0 -3.75) (layer F.Fab)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (pad "" np_thru_hole circle (at 0 0) (size 1 1) (drill 1) (layers *.Cu *.Mask))
+)
