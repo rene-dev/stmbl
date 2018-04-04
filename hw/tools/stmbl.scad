@@ -150,31 +150,34 @@ module cover(){
   
   
 }
-translate([-88, 0, -5]) cover();
-translate([14, 4.75 + 1.27 + pcb_height, 45 - 33 - pcb_height]) rotate([90, 0, 0]) f4();
-translate([-51, 46 + 1.5, 42]) rotate([-90, 0, 0]) m3(6);
-f3();translate([6, 0, -33]) rotate([0, 0, 90]) heatsink();
-translate([6, 0.5, 45 - 33]) rotate([0, 90, 0]) fan();
 
-translate([16.5, 4.5, 4 - 33]) rotate([0, 90, 0]) m3(15);
-translate([16.5, 4.5 + 37, 4 - 33]) rotate([0, 90, 0]) m3(15);
-translate([16.5 + 1.3, 4.5, 4 + 37 - 33]) rotate([0, 90, 0]) m3(10);
-translate([16.5 + 1.3, 4.5 + 37, 4 + 37 - 33]) rotate([0, 90, 0]) m3(10);
-// translate([6, 20, 33]) spacer(8);
-// translate([6 + 36, 20, 33]) spacer(8);
-// translate([6, 20, 33 + 8 + pcb_hight]) m3(15);
-// translate([6 + 36, 20, 33 + 8 + pcb_hight]) m3(15);
-translate([-81, 33, 8 + pcb_height]) m3(15);
-translate([-21, 33, 8 + pcb_height]) m3(15);
-translate([-52.5, 5, 8 + pcb_height]) m3(15);
-translate([-81, 33, 5.7]) spacer(2.3);
-translate([-21, 33, 5.7]) spacer(2.3);
-translate([-52.5, 5, 0]) spacer(8);//translate([1 + 8, 1, 96 + 4]) io();
-//translate([1, 10, 33 + 8]) cover();
-translate([-89, 5, -2]) rotate([0, -90, 0]) m3(5);
-translate([-89, 5 + 36, -2]) rotate([0, -90, 0]) m3(5);
-translate([-70.5 + 27 + 6, 32, 42]) rotate([0, 0, 180]) bracket2();
-translate([-52.5, 7.5 - 1.6, 42]) rotate([90, 0, 0]) m3(6);
-translate([-25, 0.5, -34]) rotate([0, 0, 90]) clip();
-translate([-41, 0.5 +  4, -35]) rotate([180, 0, 0]) m3(6);
-translate([-41, 0.5 +  4 + 37, -35]) rotate([180, 0, 0]) m3(6);
+module stmbl(){
+  //translate([-88, 0, -5]) cover();
+  translate([14, 4.75 + 1.27 + pcb_height, 45 - 33 - pcb_height]) rotate([90, 0, 0]) f4();
+  //translate([-51, 46 + 1.5, 42]) rotate([-90, 0, 0]) m3(6);
+  f3();translate([6, 0, -33]) rotate([0, 0, 90]) heatsink();
+  translate([6, 0.5, 45 - 33]) rotate([0, 90, 0]) fan();
+
+  translate([16.5, 4.5, 4 - 33]) rotate([0, 90, 0]) m3(15);
+  translate([16.5, 4.5 + 37, 4 - 33]) rotate([0, 90, 0]) m3(15);
+  translate([16.5 + 1.3, 4.5, 4 + 37 - 33]) rotate([0, 90, 0]) m3(10);
+  translate([16.5 + 1.3, 4.5 + 37, 4 + 37 - 33]) rotate([0, 90, 0]) m3(10);
+  // translate([6, 20, 33]) spacer(8);
+  // translate([6 + 36, 20, 33]) spacer(8);
+  // translate([6, 20, 33 + 8 + pcb_hight]) m3(15);
+  // translate([6 + 36, 20, 33 + 8 + pcb_hight]) m3(15);
+  translate([-81, 33, 8 + pcb_height]) m3(15);
+  translate([-21, 33, 8 + pcb_height]) m3(15);
+  translate([-52.5, 5, 8 + pcb_height]) m3(15);
+  translate([-81, 33, 5.7]) spacer(2.3);
+  translate([-21, 33, 5.7]) spacer(2.3);
+  translate([-52.5, 5, 0]) spacer(8);//translate([1 + 8, 1, 96 + 4]) io();
+  //translate([1, 10, 33 + 8]) cover();
+  translate([-89, 5, -2]) rotate([0, -90, 0]) m3(5);
+  translate([-89, 5 + 36, -2]) rotate([0, -90, 0]) m3(5);
+  translate([-70.5 + 27 + 6, 32, 42]) rotate([0, 0, 180]) bracket();
+  translate([-52.5, 7.5 - 1.6, 42]) rotate([90, 0, 0]) m3(6);
+  //translate([-25, 0.5, -34]) rotate([0, 0, 90]) clip2();
+  //translate([-41, 0.5 +  4, -35]) rotate([180, 0, 0]) m3(6);
+  //translate([-41, 0.5 +  4 + 37, -35]) rotate([180, 0, 0]) m3(6);
+}
