@@ -33,6 +33,11 @@ F 0 "C78" H 9625 950 50  0000 L CNN
 F 1 "100n" H 9625 750 50  0000 L CNN
 F 2 "stmbl:C_0603" H 9638 700 30  0001 C CNN
 F 3 "" H 9600 850 60  0000 C CNN
+F 4 "" H 9600 850 60  0001 C CNN "InternalName"
+F 5 "" H 9600 850 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 9600 850 60  0001 C CNN "Voltage"
+F 7 "" H 9600 850 60  0001 C CNN "Source"
+F 8 "X7R" H 9600 850 60  0001 C CNN "Tolerance"
 	1    9600 850 
 	1    0    0    -1  
 $EndComp
@@ -66,6 +71,11 @@ F 0 "C79" H 9725 950 50  0000 L CNN
 F 1 "100n" H 9725 750 50  0000 L CNN
 F 2 "stmbl:C_0603" H 9738 700 30  0001 C CNN
 F 3 "" H 9700 850 60  0000 C CNN
+F 4 "" H 9700 850 60  0001 C CNN "InternalName"
+F 5 "" H 9700 850 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 9700 850 60  0001 C CNN "Voltage"
+F 7 "" H 9700 850 60  0001 C CNN "Source"
+F 8 "X7R" H 9700 850 60  0001 C CNN "Tolerance"
 	1    9700 850 
 	1    0    0    -1  
 $EndComp
@@ -77,6 +87,11 @@ F 0 "C82" H 9825 950 50  0000 L CNN
 F 1 "100n" H 9825 750 50  0000 L CNN
 F 2 "stmbl:C_0603" H 9838 700 30  0001 C CNN
 F 3 "" H 9800 850 60  0000 C CNN
+F 4 "" H 9800 850 60  0001 C CNN "InternalName"
+F 5 "" H 9800 850 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 9800 850 60  0001 C CNN "Voltage"
+F 7 "" H 9800 850 60  0001 C CNN "Source"
+F 8 "X7R" H 9800 850 60  0001 C CNN "Tolerance"
 	1    9800 850 
 	1    0    0    -1  
 $EndComp
@@ -88,6 +103,11 @@ F 0 "C83" H 9925 950 50  0000 L CNN
 F 1 "100n" H 9925 750 50  0000 L CNN
 F 2 "stmbl:C_0603" H 9938 700 30  0001 C CNN
 F 3 "" H 9900 850 60  0000 C CNN
+F 4 "" H 9900 850 60  0001 C CNN "InternalName"
+F 5 "" H 9900 850 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 9900 850 60  0001 C CNN "Voltage"
+F 7 "" H 9900 850 60  0001 C CNN "Source"
+F 8 "X7R" H 9900 850 60  0001 C CNN "Tolerance"
 	1    9900 850 
 	1    0    0    -1  
 $EndComp
@@ -99,6 +119,11 @@ F 0 "Y1" H 1900 2400 50  0000 C CNN
 F 1 "8M" H 1900 2100 50  0000 C CNN
 F 2 "stmbl:Crystal_SMD_0503_4Pads" H 1900 2250 60  0001 C CNN
 F 3 "" H 1900 2250 60  0000 C CNN
+F 4 "" H 1900 2250 60  0001 C CNN "InternalName"
+F 5 "ABM3B-8.000MHZ-10-1UT" H 1900 2250 60  0001 C CNN "Manufacturer No"
+F 6 "" H 1900 2250 60  0001 C CNN "Voltage"
+F 7 "https://de.aliexpress.com/item/1LOT-10PCS-Crystal-8MHZ-20PF-20PPM-4P-5032-SeriesYSX531SL/32534814045.html" H 1900 2250 60  0001 C CNN "Source"
+F 8 "" H 1900 2250 60  0001 C CNN "Tolerance"
 	1    1900 2250
 	0    1    1    0   
 $EndComp
@@ -121,6 +146,11 @@ F 0 "C5" H 1675 2200 50  0000 L CNN
 F 1 "18p" H 1675 2000 50  0000 L CNN
 F 2 "stmbl:C_0603" H 1688 1950 30  0001 C CNN
 F 3 "" H 1650 2100 60  0000 C CNN
+F 4 "" H 1650 2100 60  0001 C CNN "InternalName"
+F 5 "" H 1650 2100 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 1650 2100 60  0001 C CNN "Voltage"
+F 7 "" H 1650 2100 60  0001 C CNN "Source"
+F 8 "X7R" H 1650 2100 60  0001 C CNN "Tolerance"
 	1    1650 2100
 	0    1    1    0   
 $EndComp
@@ -143,6 +173,11 @@ F 0 "C6" H 1675 2500 50  0000 L CNN
 F 1 "18p" H 1675 2300 50  0000 L CNN
 F 2 "stmbl:C_0603" H 1688 2250 30  0001 C CNN
 F 3 "" H 1650 2400 60  0000 C CNN
+F 4 "" H 1650 2400 60  0001 C CNN "InternalName"
+F 5 "" H 1650 2400 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 1650 2400 60  0001 C CNN "Voltage"
+F 7 "" H 1650 2400 60  0001 C CNN "Source"
+F 8 "X7R" H 1650 2400 60  0001 C CNN "Tolerance"
 	1    1650 2400
 	0    1    1    0   
 $EndComp
@@ -154,6 +189,11 @@ F 0 "C2" H 1125 2350 50  0000 L CNN
 F 1 "100n" H 1125 2150 50  0000 L CNN
 F 2 "stmbl:C_0603" H 1138 2100 30  0001 C CNN
 F 3 "" H 1100 2250 60  0000 C CNN
+F 4 "" H 1100 2250 60  0001 C CNN "InternalName"
+F 5 "" H 1100 2250 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 1100 2250 60  0001 C CNN "Voltage"
+F 7 "" H 1100 2250 60  0001 C CNN "Source"
+F 8 "X7R" H 1100 2250 60  0001 C CNN "Tolerance"
 	1    1100 2250
 	1    0    0    -1  
 $EndComp
@@ -187,6 +227,11 @@ F 0 "C7" H 2175 1700 50  0000 L CNN
 F 1 "100n" H 2175 1500 50  0000 L CNN
 F 2 "stmbl:C_0603" H 2188 1450 30  0001 C CNN
 F 3 "" H 2150 1600 60  0000 C CNN
+F 4 "" H 2150 1600 60  0001 C CNN "InternalName"
+F 5 "" H 2150 1600 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 2150 1600 60  0001 C CNN "Voltage"
+F 7 "" H 2150 1600 60  0001 C CNN "Source"
+F 8 "X7R" H 2150 1600 60  0001 C CNN "Tolerance"
 	1    2150 1600
 	0    1    1    0   
 $EndComp
@@ -225,6 +270,11 @@ F 0 "P12" H 18350 4500 50  0000 C CNN
 F 1 "CONN_01X04" V 18450 4250 50  0000 C CNN
 F 2 "stmbl:Pin_Header_Straight_1x04" H 18350 4250 60  0001 C CNN
 F 3 "" H 18350 4250 60  0000 C CNN
+F 4 "" H 18350 4250 60  0001 C CNN "InternalName"
+F 5 "" H 18350 4250 60  0001 C CNN "Manufacturer No"
+F 6 "" H 18350 4250 60  0001 C CNN "Voltage"
+F 7 "" H 18350 4250 60  0001 C CNN "Source"
+F 8 "" H 18350 4250 60  0001 C CNN "Tolerance"
 	1    18350 4250
 	1    0    0    1   
 $EndComp
@@ -257,6 +307,11 @@ F 0 "R2" V 880 2050 50  0000 C CNN
 F 1 "1k" V 800 2050 50  0000 C CNN
 F 2 "stmbl:R_0603" V 730 2050 30  0001 C CNN
 F 3 "" H 800 2050 30  0000 C CNN
+F 4 "" H 800 2050 30  0001 C CNN "InternalName"
+F 5 "" H 800 2050 30  0001 C CNN "Manufacturer No"
+F 6 "" H 800 2050 30  0001 C CNN "Voltage"
+F 7 "" H 800 2050 30  0001 C CNN "Source"
+F 8 "1%" H 800 2050 30  0001 C CNN "Tolerance"
 	1    800  2050
 	1    0    0    -1  
 $EndComp
@@ -290,6 +345,11 @@ F 0 "JP1" H 800 1680 50  0000 C CNN
 F 1 "Jumper_NO_Small" H 810 1540 50  0001 C CNN
 F 2 "stmbl:SOLDER_JUMPER" H 800 1600 60  0001 C CNN
 F 3 "" H 800 1600 60  0000 C CNN
+F 4 "" H 800 1600 60  0001 C CNN "InternalName"
+F 5 "" H 800 1600 60  0001 C CNN "Manufacturer No"
+F 6 "" H 800 1600 60  0001 C CNN "Voltage"
+F 7 "" H 800 1600 60  0001 C CNN "Source"
+F 8 "" H 800 1600 60  0001 C CNN "Tolerance"
 	1    800  1600
 	0    1    1    0   
 $EndComp
@@ -301,7 +361,11 @@ F 0 "U21" H 8701 6948 50  0000 C CNN
 F 1 "USBLC6-4SC6" H 9400 6850 50  0000 C CNN
 F 2 "stmbl:SOT-23-6" H 9400 6600 60  0001 C CNN
 F 3 "" H 9400 6600 60  0000 C CNN
-F 4 "TRANSIENT VOLTAGE SUPPRESSOR" H 9400 6350 50  0000 C CNN "Description"
+F 4 "USBLC6-4SC6" H 9400 6600 60  0001 C CNN "Manufacturer No"
+F 5 " " H 9400 6600 50  0001 C CNN "Voltage"
+F 6 " " H 9400 6600 50  0001 C CNN "Source"
+F 7 " " H 9400 6600 50  0001 C CNN "Tolerance"
+F 8 "TRANSIENT VOLTAGE SUPPRESSOR" H 9400 6350 50  0000 C CNN "Description"
 	1    9400 6600
 	1    0    0    -1  
 $EndComp
@@ -335,6 +399,11 @@ F 0 "U25" H 2650 4750 50  0000 C CNN
 F 1 "STM32F303CBTx" H 16700 1250 50  0000 C CNN
 F 2 "stmbl:LQFP-48_7x7mm_Pitch0.5mm" H 2750 1250 50  0000 C CNN
 F 3 "" H 9800 3000 50  0000 C CNN
+F 4 "" H 9800 3000 50  0001 C CNN "InternalName"
+F 5 "STM32F303CBT" H 9800 3000 50  0001 C CNN "Manufacturer No"
+F 6 "" H 9800 3000 50  0001 C CNN "Voltage"
+F 7 "" H 9800 3000 50  0001 C CNN "Source"
+F 8 "" H 9800 3000 50  0001 C CNN "Tolerance"
 	1    9800 3000
 	1    0    0    -1  
 $EndComp
@@ -346,6 +415,11 @@ F 0 "R129" V 17530 4500 50  0000 C CNN
 F 1 "1k" V 17450 4500 50  0000 C CNN
 F 2 "stmbl:R_0603" V 17380 4500 30  0001 C CNN
 F 3 "" H 17450 4500 30  0000 C CNN
+F 4 "" H 17450 4500 30  0001 C CNN "InternalName"
+F 5 "" H 17450 4500 30  0001 C CNN "Manufacturer No"
+F 6 "" H 17450 4500 30  0001 C CNN "Voltage"
+F 7 "" H 17450 4500 30  0001 C CNN "Source"
+F 8 "1%" H 17450 4500 30  0001 C CNN "Tolerance"
 	1    17450 4500
 	0    1    1    0   
 $EndComp
@@ -363,6 +437,11 @@ F 0 "T45" H 17950 3400 60  0000 C CNN
 F 1 "testpoint" H 17950 3200 60  0000 C CNN
 F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 17950 3300 60  0001 C CNN
 F 3 "" H 17950 3300 60  0000 C CNN
+F 4 "" H 17950 3300 60  0001 C CNN "InternalName"
+F 5 "" H 17950 3300 60  0001 C CNN "Manufacturer No"
+F 6 "" H 17950 3300 60  0001 C CNN "Voltage"
+F 7 "" H 17950 3300 60  0001 C CNN "Source"
+F 8 "" H 17950 3300 60  0001 C CNN "Tolerance"
 	1    17950 3300
 	1    0    0    -1  
 $EndComp
@@ -374,6 +453,11 @@ F 0 "T44" H 17950 3200 60  0000 C CNN
 F 1 "testpoint" H 17950 3000 60  0000 C CNN
 F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 17950 3100 60  0001 C CNN
 F 3 "" H 17950 3100 60  0000 C CNN
+F 4 "" H 17950 3100 60  0001 C CNN "InternalName"
+F 5 "" H 17950 3100 60  0001 C CNN "Manufacturer No"
+F 6 "" H 17950 3100 60  0001 C CNN "Voltage"
+F 7 "" H 17950 3100 60  0001 C CNN "Source"
+F 8 "" H 17950 3100 60  0001 C CNN "Tolerance"
 	1    17950 3100
 	1    0    0    -1  
 $EndComp
@@ -385,6 +469,11 @@ F 0 "T46" H 17950 3600 60  0000 C CNN
 F 1 "testpoint" H 17950 3400 60  0000 C CNN
 F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 17950 3500 60  0001 C CNN
 F 3 "" H 17950 3500 60  0000 C CNN
+F 4 "" H 17950 3500 60  0001 C CNN "InternalName"
+F 5 "" H 17950 3500 60  0001 C CNN "Manufacturer No"
+F 6 "" H 17950 3500 60  0001 C CNN "Voltage"
+F 7 "" H 17950 3500 60  0001 C CNN "Source"
+F 8 "" H 17950 3500 60  0001 C CNN "Tolerance"
 	1    17950 3500
 	1    0    0    -1  
 $EndComp
@@ -396,6 +485,11 @@ F 0 "T1" H 1700 3100 60  0000 C CNN
 F 1 "testpoint" H 1700 2900 60  0000 C CNN
 F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 1700 3000 60  0001 C CNN
 F 3 "" H 1700 3000 60  0000 C CNN
+F 4 "" H 1700 3000 60  0001 C CNN "InternalName"
+F 5 "" H 1700 3000 60  0001 C CNN "Manufacturer No"
+F 6 "" H 1700 3000 60  0001 C CNN "Voltage"
+F 7 "" H 1700 3000 60  0001 C CNN "Source"
+F 8 "" H 1700 3000 60  0001 C CNN "Tolerance"
 	1    1700 3000
 	-1   0    0    1   
 $EndComp
@@ -407,6 +501,11 @@ F 0 "D1" H 17600 3800 50  0000 C CNN
 F 1 "red" H 17600 3600 50  0000 C CNN
 F 2 "stmbl:LED-0805-SIDE" H 17600 3700 50  0001 C CNN
 F 3 "" H 17600 3700 50  0000 C CNN
+F 4 "" H 17600 3700 50  0001 C CNN "InternalName"
+F 5 "LTST-S220KRKT" H 17600 3700 50  0001 C CNN "Manufacturer No"
+F 6 "" H 17600 3700 50  0001 C CNN "Voltage"
+F 7 "" H 17600 3700 50  0001 C CNN "Source"
+F 8 "" H 17600 3700 50  0001 C CNN "Tolerance"
 	1    17600 3700
 	-1   0    0    1   
 $EndComp
@@ -418,6 +517,11 @@ F 0 "R8" V 18130 3700 50  0000 C CNN
 F 1 "470" V 18050 3700 50  0000 C CNN
 F 2 "stmbl:R_0603" V 17980 3700 30  0001 C CNN
 F 3 "" H 18050 3700 30  0000 C CNN
+F 4 "" H 18050 3700 30  0001 C CNN "InternalName"
+F 5 "" H 18050 3700 30  0001 C CNN "Manufacturer No"
+F 6 "" H 18050 3700 30  0001 C CNN "Voltage"
+F 7 "" H 18050 3700 30  0001 C CNN "Source"
+F 8 "1%" H 18050 3700 30  0001 C CNN "Tolerance"
 	1    18050 3700
 	0    1    1    0   
 $EndComp
@@ -431,6 +535,11 @@ F 0 "L1" V 10450 1100 50  0000 C CNN
 F 1 "220r 700mA" V 10600 1100 50  0000 C CNN
 F 2 "stmbl:R_0603" H 10500 1100 50  0001 C CNN
 F 3 "" H 10500 1100 50  0000 C CNN
+F 4 "BLM18AG221SN1" H 10500 1100 50  0001 C CNN "Manufacturer No"
+F 5 "" H 10500 1100 50  0001 C CNN "Voltage"
+F 6 "https://de.aliexpress.com/item/500-PCS-LOT-patch-magnetic-bead-FB-BLM18AG221SN1-0603-220-r-0-5-A-magnetic-beads/32675343247.html" H 10500 1100 50  0001 C CNN "Source"
+F 7 "" H 10500 1100 50  0001 C CNN "InternalName"
+F 8 "" H 10500 1100 50  0001 C CNN "Tolerance"
 	1    10500 1100
 	0    -1   -1   0   
 $EndComp
@@ -442,6 +551,11 @@ F 0 "C10" H 10925 1000 50  0000 L CNN
 F 1 "100n" H 10925 800 50  0000 L CNN
 F 2 "stmbl:C_0603" H 10938 750 30  0001 C CNN
 F 3 "" H 10900 900 60  0000 C CNN
+F 4 "" H 10900 900 60  0001 C CNN "InternalName"
+F 5 "" H 10900 900 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 10900 900 60  0001 C CNN "Voltage"
+F 7 "" H 10900 900 60  0001 C CNN "Source"
+F 8 "X7R" H 10900 900 60  0001 C CNN "Tolerance"
 	1    10900 900 
 	1    0    0    -1  
 $EndComp
@@ -464,6 +578,11 @@ F 0 "C9" H 7475 6700 50  0000 L CNN
 F 1 "100n" H 7475 6500 50  0000 L CNN
 F 2 "stmbl:C_0603" H 7488 6450 30  0001 C CNN
 F 3 "" H 7450 6600 60  0000 C CNN
+F 4 "" H 7450 6600 60  0001 C CNN "InternalName"
+F 5 "" H 7450 6600 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 7450 6600 60  0001 C CNN "Voltage"
+F 7 "" H 7450 6600 60  0001 C CNN "Source"
+F 8 "X7R" H 7450 6600 60  0001 C CNN "Tolerance"
 	1    7450 6600
 	1    0    0    -1  
 $EndComp
@@ -499,7 +618,10 @@ F 0 "U29" H 3651 5998 50  0000 C CNN
 F 1 "USBLC6-4SC6" H 4350 5900 50  0000 C CNN
 F 2 "stmbl:SOT-23-6" H 4350 5650 60  0001 C CNN
 F 3 "" H 4350 5650 60  0000 C CNN
-F 4 "TRANSIENT VOLTAGE SUPPRESSOR" H 4350 5400 50  0000 C CNN "Description"
+F 4 "USBLC6-4SC6" H 4350 5650 60  0001 C CNN "Manufacturer No"
+F 5 " " H 4350 5650 50  0001 C CNN "Voltage"
+F 6 " " H 4350 5650 50  0001 C CNN "Source"
+F 7 " " H 4350 5650 50  0001 C CNN "Tolerance"
 	1    4350 5650
 	1    0    0    -1  
 $EndComp
@@ -511,6 +633,11 @@ F 0 "C128" H 4125 6600 50  0000 L CNN
 F 1 "100n" H 4125 6400 50  0000 L CNN
 F 2 "stmbl:C_0603" H 4138 6350 30  0001 C CNN
 F 3 "" H 4100 6500 60  0000 C CNN
+F 4 "" H 4100 6500 60  0001 C CNN "InternalName"
+F 5 "" H 4100 6500 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 4100 6500 60  0001 C CNN "Voltage"
+F 7 "" H 4100 6500 60  0001 C CNN "Source"
+F 8 "X7R" H 4100 6500 60  0001 C CNN "Tolerance"
 	1    4100 6500
 	1    0    0    -1  
 $EndComp
@@ -799,6 +926,11 @@ F 0 "P11" H 7225 5525 50  0000 C CNN
 F 1 "USB_OTG" H 6900 5850 50  0000 C CNN
 F 2 "stmbl:USB_Micro-B" V 6850 5550 50  0001 C CNN
 F 3 "" V 6850 5550 50  0000 C CNN
+F 4 "" V 6850 5550 50  0001 C CNN "InternalName"
+F 5 "105017-0001" V 6850 5550 50  0001 C CNN "Manufacturer No"
+F 6 "" V 6850 5550 50  0001 C CNN "Voltage"
+F 7 "https://de.aliexpress.com/item/Wholesale-100Pcs-lot-5-Pins-Micro-USB-SMD-Female-USB-PCB-Connector-Socket-USB-Jack-Plug/1840320498.html" V 6850 5550 50  0001 C CNN "Source"
+F 8 "" V 6850 5550 50  0001 C CNN "Tolerance"
 	1    6900 5650
 	0    -1   1    0   
 $EndComp
@@ -823,6 +955,11 @@ F 0 "R151" V 7630 5550 50  0000 C CNN
 F 1 "22" V 7550 5550 50  0000 C CNN
 F 2 "stmbl:R_0603" V 7480 5550 30  0001 C CNN
 F 3 "" H 7550 5550 30  0000 C CNN
+F 4 "" H 7550 5550 30  0001 C CNN "InternalName"
+F 5 "" H 7550 5550 30  0001 C CNN "Manufacturer No"
+F 6 "" H 7550 5550 30  0001 C CNN "Voltage"
+F 7 "" H 7550 5550 30  0001 C CNN "Source"
+F 8 "1%" H 7550 5550 30  0001 C CNN "Tolerance"
 	1    7550 5550
 	0    1    1    0   
 $EndComp
@@ -841,6 +978,11 @@ F 0 "R152" V 7630 5650 50  0000 C CNN
 F 1 "22" V 7550 5650 50  0000 C CNN
 F 2 "stmbl:R_0603" V 7480 5650 30  0001 C CNN
 F 3 "" H 7550 5650 30  0000 C CNN
+F 4 "" H 7550 5650 30  0001 C CNN "InternalName"
+F 5 "" H 7550 5650 30  0001 C CNN "Manufacturer No"
+F 6 "" H 7550 5650 30  0001 C CNN "Voltage"
+F 7 "" H 7550 5650 30  0001 C CNN "Source"
+F 8 "1%" H 7550 5650 30  0001 C CNN "Tolerance"
 	1    7550 5650
 	0    1    1    0   
 $EndComp
@@ -852,6 +994,11 @@ F 0 "R150" V 7380 5300 50  0000 C CNN
 F 1 "1.5k" V 7300 5300 50  0000 C CNN
 F 2 "stmbl:R_0603" V 7230 5300 30  0001 C CNN
 F 3 "" H 7300 5300 30  0000 C CNN
+F 4 "" H 7300 5300 30  0001 C CNN "InternalName"
+F 5 "" H 7300 5300 30  0001 C CNN "Manufacturer No"
+F 6 "" H 7300 5300 30  0001 C CNN "Voltage"
+F 7 "" H 7300 5300 30  0001 C CNN "Source"
+F 8 "1%" H 7300 5300 30  0001 C CNN "Tolerance"
 	1    7300 5300
 	-1   0    0    1   
 $EndComp
@@ -932,6 +1079,11 @@ F 0 "R118" V 2230 2400 50  0000 C CNN
 F 1 "1k" V 2150 2400 50  0000 C CNN
 F 2 "stmbl:R_0603" V 2080 2400 30  0001 C CNN
 F 3 "" H 2150 2400 30  0000 C CNN
+F 4 "" H 2150 2400 30  0001 C CNN "InternalName"
+F 5 "" H 2150 2400 30  0001 C CNN "Manufacturer No"
+F 6 "" H 2150 2400 30  0001 C CNN "Voltage"
+F 7 "" H 2150 2400 30  0001 C CNN "Source"
+F 8 "1%" H 2150 2400 30  0001 C CNN "Tolerance"
 	1    2150 2400
 	0    1    1    0   
 $EndComp
@@ -945,6 +1097,11 @@ F 0 "P7" H 6100 6900 50  0000 C CNN
 F 1 "CONN_01X04" V 6200 6650 50  0000 C CNN
 F 2 "stmbl:Pin_Header_Straight_1x04" H 6100 6650 60  0001 C CNN
 F 3 "" H 6100 6650 60  0000 C CNN
+F 4 "" H 6100 6650 60  0001 C CNN "InternalName"
+F 5 "" H 6100 6650 60  0001 C CNN "Manufacturer No"
+F 6 "" H 6100 6650 60  0001 C CNN "Voltage"
+F 7 "" H 6100 6650 60  0001 C CNN "Source"
+F 8 "" H 6100 6650 60  0001 C CNN "Tolerance"
 	1    6100 6650
 	1    0    0    1   
 $EndComp
@@ -1097,6 +1254,11 @@ F 0 "T2" H 17950 3000 60  0000 C CNN
 F 1 "testpoint" H 17950 2800 60  0000 C CNN
 F 2 "stmbl:Measurement_Point_Round-SMD-Pad_Small" H 17950 2900 60  0001 C CNN
 F 3 "" H 17950 2900 60  0000 C CNN
+F 4 "" H 17950 2900 60  0001 C CNN "InternalName"
+F 5 "" H 17950 2900 60  0001 C CNN "Manufacturer No"
+F 6 "" H 17950 2900 60  0001 C CNN "Voltage"
+F 7 "" H 17950 2900 60  0001 C CNN "Source"
+F 8 "" H 17950 2900 60  0001 C CNN "Tolerance"
 	1    17950 2900
 	1    0    0    -1  
 $EndComp
@@ -1121,6 +1283,11 @@ F 0 "C141" H 10125 950 50  0000 L CNN
 F 1 "2.2µ" H 10125 750 50  0000 L CNN
 F 2 "stmbl:C_0603" H 10138 700 30  0001 C CNN
 F 3 "" H 10100 850 60  0000 C CNN
+F 4 "" H 10100 850 60  0001 C CNN "InternalName"
+F 5 "" H 10100 850 60  0001 C CNN "Manufacturer No"
+F 6 "25V" H 10100 850 60  0001 C CNN "Voltage"
+F 7 "" H 10100 850 60  0001 C CNN "Source"
+F 8 "X7R" H 10100 850 60  0001 C CNN "Tolerance"
 	1    10100 850 
 	1    0    0    -1  
 $EndComp

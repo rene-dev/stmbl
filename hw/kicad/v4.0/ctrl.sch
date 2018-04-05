@@ -230,6 +230,9 @@ F 0 "P14" H 1400 2000 50  0000 C CNN
 F 1 "CONN_01X04" V 1500 1750 50  0000 C CNN
 F 2 "stmbl:Pin_Header_Angled_1x04" H 1400 1750 50  0001 C CNN
 F 3 "" H 1400 1750 50  0000 C CNN
+F 4 " " H 1400 1750 50  0001 C CNN "Manufacturer No"
+F 5 " " H 1400 1750 50  0001 C CNN "Voltage"
+F 6 " " H 1400 1750 50  0001 C CNN "Source"
 	1    1400 1750
 	-1   0    0    1   
 $EndComp

@@ -26,6 +26,11 @@ F 0 "R27" V 2980 3350 50  0000 C CNN
 F 1 "249k" V 2900 3350 50  0000 C CNN
 F 2 "stmbl:R_1206" V 2830 3350 30  0001 C CNN
 F 3 "" H 2900 3350 30  0000 C CNN
+F 4 "" H 2900 3350 30  0001 C CNN "InternalName"
+F 5 "" H 2900 3350 30  0001 C CNN "Manufacturer No"
+F 6 "200V" H 2900 3350 30  0001 C CNN "Voltage"
+F 7 "" H 2900 3350 30  0001 C CNN "Source"
+F 8 "1%" H 2900 3350 30  0001 C CNN "Tolerance"
 	1    2900 3350
 	1    0    0    -1  
 $EndComp
@@ -37,6 +42,11 @@ F 0 "R28" V 2980 3750 50  0000 C CNN
 F 1 "249k" V 2900 3750 50  0000 C CNN
 F 2 "stmbl:R_1206" V 2830 3750 30  0001 C CNN
 F 3 "" H 2900 3750 30  0000 C CNN
+F 4 "" H 2900 3750 30  0001 C CNN "InternalName"
+F 5 "" H 2900 3750 30  0001 C CNN "Manufacturer No"
+F 6 "200V" H 2900 3750 30  0001 C CNN "Voltage"
+F 7 "" H 2900 3750 30  0001 C CNN "Source"
+F 8 "1%" H 2900 3750 30  0001 C CNN "Tolerance"
 	1    2900 3750
 	1    0    0    -1  
 $EndComp
@@ -48,6 +58,11 @@ F 0 "R29" V 2980 4250 50  0000 C CNN
 F 1 "3.9k" V 2900 4250 50  0000 C CNN
 F 2 "stmbl:R_0603" V 2830 4250 30  0001 C CNN
 F 3 "" H 2900 4250 30  0000 C CNN
+F 4 "" H 2900 4250 30  0001 C CNN "InternalName"
+F 5 "" H 2900 4250 30  0001 C CNN "Manufacturer No"
+F 6 "" H 2900 4250 30  0001 C CNN "Voltage"
+F 7 "" H 2900 4250 30  0001 C CNN "Source"
+F 8 "1%" H 2900 4250 30  0001 C CNN "Tolerance"
 	1    2900 4250
 	1    0    0    -1  
 $EndComp
@@ -74,6 +89,11 @@ F 0 "R32" V 3780 3350 50  0000 C CNN
 F 1 "249k" V 3700 3350 50  0000 C CNN
 F 2 "stmbl:R_1206" V 3630 3350 30  0001 C CNN
 F 3 "" H 3700 3350 30  0000 C CNN
+F 4 "" H 3700 3350 30  0001 C CNN "InternalName"
+F 5 "" H 3700 3350 30  0001 C CNN "Manufacturer No"
+F 6 "200V" H 3700 3350 30  0001 C CNN "Voltage"
+F 7 "" H 3700 3350 30  0001 C CNN "Source"
+F 8 "1%" H 3700 3350 30  0001 C CNN "Tolerance"
 	1    3700 3350
 	1    0    0    -1  
 $EndComp
@@ -85,6 +105,11 @@ F 0 "R33" V 3780 3750 50  0000 C CNN
 F 1 "249k" V 3700 3750 50  0000 C CNN
 F 2 "stmbl:R_1206" V 3630 3750 30  0001 C CNN
 F 3 "" H 3700 3750 30  0000 C CNN
+F 4 "" H 3700 3750 30  0001 C CNN "InternalName"
+F 5 "" H 3700 3750 30  0001 C CNN "Manufacturer No"
+F 6 "200V" H 3700 3750 30  0001 C CNN "Voltage"
+F 7 "" H 3700 3750 30  0001 C CNN "Source"
+F 8 "1%" H 3700 3750 30  0001 C CNN "Tolerance"
 	1    3700 3750
 	1    0    0    -1  
 $EndComp
@@ -96,6 +121,11 @@ F 0 "R34" V 3780 4250 50  0000 C CNN
 F 1 "3.9k" V 3700 4250 50  0000 C CNN
 F 2 "stmbl:R_0603" V 3630 4250 30  0001 C CNN
 F 3 "" H 3700 4250 30  0000 C CNN
+F 4 "" H 3700 4250 30  0001 C CNN "InternalName"
+F 5 "" H 3700 4250 30  0001 C CNN "Manufacturer No"
+F 6 "" H 3700 4250 30  0001 C CNN "Voltage"
+F 7 "" H 3700 4250 30  0001 C CNN "Source"
+F 8 "1%" H 3700 4250 30  0001 C CNN "Tolerance"
 	1    3700 4250
 	1    0    0    -1  
 $EndComp
@@ -122,6 +152,11 @@ F 0 "R51" V 4580 3350 50  0000 C CNN
 F 1 "249k" V 4500 3350 50  0000 C CNN
 F 2 "stmbl:R_1206" V 4430 3350 30  0001 C CNN
 F 3 "" H 4500 3350 30  0000 C CNN
+F 4 "" H 4500 3350 30  0001 C CNN "InternalName"
+F 5 "" H 4500 3350 30  0001 C CNN "Manufacturer No"
+F 6 "200V" H 4500 3350 30  0001 C CNN "Voltage"
+F 7 "" H 4500 3350 30  0001 C CNN "Source"
+F 8 "1%" H 4500 3350 30  0001 C CNN "Tolerance"
 	1    4500 3350
 	1    0    0    -1  
 $EndComp
@@ -133,6 +168,11 @@ F 0 "R52" V 4580 3750 50  0000 C CNN
 F 1 "249k" V 4500 3750 50  0000 C CNN
 F 2 "stmbl:R_1206" V 4430 3750 30  0001 C CNN
 F 3 "" H 4500 3750 30  0000 C CNN
+F 4 "" H 4500 3750 30  0001 C CNN "InternalName"
+F 5 "" H 4500 3750 30  0001 C CNN "Manufacturer No"
+F 6 "200V" H 4500 3750 30  0001 C CNN "Voltage"
+F 7 "" H 4500 3750 30  0001 C CNN "Source"
+F 8 "1%" H 4500 3750 30  0001 C CNN "Tolerance"
 	1    4500 3750
 	1    0    0    -1  
 $EndComp
@@ -144,6 +184,11 @@ F 0 "R53" V 4580 4250 50  0000 C CNN
 F 1 "3.9k" V 4500 4250 50  0000 C CNN
 F 2 "stmbl:R_0603" V 4430 4250 30  0001 C CNN
 F 3 "" H 4500 4250 30  0000 C CNN
+F 4 "" H 4500 4250 30  0001 C CNN "InternalName"
+F 5 "" H 4500 4250 30  0001 C CNN "Manufacturer No"
+F 6 "" H 4500 4250 30  0001 C CNN "Voltage"
+F 7 "" H 4500 4250 30  0001 C CNN "Source"
+F 8 "1%" H 4500 4250 30  0001 C CNN "Tolerance"
 	1    4500 4250
 	1    0    0    -1  
 $EndComp
@@ -168,6 +213,11 @@ F 0 "R77" V 5480 3350 50  0000 C CNN
 F 1 "249k" V 5400 3350 50  0000 C CNN
 F 2 "stmbl:R_1206" V 5330 3350 30  0001 C CNN
 F 3 "" H 5400 3350 30  0000 C CNN
+F 4 "" H 5400 3350 30  0001 C CNN "InternalName"
+F 5 "" H 5400 3350 30  0001 C CNN "Manufacturer No"
+F 6 "200V" H 5400 3350 30  0001 C CNN "Voltage"
+F 7 "" H 5400 3350 30  0001 C CNN "Source"
+F 8 "1%" H 5400 3350 30  0001 C CNN "Tolerance"
 	1    5400 3350
 	1    0    0    -1  
 $EndComp
@@ -179,6 +229,11 @@ F 0 "R78" V 5480 3750 50  0000 C CNN
 F 1 "249k" V 5400 3750 50  0000 C CNN
 F 2 "stmbl:R_1206" V 5330 3750 30  0001 C CNN
 F 3 "" H 5400 3750 30  0000 C CNN
+F 4 "" H 5400 3750 30  0001 C CNN "InternalName"
+F 5 "" H 5400 3750 30  0001 C CNN "Manufacturer No"
+F 6 "200V" H 5400 3750 30  0001 C CNN "Voltage"
+F 7 "" H 5400 3750 30  0001 C CNN "Source"
+F 8 "1%" H 5400 3750 30  0001 C CNN "Tolerance"
 	1    5400 3750
 	1    0    0    -1  
 $EndComp
@@ -190,6 +245,11 @@ F 0 "R79" V 5480 4250 50  0000 C CNN
 F 1 "3.9k" V 5400 4250 50  0000 C CNN
 F 2 "stmbl:R_0603" V 5330 4250 30  0001 C CNN
 F 3 "" H 5400 4250 30  0000 C CNN
+F 4 "" H 5400 4250 30  0001 C CNN "InternalName"
+F 5 "" H 5400 4250 30  0001 C CNN "Manufacturer No"
+F 6 "" H 5400 4250 30  0001 C CNN "Voltage"
+F 7 "" H 5400 4250 30  0001 C CNN "Source"
+F 8 "1%" H 5400 4250 30  0001 C CNN "Tolerance"
 	1    5400 4250
 	1    0    0    -1  
 $EndComp
@@ -212,6 +272,11 @@ F 0 "C11" H 2725 4350 50  0000 L CNN
 F 1 "18p" H 2725 4150 50  0000 L CNN
 F 2 "stmbl:C_0603" H 2738 4100 30  0001 C CNN
 F 3 "" H 2700 4250 60  0000 C CNN
+F 4 "" H 2700 4250 60  0001 C CNN "InternalName"
+F 5 "" H 2700 4250 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 2700 4250 60  0001 C CNN "Voltage"
+F 7 "" H 2700 4250 60  0001 C CNN "Source"
+F 8 "X7R" H 2700 4250 60  0001 C CNN "Tolerance"
 	1    2700 4250
 	1    0    0    -1  
 $EndComp
@@ -223,6 +288,11 @@ F 0 "C20" H 3525 4350 50  0000 L CNN
 F 1 "18p" H 3525 4150 50  0000 L CNN
 F 2 "stmbl:C_0603" H 3538 4100 30  0001 C CNN
 F 3 "" H 3500 4250 60  0000 C CNN
+F 4 "" H 3500 4250 60  0001 C CNN "InternalName"
+F 5 "" H 3500 4250 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 3500 4250 60  0001 C CNN "Voltage"
+F 7 "" H 3500 4250 60  0001 C CNN "Source"
+F 8 "X7R" H 3500 4250 60  0001 C CNN "Tolerance"
 	1    3500 4250
 	1    0    0    -1  
 $EndComp
@@ -234,6 +304,11 @@ F 0 "C23" H 4325 4350 50  0000 L CNN
 F 1 "18p" H 4325 4150 50  0000 L CNN
 F 2 "stmbl:C_0603" H 4338 4100 30  0001 C CNN
 F 3 "" H 4300 4250 60  0000 C CNN
+F 4 "" H 4300 4250 60  0001 C CNN "InternalName"
+F 5 "" H 4300 4250 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 4300 4250 60  0001 C CNN "Voltage"
+F 7 "" H 4300 4250 60  0001 C CNN "Source"
+F 8 "X7R" H 4300 4250 60  0001 C CNN "Tolerance"
 	1    4300 4250
 	1    0    0    -1  
 $EndComp
@@ -245,6 +320,11 @@ F 0 "C39" H 5225 4350 50  0000 L CNN
 F 1 "18p" H 5225 4150 50  0000 L CNN
 F 2 "stmbl:C_0603" H 5238 4100 30  0001 C CNN
 F 3 "" H 5200 4250 60  0000 C CNN
+F 4 "" H 5200 4250 60  0001 C CNN "InternalName"
+F 5 "" H 5200 4250 60  0001 C CNN "Manufacturer No"
+F 6 "50V" H 5200 4250 60  0001 C CNN "Voltage"
+F 7 "" H 5200 4250 60  0001 C CNN "Source"
+F 8 "X7R" H 5200 4250 60  0001 C CNN "Tolerance"
 	1    5200 4250
 	1    0    0    -1  
 $EndComp
@@ -266,10 +346,10 @@ Wire Wire Line
 Wire Wire Line
 	2900 3600 2900 3500
 Wire Wire Line
-	2900 3900 2900 4100
+	2900 3900 2900 4000
 Connection ~ 2900 4000
 Wire Wire Line
-	2900 4500 2900 4400
+	2900 4500 2900 4450
 Wire Wire Line
 	3600 3100 3700 3100
 Wire Wire Line
@@ -277,10 +357,10 @@ Wire Wire Line
 Wire Wire Line
 	3700 3600 3700 3500
 Wire Wire Line
-	3700 3900 3700 4100
+	3700 3900 3700 4000
 Connection ~ 3700 4000
 Wire Wire Line
-	3700 4500 3700 4400
+	3700 4500 3700 4450
 Wire Wire Line
 	4400 3100 4500 3100
 Wire Wire Line
@@ -288,19 +368,19 @@ Wire Wire Line
 Wire Wire Line
 	4500 3600 4500 3500
 Wire Wire Line
-	4500 3900 4500 4100
+	4500 3900 4500 4000
 Connection ~ 4500 4000
 Wire Wire Line
-	4500 4500 4500 4400
+	4500 4500 4500 4450
 Wire Wire Line
 	5400 3100 5400 3200
 Wire Wire Line
 	5400 3600 5400 3500
 Connection ~ 5400 4000
 Wire Wire Line
-	5400 4500 5400 4400
+	5400 4500 5400 4450
 Wire Wire Line
-	5100 4000 5400 4000
+	5100 4000 5200 4000
 Connection ~ 2700 4000
 Wire Wire Line
 	2700 4400 2700 4450
@@ -324,13 +404,13 @@ Wire Wire Line
 	5200 4400 5200 4450
 Connection ~ 5400 4450
 Wire Wire Line
-	2600 4000 2900 4000
+	2600 4000 2700 4000
 Wire Wire Line
-	5400 3900 5400 4100
+	5400 3900 5400 4000
 Wire Wire Line
-	4200 4000 4500 4000
+	4200 4000 4300 4000
 Wire Wire Line
-	3400 4000 3700 4000
+	3400 4000 3500 4000
 Wire Wire Line
 	2700 4000 2700 4100
 Wire Wire Line
@@ -343,4 +423,28 @@ Text Notes 3350 2700 0    60   ~ 0
 3.3V * (249k + 249k + 3.9k) / 3.9k = 424V
 Wire Wire Line
 	5200 4450 5400 4450
+Wire Wire Line
+	2900 4000 2900 4100
+Wire Wire Line
+	3700 4000 3700 4100
+Wire Wire Line
+	4500 4000 4500 4100
+Wire Wire Line
+	5400 4000 5400 4100
+Wire Wire Line
+	2700 4000 2900 4000
+Wire Wire Line
+	2900 4450 2900 4400
+Wire Wire Line
+	3500 4000 3700 4000
+Wire Wire Line
+	3700 4450 3700 4400
+Wire Wire Line
+	4300 4000 4500 4000
+Wire Wire Line
+	4500 4450 4500 4400
+Wire Wire Line
+	5200 4000 5400 4000
+Wire Wire Line
+	5400 4450 5400 4400
 $EndSCHEMATC
