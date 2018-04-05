@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L stmbl1:CP C21
+L stmbl:CP C21
 U 1 1 56590C91
 P 3050 4400
 F 0 "C21" H 3075 4500 50  0000 L CNN
@@ -31,7 +31,7 @@ F 8 "" H 3050 4400 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:CP C22
+L stmbl:CP C22
 U 1 1 56590CD1
 P 3350 4400
 F 0 "C22" H 3375 4500 50  0000 L CNN
@@ -47,7 +47,7 @@ F 8 "" H 3350 4400 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C28
+L stmbl:C C28
 U 1 1 56590D2C
 P 4250 4400
 F 0 "C28" H 4275 4500 50  0000 L CNN
@@ -63,7 +63,7 @@ F 8 "X7R" H 4250 4400 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C34
+L stmbl:C C34
 U 1 1 56590D5B
 P 4550 4400
 F 0 "C34" H 4575 4500 50  0000 L CNN
@@ -85,7 +85,7 @@ Connection ~ 3350 4250
 Connection ~ 4250 4250
 Connection ~ 4550 4250
 $Comp
-L stmbl1:C C42
+L stmbl:C C42
 U 1 1 5659119D
 P 5600 3050
 F 0 "C42" H 5625 3150 50  0000 L CNN
@@ -144,7 +144,7 @@ en
 Text HLabel 7150 3050 2    60   Input ~ 0
 itirp
 $Comp
-L stmbl1:GNDPWR #PWR056
+L stmbl:GNDPWR #PWR056
 U 1 1 56697E7C
 P 7550 5150
 F 0 "#PWR056" H 7550 4950 50  0001 C CNN
@@ -155,7 +155,7 @@ F 3 "" H 7550 5100 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:+15V #PWR057
+L stmbl:+15V #PWR057
 U 1 1 56697EBC
 P 7550 4650
 F 0 "#PWR057" H 7550 4500 50  0001 C CNN
@@ -166,7 +166,7 @@ F 3 "" H 7550 4650 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:IRAM256a U12
+L stmbl:IRAM256a U12
 U 1 1 5668DD3B
 P 6450 4050
 F 0 "U12" H 6100 5200 60  0000 C CNN
@@ -182,7 +182,7 @@ F 8 "" H 6450 4050 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C43
+L stmbl:C C43
 U 1 1 5668E03D
 P 5600 3450
 F 0 "C43" H 5625 3550 50  0000 L CNN
@@ -205,7 +205,7 @@ Wire Wire Line
 	5450 3450 5450 3550
 Connection ~ 5450 3550
 $Comp
-L stmbl1:C C44
+L stmbl:C C44
 U 1 1 5668E1AC
 P 5600 3850
 F 0 "C44" H 5625 3950 50  0000 L CNN
@@ -228,7 +228,7 @@ Wire Wire Line
 	5450 3850 5450 3950
 Connection ~ 5450 3950
 $Comp
-L stmbl1:R R80
+L stmbl:R R80
 U 1 1 5668E2F9
 P 5400 4550
 F 0 "R80" V 5480 4550 50  0000 C CNN
@@ -244,7 +244,7 @@ F 8 "1%" H 5400 4550 30  0001 C CNN "Tolerance"
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:R R81
+L stmbl:R R81
 U 1 1 5668E493
 P 5400 4750
 F 0 "R81" V 5480 4750 50  0000 C CNN
@@ -260,7 +260,7 @@ F 8 "1%" H 5400 4750 30  0001 C CNN "Tolerance"
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:R R82
+L stmbl:R R82
 U 1 1 5668E4D6
 P 5400 4950
 F 0 "R82" V 5480 4950 50  0000 C CNN
@@ -299,7 +299,7 @@ Wire Wire Line
 	5700 5050 5700 4950
 Connection ~ 5700 4950
 $Comp
-L stmbl1:GNDPWR #PWR058
+L stmbl:GNDPWR #PWR058
 U 1 1 5668FA38
 P 2950 4650
 F 0 "#PWR058" H 2950 4450 50  0001 C CNN
@@ -325,7 +325,7 @@ Wire Wire Line
 Wire Wire Line
 	7550 5050 7550 5150
 $Comp
-L stmbl1:C C63
+L stmbl:C C63
 U 1 1 56690594
 P 7800 4900
 F 0 "C63" H 7825 5000 50  0000 L CNN
@@ -343,7 +343,7 @@ $EndComp
 Connection ~ 7550 5050
 Connection ~ 7550 4750
 $Comp
-L stmbl1:CONN_01X03 P8
+L stmbl:CONN_01X03 P8
 U 1 1 566CEA04
 P 5450 2000
 F 0 "P8" H 5450 2200 50  0000 C CNN
@@ -359,7 +359,7 @@ F 8 "" H 5450 2000 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:CONN_01X02 P6
+L stmbl:CONN_01X02 P6
 U 1 1 566CF01F
 P 3900 1950
 F 0 "P6" H 3900 2100 50  0000 C CNN
@@ -375,7 +375,7 @@ F 8 "" H 3900 1950 60  0001 C CNN "Tolerance"
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:GNDPWR #PWR059
+L stmbl:GNDPWR #PWR059
 U 1 1 566CF13E
 P 4200 2100
 F 0 "#PWR059" H 4200 1900 50  0001 C CNN
@@ -386,7 +386,7 @@ F 3 "" H 4200 2050 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:VPP #PWR060
+L stmbl:VPP #PWR060
 U 1 1 566CF184
 P 4200 1800
 F 0 "#PWR060" H 4200 1650 50  0001 C CNN
@@ -407,7 +407,7 @@ Wire Wire Line
 Wire Wire Line
 	2950 4250 3050 4250
 $Comp
-L stmbl1:VPP #PWR061
+L stmbl:VPP #PWR061
 U 1 1 566CF322
 P 2950 4150
 F 0 "#PWR061" H 2950 4000 50  0001 C CNN
@@ -438,7 +438,7 @@ Wire Wire Line
 Wire Wire Line
 	7050 4650 7150 4650
 $Comp
-L stmbl1:+3.3VP #PWR062
+L stmbl:+3.3VP #PWR062
 U 1 1 566DE47B
 P 7800 4050
 F 0 "#PWR062" H 7950 4000 50  0001 C CNN
@@ -449,7 +449,7 @@ F 3 "" H 7800 4050 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R115
+L stmbl:R R115
 U 1 1 566DE4EC
 P 7800 4300
 F 0 "R115" V 7880 4300 50  0000 C CNN
@@ -482,7 +482,7 @@ Wire Wire Line
 	5250 4750 5150 4750
 Connection ~ 5150 4750
 $Comp
-L stmbl1:C C38
+L stmbl:C C38
 U 1 1 57779550
 P 4850 4400
 F 0 "C38" H 4875 4500 50  0000 L CNN
@@ -498,7 +498,7 @@ F 8 "X7R" H 4850 4400 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C93
+L stmbl:C C93
 U 1 1 5777A039
 P 3950 4400
 F 0 "C93" H 3975 4500 50  0000 L CNN
@@ -514,7 +514,7 @@ F 8 "X7R" H 3950 4400 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C92
+L stmbl:C C92
 U 1 1 5777A5B0
 P 3650 4400
 F 0 "C92" H 3675 4500 50  0000 L CNN
@@ -536,7 +536,7 @@ Connection ~ 3650 4250
 Connection ~ 4850 4550
 Connection ~ 4850 4250
 $Comp
-L stmbl1:C C129
+L stmbl:C C129
 U 1 1 57F703A4
 P 8100 4900
 F 0 "C129" H 8125 5000 50  0000 L CNN
@@ -554,7 +554,7 @@ $EndComp
 Connection ~ 7800 5050
 Connection ~ 7800 4750
 $Comp
-L stmbl1:C C14
+L stmbl:C C14
 U 1 1 583034AA
 P 8400 4900
 F 0 "C14" H 8425 5000 50  0000 L CNN
@@ -572,7 +572,7 @@ $EndComp
 Connection ~ 8100 5050
 Connection ~ 8100 4750
 $Comp
-L stmbl1:C C147
+L stmbl:C C147
 U 1 1 58B0F177
 P 8800 4900
 F 0 "C147" H 8825 5000 50  0000 L CNN
@@ -594,7 +594,7 @@ Wire Wire Line
 Wire Wire Line
 	8800 4650 8800 4750
 $Comp
-L stmbl1:GNDPWR #PWR063
+L stmbl:GNDPWR #PWR063
 U 1 1 58B0F3C7
 P 8800 5150
 F 0 "#PWR063" H 8800 4950 50  0001 C CNN

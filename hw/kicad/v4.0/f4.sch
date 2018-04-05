@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L stmbl1:STM32F405VG U26
+L stmbl:STM32F405VG U26
 U 1 1 565FD974
 P 10200 5500
 F 0 "U26" H 10200 5500 50  0000 C CNN
@@ -31,7 +31,7 @@ F 8 "" H 10200 5500 50  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:Crystal Y2
+L stmbl:Crystal Y2
 U 1 1 565FDF0A
 P 4700 3700
 F 0 "Y2" H 4700 3850 50  0000 C CNN
@@ -47,7 +47,7 @@ F 8 "" H 4700 3700 60  0001 C CNN "InternalName"
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:C C31
+L stmbl:C C31
 U 1 1 565FDF4E
 P 4350 3400
 F 0 "C31" H 4375 3500 50  0000 L CNN
@@ -63,7 +63,7 @@ F 8 "X7R" H 4350 3400 60  0001 C CNN "Tolerance"
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:C C32
+L stmbl:C C32
 U 1 1 565FDFAD
 P 4350 4000
 F 0 "C32" H 4375 4100 50  0000 L CNN
@@ -79,7 +79,7 @@ F 8 "X7R" H 4350 4000 60  0001 C CNN "Tolerance"
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0177
+L stmbl:GND #PWR0177
 U 1 1 565FE0C3
 P 4100 4000
 F 0 "#PWR0177" H 4100 3750 50  0001 C CNN
@@ -90,7 +90,7 @@ F 3 "" H 4100 4000 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0178
+L stmbl:GND #PWR0178
 U 1 1 565FE0E1
 P 4100 3400
 F 0 "#PWR0178" H 4100 3150 50  0001 C CNN
@@ -101,7 +101,7 @@ F 3 "" H 4100 3400 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:C C90
+L stmbl:C C90
 U 1 1 565FE1E0
 P 11600 8750
 F 0 "C90" H 11625 8850 50  0000 L CNN
@@ -117,7 +117,7 @@ F 8 "X7R" H 11600 8750 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C88
+L stmbl:C C88
 U 1 1 565FE20A
 P 11100 8750
 F 0 "C88" H 11125 8850 50  0000 L CNN
@@ -133,7 +133,7 @@ F 8 "X7R" H 11100 8750 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0179
+L stmbl:GND #PWR0179
 U 1 1 565FE268
 P 10600 8600
 F 0 "#PWR0179" H 10600 8350 50  0001 C CNN
@@ -144,7 +144,7 @@ F 3 "" H 10600 8600 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0180
+L stmbl:GND #PWR0180
 U 1 1 565FE28C
 P 10400 8600
 F 0 "#PWR0180" H 10400 8350 50  0001 C CNN
@@ -155,7 +155,7 @@ F 3 "" H 10400 8600 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0181
+L stmbl:GND #PWR0181
 U 1 1 565FE2A9
 P 10200 8600
 F 0 "#PWR0181" H 10200 8350 50  0001 C CNN
@@ -166,7 +166,7 @@ F 3 "" H 10200 8600 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0182
+L stmbl:GND #PWR0182
 U 1 1 565FE2C6
 P 10000 8600
 F 0 "#PWR0182" H 10000 8350 50  0001 C CNN
@@ -177,7 +177,7 @@ F 3 "" H 10000 8600 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0183
+L stmbl:GND #PWR0183
 U 1 1 565FE2E3
 P 9800 8600
 F 0 "#PWR0183" H 9800 8350 50  0001 C CNN
@@ -188,7 +188,7 @@ F 3 "" H 9800 8600 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0184
+L stmbl:GND #PWR0184
 U 1 1 565FE300
 P 11100 9000
 F 0 "#PWR0184" H 11100 8750 50  0001 C CNN
@@ -199,7 +199,7 @@ F 3 "" H 11100 9000 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0185
+L stmbl:GND #PWR0185
 U 1 1 565FE31D
 P 11600 9000
 F 0 "#PWR0185" H 11600 8750 50  0001 C CNN
@@ -210,7 +210,7 @@ F 3 "" H 11600 9000 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C89
+L stmbl:C C89
 U 1 1 565FE528
 P 11400 2150
 F 0 "C89" H 11425 2250 50  0000 L CNN
@@ -226,7 +226,7 @@ F 8 "X7R" H 11400 2150 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C87
+L stmbl:C C87
 U 1 1 565FE6F4
 P 10900 2150
 F 0 "C87" H 10925 2250 50  0000 L CNN
@@ -242,7 +242,7 @@ F 8 "X7R" H 10900 2150 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C86
+L stmbl:C C86
 U 1 1 565FE720
 P 10600 2150
 F 0 "C86" H 10625 2250 50  0000 L CNN
@@ -258,7 +258,7 @@ F 8 "X7R" H 10600 2150 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C85
+L stmbl:C C85
 U 1 1 565FE74C
 P 10300 2150
 F 0 "C85" H 10325 2250 50  0000 L CNN
@@ -274,7 +274,7 @@ F 8 "X7R" H 10300 2150 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C84
+L stmbl:C C84
 U 1 1 565FE77A
 P 10000 2150
 F 0 "C84" H 10025 2250 50  0000 L CNN
@@ -290,7 +290,7 @@ F 8 "X7R" H 10000 2150 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C80
+L stmbl:C C80
 U 1 1 565FE7A9
 P 9700 2150
 F 0 "C80" H 9725 2250 50  0000 L CNN
@@ -306,7 +306,7 @@ F 8 "X7R" H 9700 2150 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C77
+L stmbl:C C77
 U 1 1 565FE7DB
 P 9400 2150
 F 0 "C77" H 9425 2250 50  0000 L CNN
@@ -322,7 +322,7 @@ F 8 "X7R" H 9400 2150 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C65
+L stmbl:C C65
 U 1 1 565FE80F
 P 8400 2150
 F 0 "C65" H 8425 2250 50  0000 L CNN
@@ -338,7 +338,7 @@ F 8 "X7R" H 8400 2150 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:+3.3V #PWR0186
+L stmbl:+3.3V #PWR0186
 U 1 1 565FEC9D
 P 11800 2300
 F 0 "#PWR0186" H 11800 2150 50  0001 C CNN
@@ -349,7 +349,7 @@ F 3 "" H 11800 2300 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0187
+L stmbl:GND #PWR0187
 U 1 1 565FECDB
 P 11400 1900
 F 0 "#PWR0187" H 11400 1650 50  0001 C CNN
@@ -360,7 +360,7 @@ F 3 "" H 11400 1900 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0188
+L stmbl:GND #PWR0188
 U 1 1 565FED17
 P 10900 1900
 F 0 "#PWR0188" H 10900 1650 50  0001 C CNN
@@ -371,7 +371,7 @@ F 3 "" H 10900 1900 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0189
+L stmbl:GND #PWR0189
 U 1 1 565FED4C
 P 10600 1900
 F 0 "#PWR0189" H 10600 1650 50  0001 C CNN
@@ -382,7 +382,7 @@ F 3 "" H 10600 1900 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0190
+L stmbl:GND #PWR0190
 U 1 1 565FED81
 P 10300 1900
 F 0 "#PWR0190" H 10300 1650 50  0001 C CNN
@@ -393,7 +393,7 @@ F 3 "" H 10300 1900 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0191
+L stmbl:GND #PWR0191
 U 1 1 565FEDB6
 P 10000 1900
 F 0 "#PWR0191" H 10000 1650 50  0001 C CNN
@@ -404,7 +404,7 @@ F 3 "" H 10000 1900 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0192
+L stmbl:GND #PWR0192
 U 1 1 565FEDEB
 P 9700 1900
 F 0 "#PWR0192" H 9700 1650 50  0001 C CNN
@@ -415,7 +415,7 @@ F 3 "" H 9700 1900 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0193
+L stmbl:GND #PWR0193
 U 1 1 565FEE20
 P 9400 1900
 F 0 "#PWR0193" H 9400 1650 50  0001 C CNN
@@ -426,7 +426,7 @@ F 3 "" H 9400 1900 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0194
+L stmbl:GND #PWR0194
 U 1 1 565FF1AF
 P 8400 1900
 F 0 "#PWR0194" H 8400 1650 50  0001 C CNN
@@ -437,7 +437,7 @@ F 3 "" H 8400 1900 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:INDUCTOR L3
+L stmbl:INDUCTOR L3
 U 1 1 565FF296
 P 8900 2400
 F 0 "L3" V 8850 2400 50  0000 C CNN
@@ -453,7 +453,7 @@ F 8 "" H 8900 2400 60  0001 C CNN "Tolerance"
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:C C29
+L stmbl:C C29
 U 1 1 565FFAD0
 P 4600 2850
 F 0 "C29" H 4625 2950 50  0000 L CNN
@@ -469,7 +469,7 @@ F 8 "X7R" H 4600 2850 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0195
+L stmbl:GND #PWR0195
 U 1 1 565FFB31
 P 4600 2600
 F 0 "#PWR0195" H 4600 2350 50  0001 C CNN
@@ -480,7 +480,7 @@ F 3 "" H 4600 2600 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:USB_OTG P1
+L stmbl:USB_OTG P1
 U 1 1 56602983
 P 850 6000
 F 0 "P1" H 1175 5875 50  0000 C CNN
@@ -496,7 +496,7 @@ F 8 "" V 800 5900 60  0001 C CNN "Tolerance"
 	0    -1   1    0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0196
+L stmbl:GND #PWR0196
 U 1 1 56602FE1
 P 750 6900
 F 0 "#PWR0196" H 750 6650 50  0001 C CNN
@@ -507,7 +507,7 @@ F 3 "" H 750 6900 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0197
+L stmbl:GND #PWR0197
 U 1 1 56603874
 P 1250 6300
 F 0 "#PWR0197" H 1250 6050 50  0001 C CNN
@@ -518,7 +518,7 @@ F 3 "" H 1250 6300 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0198
+L stmbl:GND #PWR0198
 U 1 1 5667D307
 P 1650 6550
 F 0 "#PWR0198" H 1650 6300 50  0001 C CNN
@@ -529,7 +529,7 @@ F 3 "" H 1650 6550 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:+3.3V #PWR0199
+L stmbl:+3.3V #PWR0199
 U 1 1 5667D40D
 P 4400 6450
 F 0 "#PWR0199" H 4400 6300 50  0001 C CNN
@@ -540,7 +540,7 @@ F 3 "" H 4400 6450 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:USBLC6-4SC6 U1
+L stmbl:USBLC6-4SC6 U1
 U 1 1 5667D8FF
 P 2800 6550
 F 0 "U1" H 2101 6898 50  0000 C CNN
@@ -552,7 +552,7 @@ F 4 "USBLC6-4SC6" H 2101 6998 50  0001 C CNN "Manufacturer No"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R116
+L stmbl:R R116
 U 1 1 5668EA86
 P 7850 9050
 F 0 "R116" V 7930 9050 50  0000 C CNN
@@ -568,7 +568,7 @@ F 8 "" H 7850 9050 30  0001 C CNN "Source"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R117
+L stmbl:R R117
 U 1 1 5668EAFB
 P 7850 9550
 F 0 "R117" V 7930 9550 50  0000 C CNN
@@ -584,7 +584,7 @@ F 8 "" H 7850 9550 30  0001 C CNN "Source"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0200
+L stmbl:GND #PWR0200
 U 1 1 5668EC91
 P 7850 9900
 F 0 "#PWR0200" H 7850 9650 50  0001 C CNN
@@ -595,7 +595,7 @@ F 3 "" H 7850 9900 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R121
+L stmbl:R R121
 U 1 1 5668F2EF
 P 8750 9050
 F 0 "R121" V 8830 9050 50  0000 C CNN
@@ -611,7 +611,7 @@ F 8 "" H 8750 9050 30  0001 C CNN "Source"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R122
+L stmbl:R R122
 U 1 1 5668F395
 P 8750 9550
 F 0 "R122" V 8830 9550 50  0000 C CNN
@@ -627,7 +627,7 @@ F 8 "" H 8750 9550 30  0001 C CNN "Source"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0201
+L stmbl:GND #PWR0201
 U 1 1 5668F551
 P 8750 9900
 F 0 "#PWR0201" H 8750 9650 50  0001 C CNN
@@ -638,7 +638,7 @@ F 3 "" H 8750 9900 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C81
+L stmbl:C C81
 U 1 1 56692CBC
 P 8950 9550
 F 0 "C81" H 8975 9650 50  0000 L CNN
@@ -654,7 +654,7 @@ F 8 "X7R" H 8950 9550 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C64
+L stmbl:C C64
 U 1 1 56693D94
 P 8050 9550
 F 0 "C64" H 8075 9650 50  0000 L CNN
@@ -670,7 +670,7 @@ F 8 "X7R" H 8050 9550 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R61
+L stmbl:R R61
 U 1 1 566A9C27
 P 4850 2750
 F 0 "R61" V 4930 2750 50  0000 C CNN
@@ -686,7 +686,7 @@ F 8 "" H 4850 2750 30  0001 C CNN "Source"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0202
+L stmbl:GND #PWR0202
 U 1 1 566A9D9E
 P 4850 2500
 F 0 "#PWR0202" H 4850 2250 50  0001 C CNN
@@ -697,7 +697,7 @@ F 3 "" H 4850 2500 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:Jumper_NO_Small JP9
+L stmbl:Jumper_NO_Small JP9
 U 1 1 566A9E2C
 P 5100 2800
 F 0 "JP9" H 5100 2880 50  0000 C CNN
@@ -713,7 +713,7 @@ F 8 "" H 5100 2800 60  0001 C CNN "Tolerance"
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:+3.3V #PWR0203
+L stmbl:+3.3V #PWR0203
 U 1 1 566A9F89
 P 5100 2600
 F 0 "#PWR0203" H 5100 2450 50  0001 C CNN
@@ -724,7 +724,7 @@ F 3 "" H 5100 2600 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0204
+L stmbl:GND #PWR0204
 U 1 1 56667EDB
 P 3050 7050
 F 0 "#PWR0204" H 3050 6800 50  0001 C CNN
@@ -735,7 +735,7 @@ F 3 "" H 3050 7050 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L stmbl1:+3.3V #PWR0205
+L stmbl:+3.3V #PWR0205
 U 1 1 566680A9
 P 2550 7050
 F 0 "#PWR0205" H 2550 6900 50  0001 C CNN
@@ -746,7 +746,7 @@ F 3 "" H 2550 7050 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L stmbl1:C C16
+L stmbl:C C16
 U 1 1 5666869C
 P 2800 7050
 F 0 "C16" H 2825 7150 50  0000 L CNN
@@ -762,7 +762,7 @@ F 8 "X7R" H 2800 7050 60  0001 C CNN "Tolerance"
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:C C119
+L stmbl:C C119
 U 1 1 57B075E7
 P 8100 2150
 F 0 "C119" H 8125 2250 50  0000 L CNN
@@ -778,7 +778,7 @@ F 8 "X7R" H 8100 2150 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0206
+L stmbl:GND #PWR0206
 U 1 1 57B0781F
 P 8100 1900
 F 0 "#PWR0206" H 8100 1650 50  0001 C CNN
@@ -789,7 +789,7 @@ F 3 "" H 8100 1900 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L stmbl1:C C1
+L stmbl:C C1
 U 1 1 56602D8C
 P 850 6650
 F 0 "C1" H 875 6750 50  0000 L CNN
@@ -805,7 +805,7 @@ F 8 "X7R" H 850 6650 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R1
+L stmbl:R R1
 U 1 1 56602DEB
 P 650 6650
 F 0 "R1" V 730 6650 50  0000 C CNN
@@ -821,7 +821,7 @@ F 8 "" H 650 6650 30  0001 C CNN "Source"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:USBLC6-4SC6 U23
+L stmbl:USBLC6-4SC6 U23
 U 1 1 5818ACD1
 P 4600 10150
 F 0 "U23" H 3901 10498 50  0000 C CNN
@@ -833,7 +833,7 @@ F 4 "USBLC6-4SC6" H 3901 10598 50  0001 C CNN "Manufacturer No"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:USBLC6-4SC6 U20
+L stmbl:USBLC6-4SC6 U20
 U 1 1 5818ACD9
 P 2800 1950
 F 0 "U20" H 2101 2298 50  0000 C CNN
@@ -845,7 +845,7 @@ F 4 "USBLC6-4SC6" H 2800 1950 50  0001 C CNN "Manufacturer No"
 	-1   0    0    -1  
 $EndComp
 $Comp
-L stmbl1:USBLC6-4SC6 U22
+L stmbl:USBLC6-4SC6 U22
 U 1 1 5818ACE1
 P 2800 2650
 F 0 "U22" H 2101 2998 50  0000 C CNN
@@ -857,7 +857,7 @@ F 4 "USBLC6-4SC6" H 2101 3098 50  0001 C CNN "Manufacturer No"
 	-1   0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C61
+L stmbl:C C61
 U 1 1 5818ACE8
 P 2150 3450
 F 0 "C61" H 2175 3550 50  0000 L CNN
@@ -873,7 +873,7 @@ F 8 "X7R" H 2150 3450 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C66
+L stmbl:C C66
 U 1 1 5818ACEF
 P 2600 3450
 F 0 "C66" H 2625 3550 50  0000 L CNN
@@ -889,7 +889,7 @@ F 8 "X7R" H 2600 3450 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C67
+L stmbl:C C67
 U 1 1 5818ACF6
 P 4750 9250
 F 0 "C67" H 4775 9350 50  0000 L CNN
@@ -905,7 +905,7 @@ F 8 "X7R" H 4750 9250 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0207
+L stmbl:GND #PWR0207
 U 1 1 5818ACFD
 P 3450 10150
 F 0 "#PWR0207" H 3450 9900 50  0001 C CNN
@@ -916,7 +916,7 @@ F 3 "" H 3450 10150 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0208
+L stmbl:GND #PWR0208
 U 1 1 5818AD03
 P 3950 1950
 F 0 "#PWR0208" H 3950 1700 50  0001 C CNN
@@ -927,7 +927,7 @@ F 3 "" H 3950 1950 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0209
+L stmbl:GND #PWR0209
 U 1 1 5818AD09
 P 3950 2650
 F 0 "#PWR0209" H 3950 2400 50  0001 C CNN
@@ -938,7 +938,7 @@ F 3 "" H 3950 2650 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0210
+L stmbl:GND #PWR0210
 U 1 1 5818AD0F
 P 4750 9500
 F 0 "#PWR0210" H 4750 9250 50  0001 C CNN
@@ -949,7 +949,7 @@ F 3 "" H 4750 9500 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0211
+L stmbl:GND #PWR0211
 U 1 1 5818AD15
 P 2600 3700
 F 0 "#PWR0211" H 2600 3450 50  0001 C CNN
@@ -960,7 +960,7 @@ F 3 "" H 2600 3700 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0212
+L stmbl:GND #PWR0212
 U 1 1 5818AD1B
 P 2150 3700
 F 0 "#PWR0212" H 2150 3450 50  0001 C CNN
@@ -971,7 +971,7 @@ F 3 "" H 2150 3700 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:+3.3V #PWR0213
+L stmbl:+3.3V #PWR0213
 U 1 1 5818AD21
 P 5750 10150
 F 0 "#PWR0213" H 5750 10000 50  0001 C CNN
@@ -982,7 +982,7 @@ F 3 "" H 5750 10150 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:+3.3V #PWR0214
+L stmbl:+3.3V #PWR0214
 U 1 1 5818AD3C
 P 4750 9000
 F 0 "#PWR0214" H 4750 8850 50  0001 C CNN
@@ -993,7 +993,7 @@ F 3 "" H 4750 9000 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:+24V #PWR0215
+L stmbl:+24V #PWR0215
 U 1 1 58234F7D
 P 7850 8800
 F 0 "#PWR0215" H 7850 8650 50  0001 C CNN
@@ -1004,7 +1004,7 @@ F 3 "" H 7850 8800 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R153
+L stmbl:R R153
 U 1 1 582C978B
 P 4950 4000
 F 0 "R153" V 5030 4000 50  0000 C CNN
@@ -1020,7 +1020,7 @@ F 8 "" H 4950 4000 30  0001 C CNN "Source"
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:+5V #PWR0216
+L stmbl:+5V #PWR0216
 U 1 1 5831AE80
 P 2150 3200
 F 0 "#PWR0216" H 2150 3050 50  0001 C CNN
@@ -1031,7 +1031,7 @@ F 3 "" H 2150 3200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:+5V #PWR0217
+L stmbl:+5V #PWR0217
 U 1 1 5831AF04
 P 2600 3200
 F 0 "#PWR0217" H 2600 3050 50  0001 C CNN
@@ -1042,7 +1042,7 @@ F 3 "" H 2600 3200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:+5V #PWR0218
+L stmbl:+5V #PWR0218
 U 1 1 5831BE71
 P 1650 1950
 F 0 "#PWR0218" H 1650 1800 50  0001 C CNN
@@ -1053,7 +1053,7 @@ F 3 "" H 1650 1950 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:+5V #PWR0219
+L stmbl:+5V #PWR0219
 U 1 1 5831BF14
 P 1650 2650
 F 0 "#PWR0219" H 1650 2500 50  0001 C CNN
@@ -1064,7 +1064,7 @@ F 3 "" H 1650 2650 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:+5VA #PWR0220
+L stmbl:+5VA #PWR0220
 U 1 1 5832C893
 P 8750 8800
 F 0 "#PWR0220" H 8750 8650 50  0001 C CNN
@@ -1075,7 +1075,7 @@ F 3 "" H 8750 8800 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GND #PWR0221
+L stmbl:GND #PWR0221
 U 1 1 5834B53B
 P 5000 6600
 F 0 "#PWR0221" H 5000 6350 50  0001 C CNN
@@ -1086,7 +1086,7 @@ F 3 "" H 5000 6600 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0222
+L stmbl:GND #PWR0222
 U 1 1 5834BAB3
 P 15300 8000
 F 0 "#PWR0222" H 15300 7750 50  0001 C CNN
@@ -1097,7 +1097,7 @@ F 3 "" H 15300 8000 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0223
+L stmbl:GND #PWR0223
 U 1 1 5834C236
 P 15300 8100
 F 0 "#PWR0223" H 15300 7850 50  0001 C CNN
@@ -1108,7 +1108,7 @@ F 3 "" H 15300 8100 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0224
+L stmbl:GND #PWR0224
 U 1 1 5834C460
 P 15300 7500
 F 0 "#PWR0224" H 15300 7250 50  0001 C CNN
@@ -1119,7 +1119,7 @@ F 3 "" H 15300 7500 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0225
+L stmbl:GND #PWR0225
 U 1 1 5834C5CD
 P 15300 7100
 F 0 "#PWR0225" H 15300 6850 50  0001 C CNN
@@ -1130,7 +1130,7 @@ F 3 "" H 15300 7100 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0226
+L stmbl:GND #PWR0226
 U 1 1 5834C64A
 P 15300 7000
 F 0 "#PWR0226" H 15300 6750 50  0001 C CNN
@@ -1141,7 +1141,7 @@ F 3 "" H 15300 7000 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0227
+L stmbl:GND #PWR0227
 U 1 1 5834CAE4
 P 15300 5000
 F 0 "#PWR0227" H 15300 4750 50  0001 C CNN
@@ -1152,7 +1152,7 @@ F 3 "" H 15300 5000 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0228
+L stmbl:GND #PWR0228
 U 1 1 5834CD84
 P 15300 4500
 F 0 "#PWR0228" H 15300 4250 50  0001 C CNN
@@ -1163,7 +1163,7 @@ F 3 "" H 15300 4500 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L stmbl1:GND #PWR0229
+L stmbl:GND #PWR0229
 U 1 1 5834D0BD
 P 15300 3200
 F 0 "#PWR0229" H 15300 2950 50  0001 C CNN

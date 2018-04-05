@@ -193,7 +193,7 @@ Wire Wire Line
 Wire Wire Line
 	1600 1800 1650 1800
 $Comp
-L stmbl1:+3.3V #PWR070
+L stmbl:+3.3V #PWR070
 U 1 1 578427DC
 P 1650 1550
 F 0 "#PWR070" H 1650 1400 50  0001 C CNN
@@ -208,7 +208,7 @@ Wire Wire Line
 Wire Wire Line
 	1650 1600 1600 1600
 $Comp
-L stmbl1:GND #PWR071
+L stmbl:GND #PWR071
 U 1 1 57848EA2
 P 1650 1950
 F 0 "#PWR071" H 1650 1700 50  0001 C CNN
@@ -223,7 +223,7 @@ Wire Wire Line
 Wire Wire Line
 	1650 1900 1650 1950
 $Comp
-L stmbl1:CONN_01X04 P14
+L stmbl:CONN_01X04 P14
 U 1 1 57AEB2FC
 P 1400 1750
 F 0 "P14" H 1400 2000 50  0000 C CNN
@@ -321,7 +321,7 @@ Wire Wire Line
 Wire Wire Line
 	3100 1750 2900 1750
 $Comp
-L stmbl1:non_plated U32
+L stmbl:non_plated U32
 U 1 1 5830D361
 P 6450 1250
 F 0 "U32" H 6450 900 60  0000 C CNN
@@ -332,7 +332,7 @@ F 3 "" H 6450 1250 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:OPEN_HARDWARE_1 LOGO1
+L stmbl:OPEN_HARDWARE_1 LOGO1
 U 1 1 58341DA7
 P 2400 5400
 F 0 "LOGO1" H 2400 5675 50  0000 C CNN

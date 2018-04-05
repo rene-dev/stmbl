@@ -19,7 +19,7 @@ U
 Text HLabel 2600 4000 0    60   Input ~ 0
 U_
 $Comp
-L stmbl1:R R27
+L stmbl:R R27
 U 1 1 566960D3
 P 2900 3350
 F 0 "R27" V 2980 3350 50  0000 C CNN
@@ -35,7 +35,7 @@ F 8 "1%" H 2900 3350 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R28
+L stmbl:R R28
 U 1 1 56696104
 P 2900 3750
 F 0 "R28" V 2980 3750 50  0000 C CNN
@@ -51,7 +51,7 @@ F 8 "1%" H 2900 3750 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R29
+L stmbl:R R29
 U 1 1 56696127
 P 2900 4250
 F 0 "R29" V 2980 4250 50  0000 C CNN
@@ -67,7 +67,7 @@ F 8 "1%" H 2900 4250 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GNDPWR #PWR051
+L stmbl:GNDPWR #PWR051
 U 1 1 566961CF
 P 2900 4500
 F 0 "#PWR051" H 2900 4300 50  0001 C CNN
@@ -82,7 +82,7 @@ V
 Text HLabel 3400 4000 0    60   Input ~ 0
 V_
 $Comp
-L stmbl1:R R32
+L stmbl:R R32
 U 1 1 5669628D
 P 3700 3350
 F 0 "R32" V 3780 3350 50  0000 C CNN
@@ -98,7 +98,7 @@ F 8 "1%" H 3700 3350 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R33
+L stmbl:R R33
 U 1 1 56696293
 P 3700 3750
 F 0 "R33" V 3780 3750 50  0000 C CNN
@@ -114,7 +114,7 @@ F 8 "1%" H 3700 3750 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R34
+L stmbl:R R34
 U 1 1 56696299
 P 3700 4250
 F 0 "R34" V 3780 4250 50  0000 C CNN
@@ -130,7 +130,7 @@ F 8 "1%" H 3700 4250 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GNDPWR #PWR052
+L stmbl:GNDPWR #PWR052
 U 1 1 566962B2
 P 3700 4500
 F 0 "#PWR052" H 3700 4300 50  0001 C CNN
@@ -145,7 +145,7 @@ W
 Text HLabel 4200 4000 0    60   Input ~ 0
 W_
 $Comp
-L stmbl1:R R51
+L stmbl:R R51
 U 1 1 56696338
 P 4500 3350
 F 0 "R51" V 4580 3350 50  0000 C CNN
@@ -161,7 +161,7 @@ F 8 "1%" H 4500 3350 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R52
+L stmbl:R R52
 U 1 1 5669633E
 P 4500 3750
 F 0 "R52" V 4580 3750 50  0000 C CNN
@@ -177,7 +177,7 @@ F 8 "1%" H 4500 3750 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R53
+L stmbl:R R53
 U 1 1 56696344
 P 4500 4250
 F 0 "R53" V 4580 4250 50  0000 C CNN
@@ -193,7 +193,7 @@ F 8 "1%" H 4500 4250 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GNDPWR #PWR053
+L stmbl:GNDPWR #PWR053
 U 1 1 5669635D
 P 4500 4500
 F 0 "#PWR053" H 4500 4300 50  0001 C CNN
@@ -206,7 +206,7 @@ $EndComp
 Text HLabel 5100 4000 0    60   Input ~ 0
 HV_
 $Comp
-L stmbl1:R R77
+L stmbl:R R77
 U 1 1 566963D7
 P 5400 3350
 F 0 "R77" V 5480 3350 50  0000 C CNN
@@ -222,7 +222,7 @@ F 8 "1%" H 5400 3350 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R78
+L stmbl:R R78
 U 1 1 566963DD
 P 5400 3750
 F 0 "R78" V 5480 3750 50  0000 C CNN
@@ -238,7 +238,7 @@ F 8 "1%" H 5400 3750 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:R R79
+L stmbl:R R79
 U 1 1 566963E3
 P 5400 4250
 F 0 "R79" V 5480 4250 50  0000 C CNN
@@ -254,7 +254,7 @@ F 8 "1%" H 5400 4250 30  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:GNDPWR #PWR054
+L stmbl:GNDPWR #PWR054
 U 1 1 566963FC
 P 5400 4500
 F 0 "#PWR054" H 5400 4300 50  0001 C CNN
@@ -265,7 +265,7 @@ F 3 "" H 5400 4450 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C11
+L stmbl:C C11
 U 1 1 5682FF8E
 P 2700 4250
 F 0 "C11" H 2725 4350 50  0000 L CNN
@@ -281,7 +281,7 @@ F 8 "X7R" H 2700 4250 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C20
+L stmbl:C C20
 U 1 1 5683022A
 P 3500 4250
 F 0 "C20" H 3525 4350 50  0000 L CNN
@@ -297,7 +297,7 @@ F 8 "X7R" H 3500 4250 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C23
+L stmbl:C C23
 U 1 1 568302B9
 P 4300 4250
 F 0 "C23" H 4325 4350 50  0000 L CNN
@@ -313,7 +313,7 @@ F 8 "X7R" H 4300 4250 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:C C39
+L stmbl:C C39
 U 1 1 56830430
 P 5200 4250
 F 0 "C39" H 5225 4350 50  0000 L CNN
@@ -329,7 +329,7 @@ F 8 "X7R" H 5200 4250 60  0001 C CNN "Tolerance"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl1:VPP #PWR055
+L stmbl:VPP #PWR055
 U 1 1 5775CE00
 P 5400 3100
 F 0 "#PWR055" H 5400 2950 50  0001 C CNN
