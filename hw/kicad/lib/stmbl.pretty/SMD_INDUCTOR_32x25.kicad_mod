@@ -1,9 +1,9 @@
-(module SMD_INDUCTOR_32x25 (layer F.Cu) (tedit 594EE8A7)
+(module SMD_INDUCTOR_32x25 (layer F.Cu) (tedit 5AC5683C)
   (attr smd)
-  (fp_text reference L3 (at -2.57 -0.712) (layer F.SilkS)
+  (fp_text reference L12 (at -2.57 -0.712) (layer F.SilkS) hide
     (effects (font (size 0.8 0.8) (thickness 0.2)))
   )
-  (fp_text value INDUCTOR (at 0 -2.5) (layer F.Fab)
+  (fp_text value "4.7µH 1.5A" (at 0 -2.5) (layer F.Fab)
     (effects (font (size 1 1) (thickness 0.15)))
   )
   (fp_line (start -2 1.75) (end -1 1.75) (layer F.SilkS) (width 0.15))

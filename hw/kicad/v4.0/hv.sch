@@ -226,7 +226,7 @@ U 1 1 57AEC939
 P 2300 1750
 F 0 "P13" H 2300 2000 50  0000 C CNN
 F 1 "CONN_01X04" V 2400 1750 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x04" H 2300 1750 50  0001 C CNN
+F 2 "stmbl:Socket_Strip_Straight_1x04" H 2300 1750 50  0001 C CNN
 F 3 "" H 2300 1750 50  0000 C CNN
 	1    2300 1750
 	-1   0    0    1   

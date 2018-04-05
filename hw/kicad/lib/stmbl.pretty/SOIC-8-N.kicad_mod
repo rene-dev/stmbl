@@ -1,4 +1,4 @@
-(module SOIC-8-N (layer F.Cu) (tedit 5895993B)
+(module SOIC-8-N (layer F.Cu) (tedit 5AC565F8)
   (descr "Module Narrow CMS SOJ 8 pins large")
   (tags "CMS SOJ")
   (attr smd)
@@ -27,7 +27,7 @@
   (pad 7 smd roundrect (at 2.75 -0.635 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25))
   (pad 8 smd roundrect (at 2.75 -1.905 270) (size 0.5 1.25) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25))
   (model ${KIPRJMOD}/../lib/stmbl.pretty/so8.wrl
-    (at (xyz -0.1220472440944882 -0.09842519685039371 0))
+    (offset (xyz -3.099999953442671 -2.499999962453767 0))
     (scale (xyz 0.394 0.394 0.394))
     (rotate (xyz 0 0 0))
   )

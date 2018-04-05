@@ -696,7 +696,7 @@ U 1 1 5801B855
 P 6250 1350
 F 0 "P10" H 6250 1700 50  0000 C CNN
 F 1 "CONN_02X06" H 6250 1000 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Angled_2x06" H 6250 900 50  0001 C CNN
+F 2 "stmbl:Socket_Strip_Angled_2x06" H 6250 900 50  0001 C CNN
 F 3 "" H 6250 150 50  0000 C CNN
 	1    6250 1350
 	-1   0    0    -1  
