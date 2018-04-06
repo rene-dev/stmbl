@@ -34,10 +34,10 @@ typedef struct {
   uint32_t addr;
   uint32_t value;
   enum{
-    BOOTLOADER_OPCODE_READ = 0,
+    BOOTLOADER_OPCODE_NOP = 0,
+    BOOTLOADER_OPCODE_READ,
     BOOTLOADER_OPCODE_WRITE, // MEM[addr] = value
     BOOTLOADER_OPCODE_PAGEERASE, // clear PAGE[addr]
-    BOOTLOADER_OPCODE_RESET,
     BOOTLOADER_OPCODE_CRCCHECK, // CRC(APP) == 0
   } cmd : 8;
   enum {
@@ -67,6 +67,7 @@ typedef struct {
   float vel;
   union {
     struct {
+      uint8_t buf;
       uint8_t enable : 1;
       enum packet_to_hv_cmd_type_t {
         VOLT_MODE = 0,
@@ -79,12 +80,6 @@ typedef struct {
         PHASE_180_2PH,
         PHASE_180_3PH,
       } phase_type : 3;
-      enum packet_to_hv_opcode_t {
-        PACKET_TO_HV_OPCODE_NOP = 0,
-        PACKET_TO_HV_OPCODE_RESET,
-        PACKET_TO_HV_OPCODE_BOOTLOADER,
-      } opcode : 3;
-      uint8_t buf;
     } flags;
     uint32_t padding;
   };

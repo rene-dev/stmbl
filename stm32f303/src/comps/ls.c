@@ -147,10 +147,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   USART3->ICR |= USART_ICR_RTOCF;  // timeout clear flag
 
   ctx->packet_from_hv.header.len = (sizeof(packet_from_hv_t) - sizeof(stmbl_talk_header_t)) / 4;
-  ctx->packet_from_hv.header.flags.write_to_conf = 1;
-  ctx->packet_from_hv.header.flags.read_same_addr = 1;
-  ctx->packet_from_hv.header.flags.packet_to_master = 1;
-  ctx->packet_from_hv.header.flags.error = 0;
+  ctx->packet_from_hv.header.flags.cmd = WRITE_CONF;
   ctx->packet_from_hv.header.slave_addr = 0;
 }
 
@@ -192,7 +189,28 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   if(dma_pos == sizeof(packet_to_hv_t)) {
     uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_to_hv.header.slave_addr), sizeof(packet_to_hv_t) / 4 - 1);
     if(ctx->packet_to_hv.header.slave_addr == 0 && ctx->packet_to_hv.header.len == (sizeof(packet_to_hv_t) - sizeof(stmbl_talk_header_t)) / 4 && crc == ctx->packet_to_hv.header.crc) {
-      // 
+      //
+      uint8_t a       = ctx->packet_to_hv.header.conf_addr;
+      a               = CLAMP(a, 0, sizeof(config) / 4);
+
+      switch(ctx->packet_to_hv.header.flags.cmd){
+        case NO_CMD:
+        break;
+        case WRITE_CONF:
+          config.data[a]  = ctx->packet_to_hv.header.config.f32;  // TODO: first enable after complete update
+        break;
+        case READ_CONF:
+          ctx->tx_addr = a;
+        break;
+        case DO_RESET:
+          NVIC_SystemReset();
+        break;
+        case BOOTLOADER:
+          RTC->BKP0R = 0xDEADBEEF;
+          NVIC_SystemReset();
+        break;
+      }
+
       PIN(en)         = ctx->packet_to_hv.flags.enable;
       PIN(phase_mode) = ctx->packet_to_hv.flags.phase_type;
       PIN(cmd_mode)   = ctx->packet_to_hv.flags.cmd_type;
@@ -200,10 +218,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       PIN(q_cmd)      = ctx->packet_to_hv.q_cmd;
       PIN(pos)        = ctx->packet_to_hv.pos;
       PIN(vel)        = ctx->packet_to_hv.vel;
-      uint8_t a       = ctx->packet_to_hv.header.conf_addr;
-      a               = CLAMP(a, 0, sizeof(config) / 4);
-      config.data[a]  = ctx->packet_to_hv.header.config.f32;  // TODO: first enable after complete update
-      if(ctx->packet_to_hv.flags.buf != 0xff){
+      
+      if(ctx->packet_to_hv.flags.buf != 0x0){
         extern struct ringbuf rx_buf;
         rb_write(&rx_buf, (void*)&(ctx->packet_to_hv.flags.buf), 1);
       }
@@ -281,7 +297,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     if(rb_read(&tx_buf, buf, 1)){
       ctx->packet_from_hv.buf = buf[0];
     }else{
-      ctx->packet_from_hv.buf = 0xff;
+      ctx->packet_from_hv.buf = 0x0;
     }
     ctx->packet_from_hv.header.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_from_hv.header.slave_addr), sizeof(packet_from_hv_t) / 4 - 1);
 

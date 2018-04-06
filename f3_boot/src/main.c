@@ -78,8 +78,26 @@ void TIM8_UP_IRQHandler() {
     if(rx_buf.header.slave_addr == 255 && rx_buf.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4 && rx_buf.header.crc == HAL_CRC_Calculate(&hcrc, (uint32_t *)&(rx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1)){
       //do stuff
       //tx_buf.state = do_stuff();
+
+      switch(rx_buf.header.flags.cmd){
+        case NO_CMD:
+        break;
+        case WRITE_CONF:
+        break;
+        case READ_CONF:
+        break;
+        case DO_RESET:
+          HAL_FLASH_Lock();
+          HAL_NVIC_SystemReset();
+        break;
+        case BOOTLOADER:
+        break;
+      }
+
       HAL_StatusTypeDef status = HAL_OK;
       switch(rx_buf.cmd){
+        case BOOTLOADER_OPCODE_NOP:
+        break;
         case BOOTLOADER_OPCODE_READ:
           tx_buf.value = *(uint32_t *)rx_buf.addr;
           tx_buf.addr = rx_buf.addr;
@@ -113,11 +131,6 @@ void TIM8_UP_IRQHandler() {
           status                      = HAL_FLASHEx_Erase(&eraseinitstruct, &PageError);
           break;
 
-        case BOOTLOADER_OPCODE_RESET:
-          HAL_FLASH_Lock();
-          HAL_NVIC_SystemReset();
-          break;
-
         case BOOTLOADER_OPCODE_CRCCHECK:
           if(app_ok()){
             status = HAL_OK;
@@ -128,22 +141,20 @@ void TIM8_UP_IRQHandler() {
           break;
       }
 
-      if(status != HAL_OK){
-        tx_buf.header.flags.error = 1;
-      }
-      else{
-        tx_buf.header.flags.error = 0;
-      }
+      // if(status != HAL_OK){
+      //   tx_buf.header.flags.conf_addr = 1;
+      // }
+      // else{
+      //   tx_buf.header.flags.error = 0;
+      // }
       
       tx_buf.cmd = rx_buf.cmd;
       tx_buf.header.flags.counter = rx_buf.header.flags.counter;
       tx_buf.header.slave_addr = 255;
       tx_buf.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
-      tx_buf.header.flags.packet_to_master = 1;
       tx_buf.header.conf_addr = 0;
       tx_buf.header.config.u32 = 0;
-      tx_buf.header.flags.read_same_addr = 0;
-      tx_buf.header.flags.write_to_conf = 0;
+      tx_buf.header.flags.cmd = NO_CMD;
       tx_buf.header.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(tx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1);
 
       rx_buf.header.crc = 0;
@@ -300,11 +311,9 @@ int main(void) {
 
     tx_buf.header.slave_addr = 255;
     tx_buf.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
-    tx_buf.header.flags.packet_to_master = 1;
     tx_buf.header.conf_addr = 0;
     tx_buf.header.config.u32 = 0;
-    tx_buf.header.flags.read_same_addr = 0;
-    tx_buf.header.flags.write_to_conf = 0;
+    tx_buf.header.flags.cmd = NO_CMD;
 
     // start rx DMA
     DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
