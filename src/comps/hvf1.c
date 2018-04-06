@@ -150,9 +150,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       PIN(pwm_volt) = 0.0;
     }
     PIN(hv_temp)   = TOFLOAT(ctx->packet_from_hv.data.hv_temp);
-    PIN(over_cur)  = ctx->packet_from_hv.data.over_cur;  //hardware cur limit
+    PIN(over_cur)  = ctx->packet_from_hv.data.over_cur;   //hardware cur limit
     PIN(over_temp) = ctx->packet_from_hv.data.over_temp;  //hardware temp limit
-    PIN(hv_fault)  = ctx->packet_from_hv.data.hv_fault;  //iramx fault
+    PIN(hv_fault)  = ctx->packet_from_hv.data.hv_fault;   //iramx fault
 
     PIN(error) = 0.0;  //TODO: link to fault
   } else {

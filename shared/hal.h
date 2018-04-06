@@ -160,7 +160,7 @@ typedef struct {
   volatile float frt_period;
 
   hal_error_t error_info;
-  
+
   volatile enum {
     PRINT_ALL,
     PRINT_ERRORS,

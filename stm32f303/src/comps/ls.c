@@ -42,7 +42,7 @@ HAL_PIN(q_fb);
 HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
 HAL_PIN(core_temp);
-HAL_PIN(fault_in);//fault code send to f4
+HAL_PIN(fault_in);  //fault code send to f4
 HAL_PIN(y);
 HAL_PIN(u_fb);
 HAL_PIN(v_fb);
@@ -55,7 +55,7 @@ HAL_PIN(crc_ok);
 HAL_PIN(timeout);
 HAL_PIN(dma_pos);
 HAL_PIN(idle);
-HAL_PIN(fault);//communication fault output
+HAL_PIN(fault);  //communication fault output
 
 HAL_PIN(dma_pos2);
 HAL_PIN(arr);
@@ -146,8 +146,8 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   USART3->CR2 |= USART_CR2_RTOEN;  // timeout en
   USART3->ICR |= USART_ICR_RTOCF;  // timeout clear flag
 
-  ctx->packet_from_hv.header.len = (sizeof(packet_from_hv_t) - sizeof(stmbl_talk_header_t)) / 4;
-  ctx->packet_from_hv.header.flags.cmd = WRITE_CONF;
+  ctx->packet_from_hv.header.len        = (sizeof(packet_from_hv_t) - sizeof(stmbl_talk_header_t)) / 4;
+  ctx->packet_from_hv.header.flags.cmd  = WRITE_CONF;
   ctx->packet_from_hv.header.slave_addr = 0;
 }
 
@@ -190,25 +190,25 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     uint32_t crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_to_hv.header.slave_addr), sizeof(packet_to_hv_t) / 4 - 1);
     if(ctx->packet_to_hv.header.slave_addr == 0 && ctx->packet_to_hv.header.len == (sizeof(packet_to_hv_t) - sizeof(stmbl_talk_header_t)) / 4 && crc == ctx->packet_to_hv.header.crc) {
       //
-      uint8_t a       = ctx->packet_to_hv.header.conf_addr;
-      a               = CLAMP(a, 0, sizeof(config) / 4);
+      uint8_t a = ctx->packet_to_hv.header.conf_addr;
+      a         = CLAMP(a, 0, sizeof(config) / 4);
 
-      switch(ctx->packet_to_hv.header.flags.cmd){
+      switch(ctx->packet_to_hv.header.flags.cmd) {
         case NO_CMD:
-        break;
+          break;
         case WRITE_CONF:
-          config.data[a]  = ctx->packet_to_hv.header.config.f32;  // TODO: first enable after complete update
-        break;
+          config.data[a] = ctx->packet_to_hv.header.config.f32;  // TODO: first enable after complete update
+          break;
         case READ_CONF:
           ctx->tx_addr = a;
-        break;
+          break;
         case DO_RESET:
           NVIC_SystemReset();
-        break;
+          break;
         case BOOTLOADER:
           RTC->BKP0R = 0xDEADBEEF;
           NVIC_SystemReset();
-        break;
+          break;
       }
 
       PIN(en)         = ctx->packet_to_hv.flags.enable;
@@ -218,10 +218,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       PIN(q_cmd)      = ctx->packet_to_hv.q_cmd;
       PIN(pos)        = ctx->packet_to_hv.pos;
       PIN(vel)        = ctx->packet_to_hv.vel;
-      
-      if(ctx->packet_to_hv.flags.buf != 0x0){
+
+      if(ctx->packet_to_hv.flags.buf != 0x0) {
         extern struct ringbuf rx_buf;
-        rb_write(&rx_buf, (void*)&(ctx->packet_to_hv.flags.buf), 1);
+        rb_write(&rx_buf, (void *)&(ctx->packet_to_hv.flags.buf), 1);
       }
 
       PIN(r)       = config.pins.r;
@@ -285,18 +285,18 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     state.pins.pwm_volt  = PIN(pwm_volt);
 
     // fill tx struct
-    ctx->packet_from_hv.fault     = (uint8_t)PIN(fault_in);
-    ctx->packet_from_hv.d_fb     = PIN(d_fb);
-    ctx->packet_from_hv.q_fb     = PIN(q_fb);
-    ctx->packet_from_hv.header.conf_addr     = ctx->tx_addr;
-    ctx->packet_from_hv.header.config.f32    = state.data[ctx->tx_addr++];
+    ctx->packet_from_hv.fault             = (uint8_t)PIN(fault_in);
+    ctx->packet_from_hv.d_fb              = PIN(d_fb);
+    ctx->packet_from_hv.q_fb              = PIN(q_fb);
+    ctx->packet_from_hv.header.conf_addr  = ctx->tx_addr;
+    ctx->packet_from_hv.header.config.f32 = state.data[ctx->tx_addr++];
     ctx->tx_addr %= sizeof(state) / 4;
 
     extern struct ringbuf tx_buf;
     uint8_t buf[1];
-    if(rb_read(&tx_buf, buf, 1)){
+    if(rb_read(&tx_buf, buf, 1)) {
       ctx->packet_from_hv.buf = buf[0];
-    }else{
+    } else {
       ctx->packet_from_hv.buf = 0x0;
     }
     ctx->packet_from_hv.header.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(ctx->packet_from_hv.header.slave_addr), sizeof(packet_from_hv_t) / 4 - 1);

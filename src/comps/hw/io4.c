@@ -20,14 +20,14 @@ HAL_PIN(out0);
 HAL_PIN(out1);
 HAL_PIN(out2);
 
-HAL_PIN(in0);  //input 0, analog
-HAL_PIN(in1);  //input 1, analog
-HAL_PIN(ind0);  //input 0, digital
-HAL_PIN(ind1);  //input 1, digital
+HAL_PIN(in0);    //input 0, analog
+HAL_PIN(in1);    //input 1, analog
+HAL_PIN(ind0);   //input 0, digital
+HAL_PIN(ind1);   //input 1, digital
 HAL_PIN(ind0n);  //input 0 inverted
 HAL_PIN(ind1n);  //input 0 inverted
-HAL_PIN(th0);  //voltage threshold in0
-HAL_PIN(th1);  //voltage threshold in1
+HAL_PIN(th0);    //voltage threshold in0
+HAL_PIN(th1);    //voltage threshold in1
 
 HAL_PIN(CTX);
 HAL_PIN(CRX);
@@ -110,11 +110,11 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC3, ENABLE);
   ADC_InitStructure.ADC_DataAlign            = ADC_DataAlign_Right;  //data converted will be shifted to right
-  ADC_InitStructure.ADC_Resolution           = ADC_Resolution_12b;  //Input voltage is converted into a 12bit number giving a maximum value of 4096
-  ADC_InitStructure.ADC_ContinuousConvMode   = DISABLE;  //the conversion is continuous, the input data is converted more than once
-  ADC_InitStructure.ADC_ExternalTrigConv     = TIM_MASTER_ADC;  //trigger on rising edge of TIM_MASTER oc
+  ADC_InitStructure.ADC_Resolution           = ADC_Resolution_12b;   //Input voltage is converted into a 12bit number giving a maximum value of 4096
+  ADC_InitStructure.ADC_ContinuousConvMode   = DISABLE;              //the conversion is continuous, the input data is converted more than once
+  ADC_InitStructure.ADC_ExternalTrigConv     = TIM_MASTER_ADC;       //trigger on rising edge of TIM_MASTER oc
   ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_Rising;
-  ADC_InitStructure.ADC_NbrOfConversion      = 1;  //ADC_ANZ;//I think this one is clear :p
+  ADC_InitStructure.ADC_NbrOfConversion      = 1;       //ADC_ANZ;//I think this one is clear :p
   ADC_InitStructure.ADC_ScanConvMode         = ENABLE;  //The scan is configured in one channel
   ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
   ADC_Init(ADC3, &ADC_InitStructure);

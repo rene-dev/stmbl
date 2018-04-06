@@ -10,17 +10,17 @@ static volatile float jog;
 static volatile float jog_timeout;
 
 void jog_left(char *ptr) {
-  jog      = -1.0;
+  jog         = -1.0;
   jog_timeout = 0.0;
 }
 
 void jog_right(char *ptr) {
-  jog      = 1.0;
+  jog         = 1.0;
   jog_timeout = 0.0;
 }
 
 void jog_stop(char *ptr) {
-  jog = 0.0;
+  jog         = 0.0;
   jog_timeout = 0.0;
 }
 
@@ -29,18 +29,17 @@ COMMAND("jogr", jog_right, "Jog right");
 COMMAND("jogx", jog_stop, "Stop jog");
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-    jog_timeout = 0.0;
-    jog = 0.0;
+  jog_timeout = 0.0;
+  jog         = 0.0;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct jog_pin_ctx_t *pins = (struct jog_pin_ctx_t *)pin_ptr;
 
   if(jog_timeout < 0.75) {
-    jog_timeout += period; 
-  }
-  else{
-      jog = 0.0;
+    jog_timeout += period;
+  } else {
+    jog = 0.0;
   }
   PIN(jog) = jog;
 }

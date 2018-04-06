@@ -8,18 +8,18 @@ HAL_COMP(spid);
 
 // input
 HAL_PIN(cmd);  // command
-HAL_PIN(fb);  // feedback
-HAL_PIN(en);  // enalbe
+HAL_PIN(fb);   // feedback
+HAL_PIN(en);   // enalbe
 
 // gains
-HAL_PIN(kp);  // proportional
-HAL_PIN(ki);  // integator
-HAL_PIN(kd);  // differential
-HAL_PIN(ksd);  // scaled differential
-HAL_PIN(kdi);  // differential integrator
-HAL_PIN(ksdi);  // scaled differential integrator
-HAL_PIN(kff0);  // feedforward 0
-HAL_PIN(kff1);  // feedforward 1
+HAL_PIN(kp);      // proportional
+HAL_PIN(ki);      // integator
+HAL_PIN(kd);      // differential
+HAL_PIN(ksd);     // scaled differential
+HAL_PIN(kdi);     // differential integrator
+HAL_PIN(ksdi);    // scaled differential integrator
+HAL_PIN(kff0);    // feedforward 0
+HAL_PIN(kff1);    // feedforward 1
 HAL_PIN(offset);  // 0 offset
 
 HAL_PIN(min_output);
@@ -55,16 +55,16 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float error_d = (error - ctx->last_error) / period;
 
   float output = 0.0;
-  output += cmd * PIN(kff0);  // feedforward 0
+  output += cmd * PIN(kff0);    // feedforward 0
   output += cmd_d * PIN(kff1);  // feedforward 1
-  output += error * PIN(kp);  // porportional
+  output += error * PIN(kp);    // porportional
   output += error_d * PIN(kd);  // differential
   if(PIN(ksd) != 0.0 && ABS(error) > (max - min) / PIN(ksd) * 0.001) {
     ctx->error_sum += error_d / ABS(error) * PIN(ksd);  // scalded differential
   }
   output = CLAMP(output, min, max);
 
-  ctx->error_sum += error * PIN(ki) * period;  // integrator
+  ctx->error_sum += error * PIN(ki) * period;     // integrator
   ctx->error_sum += error_d * PIN(kdi) * period;  // differential integrator
   if(PIN(ksdi) != 0.0 && ABS(error) > (max - min) / PIN(ksdi) * 0.001) {
     ctx->error_sum += error_d / ABS(error) * PIN(ksdi) * period;  // scalded differential integrator

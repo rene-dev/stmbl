@@ -28,10 +28,10 @@ typedef struct {
   int16_t dc_volt;
   int16_t hv_temp;
   uint8_t high_volt : 1;  //hardware hi limit
-  uint8_t low_volt : 1;  //hardware low limit
-  uint8_t over_cur : 1;  //hardware cur limit
+  uint8_t low_volt : 1;   //hardware low limit
+  uint8_t over_cur : 1;   //hardware cur limit
   uint8_t over_temp : 1;  //hardware temp limit
-  uint8_t hv_fault : 1;  //iramx fault
+  uint8_t hv_fault : 1;   //iramx fault
   uint8_t sys_fault : 1;  //sys fault, crc error, clock error, watchdog bit, startup failure...
   uint8_t padding : 2;
 #ifdef TROLLER

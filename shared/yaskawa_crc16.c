@@ -13,10 +13,9 @@
  *  - ReflectOut    = False
  *  - Algorithm     = table-driven
  */
-#include "yaskawa_crc16.h"     /* include the header file generated with pycrc */
+#include "yaskawa_crc16.h" /* include the header file generated with pycrc */
 #include <stdlib.h>
 #include <stdint.h>
-
 
 
 /**
@@ -54,19 +53,17 @@ static const yaskawa_crc16_t crc_table[256] = {
     0xfd2e, 0xed0f, 0xdd6c, 0xcd4d, 0xbdaa, 0xad8b, 0x9de8, 0x8dc9,
     0x7c26, 0x6c07, 0x5c64, 0x4c45, 0x3ca2, 0x2c83, 0x1ce0, 0x0cc1,
     0xef1f, 0xff3e, 0xcf5d, 0xdf7c, 0xaf9b, 0xbfba, 0x8fd9, 0x9ff8,
-    0x6e17, 0x7e36, 0x4e55, 0x5e74, 0x2e93, 0x3eb2, 0x0ed1, 0x1ef0
-};
+    0x6e17, 0x7e36, 0x4e55, 0x5e74, 0x2e93, 0x3eb2, 0x0ed1, 0x1ef0};
 
 
-yaskawa_crc16_t yaskawa_crc16_update(yaskawa_crc16_t crc, const void *data, size_t data_len)
-{
-    const unsigned char *d = (const unsigned char *)data;
-    unsigned int tbl_idx;
+yaskawa_crc16_t yaskawa_crc16_update(yaskawa_crc16_t crc, const void *data, size_t data_len) {
+  const unsigned char *d = (const unsigned char *)data;
+  unsigned int tbl_idx;
 
-    while (data_len--) {
-        tbl_idx = ((crc >> 8) ^ *d) & 0xff;
-        crc = (crc_table[tbl_idx] ^ (crc << 8)) & 0xffff;
-        d++;
-    }
-    return crc & 0xffff;
+  while(data_len--) {
+    tbl_idx = ((crc >> 8) ^ *d) & 0xff;
+    crc     = (crc_table[tbl_idx] ^ (crc << 8)) & 0xffff;
+    d++;
+  }
+  return crc & 0xffff;
 }

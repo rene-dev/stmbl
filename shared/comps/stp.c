@@ -28,14 +28,14 @@ struct stp_ctx_t {
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct stp_ctx_t *ctx      = (struct stp_ctx_t *)ctx_ptr;
   struct stp_pin_ctx_t *pins = (struct stp_pin_ctx_t *)pin_ptr;
-  ctx->p0 = 0.0;
-  ctx->p = 0.0;
-  ctx->v0 = 0.0;
-  ctx->pold = 0.0;
-  ctx->vold = 0.0;
-  PIN(target) = 0.0;
-  PIN(max_vel) = 1.0 * 2.0 * M_PI;
-  PIN(max_acc) = 10.0 * 2.0 * M_PI;
+  ctx->p0                    = 0.0;
+  ctx->p                     = 0.0;
+  ctx->v0                    = 0.0;
+  ctx->pold                  = 0.0;
+  ctx->vold                  = 0.0;
+  PIN(target)                = 0.0;
+  PIN(max_vel)               = 1.0 * 2.0 * M_PI;
+  PIN(max_acc)               = 10.0 * 2.0 * M_PI;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {

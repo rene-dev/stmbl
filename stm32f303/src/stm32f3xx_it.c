@@ -149,13 +149,13 @@ void DebugMon_Handler(void) {
 * @brief This function handles USB low priority or CAN_RX0 interrupts.
 */
 void USB_LP_CAN_RX0_IRQHandler(void) {
-  /* USER CODE BEGIN USB_LP_CAN_RX0_IRQn 0 */
-  //GPIOA->BSRR |= GPIO_PIN_10;
+/* USER CODE BEGIN USB_LP_CAN_RX0_IRQn 0 */
+//GPIOA->BSRR |= GPIO_PIN_10;
 
-  /* USER CODE END USB_LP_CAN_RX0_IRQn 0 */
-  #ifdef USB_TERM
+/* USER CODE END USB_LP_CAN_RX0_IRQn 0 */
+#ifdef USB_TERM
   HAL_PCD_IRQHandler(&hpcd_USB_FS);
-  #endif
+#endif
   /* USER CODE BEGIN USB_LP_CAN_RX0_IRQn 1 */
   //GPIOA->BSRR |= GPIO_PIN_10 << 16;
   /* USER CODE END USB_LP_CAN_RX0_IRQn 1 */

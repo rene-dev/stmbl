@@ -70,9 +70,8 @@ typedef uint_fast16_t yaskawa_crc16_t;
  *
  * \return     The initial crc value.
  */
-static inline yaskawa_crc16_t yaskawa_crc16_init(void)
-{
-    return 0xffff;
+static inline yaskawa_crc16_t yaskawa_crc16_init(void) {
+  return 0xffff;
 }
 
 
@@ -93,14 +92,13 @@ yaskawa_crc16_t yaskawa_crc16_update(yaskawa_crc16_t crc, const void *data, size
  * \param[in] crc  The current crc value.
  * \return     The final crc value.
  */
-static inline yaskawa_crc16_t yaskawa_crc16_finalize(yaskawa_crc16_t crc)
-{
-    return crc ^ 0xffff;
+static inline yaskawa_crc16_t yaskawa_crc16_finalize(yaskawa_crc16_t crc) {
+  return crc ^ 0xffff;
 }
 
 
 #ifdef __cplusplus
-}           /* closing brace for extern "C" */
+} /* closing brace for extern "C" */
 #endif
 
-#endif      /* YASKAWA_CRC16_H */
+#endif /* YASKAWA_CRC16_H */

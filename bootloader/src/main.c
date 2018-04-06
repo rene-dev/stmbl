@@ -61,7 +61,7 @@ int main(void) {
 
   void (*SysMemBootJump)(void);
   if((*((unsigned long *)0x2001C000) == 0xDEADBEEF) || pin || !app_ok()) {  //Memory map, datasheet
-    *((unsigned long *)0x2001C000) = 0xCAFEFEED;  //Reset bootloader trigger
+    *((unsigned long *)0x2001C000) = 0xCAFEFEED;                            //Reset bootloader trigger
     __set_MSP(0x20001000);
     //Point the PC to the System Memory reset vector (+4)
     //AN2606

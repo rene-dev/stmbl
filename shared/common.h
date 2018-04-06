@@ -33,12 +33,12 @@ typedef struct {
   stmbl_talk_header_t header;
   uint32_t addr;
   uint32_t value;
-  enum{
+  enum {
     BOOTLOADER_OPCODE_NOP = 0,
     BOOTLOADER_OPCODE_READ,
-    BOOTLOADER_OPCODE_WRITE, // MEM[addr] = value
-    BOOTLOADER_OPCODE_PAGEERASE, // clear PAGE[addr]
-    BOOTLOADER_OPCODE_CRCCHECK, // CRC(APP) == 0
+    BOOTLOADER_OPCODE_WRITE,      // MEM[addr] = value
+    BOOTLOADER_OPCODE_PAGEERASE,  // clear PAGE[addr]
+    BOOTLOADER_OPCODE_CRCCHECK,   // CRC(APP) == 0
   } cmd : 8;
   enum {
     BOOTLOADER_STATE_OK = 0,

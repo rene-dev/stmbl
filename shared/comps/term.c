@@ -25,7 +25,6 @@ struct term_ctx_t {
 };
 
 
-
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct term_ctx_t * ctx = (struct sim_ctx_t *)ctx_ptr;
   struct term_pin_ctx_t *pins = (struct term_pin_ctx_t *)pin_ptr;

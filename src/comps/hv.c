@@ -42,7 +42,7 @@ HAL_PIN(abs_cur);
 HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
 HAL_PIN(core_temp);
-HAL_PIN(fault);//fault from hv
+HAL_PIN(fault);  //fault from hv
 HAL_PIN(y);
 HAL_PIN(u_fb);
 HAL_PIN(v_fb);
@@ -53,18 +53,18 @@ HAL_PIN(rev);
 HAL_PIN(pwm_volt);
 HAL_PIN(uart_sr);
 HAL_PIN(uart_dr);
-HAL_PIN(crc_error);//total number of crc errors, never reset
+HAL_PIN(crc_error);  //total number of crc errors, never reset
 HAL_PIN(scale);
 
 HAL_PIN(state);
 HAL_PIN(value);
 
 struct hv_ctx_t {
-  union{
+  union {
     volatile packet_to_hv_t packet_to_hv;
     volatile packet_bootloader_t packet_to_hv_bootloader;
   } to_hv;
-  union{
+  union {
     volatile packet_from_hv_t packet_from_hv;
     volatile packet_bootloader_t packet_from_hv_bootloader;
   } from_hv;
@@ -98,7 +98,7 @@ struct ringbuf hv_rx_buf = RINGBUF(128);
 struct ringbuf hv_tx_buf = RINGBUF(128);
 
 void hv_send(char *ptr) {
-  if(ptr){//TODO: check connection status
+  if(ptr) {  //TODO: check connection status
     rb_write(&hv_tx_buf, ptr, strlen(ptr));
     rb_write(&hv_tx_buf, "\n", 1);
   }
@@ -198,22 +198,22 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   DMA_Cmd(UART_DRV_RX_DMA, ENABLE);
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
-  ctx->timeout = 0;
-  PIN(dac) = 1560;
+  ctx->timeout       = 0;
+  PIN(dac)           = 1560;
   send_to_bootloader = 0;
-  flash_state = SLAVE_IN_APP;
+  flash_state        = SLAVE_IN_APP;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
-  ctx->frt_slot = 0;
+  struct hv_ctx_t *ctx = (struct hv_ctx_t *)ctx_ptr;
+  ctx->frt_slot        = 0;
 }
 
 static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
   ctx->frt_slot++;
-  if(ctx->frt_slot == 3){
+  if(ctx->frt_slot == 3) {
     float e   = PIN(en);
     float pos = PIN(pos);
     float vel = PIN(vel);
@@ -230,25 +230,25 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
     ctx->config.pins.dac     = PIN(dac);
 
     uint32_t dma_count = MAX(sizeof(packet_from_hv_t), sizeof(packet_bootloader_t)) - DMA_GetCurrDataCounter(UART_DRV_RX_DMA);
-    
+
     PIN(value) = 0.0;
 
-    if(dma_count >= sizeof(stmbl_talk_header_t)){
+    if(dma_count >= sizeof(stmbl_talk_header_t)) {
       // PIN(value) = 0.5;
-      if(dma_count >= sizeof(stmbl_talk_header_t) + ctx->from_hv.packet_from_hv.header.len * 4){
+      if(dma_count >= sizeof(stmbl_talk_header_t) + ctx->from_hv.packet_from_hv.header.len * 4) {
         PIN(value) = 0.75;
 
         CRC_ResetDR();
         uint32_t crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->from_hv.packet_from_hv.header.slave_addr), sizeof(stmbl_talk_header_t) / 4 + ctx->from_hv.packet_from_hv.header.len - 1);
-        if(ctx->from_hv.packet_from_hv.header.crc == crc){
-          switch(flash_state){
+        if(ctx->from_hv.packet_from_hv.header.crc == crc) {
+          switch(flash_state) {
             case SLAVE_IN_APP:
-              if(ctx->from_hv.packet_from_hv.header.slave_addr == 0 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_from_hv_t) - sizeof(stmbl_talk_header_t)) / 4){
+              if(ctx->from_hv.packet_from_hv.header.slave_addr == 0 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_from_hv_t) - sizeof(stmbl_talk_header_t)) / 4) {
                 // from f3 app
-                PIN(d_fb)     = ctx->from_hv.packet_from_hv.d_fb;
-                PIN(q_fb)     = ctx->from_hv.packet_from_hv.q_fb;
-                PIN(fault)     = ctx->from_hv.packet_from_hv.fault;
-                PIN(abs_cur)  = sqrtf(PIN(d_fb) * PIN(d_fb) + PIN(q_fb) * PIN(q_fb));
+                PIN(d_fb)    = ctx->from_hv.packet_from_hv.d_fb;
+                PIN(q_fb)    = ctx->from_hv.packet_from_hv.q_fb;
+                PIN(fault)   = ctx->from_hv.packet_from_hv.fault;
+                PIN(abs_cur) = sqrtf(PIN(d_fb) * PIN(d_fb) + PIN(q_fb) * PIN(q_fb));
 
                 uint16_t a         = ctx->from_hv.packet_from_hv.header.conf_addr;
                 a                  = CLAMP(a, 0, sizeof(f3_state_data_t) / 4);
@@ -268,73 +268,68 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
 
                 ctx->timeout = 0;
 
-                if(ctx->from_hv.packet_from_hv.buf != 0x0){
-                  rb_write(&hv_rx_buf, (void*)&(ctx->from_hv.packet_from_hv.buf), 1);
+                if(ctx->from_hv.packet_from_hv.buf != 0x0) {
+                  rb_write(&hv_rx_buf, (void *)&(ctx->from_hv.packet_from_hv.buf), 1);
                 }
-              }
-              else{
+              } else {
                 // wrong packet len or slave addr
               }
-            break;
+              break;
             case SEND_TO_BOOTLOADER:
-              
-            break;
+
+              break;
             case ERASE_FLASH:
-              if(ctx->from_hv.packet_from_hv.header.slave_addr == 255 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4){
+              if(ctx->from_hv.packet_from_hv.header.slave_addr == 255 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4) {
                 // from f3 bootloader
-                if(/*ctx->from_hv.packet_from_hv_bootloader.header.flags.error == 0 && */ctx->from_hv.packet_from_hv_bootloader.cmd == BOOTLOADER_OPCODE_PAGEERASE){
+                if(/*ctx->from_hv.packet_from_hv_bootloader.header.flags.error == 0 && */ ctx->from_hv.packet_from_hv_bootloader.cmd == BOOTLOADER_OPCODE_PAGEERASE) {
                   ctx->timeout = 0;
-                  flash_state = SEND_APP;
+                  flash_state  = SEND_APP;
                 }
-              }
-              else{
+              } else {
                 // wrong packet len or slave addr
                 PIN(value) = 3.0;
               }
-            break;
+              break;
             case SEND_APP:
-              if(ctx->from_hv.packet_from_hv.header.slave_addr == 255 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4){
+              if(ctx->from_hv.packet_from_hv.header.slave_addr == 255 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4) {
                 // from f3 bootloader
-                if(/*ctx->from_hv.packet_from_hv_bootloader.header.flags.error == 0 && */ctx->from_hv.packet_from_hv_bootloader.cmd == BOOTLOADER_OPCODE_WRITE && ctx->from_hv.packet_from_hv_bootloader.addr == 0x08004000 + ctx->addr * 4 && ctx->from_hv.packet_from_hv_bootloader.value == ((uint32_t *)&(_binary_obj_hvf3_hvf3_bin_start))[ctx->addr]){
+                if(/*ctx->from_hv.packet_from_hv_bootloader.header.flags.error == 0 && */ ctx->from_hv.packet_from_hv_bootloader.cmd == BOOTLOADER_OPCODE_WRITE && ctx->from_hv.packet_from_hv_bootloader.addr == 0x08004000 + ctx->addr * 4 && ctx->from_hv.packet_from_hv_bootloader.value == ((uint32_t *)&(_binary_obj_hvf3_hvf3_bin_start))[ctx->addr]) {
                   ctx->timeout = 0;
                   ctx->addr++;
                 }
-                if(ctx->addr > ((uint32_t)&(_binary_obj_hvf3_hvf3_bin_size)) / 4){
+                if(ctx->addr > ((uint32_t) & (_binary_obj_hvf3_hvf3_bin_size)) / 4) {
                   flash_state = CRC_CHECK;
                 }
-              }
-              else{
+              } else {
                 // wrong packet len or slave addr
                 PIN(value) = 3.0;
               }
-            break;
+              break;
             case CRC_CHECK:
-              if(ctx->from_hv.packet_from_hv.header.slave_addr == 255 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4){
+              if(ctx->from_hv.packet_from_hv.header.slave_addr == 255 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4) {
                 // from f3 bootloader
-                if(/*ctx->from_hv.packet_from_hv_bootloader.header.flags.error == 0 && */ctx->from_hv.packet_from_hv_bootloader.cmd == BOOTLOADER_OPCODE_CRCCHECK){
+                if(/*ctx->from_hv.packet_from_hv_bootloader.header.flags.error == 0 && */ ctx->from_hv.packet_from_hv_bootloader.cmd == BOOTLOADER_OPCODE_CRCCHECK) {
                   ctx->timeout = 0;
-                  flash_state = SEND_TO_APP;
+                  flash_state  = SEND_TO_APP;
                 }
-              }
-              else{
+              } else {
                 // wrong packet len or slave addr
                 PIN(value) = 3.0;
               }
-            break;
+              break;
             case SEND_TO_APP:
-              
-            break;
+
+              break;
             case FLASH_FAILED:
-              
-            break;
+
+              break;
           }
-          
 
 
-        }
-        else{
+        } else {
           // CRC fault
-          PIN(crc_error)++;
+          PIN(crc_error)
+          ++;
           // PIN(fault) = HV_CRC_ERROR;
           // PIN(value) = 4.0;
         }
@@ -357,7 +352,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
 
     uint32_t tx_size = 0;
 
-    switch(flash_state){
+    switch(flash_state) {
       case SLAVE_IN_APP:
         if(e > 0.0) {
           ctx->to_hv.packet_to_hv.d_cmd        = d_cmd;
@@ -374,16 +369,16 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
         ctx->to_hv.packet_to_hv.vel              = vel;
 
         ctx->to_hv.packet_to_hv.header.slave_addr = 0;
-        ctx->to_hv.packet_to_hv.header.flags.cmd = WRITE_CONF;
+        ctx->to_hv.packet_to_hv.header.flags.cmd  = WRITE_CONF;
         ctx->to_hv.packet_to_hv.header.flags.counter++;
-        ctx->to_hv.packet_to_hv.header.len = (sizeof(packet_to_hv_t) - sizeof(stmbl_talk_header_t)) / 4;
-        ctx->to_hv.packet_to_hv.header.conf_addr = ctx->conf_addr;
+        ctx->to_hv.packet_to_hv.header.len        = (sizeof(packet_to_hv_t) - sizeof(stmbl_talk_header_t)) / 4;
+        ctx->to_hv.packet_to_hv.header.conf_addr  = ctx->conf_addr;
         ctx->to_hv.packet_to_hv.header.config.f32 = ctx->config.data[ctx->conf_addr++];
 
         uint8_t buf[1];
-        if(rb_read(&hv_tx_buf, buf, 1)){
+        if(rb_read(&hv_tx_buf, buf, 1)) {
           ctx->to_hv.packet_to_hv.flags.buf = buf[0];
-        }else{
+        } else {
           ctx->to_hv.packet_to_hv.flags.buf = 0x0;
         }
 
@@ -391,17 +386,17 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
 
         ctx->conf_addr %= sizeof(f3_config_data_t) / 4;
 
-        if(send_to_bootloader){
+        if(send_to_bootloader) {
           send_to_bootloader = 0;
-          flash_state = SEND_TO_BOOTLOADER;
-          ctx->timeout = 0;
+          flash_state        = SEND_TO_BOOTLOADER;
+          ctx->timeout       = 0;
           // TODO: check f3 crc, size, ...
         }
-      break;
+        break;
 
-      case SEND_TO_BOOTLOADER: // fix
+      case SEND_TO_BOOTLOADER:  // fix
         ctx->to_hv.packet_to_hv.header.flags.cmd = BOOTLOADER;
-        ctx->to_hv.packet_to_hv.flags.buf = 0x0;
+        ctx->to_hv.packet_to_hv.flags.buf        = 0x0;
         ctx->to_hv.packet_to_hv.header.flags.counter++;
         ctx->to_hv.packet_to_hv.d_cmd        = 0.0;
         ctx->to_hv.packet_to_hv.q_cmd        = 0.0;
@@ -409,22 +404,22 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
 
         tx_size = sizeof(packet_to_hv_t);
 
-        if(ctx->timeout > 10){
+        if(ctx->timeout > 10) {
           ctx->timeout = 0;
-          flash_state = ERASE_FLASH;
+          flash_state  = ERASE_FLASH;
         }
-      break;
+        break;
 
       case ERASE_FLASH:
         ctx->to_hv.packet_to_hv.header.slave_addr = 255;
-        ctx->to_hv.packet_to_hv.header.flags.cmd = NO_CMD;
+        ctx->to_hv.packet_to_hv.header.flags.cmd  = NO_CMD;
         ctx->to_hv.packet_to_hv.header.flags.counter++;
-        ctx->to_hv.packet_to_hv.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
-        ctx->to_hv.packet_to_hv.header.conf_addr = 0;
+        ctx->to_hv.packet_to_hv.header.len        = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
+        ctx->to_hv.packet_to_hv.header.conf_addr  = 0;
         ctx->to_hv.packet_to_hv.header.config.f32 = 0;
-        ctx->to_hv.packet_to_hv_bootloader.addr = 0;
-        ctx->to_hv.packet_to_hv_bootloader.value = 0;
-        ctx->to_hv.packet_to_hv_bootloader.cmd = BOOTLOADER_OPCODE_PAGEERASE;
+        ctx->to_hv.packet_to_hv_bootloader.addr   = 0;
+        ctx->to_hv.packet_to_hv_bootloader.value  = 0;
+        ctx->to_hv.packet_to_hv_bootloader.cmd    = BOOTLOADER_OPCODE_PAGEERASE;
 
         tx_size = sizeof(packet_bootloader_t);
 
@@ -432,62 +427,61 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
 
         // flash_state = SLAVE_IN_APP;
 
-        if(ctx->timeout > 20000){
+        if(ctx->timeout > 20000) {
           ctx->timeout = 0;
-          flash_state = FLASH_FAILED;
+          flash_state  = FLASH_FAILED;
         }
-      break;
+        break;
 
       case SEND_APP:
         ctx->to_hv.packet_to_hv.header.flags.counter++;
-        ctx->to_hv.packet_to_hv.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
-        ctx->to_hv.packet_to_hv_bootloader.addr = 0x08004000 + ctx->addr * 4;
+        ctx->to_hv.packet_to_hv.header.len       = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
+        ctx->to_hv.packet_to_hv_bootloader.addr  = 0x08004000 + ctx->addr * 4;
         ctx->to_hv.packet_to_hv_bootloader.value = ((uint32_t *)&_binary_obj_hvf3_hvf3_bin_start)[ctx->addr];
-        ctx->to_hv.packet_to_hv_bootloader.cmd = BOOTLOADER_OPCODE_WRITE;
+        ctx->to_hv.packet_to_hv_bootloader.cmd   = BOOTLOADER_OPCODE_WRITE;
 
         tx_size = sizeof(packet_bootloader_t);
 
-        if(ctx->timeout > 1000){
+        if(ctx->timeout > 1000) {
           ctx->timeout = 0;
-          flash_state = FLASH_FAILED;
+          flash_state  = FLASH_FAILED;
         }
-      break;
+        break;
 
       case CRC_CHECK:
         ctx->to_hv.packet_to_hv.header.flags.counter++;
-        ctx->to_hv.packet_to_hv.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
+        ctx->to_hv.packet_to_hv.header.len     = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
         ctx->to_hv.packet_to_hv_bootloader.cmd = BOOTLOADER_OPCODE_CRCCHECK;
 
         tx_size = sizeof(packet_bootloader_t);
 
-        if(ctx->timeout > 1000){
+        if(ctx->timeout > 1000) {
           ctx->timeout = 0;
-          flash_state = FLASH_FAILED;
+          flash_state  = FLASH_FAILED;
         }
-      break;
+        break;
       case SEND_TO_APP:
         ctx->to_hv.packet_to_hv.header.flags.cmd = DO_RESET;
         ctx->to_hv.packet_to_hv.header.flags.counter++;
-        ctx->to_hv.packet_to_hv.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
+        ctx->to_hv.packet_to_hv.header.len     = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
         ctx->to_hv.packet_to_hv_bootloader.cmd = BOOTLOADER_OPCODE_NOP;
 
         tx_size = sizeof(packet_bootloader_t);
 
-        if(ctx->timeout > 1000){
+        if(ctx->timeout > 1000) {
           ctx->timeout = 0;
-          flash_state = SLAVE_IN_APP;
+          flash_state  = SLAVE_IN_APP;
         }
-      break;
+        break;
       case FLASH_FAILED:
-        if(ctx->timeout > 10){
+        if(ctx->timeout > 10) {
           ctx->timeout = 0;
-          flash_state = SLAVE_IN_APP;
+          flash_state  = SLAVE_IN_APP;
         }
-      break;
-
+        break;
     }
 
-    if(tx_size){
+    if(tx_size) {
       CRC_ResetDR();
       ctx->to_hv.packet_to_hv.header.crc = CRC_CalcBlockCRC((uint32_t *)&(ctx->to_hv.packet_to_hv.header.slave_addr), tx_size / 4 - 1);
 
@@ -511,58 +505,56 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
   PIN(state) = flash_state;
 }
 
-void send_boot(char *ptr){
+void send_boot(char *ptr) {
   send_to_bootloader = 1;
 }
 COMMAND("hv_update", send_boot, "try hv update");
 
 static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
+  struct hv_ctx_t *ctx = (struct hv_ctx_t *)ctx_ptr;
   // struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
   char c;
-  while(rb_getc(&hv_rx_buf, &c)){
-    printf("%c",c);
+  while(rb_getc(&hv_rx_buf, &c)) {
+    printf("%c", c);
   }
 
   static flash_state_t last_flash_state = SLAVE_IN_APP;
-  static uint32_t last_addr = 0;
-  
-  if(last_flash_state != flash_state){
-    switch(flash_state){
+  static uint32_t last_addr             = 0;
+
+  if(last_flash_state != flash_state) {
+    switch(flash_state) {
       case SLAVE_IN_APP:
         printf("hv_update: SLAVE_IN_APP\n");
-      break;
+        break;
       case SEND_TO_BOOTLOADER:
         printf("hv_update: SEND_TO_BOOTLOADER\n");
         last_addr = 0;
-      break;
+        break;
       case ERASE_FLASH:
         printf("hv_update: ERASE_FLASH\n");
         last_addr = 0;
-      break;
+        break;
       case SEND_APP:
         printf("hv_update: SEND_APP\n");
-      break;
+        break;
       case CRC_CHECK:
         printf("hv_update: CRC_CHECK\n");
         last_addr = 0;
-      break;
+        break;
       case SEND_TO_APP:
         printf("hv_update: SEND_TO_APP\n");
         last_addr = 0;
-      break;
+        break;
       case FLASH_FAILED:
         printf("hv_update: FLASH_FAILED\n");
         last_addr = 0;
-      break;
+        break;
     }
     last_flash_state = flash_state;
-    
   }
 
-  if(ctx->addr >= last_addr + 1024){
-   
-    printf("hv_update: status: %i%%\n", (int)(100.0 * ctx->addr * 4. / (float)((uint32_t)&(_binary_obj_hvf3_hvf3_bin_size))));
+  if(ctx->addr >= last_addr + 1024) {
+    printf("hv_update: status: %i%%\n", (int)(100.0 * ctx->addr * 4. / (float)((uint32_t) & (_binary_obj_hvf3_hvf3_bin_size))));
     last_addr = ctx->addr;
   }
 }

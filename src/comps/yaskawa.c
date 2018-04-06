@@ -48,8 +48,8 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct yaskawa_ctx_t *ctx = (struct yaskawa_ctx_t *)ctx_ptr;
   struct yaskawa_pin_ctx_t *pins = (struct yaskawa_pin_ctx_t *)pin_ptr;
 
-  PIN(len) = 15;
-  PIN(off) = 64;
+  PIN(len)  = 15;
+  PIN(off)  = 64;
   PIN(len3) = 57;
   PIN(len4) = 58;
   PIN(len5) = 59;
@@ -58,7 +58,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct yaskawa_ctx_t *ctx = (struct yaskawa_ctx_t *)ctx_ptr;
   // struct yaskawa_pin_ctx_t *pins = (struct yaskawa_pin_ctx_t *)pin_ptr;
-  
+
   GPIO_InitTypeDef GPIO_InitStruct;
 
   //TX enable
@@ -120,7 +120,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   txbuf[pos++] = tim_a;
   txbuf[pos++] = tim_a;
 
-  DMA_InitStructuretx.DMA_Channel            = DMA_Channel_7;  
+  DMA_InitStructuretx.DMA_Channel            = DMA_Channel_7;
   DMA_InitStructuretx.DMA_PeripheralBaseAddr = (uint32_t)&FB0_Z_PORT->BSRRL;  //TODO: change
   DMA_InitStructuretx.DMA_Memory0BaseAddr    = (uint32_t)&txbuf;
   DMA_InitStructuretx.DMA_DIR                = DMA_DIR_MemoryToPeripheral;
@@ -136,7 +136,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   DMA_InitStructuretx.DMA_MemoryBurst        = DMA_MemoryBurst_Single;
   DMA_InitStructuretx.DMA_PeripheralBurst    = DMA_PeripheralBurst_Single;
 
-  DMA_InitStructurerx.DMA_Channel            = DMA_Channel_2;  
+  DMA_InitStructurerx.DMA_Channel            = DMA_Channel_2;
   DMA_InitStructurerx.DMA_PeripheralBaseAddr = (uint32_t)&FB0_ENC_TIM->CCR3;  //TODO: change
   DMA_InitStructurerx.DMA_Memory0BaseAddr    = (uint32_t)&tim_data;
   DMA_InitStructurerx.DMA_DIR                = DMA_DIR_PeripheralToMemory;
@@ -164,11 +164,11 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   TIM_DMACmd(TIM8, TIM_DMA_Update, ENABLE);
   TIM_Cmd(TIM8, ENABLE);
 
-  FB0_ENC_TIM->CR1 &= ~TIM_CR1_CEN; 
+  FB0_ENC_TIM->CR1 &= ~TIM_CR1_CEN;
   FB0_ENC_TIM->ARR = 65535;
   FB0_ENC_TIM->CNT = 3300;
-  FB0_ENC_TIM->CR1 |= TIM_CR1_CEN; // enable tim
-  
+  FB0_ENC_TIM->CR1 |= TIM_CR1_CEN;  // enable tim
+
   DMA_Cmd(DMA1_Stream7, DISABLE);
   DMA_DeInit(DMA1_Stream7);
   DMA_Init(DMA1_Stream7, &DMA_InitStructurerx);
@@ -182,88 +182,82 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct yaskawa_ctx_t *ctx      = (struct yaskawa_ctx_t *)ctx_ptr;
   struct yaskawa_pin_ctx_t *pins = (struct yaskawa_pin_ctx_t *)pin_ptr;
- 
-  while(FB0_ENC_TIM->CNT < 3300){
 
+  while(FB0_ENC_TIM->CNT < 3300) {
   }
 
   int count = ARRAY_SIZE(tim_data) - DMA1_Stream7->NDTR;
   DMA_Cmd(DMA1_Stream7, DISABLE);
 
   uint16_t bit_time = 15;
- 
-  if(count > 80){
-    int pol = 0;
-    int read_counter = 0;
-    int counter = 0;
 
-    for(int i = 0;i < ARRAY_SIZE(yaskawa_reply);i++){
+  if(count > 80) {
+    int pol          = 0;
+    int read_counter = 0;
+    int counter      = 0;
+
+    for(int i = 0; i < ARRAY_SIZE(yaskawa_reply); i++) {
       yaskawa_reply[i] = 0;
     }
 
-    for(int i = 1; i < count; i++){
-      if(tim_data[i + 1] - tim_data[i] < bit_time){
+    for(int i = 1; i < count; i++) {
+      if(tim_data[i + 1] - tim_data[i] < bit_time) {
         counter++;
-      }
-      else if(counter == 10){
+      } else if(counter == 10) {
         read_counter = i + 1;
-        pol = 0;
+        pol          = 0;
         break;
-      }
-      else{
+      } else {
         counter = 0;
       }
     }
 
     int write_counter2 = 0;
-    for(int i = read_counter; i < count; i++){
-      if(tim_data[i + 1] - tim_data[i] < bit_time){
+    for(int i = read_counter; i < count; i++) {
+      if(tim_data[i + 1] - tim_data[i] < bit_time) {
         i++;
-        if(tim_data[i + 1] - tim_data[i] < bit_time){
+        if(tim_data[i + 1] - tim_data[i] < bit_time) {
           //data[write_counter++] = '0' + pol;
-        }
-        else{
+        } else {
           //error
           PIN(error) = 1.0;
           break;
         }
 
-      }
-      else{
+      } else {
         pol = 1 - pol;
         //data[write_counter++] = '0' + pol;
       }
 
-      if(pol == 1){
+      if(pol == 1) {
         counter++;
         m_data[write_counter2] = '1';
-        yaskawa_reply[write_counter2/8] |= 1 << (7-(write_counter2%8));
+        yaskawa_reply[write_counter2 / 8] |= 1 << (7 - (write_counter2 % 8));
         write_counter2++;
-      }
-      else if(counter == 5){
+      } else if(counter == 5) {
         counter = 0;
         // unstuff
-      }
-      else if(counter == 6){
+      } else if(counter == 6) {
         // hldc
         m_data[write_counter2++] = 'H';
         break;
-      }
-      else{
-        counter = 0;
+      } else {
+        counter                  = 0;
         m_data[write_counter2++] = '0';
       }
     }
 
     yaskawa_crc16_t crc;
     yaskawa_crc16_t data = (yaskawa_reply[13] & 0xff) | (yaskawa_reply[12] << 8);
-    crc = yaskawa_crc16_init();
-    crc = yaskawa_crc16_update(crc, yaskawa_reply, 12);
-    crc = yaskawa_crc16_finalize(crc);
-    if(data == crc){
-      PIN(crc_ok)++;
-    }else{
-      PIN(crc_error)++;
+    crc                  = yaskawa_crc16_init();
+    crc                  = yaskawa_crc16_update(crc, yaskawa_reply, 12);
+    crc                  = yaskawa_crc16_finalize(crc);
+    if(data == crc) {
+      PIN(crc_ok)
+      ++;
+    } else {
+      PIN(crc_error)
+      ++;
     }
 
     m_data[write_counter2] = 0;
@@ -278,26 +272,25 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     for(int i = 0; i < PIN(len2); i++) {
       probe += (m_data[i + (int)PIN(off2)] == '1') << i;
     }
-    
-    PIN(pos)   = (float)pos / (float)(1 << (int)PIN(len)) * M_PI * 2.0 - M_PI;
+
+    PIN(pos)    = (float)pos / (float)(1 << (int)PIN(len)) * M_PI * 2.0 - M_PI;
     PIN(probe2) = probe;
 
     PIN(probe3) = m_data[(int)PIN(len3)] == '1';
     PIN(probe4) = m_data[(int)PIN(len4)] == '1';
     PIN(probe5) = m_data[(int)PIN(len5)] == '1';
-    PIN(error) = 0.0;
+    PIN(error)  = 0.0;
 
-    if(dfdf < 1){
-      for(int i = 0; i < ARRAY_SIZE(m_data2); i++){
+    if(dfdf < 1) {
+      for(int i = 0; i < ARRAY_SIZE(m_data2); i++) {
         m_data2[i] = m_data[i];
       }
       dfdf = 1;
     }
-  }
-  else{
+  } else {
     PIN(error) = 1.0;
     // error
-  }  
+  }
 
   // PIN(send) = send;
 
@@ -311,36 +304,38 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF7);
   DMA_Cmd(DMA2_Stream1, ENABLE);  //transmit request
 
-  TIM8->CR1 &= ~TIM_CR1_CEN; // disable tim
-  TIM8->ARR = 20; // 168 / 2 / (9 + 1) = 8.4MHz
-  TIM8->DIER = TIM_DIER_UDE; // cc3 dma
+  TIM8->CR1 &= ~TIM_CR1_CEN;  // disable tim
+  TIM8->ARR  = 20;            // 168 / 2 / (9 + 1) = 8.4MHz
+  TIM8->DIER = TIM_DIER_UDE;  // cc3 dma
   // TIM8->CCMR2 = 0; // cc3 output
   // TIM8->CCR3 = 1;
   TIM8->CNT = 0;
-  TIM8->CR1 |= TIM_CR1_CEN; 
+  TIM8->CR1 |= TIM_CR1_CEN;
 
   DMA_Cmd(DMA1_Stream7, DISABLE);
   DMA_ClearFlag(DMA1_Stream7, DMA_FLAG_TCIF7);
   DMA_Cmd(DMA1_Stream7, ENABLE);
 
-  FB0_ENC_TIM->CR1 &= ~TIM_CR1_CEN; 
-  FB0_ENC_TIM->CCMR2 = TIM_CCMR2_CC3S_0; // cc3 input ti3
-  FB0_ENC_TIM->CCER = TIM_CCER_CC3E | TIM_CCER_CC3P | TIM_CCER_CC3NP; // cc3 en, rising edge, falling edge
-  FB0_ENC_TIM->ARR = 65535;
-  FB0_ENC_TIM->DIER = TIM_DIER_CC3DE; // cc3 dma
-  FB0_ENC_TIM->CNT = 0;
-  FB0_ENC_TIM->CCR3 = 0;
+  FB0_ENC_TIM->CR1 &= ~TIM_CR1_CEN;
+  FB0_ENC_TIM->CCMR2 = TIM_CCMR2_CC3S_0;                                // cc3 input ti3
+  FB0_ENC_TIM->CCER  = TIM_CCER_CC3E | TIM_CCER_CC3P | TIM_CCER_CC3NP;  // cc3 en, rising edge, falling edge
+  FB0_ENC_TIM->ARR   = 65535;
+  FB0_ENC_TIM->DIER  = TIM_DIER_CC3DE;  // cc3 dma
+  FB0_ENC_TIM->CNT   = 0;
+  FB0_ENC_TIM->CCR3  = 0;
 
-  while(!(DMA2->LISR & DMA_FLAG_TCIF1));  //wait for request
-  
-  FB0_Z_TXEN_PORT->BSRRH = FB0_Z_TXEN_PIN;  //TX disable
+  while(!(DMA2->LISR & DMA_FLAG_TCIF1))
+    ;  //wait for request
+
+  FB0_Z_TXEN_PORT->BSRRH = FB0_Z_TXEN_PIN;     //TX disable
   FB0_Z_PORT->MODER &= ~GPIO_MODER_MODER14_0;  //set tx pin to af
   FB0_Z_PORT->MODER |= GPIO_MODER_MODER14_1;
 
-  FB0_ENC_TIM->CR1 |= TIM_CR1_CEN; // enable tim
+  FB0_ENC_TIM->CR1 |= TIM_CR1_CEN;  // enable tim
 
-  if(PIN(error) > 0.0){
-    PIN(error_sum)++;
+  if(PIN(error) > 0.0) {
+    PIN(error_sum)
+    ++;
   }
 }
 
@@ -348,8 +343,8 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct yaskawa_ctx_t *ctx      = (struct yaskawa_ctx_t *)ctx_ptr;
   struct yaskawa_pin_ctx_t *pins = (struct yaskawa_pin_ctx_t *)pin_ptr;
   if(RISING_EDGE(PIN(dump))) {
-    for(int i = 0; i < 14; i++){
-      for(int j = 0; j < 8; j++){
+    for(int i = 0; i < 14; i++) {
+      for(int j = 0; j < 8; j++) {
         printf("%c", m_data2[i * 8 + j]);
       }
       printf("|");

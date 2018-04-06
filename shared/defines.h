@@ -52,15 +52,15 @@ extern "C" {
 #define STRINGIFY(x) STRINGIFY_(x)
 
 extern volatile uint64_t systime;
-#define BLINK(N)                           \
-  ({                                       \
+#define BLINK(N)                                           \
+  ({                                                       \
     int t = (systime / 300) % (2 * (unsigned int)(N) + 2); \
-    if(t < 2) {                            \
-      t = 0;                               \
-    } else {                               \
-      t = t % 2;                           \
-    }                                      \
-    t;                                     \
+    if(t < 2) {                                            \
+      t = 0;                                               \
+    } else {                                               \
+      t = t % 2;                                           \
+    }                                                      \
+    t;                                                     \
   })
 
 //TODO: change type to typeof()

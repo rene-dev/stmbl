@@ -37,7 +37,7 @@ HAL_PIN(rev_clear);
 HAL_PIN(rev);
 
 struct linrev_ctx_t {
-  int lastq;  //last quadrant
+  int lastq;    //last quadrant
   int32_t rev;  //current multiturn
 };
 

@@ -29,22 +29,22 @@ uint32_t send_counterf;
 volatile uint16_t tim_data[160];
 
 #pragma pack(push, 1)
-typedef struct{
-  uint32_t flag0 : 4; // 0101
+typedef struct {
+  uint32_t flag0 : 4;  // 0101
   uint32_t bat : 2;
-  uint32_t flag1 : 3; // 101
-  uint32_t no_index : 1; 
-  uint32_t flag2 : 1; // 0
+  uint32_t flag1 : 3;  // 101
+  uint32_t no_index : 1;
+  uint32_t flag2 : 1;  // 0
   uint32_t pos_lo : 6;
-  uint32_t flag3 : 2; // 10
+  uint32_t flag3 : 2;  // 10
   uint32_t pos_hi : 16;
-  uint32_t flag4 : 2; // 10
+  uint32_t flag4 : 2;  // 10
   uint32_t turns : 16;
-  uint32_t flag5 : 2; // 10
+  uint32_t flag5 : 2;  // 10
   uint32_t com_pos : 10;
-  uint32_t flag6 : 7; // 0000011
+  uint32_t flag6 : 7;  // 0000011
   uint32_t crc : 5;
-  uint32_t flag7 : 3; // 000
+  uint32_t flag7 : 3;  // 000
 } fanuc_t;
 #pragma pack(pop)
 /*
@@ -97,7 +97,7 @@ uint32_t state_counter;
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx = (struct encf_ctx_t *)ctx_ptr;
-  struct encf_pin_ctx_t * pins = (struct encf_pin_ctx_t *)pin_ptr;
+  struct encf_pin_ctx_t *pins = (struct encf_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
 
   //TX enable
@@ -142,25 +142,25 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
   //timer setup
   RCC_APB1PeriphClockCmd(FB0_ENC_TIM_RCC, ENABLE);
-  FB0_ENC_TIM->CR1 &= ~TIM_CR1_CEN; 
-  FB0_ENC_TIM->CCMR1 = TIM_CCMR1_CC1S_0; // cc1 input ti1
-  FB0_ENC_TIM->CCER = TIM_CCER_CC1E | TIM_CCER_CC1P | TIM_CCER_CC1NP; // cc1 en, rising edge, falling edge
-  FB0_ENC_TIM->ARR = 65535;
-  FB0_ENC_TIM->DIER = TIM_DIER_CC1DE; // enable cc1 dma reeuest
+  FB0_ENC_TIM->CR1 &= ~TIM_CR1_CEN;
+  FB0_ENC_TIM->CCMR1 = TIM_CCMR1_CC1S_0;                                // cc1 input ti1
+  FB0_ENC_TIM->CCER  = TIM_CCER_CC1E | TIM_CCER_CC1P | TIM_CCER_CC1NP;  // cc1 en, rising edge, falling edge
+  FB0_ENC_TIM->ARR   = 65535;
+  FB0_ENC_TIM->DIER  = TIM_DIER_CC1DE;  // enable cc1 dma reeuest
 
   //SPI is used to generate request
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3, ENABLE);
   SPI_InitTypeDef SPI_InitTypeDefStruct;
   SPI_InitTypeDefStruct.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32;
-  SPI_InitTypeDefStruct.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  SPI_InitTypeDefStruct.SPI_Mode = SPI_Mode_Master;
-  SPI_InitTypeDefStruct.SPI_DataSize = SPI_DataSize_16b;
-  SPI_InitTypeDefStruct.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitTypeDefStruct.SPI_FirstBit = SPI_FirstBit_MSB;
-  SPI_InitTypeDefStruct.SPI_CPOL = SPI_CPOL_High;
-  SPI_InitTypeDefStruct.SPI_CPHA = SPI_CPHA_2Edge;
+  SPI_InitTypeDefStruct.SPI_Direction         = SPI_Direction_2Lines_FullDuplex;
+  SPI_InitTypeDefStruct.SPI_Mode              = SPI_Mode_Master;
+  SPI_InitTypeDefStruct.SPI_DataSize          = SPI_DataSize_16b;
+  SPI_InitTypeDefStruct.SPI_NSS               = SPI_NSS_Soft;
+  SPI_InitTypeDefStruct.SPI_FirstBit          = SPI_FirstBit_MSB;
+  SPI_InitTypeDefStruct.SPI_CPOL              = SPI_CPOL_High;
+  SPI_InitTypeDefStruct.SPI_CPHA              = SPI_CPHA_2Edge;
   SPI_Init(SPI3, &SPI_InitTypeDefStruct);
-  
+
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource12, GPIO_AF_SPI3);
   GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_12;
   GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_AF;
@@ -172,8 +172,8 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
   GPIO_SetBits(GPIOD, GPIO_Pin_15);  //tx enable
 
-  pos_offset = 0;
-  PIN(req_len) = 2046;
+  pos_offset    = 0;
+  PIN(req_len)  = 2046;
   state_counter = 0;
 }
 
@@ -182,98 +182,97 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct encf_pin_ctx_t *pins = (struct encf_pin_ctx_t *)pin_ptr;
 
   uint32_t count = ARRAY_SIZE(tim_data) - DMA1_Stream0->NDTR;
-  PIN(dma) = count;
+  PIN(dma)       = count;
 
-  for(int i = 0; i < 10; i++){
+  for(int i = 0; i < 10; i++) {
     data.enc_data[i] = 0;
   }
 
   uint8_t bits_sum = 0;
-  for(int i = 1; i < count; i++){//each capture form dma
+  for(int i = 1; i < count; i++) {  //each capture form dma
     //1 bit = 82 ticks (1.024e-6)/(1/82e6)
     //calculate time between edges
-    uint16_t diff = tim_data[i] - tim_data[i-1];
+    uint16_t diff = tim_data[i] - tim_data[i - 1];
     //number of bits to set
-    int bits = (float)diff/(float)81;
-    if(i%2 == 0){//line starts high, set every even numbered captures to 1
-      for(int j = bits_sum; j < bits + bits_sum; j++){
-        data.enc_data[j/8] |= (1 << j%8);
+    int bits = (float)diff / (float)81;
+    if(i % 2 == 0) {  //line starts high, set every even numbered captures to 1
+      for(int j = bits_sum; j < bits + bits_sum; j++) {
+        data.enc_data[j / 8] |= (1 << j % 8);
       }
     }
     bits_sum += bits;
   }
   //set remaining bits to 1
-  for(int j = bits_sum; j < 77; j++){
-    data.enc_data[j/8] |= (1 << j%8);
+  for(int j = bits_sum; j < 77; j++) {
+    data.enc_data[j / 8] |= (1 << j % 8);
   }
 
-  if(!sendf){
+  if(!sendf) {
     memcpy((void *)print_buf, (void *)data.enc_data, 10);
     sendf = 1;
   }
-  if(bits_sum > 50){
-
+  if(bits_sum > 50) {
     //check crc. TODO: use result, change to word/byte algorithm
     //http://freeby.mesanet.com/fabsread.pas
-    uint8_t crc[5] = {0,0,0,0,0};
-    uint8_t oldcrc[5] = {0,0,0,0,0};
-    for(uint8_t i = 76; i >= 1; i--){
-      uint8_t bit = (data.enc_data[i/8] & (1 << i%8))?1:0;
-      crc[0] = oldcrc[4] ^ bit;
-      crc[1] = oldcrc[0];
-      crc[2] = oldcrc[1] ^ bit ^ oldcrc[4];
-      crc[3] = oldcrc[2];
-      crc[4] = oldcrc[3] ^ bit ^ oldcrc[4];
-      oldcrc[0] = crc[0];
-      oldcrc[1] = crc[1];
-      oldcrc[2] = crc[2];
-      oldcrc[3] = crc[3];
-      oldcrc[4] = crc[4];
+    uint8_t crc[5]    = {0, 0, 0, 0, 0};
+    uint8_t oldcrc[5] = {0, 0, 0, 0, 0};
+    for(uint8_t i = 76; i >= 1; i--) {
+      uint8_t bit = (data.enc_data[i / 8] & (1 << i % 8)) ? 1 : 0;
+      crc[0]      = oldcrc[4] ^ bit;
+      crc[1]      = oldcrc[0];
+      crc[2]      = oldcrc[1] ^ bit ^ oldcrc[4];
+      crc[3]      = oldcrc[2];
+      crc[4]      = oldcrc[3] ^ bit ^ oldcrc[4];
+      oldcrc[0]   = crc[0];
+      oldcrc[1]   = crc[1];
+      oldcrc[2]   = crc[2];
+      oldcrc[3]   = crc[3];
+      oldcrc[4]   = crc[4];
     }
-    if(crc[0] == 0 && crc[1] == 0 && crc[2] == 0 && crc[3] == 0 && crc[4] == 0){
-      PIN(crc_ok)++;
-    }else{
-      PIN(crc_er)++;
+    if(crc[0] == 0 && crc[1] == 0 && crc[2] == 0 && crc[3] == 0 && crc[4] == 0) {
+      PIN(crc_ok)
+      ++;
+    } else {
+      PIN(crc_er)
+      ++;
     }
 
     int32_t pos;
 
-    pos = data.fanuc.pos_lo + (data.fanuc.pos_hi << 6);
+    pos        = data.fanuc.pos_lo + (data.fanuc.pos_hi << 6);
     PIN(index) = data.fanuc.no_index;
 
-    PIN(abs_pos) = mod((float)pos * 2.0 * M_PI / (1<<22));
+    PIN(abs_pos) = mod((float)pos * 2.0 * M_PI / (1 << 22));
 
-    if(PIN(index) > 0.0){
-      pos_offset = pos;
-      PIN(pos) = PIN(abs_pos);
-      PIN(state) = 1;
+    if(PIN(index) > 0.0) {
+      pos_offset    = pos;
+      PIN(pos)      = PIN(abs_pos);
+      PIN(state)    = 1;
       state_counter = 1;
-    }
-    else if(state_counter == 1){
+    } else if(state_counter == 1) {
       state_counter = 2;
-      pos_offset = pos;
-      PIN(pos) = PIN(abs_pos);
-    }
-    else{
+      pos_offset    = pos;
+      PIN(pos)      = PIN(abs_pos);
+    } else {
       state_counter = 3;
-      PIN(pos) = mod((float)(pos + pos_offset) * 2.0 * M_PI / (1<<22));
-      PIN(state) = 3;
+      PIN(pos)      = mod((float)(pos + pos_offset) * 2.0 * M_PI / (1 << 22));
+      PIN(state)    = 3;
     }
 
-    
-    PIN(turns) = data.fanuc.turns;
-    pos = data.fanuc.com_pos;
+
+    PIN(turns)   = data.fanuc.turns;
+    pos          = data.fanuc.com_pos;
     PIN(com_pos) = mod(pos * 2.0 * M_PI / 1024);
-    PIN(error) = 0;
-  }else{
-    PIN(error) = 1;
-    PIN(state) = 1;
+    PIN(error)   = 0;
+  } else {
+    PIN(error)    = 1;
+    PIN(state)    = 1;
     state_counter = 0;
   }
   //reset timer
-  FB0_ENC_TIM->CNT = 0;
+  FB0_ENC_TIM->CNT  = 0;
   FB0_ENC_TIM->CCR1 = 0;
-  FB0_ENC_TIM->CR1 |= TIM_CR1_CEN; // enable tim
+  FB0_ENC_TIM->CR1 |= TIM_CR1_CEN;  // enable tim
 
   //send request, 1/(42e6/32)*11 = 8.4uS
   SPI3->DR = PIN(req_len);
@@ -285,14 +284,14 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
 static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx = (struct encf_ctx_t *)ctx_ptr;
-  struct encf_pin_ctx_t * pins = (struct encf_pin_ctx_t *)pin_ptr;
+  struct encf_pin_ctx_t *pins = (struct encf_pin_ctx_t *)pin_ptr;
 
   if(sendf == 1 && send_counterf++ >= PIN(send_step) - 1 && PIN(send_step) >= 50) {
     send_counterf = 0;
-    for(int i = 1; i < 77; i++){
-      if(print_buf[i/8] & (1 << i%8)){
+    for(int i = 1; i < 77; i++) {
+      if(print_buf[i / 8] & (1 << i % 8)) {
         printf("1");
-      }else{
+      } else {
         printf("0");
       }
     }

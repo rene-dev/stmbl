@@ -268,26 +268,26 @@ COMMAND("hal", hal_term_print_info, "print HAL stats");
 
 uint32_t load_comp(hal_comp_t *comp) {
   if(!comp) {
-    if(hal.debug_level < 2){
+    if(hal.debug_level < 2) {
       printf("<font color=\"FireBrick\">load_comp: not found</font>\n");
     }
     return (0);
   }
   if(hal.comp_inst_count >= HAL_MAX_COMPS - 1) {
-    if(hal.debug_level < 2){
+    if(hal.debug_level < 2) {
       printf("<font color=\"FireBrick\">load_comp: not enough space to load comp: %s</font>\n", comp->name);
     }
     return (0);
   }
   if(hal.pin_inst_count + comp->pin_count >= HAL_MAX_PINS - 1) {
-    if(hal.debug_level < 2){
+    if(hal.debug_level < 2) {
       printf("<font color=\"FireBrick\">load_comp: not enough space to load comp pins: %s</font>\n", comp->name);
     }
     return (0);
   }
   uint32_t ctx_size = ((uint32_t)ceil((comp->ctx_size / 4.0))) * 4;
   if(hal.ctx_count + ctx_size >= HAL_MAX_CTX - 1) {
-    if(hal.debug_level < 2){
+    if(hal.debug_level < 2) {
       printf("<font color=\"FireBrick\">load_comp: not enough space to load comp ctx: %s</font>\n", comp->name);
     }
     return (0);
@@ -813,14 +813,14 @@ uint32_t hal_parse_(char *cmd) {
     case 1:  // search comps
       for(int i = 0; i < hal.comp_inst_count; i++) {
         if(!strncmp(hal.comp_insts[i].comp->name, sinkc, strlen(sinkc))) {
-          if(hal.debug_level < 1){
+          if(hal.debug_level < 1) {
             printf("%s%lu\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance);
           }
           found = 1;
         }
       }
       if(!found) {
-        if(hal.debug_level < 2){
+        if(hal.debug_level < 2) {
           printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
         }
       }
@@ -837,7 +837,7 @@ uint32_t hal_parse_(char *cmd) {
         }
       }
       if(!found) {
-        if(hal.debug_level < 2){
+        if(hal.debug_level < 2) {
           printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
         }
       }
@@ -849,15 +849,15 @@ uint32_t hal_parse_(char *cmd) {
         source = pin_inst_by_name(sourcec, sourcei, sourcep);
         if(sink && source) {
           sink->source = source;
-          if(hal.debug_level < 1){
+          if(hal.debug_level < 1) {
             printf("OK %s%lu.%s <= %s%lu.%s = %f\n", sinkc, sinki, sinkp, sourcec, sourcei, sourcep, source->source->value);
           }
         } else if(sink) {
-          if(hal.debug_level < 2){
+          if(hal.debug_level < 2) {
             printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sourcec, sourcei, sourcep);
           }
         } else {
-          if(hal.debug_level < 2){
+          if(hal.debug_level < 2) {
             printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sinkc, sinki, sinkp);
           }
         }
@@ -875,7 +875,7 @@ uint32_t hal_parse_(char *cmd) {
           }
         }
         if(!found) {
-          if(hal.debug_level < 2){
+          if(hal.debug_level < 2) {
             printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
           }
         }
@@ -886,17 +886,17 @@ uint32_t hal_parse_(char *cmd) {
       if(sink) {
         sink->value  = value;
         sink->source = sink;
-        if(hal.debug_level < 1){
+        if(hal.debug_level < 1) {
           printf("OK %s%lu.%s = %f\n", sinkc, sinki, sinkp, value);
         }
       } else {
-        if(hal.debug_level < 2){
+        if(hal.debug_level < 2) {
           printf("<font color=\"FireBrick\">not found: %s%lu.%s</font>\n", sinkc, sinki, sinkp);
         }
       }
       break;
     default:
-      if(hal.debug_level < 2){
+      if(hal.debug_level < 2) {
         printf("<font color=\"FireBrick\">not found: %s</font>\n", cmd);
       }
   }
@@ -920,18 +920,17 @@ void fault(char *ptr) {
 
 COMMAND("fault", fault, "trigger fault");
 
-void hal_set_debug_level(uint32_t debug_level){
+void hal_set_debug_level(uint32_t debug_level) {
   hal.debug_level = debug_level;
 }
 
-void debug_level(char *ptr){
+void debug_level(char *ptr) {
   int debug_level = 0;
-  if(ptr){
+  if(ptr) {
     sscanf(ptr, "%i", &debug_level);
   }
-  
+
   hal_set_debug_level(CLAMP(debug_level, 0, 2));
 }
 
 COMMAND("debug_level", debug_level, "set hal debug level, 0 = print all, 1 = print errors, 2 = no output");
-

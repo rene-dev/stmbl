@@ -130,66 +130,66 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 
   if(err_filter(&(ctx->cmd_error), 5.0, 0.001, PIN(cmd_error) > 0.0)) {
-    ctx->fault = CMD_ERROR;
+    ctx->fault      = CMD_ERROR;
     PIN(last_fault) = ctx->fault;
-    ctx->state = SOFT_FAULT;
+    ctx->state      = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->mot_fb_error), 5.0, 0.001, PIN(mot_fb_error) > 0.0)) {
-    ctx->fault = MOT_FB_ERROR;
+    ctx->fault      = MOT_FB_ERROR;
     PIN(last_fault) = ctx->fault;
-    ctx->state = SOFT_FAULT;
+    ctx->state      = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->com_fb_error), 5.0, 0.001, PIN(com_fb_error) > 0.0)) {
-    ctx->fault = COM_FB_ERROR;
+    ctx->fault      = COM_FB_ERROR;
     PIN(last_fault) = ctx->fault;
-    ctx->state = SOFT_FAULT;
+    ctx->state      = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->joint_fb_error), 5.0, 0.001, PIN(joint_fb_error) > 0.0)) {
-    ctx->fault = JOINT_FB_ERROR;
+    ctx->fault      = JOINT_FB_ERROR;
     PIN(last_fault) = ctx->fault;
-    ctx->state = SOFT_FAULT;
+    ctx->state      = SOFT_FAULT;
   }
 
-//  if(err_filter(&(ctx->hv_error), 3.0, 0.001, PIN(hv_error) > 0.0)) {
+  //  if(err_filter(&(ctx->hv_error), 3.0, 0.001, PIN(hv_error) > 0.0)) {
   float hv_error = PIN(hv_error);
   if(hv_error > 0.0) {
     //TODO: pass error, move filter to hv comp
-    ctx->fault = hv_error;
+    ctx->fault      = hv_error;
     PIN(last_fault) = ctx->fault;
-    ctx->state = SOFT_FAULT;
+    ctx->state      = SOFT_FAULT;
   }
 
   if(ABS(PIN(pos_error)) > PIN(max_pos_error)) {
-    ctx->fault = POS_ERROR;
+    ctx->fault      = POS_ERROR;
     PIN(last_fault) = ctx->fault;
-    ctx->state = SOFT_FAULT;
+    ctx->state      = SOFT_FAULT;
   }
 
   if(PIN(sat) > PIN(max_sat)) {
-    ctx->fault = SAT_ERROR;
+    ctx->fault      = SAT_ERROR;
     PIN(last_fault) = ctx->fault;
-    ctx->state = SOFT_FAULT;
+    ctx->state      = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->hv_temp_error), 5.0, 0.001, PIN(hv_temp) > PIN(max_hv_temp))) {
-    ctx->fault = HV_TEMP_ERROR;
+    ctx->fault      = HV_TEMP_ERROR;
     PIN(last_fault) = ctx->fault;
-    ctx->state = SOFT_FAULT;
+    ctx->state      = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->dc_volt_error), 5.0, 0.001, PIN(dc_volt) > PIN(max_dc_volt) || PIN(dc_volt) < PIN(min_dc_volt))) {
-    ctx->fault = HV_VOLT_ERROR;
+    ctx->fault      = HV_VOLT_ERROR;
     PIN(last_fault) = ctx->fault;
-    ctx->state = SOFT_FAULT;
+    ctx->state      = SOFT_FAULT;
   }
 
   if(err_filter(&(ctx->mot_temp_error), 5.0, 0.001, PIN(mot_temp) > PIN(max_mot_temp))) {
-    ctx->fault = MOT_TEMP_ERROR;
+    ctx->fault      = MOT_TEMP_ERROR;
     PIN(last_fault) = ctx->fault;
-    ctx->state = SOFT_FAULT;
+    ctx->state      = SOFT_FAULT;
   }
 
   float scale = 1.0;
@@ -227,11 +227,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       break;
 
     case ENABLED:
-      PIN(mot_brake) = 1.0;
-      PIN(en_out)    = 1.0;
-      PIN(en_fb)     = 1.0;
-      PIN(en_pid)    = 1.0;
-      ctx->fault     = NO_ERROR;
+      PIN(mot_brake)  = 1.0;
+      PIN(en_out)     = 1.0;
+      PIN(en_fb)      = 1.0;
+      PIN(en_pid)     = 1.0;
+      ctx->fault      = NO_ERROR;
       PIN(last_fault) = NO_ERROR;
       break;
 
@@ -345,7 +345,7 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
           case MOT_TEMP_ERROR:
             printf("Motor overtemperture\n");
             break;
-          
+
           case HV_CURRENT_OFFSET_FAULT:
             printf("Current offset fault\n");
             break;
@@ -353,7 +353,7 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
           case HV_OVERCURRENT_RMS:
             printf("Motor overcurrent rms\n");
             break;
-            
+
           case HV_OVERCURRENT_PEAK:
             printf("Motor overcurrent peak\n");
             break;

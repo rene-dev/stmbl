@@ -14,11 +14,11 @@
 
 HAL_COMP(adc);
 
-HAL_PIN(sin0);  //sin output
-HAL_PIN(cos0);  //cos output
-HAL_PIN(sin0l); //sin output, last group only
-HAL_PIN(cos0l); //cos output, last group only
-HAL_PIN(quad);  //quadrant of sin/cos
+HAL_PIN(sin0);   //sin output
+HAL_PIN(cos0);   //cos output
+HAL_PIN(sin0l);  //sin output, last group only
+HAL_PIN(cos0l);  //cos output, last group only
+HAL_PIN(quad);   //quadrant of sin/cos
 
 HAL_PIN(sin1l);  //sin output, last group only
 HAL_PIN(cos1l);  //cos output, last group only
@@ -86,10 +86,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   volatile uint32_t *ADC_DMA_Buffer;
 
-  if(DMA_GetCurrentMemoryTarget(DMA2_Stream0)){
+  if(DMA_GetCurrentMemoryTarget(DMA2_Stream0)) {
     ADC_DMA_Buffer = ADC_DMA_Buffer1;
-  }
-  else{
+  } else {
     ADC_DMA_Buffer = ADC_DMA_Buffer0;
   }
   int flip;
@@ -122,7 +121,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     si1[i] = s_g * V_DIFF(sii1, ADC_OVER_FB1) + s_o;
     co1[i] = c_g * V_DIFF(coi1, ADC_OVER_FB1) + c_o;
 #endif
-
   }
   if(ctx->send == 0) {
     memcpy((void *)(ctx->txbuf_raw), (void *)ADC_DMA_Buffer, ADC_SAMPLES_IN_RT * 4);
@@ -131,8 +129,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   PIN(sin0l) = si0[ADC_GROUPS - 1];
   PIN(cos0l) = co0[ADC_GROUPS - 1];
-  PIN(sin0) = sin0all / (float)ADC_GROUPS;
-  PIN(cos0) = cos0all / (float)ADC_GROUPS;
+  PIN(sin0)  = sin0all / (float)ADC_GROUPS;
+  PIN(cos0)  = cos0all / (float)ADC_GROUPS;
 #ifdef FB1
   PIN(sin1l) = si1[ADC_GROUPS - 1];
   PIN(cos1l) = co1[ADC_GROUPS - 1];
@@ -199,7 +197,7 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
     }
 
     ctx->txpos = 0;
-    buf[0] = 255;//start of waves
+    buf[0]     = 255;                             //start of waves
     for(int k = 0; k < ADC_SAMPLES_IN_RT; k++) {  //each sample
       for(int i = 0; i < TERM_NUM_WAVES; i++) {   //each wave
         tmp        = (ctx->txbuf[i][k] + PINA(offset, i)) * PINA(gain, i) + 128;
@@ -212,7 +210,7 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
       }
     }
 
-    buf[0] = 0xfe;//trigger servoterm
+    buf[0] = 0xfe;  //trigger servoterm
     buf[1] = 0x00;
     if(USB_CDC_is_connected()) {
       USB_VCP_send_string(buf);

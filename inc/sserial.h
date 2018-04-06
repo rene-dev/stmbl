@@ -43,8 +43,8 @@
 #define LBPCardName2Cmd 0xd2
 #define LBPCardName3Cmd 0xd3
 
-#define CT_RW 1  // 01b
-#define CT_RPC 2  // 10b
+#define CT_RW 1     // 01b
+#define CT_RPC 2    // 10b
 #define CT_LOCAL 3  // 11b
 
 #define MEM_SIZE 2048
@@ -103,12 +103,12 @@
 
 typedef union {
   struct {
-    uint8_t ds : 2;  //DataSize: Specifies data size, 00b = 1 bytes, 01b = 2 bytes, 10 b= 4 bytes, 11b = 8 bytes.
-    uint8_t as : 1;  //AddressSize: 0 to specify current address, 1 to specify 2 byte address.
-    uint8_t ai : 1;  //AutoInc: 0 leaves address unchanged, 1 specifies that address is post incremented by data size in bytes.
+    uint8_t ds : 2;   //DataSize: Specifies data size, 00b = 1 bytes, 01b = 2 bytes, 10 b= 4 bytes, 11b = 8 bytes.
+    uint8_t as : 1;   //AddressSize: 0 to specify current address, 1 to specify 2 byte address.
+    uint8_t ai : 1;   //AutoInc: 0 leaves address unchanged, 1 specifies that address is post incremented by data size in bytes.
     uint8_t rid : 1;  //RPCIncludesData: 0 specifies that data is from stream, 1, that data is from RPC (RPC only, ignored for non RPC commands)
-    uint8_t wr : 1;  //Write: 1 to specify write, 0 to specify read
-    uint8_t ct : 2;  //CommandType: Must be 01b to specify data read/write command
+    uint8_t wr : 1;   //Write: 1 to specify write, 0 to specify read
+    uint8_t ct : 2;   //CommandType: Must be 01b to specify data read/write command
     // 01:rw   11:local command   10:rpc
   };
   struct {
@@ -145,7 +145,7 @@ typedef struct {
 } mode_descriptor_t;
 
 typedef struct {
-  uint8_t input;  //process data input bytes
+  uint8_t input;   //process data input bytes
   uint8_t output;  //process data output bytes
   uint16_t ptocp;  //pointer to process data table start
   uint16_t gtocp;  //pointer to mode data table start
@@ -154,7 +154,7 @@ typedef struct {
 typedef union {
   struct {
     discovery_rpc_t discovery;  //6 bytes
-    uint16_t foo;  //padding, so heap is word aligned
+    uint16_t foo;               //padding, so heap is word aligned
     uint8_t heap[MEM_SIZE - sizeof(discovery_rpc_t)];
   };
 

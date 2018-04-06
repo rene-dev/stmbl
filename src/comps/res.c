@@ -22,8 +22,8 @@ HAL_PIN(cos);
 HAL_PIN(enable);
 HAL_PIN(error);
 HAL_PIN(state);
-HAL_PIN(phase);//phase adjust
-HAL_PIN(res_mode);//resolver mode output, calculated form frequency
+HAL_PIN(phase);     //phase adjust
+HAL_PIN(res_mode);  //resolver mode output, calculated form frequency
 HAL_PIN(freq);
 
 // TODO: in hal stop, reset adc dma
@@ -37,12 +37,12 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
   PIN(poles)                 = 1.0;
-  PIN(phase)                = 0.85;
+  PIN(phase)                 = 0.85;
   PIN(min_amp)               = 0.15;
-  PIN(freq)              = 10000;
+  PIN(freq)                  = 10000;
 }
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
+  struct res_ctx_t *ctx = (struct res_ctx_t *)ctx_ptr;
   // struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
 
   ctx->abspos = 0;
@@ -117,8 +117,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
   //TODO: arr can change!
-  uint32_t mult = CLAMP(PIN(freq) / RT_FREQ + 0.5, 1, 4);
-  PIN(freq) = RT_FREQ * mult;
+  uint32_t mult         = CLAMP(PIN(freq) / RT_FREQ + 0.5, 1, 4);
+  PIN(freq)             = RT_FREQ * mult;
   FB0_RES_REF_TIM->ARR  = ADC_TRIGGER_FREQ / 2 / (RT_FREQ * mult) - 1;
   FB0_RES_REF_TIM->CCR3 = (int)CLAMP(PIN(phase) * FB0_RES_REF_TIM->ARR, 0, FB0_RES_REF_TIM->ARR - 1);
   PIN(res_mode)         = ADC_GROUPS / 2 / mult;

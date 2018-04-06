@@ -42,7 +42,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float slip = 0.0;
 
   switch((int)PIN(mode)) {
-    case 0:  // slip control
+    case 0:                       // slip control
       id   = cur_n / sqrtf(2.0);  // constant flux
       iq   = cur_n / sqrtf(2.0) / torque_n * torque;
       slip = slip_n / torque_n * torque;

@@ -13,7 +13,7 @@ HAL_PIN(pos);
 HAL_PIN(a);
 HAL_PIN(b);
 HAL_PIN(fault);
-HAL_PIN(mode);  // 0 = quad, 1 = step/dir, 2 = dir/step, 3 = up/down
+HAL_PIN(mode);   // 0 = quad, 1 = step/dir, 2 = dir/step, 3 = up/down
 HAL_PIN(remap);  // 0 = cmd, 1 = fb0, 2 = fb1
 
 struct enc_cmd_ctx_t {
@@ -127,16 +127,16 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   TIM_EncoderInterfaceConfig(ctx->tim, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising);
   TIM_ICInitTypeDef TIM_ICInitStruct;
   TIM_ICInitStruct.TIM_Channel     = TIM_Channel_1;
-  TIM_ICInitStruct.TIM_ICFilter    = 0x0f;  //Digital filtering @ 1/32 fDTS
-  TIM_ICInitStruct.TIM_ICPolarity  = TIM_ICPolarity_BothEdge;  //Just trigger at the rising edge, because its the  clock
-  TIM_ICInitStruct.TIM_ICPrescaler = 1;  //no prescaler, capture is done each time an edge is detected on the capture input
+  TIM_ICInitStruct.TIM_ICFilter    = 0x0f;                        //Digital filtering @ 1/32 fDTS
+  TIM_ICInitStruct.TIM_ICPolarity  = TIM_ICPolarity_BothEdge;     //Just trigger at the rising edge, because its the  clock
+  TIM_ICInitStruct.TIM_ICPrescaler = 1;                           //no prescaler, capture is done each time an edge is detected on the capture input
   TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI;  //IC1 mapped to TI1
   TIM_ICInit(ctx->tim, &TIM_ICInitStruct);
 
   TIM_ICInitStruct.TIM_Channel     = TIM_Channel_2;
-  TIM_ICInitStruct.TIM_ICFilter    = 0x0f;  //Digital filtering @ 1/32 fDTS
-  TIM_ICInitStruct.TIM_ICPolarity  = TIM_ICPolarity_Rising;  //Trigger at every edge, because its the direction
-  TIM_ICInitStruct.TIM_ICPrescaler = 1;  //no prescaler, capture is done each time an edge is detected on the capture input
+  TIM_ICInitStruct.TIM_ICFilter    = 0x0f;                      //Digital filtering @ 1/32 fDTS
+  TIM_ICInitStruct.TIM_ICPolarity  = TIM_ICPolarity_Rising;     //Trigger at every edge, because its the direction
+  TIM_ICInitStruct.TIM_ICPrescaler = 1;                         //no prescaler, capture is done each time an edge is detected on the capture input
   TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_DirectTI;  //IC2 mapped to TI1
   TIM_ICInit(ctx->tim, &TIM_ICInitStruct);
   TIM_Cmd(ctx->tim, ENABLE);

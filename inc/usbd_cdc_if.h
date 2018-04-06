@@ -12,7 +12,7 @@
 extern uint8_t APP_Rx_Buffer[]; /* Write CDC received data in this buffer.
                                      These data will be sent over USB IN endpoint
                                      in the CDC core functions. */
-extern uint32_t APP_Rx_ptr_in; /* Increment this pointer or roll it back to
+extern uint32_t APP_Rx_ptr_in;  /* Increment this pointer or roll it back to
                                      start address when writing received data
                                      in the buffer APP_Rx_Buffer. */
 

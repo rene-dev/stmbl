@@ -36,7 +36,7 @@ HAL_COMP(sserial);
 HAL_PIN(error);
 HAL_PIN(crc_error);  //counts crc errors, is never reset
 HAL_PIN(connected);  //connection status TODO: not stable during startup, needs link to pd
-HAL_PIN(timeout);  // 20khz / 1khz * 2 reads = 40
+HAL_PIN(timeout);    // 20khz / 1khz * 2 reads = 40
 
 HAL_PIN(pos_cmd);
 HAL_PIN(pos_cmd_d);
@@ -65,10 +65,10 @@ struct sserial_ctx_t {
   uint32_t foo;
 };
 
-volatile uint8_t rxbuf[128];//rx dma buffer
-volatile uint8_t txbuf[128];//tx dma buffer
-uint16_t address;  //current address pointer
-int rxpos;//read pointer for rx ringbuffer
+volatile uint8_t rxbuf[128];  //rx dma buffer
+volatile uint8_t txbuf[128];  //tx dma buffer
+uint16_t address;             //current address pointer
+int rxpos;                    //read pointer for rx ringbuffer
 uint32_t timeout;
 lbp_t lbp;
 const char name[] = LBPCardName;
@@ -152,7 +152,7 @@ typedef struct {
   uint32_t enable : 1;
   uint32_t index_enable : 1;
   uint32_t padding : 2;
-} sserial_out_process_data_t; //size:9 bytes
+} sserial_out_process_data_t;  //size:9 bytes
 _Static_assert(sizeof(sserial_out_process_data_t) == 9, "sserial_out_process_data_t size error!");
 
 typedef struct {
@@ -166,7 +166,7 @@ typedef struct {
   uint32_t fault : 1;
   uint32_t index_enable : 1;
   uint32_t padding : 2;
-} sserial_in_process_data_t; //size:10 bytes
+} sserial_in_process_data_t;  //size:10 bytes
 _Static_assert(sizeof(sserial_in_process_data_t) == 10, "sserial_in_process_data_t size error!");
 //global name:scale addr:0x12c size:32 dir:0x80
 #define scale_address 300
@@ -403,14 +403,14 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
         } while(available < discovery.output + 2 && wait_ticks <= max_waste_ticks);
         //TODO: fault handling on timeout...
         //set input pins
-        data_in.pos_fb       = PIN(pos_fb) + PIN(vel_fb) * PIN(pos_advance);
-        data_in.vel_fb       = PIN(vel_fb);
-        data_in.current      = CLAMP(PIN(current) / (30.0f / 128.0f), -127, 127);
-        data_in.in_0 = (PIN(in0) > 0) ? 1 : 0;
-        data_in.in_1 = (PIN(in1) > 0) ? 1 : 0;
-        data_in.in_2 = (PIN(in2) > 0) ? 1 : 0;
-        data_in.in_3 = (PIN(in3) > 0) ? 1 : 0;
-        data_in.fault        = (PIN(fault) > 0) ? 1 : 0;
+        data_in.pos_fb  = PIN(pos_fb) + PIN(vel_fb) * PIN(pos_advance);
+        data_in.vel_fb  = PIN(vel_fb);
+        data_in.current = CLAMP(PIN(current) / (30.0f / 128.0f), -127, 127);
+        data_in.in_0    = (PIN(in0) > 0) ? 1 : 0;
+        data_in.in_1    = (PIN(in1) > 0) ? 1 : 0;
+        data_in.in_2    = (PIN(in2) > 0) ? 1 : 0;
+        data_in.in_3    = (PIN(in3) > 0) ? 1 : 0;
+        data_in.fault   = (PIN(fault) > 0) ? 1 : 0;
 
         //copy output pins from rx buffer
         for(int i = 0; i < discovery.output; i++) {

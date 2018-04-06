@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-typedef struct{
+typedef struct {
   // set at link-time by add-version-info.py
   uint32_t image_crc;
   uint32_t image_size;

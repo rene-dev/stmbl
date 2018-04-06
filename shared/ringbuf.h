@@ -7,8 +7,8 @@
  *
  */
 struct ringbuf {
-  char *buf;  ///< Pointer to buffer memory
-  unsigned bufsize;  ///< Size of buffer memory
+  char *buf;              ///< Pointer to buffer memory
+  unsigned bufsize;       ///< Size of buffer memory
   volatile unsigned pos;  ///< Current read position
   volatile unsigned len;  ///< Length of data in buffer
 };

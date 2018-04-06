@@ -115,7 +115,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
     if(offset >= 0 && ctx->rxbuf[0 + offset] == 0x32 && ((ctx->rxbuf[0 + offset] ^ ctx->rxbuf[1 + offset] ^ ctx->rxbuf[2 + offset] ^ ctx->rxbuf[3 + offset] ^ ctx->rxbuf[4 + offset] ^ ctx->rxbuf[5 + offset] ^ ctx->rxbuf[6 + offset] ^ ctx->rxbuf[7 + offset] ^ ctx->rxbuf[8 + offset]) == 0)) {
       uint32_t tpos = ((ctx->rxbuf[2 + offset] & 0x80) >> 7) + ctx->rxbuf[3 + offset] * 2 + ctx->rxbuf[4 + offset] * 512;  // 17 bit single turn position
-      PIN(pos)      = (tpos * M_PI * 2.0 / 131072.0) - M_PI;  // convert to +-PI
+      PIN(pos)      = (tpos * M_PI * 2.0 / 131072.0) - M_PI;                                                               // convert to +-PI
       PIN(error)    = 0.0;
       PIN(state)    = 3.0;
     } else {

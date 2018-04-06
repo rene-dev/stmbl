@@ -55,52 +55,49 @@ static int app_ok(void) {
 }
 
 void TIM8_UP_IRQHandler() {
-  
-
   static uint32_t last_dma_count = 0;
 
   uint32_t dma_count = DMA1_Channel3->CNDTR;
   // if(USART3->ISR & USART_ISR_RTOF) {                                    // idle line
   //   USART3->ICR |= USART_ICR_RTOCF | USART_ICR_FECF | USART_ICR_ORECF;  // timeout clear flag
-  if(dma_count == last_dma_count){ // framing
+  if(dma_count == last_dma_count) {  // framing
     last_dma_count = 0;
 
     // start rx DMA
     DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
     DMA1_Channel3->CNDTR = sizeof(packet_bootloader_t);
     DMA1_Channel3->CCR |= DMA_CCR_EN;
-  }
-  else{
-    last_dma_count  = dma_count;
+  } else {
+    last_dma_count = dma_count;
   }
 
-  if(dma_count == 0){
-    if(rx_buf.header.slave_addr == 255 && rx_buf.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4 && rx_buf.header.crc == HAL_CRC_Calculate(&hcrc, (uint32_t *)&(rx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1)){
+  if(dma_count == 0) {
+    if(rx_buf.header.slave_addr == 255 && rx_buf.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4 && rx_buf.header.crc == HAL_CRC_Calculate(&hcrc, (uint32_t *)&(rx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1)) {
       //do stuff
       //tx_buf.state = do_stuff();
 
-      switch(rx_buf.header.flags.cmd){
+      switch(rx_buf.header.flags.cmd) {
         case NO_CMD:
-        break;
+          break;
         case WRITE_CONF:
-        break;
+          break;
         case READ_CONF:
-        break;
+          break;
         case DO_RESET:
           HAL_FLASH_Lock();
           HAL_NVIC_SystemReset();
-        break;
+          break;
         case BOOTLOADER:
-        break;
+          break;
       }
 
       HAL_StatusTypeDef status = HAL_OK;
-      switch(rx_buf.cmd){
+      switch(rx_buf.cmd) {
         case BOOTLOADER_OPCODE_NOP:
-        break;
+          break;
         case BOOTLOADER_OPCODE_READ:
           tx_buf.value = *(uint32_t *)rx_buf.addr;
-          tx_buf.addr = rx_buf.addr;
+          tx_buf.addr  = rx_buf.addr;
           break;
 
         case BOOTLOADER_OPCODE_WRITE:
@@ -111,7 +108,7 @@ void TIM8_UP_IRQHandler() {
             status = HAL_ERROR;
           }
           tx_buf.value = *(uint32_t *)rx_buf.addr;
-          tx_buf.addr = rx_buf.addr;
+          tx_buf.addr  = rx_buf.addr;
           break;
 
         case BOOTLOADER_OPCODE_PAGEERASE:
@@ -132,10 +129,9 @@ void TIM8_UP_IRQHandler() {
           break;
 
         case BOOTLOADER_OPCODE_CRCCHECK:
-          if(app_ok()){
+          if(app_ok()) {
             status = HAL_OK;
-          }
-          else{
+          } else {
             status = HAL_ERROR;
           }
           break;
@@ -147,15 +143,15 @@ void TIM8_UP_IRQHandler() {
       // else{
       //   tx_buf.header.flags.error = 0;
       // }
-      
-      tx_buf.cmd = rx_buf.cmd;
+
+      tx_buf.cmd                  = rx_buf.cmd;
       tx_buf.header.flags.counter = rx_buf.header.flags.counter;
-      tx_buf.header.slave_addr = 255;
-      tx_buf.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
-      tx_buf.header.conf_addr = 0;
-      tx_buf.header.config.u32 = 0;
-      tx_buf.header.flags.cmd = NO_CMD;
-      tx_buf.header.crc = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(tx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1);
+      tx_buf.header.slave_addr    = 255;
+      tx_buf.header.len           = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
+      tx_buf.header.conf_addr     = 0;
+      tx_buf.header.config.u32    = 0;
+      tx_buf.header.flags.cmd     = NO_CMD;
+      tx_buf.header.crc           = HAL_CRC_Calculate(&hcrc, (uint32_t *)&(tx_buf.header.slave_addr), sizeof(packet_bootloader_t) / 4 - 1);
 
       rx_buf.header.crc = 0;
 
@@ -169,7 +165,7 @@ void TIM8_UP_IRQHandler() {
   __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
 }
 
-void uart_init(){
+void uart_init() {
   GPIO_InitTypeDef GPIO_InitStruct;
 
   /* Peripheral clock enable */
@@ -205,7 +201,7 @@ void uart_init(){
   //TX DMA
   DMA1_Channel2->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA1_Channel2->CPAR  = (uint32_t) & (USART3->TDR);
-  DMA1_Channel2->CMAR  = (uint32_t) & tx_buf;
+  DMA1_Channel2->CMAR  = (uint32_t)&tx_buf;
   DMA1_Channel2->CNDTR = sizeof(packet_bootloader_t);
   DMA1_Channel2->CCR   = DMA_CCR_MINC | DMA_CCR_DIR;  // | DMA_CCR_PL_0 | DMA_CCR_PL_1
   DMA1->IFCR           = DMA_IFCR_CTCIF2 | DMA_IFCR_CHTIF2 | DMA_IFCR_CGIF2;
@@ -213,13 +209,13 @@ void uart_init(){
   //RX DMA
   DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA1_Channel3->CPAR  = (uint32_t) & (USART3->RDR);
-  DMA1_Channel3->CMAR  = (uint32_t) & rx_buf;
+  DMA1_Channel3->CMAR  = (uint32_t)&rx_buf;
   DMA1_Channel3->CNDTR = sizeof(packet_bootloader_t);
   DMA1_Channel3->CCR   = DMA_CCR_MINC;  // | DMA_CCR_PL_0 | DMA_CCR_PL_1
   DMA1->IFCR           = DMA_IFCR_CTCIF3 | DMA_IFCR_CHTIF3 | DMA_IFCR_CGIF3;
   DMA1_Channel3->CCR |= DMA_CCR_EN;
 
-  USART3->RTOR = 16;  // 16 bits timeout
+  USART3->RTOR = 16;               // 16 bits timeout
   USART3->CR2 |= USART_CR2_RTOEN;  // timeout en
   USART3->ICR |= USART_ICR_RTOCF;  // timeout clear flag
 }
@@ -303,17 +299,16 @@ int main(void) {
     /* Initialize user application's Stack Pointer */
     __set_MSP(*(__IO uint32_t *)APP_START);
     JumpToApplication();
-    while(1){
+    while(1) {
     }
-  }
-  else{
+  } else {
     uart_init();
 
     tx_buf.header.slave_addr = 255;
-    tx_buf.header.len = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
-    tx_buf.header.conf_addr = 0;
+    tx_buf.header.len        = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
+    tx_buf.header.conf_addr  = 0;
     tx_buf.header.config.u32 = 0;
-    tx_buf.header.flags.cmd = NO_CMD;
+    tx_buf.header.flags.cmd  = NO_CMD;
 
     // start rx DMA
     DMA1_Channel3->CCR &= (uint16_t)(~DMA_CCR_EN);

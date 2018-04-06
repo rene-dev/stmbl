@@ -27,22 +27,22 @@
 HAL_COMP(ypid);
 
 HAL_PIN(pos_ext_cmd);  // cmd in (rad)
-HAL_PIN(pos_fb);  // feedback in (rad)
-HAL_PIN(pos_error);  // error out (rad)
+HAL_PIN(pos_fb);       // feedback in (rad)
+HAL_PIN(pos_error);    // error out (rad)
 
 HAL_PIN(vel_ext_cmd);  // cmd in (rad/s)
-HAL_PIN(vel_fb);  // feedback in (rad/s)
-HAL_PIN(vel_cmd);  // cmd out (rad/s)
-HAL_PIN(vel_error);  // error out (rad/s)
-HAL_PIN(vel_min);  // minimum velocity error 0.3
+HAL_PIN(vel_fb);       // feedback in (rad/s)
+HAL_PIN(vel_cmd);      // cmd out (rad/s)
+HAL_PIN(vel_error);    // error out (rad/s)
+HAL_PIN(vel_min);      // minimum velocity error 0.3
 
 HAL_PIN(enable);
 HAL_PIN(out);
 
 HAL_PIN(pos_p);  //10
 
-HAL_PIN(vel_p);  //0.5
-HAL_PIN(vel_i);  //0.005
+HAL_PIN(vel_p);   //0.5
+HAL_PIN(vel_i);   //0.005
 HAL_PIN(vel_ff);  //1.0
 
 // system limits

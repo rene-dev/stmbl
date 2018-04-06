@@ -93,7 +93,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   TIM_EncoderInterfaceConfig(FB0_ENC_TIM, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Falling);
   TIM_Cmd(FB0_ENC_TIM, ENABLE);
   FB0_ENC_TIM->CCMR2 |= TIM_CCMR2_CC3S_0;  //CC3 channel is configured as input, IC3 is mapped on CH3
-  FB0_ENC_TIM->CCER |= TIM_CCER_CC3E;  //Capture enabled
+  FB0_ENC_TIM->CCER |= TIM_CCER_CC3E;      //Capture enabled
 }
 
 

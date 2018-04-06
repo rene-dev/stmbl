@@ -5,10 +5,10 @@
 #include <math.h>
 
 #define ARES 4096.0  // analog resolution, 12 bit
-#define AREF 3.3  // analog reference voltage
+#define AREF 3.3     // analog reference voltage
 
 //iramx v3.1-v3.3 hardware
-#define RCUR 0.0181  //shunt
+#define RCUR 0.0181    //shunt
 #define TPULLUP 10000  //iramx temperature pullup
 #define R10 10000
 #define R11 180
@@ -25,8 +25,8 @@
 #define VOLT(a) ((a) / ARES * AREF / VDIVDOWN * (VDIVUP + VDIVDOWN))
 
 volatile uint16_t ADCConvertedValue[100];  //DMA buffer for ADC
-volatile uint8_t rxbuf[50];  //DMA buffer for UART RX
-uint32_t rxpos = 0;  //UART rx buffer position
+volatile uint8_t rxbuf[50];                //DMA buffer for UART RX
+uint32_t rxpos = 0;                        //UART rx buffer position
 
 volatile uint32_t u_cmd = 0;
 volatile uint32_t v_cmd = 0;
@@ -363,7 +363,7 @@ void TIM1_UP_IRQHandler() {
   TIM_ClearITPendingBit(TIM1, TIM_IT_Update);
   if(timeout > 30) {  //disable driver
     hv_disable();
-    GPIO_SetBits(GPIOC, GPIO_Pin_1);  //yellow led on
+    GPIO_SetBits(GPIOC, GPIO_Pin_1);    //yellow led on
     GPIO_ResetBits(GPIOC, GPIO_Pin_2);  //green led off
 
     PWM_U = 0;
@@ -377,7 +377,7 @@ void TIM1_UP_IRQHandler() {
     w_cmd   = TOFIXEDU32(0.0);
     w_error = TOFIXEDU32(0.0);
   } else {
-    GPIO_SetBits(GPIOC, GPIO_Pin_2);  //green led on
+    GPIO_SetBits(GPIOC, GPIO_Pin_2);    //green led on
     GPIO_ResetBits(GPIOC, GPIO_Pin_1);  //yellow led off
     timeout++;
 
@@ -450,7 +450,7 @@ int main(void) {
         float w = 0.0;
 
         if(packet_to_hv.data.mode == 0) {  //a,b voltages
-          u = ua;  // inverse clarke
+          u = ua;                          // inverse clarke
           v = -ua / 2.0 + ub / 2.0 * M_SQRT3;
           w = -ua / 2.0 - ub / 2.0 * M_SQRT3;
         } else if(packet_to_hv.data.mode == 1) {  //DC, a: -dclink ... +dclink

@@ -95,7 +95,7 @@ extern "C" {
   */
 #if !defined(HSE_VALUE)
 #define HSE_VALUE ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */
-#endif /* HSE_VALUE */
+#endif                                /* HSE_VALUE */
 
 /**
   * @brief In the following line adjust the External High Speed oscillator (HSE) Startup 
@@ -103,7 +103,7 @@ extern "C" {
   */
 #if !defined(HSE_STARTUP_TIMEOUT)
 #define HSE_STARTUP_TIMEOUT ((uint32_t)100) /*!< Time out for HSE start up, in ms */
-#endif /* HSE_STARTUP_TIMEOUT */
+#endif                                      /* HSE_STARTUP_TIMEOUT */
 
 /**
   * @brief Internal High Speed oscillator (HSI) value.
@@ -112,7 +112,7 @@ extern "C" {
   */
 #if !defined(HSI_VALUE)
 #define HSI_VALUE ((uint32_t)8000000) /*!< Value of the Internal oscillator in Hz*/
-#endif /* HSI_VALUE */
+#endif                                /* HSI_VALUE */
 
 /**
   * @brief In the following line adjust the Internal High Speed oscillator (HSI) Startup 
@@ -120,7 +120,7 @@ extern "C" {
   */
 #if !defined(HSI_STARTUP_TIMEOUT)
 #define HSI_STARTUP_TIMEOUT ((uint32_t)5000) /*!< Time out for HSI start up */
-#endif /* HSI_STARTUP_TIMEOUT */
+#endif                                       /* HSI_STARTUP_TIMEOUT */
 
 /**
   * @brief Internal Low Speed oscillator (LSI) value.
@@ -135,14 +135,14 @@ extern "C" {
   */
 #if !defined(LSE_VALUE)
 #define LSE_VALUE ((uint32_t)32768) /*!< Value of the External Low Speed oscillator in Hz */
-#endif /* LSE_VALUE */
+#endif                              /* LSE_VALUE */
 
 /**
   * @brief Time out for LSE start up value in ms.
   */
 #if !defined(LSE_STARTUP_TIMEOUT)
 #define LSE_STARTUP_TIMEOUT ((uint32_t)5000) /*!< Time out for LSE start up, in ms */
-#endif /* LSE_STARTUP_TIMEOUT */
+#endif                                       /* LSE_STARTUP_TIMEOUT */
 
 /**
   * @brief External clock source for I2S peripheral
@@ -153,7 +153,7 @@ extern "C" {
   */
 #if !defined(EXTERNAL_CLOCK_VALUE)
 #define EXTERNAL_CLOCK_VALUE ((uint32_t)8000000) /*!< Value of the External oscillator in Hz*/
-#endif /* EXTERNAL_CLOCK_VALUE */
+#endif                                           /* EXTERNAL_CLOCK_VALUE */
 
 /* Tip: To avoid modifying this file each time you need to use different HSE,
    ===  you can define the HSE value in your toolchain compiler preprocessor. */
@@ -163,7 +163,7 @@ extern "C" {
   * @brief This is the HAL system configuration section
   */
 
-#define VDD_VALUE ((uint32_t)3300) /*!< Value of VDD in mv */
+#define VDD_VALUE ((uint32_t)3300)      /*!< Value of VDD in mv */
 #define TICK_INT_PRIORITY ((uint32_t)0) /*!< tick interrupt priority (lowest by default)  */
 #define USE_RTOS 0
 #define PREFETCH_ENABLE 1
