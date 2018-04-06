@@ -28,7 +28,7 @@
 
 #define DATABAUD 3000000  //baudrate used for communication
 
-#pragma pack(1)
+#pragma pack(push, 1)
 typedef struct {
   stmbl_talk_header_t header;
   uint32_t addr;
@@ -49,7 +49,6 @@ typedef struct {
 
 
 //process data from f3 to f4
-#pragma pack(1)
 typedef struct {
   stmbl_talk_header_t header;
   float d_fb;
@@ -60,7 +59,6 @@ typedef struct {
 } packet_from_hv_t;
 
 //process data from f4 to f3
-#pragma pack(1)
 typedef struct {
   stmbl_talk_header_t header;
   float d_cmd;
@@ -93,7 +91,6 @@ typedef struct {
 } packet_to_hv_t;
 
 //config data for f3
-#pragma pack(1)
 typedef union {
   struct f3_config_data_temp {
     float r;
@@ -111,7 +108,6 @@ typedef union {
 } f3_config_data_t;
 
 //status reply from f3
-#pragma pack(1)
 typedef union {
   struct f3_state_data_temp {
     float u_fb;
@@ -126,6 +122,9 @@ typedef union {
   } pins;
   float data[sizeof(struct f3_state_data_temp) / 4];
 } f3_state_data_t;
+
+#pragma pack(pop)
+
 
 //fault state
 typedef enum {
@@ -157,6 +156,7 @@ typedef enum {
   HV_OVERCURRENT_PEAK,
   HV_OVERCURRENT_HW,
 } fault_t;
+
 
 //check if structs can be send at 5kHz with DATABAUD
 _Static_assert(sizeof(packet_to_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "to_hv struct to large");

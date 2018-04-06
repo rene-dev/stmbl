@@ -22,7 +22,7 @@ typedef struct {
 } packet_header_t;
 
 //data from f1 to f4
-#pragma pack(1)
+#pragma pack(push, 1)
 typedef struct {
   int16_t dc_cur;
   int16_t dc_volt;
@@ -42,7 +42,6 @@ typedef struct {
 } from_hv_t;
 
 //data from f4 to f1
-#pragma pack(1)
 typedef struct {
   float a;
   float b;
@@ -52,17 +51,16 @@ typedef struct {
   uint8_t padding : 3;
 } to_hv_t;
 
-#pragma pack(1)
 typedef struct {
   packet_header_t head;
   to_hv_t data;
 } packet_to_hv_t;
 
-#pragma pack(1)
 typedef struct {
   packet_header_t head;
   from_hv_t data;
 } packet_from_hv_t;
+#pragma pack(pop)
 
 void buff_packet(packet_header_t *p, uint8_t size);
 void unbuff_packet(packet_header_t *p, uint8_t size);

@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 
-#pragma pack(1)
+#pragma pack(push, 1)
 typedef struct{
     uint32_t crc; // can be 0 for eth comm
     uint8_t slave_addr;   // calc from uid, overwrite in config
@@ -20,7 +20,7 @@ typedef struct{
       int32_t i32;
     } config;
 } stmbl_talk_header_t;
-
+#pragma pack(pop)
 
 
 /*

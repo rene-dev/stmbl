@@ -1,7 +1,7 @@
 #! /bin/sh
 "true" '''\'
-if command -v python2 > /dev/null; then
-  exec python2 "$0" "$@"
+if command -v python2.7 > /dev/null; then
+  exec python2.7 "$0" "$@"
 else
   exec python "$0" "$@"
 fi

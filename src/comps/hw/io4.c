@@ -6,6 +6,7 @@
 #include "stm32f4xx_conf.h"
 #include "hw/hw.h"
 #include "main.h"
+#include "common.h"
 
 HAL_COMP(io);
 

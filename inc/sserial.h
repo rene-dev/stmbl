@@ -119,7 +119,7 @@ typedef union {
   uint8_t byte;
 } lbp_t;
 
-#pragma pack(1)
+#pragma pack(push, 1)
 typedef union {
   uint8_t byte[4];
   uint32_t unit;
@@ -179,3 +179,4 @@ typedef struct {
   pd_metadata_t index_enable;
   pd_metadata_t current;
 } pd_table_t;
+#pragma pack(pop)

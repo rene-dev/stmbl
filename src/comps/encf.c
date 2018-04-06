@@ -28,7 +28,7 @@ volatile uint32_t sendf;
 uint32_t send_counterf;
 volatile uint16_t tim_data[160];
 
-#pragma pack(1)
+#pragma pack(push, 1)
 typedef struct{
   uint32_t flag0 : 4; // 0101
   uint32_t bat : 2;
@@ -46,7 +46,7 @@ typedef struct{
   uint32_t crc : 5;
   uint32_t flag7 : 3; // 000
 } fanuc_t;
-
+#pragma pack(pop)
 /*
 http://freeby.mesanet.com/regmap
 

@@ -76,7 +76,7 @@ unit_no_t unit;
 uint32_t max_waste_ticks;
 uint32_t block_bytes;
 
-#pragma pack(1)
+#pragma pack(push, 1)
 //*****************************************************************************
 uint8_t sserial_slave[] = {
   0x0B,0x09,0x8B,0x01,0xA5,0x01,0x00,0x00,// 0..7
@@ -171,6 +171,7 @@ _Static_assert(sizeof(sserial_in_process_data_t) == 10, "sserial_in_process_data
 //global name:scale addr:0x12c size:32 dir:0x80
 #define scale_address 300
 //******************************************************************************
+#pragma pack(pop)
 
 static sserial_out_process_data_t data_out;
 static sserial_in_process_data_t data_in;
