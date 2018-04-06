@@ -4,4 +4,4 @@ volatile const version_info_t version_info __attribute__ ((section (".version_in
     .product_name = "STMBL-hv-f303",
     .major        = 0,
     .minor        = 9,
-    .patch        = 0};
+    .patch        = 14};
