@@ -67,7 +67,7 @@ struct fault_ctx_t {
   float mot_fb_error;
   float com_fb_error;
   float joint_fb_error;
-  float hv_error;
+  // float hv_error;
   float hv_temp_error;
   float dc_volt_error;
   float mot_temp_error;
@@ -153,9 +153,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     ctx->state = SOFT_FAULT;
   }
 
-  if(err_filter(&(ctx->hv_error), 3.0, 0.001, PIN(hv_error) > 0.0)) {
+//  if(err_filter(&(ctx->hv_error), 3.0, 0.001, PIN(hv_error) > 0.0)) {
+  float hv_error = PIN(hv_error);
+  if(hv_error > 0.0) {
     //TODO: pass error, move filter to hv comp
-    ctx->fault = HV_FAULT_ERROR;
+    ctx->fault = hv_error;
     PIN(last_fault) = ctx->fault;
     ctx->state = SOFT_FAULT;
   }

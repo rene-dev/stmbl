@@ -335,7 +335,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
         else{
           // CRC fault
           PIN(crc_error)++;
-          PIN(fault) = HV_CRC_ERROR;
+          // PIN(fault) = HV_CRC_ERROR;
           // PIN(value) = 4.0;
         }
       }
