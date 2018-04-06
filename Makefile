@@ -301,7 +301,7 @@ f3_boot_btburn:
 	$(MAKE) -f f3_boot/Makefile btburn
 
 hv_firmware.o:
-	$(MAKE) -f stm32f303/Makefile hv_firmware.o
+	$(MAKE) -f stm32f303/Makefile all
 
 deploy: boot f3_boot f3 build
 

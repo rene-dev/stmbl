@@ -179,6 +179,7 @@ LDFLAGS  += $(CPU)
 all: gccversion build showsize
 
 build: tbl elf hex bin lss sym
+	$(OBJCOPY) --rename-section .data=.hv_firmware -I binary obj_hvf3/hvf3.bin -B arm -O elf32-littlearm hv_firmware.o
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
@@ -201,9 +202,6 @@ tbl:
 
 gccversion:
 	@$(CC) --version
-
-hv_firmware.o: bin
-	$(OBJCOPY) --rename-section .data=.hv_firmware -I binary obj_hvf3/hvf3.bin -B arm -O elf32-littlearm hv_firmware.o
 
 # Show the final program size
 #
@@ -234,6 +232,7 @@ clean:
 	rm -rf stm32f303/inc/commandslist.h
 	rm -rf stm32f303/inc/hal_tbl.h
 	rm -rf stm32f303/src/hal_tbl.c
+	rm -rf hv_firmware.o
 
 # Include the base rules
 #
