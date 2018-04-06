@@ -127,6 +127,37 @@ typedef union {
   float data[sizeof(struct f3_state_data_temp) / 4];
 } f3_state_data_t;
 
+//fault state
+typedef enum {
+  DISABLED = 0,
+  ENABLED,
+  PHASING,
+  SOFT_FAULT,
+  HARD_FAULT,
+  LED_TEST,
+} state_t;
+
+//fault error codes
+typedef enum {
+  NO_ERROR = 0,
+  CMD_ERROR,
+  MOT_FB_ERROR,
+  COM_FB_ERROR,
+  JOINT_FB_ERROR,
+  POS_ERROR,
+  SAT_ERROR,
+  MOT_TEMP_ERROR,
+  HV_CRC_ERROR,
+  HV_TIMEOUT_ERROR,
+  HV_TEMP_ERROR,
+  HV_VOLT_ERROR,
+  HV_FAULT_ERROR,
+  HV_CURRENT_OFFSET_FAULT,
+  HV_OVERCURRENT_RMS,
+  HV_OVERCURRENT_PEAK,
+  HV_OVERCURRENT_HW,
+} fault_t;
+
 //check if structs can be send at 5kHz with DATABAUD
 _Static_assert(sizeof(packet_to_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "to_hv struct to large");
 _Static_assert(sizeof(packet_from_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "from_hv struct to large");

@@ -26,18 +26,18 @@
 #define ABS_MAX_VOLT 410.0
 #define ABS_MAX_CURRENT 30.0
 
-typedef enum{
-    HV_NO_FAULT = 0,
-    HV_OVERTEMP,
-    HV_OVERVOLT,
-    HV_OVERCURRENT_RMS,
-    HV_OVERCURRENT_PEAK,
-    HV_OVERCURRENT_HW,
-    HV_HV_FAULT,
-    HV_CURRENT_OFFSET_FAULT,
-    HV_COMM_FAULT,
-    HV_HAL_FAULT,
-}hv_fault_t;
+// typedef enum{
+//     HV_NO_FAULT = 0,
+//     HV_OVERTEMP,
+//     HV_OVERVOLT,
+//     HV_OVERCURRENT_RMS,
+//     HV_OVERCURRENT_PEAK,
+//     HV_OVERCURRENT_HW,
+//     HV_HV_FAULT,
+//     HV_CURRENT_OFFSET_FAULT,
+//     HV_COMM_FAULT,
+//     HV_HAL_FAULT,
+// }hv_fault_t;
 
 //io board
 //#define USB_CONNECT_PIN GPIO_PIN_15

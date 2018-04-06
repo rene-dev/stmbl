@@ -4,6 +4,7 @@
 #include "defines.h"
 #include "angle.h"
 #include "main.h"
+#include "common.h"
 
 HAL_COMP(fault);
 
@@ -341,6 +342,22 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
           case MOT_TEMP_ERROR:
             printf("Motor overtemperture\n");
+            break;
+          
+          case HV_CURRENT_OFFSET_FAULT:
+            printf("Current offset fault\n");
+            break;
+
+          case HV_OVERCURRENT_RMS:
+            printf("Motor overcurrent rms\n");
+            break;
+            
+          case HV_OVERCURRENT_PEAK:
+            printf("Motor overcurrent peak\n");
+            break;
+
+          case HV_OVERCURRENT_HW:
+            printf("Motor overcurrent hw limit\n");
             break;
         }
         break;

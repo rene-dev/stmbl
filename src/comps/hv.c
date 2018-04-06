@@ -50,18 +50,14 @@ HAL_PIN(w_fb);
 
 // misc
 HAL_PIN(rev);
-HAL_PIN(com_error);
 HAL_PIN(pwm_volt);
 HAL_PIN(uart_sr);
 HAL_PIN(uart_dr);
-HAL_PIN(crc_error);
-HAL_PIN(timeout);
+HAL_PIN(crc_error);//total number of crc errors, never reset
 HAL_PIN(scale);
 
-HAL_PIN(send_boot);
 HAL_PIN(state);
 HAL_PIN(value);
-HAL_PIN(send_reset);
 
 struct hv_ctx_t {
   union{
@@ -203,7 +199,6 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_CRC, ENABLE);
   ctx->timeout = 0;
-  PIN(timeout) = 0;
   PIN(dac) = 1560;
   send_to_bootloader = 0;
   flash_state = SLAVE_IN_APP;
@@ -259,8 +254,8 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
                 a                  = CLAMP(a, 0, sizeof(f3_state_data_t) / 4);
                 ctx->state.data[a] = ctx->from_hv.packet_from_hv.header.config.f32;
 
-                PIN(dc_volt)  = ctx->state.pins.dc_volt;
-                PIN(pwm_volt) = ctx->state.pins.pwm_volt;
+                PIN(dc_volt)   = ctx->state.pins.dc_volt;
+                PIN(pwm_volt)  = ctx->state.pins.pwm_volt;
                 PIN(u_fb)      = ctx->state.pins.u_fb;
                 PIN(v_fb)      = ctx->state.pins.v_fb;
                 PIN(w_fb)      = ctx->state.pins.w_fb;
@@ -268,12 +263,6 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
                 PIN(mot_temp)  = ctx->state.pins.mot_temp;
                 PIN(core_temp) = ctx->state.pins.core_temp;
                 PIN(y)         = ctx->state.pins.y;
-
-                if(ctx->from_hv.packet_from_hv.fault > 0.0) {
-                  PIN(com_error) = HV_FAULT_ERROR;
-                } else {
-                  PIN(com_error) = 0.0;
-                }
 
                 PIN(value) = 1.0;
 
@@ -300,7 +289,6 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
               }
               else{
                 // wrong packet len or slave addr
-                PIN(com_error) = -1;
                 PIN(value) = 3.0;
               }
             break;
@@ -317,7 +305,6 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
               }
               else{
                 // wrong packet len or slave addr
-                PIN(com_error) = -1;
                 PIN(value) = 3.0;
               }
             break;
@@ -331,7 +318,6 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
               }
               else{
                 // wrong packet len or slave addr
-                PIN(com_error) = -1;
                 PIN(value) = 3.0;
               }
             break;
@@ -349,15 +335,14 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
         else{
           // CRC fault
           PIN(crc_error)++;
-          PIN(com_error) = HV_CRC_ERROR;
+          PIN(fault) = HV_CRC_ERROR;
           // PIN(value) = 4.0;
         }
       }
     }
 
     if(ctx->timeout > 2) {
-      PIN(timeout)++;
-      PIN(com_error) = HV_TIMEOUT_ERROR;
+      PIN(fault) = HV_TIMEOUT_ERROR;
     }
     ctx->timeout++;
 

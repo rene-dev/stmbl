@@ -5,6 +5,7 @@
 #include "angle.h"
 #include "stm32f3xx_hal.h"
 #include "f3hw.h"
+#include "common.h"
 
 HAL_COMP(io);
 
@@ -63,7 +64,7 @@ struct io_ctx_t {
   uint32_t offset_count;
   uint32_t hv_temp;
   uint32_t mot_temp;
-  hv_fault_t fault;
+  uint32_t fault;
   uint32_t enabled;
 };
 
@@ -140,7 +141,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   ctx->u_offset = 0.0;
   ctx->v_offset = 0.0;
   ctx->w_offset = 0.0;
-  ctx->fault = HV_NO_FAULT;
+  ctx->fault = NO_ERROR;
   ctx->overtemp_error = 0;
   ctx->overvoltage_error = 0;
   ctx->overcurrent_error = 0;
@@ -213,11 +214,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     ctx->mot_temp = adc_34_buf[3];
     
     if(err_filter(&(ctx->overtemp_error), 5.0, 0.001, PIN(hv_temp) > ABS_MAX_TEMP)) {
-      ctx->fault = HV_OVERTEMP;
+      ctx->fault = HV_TEMP_ERROR;
     }
 
     if(err_filter(&(ctx->overvoltage_error), 5.0, 0.001, PIN(udc) > ABS_MAX_VOLT)) {
-      ctx->fault = HV_OVERVOLT;
+      ctx->fault = HV_VOLT_ERROR;
     }
 
     if(err_filter(&(ctx->overcurrent_error), 5.0, 0.001, PIN(iabs) > ABS_MAX_CURRENT * 0.95)) {
@@ -240,7 +241,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 #endif
         ctx->enabled = 1;
       }
-      if(ctx->fault == HV_NO_FAULT) {
+      if(ctx->fault == NO_ERROR) {
 #ifdef HV_FAULT_PIN
         //read fault pin from driver
         if(err_filter(&(ctx->fault_pin_error), 5.0, 0.01, HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN) == HV_FAULT_POLARITY)){
@@ -261,7 +262,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       }
     } else {
       ctx->enabled = 0;
-      ctx->fault = HV_NO_FAULT;
+      ctx->fault = NO_ERROR;
 #ifdef HV_EN_PIN
       //clear driver enable pin
       HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
@@ -285,7 +286,7 @@ void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   uint32_t led = (uint32_t)PIN(led);
 
   if(hal.hal_state != HAL_OK2){
-    led = HV_HAL_FAULT;
+    led = 2;
   }
 
   HAL_GPIO_WritePin(LED_PORT, LED_PIN, BLINK(led) > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);

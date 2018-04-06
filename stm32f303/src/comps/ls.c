@@ -42,7 +42,7 @@ HAL_PIN(q_fb);
 HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
 HAL_PIN(core_temp);
-HAL_PIN(fault_in);
+HAL_PIN(fault_in);//fault code send to f4
 HAL_PIN(y);
 HAL_PIN(u_fb);
 HAL_PIN(v_fb);
@@ -55,7 +55,7 @@ HAL_PIN(crc_ok);
 HAL_PIN(timeout);
 HAL_PIN(dma_pos);
 HAL_PIN(idle);
-HAL_PIN(fault);
+HAL_PIN(fault);//communication fault output
 
 HAL_PIN(dma_pos2);
 HAL_PIN(arr);
@@ -227,7 +227,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     } else {
       PIN(crc_error)
       ++;
-      fault = HV_COMM_FAULT;
+      fault = 3;
     }
   }
 
@@ -296,7 +296,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     PIN(en) = 0.0;
     PIN(timeout)
     ++;
-    fault = HV_COMM_FAULT;
+    fault = 1;
   }
   ctx->timeout++;
 
