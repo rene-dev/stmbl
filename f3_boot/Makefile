@@ -146,6 +146,7 @@ CXXFLAGS += $(CPU)
 ASFLAGS  += $(CPU)
 LDFLAGS  += $(CPU)
 
+ADDRESS = 0x8000000
 # Default target
 #
 all: gccversion build showsize
@@ -157,31 +158,6 @@ hex: $(TARGET).hex
 bin: $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
-
-# Display compiler version information
-#
-
-gccversion:
-	@$(CC) --version
-
-# Show the final program size
-#
-showsize: build
-	@echo
-	@$(SIZE) $(TARGET).elf 2>/dev/null
-
-# Flash the device
-#
-btburn: build showsize $(TARGET).dfu
-	@dfu-util -d 0483:df11 -a 0 -s 0x8000000:leave -D $(TARGET).dfu
-
-flash: $(TARGET).bin
-	st-flash --reset write $(TARGET).bin 0x8000000
-
-# Create a DFU file from bin file
-%.dfu: %.bin
-	@cp $< $@
-	@dfu-suffix -v 0483 -p df11 -a $@
 
 # Target: clean project
 #

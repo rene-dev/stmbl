@@ -125,6 +125,8 @@ CXXFLAGS += $(CPU)
 ASFLAGS  += $(CPU)
 LDFLAGS  += $(CPU)
 
+ADDRESS = 0x08000000
+
 # Default target
 #
 all:  gccversion build showsize
@@ -136,29 +138,6 @@ hex: $(TARGET).hex
 bin: $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
-
-# Display compiler version information
-#
-gccversion:
-	@$(CC) --version
-
-# Show the final program size
-#
-showsize: build
-	@echo
-	@$(SIZE) $(TARGET).elf 2>/dev/null
-
-# Flash the device
-#
-btflash: build showsize
-	#change this to your device
-	printf "bootloader\r" > `ls /dev/cu.usbmodem*` || true
-	printf "bootloader\r" > `ls /dev/ttyACM*` || true
-	sleep 1
-	dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D $(TARGET).bin
-
-flash: build showsize
-	st-flash --reset write $(TARGET).bin 0x08000000
 
 # Target: clean project
 #

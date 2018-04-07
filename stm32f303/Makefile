@@ -174,6 +174,8 @@ CXXFLAGS += $(CPU)
 ASFLAGS  += $(CPU)
 LDFLAGS  += $(CPU)
 
+ADDRESS = 0x8004000
+
 # Default target
 #
 all: gccversion build showsize
@@ -199,30 +201,6 @@ tbl:
 	@$(PYTHON) tools/create_hal_tbl.py stm32f303/ $(COMPS)
 	#shared/comps/*.c src/comps/hw/*.c src/comps/*.c
 	@$(PYTHON) tools/create_cmd.py $(SOURCES) > stm32f303/inc/commandslist.h
-
-gccversion:
-	@$(CC) --version
-
-# Show the final program size
-#
-showsize: build
-	@echo
-	@$(SIZE) $(TARGET).elf 2>/dev/null
-
-# Flash the device
-#
-btburn: build showsize $(TARGET).dfu
-	@$(PYTHON) tools/bootloader.py
-	@sleep 1
-	@dfu-util -d 0483:df11 -a 0 -s 0x8004000:leave -D $(TARGET).dfu
-
-flash: $(TARGET).bin
-	st-flash --reset write $(TARGET).bin 0x8004000
-
-# Create a DFU file from bin file
-%.dfu: %.bin
-	@cp $< $@
-	@dfu-suffix -v 0483 -p df11 -a $@
 
 # Target: clean project
 #

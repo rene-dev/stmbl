@@ -243,6 +243,8 @@ CXXFLAGS += $(CPU)
 ASFLAGS  += $(CPU)
 LDFLAGS  += $(CPU)
 
+ADDRESS = 0x08010000
+
 # Default target
 #
 all:  gccversion tbl boot build showsize
@@ -314,32 +316,6 @@ binall:
 
 format:
 	find src/ f3_boot/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ tools/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
-
-# Display compiler version information
-#
-gccversion:
-	@$(CC) --version
-
-# Show the final program size
-#
-showsize: build
-	@echo
-	@$(SIZE) $(TARGET).elf 2>/dev/null
-
-# Flash the device
-#
-btburn: build showsize $(TARGET).dfu
-	@$(PYTHON) tools/bootloader.py
-	@sleep 1
-	@dfu-util -d 0483:df11 -a 0 -s 0x08010000:leave -D $(TARGET).dfu
-
-flash: $(TARGET).bin
-	st-flash --reset write $(TARGET).bin 0x08010000
-
-# Create a DFU file from bin file
-%.dfu: %.bin
-	@cp $< $@
-	@dfu-suffix -v 0483 -p df11 -a $@
 
 # Target: clean project
 #

@@ -60,3 +60,29 @@ $(OBJDIR)/%.o : %.s
 	@echo Assembling: $<
 	@$(MKDIR) -p $(dir $@)
 	$(Q)$(CC) -c $(CPPFLAGS) $(ASFLAGS) $(GENDEPFLAGS) $< -o $@
+
+# Display compiler version information
+#
+gccversion:
+	@$(CC) --version
+
+# Show the final program size
+#
+showsize: build
+	@echo
+	@$(SIZE) $(TARGET).elf 2>/dev/null
+
+# Flash the device
+#
+btburn: build showsize $(TARGET).dfu
+	@$(PYTHON) tools/bootloader.py
+	@sleep 1
+	@$(DFU-UTIL) -d 0483:df11 -a 0 -s $(ADDRESS):leave -D $(TARGET).dfu
+
+flash: $(TARGET).bin
+	@$(ST-FLASH) --reset write $(TARGET).bin $(ADDRESS)
+
+# Create a DFU file from bin file
+%.dfu: %.bin
+	@cp $< $@
+	@$(DFU-SUFFIX) -v 0483 -p df11 -a $@
