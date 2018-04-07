@@ -505,10 +505,9 @@ Connect the USB cable to the HV board as with the LV board, and use the
 boot pads on the HV board to put it into bootloader mode. Again it
 should appear in the USB device tree. 
 
-The command to flash the bootloader for the F3 board does not have a
-makefile shortcut, it is:
+The command to flash the bootloader for the F3 board is:
 
-'make -f f3dfu/Makefile btburn
+'make f3_boot_btburn
 
 Again a progress bar should be seen, after which the main F3 firmware
 can be flashed:
