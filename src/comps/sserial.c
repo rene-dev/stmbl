@@ -136,10 +136,10 @@ uint8_t sserial_slave[] = {
 };
 
 const discovery_rpc_t discovery = {
-  .ptocp = 0x018B,
-  .gtocp = 0x01A5,
-  .input = 11,
-  .output = 9,
+    .ptocp  = 0x018B,
+    .gtocp  = 0x01A5,
+    .input  = 11,
+    .output = 9,
 };
 
 typedef struct {
