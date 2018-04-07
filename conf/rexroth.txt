@@ -1,0 +1,15 @@
+link pid
+link pmsm
+link enc_fb0
+link jog_cmd
+link misc
+conf0.r = 3.75
+conf0.l = 0.008
+conf0.j = 0.000013
+conf0.max_force = 3
+conf0.max_ac_cur = 6
+conf0.mot_fb_res = 512
+conf0.polecount = 3
+conf0.out_rev = 1
+fb_switch0.mot_pos = enc_fb0.ipos
+reslimit0.res = 131072
