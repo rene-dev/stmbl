@@ -87,9 +87,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   volatile uint32_t *ADC_DMA_Buffer;
 
   if(DMA_GetCurrentMemoryTarget(DMA2_Stream0)) {
-    ADC_DMA_Buffer = ADC_DMA_Buffer1;
-  } else {
     ADC_DMA_Buffer = ADC_DMA_Buffer0;
+  } else {
+    ADC_DMA_Buffer = ADC_DMA_Buffer1;
   }
   int flip;
   int n = PIN(res_mode);
