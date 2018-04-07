@@ -1,9 +1,6 @@
 load adc
 load reslimit
 load rev
-load rev
-load rev
-load rev
 load fb_switch
 load vel
 load vel
