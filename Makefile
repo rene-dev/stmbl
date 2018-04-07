@@ -227,7 +227,7 @@ LDFLAGS += -T$(LDSCRIPT)
 
 #============================================================================
 
-POSTLD   = tools/add_version_info.py # -q
+POSTLD   = $(PYTHON) tools/add_version_info.py # -q
 
 # Compiler flags to generate dependency files
 #
@@ -263,9 +263,9 @@ src/conf_templates.c: tbl
 #generate hal and command tables
 tbl:
 	@echo Generating tables
-	@tools/create_hal_tbl.py . $(COMPS)
-	@tools/create_config.py conf/template/* > src/conf_templates.c
-	@tools/create_cmd.py $(SOURCES) > inc/commandslist.h
+	@$(PYTHON) tools/create_hal_tbl.py . $(COMPS)
+	@$(PYTHON) tools/create_config.py conf/template/* > src/conf_templates.c
+	@$(PYTHON) tools/create_cmd.py $(SOURCES) > inc/commandslist.h
 
 boot:
 	$(MAKE) -f bootloader/Makefile
@@ -329,7 +329,7 @@ showsize: build
 # Flash the device
 #
 btburn: build showsize $(TARGET).dfu
-	@tools/bootloader.py
+	@$(PYTHON) tools/bootloader.py
 	@sleep 1
 	@dfu-util -d 0483:df11 -a 0 -s 0x08010000:leave -D $(TARGET).dfu
 

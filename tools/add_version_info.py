@@ -1,12 +1,4 @@
-#! /bin/sh
-"true" '''\'
-if command -v python2.7 > /dev/null; then
-  exec python2.7 "$0" "$@"
-else
-  exec python "$0" "$@"
-fi
-exit $?
-'''
+#!/usr/bin/env python
 #
 # Add CRC checksum and version information to an ELF file
 # Copyright (C)2015 Thomas Kindler <mail@t-kindler.de>
@@ -28,7 +20,7 @@ import os, struct
 import argparse, subprocess
 import getpass, platform
 
-from StringIO import StringIO
+from io import BytesIO
 from datetime import datetime
 
 from crc32 import CRC32
@@ -71,8 +63,8 @@ class VersionInfo:
             self.image_crc, self.image_size,
             self.git_version,
             self.git_branch,
-            self.build_user, self.build_host,
-            self.build_date, self.build_time
+            self.build_user.encode(), self.build_host.encode(),
+            self.build_date.encode(), self.build_time.encode()
         )
 
 
@@ -132,7 +124,7 @@ def elf_to_bin(elf, elf_data):
         bin_data += b'\xFF' * gap
         bin_data += elf_data[s.sh_offset : s.sh_offset + s.sh_size]
 
-    return str(bin_data)
+    return bin_data
 
 
 def patch_section(elf, elf_data, section, data):
@@ -146,8 +138,8 @@ def patch_elf():
         elf_data = bytearray(file.read())
 
     elf = ELFObject()
-    elf.fromFile(StringIO(elf_data))
 
+    elf.fromFile(BytesIO(elf_data))
     for s in elf.getSections():
         dprint("  %-16s: 0x%08x -> 0x%08x %8d" %
             (s.name, s.lma, s.sh_addr, s.sh_size)

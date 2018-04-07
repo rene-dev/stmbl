@@ -109,7 +109,7 @@ LDFLAGS += -T$(LDSCRIPT)
 
 #============================================================================
 
-POSTLD   = tools/add_version_info.py # -q
+POSTLD   = $(PYTHON) tools/add_version_info.py # -q
 
 # Compiler flags to generate dependency files
 #

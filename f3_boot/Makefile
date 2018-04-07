@@ -130,7 +130,7 @@ LDFLAGS += -T$(LDSCRIPT)
 
 #============================================================================
 
-POSTLD   = tools/add_version_info.py # -q
+POSTLD   = $(PYTHON) tools/add_version_info.py # -q
 
 # Compiler flags to generate dependency files
 #
@@ -173,8 +173,6 @@ showsize: build
 # Flash the device
 #
 btburn: build showsize $(TARGET).dfu
-	@tools/bootloader.py
-	@sleep 1
 	@dfu-util -d 0483:df11 -a 0 -s 0x8000000:leave -D $(TARGET).dfu
 
 flash: $(TARGET).bin

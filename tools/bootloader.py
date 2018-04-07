@@ -1,12 +1,4 @@
-#! /bin/sh
-"true" '''\'
-if command -v python2.7 > /dev/null; then
-  exec python2.7 "$0" "$@"
-else
-  exec python "$0" "$@"
-fi
-exit $?
-'''
+#!/usr/bin/env python
 import serial.tools.list_ports
 done = False
 
@@ -15,7 +7,7 @@ for port in serial.tools.list_ports.comports():
       print ("Reseting stmbl at " + port[2])
       try:
         stmbl = serial.Serial(port[0])
-        stmbl.write('bootloader\n')
+        stmbl.write('bootloader\n'.encode())
         stmbl.close()
         done = True
       except OSError:

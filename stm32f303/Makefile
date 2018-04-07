@@ -158,7 +158,7 @@ LDFLAGS += -T$(LDSCRIPT)
 
 #============================================================================
 
-POSTLD   = tools/add_version_info.py # -q
+POSTLD   = $(PYTHON) tools/add_version_info.py # -q
 
 # Compiler flags to generate dependency files
 #
@@ -196,9 +196,9 @@ stm32f303/src/hal_tbl.c: tbl
 
 tbl:
 	@echo Generating tables
-	@tools/create_hal_tbl.py stm32f303/ $(COMPS)
+	@$(PYTHON) tools/create_hal_tbl.py stm32f303/ $(COMPS)
 	#shared/comps/*.c src/comps/hw/*.c src/comps/*.c
-	@tools/create_cmd.py $(SOURCES) > stm32f303/inc/commandslist.h
+	@$(PYTHON) tools/create_cmd.py $(SOURCES) > stm32f303/inc/commandslist.h
 
 gccversion:
 	@$(CC) --version
@@ -212,7 +212,7 @@ showsize: build
 # Flash the device
 #
 btburn: build showsize $(TARGET).dfu
-	@tools/bootloader.py
+	@$(PYTHON) tools/bootloader.py
 	@sleep 1
 	@dfu-util -d 0483:df11 -a 0 -s 0x8004000:leave -D $(TARGET).dfu
 
