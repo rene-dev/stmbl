@@ -320,7 +320,7 @@ f1:
 f1_flash: boot
 	$(MAKE) -f stm32f103/Makefile flash
 
-deploy: f3_boot f3 boot build obj_app/stmbl.dfu binall
+deploy: f3_boot f3 boot build binall
 
 binall:
 	cat obj_boot/blboot.bin /dev/zero | head -c 32768 > f4.bin
