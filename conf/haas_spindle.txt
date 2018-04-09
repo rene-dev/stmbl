@@ -35,7 +35,6 @@ ramp0.brake_scale = 0.65
 acim_ttc0.slip_n = 1
 pid0.max_torque = 30
 pid0.vel_ext_cmd = ramp0.out
-hv0.rt_prio = 16.5
 vel1.en = 1
 ramp0.in = linrev0.cmd_d_out
 linrev0.scale = 1
