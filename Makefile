@@ -249,7 +249,7 @@ ADDRESS = 0x08010000
 #
 all:  gccversion tbl boot build showsize
 
-build: tbl elf hex bin lss sym
+build: tbl elf hex bin lss sym f3_boot
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
@@ -269,43 +269,58 @@ tbl:
 	@$(PYTHON) tools/create_config.py conf/template/* > src/conf_templates.c
 	@$(PYTHON) tools/create_cmd.py $(SOURCES) > inc/commandslist.h
 
+#build f4 bootloader
 boot:
 	$(MAKE) -f bootloader/Makefile
 
-boot_clean:
-	$(MAKE) -f bootloader/Makefile clean
-
+#flash f4 bootloader using stlink
 boot_flash: boot
 	$(MAKE) -f bootloader/Makefile flash
 
-hv_flash: boot
-	$(MAKE) -f stm32f103/Makefile flash
-
+#flash f4 bootloader using df-util
 boot_btburn: boot
-	$(MAKE) -f bootloader/Makefile btflash
+	$(MAKE) -f bootloader/Makefile btburn
 
-hv:
-	$(MAKE) -f stm32f103/Makefile
 
-f3:
-	$(MAKE) -f stm32f303/Makefile
-
-f3_flash:
-	$(MAKE) -f stm32f303/Makefile flash
-
-f3_btburn:
-	$(MAKE) -f stm32f303/Makefile btburn
-
+#build f3 bootloader
 f3_boot:
 	$(MAKE) -f f3_boot/Makefile
 
+#flash f3 bootloader using stlink
+f3_boot_flash:
+	$(MAKE) -f f3_boot/Makefile flash
+
+#flash f3 bootloader using df-util
 f3_boot_btburn:
 	$(MAKE) -f f3_boot/Makefile btburn
 
+
+#build f3 firmware
+f3:
+	$(MAKE) -f stm32f303/Makefile
+
+#flash f3 firmware using stlink
+f3_flash:
+	$(MAKE) -f stm32f303/Makefile flash
+
+#flash f3 firmware using df-util
+f3_btburn:
+	$(MAKE) -f stm32f303/Makefile btburn
+
+
+#generate f3 firmware object from f3 bin
 hv_firmware.o:
 	$(MAKE) -f stm32f303/Makefile all
 
-deploy: boot f3_boot f3 build
+#build f103 firmware for V3 hardware
+f1:
+	$(MAKE) -f stm32f103/Makefile
+
+#flash f103 firmware for V3 hardware using stlink
+f1_flash: boot
+	$(MAKE) -f stm32f103/Makefile flash
+
+deploy: f3_boot f3 boot build obj_app/stmbl.dfu binall
 
 binall:
 	cat obj_boot/blboot.bin /dev/zero | head -c 32768 > f4.bin
@@ -345,4 +360,4 @@ include toolchain.mak
 .PHONY: all build flash clean \
         boot boot_clean boot_flash btburn boot_btflash boot_flash\
         elf lss sym \
-        showsize gccversion tbl
+        showsize gccversion tbl f3_boot

@@ -7,7 +7,7 @@ OPT = -O1 -flto
 # Object files directory
 # Warning: this will be removed by make clean!
 #
-OBJDIR = obj_hv
+OBJDIR = obj_f1
 
 # Target file name (without extension)
 TARGET = $(OBJDIR)/hv
@@ -136,24 +136,6 @@ hex: $(TARGET).hex
 bin: $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
-hv_firmware.o:
-	$(OBJCOPY) --rename-section .data=.hv_firmware -I binary obj_hv/hv.bin -B arm -O elf32-littlearm hv_firmware.o
-
-# Display compiler version information
-#
-gccversion:
-	@$(CC) --version
-
-# Show the final program size
-#
-showsize: build
-	@echo
-	@$(SIZE) $(TARGET).elf 2>/dev/null
-
-# Flash the device
-#
-flash: build
-	st-flash --reset write $(TARGET).bin 0x8000000
 
 # Target: clean project
 #
