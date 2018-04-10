@@ -245,6 +245,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       ++;
       fault = 3;
     }
+  }else if(ctx->timeout <= 5){// if no packet and no timeout, advance pos by velovity
+    PIN(pos) = PIN(pos) + PIN(vel) * period;
   }
 
 
@@ -310,6 +312,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   if(ctx->timeout > 5) {  //disable driver
     PIN(en) = 0.0;
+    PIN(vel) = 0.0;
     PIN(timeout)
     ++;
     fault = 1;
