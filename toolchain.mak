@@ -1,4 +1,5 @@
 # Define programs and commands for the toolchain
+# Do not modiy this file. Instead create a file toolchain-user.mak which can overwrite anything in here.
 PYTHON     = python
 DFU-UTIL   = dfu-util
 DFU-SUFFIX = dfu-suffix

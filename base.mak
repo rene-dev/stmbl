@@ -86,3 +86,6 @@ flash: $(TARGET).bin
 %.dfu: %.bin
 	@cp $< $@
 	@$(DFU-SUFFIX) -v 0483 -p df11 -a $@
+
+include toolchain.mak
+-include toolchain-user.mak
