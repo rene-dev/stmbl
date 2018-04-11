@@ -137,12 +137,12 @@ void TIM8_UP_IRQHandler() {
           break;
       }
 
-      // if(status != HAL_OK){
-      //   tx_buf.header.flags.conf_addr = 1;
-      // }
-      // else{
-      //   tx_buf.header.flags.error = 0;
-      // }
+      if(status != HAL_OK){
+        tx_buf.state = BOOTLOADER_STATE_NAK;
+      }
+      else{
+        tx_buf.state = BOOTLOADER_STATE_OK;
+      }
 
       tx_buf.cmd                  = rx_buf.cmd;
       tx_buf.header.flags.counter = rx_buf.header.flags.counter;
