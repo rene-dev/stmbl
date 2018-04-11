@@ -153,15 +153,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     ctx->state      = SOFT_FAULT;
   }
 
-  //  if(err_filter(&(ctx->hv_error), 3.0, 0.001, PIN(hv_error) > 0.0)) {
-  float hv_error = PIN(hv_error);
-  if(hv_error > 0.0) {
-    //TODO: pass error, move filter to hv comp
-    ctx->fault      = hv_error;
-    PIN(last_fault) = ctx->fault;
-    ctx->state      = SOFT_FAULT;
-  }
-
   if(ABS(PIN(pos_error)) > PIN(max_pos_error)) {
     ctx->fault      = POS_ERROR;
     PIN(last_fault) = ctx->fault;
@@ -188,6 +179,14 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   if(err_filter(&(ctx->mot_temp_error), 5.0, 0.001, PIN(mot_temp) > PIN(max_mot_temp))) {
     ctx->fault      = MOT_TEMP_ERROR;
+    PIN(last_fault) = ctx->fault;
+    ctx->state      = SOFT_FAULT;
+  }
+
+  float hv_error = PIN(hv_error);
+  if(hv_error > 0.0) {
+    //TODO: pass error, move filter to hv comp
+    ctx->fault      = hv_error;
     PIN(last_fault) = ctx->fault;
     ctx->state      = SOFT_FAULT;
   }
