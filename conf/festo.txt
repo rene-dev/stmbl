@@ -1,6 +1,7 @@
 link pid
 link pmsm
 link res_fb0
+link jog_cmd
 link misc
 conf0.r = 9.6
 conf0.l = 0.01
@@ -12,3 +13,4 @@ conf0.max_ac_cur = 10
 conf0.max_force = 3
 res0.freq = 5000
 res0.phase = 0.4
+conf0.mot_fb_offset = -0.255

@@ -120,18 +120,18 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   } else {
     PIN(state) = 1.0;
     if(PIN(joint_state) >= 2.0 && ctx->current_com_pos > 3.0) {
-      ctx->current_com_pos = 3;
+      ctx->current_com_pos = 3; // joint fb absolute
       ctx->com_offset      = minus(mod((joint_abs_pos + joint_offset) * PIN(polecount) / PIN(mot_joint_ratio)), mod(mot_pos * PIN(polecount) / PIN(mot_polecount)));
     }
     if(PIN(com_state) >= 2.0 && ctx->current_com_pos > 2.0) {
-      ctx->current_com_pos = 2;
+      ctx->current_com_pos = 2; // com fb absolute
       ctx->com_offset      = minus(mod((com_abs_pos + com_offset) * PIN(polecount) / PIN(com_polecount)), mod(mot_pos * PIN(polecount) / PIN(mot_polecount)));
     }
     if(PIN(mot_state) >= 2.0 && ctx->current_com_pos > 1.0) {
-      ctx->current_com_pos = 1;
+      ctx->current_com_pos = 1; // mot fb absolute
       ctx->com_offset      = 0.0;
     }
-    if(ctx->current_com_pos > 4.0) {
+    if(ctx->current_com_pos > 4.0) { // autophasing
       PIN(com_fb) = 0.0;
 
       ctx->phase_timer += period;
@@ -146,7 +146,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       }
     }
 
-    PIN(current_com_pos) = ctx->current_com_pos;
 
     switch(ctx->current_com_pos) {
       case 4:
@@ -155,7 +154,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
       case 3:
         if(PIN(joint_state) != 3.0) {
-          PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset);
+          PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset); // tracking
         } else {
           PIN(com_fb) = mod((joint_abs_pos + joint_offset) * PIN(polecount));
         }
@@ -163,7 +162,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
       case 2:
         if(PIN(com_state) != 3.0) {
-          PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset);
+          PIN(com_fb) = mod(mot_pos * PIN(polecount) / PIN(mot_polecount) + ctx->com_offset); // tracking
         } else {
           PIN(com_fb) = mod((com_abs_pos + com_offset) * PIN(polecount) / PIN(com_polecount));
         }
@@ -181,6 +180,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
         PIN(state) = 0.0;
     }
   }
+  PIN(current_com_pos) = ctx->current_com_pos;
 }
 
 hal_comp_t fb_switch_comp_struct = {

@@ -2,12 +2,17 @@ link pid
 link pmsm
 link enc_fb0
 link uvw_fb1
+link jog_cmd
 link misc
+#link sserial
+#linrev0.scale = 6
 conf0.r = 1.6
-conf0.l = 0.005
-conf0.j = 0.000056
+conf0.l = 0.008
+conf0.j = 0.00007
+conf0.cur_i = 0.0004
+conf0.mot_fb_offset = 0.1
 conf0.max_force = 5.7
-conf0.max_ac_cur = 5
+conf0.max_ac_cur = 9
 conf0.mot_fb_res = 10000
 conf0.cmd_res = 10000
 conf0.mot_fb_rev = 1

@@ -25,6 +25,7 @@ HAL_PIN(oquadoff);
 HAL_PIN(qdiff);
 HAL_PIN(error);
 HAL_PIN(amp);
+HAL_PIN(vel);
 HAL_PIN(ccr3);
 HAL_PIN(indexprint);
 
@@ -135,9 +136,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   float s = PIN(sin);
   float c = PIN(cos);
-  float a = sqrtf(s * s + c * c);
 
-  PIN(amp) = a;
   int q;
 
   //calculate quadrant of timer
@@ -199,9 +198,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(abs_pos) = minus(p, ctx->absoffset);
   PIN(index)   = GPIO_ReadInputDataBit(FB0_Z_PORT, FB0_Z_PIN);
 
-
-  //TODO: fix EDGE
-  if(a > 0.15 || EDGE(tim)) {
+  if(PIN(amp) > 0.25 || ABS(PIN(vel)) > 0.15) {
     PIN(error) = 0.0;
     PIN(state) = MAX(PIN(state), 1.0);
     PIN(ipos)  = mod(p + ((int)(ir * mod(atan2f(s, c) * 4.0 + M_PI) / M_PI)) / ir * M_PI / (float)ctx->e_res);

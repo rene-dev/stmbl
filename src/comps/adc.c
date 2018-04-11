@@ -19,9 +19,13 @@ HAL_PIN(cos0);   //cos output
 HAL_PIN(sin0l);  //sin output, last group only
 HAL_PIN(cos0l);  //cos output, last group only
 HAL_PIN(quad);   //quadrant of sin/cos
+HAL_PIN(amp0);   
 
+HAL_PIN(sin1);   //sin output
+HAL_PIN(cos1);   //cos output
 HAL_PIN(sin1l);  //sin output, last group only
 HAL_PIN(cos1l);  //cos output, last group only
+HAL_PIN(amp1);   
 
 HAL_PIN(res_mode);  //polarity flip mode for resolvers
 
@@ -77,6 +81,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float si1[ADC_GROUPS];
   uint32_t sii1;
   uint32_t coi1;
+  //scaled, all groups
+  float sin1all = 0.0;
+  float cos1all = 0.0;
 #endif
 
   float s_o = PIN(sin_offset);
@@ -120,6 +127,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     }
     si1[i] = s_g * V_DIFF(sii1, ADC_OVER_FB1) + s_o;
     co1[i] = c_g * V_DIFF(coi1, ADC_OVER_FB1) + c_o;
+    sin1all += si1[i];
+    cos1all += co1[i];
 #endif
   }
   if(ctx->send == 0) {
@@ -127,13 +136,22 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     ctx->send = 1;
   }
 
+  float s = V_DIFF(ADC_DMA_Buffer[0] & 0x0000ffff, 1);
+  float c = V_DIFF(ADC_DMA_Buffer[0] >> 16, 1);
+
   PIN(sin0l) = si0[ADC_GROUPS - 1];
   PIN(cos0l) = co0[ADC_GROUPS - 1];
   PIN(sin0)  = sin0all / (float)ADC_GROUPS;
   PIN(cos0)  = cos0all / (float)ADC_GROUPS;
+  PIN(amp0) = PIN(amp0) * 0.99 + sqrtf(s * s + c * c) * 0.01;
 #ifdef FB1
+  s = V_DIFF(ADC_DMA_Buffer[ADC_OVER_FB0] & 0x0000ffff, 1);
+  c = V_DIFF(ADC_DMA_Buffer[ADC_OVER_FB0] >> 16, 1);
   PIN(sin1l) = si1[ADC_GROUPS - 1];
   PIN(cos1l) = co1[ADC_GROUPS - 1];
+  PIN(sin1)  = sin1all / (float)ADC_GROUPS;
+  PIN(cos1)  = cos1all / (float)ADC_GROUPS;
+  PIN(amp1) = PIN(amp1) * 0.99 + sqrtf(s * s + c * c) * 0.01;
 #endif
 
   // if(PIN(res_en) > 0.0) {
