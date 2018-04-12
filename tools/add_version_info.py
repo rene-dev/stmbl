@@ -52,7 +52,7 @@ class VersionInfo:
         self.image_crc    = 0x00000000  # must be calculated later
         self.image_size   = ss[-1].lma + ss[-1].sh_size - ss[0].lma
         self.git_version  = git_version
-        self.git_branch  = git_branch
+        self.git_branch   = git_branch
         self.build_user   = getpass.getuser()
         self.build_host   = platform.node()
         self.build_date   = now.strftime("%Y-%m-%d")
@@ -111,9 +111,7 @@ def parse_args():
 def dprint(*str):
     if args.verbose:
         for s in str:
-            print (s,)
-        print
-
+            print (s)
 
 def elf_to_bin(elf, elf_data):
     bin_data = bytearray()
@@ -142,7 +140,7 @@ def patch_elf():
     elf.fromFile(BytesIO(elf_data))
     for s in elf.getSections():
         dprint("  %-16s: 0x%08x -> 0x%08x %8d" %
-            (s.name, s.lma, s.sh_addr, s.sh_size)
+            (s.name.decode(), s.lma, s.sh_addr, s.sh_size)
         )
 
     ##########
