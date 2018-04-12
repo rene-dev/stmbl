@@ -148,7 +148,6 @@ clean:
 # Include the base rules
 #
 include base.mak
-include toolchain.mak
 
 # Include the dependency files
 #

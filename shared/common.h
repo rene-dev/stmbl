@@ -46,7 +46,7 @@ typedef struct {
   } state : 8;
   uint16_t padding;
 } packet_bootloader_t;
-
+_Static_assert(sizeof(packet_bootloader_t) == 24, "packet_bootloader_t size error");
 
 //process data from f3 to f4
 typedef struct {
@@ -57,6 +57,7 @@ typedef struct {
   uint8_t buf;
   uint16_t padding;
 } packet_from_hv_t;
+_Static_assert(sizeof(packet_from_hv_t) == 24, "packet_from_hv_t size error");
 
 //process data from f4 to f3
 typedef struct {
@@ -85,6 +86,7 @@ typedef struct {
     uint32_t padding;
   };
 } packet_to_hv_t;
+_Static_assert(sizeof(packet_to_hv_t) == 32, "packet_to_hv_t size error");
 
 //config data for f3
 typedef union {
@@ -152,7 +154,6 @@ typedef enum {
   HV_OVERCURRENT_PEAK,
   HV_OVERCURRENT_HW,
 } fault_t;
-
 
 //check if structs can be send at 5kHz with DATABAUD
 _Static_assert(sizeof(packet_to_hv_t) <= DATABAUD / 11 / 5000 - 1 - 5, "to_hv struct to large");
