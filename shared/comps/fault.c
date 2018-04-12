@@ -60,6 +60,27 @@ HAL_PIN(print);
 
 HAL_PIN(brake_release);
 
+//fault strings for fault_t form common.h
+static const char* fault_string[] = {
+  "no error",
+  "CMD error",
+  "mot FB error",
+  "com FB error",
+  "joint FB error",
+  "position error",
+  "saturation error",
+  "Motor overtemperture",
+  "HV crc error",
+  "HV timeout error",
+  "HV overtemperture",
+  "HV volt error",
+  "HV fault error",
+  "Current offset fault",
+  "Motor overcurrent rms",
+  "Motor overcurrent peak",
+  "Motor overcurrent hw limit",
+};
+
 struct fault_ctx_t {
   state_t state;
   fault_t fault;
@@ -67,7 +88,6 @@ struct fault_ctx_t {
   float mot_fb_error;
   float com_fb_error;
   float joint_fb_error;
-  // float hv_error;
   float hv_temp_error;
   float dc_volt_error;
   float mot_temp_error;
@@ -185,7 +205,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   float hv_error = PIN(hv_error);
   if(hv_error > 0.0) {
-    //TODO: pass error, move filter to hv comp
     ctx->fault      = hv_error;
     PIN(last_fault) = ctx->fault;
     ctx->state      = SOFT_FAULT;
@@ -217,12 +236,14 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   switch(ctx->state) {
     case DISABLED:
+      ctx->fault     = NO_ERROR;
+    case SOFT_FAULT:
+    case LED_TEST:
+    case HARD_FAULT:
       PIN(mot_brake) = 0.0;
       PIN(en_out)    = 0.0;
       PIN(en_fb)     = 0.0;
       PIN(en_pid)    = 0.0;
-      ctx->fault     = NO_ERROR;
-      // scale = 0.0;
       break;
 
     case ENABLED:
@@ -240,23 +261,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       PIN(en_pid)    = 0.0;
       PIN(en_fb)     = 1.0;
       PIN(en_out)    = 1.0;
-      break;
-
-    case SOFT_FAULT:
-      PIN(mot_brake) = 0.0;
-      PIN(en_out)    = 0.0;
-      PIN(en_fb)     = 0.0;
-      PIN(en_pid)    = 0.0;
-      // scale = 0.0;
-      break;
-
-    case LED_TEST:
-    case HARD_FAULT:
-      PIN(mot_brake) = 0.0;
-      PIN(en_out)    = 0.0;
-      PIN(en_fb)     = 0.0;
-      PIN(en_pid)    = 0.0;
-      // scale = 0.0;
       break;
   }
 
@@ -291,76 +295,7 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
         break;
 
       case SOFT_FAULT:
-        printf("ERROR: Soft fault: ");
-        switch((fault_t)ctx->fault) {
-          case NO_ERROR:
-            printf("no error\n");
-            break;
-
-          case CMD_ERROR:
-            printf("CMD error\n");
-            break;
-
-          case MOT_FB_ERROR:
-            printf("mot FB error\n");
-            break;
-
-          case COM_FB_ERROR:
-            printf("com FB error\n");
-            break;
-
-          case JOINT_FB_ERROR:
-            printf("com FB error\n");
-            break;
-
-          case POS_ERROR:
-            printf("position error\n");
-            break;
-
-          case SAT_ERROR:
-            printf("saturation error\n");
-            break;
-
-          case HV_CRC_ERROR:
-            printf("HV crc error\n");
-            break;
-
-          case HV_TIMEOUT_ERROR:
-            printf("HV timeout error\n");
-            break;
-
-          case HV_TEMP_ERROR:
-            printf("HV overtemperture\n");
-            break;
-
-          case HV_VOLT_ERROR:
-            printf("HV volt error\n");
-            break;
-
-          case HV_FAULT_ERROR:
-            printf("HV fault error\n");
-            break;
-
-          case MOT_TEMP_ERROR:
-            printf("Motor overtemperture\n");
-            break;
-
-          case HV_CURRENT_OFFSET_FAULT:
-            printf("Current offset fault\n");
-            break;
-
-          case HV_OVERCURRENT_RMS:
-            printf("Motor overcurrent rms\n");
-            break;
-
-          case HV_OVERCURRENT_PEAK:
-            printf("Motor overcurrent peak\n");
-            break;
-
-          case HV_OVERCURRENT_HW:
-            printf("Motor overcurrent hw limit\n");
-            break;
-        }
+        printf("ERROR: Fault %lu: %s\n",(uint32_t)ctx->fault,fault_string[(uint32_t)ctx->fault]);
         break;
 
       case HARD_FAULT:
