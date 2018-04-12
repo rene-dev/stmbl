@@ -32,7 +32,6 @@ TIM_HandleTypeDef htim8;
 void MX_TIM8_Init(void) {
   TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
-  TIM_OC_InitTypeDef sConfigOC;
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
 
   htim8.Instance           = TIM8;
@@ -98,7 +97,6 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *tim_baseHandle) {
   }
 }
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *timHandle) {
-  GPIO_InitTypeDef GPIO_InitStruct;
   if(timHandle->Instance == TIM8) {
     /* USER CODE BEGIN TIM8_MspPostInit 0 */
 
