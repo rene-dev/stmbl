@@ -352,6 +352,7 @@ int main(void) {
   hal_parse("curpid0.en = ls0.en");
   hal_parse("curpid0.cmd_mode = ls0.cmd_mode");
   hal_parse("hv0.arr = ls0.arr");
+  hal_parse("io0.ignore_fault_pin = ls0.ignore_fault_pin");
   hal_parse("debug_level 0");
 
   // hal parse config

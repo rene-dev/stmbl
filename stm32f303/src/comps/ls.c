@@ -43,6 +43,7 @@ HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
 HAL_PIN(core_temp);
 HAL_PIN(fault_in);  //fault code send to f4
+HAL_PIN(ignore_fault_pin);
 HAL_PIN(y);
 HAL_PIN(u_fb);
 HAL_PIN(v_fb);
@@ -214,6 +215,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       PIN(en)         = ctx->packet_to_hv.flags.enable;
       PIN(phase_mode) = ctx->packet_to_hv.flags.phase_type;
       PIN(cmd_mode)   = ctx->packet_to_hv.flags.cmd_type;
+      PIN(ignore_fault_pin) = ctx->packet_to_hv.flags.ignore_fault_pin;
       PIN(d_cmd)      = ctx->packet_to_hv.d_cmd;
       PIN(q_cmd)      = ctx->packet_to_hv.q_cmd;
       PIN(pos)        = ctx->packet_to_hv.pos;

@@ -68,7 +68,7 @@ typedef struct {
   union {
     struct {
       uint8_t buf;
-      uint8_t enable : 1;
+      uint32_t enable : 1;
       enum packet_to_hv_cmd_type_t {
         VOLT_MODE = 0,
         CURRENT_MODE,
@@ -80,6 +80,7 @@ typedef struct {
         PHASE_180_2PH,
         PHASE_180_3PH,
       } phase_type : 3;
+      uint32_t ignore_fault_pin : 1;
     } flags;
     uint32_t padding;
   };

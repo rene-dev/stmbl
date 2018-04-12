@@ -43,6 +43,7 @@ HAL_PIN(hv_temp);
 HAL_PIN(mot_temp);
 HAL_PIN(core_temp);
 HAL_PIN(fault);  //fault from hv
+HAL_PIN(ignore_fault_pin);
 HAL_PIN(y);
 HAL_PIN(u_fb);
 HAL_PIN(v_fb);
@@ -366,6 +367,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           ctx->to_hv.packet_to_hv.q_cmd        = 0.0;
           ctx->to_hv.packet_to_hv.flags.enable = 0;
         }
+        ctx->to_hv.packet_to_hv.flags.ignore_fault_pin = PIN(ignore_fault_pin) > 0.0;
         ctx->to_hv.packet_to_hv.flags.cmd_type   = PIN(cmd_mode);
         ctx->to_hv.packet_to_hv.flags.phase_type = PIN(phase_mode);
         ctx->to_hv.packet_to_hv.pos              = pos;
@@ -485,7 +487,9 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
     }
 
     if(ctx->send_state > 1){
-      tx_size = 0;
+      if(flash_state != SLAVE_IN_APP){
+        tx_size = 0;
+      }
       ctx->send_state = 0;
     }
     ctx->send_state++;
@@ -534,7 +538,7 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
     printf("hv_update: status: %i%%\n", (int)(100.0 * ctx->addr * 4. / (float)((uint32_t) & (_binary_obj_hvf3_hvf3_bin_size))));
     last_addr = ctx->addr;
   }
-  
+
   if(last_flash_state != flash_state) {
     switch(flash_state) {
       case SLAVE_IN_APP:

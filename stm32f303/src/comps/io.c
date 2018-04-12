@@ -48,6 +48,8 @@ HAL_PIN(hv_en);
 
 //fault output
 HAL_PIN(fault);
+HAL_PIN(ignore_fault_pin);
+
 
 
 volatile uint32_t adc_12_buf[6];
@@ -103,7 +105,7 @@ float r2temp(float r) {
       return (-(r - b) / (a - b) * step + i * step + start);
     }
   }
-  return (temp[ARRAY_SIZE(temp)] + step);  // TODO fix
+  return (temp[ARRAY_SIZE(temp) - 1] + step);  // TODO fix
 }
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -241,8 +243,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       if(ctx->fault == NO_ERROR) {
 #ifdef HV_FAULT_PIN
         //read fault pin from driver
-        if(err_filter(&(ctx->fault_pin_error), 5.0, 0.01, HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN) == HV_FAULT_POLARITY)) {
-          ctx->fault = HV_HV_FAULT;
+        if(PIN(ignore_fault_pin) <= 0.0 && err_filter(&(ctx->fault_pin_error), 5.0, 0.01, HAL_GPIO_ReadPin(HV_FAULT_PORT, HV_FAULT_PIN) == HV_FAULT_POLARITY)) {
+          ctx->fault = HV_FAULT_ERROR;
         }
 #endif
         //Master out enable is cleared by timer break input.
