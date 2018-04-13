@@ -328,6 +328,9 @@ binall:
 	cat obj_app/stmbl.bin >> f4.bin
 	cat obj_f3_boot/f3_boot.bin /dev/zero | head -c 16384 > f3.bin
 	cat obj_hvf3/hvf3.bin >> f3.bin
+	$(PYTHON) tools/dfu-convert.py -b 0x08000000:f4.bin f4.dfu
+	$(PYTHON) tools/dfu-convert.py -b 0x08000000:f3.bin f3.dfu
+	$(PYTHON) tools/dfu-convert.py -b 0x08010000:obj_app/stmbl.bin stmbl.dfu
 
 format:
 	find src/ f3_boot/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ tools/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
@@ -337,7 +340,7 @@ format:
 clean:
 	@echo Cleaning project:
 	rm -rf hv_firmware.o
-	rm -rf f3.bin f4.bin
+	rm -rf f3.bin f4.bin f3.dfu f4.dfu stmbl.dfu 
 	rm -rf $(OBJDIR)
 	rm -rf inc/commandslist.h
 	rm -rf src/conf_templates.c
@@ -359,4 +362,4 @@ include base.mak
 .PHONY: all build flash clean \
         boot boot_clean boot_flash btburn boot_btflash boot_flash\
         elf lss sym \
-        showsize gccversion tbl f3_boot
+        showsize gccversion tbl f3_boot binall deploy format

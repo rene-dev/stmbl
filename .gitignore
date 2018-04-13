@@ -4,6 +4,7 @@
 *.elf
 *.hex
 *.bin
+*.dfu
 *.map
 *.log
 #*.net
@@ -14,6 +15,8 @@
 *.list
 *.out
 *.pyc
+*.jdebug
+*.jdebug.user
 
 .vscode/*
 
