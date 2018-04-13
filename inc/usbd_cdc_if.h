@@ -20,8 +20,6 @@ extern struct ringbuf usb_rx_buf;
 extern struct ringbuf usb_tx_buf;
 
 uint8_t USB_CDC_is_connected(void);
-uint16_t USB_VCP_get_string(char *ptr);
-void USB_VCP_send_string(unsigned char *ptr);
 void usb_init(void);
 
 void cdc_init(void);

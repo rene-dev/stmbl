@@ -221,19 +221,10 @@ static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
         tmp        = (ctx->txbuf[i][k] + PINA(offset, i)) * PINA(gain, i) + 128;
         buf[i + 1] = CLAMP(tmp, 1, 254);
       }
-      buf[8 + 1] = 0;
-
-      if(USB_CDC_is_connected()) {
-        USB_VCP_send_string(buf);
-      }
+      cdc_tx(buf, 9);
     }
-
     buf[0] = 0xfe;  //trigger servoterm
-    buf[1] = 0x00;
-    if(USB_CDC_is_connected()) {
-      USB_VCP_send_string(buf);
-    }
-
+    cdc_tx(buf, 1);
     ctx->send = 0;
   }
 }

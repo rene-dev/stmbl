@@ -42,53 +42,6 @@ static uint16_t VCP_DataRx(uint8_t *buf, uint32_t len) {
   return USBD_OK;
 }
 
-
-#define USB_CDC_FIRST_ASCII 32  // erstes Ascii-Zeichen
-#define USB_CDC_LAST_ASCII 255  // letztes Ascii-Zeichen
-uint16_t USB_VCP_get_string(char *ptr) {
-  uint16_t akt_pos = 0;
-  char wert        = '\0';
-
-  // test ob eine Endekennung empfangen wurde
-  if(cr_count == 0)
-    return 0;
-
-  if(usb_rx_buf.len == 0)
-    return 0;
-
-  // kompletten String bis zur Endekennung auslesen
-  // (oder bis Puffer leer ist)
-  // es werden nur Ascii-Zeichen übergeben
-  do {
-    rb_getc(&usb_rx_buf, &wert);
-    if((wert >= USB_CDC_FIRST_ASCII) && (wert <= USB_CDC_LAST_ASCII)) {
-      *(ptr + akt_pos) = wert;
-      akt_pos++;
-    }
-  } while((usb_rx_buf.len != 0) && (wert != '\n'));
-
-  // Stringende anhängen
-  *(ptr + akt_pos) = '\0';
-
-  // eine Endekennung wurde bearbeitet
-  cr_count--;
-
-  return akt_pos;
-}
-
-void USB_VCP_send_string(unsigned char *ptr) {
-  while(*ptr != 0) {
-    // send a queued byte - copy to usb stack buffer
-    APP_Rx_Buffer[APP_Rx_ptr_in++] = *ptr;
-    ptr++;
-
-    // To avoid buffer overflow
-    if(APP_Rx_ptr_in >= APP_RX_DATA_SIZE) {
-      APP_Rx_ptr_in = 0;
-    }
-  }
-}
-
 const CDC_IF_Prop_TypeDef VCP_fops = {
     .pIf_Init   = VCP_Init,
     .pIf_DeInit = VCP_DeInit,
@@ -202,6 +155,9 @@ uint8_t USB_CDC_is_connected(void) {
 void cdc_init(void) {}
 
 int cdc_tx(void *data, uint32_t len) {
+  if(!cdc_is_connected()){
+    return 0;
+  }
   while(len--) {
     // send a queued byte - copy to usb stack buffer
     APP_Rx_Buffer[APP_Rx_ptr_in++] = *(uint8_t *)data;
@@ -215,7 +171,7 @@ int cdc_tx(void *data, uint32_t len) {
 }
 
 int cdc_getline(char *ptr, int len) {
-  return USB_VCP_get_string(ptr);
+  return rb_getline(&usb_rx_buf, ptr, len);
 }
 
 int cdc_is_connected() {
