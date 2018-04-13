@@ -320,6 +320,15 @@ f1:
 f1_flash: boot
 	$(MAKE) -f stm32f103/Makefile flash
 
+f3_all_btburn:
+	@$(DFU-UTIL) -d 0483:df11 -a 0 -s 0x08000000:leave -D f3.dfu
+all_btburn:
+	@$(DFU-UTIL) -d 0483:df11 -a 0 -s 0x08000000:leave -D f4.dfu
+all_flash:
+	@$(ST-FLASH) --reset write f4.bin 0x08000000
+f3_all_flash:
+	@$(ST-FLASH) --reset write f3.bin 0x08000000
+
 deploy: f3_boot f3 boot build binall
 
 binall:
@@ -362,4 +371,4 @@ include base.mak
 .PHONY: all build flash clean \
         boot boot_clean boot_flash btburn boot_btflash boot_flash\
         elf lss sym \
-        showsize gccversion tbl f3_boot binall deploy format
+        showsize gccversion tbl f3_boot binall deploy format f3_all_btburn all_btburn f3_all_flash all_flash
