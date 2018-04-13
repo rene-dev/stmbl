@@ -34,3 +34,14 @@ void listcmd(char *ptr) {
 }
 
 COMMAND("help", listcmd, "print this");
+
+void uptime(char *ptr) {
+  extern uint64_t systime;
+  uint32_t min = systime/1000/60;
+  uint32_t sec = (systime/1000)%60;
+  uint32_t hr = min/60;
+  min = min%60;
+  printf("up %02lu:%02lu:%02lu\n",hr,min,sec);
+}
+
+COMMAND("uptime", uptime, "display uptime");
