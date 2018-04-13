@@ -6,12 +6,13 @@
 uint32_t call_cmd(char *s) {
   char c[64];
   char a[64];
-  uint32_t foo = sscanf(s, " %[a-zA-Z_0-9] %[ -~]", c, a);
-  switch(foo) {
+  uint32_t matches = sscanf(s, " %[a-zA-Z_0-9] %[ -~]", c, a);
+  switch(matches) {
     case 0:
       return (0);
     case 1:
       a[0] = 0;
+      /* FALLTHRU */
     case 2:
       for(uint32_t i = 0; i < sizeof(cmd) / sizeof(cmd_t); i++) {
         if(!strcmp(cmd[i].name, c)) {
@@ -19,6 +20,7 @@ uint32_t call_cmd(char *s) {
           return (1);
         }
       }
+      /* FALLTHRU */
     default:
       return (0);
   }

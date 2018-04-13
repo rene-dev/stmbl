@@ -237,6 +237,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   switch(ctx->state) {
     case DISABLED:
       ctx->fault     = NO_ERROR;
+      /* FALLTHRU */
     case SOFT_FAULT:
     case LED_TEST:
     case HARD_FAULT:
