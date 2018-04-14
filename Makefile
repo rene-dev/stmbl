@@ -321,9 +321,9 @@ f1_flash: boot
 	$(MAKE) -f stm32f103/Makefile flash
 
 f3_all_btburn:
-	@$(DFU-UTIL) -d 0483:df11 -a 0 -s 0x08000000:leave -D f3.dfu
+	@$(DFU-UTIL) -d 0483:df11 -a 0 -s 0x08000000:leave -D f3.bin
 all_btburn:
-	@$(DFU-UTIL) -d 0483:df11 -a 0 -s 0x08000000:leave -D f4.dfu
+	@$(DFU-UTIL) -d 0483:df11 -a 0 -s 0x08000000:leave -D f4.bin
 all_flash:
 	@$(ST-FLASH) --reset write f4.bin 0x08000000
 f3_all_flash:
