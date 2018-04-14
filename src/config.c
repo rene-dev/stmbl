@@ -45,13 +45,36 @@ void flashloadconf(char *ptr) {
 COMMAND("flashloadconf", flashloadconf, "load config from flash");
 
 void flashsaveconf(char *ptr) {
-  printf("erasing flash page...\n");
+  // reset
+  IWDG->KR = 0xAAAA;
+
+  // enable access
+  IWDG->KR = 0x5555;
+
+  // set reaload 4s
+  IWDG->RLR = 4 * 32000 / 32;
+
+  while((IWDG->SR & IWDG_SR_RVU != 0) || (IWDG->SR & IWDG_SR_PVU != 0)){
+    IWDG->KR = 0xAAAA;
+  }
+
+  printf("stopping hal ...\n");
+  hal_stop();
+
+  // reset
+  IWDG->KR = 0xAAAA;
+
+  printf("erasing flash page ...\n");
   FLASH_Unlock();
   if(FLASH_EraseSector(FLASH_Sector_2, VoltageRange_3) != FLASH_COMPLETE) {
     printf("error!\n");
     FLASH_Lock();
     return;
   }
+
+  // reset
+  IWDG->KR = 0xAAAA;
+
   printf("saving conf\n");
   int i   = 0;
   int ret = 0;
@@ -61,9 +84,21 @@ void flashsaveconf(char *ptr) {
       printf("error writing %i\n", ret);
       break;
     }
+    
+    // reset
+    IWDG->KR = 0xAAAA;
   } while(config[i++] != 0);
   printf("OK %i bytes written\n", i);
   FLASH_Lock();
+
+  printf("reboot ...\n");
+
+  // reset
+  IWDG->KR = 0xAAAA;
+
+  extern void Wait(uint32_t ms);
+  Wait(100);
+  NVIC_SystemReset();
 }
 COMMAND("flashsaveconf", flashsaveconf, "save config to flash");
 

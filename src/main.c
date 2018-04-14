@@ -49,7 +49,9 @@ void SysTick_Handler(void) {
 //20kHz
 void TIM_SLAVE_HANDLER(void) {
   TIM_ClearITPendingBit(TIM_SLAVE, TIM_IT_Update);
+  
   hal_run_frt();
+  
   if(TIM_GetITStatus(TIM_SLAVE, TIM_IT_Update) == SET) {
     hal_stop();
     hal.hal_state = FRT_TOO_LONG;
@@ -60,11 +62,16 @@ void TIM_SLAVE_HANDLER(void) {
 //see setup_res() in setup.c if you are interested in the magic behind this.
 void DMA2_Stream0_IRQHandler(void) {
   DMA_ClearITPendingBit(DMA2_Stream0, DMA_IT_TCIF0);
+  
   hal_run_rt();
+  
   if(DMA_GetITStatus(DMA2_Stream0, DMA_IT_TCIF0) == SET) {
     hal_stop();
     hal.hal_state = RT_TOO_LONG;
   }
+  
+  // reset
+  IWDG->KR = 0xAAAA;
 }
 
 void bootloader(char *ptr) {
@@ -166,6 +173,24 @@ int main(void) {
   extern void *g_pfnVectors;
   SCB->VTOR = (uint32_t)&g_pfnVectors;
 
+  // enable access
+  IWDG->KR = 0x5555;
+
+  // set prescalser 32
+  IWDG->PR = 3;
+  
+  // while(IWDG->SR & IWDG_SR_PVU) {
+  // }
+
+  // set reaload 0.5s
+  IWDG->RLR = 0.5 * 32000 / 32;
+
+  // start
+  IWDG->KR = 0xCCCC;
+
+  // reset
+  IWDG->KR = 0xAAAA;
+
   setup();
   hal_init(0.0002, 0.00005);
   // hal load comps
@@ -176,6 +201,15 @@ int main(void) {
 
   TIM_Cmd(TIM_MASTER, ENABLE);
   TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, ENABLE);
+
+  // reset
+  IWDG->KR = 0xAAAA;
+
+  // enable access
+  IWDG->KR = 0x5555;
+
+  // set reaload 0.002s
+  IWDG->RLR = 0.002 * 32000 / 32;
 
   while(1)  //run non realtime stuff
   {
