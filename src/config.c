@@ -45,6 +45,8 @@ void flashloadconf(char *ptr) {
 COMMAND("flashloadconf", flashloadconf, "load config from flash");
 
 void flashsaveconf(char *ptr) {
+    extern void Wait(uint32_t ms);
+
   // reset
   IWDG->KR = 0xAAAA;
 
@@ -63,10 +65,12 @@ void flashsaveconf(char *ptr) {
 
   // reset
   IWDG->KR = 0xAAAA;
-
+// Wait(100);
+//   printf("flash->sr: %lu\n", FLASH->SR);
   printf("erasing flash page ...\n");
+Wait(100);
   FLASH_Unlock();
-  if(FLASH_EraseSector(FLASH_Sector_2, VoltageRange_3) != FLASH_COMPLETE) {
+  if(FLASH_EraseSector(FLASH_Sector_2, VoltageRange_1) != FLASH_COMPLETE) {
     printf("error!\n");
     FLASH_Lock();
     return;
@@ -96,7 +100,6 @@ void flashsaveconf(char *ptr) {
   // reset
   IWDG->KR = 0xAAAA;
 
-  extern void Wait(uint32_t ms);
   Wait(100);
   NVIC_SystemReset();
 }
