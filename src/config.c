@@ -56,7 +56,7 @@ void flashsaveconf(char *ptr) {
   // set reaload 4s
   IWDG->RLR = 4 * 32000 / 32;
 
-  while((IWDG->SR & IWDG_SR_RVU != 0) || (IWDG->SR & IWDG_SR_PVU != 0)){
+  while(((IWDG->SR & IWDG_SR_RVU) != 0) || ((IWDG->SR & IWDG_SR_PVU) != 0)){
     IWDG->KR = 0xAAAA;
   }
 

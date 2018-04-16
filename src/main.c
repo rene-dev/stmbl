@@ -81,29 +81,31 @@ void bootloader(char *ptr) {
   NVIC_DisableIRQ(DMA2_Stream0_IRQn);
   NVIC_DisableIRQ(SysTick_IRQn);
 
-  void (*SysMemBootJump)(void);
-  volatile uint32_t addr = 0x1FFF0000;
+  while(1){}
 
-  RCC_DeInit();
-  SysTick->CTRL = 0;
-  SysTick->LOAD = 0;
-  SysTick->VAL  = 0;
+  // void (*SysMemBootJump)(void);
+  // volatile uint32_t addr = 0x1FFF0000;
 
-  RCC->AHB1RSTR = 0x22E017FF;
-  RCC->AHB1RSTR = 0;
-  RCC->AHB2RSTR = 0xF1;
-  RCC->AHB2RSTR = 0;
-  RCC->AHB3RSTR = 0x1;
-  RCC->AHB3RSTR = 0;
-  RCC->APB1RSTR = 0xF6FEC9FF;
-  RCC->APB1RSTR = 0;
-  RCC->APB2RSTR = 0x4777933;
-  RCC->APB2RSTR = 0;
+  // RCC_DeInit();
+  // SysTick->CTRL = 0;
+  // SysTick->LOAD = 0;
+  // SysTick->VAL  = 0;
 
-  SYSCFG->MEMRMP = 0x01;
-  SysMemBootJump = (void (*)(void))(*((uint32_t *)(addr + 4)));
-  __set_MSP(*(uint32_t *)addr);
-  SysMemBootJump();
+  // RCC->AHB1RSTR = 0x22E017FF;
+  // RCC->AHB1RSTR = 0;
+  // RCC->AHB2RSTR = 0xF1;
+  // RCC->AHB2RSTR = 0;
+  // RCC->AHB3RSTR = 0x1;
+  // RCC->AHB3RSTR = 0;
+  // RCC->APB1RSTR = 0xF6FEC9FF;
+  // RCC->APB1RSTR = 0;
+  // RCC->APB2RSTR = 0x4777933;
+  // RCC->APB2RSTR = 0;
+
+  // SYSCFG->MEMRMP = 0x01;
+  // SysMemBootJump = (void (*)(void))(*((uint32_t *)(addr + 4)));
+  // __set_MSP(*(uint32_t *)addr);
+  // SysMemBootJump();
 }
 COMMAND("bootloader", bootloader, "enter bootloader");
 
@@ -172,21 +174,6 @@ int main(void) {
   // Relocate interrupt vectors
   extern void *g_pfnVectors;
   SCB->VTOR = (uint32_t)&g_pfnVectors;
-
-  // enable access
-  IWDG->KR = 0x5555;
-
-  // set prescalser 32
-  IWDG->PR = 3;
-  
-  // while(IWDG->SR & IWDG_SR_PVU) {
-  // }
-
-  // set reaload 0.5s
-  IWDG->RLR = 0.5 * 32000 / 32;
-
-  // start
-  IWDG->KR = 0xCCCC;
 
   // reset
   IWDG->KR = 0xAAAA;

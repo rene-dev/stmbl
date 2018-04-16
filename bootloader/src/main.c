@@ -46,23 +46,15 @@ static int app_ok(void) {
 }
 
 int main(void) {
-  GPIO_InitTypeDef GPIO_InitDef;
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_CRC, ENABLE);
-  GPIO_InitDef.GPIO_Pin   = GPIO_Pin_13;
-  GPIO_InitDef.GPIO_Mode  = GPIO_Mode_IN;
-  GPIO_InitDef.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitDef.GPIO_PuPd  = GPIO_PuPd_UP;
-  GPIO_InitDef.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(GPIOA, &GPIO_InitDef);
-  uint32_t pin = !GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_13);
-  RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_GPIOA, ENABLE);  // reset gpio a
-  RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_GPIOA, DISABLE);
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, DISABLE);
+  RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_CRC, ENABLE);
 
   void (*SysMemBootJump)(void);
-  if((*((unsigned long *)0x2001C000) == 0xDEADBEEF) || pin || !app_ok()) {  //Memory map, datasheet
-    *((unsigned long *)0x2001C000) = 0xCAFEFEED;                            //Reset bootloader trigger
+  if(!app_ok() || (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))) {  //Memory map, datasheet
+    // reset rcc reset flag
+    RCC->CSR |= RCC_CSR_RMVF;
+
     __set_MSP(0x20001000);
+
     //Point the PC to the System Memory reset vector (+4)
     //AN2606
     //Table 64. Bootloader device-dependent parameters
@@ -70,7 +62,26 @@ int main(void) {
     SysMemBootJump();
     while(1)
       ;
-  } else {
+  }
+  else {
+    // enable access
+    IWDG->KR = 0x5555;
+
+    // set prescalser 32
+    IWDG->PR = 3;
+    
+    // while(IWDG->SR & IWDG_SR_PVU) {
+    // }
+
+    // set reaload 0.5s
+    IWDG->RLR = 0.5 * 32000 / 32;
+
+    // start
+    IWDG->KR = 0xCCCC;
+
+    // reset
+    IWDG->KR = 0xAAAA;
+
     uint32_t stack = ((const uint32_t *)APP_START)[0];
     uint32_t entry = ((const uint32_t *)APP_START)[1];
     asm volatile(
