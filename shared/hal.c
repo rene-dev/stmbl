@@ -934,3 +934,28 @@ void debug_level(char *ptr) {
 }
 
 COMMAND("debug_level", debug_level, "set hal debug level, 0 = print all, 1 = print errors, 2 = no output");
+
+void hal_linked_pins(char *ptr){
+  char sinkc[64];
+  uint32_t sinki = 0;
+  char sinkp[64];
+  int foo;
+  foo = sscanf(ptr, " %[a-zA-Z_]%lu.%[a-zA-Z0-9_]", sinkc, &sinki, sinkp);
+  if(foo == 3){
+    hal_pin_inst_t *pin = pin_inst_by_name(sinkc, sinki, sinkp);
+    if(pin){
+      hal_print_pin(pin);
+      for(int i = 0; i < hal.comp_inst_count; i++) {
+        for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++) {
+          if(hal.comp_insts[i].pin_insts[j].source->source == pin && &(hal.comp_insts[i].pin_insts[j]) != pin){
+            hal_print_pin(&(hal.comp_insts[i].pin_insts[j]));
+          }
+        }
+      }
+      return;
+    }
+  }
+  printf("not found: %s\n",ptr);
+}
+
+COMMAND("linked", hal_linked_pins, "show linked pins");
