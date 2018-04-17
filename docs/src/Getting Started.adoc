@@ -778,7 +778,30 @@ different class of faults.
 11. HV fault
 12. Motor overtemperature
 
+== Specs 
+=== PCB Version 4
 
+| connector | abs. MIN | MIN | TYP | MAX | abs. MAX | unit | note |
+|:----------|:---------|:----|:----|:----|:---------|:-----|:-----|
+| 24V       | 0        | 15  | 24  | 25  | 26       | V    |      |
+| 24V       |          |     | 0.2 | 3   | 6        | A    | 1    |
+| HV        | 0        | 24  | 320 | 380 | 400      | V    |      |
+| HV        | -28      | -17 |     | 17  | 28       | A    | 2    |
+| CMD       | -7       | 0   |     | 5   | 12       | V    |      |
+| CMD       | -250     | -50 |     | 50  | 250      | mA   |      |
+| FB VPP    | 0        | 0   |     | 12  | 24       | V    |      |
+| FB VPP    | 0        | 0   | 500 | 1000| 1500     | mA   |      |
+| FB diff.  | -7       | 0   |     | 5   | 12       | V    |      |
+| FB diff.  |          | -1.2|     | +1.2|          | Vpp  | 3    |
+| FB        | -250     | -50 |     | 50  | 250      | mA   |      |
+| output    | 0        | 0   |     | 24  | 26       | V    |      |
+| output    | 0        | 0   |     | 1   | 2        | A    |      |
+| input     | -36      | -24 |     | 24  | 36       | V    |      |
+| IO        | 0        | 0   |     | 5   | 5        | V    |      |
+| UVW       | 0        | 0   |     | 380 | 400      | V    |      |
+| UVW       | -30      | -28 |     | 28  | 30       | A    |      |
+| UVW avg.  |          | -17 |     | 17  |          | A    | 2    |
 
-
-
+note 1: depends on brake, fan and encoder consumption  
+note 2: depends on PCB and driver cooling  
+note 3: for analog input
