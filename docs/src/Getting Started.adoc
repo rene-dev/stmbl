@@ -170,6 +170,16 @@ The rotation speed can be altered by changing the sim0 frequency:
 STMBL v4 HAL contains a number of components that have built-in linking
 behaviour. 
 
+== Drive the motor with a sine wave ###
+1. Connect it `rev0.in = sim0.msin`
+2. Set amplitude `sim0.amp = 1` (in rad)
+3. Set frequency `sim0.freq = 0.5` (in Hz)
+
+== Or constant velocity ###
+1. Connect it `rev0.in = sim0.vel`
+2. Set frequency `sim0.freq = 0.5` (in Hz)
+
+pressing esc at any time will disable the drive. to reenable, press reset or type `fault0.en = 0` followed by `fault0.en = 1`
 
 === HAL modules
 The Servoterm command `show` will list all the HAL modules that can be
@@ -533,6 +543,119 @@ Example:
 'hv0.dc_volt = 33.513943
 'hv0.d_fb = -0.022181
 
+### conf Pins ###
+#### Motor ####
+[Here is a quick tutorial to measure AC servo parameters](https://github.com/rene-dev/stmbl/wiki/motor-parameters)
+
+* conf0.r phase-neutral resistance (ohm)
+* conf0.l phase-neutral inductance (henry)
+* conf0.j inertia (kg*m^2)
+* conf0.psi torque constant (Nm/A)
+* conf0.polecount number of pole pairs
+* conf0.max_vel max velocity (rad/s)
+* conf0.max_acc max acceleration (rad/s^2)
+* conf0.max_force max torque (Nm)
+* conf0.max_ac_cur max AC current (A)
+* conf0.max_dc_cur max DC current (A)
+* conf0.mot_type 0 = ac async, 1 = DC
+
+##### conf0.sin_offset conf0.cos_offset conf0.sin_gain conf0.cos_gain#####
+Offsets and gains for analog input. Only needed for sin/cos or if high precision with resolvers is required.
+
+== Motor parameters
+
+Unfortunately servo motor datasheets often lack a good description of the parameters. There is a difference between line-to-line and phase values. Here are listed the most important motor parameters and how to determine them.
+
+### resistance conf0.r (ohm) ###
+1. measure line-to-line resistance R
+2. convert to phase resistance conf0.r = R/2
+
+### inductance conf0.l (henry) ###
+1. measure line-to-line inductance L
+2. convert to phase inductance conf0.l = L/2
+
+### moment of inertia conf0.j (kg*m^2) ###
+1. read moment of inertia from datasheet
+
+### polepair count conf0.polecount () ###
+1. attach a power supply to the motor (limit the current)
+2. turn the motor one rotation and count the number N of positions it snaps in conf0.polecount = N
+
+### torque constant conf0.psi (Nm/A) ###
+There is no common ground for the toque constant. Some manufacturers state the current in RMS, others in peak-to-peak. We also stumbled over values that were neither.
+
+How to determine psi:
+#### Scope ####
+1. Drive motor at constant speed (lathe, power drill, ...)
+2. Connect an oscilloscope between two phases and measure frequency F (Hz) and peak, line-to-line voltage U0 (V)
+3. Convert to line-to-neutral voltage U1 = U0/sqrt(3)
+4. Convert to amplitude U2 = U1/2
+5. Convert to torque constant conf0.psi = U2/F/2.0/PI
+
+#### STMBL ####
+It's also possible to measure psi directly with STMBL. Maybe even automatically in a future version.
+
+1. Disconnect the HV power, leave the servo connected.
+2. Connect with Servoterm, drag&drop this file into Servoterm: https://github.com/rene-dev/stmbl/blob/newstuff/conf/psi.txt
+3. Type `stop` and  `start`
+4. Turn the shaft of the motor. You can use your hand for a rough estimation, but it's probably better to drive with a cordless drill. The closer to the nominal RPM rating, the more accurate the result will be. There is no need to turn the shaft continuously, a quick short turn of one revolution is sufficient.
+5. Type `psi0.max_psi` and you will get the peak psi value that was measured. You can set `conf0.psi` to the measured peak psi value now. If you did not drive the motor reasonably fast, the proper psi value is probably a couple percent higher.
+
+
+#### KV ####
+psi = 60.0 / #POLE_PAIRS / sqrt(3) / 2.0 / PI / KV
+
+
+#### PID ####
+
+In all modes:
+* conf0.cur_p pid current proportional gain
+* conf0.cur_i pid current integral gain
+* conf0.cur_ff pid current ff0 gain
+
+When driven in velocity mode (default)
+* conf0.pos_p pid velocity proportional gain (1/s)
+* conf0.acc_p pid acceleration proportional gain (1/s)
+* conf0.acc_pi pid acceleration integral gain (1/s)
+
+When driven in position mode (e.g. via serial link to LinuxCNC)
+* conf0.pos_p pid position proportional gain (1/s)
+* conf0.vel_p pid velocity proportional gain (1/s)
+* conf0.vel_i pid velocity integral gain (1/s)
+* FIXME: conf0.vel_g pid velocity
+* FIXME: conf0.g pid
+
+
+#### Command ####
+* conf0.cmd_rev command reverse
+* conf0.cmd_res command resolution (1/rev)
+
+#### Limits ####
+Exceeding a limit results in an action.
+* conf0.max_dc_volt voltage limit (V)
+  * disable drive
+* conf0.high_dc_volt brake resistor limit (V)
+  * activate brake resistor
+* conf0.low_dc_volt voltage limit (V)
+  * disable drive
+* conf0.max_temp temperature limit (°C)
+  * disable drive
+* conf0.high_temp temperature limit (°C)
+  * reduce max current
+* conf0.fan_temp temperature limit (°C)
+  * activate fan
+* conf0.max_pos_error max positon error (rad)
+  * disable drive
+* conf0.max_sat max saturation time (s)
+  * disable drive
+
+
+== Autophasing
+Autophasing is the routine used to determine the relative position of encoder
+with regard to magnetic orientation of the rotor.
+Make sure to set the motor parameters: conf0.r, conf0.l, conf0.j, conf0.polecount before.
+Also check feedback before proceeding.
+TODO
 
 == Pinouts
 
@@ -582,7 +705,62 @@ Example:
 |===
 
 
+== linuxcnc
+STMBL supports Mesa Smartserial to communicate with LinuxCNC. http://linuxcnc.org/docs/html/man/man9/sserial.9.html
+
+https://www.youtube.com/watch?v=5CKMrOy0ZXk
+
+# Version 3 #
+Version 3 can connect via rj45 to our db25 bob: https://github.com/rene-dev/stmbl/tree/master/hw/kicad/bob/db25_bob
+
+It plugs into any DB25 mesa card, and provides full isolation.
+
+Supported are 5i25, 6i25, 7i92, 7i80DB, 7i76E.
+
+To use stmbl with 7I74 or 7I44 you need to make a custom cable.
+
+| Mesa               | STMBL              |
+|--------------------|--------------------|
+|  1 Orange stripe   | 2 Orange           |
+| 2 Orange           | 1 Orange stripe    |
+| 3 Green stripe     | 5 Blue stripe      |
+| 6 Green            | 4 Blue             |
+
+# Version 4 #
+The same applys for version 4. additionally, version 4 can also plug directly into a 7I74 or 7I44.
+
+# STMBL config
+    # At the beginning of your STMBL config, load sserial:
+    link sserial
+
+    # set the scale
+    linrev0.scale = 5
+# Example: HAL config for Position mode with Position feedback ##
+
+This is an example for one axis, Mesa 5i25 and one stmbl board, added to a .hal file in a machine config:
+
+
+    # This is an example for linuxcnc hal in position mode for the x-axis:
+    net xposcmd joint.0.motor-pos-cmd  => hm2_5i25.0.stbl.0.0.pos_cmd
+    net xvelcmd joint.0.vel-cmd        => hm2_5i25.0.stbl.0.0.vel_cmd
+    net xposfb  joint.0.motor-pos-fb  <=  hm2_5i25.0.stbl.0.0.pos_fb
+    net xenable joint.0.amp-enable-out => hm2_5i25.0.stbl.0.0.enable
+    net xfault  joint.0.amp-fault-in  <=  hm2_5i25.0.stbl.0.0.fault
+    net xindex  joint.0.index-enable  <=> hm2_5i25.0.stbl.0.0.index_enable
+
+# Example: Full Machine Config with STMBL boards, Mesa 7i80, Mesa 7i77, Analog Outputs, Encoder Inputs
+
+See <https://github.com/aShure/cnc-configs/tree/master/justinbieber>
+
 == Blink Codes
+
+1. Normal Operation
+ * No Error (Green LED on top illuminated. Good!)
+ * Drive disabled (Yellow LED on top. Drive ready to go but disabled.)
+ * Autophasing (Green and Yellow)
+2. Errors
+ * Soft fault, resettable (Red LED blinks according to the list below)
+ * Hard fault, bad! (All LEDs on top blink.)
 
 Count the number of blinks of the red LED. Each number indicates a
 different class of faults. 
