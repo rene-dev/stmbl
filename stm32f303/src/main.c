@@ -278,7 +278,6 @@ int main(void) {
   hal_parse("load hv");
   hal_parse("load curpid");
 
-  // hal_parse("term0.rt_prio = 0.1");
   hal_parse("ls0.rt_prio = 0.6");
   hal_parse("io0.rt_prio = 1.0");
   hal_parse("dq0.rt_prio = 2.0");
@@ -288,14 +287,6 @@ int main(void) {
   hal_parse("hv0.rt_prio = 6.0");
 
   hal_parse("term0.send_step = 0.0");
-  hal_parse("term0.gain0 = 10.0");
-  hal_parse("term0.gain1 = 10.0");
-  hal_parse("term0.gain2 = 10.0");
-  hal_parse("term0.gain3 = 10.0");
-  hal_parse("term0.gain4 = 10.0");
-  hal_parse("term0.gain5 = 10.0");
-  hal_parse("term0.gain6 = 10.0");
-  hal_parse("term0.gain7 = 10.0");
 
   //link LS
   hal_parse("ls0.mot_temp = io0.mot_temp");
@@ -313,7 +304,6 @@ int main(void) {
   hal_parse("io0.dac = ls0.dac");
 
   //ADC TEST
-  hal_parse("term0.wave3 = io0.udc");
   hal_parse("hv0.udc = io0.udc");
   hal_parse("dq0.u = io0.iu");
   hal_parse("dq0.v = io0.iv");
@@ -336,10 +326,6 @@ int main(void) {
   hal_parse("ls0.w_fb = io0.w");
   hal_parse("idq0.d = curpid0.ud");
   hal_parse("idq0.q = curpid0.uq");
-  hal_parse("term0.wave0 = curpid0.id_cmd");
-  hal_parse("term0.wave1 = curpid0.iq_cmd");
-  hal_parse("term0.wave2 = curpid0.id_fb");
-  hal_parse("term0.wave3 = curpid0.iq_fb");
   hal_parse("curpid0.rd = ls0.r");
   hal_parse("curpid0.rq = ls0.r");
   hal_parse("curpid0.ld = ls0.l");

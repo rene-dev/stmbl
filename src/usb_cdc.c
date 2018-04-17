@@ -31,14 +31,8 @@ static uint16_t VCP_DataTx(void) {
   return USBD_OK;
 }
 
-uint16_t cr_count = 0;
-
 static uint16_t VCP_DataRx(uint8_t *buf, uint32_t len) {
-  for(uint32_t i = 0; i < len; i++) {
-    if(buf[i] == 0x0A)
-      cr_count++;
-    rb_putc(&usb_rx_buf, buf[i]);
-  }
+  rb_write(&usb_rx_buf, buf, len);
   return USBD_OK;
 }
 
