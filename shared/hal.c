@@ -25,6 +25,15 @@
 #include "commands.h"
 #include "defines.h"
 #include "version.h"
+#ifdef HAL_NAN_TRAP
+  #ifdef STM32F303xC
+    #include "stm32f3xx_hal.h"
+  #else
+    #ifdef STM32F40_41xxx
+      #include "stm32f4xx_conf.h"
+    #endif
+  #endif
+#endif
 
 hal_t hal;
 
@@ -149,6 +158,8 @@ void hal_term_print_state() {
       break;
     case NAN_ERROR:
       printf("HAL state:  NAN_ERROR\n");
+      printf("active rt func: %lu\n", hal.error_info.active_rt_func);
+      printf("active frt func: %lu\n", hal.error_info.active_frt_func);
       break;
     default:
       printf("HAL state:  unkonwn error\n");
@@ -362,6 +373,9 @@ void hal_run_rt() {
         return;
       }
       hal.rt_state = RT_CALC;
+      break;
+    default:
+      return;
   }
 
 #ifdef HAL_COMP_CALC_TIME
@@ -378,6 +392,14 @@ void hal_run_rt() {
     hal.rt_comps[hal.active_rt_func]->rt_ticks     = start - end_ticks;
     hal.rt_comps[hal.active_rt_func]->rt_max_ticks = MAX(hal.rt_comps[hal.active_rt_func]->rt_max_ticks, hal.rt_comps[hal.active_rt_func]->rt_ticks);
     start                                          = end_ticks;
+#endif
+#ifdef HAL_NAN_TRAP
+    if(__get_FPSCR() & (1 << 0)){
+      hal_stop();
+      printf("NAN rt: %li", hal.active_rt_func);
+      hal.hal_state = NAN_ERROR;
+      return;
+    }
 #endif
   }
   hal.active_rt_func = -1;
@@ -421,6 +443,9 @@ void hal_run_frt() {
         return;
       }
       hal.frt_state = RT_CALC;
+      break;
+    default:
+      return;
   }
 
 #ifdef HAL_COMP_CALC_TIME
@@ -437,6 +462,14 @@ void hal_run_frt() {
     hal.frt_comps[hal.active_frt_func]->frt_ticks     = start - end_ticks;
     hal.frt_comps[hal.active_frt_func]->frt_max_ticks = MAX(hal.frt_comps[hal.active_frt_func]->frt_max_ticks, hal.frt_comps[hal.active_frt_func]->frt_ticks);
     start                                             = end_ticks;
+#endif
+#ifdef HAL_NAN_TRAP
+    if(__get_FPSCR() & (1 << 0)){
+      hal_stop();
+      printf("NAN frt: %li", hal.active_frt_func);
+      hal.hal_state = NAN_ERROR;
+      return;
+    }
 #endif
   }
   hal.active_frt_func = -1;
@@ -663,6 +696,11 @@ void start_frt() {
 }
 
 void hal_start() {
+  hal.hal_state = HAL_OK2;
+
+  // Clear all exception flags
+  __set_FPSCR(__get_FPSCR() & (uint32_t)~0x9F);
+
   hal.hal_state = HAL_OK2;
 
   sort_rt();

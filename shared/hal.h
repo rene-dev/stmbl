@@ -24,6 +24,7 @@
 
 #define HAL_CALC_TIME
 #define HAL_COMP_CALC_TIME
+#define HAL_NAN_TRAP
 //#define HAL_WATCHDOG
 
 #ifndef HAL_MAX_PINS
