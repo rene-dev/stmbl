@@ -24,6 +24,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_it.h"
 #include "hal.h"
+#include "hw/hw.h"
+
 
 /** @addtogroup STM32F4_Discovery_Peripheral_Examples
   * @{
@@ -44,6 +46,7 @@
 /*            Cortex-M4 Processor Exceptions Handlers                         */
 /******************************************************************************/
 
+extern void Wait(uint32_t ms);
 /**
   * @brief   This function handles NMI exception.
   * @param  None
@@ -51,6 +54,10 @@
   */
 void NMI_Handler(void) {
   hal_error(NMI);
+  NVIC_DisableIRQ(TIM_SLAVE_IRQ);
+  NVIC_DisableIRQ(DMA2_Stream0_IRQn);
+  NVIC_DisableIRQ(SysTick_IRQn);
+  while(1){}
 }
 
 /**
@@ -61,6 +68,10 @@ void NMI_Handler(void) {
 void HardFault_Handler(void) {
   /* Go to infinite loop when Hard Fault exception occurs */
   hal_error(HardFault);
+  NVIC_DisableIRQ(TIM_SLAVE_IRQ);
+  NVIC_DisableIRQ(DMA2_Stream0_IRQn);
+  NVIC_DisableIRQ(SysTick_IRQn);
+  while(1){}
 }
 
 /**
@@ -71,6 +82,10 @@ void HardFault_Handler(void) {
 void MemManage_Handler(void) {
   /* Go to infinite loop when Memory Manage exception occurs */
   hal_error(MemManage);
+  NVIC_DisableIRQ(TIM_SLAVE_IRQ);
+  NVIC_DisableIRQ(DMA2_Stream0_IRQn);
+  NVIC_DisableIRQ(SysTick_IRQn);
+  while(1){}
 }
 
 /**
@@ -81,6 +96,10 @@ void MemManage_Handler(void) {
 void BusFault_Handler(void) {
   /* Go to infinite loop when Bus Fault exception occurs */
   hal_error(BusFault);
+  NVIC_DisableIRQ(TIM_SLAVE_IRQ);
+  NVIC_DisableIRQ(DMA2_Stream0_IRQn);
+  NVIC_DisableIRQ(SysTick_IRQn);
+  while(1){}
 }
 
 /**
@@ -91,6 +110,10 @@ void BusFault_Handler(void) {
 void UsageFault_Handler(void) {
   /* Go to infinite loop when Usage Fault exception occurs */
   hal_error(UsageFault);
+  NVIC_DisableIRQ(TIM_SLAVE_IRQ);
+  NVIC_DisableIRQ(DMA2_Stream0_IRQn);
+  NVIC_DisableIRQ(SysTick_IRQn);
+  while(1){}
 }
 
 /**

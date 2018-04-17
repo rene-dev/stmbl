@@ -72,14 +72,14 @@ void SystemClock_Config(void);
 void Error_Handler(void);
 
 void TIM8_UP_IRQHandler() {
-  GPIOA->BSRR |= GPIO_PIN_9;
   __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
   hal_run_rt();
   if(__HAL_TIM_GET_FLAG(&htim8, TIM_IT_UPDATE) == SET) {
     hal_stop();
     hal.hal_state = RT_TOO_LONG;
   }
-  GPIOA->BSRR |= GPIO_PIN_9 << 16;
+  // reset
+  IWDG->KR = 0xAAAA;
 }
 
 void about(char *ptr) {
@@ -129,6 +129,9 @@ int main(void) {
   // Relocate interrupt vectors
   extern void *g_pfnVectors;
   SCB->VTOR = (uint32_t)&g_pfnVectors;
+
+  // reset
+  IWDG->KR = 0xAAAA;
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
@@ -355,10 +358,19 @@ int main(void) {
   hal_parse("io0.ignore_fault_pin = ls0.ignore_fault_pin");
   hal_parse("debug_level 0");
 
-  // hal parse config
-  // hal_init_nrt();
-  // error foo
+  // reset
+  IWDG->KR = 0xAAAA;
+
   hal_start();
+
+  // reset
+  IWDG->KR = 0xAAAA;
+
+  // enable access
+  IWDG->KR = 0x5555;
+
+  // set reaload 0.0005s
+  IWDG->RLR = 0.0005 * 40000 / 4;
 
   while(1) {
     hal_run_nrt();

@@ -910,12 +910,40 @@ void hal_error(uint32_t error_handler) {
   hal.error_info.error_handler   = error_handler;
   hal_stop();
   hal.hal_state = MISC_ERROR;
+
+  switch(error_handler){
+    case HardFault:
+      printf("<font color=\"FireBrick\">HardFault</font>\n");
+    break;
+
+    case NMI:
+      printf("<font color=\"FireBrick\">NMI</font>\n");
+    break;
+
+    case MemManage:
+      printf("<font color=\"FireBrick\">MemManage</font>\n");
+    break;
+
+    case BusFault:
+      printf("<font color=\"FireBrick\">BusFault</font>\n");
+    break;
+
+    case UsageFault:
+      printf("<font color=\"FireBrick\">UsageFault</font>\n");
+    break;
+  }
 }
 
 void fault(char *ptr) {
-  printf("trigger fault handler\n");
-  volatile uint32_t *p = (uint32_t *)0x08010000;
-  p[0]                 = 1;
+  // unaligned multiple load/store
+  //
+  __asm volatile (
+      "movs r0, #1       \t\n"
+      "ldm  r0, {r1-r2}  \t\n"
+      "bx   lr           \t\n"
+  );
+  //volatile uint32_t *p = (uint32_t *)0x08010000;
+  //p[0]                 = 1;
 }
 
 COMMAND("fault", fault, "trigger fault");

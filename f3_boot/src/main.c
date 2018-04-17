@@ -289,7 +289,25 @@ int main(void) {
   MX_RTC_Init();
 
 
-  if(app_ok() && RTC->BKP0R == 0x00000000) {
+  if(app_ok() && RTC->BKP0R == 0x00000000 && (RCC->CSR & (RCC_CSR_IWDGRSTF | RCC_CSR_WWDGRSTF)) == 0x00000000) {
+    // reset rcc reset flag
+    RCC->CSR |= RCC_CSR_RMVF;
+
+    // enable access
+    IWDG->KR = 0x5555;
+
+    // set prescalser 4
+    IWDG->PR = 0;
+
+    // set reaload 0.2s
+    IWDG->RLR = 0.2 * 40000 / 4;
+
+    // start
+    IWDG->KR = 0xCCCC;
+
+    // reset
+    IWDG->KR = 0xAAAA;
+
     // SCB->VTOR = APP_START;
     /* Jump to user application */
     void (*JumpToApplication)(void);
