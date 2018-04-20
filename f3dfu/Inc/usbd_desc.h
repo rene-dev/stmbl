@@ -1,10 +1,11 @@
 /**
   ******************************************************************************
-  * @file           : usbd_cdc_if.h
-  * @brief          : Header for usbd_cdc_if file.
+  * @file           : usbd_desc.h
+  * @version        : v1.0_Cube
+  * @brief          : Header for usbd_desc file.
   ******************************************************************************
   *
-  * Copyright (c) 2016 STMicroelectronics International N.V. 
+  * Copyright (c) 2017 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -42,96 +43,72 @@
 */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USBD_CDC_IF_H
-#define __USBD_CDC_IF_H
+#ifndef __USBD_DESC__H__
+#define __USBD_DESC__H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 /* Includes ------------------------------------------------------------------*/
-#include "usbd_cdc.h"
-/* USER CODE BEGIN INCLUDE */
-/* USER CODE END INCLUDE */
+#include "usbd_def.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
   */
 
-/** @defgroup USBD_CDC_IF
-  * @brief header 
+/** @defgroup USB_DESC
+  * @brief general defines for the usb device library file
   * @{
   */
 
-/** @defgroup USBD_CDC_IF_Exported_Defines
+/** @defgroup USB_DESC_Exported_Defines
   * @{
   */
-/* USER CODE BEGIN EXPORTED_DEFINES */
-/* USER CODE END EXPORTED_DEFINES */
 
 /**
   * @}
   */
 
-/** @defgroup USBD_CDC_IF_Exported_Types
+/** @defgroup USBD_DESC_Exported_TypesDefinitions
   * @{
   */
-/* USER CODE BEGIN EXPORTED_TYPES */
-/* USER CODE END EXPORTED_TYPES */
-
 /**
   * @}
   */
 
-/** @defgroup USBD_CDC_IF_Exported_Macros
+/** @defgroup USBD_DESC_Exported_Macros
   * @{
   */
-/* USER CODE BEGIN EXPORTED_MACRO */
-/* USER CODE END EXPORTED_MACRO */
-
 /**
   * @}
   */
 
-/** @defgroup USBD_AUDIO_IF_Exported_Variables
+/** @defgroup USBD_DESC_Exported_Variables
   * @{
   */
-extern USBD_CDC_ItfTypeDef USBD_Interface_fops_FS;
-
-/* USER CODE BEGIN EXPORTED_VARIABLES */
-/* USER CODE END EXPORTED_VARIABLES */
-
+extern USBD_DescriptorsTypeDef FS_Desc;
 /**
   * @}
   */
 
-/** @defgroup USBD_CDC_IF_Exported_FunctionsPrototype
+/** @defgroup USBD_DESC_Exported_FunctionsPrototype
   * @{
   */
-uint8_t CDC_Transmit_FS(uint8_t *Buf, uint16_t Len);
-
-/* USER CODE BEGIN EXPORTED_FUNCTIONS */
-//void cdc_init(void);
-int cdc_tx(void *data, uint32_t len);
-int cdc_getline(char *ptr, int len);
-int cdc_is_connected();
-void cdc_poll();
-/* USER CODE END EXPORTED_FUNCTIONS */
-/**
-  * @}
-  */
 
 /**
   * @}
   */
-
-/**
-  * @}
-  */
-
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __USBD_CDC_IF_H */
+#endif /* __USBD_DESC_H */
 
+/**
+  * @}
+  */
+
+/**
+* @}
+*/
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -110,11 +110,11 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct io_pin_ctx_t * pins = (struct io_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
 
-  // GPIO_InitStruct.Pin   = LED_Pin | GPIO_PIN_14 | GPIO_PIN_15;
-  // GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-  // GPIO_InitStruct.Pull  = GPIO_NOPULL;
-  // GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  // HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin   = LED_PIN | GPIO_PIN_14 | GPIO_PIN_15;
+  GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull  = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LED_PORT, &GPIO_InitStruct);
 
   DMA1_Channel1->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA1_Channel1->CPAR  = (uint32_t) & (ADC12_COMMON->CDR);
@@ -186,7 +186,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(ia)  = (PIN(iap) - PIN(ian)) / 2.0;
   PIN(ib)  = (PIN(ibp) - PIN(ibn)) / 2.0;
 
-  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, PIN(led) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET);  // 0.1u
+  HAL_GPIO_WritePin(LED_PORT, LED_PIN, PIN(led) > 0.0 ? GPIO_PIN_SET : GPIO_PIN_RESET);  // 0.1u
 }
 
 static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {

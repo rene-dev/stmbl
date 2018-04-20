@@ -1,10 +1,11 @@
 /**
   ******************************************************************************
-  * @file           : usbd_cdc_if.h
-  * @brief          : Header for usbd_cdc_if file.
+  * @file           : USB_DEVICE  
+  * @version        : v1.0_Cube
+  * @brief          : This file implements the USB Device 
   ******************************************************************************
   *
-  * Copyright (c) 2016 STMicroelectronics International N.V. 
+  * Copyright (c) 2017 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -41,97 +42,34 @@
   ******************************************************************************
 */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USBD_CDC_IF_H
-#define __USBD_CDC_IF_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 /* Includes ------------------------------------------------------------------*/
-#include "usbd_cdc.h"
-/* USER CODE BEGIN INCLUDE */
-/* USER CODE END INCLUDE */
 
-/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
-  * @{
-  */
+#include "usb_device.h"
+#include "usbd_core.h"
+#include "usbd_desc.h"
+#include "usbd_dfu.h"
+#include "usbd_dfu_if.h"
 
-/** @defgroup USBD_CDC_IF
-  * @brief header 
-  * @{
-  */
+/* USB Device Core handle declaration */
+USBD_HandleTypeDef hUsbDeviceFS;
 
-/** @defgroup USBD_CDC_IF_Exported_Defines
-  * @{
-  */
-/* USER CODE BEGIN EXPORTED_DEFINES */
-/* USER CODE END EXPORTED_DEFINES */
+/* init function */
+void MX_USB_DEVICE_Init(void) {
+  /* Init Device Library,Add Supported Class and Start the library*/
+  USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
 
-/**
-  * @}
-  */
+  USBD_RegisterClass(&hUsbDeviceFS, &USBD_DFU);
 
-/** @defgroup USBD_CDC_IF_Exported_Types
-  * @{
-  */
-/* USER CODE BEGIN EXPORTED_TYPES */
-/* USER CODE END EXPORTED_TYPES */
+  USBD_DFU_RegisterMedia(&hUsbDeviceFS, &USBD_DFU_fops_FS);
 
-/**
-  * @}
-  */
-
-/** @defgroup USBD_CDC_IF_Exported_Macros
-  * @{
-  */
-/* USER CODE BEGIN EXPORTED_MACRO */
-/* USER CODE END EXPORTED_MACRO */
-
-/**
-  * @}
-  */
-
-/** @defgroup USBD_AUDIO_IF_Exported_Variables
-  * @{
-  */
-extern USBD_CDC_ItfTypeDef USBD_Interface_fops_FS;
-
-/* USER CODE BEGIN EXPORTED_VARIABLES */
-/* USER CODE END EXPORTED_VARIABLES */
-
-/**
-  * @}
-  */
-
-/** @defgroup USBD_CDC_IF_Exported_FunctionsPrototype
-  * @{
-  */
-uint8_t CDC_Transmit_FS(uint8_t *Buf, uint16_t Len);
-
-/* USER CODE BEGIN EXPORTED_FUNCTIONS */
-//void cdc_init(void);
-int cdc_tx(void *data, uint32_t len);
-int cdc_getline(char *ptr, int len);
-int cdc_is_connected();
-void cdc_poll();
-/* USER CODE END EXPORTED_FUNCTIONS */
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-#ifdef __cplusplus
+  USBD_Start(&hUsbDeviceFS);
 }
-#endif
+/**
+  * @}
+  */
 
-#endif /* __USBD_CDC_IF_H */
+/**
+  * @}
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file           : usbd_cdc_if.h
-  * @brief          : Header for usbd_cdc_if file.
+  * @file           : usbd_dfu_if.h
+  * @brief          : Header for usbd_dfu_if file.
   ******************************************************************************
   *
-  * Copyright (c) 2016 STMicroelectronics International N.V. 
+  * Copyright (c) 2017 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -42,27 +42,27 @@
 */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USBD_CDC_IF_H
-#define __USBD_CDC_IF_H
+#ifndef __USBD_DFU_IF_H
+#define __USBD_DFU_IF_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 /* Includes ------------------------------------------------------------------*/
-#include "usbd_cdc.h"
+#include "usbd_dfu.h"
 /* USER CODE BEGIN INCLUDE */
 /* USER CODE END INCLUDE */
 
-/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
+/** @addtogroup STM32_USB_DEVICE_LIBRARY
   * @{
   */
 
-/** @defgroup USBD_CDC_IF
-  * @brief header 
+/** @defgroup USBD_MEDIA
+  * @brief header file for the usbd_dfu_if.c file
   * @{
   */
 
-/** @defgroup USBD_CDC_IF_Exported_Defines
+/** @defgroup USBD_MEDIA_Exported_Defines
   * @{
   */
 /* USER CODE BEGIN EXPORTED_DEFINES */
@@ -72,7 +72,7 @@ extern "C" {
   * @}
   */
 
-/** @defgroup USBD_CDC_IF_Exported_Types
+/** @defgroup USBD_MEDIA_Exported_Types
   * @{
   */
 /* USER CODE BEGIN EXPORTED_TYPES */
@@ -82,7 +82,7 @@ extern "C" {
   * @}
   */
 
-/** @defgroup USBD_CDC_IF_Exported_Macros
+/** @defgroup USBD_MEDIA_Exported_Macros
   * @{
   */
 /* USER CODE BEGIN EXPORTED_MACRO */
@@ -92,10 +92,11 @@ extern "C" {
   * @}
   */
 
-/** @defgroup USBD_AUDIO_IF_Exported_Variables
+/** @defgroup USBD_MEDIA_Exported_Variables
   * @{
   */
-extern USBD_CDC_ItfTypeDef USBD_Interface_fops_FS;
+
+extern USBD_DFU_MediaTypeDef USBD_DFU_fops_FS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
 /* USER CODE END EXPORTED_VARIABLES */
@@ -104,17 +105,11 @@ extern USBD_CDC_ItfTypeDef USBD_Interface_fops_FS;
   * @}
   */
 
-/** @defgroup USBD_CDC_IF_Exported_FunctionsPrototype
+/** @defgroup USBD_MEDIA_Exported_FunctionsPrototype
   * @{
   */
-uint8_t CDC_Transmit_FS(uint8_t *Buf, uint16_t Len);
 
 /* USER CODE BEGIN EXPORTED_FUNCTIONS */
-//void cdc_init(void);
-int cdc_tx(void *data, uint32_t len);
-int cdc_getline(char *ptr, int len);
-int cdc_is_connected();
-void cdc_poll();
 /* USER CODE END EXPORTED_FUNCTIONS */
 /**
   * @}
@@ -125,13 +120,11 @@ void cdc_poll();
   */
 
 /**
-  * @}
-  */
-
+* @}
+*/
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __USBD_CDC_IF_H */
-
+#endif /* __USBD_DFU_IF_H */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
