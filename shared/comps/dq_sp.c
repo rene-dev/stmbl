@@ -23,7 +23,7 @@ HAL_PIN(q);
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct dq_ctx_t * ctx = (struct dq_ctx_t *)ctx_ptr;
-  struct dq_pin_ctx_t *pins = (struct dq_pin_ctx_t *)pin_ptr;
+  struct dq_sp_pin_ctx_t *pins = (struct dq_sp_pin_ctx_t *)pin_ptr;
 
   //clarke transformation
   float a = PIN(a);
@@ -44,7 +44,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(q) = q;
 }
 
-hal_comp_t dq_comp_struct = {
+hal_comp_t dq_sp_comp_struct = {
     .name      = "dq_sp",
     .nrt       = 0,
     .rt        = rt_func,
@@ -55,5 +55,5 @@ hal_comp_t dq_comp_struct = {
     .rt_stop   = 0,
     .frt_stop  = 0,
     .ctx_size  = 0,
-    .pin_count = sizeof(struct dq_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+    .pin_count = sizeof(struct dq_sp_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
 };

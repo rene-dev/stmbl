@@ -191,7 +191,7 @@ void hal_setup(){
   hal_parse("load curpid");
 
   hal_parse("io0.rt_prio = 1.0");  
-  hal_parse("sim0.rt_prio = 2.0");  
+  hal_parse("sim0.rt_prio = 10.0");  
   hal_parse("tle0.rt_prio = 2.0");
   hal_parse("map0.rt_prio = 3.0");
   hal_parse("vel0.rt_prio = 4.0");
@@ -206,7 +206,6 @@ void hal_setup(){
   hal_parse("hv0.rt_prio = 9.0");
   
   hal_parse("term0.rt_prio = 10");
-  // hal_parse("sim0.rt_prio = 10.0");
 
   hal_parse("term0.send_step = 10.0");
   hal_parse("term0.gain0 = 20.0");
@@ -235,15 +234,15 @@ void hal_setup(){
   hal_parse("curpid0.ld = 0.0038");
   hal_parse("curpid0.lq = 0.0038");
   hal_parse("curpid0.psi = 0.005");
-  hal_parse("curpid0.kp = 1.0");
-  hal_parse("curpid0.ki = 0.0005");
+  hal_parse("curpid0.kp = 0.5");
+  hal_parse("curpid0.ki = 0.001");
   hal_parse("curpid0.ff = 1");
   hal_parse("curpid0.kind = 0");
   hal_parse("curpid0.max_cur = 3.1");
   hal_parse("curpid0.pwm_volt = io0.dc_link");
 
   hal_parse("pole0.p = 50.0");
-  // hal_parse("io0.led = term0.con");
+  hal_parse("io0.led = term0.con");
 
   hal_parse("dq_sp0.pos = pole0.cpos");
   hal_parse("idq0.pos = pole0.cpos");

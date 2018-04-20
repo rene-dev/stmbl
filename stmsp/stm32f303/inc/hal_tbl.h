@@ -126,18 +126,14 @@ struct svm_pin_ctx_t{ // found in shared/comps/svm.c
    hal_pin_inst_t enw;
 };
 
-struct dq_pin_ctx_t{ // found in shared/comps/dq.c
+struct dq_sp_pin_ctx_t{ // found in shared/comps/dq_sp.c
    hal_pin_inst_t rt_prio;
    hal_pin_inst_t frt_prio;
    hal_pin_inst_t mode;
-   hal_pin_inst_t u;
-   hal_pin_inst_t v;
-   hal_pin_inst_t w;
    hal_pin_inst_t pos;
    hal_pin_inst_t polecount;
    hal_pin_inst_t a;
    hal_pin_inst_t b;
-   hal_pin_inst_t y;
    hal_pin_inst_t d;
    hal_pin_inst_t q;
 };
@@ -261,7 +257,7 @@ extern const hal_comp_t sim_comp_struct; // found in shared/comps/sim.c
 extern const hal_comp_t term_comp_struct; // found in shared/comps/term.c
 extern const hal_comp_t curpid_comp_struct; // found in shared/comps/curpid.c
 extern const hal_comp_t svm_comp_struct; // found in shared/comps/svm.c
-extern const hal_comp_t dq_comp_struct; // found in shared/comps/dq.c
+extern const hal_comp_t dq_sp_comp_struct; // found in shared/comps/dq_sp.c
 extern const hal_comp_t idq_comp_struct; // found in shared/comps/idq.c
 extern const hal_comp_t pole_comp_struct; // found in shared/comps/pole.c
 extern const hal_comp_t map_comp_struct; // found in shared/comps/map.c

@@ -9,7 +9,7 @@ const hal_comp_t * comps[] = {
    &term_comp_struct, // found in shared/comps/term.c
    &curpid_comp_struct, // found in shared/comps/curpid.c
    &svm_comp_struct, // found in shared/comps/svm.c
-   &dq_comp_struct, // found in shared/comps/dq.c
+   &dq_sp_comp_struct, // found in shared/comps/dq_sp.c
    &idq_comp_struct, // found in shared/comps/idq.c
    &pole_comp_struct, // found in shared/comps/pole.c
    &map_comp_struct, // found in shared/comps/map.c
@@ -148,18 +148,14 @@ const pin_t pins[] = {
    "enu",
    "env",
    "enw",
-   // pins for comp dq found in shared/comps/dq.c
+   // pins for comp dq_sp found in shared/comps/dq_sp.c
    "rt_prio",
    "frt_prio",
    "mode",
-   "u",
-   "v",
-   "w",
    "pos",
    "polecount",
    "a",
    "b",
-   "y",
    "d",
    "q",
    // pins for comp idq found in shared/comps/idq.c
