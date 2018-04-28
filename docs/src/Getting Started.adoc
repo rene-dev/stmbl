@@ -780,9 +780,9 @@ different class of faults.
 
 == Specs 
 === PCB Version 4
-
+|===
 | connector | abs. MIN | MIN | TYP | MAX | abs. MAX | unit | note |
-|:----------|:---------|:----|:----|:----|:---------|:-----|:-----|
+
 | 24V       | 0        | 15  | 24  | 25  | 26       | V    |      |
 | 24V       |          |     | 0.2 | 3   | 6        | A    | 1    |
 | HV        | 0        | 24  | 320 | 380 | 400      | V    |      |
@@ -801,7 +801,10 @@ different class of faults.
 | UVW       | 0        | 0   |     | 380 | 400      | V    |      |
 | UVW       | -30      | -28 |     | 28  | 30       | A    |      |
 | UVW avg.  |          | -17 |     | 17  |          | A    | 2    |
+|===
 
 note 1: depends on brake, fan and encoder consumption  
+
 note 2: depends on PCB and driver cooling  
+
 note 3: for analog input
