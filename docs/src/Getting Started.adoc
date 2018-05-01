@@ -719,12 +719,14 @@ Supported are 5i25, 6i25, 7i92, 7i80DB, 7i76E.
 
 To use stmbl with 7I74 or 7I44 you need to make a custom cable.
 
+|===
 | Mesa               | STMBL              |
-|--------------------|--------------------|
-|  1 Orange stripe   | 2 Orange           |
+
+| 1 Orange stripe    | 2 Orange           |
 | 2 Orange           | 1 Orange stripe    |
 | 3 Green stripe     | 5 Blue stripe      |
 | 6 Green            | 4 Blue             |
+|===
 
 # Version 4 #
 The same applys for version 4. additionally, version 4 can also plug directly into a 7I74 or 7I44.
