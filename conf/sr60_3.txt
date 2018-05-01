@@ -1,0 +1,19 @@
+link pid
+link pmsm
+link res_fb0
+link jog_cmd
+link misc
+link sserial
+linrev0.scale = 6
+conf0.r = 25.5
+conf0.l = 0.001
+conf0.j = 0.000011
+conf0.polecount = 4
+conf0.mot_fb_offset = 0.8
+conf0.max_ac_cur = 2.5
+conf0.max_force = 0.7
+conf0.max_vel = 1200
+conf0.max_acc = 120000
+io0.out0 = fault0.mot_brake
+res0.freq = 5000
+res0.phase = 0.9
