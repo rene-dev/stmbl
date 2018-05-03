@@ -765,20 +765,24 @@ See <https://github.com/aShure/cnc-configs/tree/master/justinbieber>
  * Hard fault, bad! (All LEDs on top blink.)
 
 Count the number of blinks of the red LED. Each number indicates a
-different class of faults. 
+different class of faults. (The faults will also be shown in text format in Servoterm)
 
-1. Command error - This will be quite common during setup
-2. Feedback error
-3. Commutation feedback error
-4. Joint feedback error
-5. Position error
-6. Saturation error
-7. HV CRC error
-8. HV timeout error
-9. Overtemperature error
-10. High/Low voltage error (Or no communication with F3 board)
-11. HV fault
-12. Motor overtemperature
+  1) Command Error. Common during setup. Only really relevant to smart-serial
+  2) Motor Feedback Error
+  3) Commutation Feedback Error
+  4) Joint Feedback Error
+  5) Position Error
+  6) Saturation Error
+  7) Motor temperature high
+  8) HV Board serial CRC Error
+  9) HV Board comms Timeout Error
+  10) HV Board over-temperature
+  11) HV Voltage out of range
+  12) HV Board Fault
+  13) HV current offset fault
+  14) HV Overcurrent RMS
+  15) HV Overcurrent Peak
+  16) HV Overcurrent HW
 
 == Specs 
 === PCB Version 4
