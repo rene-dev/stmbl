@@ -41,6 +41,13 @@ the PCB.
 In addition to motor control and feedback each STMBL drive has two
 +/-30V analogue inputs and three 24V / 2A digital outputs. 
 
+To use the STMBL you will need to <<Flashing Firmware, flash the firmware>>,
+configure the drive for your motor using <<Servoterm>> after determining
+the <<Motor, motor parameters>> using the correct
+<<HAL (Hardware Abstraction Layer), HAL modules>> for your motor and chosen
+control mode and connect the drive, motor and controller using
+<<Pinouts, suitable cables>>
+
 == Anatomy of the STMBL
 
 The STMBL consists of two separate PCBs (though they are made as one,
@@ -374,7 +381,7 @@ editor
 
 === Servoterm Connection Problems
 
-== Flashing Firmware
+= Flashing Firmware
 
 === Requirements to build/flash firmware
 
@@ -403,24 +410,28 @@ should be impossible to "brick" the boards. Each of the two CPUs in the
 STMBL drive needs both a dedicated bootloader to start the STMBL firmware
 and the firmware itself. 
 
-=== Checking for Existing Firmware
+=== Checking for Existing Firmware - F4 board
 
 Before flashing firmware it is worth trying to figure out if your board
 is completely blank or has been pre-flashed with a bootloader or
 firmware. 
+
+If the board will connect with Servoterm then it already has a firmware
+and STMBL bootloader. 
+"about" will show the firmware information of the F4 board. "hv about"
+will give the same information about the F3 board. Go to the 
+<<Updating Firmware>> section to flash new firmware. 
+
 If the board lights any LEDs other than the green power-good ones near
 to the power input connectors then there is likely to already be a
-firmware installed. 
+firmware installed. Go to the 
+<<Updating Firmware>> section if you need to update the firmware.  
 
 If the board is powered with 24V to the LV board and connected with USB
 to a PC then it will report as "STMBL Virtual ComPort:" in the Apple
-System Profiler, 
-"ID 0483:5740 STMicroelectronics STM32F407" in lsusb in Linux and 
-"STMBL Virtual COM Port" in the Windows device manager if
+System Profiler,  "ID 0483:5740 STMicroelectronics STM32F407" in lsusb
+in Linux and "STMBL Virtual COM Port" in the Windows device manager if
 there is a full firmware + STM32 bootloader installed. 
-
-Additionally, if the board will connect with Servoterm then it already
-has a firmware and STMBL bootloader. 
 
 If the board shows "STM32 BOOTLOADER" (Mac) 
 "0483:df11 STMicroelectronics STM Device in DFU Mode" (Linus lsusb) or
@@ -433,28 +444,39 @@ put it in ROM boot mode by shorting the boot pads together, you should
 see "STM32 Bootlader" (Mac), "STMicroelectronics STM Device in DFU Mode"
 (Linux lsusb) or "STM32 BOOTLOADER" (Windows Device Manager)
 In this case you will need to flash both the STMBL bootloader and the
-STMBL firmware. 
+STMBL firmware. Go to the
+<<Flashing the F4 (low voltage) board with no bootloader>> section.
 
-With 24V to the HV board and a USB connection: 
+=== Checking for existing firmware - F3 board
+
+With 24V to the F3 board and with the F4 board _unpowered_ look at
+the red LED under the fan, near the USB connector. 
 
 If the HV board has both an STMBL bootloader and an STMBL Firmware
-installed then it will illuminate only the green power LED and will
- report as "STMBL Virtual Com Port" (Mac) 
-"0483:5740 STMicroelectronics STM32F407" (Linux, rather inaccurately) 
-and "Unknown Device" in the Windows Device Manager. 
+installed then it will illuminate only the green power LED and will flash
+the red LED slowly to indicate no comms with the F4 board (which is
+why this check should be done with the F4 board unpowered). Go to the
+<<Updating Firmware>> section in this scenario. 
 
-If the HV board has an STMBL bootloader installed then it will flash a
-red LED near to the USB connector and report as 
-"STM32 DownLoad Firmware Update:" (Mac) 
+If the F3 board does not flash the red LED when the F4 is unpowered then
+there is no bootloader and no firmware flashed. Go to the
+<<Flashing the F4 (low voltage) board with no bootloader>> section.
+
+If the F3 board has only a bootloader flashed and no firmware then the
+red LED will flash rapidly  and report as
+"STM32 DownLoad Firmware Update:" (Mac)
 "0483:df11 STMicroelectronics STM Device in DFU Mode" (Linux lsusb) and
-"Unknown Device" in the Windows Device Manager. 
+"Unknown Device" in the Windows Device Manager. Use the instructions in
+<<Updating Firmware>> in this case. 
 
 If the HV board does not show up at all on the USB bus then attempt to
 put it in ROM boot mode by shorting the boot pads together, you should
 see "STM32 Bootlader" (Mac), "STMicroelectronics STM Device in DFU Mode"
 (Linux lsusb) or "STM32 BOOTLOADER" (Windows Device Manager)
 In this case you will need to flash both the STMBL bootloader (F3
-version) and the STMBL firmware (F3 version). 
+version) and the STMBL firmware (F3 version). You will need to follow
+the instructions in
+<<Flashing the F3 (high voltage board) with no bootloader>>
 
 The boards can also be flashed with a JTAG programmer, but that process
 is not documented here. 
@@ -463,19 +485,71 @@ It can be convenient to flash the boards to test them before separating
 the halves and before installing the IRAM module and bus capacitors if
 you have a self-built or part-assembled board. 
 
-It is possible that in the future standalone binaries of the firmware
-will be made available. 
+Precompiled Binary versions of the firmware can be downloaded from
+https://github.com/rene-dev/stmbl/releases
+But the author of this document has no idea how to use them.
 
-Firmware flashing is handled by specifying a makefile target for each of
-the 4 firmware sections. 
+When compiling from the source code Firmware flashing is handled by
+specifying a makefile target for each of the firmware sections. 
 
-=== Flashing the F4 (low voltage) board
+=== Updating Firmware
+
+The firmware on both the F3 and F4 board can be updated through the F4 USB
+port and without access to the boot pads. 
+
+Connect 24V to both the F3 and F4 boards and connect with Servoterm
+put the F4 board in to Boot Loader mode with the "bootloader" command. 
+Servoterm will disconnect. 
+In the source software folder type
+
+ git pull
+ 
+to get the latest software version
+
+ make clean
+ 
+to ensure that all files are freshened
+
+ make
+ make binall
+ 
+to create the binary files to be flashed
+
+ make all_btburn
+ 
+to program the F4 board and transfer a copy of the F3 software. 
+
+You can now re-connect with servoterm and check the firmware version with
+
+ about
+ 
+Updating the F3 firmware is done via Servoterm using the
+
+ hv_update
+ 
+command. This should give output similar to:
+
+ hv_update: SEND_TO_BOOTLOADER
+ hv_update: ERASE_FLASH
+ hv_update: SEND_APP
+ hv_update: status: 4%
+ ...
+ hv_update: status: 95%
+ hv_update: CRC_CHECK
+ hv_update: status: 100%
+ hv_update: FLASH_SUCCESS
+ hv_update: status: 100%
+ hv_update: SLAVE_IN_APP
+
+=== Flashing the F4 (low voltage) board with no bootloader
 
 Connect 24V to the low voltage board power cable and a USB cable to the
 computer where the source code has been downloaded to.
 To flash the initial boot formware it is necessary to put the STM32 CPU
 into ROM bootloader mode. You do this by shorting together the two pads
-marked "boot" on the larger of the two boards. For the exact location of
+marked "boot" on the larger of the two boards while the board is powering
+up. This is a bit of a fiddle but should only need to be done once when
+the board is first built. For the exact location of
 these pads see the illustration in the <<Anatomy of the STMBL,Anatomy>>
 section. Typically a small screwdriver can be used for this purpose. 
 At this point the board should appear as an "STM32 Bootloader" in the 
@@ -486,27 +560,26 @@ The commands to flash the firmwares should be issued from a command line
 after navigating to the root of the downloaded source code (ie the same
 directory as the "Makefile" file)
 
-The command to flash the F4 bootloader is:
+The command to flash the F4 bootloader and firmware is:
 
-'make boot_btburn
+ make all_btburn
 
 There should then be a quantity of text output culminating with a
 progress bar:
 
-'Downloading to address = 0x08000000, size = 2756
-'Download	[=========================] 100%         2756 bytes
+ Downloading to address = 0x08000000, size = 2756
+ Download	[=========================] 100%         2756 bytes
 
 There may be several apparent errors reported during the process, but
 these can be ignored if the progress bar is seen.
 
-The next step is to flash the actual firmware. This will take rather
-longer as the firmware will need to be compiled. The command is:
+If required the firmware-only can be flashed with the command
 
-'make btburn
+ make btburn
+ 
+But there is no real advantage to this. 
 
-Again, a progress bar should appear, indicating success. 
-
-=== Flashing the F3 (high voltage board)
+=== Flashing the F3 (high voltage board) with no bootloader
 
 Connect an isolated 24V supply to the HV inputs of F3 board. The board
 can operate at up to 380V but for the flashing process 24V is much safer.
@@ -515,20 +588,14 @@ Connect the USB cable to the HV board as with the LV board, and use the
 boot pads on the HV board to put it into bootloader mode. Again it
 should appear in the USB device tree. 
 
-The command to flash the bootloader for the F3 board is:
+The command to flash the bootloader and firmware for the F3 board is:
 
-'make f3_boot_btburn
+'make f3_all_btburn
 
 Again a progress bar should be seen, after which the main F3 firmware
 can be flashed:
 
-'make f3_btburn
-
-If all is well the board should now appear connnect to servoterm if the
-USB cable is moved to the LV (F4) board and if 24V is supplied to both
-power connectors.  
-
-If you type "hv0" at the servoterm command line and see a bis voltage
+If you type "hv0" at the servoterm command line and see a non-zero voltage
 then this indicates that both STM32 ships have working firmware and that
 communication between them is functional. This might require as much as
 30V supply to the F3 board as 24V is a little marginal for one of the
@@ -755,7 +822,7 @@ This is an example for one axis, Mesa 5i25 and one stmbl board, added to a .hal 
 See <https://github.com/aShure/cnc-configs/tree/master/justinbieber>
 
 == Blink Codes
-
+=== F4 Board
 1. Normal Operation
  * No Error (Green LED on top illuminated. Good!)
  * Drive disabled (Yellow LED on top. Drive ready to go but disabled.)
@@ -767,18 +834,30 @@ See <https://github.com/aShure/cnc-configs/tree/master/justinbieber>
 Count the number of blinks of the red LED. Each number indicates a
 different class of faults. 
 
-1. Command error - This will be quite common during setup
-2. Feedback error
-3. Commutation feedback error
-4. Joint feedback error
-5. Position error
-6. Saturation error
-7. HV CRC error
-8. HV timeout error
-9. Overtemperature error
-10. High/Low voltage error (Or no communication with F3 board)
-11. HV fault
-12. Motor overtemperature
+1. Command Error. Common during setup. Only really relevant to smart-serial
+2. Motor Feedback Error
+3. Commutation Feedback Error
+4. Joint Feedback Error
+5. Position Error
+6. Saturation Error
+7. Motor temperature high
+8. HV Board serial CRC Error
+9. HV Board comms Timeout Error
+10. HV Board over-temperature
+11. HV Voltage out of range
+12. HV Board Fault
+13. HV current offset fault
+14. HV Overcurrent RMS
+15. HV Overcurrent Peak
+16. HV Overcurrent HW
+
+=== F3 Board
+1. Normal operation
+ * Green LED at power input
+2. Errors
+ * Red LED under fan blinks fast - Bootloader but no firmware
+ * Red LED under fan blinks slow - No communication with F4
+ * Red LED under fan does not blink _AND_ F4 not plugged in - No firmware or bootloader
 
 == Specs 
 === PCB Version 4
