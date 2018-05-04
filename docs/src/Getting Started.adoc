@@ -5,18 +5,18 @@
 == Description
 
 STMBL is a motor drive controlled by the STM32 microprocessor. It can 
-power motors of up to 2.2kW and up to around 350V DC bus voltage. 
+power motors of up to 2.2kW and up to around 380V DC bus voltage. 
 
 The name "STMBL" is based on the combination of the STM32 microprocessor
 and BrushLess motor. However the drive is also capable of powering AC
-induction motors. The hardware is also capable of driving 3-phase
+induction or DC motors. The hardware is also capable of driving 3-phase
 stepper motors.
 
 The drive is configurable for a wide range of command and feedback types
-through a HAL layer analagous to that used by 
+through a hardware abstraction layer (HAL) analagous to that used by 
 http://linuxcnc.org/docs/2.7/html/hal/intro.html[LinuxCNC]. 
 
-Supported command interfaces are:
+Currently supported command interfaces are:
 
 * Mesa Smart-Serial
 * Step-Dir
@@ -25,53 +25,66 @@ Supported command interfaces are:
 
 +/-10V control is not supported, though the hardware capability exists.
 
-Supported feedback interfaces are:
+Currently supported feedback interfaces are:
 
 * Encoder
 * Resolver
 * sin/cos 1vpp
+* Hall sensors
 * Mitsubishi absolute encoder
 * Yaskawa absolute encoder
-* Sick Hyperface
 * Sanyo Denki absolute encoder
+* Fanuc serial encoder
+
+The hardware has the capability to support other protocols like:
+
+* EnDat
+* BiSS
+* SSI
+* Modbus
+* Profibus
+* Hiperface
+* CANopen
 
 Encoder power is 5V by default but 12V can be selected by jumper pads on
 the PCB. 
 
-In addition to motor control and feedback each STMBL drive has two
+In addition to motor control and dual feedback each STMBL drive has two
 +/-30V analogue inputs and three 24V / 2A digital outputs. 
 
-To use the STMBL you will need to <<Flashing Firmware, flash the firmware>>,
-configure the drive for your motor using <<Servoterm>> after determining
-the <<Motor, motor parameters>> using the correct
-<<HAL (Hardware Abstraction Layer), HAL modules>> for your motor and chosen
-control mode and connect the drive, motor and controller using
+To use the STMBL you will need to:
+
+* connect your command, feedback and motor to STMBL using
 <<Pinouts, suitable cables>>
+* <<Flashing Firmware, flash the firmware>>
+* configure the drive for your motor using <<Servoterm>> 
+** configure your feedback interface
+** find the correct <<Motor, parameters>> for your motor
+** configure your command interface
 
 == Anatomy of the STMBL
 
 The STMBL consists of two separate PCBs (though they are made as one,
 assembled and then split to be connected in the manner shown below. 
-The vertical (top) board is the Low Voltage (LV) board and this handles
-the command, feedback and configuration tasks. The STM32F4
+The vertical (top) board is the low-voltage (LV) board and this handles
+the command, feedback and configuration tasks. The STM32F405
 microprocessor is in charge of these tasks. 
-The lower board is the
-high-voltage (HV) board and this is where the power driver is situated.
+The lower board is the high-voltage (HV) board and this is where the power driver is situated.
 The only connection between the two boards is a serial connection
-through a 5kV isolation IC. To make this possible there is a second
-STM32 chip on the lower board. This is an STM32F3 and is referred to as
+through a 2.5kV isolation IC. To make this possible there is a second
+STM32 chip on the lower board. This is an STM32F303 and is referred to as
 the "F3" in the remainder of this document. The processor on the upper
 board is referred to as "F4".
 
 image::images/ISO1.svg[]
 
-The connectors on the HV board are 5.08mm pitch. Those on the LV board
+The connectors on the HV board are 5.08mm and 3.5mm pitch. Those on the LV board
 are 3.5mm pitch.  Mating part numbers are:
 
 * HV Power: https://octopart.com/1757019-phoenix+contact-789[1757019]
 * HV Motor: https://octopart.com/1757022-phoenix+contact-902[1757022] or
 https://octopart.com/1792760-phoenix+contact-29279[1792760]
-* LV Power: https://octopart.com/1840366-phoenix+contact-6675[1840366] or
+* LV Power and HV Temperatur: https://octopart.com/1840366-phoenix+contact-6675[1840366] or
 https://octopart.com/1862852-phoenix+contact-118535[1862852]
 * IO: https://octopart.com/1840405-phoenix+contact-14126[1840405] or
 https://octopart.com/1862894-phoenix+contact-79205[1862894]
@@ -82,7 +95,7 @@ the 6-position sockets.
 Logic power to the LV board should be 24V. A green LED will light
 adjacent to the socket when power is supplied.
 
-WARNING: The LV board is safe up to about 30V but take care that 0V is
+WARNING: The LV board is safe up to about 26V but take care that 0V is
 common with the PC GND before connecting a USB cable. 
 
 Motor power should be 30 to 350V, though the logic parts of the HV
@@ -92,8 +105,7 @@ adjacent to the connector confirms that the board is powered-up.
 WARNING: The HV and LV boards are isolated in normal use but it is easy
 to accidentally connect them. One way to do this is via USB cables which
 can easily tie GND lines together through the setup PC. It is imperative
-that the HV board should be powered from an isolated (and preferably
-low voltage) supply when flashing firmware. 
+that the HV board should be powered from an isolated, low voltage supply when flashing firmware. 
 
 image::images/ISO2.svg[]
 
@@ -117,10 +129,10 @@ adjacent to a 24V suppply pin. DIO0 (nearest the top) is the one that is
 typically used to operate the holding brake on motors so-equipped. 
 
 On the top of the drive are two analogue inputs, with 0V and 24V on
-either side to that a potentiometer can be connected. These are
+either side to that a active sensors can be connected. These are
 typically used as variable-threshold digital inputs and are used, for
 example, for axis limit switches. However it is relatively simple to
-configure them for other uses in the HAL layer. 
+configure them for other uses in the HAL. 
 
 Three LEDS on top of the unit indicate drive status. Red displays error
 codes (using <<Blink Codes,blink codes>>). Amber indicates that all is well but the
@@ -135,10 +147,10 @@ firmware is loaded.
 
 == HAL (Hardware Abstraction Layer)
 
-STMBL uses a Hardware abstraction layer to configure the drive for
+STMBL uses a data flow graph to configure the drive for
 different types of motor, feedback and operation mode.
-This is conceptually similar to the HAL in LinuxCNC but the format and
-cmmands are different. Also, all pins are floating point so no data
+This is conceptually similar to the HAL in http://linuxcnc.org/docs/2.7/html/hal/intro.html[LinuxCNC] but the format and
+commands are different. Also, all pins are floating point so no data
 conversion is needed. 
 
 An Application called <<Servoterm>> is used to interact with the HAL
@@ -181,92 +193,14 @@ behaviour.
 1. Connect it `rev0.in = sim0.msin`
 2. Set amplitude `sim0.amp = 1` (in rad)
 3. Set frequency `sim0.freq = 0.5` (in Hz)
+4. Enable `fault0.en = 1`
 
 == Or constant velocity ###
 1. Connect it `rev0.in = sim0.vel`
 2. Set frequency `sim0.freq = 0.5` (in Hz)
+3. Enable `fault0.en = 1`
 
 pressing esc at any time will disable the drive. to reenable, press reset or type `fault0.en = 0` followed by `fault0.en = 1`
-
-=== HAL modules
-The Servoterm command `show` will list all the HAL modules that can be
-loaded (whereas `list` will show all those that currently are loaded)
-
-The modules available are as follows (the link will take you to the
-reference section for each component)
-
-
-<<HAL Reference#acim_ttc,acim_ttc>> - The module used for AC induction
-motors (cf pmsm) ttc is Torque to Current+
-<<HAL Reference#adc,adc>> - Analogue to digital converter for Resolver
-feedback. Outputs the sine and cosine amplitudes. +
-<<HAL Reference#conf,conf>> - A module used to supply config data to
-other modules. +
-<<HAL Reference#curpid,curpid>> - No idea +
-<<HAL Reference#dc,dc>> - No idea +
-<<HAL Reference#dc_limits,dc_limits>> - no idea +
-<<HAL Reference#dc_ttc,dc_ttc>> - no idea +
-<<HAL Reference#dq,dq>> - not much idea +
-<<HAL Reference#enc_cmd,enc_cmd>> - Used to supply position commands
-through quadrature signals +
-<<HAL Reference#enc_fb,enc_fb>> Encoder counter, converts AB quadrature
-and index on FB0 connector to motor position +
-<<HAL Reference#encm,encm>> +
-<<HAL Reference#fanuc,fanuc>> Converts Fanuc 4-channel commutation
-signals +
-<<HAL Reference#fault,fault>> Handles the checking and distribution of
-fault information and reactons between the modules +
-<<HAL Reference#fb_switch,fb_switch>> This module arbitrates between
-commutation inputs for motors where UVW (Hall) sensors are suppplied in
-addition to an encoder. +
-<<HAL Reference#hal_test,hal_test>> Something to do with testing, I 
-assume +
-<<HAL Reference#hv,hv>> This module controls the HV board, provides the
-current and voltage commands to the H-bridge. +
-<<HAL Reference#idq,idq>> - Something to do with commutation +
-<<HAL Reference#idx_home,idx_home>> - Handles homing to the index pulse +
-<<HAL Reference#iit,iit>> - No idea +
-<<HAL Reference#io,io>> - Controls the IO, both input and output. +
-Including the feedback and command connector LEDs. Also mirrors ABZ and
-UVW states. +
-<<HAL Reference#linrev,linrev>> - Converts linear position into motor
-single-turn command positions and vice-versa. +
-<<HAL Reference#move,move>> - Surely does something +
-<<HAL Reference#o_fb,o_fb>> - A feedback, but from where? +
-<<HAL Reference#pe,pe>> - No idea.
-<<HAL Reference#pid,pid>> - The position PID controller. +
-<<HAL Reference#pmsm,pmsm>> - Permananet Magnet Servo Motor control
-module. Required for nearly all servo motors. +
-<<HAL Reference#pmsm_limits,pmsm_limits>> - Controls the limits for
-pmsm, used to clamp the PID +
-<<HAL Reference#pmsm_ttc,pmsm_ttc>> - PMSM torque to current
-calculation +
-<<HAL Reference#psi,psi>> - Motor Constant calculations. Nm/A +
-<<HAL Reference#ramp,ramp>> - Ramp? +
-<<HAL Reference#res,res>> - Resolver module for motors that use them.
-Calculates rotor position from the sine-cosine of ADC and generates the
-excitation. +
-<<HAL Reference#reslimit,reslimit>> - Limitation for the Resolver
-module +
-<<HAL Reference#rev,rev>> - Very important + 
-<<HAL Reference#scale,scale>> - A scaling utility function. +
-<<HAL Reference#sim,sim>> - Provides a set of waveforms useful for motor
-characterisation and testing. +
-<<HAL Reference#spid,spid>> - Simple PID. Usable but not used +
-<<HAL Reference#sserial,sserial>> - Handles communication through the 
-Mesa Electronics Smart Serial interface. Takes digital (floating point
-position and velocity commands and returns digital position and current
-feedback data. Also handles STMBL GPIO to LinuxCNC HAL.  +
-<<HAL Reference#stp,stp>> - Simple Trajectory Plannner +
-<<HAL Reference#svm,svm>> - Space Vector Modulation +
-<<HAL Reference#term,term>> - Graphing terminal in Servoterm. +
-<<HAL Reference#uf,uf>> - Good question +
-<<HAL Reference#uvw,uvw>> - Hall sensor (trapzeoidal) commutation
-module. +
-<<HAL Reference#vel,vel>> - Velocit Observer +
-<<HAL Reference#vel_int,vel_int>> - Also not sure +
-<<HAL Reference#ypid,ypid>> - YoloPID module. Usable but not used. 
-
 
 == Servoterm
 
@@ -275,7 +209,7 @@ of the drive HAL configuration. It also provides a rolling graphical
 representation of any chosen parameter in the HAL which can be a great
 aid to tuning and motor setup. 
 
-Servoterm is supplied as a Google Chrome Add-in. This might seem
+Servoterm is supplied as a Google Chrome extension. This might seem
 somewhat odd, but does provide for good cross-platform availability. 
 
 Servoterm can be downloaded from https://github.com/STMBL/Servoterm-app[
@@ -313,10 +247,9 @@ Taking the buttons from left to right:
 
 * Connect / Disconnect - Should be fairly self-evident
 * Clear - simply clears the screen
-* Reset - Resets the connection. Does not reset the STMBL. To do that
+* Reset - Reenables the drive and clears faults. Does not reset the STMBL. To do that
 type the <<Servoterm Commands,`reset`>> command
-* Capture - Allows the output of the graphs to be saved and exported to
-file
+* Capture - Allows the output of the graphs to be saved and exported as CSV. First click starts the recording, second click stops and saves the file.
 * Jog - when ticked the left-right arrow keys on the keyboard can be
 used to jog the motor. 
 * Trigger - stops the graph plot until the trigger condition is met.
@@ -325,7 +258,7 @@ used to jog the motor.
 can be edited. 
 
 Other than the buttons described above the ramainder of servoterm (and
-the STMBL HAL) is controlled by a command-line interface. 
+the STMBL HAL) is controlled by a command-line interface at the bottom. 
 
 Servoterm uses the up and down arrow keys to scroll through previous
 commands, but there is no tab-completion. 
@@ -357,8 +290,22 @@ functions like the time-base of an oscilloscope.
 The servoterm command list can be obtained at the command line by using
 the `help` command. 
 
+Commands to be used by the user:
+
 * bootloader: enter bootloader
 * reset: reset STMBL
+* about: show system infos
+* help: print this
+* link: load config template
+* hal: print HAL stats
+* hv_update: update the F3 firmware
+* show_config: show config templates
+* show: show comps in flash
+* list: show comp instances
+* hv FOOBAR XYZ: send "FOOBAR XYZ" to the HV board
+
+Commands for internal use:
+
 * confcrc: Shows the CRC checksum of the loaded config. 
 * flashloadconf: load config from flash
 * flashsaveconf: save config to flash
@@ -367,19 +314,13 @@ the `help` command.
 * appendconf: append string to config - also redundant with the config
 editor
 * deleteconf: delete config
-* hal: print HAL stats
 * load: load comp from flash
-* show: show comps in flash
-* list: show comp instances
 * start: start rt system
 * stop: stop rt system
 * fault: trigger fault
-* about: show system infos
-* help: print this
-* link: load config template
-* show_config: show config templates
 
 === Servoterm Connection Problems
+https://github.com/rene-dev/stmbl/wiki/Development[]
 
 = Flashing Firmware
 
@@ -389,7 +330,7 @@ The GCC cross-compiler for Arm:
 gcc-arm-none-eabi-gcc https://launchpad.net/gcc-arm-embedded/+download
 
 In order for the STMBL Makefiles to be able to find the gcc binaries
-you may need to edit the file toolchain.mak to point to the correct
+you may need to create the file toolchain-user.mak to point to the correct
 folder and version number.
 
 To flash the boards with USB you will need the dfu-utils package. 
@@ -402,7 +343,7 @@ https://github.com/rene-dev/stmbl
 You can either clone this as a https://git-scm.com[git] archive or just
 download a current snapshot as a zip file. 
 
-For Windows only you will also need the STMBL Virtual Comport
+For Windows only you will also need the STM Virtual Comport driver
 http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-stm32102.html
 
 The STM32 chips have a built-in ROM bootloader, this means that it
@@ -440,12 +381,11 @@ using the boot pads) then this indicates that it already has an STMBL
 bootloader. (though no harm is done by re-flashing this)
 
 If the LV board does not show up at all on the USB bus then attempt to
-put it in ROM boot mode by shorting the boot pads together, you should
+put it in ROM boot mode by shorting the boot pads together while connection the 24V, you should
 see "STM32 Bootlader" (Mac), "STMicroelectronics STM Device in DFU Mode"
 (Linux lsusb) or "STM32 BOOTLOADER" (Windows Device Manager)
 In this case you will need to flash both the STMBL bootloader and the
-STMBL firmware. Go to the
-<<Flashing the F4 (low voltage) board with no bootloader>> section.
+STMBL firmware. Go to the <<Flashing the LV board with no bootloader>> section.
 
 === Checking for existing firmware - F3 board
 
@@ -460,25 +400,13 @@ why this check should be done with the F4 board unpowered). Go to the
 
 If the F3 board does not flash the red LED when the F4 is unpowered then
 there is no bootloader and no firmware flashed. Go to the
-<<Flashing the F4 (low voltage) board with no bootloader>> section.
+<<Flashing the HV board with no bootloader>> section.
 
-If the F3 board has only a bootloader flashed and no firmware then the
-red LED will flash rapidly  and report as
-"STM32 DownLoad Firmware Update:" (Mac)
-"0483:df11 STMicroelectronics STM Device in DFU Mode" (Linux lsusb) and
-"Unknown Device" in the Windows Device Manager. Use the instructions in
-<<Updating Firmware>> in this case. 
+If the F3 board has only a bootloader flashed and no or broken firmware then the
+red LED will flash rapidly. 
+Use the instructions in <<Updating Firmware>> in this case. 
 
-If the HV board does not show up at all on the USB bus then attempt to
-put it in ROM boot mode by shorting the boot pads together, you should
-see "STM32 Bootlader" (Mac), "STMicroelectronics STM Device in DFU Mode"
-(Linux lsusb) or "STM32 BOOTLOADER" (Windows Device Manager)
-In this case you will need to flash both the STMBL bootloader (F3
-version) and the STMBL firmware (F3 version). You will need to follow
-the instructions in
-<<Flashing the F3 (high voltage board) with no bootloader>>
-
-The boards can also be flashed with a JTAG programmer, but that process
+The boards can also be flashed with a SWD programmer, but that process
 is not documented here. 
 
 It can be convenient to flash the boards to test them before separating
@@ -489,7 +417,7 @@ Precompiled Binary versions of the firmware can be downloaded from
 https://github.com/rene-dev/stmbl/releases
 But the author of this document has no idea how to use them.
 
-When compiling from the source code Firmware flashing is handled by
+When compiling from the source code firmware flashing is handled by
 specifying a makefile target for each of the firmware sections. 
 
 === Updating Firmware
@@ -497,9 +425,8 @@ specifying a makefile target for each of the firmware sections.
 The firmware on both the F3 and F4 board can be updated through the F4 USB
 port and without access to the boot pads. 
 
-Connect 24V to both the F3 and F4 boards and connect with Servoterm
-put the F4 board in to Boot Loader mode with the "bootloader" command. 
-Servoterm will disconnect. 
+Connect 24V to both the F3 and F4 boards.
+
 In the source software folder type
 
  git pull
@@ -515,9 +442,19 @@ to ensure that all files are freshened
  
 to create the binary files to be flashed
 
+ make btburn
+ 
+to program the F4 firmware and transfer a copy of the F3 software or 
+
  make all_btburn
  
-to program the F4 board and transfer a copy of the F3 software. 
+to program the F4 firmware + bootloader and transfer a copy of the F3 software (Warning: this will overwrite your config). 
+
+There should then be a quantity of text output culminating with a
+progress bar like:
+
+ Downloading to address = 0x08000000, size = 2756
+ Download	[=========================] 100%         2756 bytes
 
 You can now re-connect with servoterm and check the firmware version with
 
@@ -540,75 +477,39 @@ command. This should give output similar to:
  hv_update: FLASH_SUCCESS
  hv_update: status: 100%
  hv_update: SLAVE_IN_APP
+ 
+ If this fails multiple times go to the <<Flashing the HV board with no bootloader>> section.
 
-=== Flashing the F4 (low voltage) board with no bootloader
+=== Flashing the LV board with no bootloader
 
-Connect 24V to the low voltage board power cable and a USB cable to the
-computer where the source code has been downloaded to.
-To flash the initial boot formware it is necessary to put the STM32 CPU
+To flash the initial bootloader and firmware it is necessary to put the STM32 CPU
 into ROM bootloader mode. You do this by shorting together the two pads
-marked "boot" on the larger of the two boards while the board is powering
-up. This is a bit of a fiddle but should only need to be done once when
+marked "boot" on the LV board while connection the 24V supply. 
+This is a bit of a fiddle but should only need to be done once when
 the board is first built. For the exact location of
 these pads see the illustration in the <<Anatomy of the STMBL,Anatomy>>
 section. Typically a small screwdriver can be used for this purpose. 
 At this point the board should appear as an "STM32 Bootloader" in the 
-USB tree of the attached PC. It might be necessary to power-up the board
-with the pads shorted. 
+USB tree of the attached PC. 
 
-The commands to flash the firmwares should be issued from a command line
-after navigating to the root of the downloaded source code (ie the same
-directory as the "Makefile" file)
-
-The command to flash the F4 bootloader and firmware is:
-
- make all_btburn
-
-There should then be a quantity of text output culminating with a
-progress bar:
-
- Downloading to address = 0x08000000, size = 2756
- Download	[=========================] 100%         2756 bytes
-
-There may be several apparent errors reported during the process, but
-these can be ignored if the progress bar is seen.
-
-If required the firmware-only can be flashed with the command
-
- make btburn
+Follow the <<Updating Firmware>> instructions and use the 
  
-But there is no real advantage to this. 
+  make all_btburn
+
+command.
 
 === Flashing the F3 (high voltage board) with no bootloader
 
-Connect an isolated 24V supply to the HV inputs of F3 board. The board
-can operate at up to 380V but for the flashing process 24V is much safer.
-
-Connect the USB cable to the HV board as with the LV board, and use the
-boot pads on the HV board to put it into bootloader mode. Again it
+Connect the USB cable to the HV board and short the
+boot pads on the HV board while connection 24V to the HV input.
+to put it into bootloader mode. Again it
 should appear in the USB device tree. 
 
-The command to flash the bootloader and firmware for the F3 board is:
+Follow the <<Updating Firmware>> instructions but use the 
+ 
+  make f3_all_btburn
 
-'make f3_all_btburn
-
-Again a progress bar should be seen, after which the main F3 firmware
-can be flashed:
-
-If you type "hv0" at the servoterm command line and see a non-zero voltage
-then this indicates that both STM32 ships have working firmware and that
-communication between them is functional. This might require as much as
-30V supply to the F3 board as 24V is a little marginal for one of the
-devices in the communication chain. 
-
-Example:
-
-'hv0
-
-
-'hv0.max_cur <= conf0.max_ac_cur = 30.000000
-'hv0.dc_volt = 33.513943
-'hv0.d_fb = -0.022181
+command.
 
 ### conf Pins ###
 #### Motor ####
@@ -623,11 +524,9 @@ Example:
 * conf0.max_acc max acceleration (rad/s^2)
 * conf0.max_force max torque (Nm)
 * conf0.max_ac_cur max AC current (A)
-* conf0.max_dc_cur max DC current (A)
-* conf0.mot_type 0 = ac async, 1 = DC
 
-##### conf0.sin_offset conf0.cos_offset conf0.sin_gain conf0.cos_gain#####
-Offsets and gains for analog input. Only needed for sin/cos or if high precision with resolvers is required.
+##### adc0.sin_offset adc0.cos_offset adc0.sin_gain adc0.cos_gain#####
+Offsets and gains for analog inputs of FB0. Only needed for sin/cos or if high precision with resolvers is required.
 
 == Motor parameters
 
@@ -641,6 +540,8 @@ Unfortunately servo motor datasheets often lack a good description of the parame
 1. measure line-to-line inductance L
 2. convert to phase inductance conf0.l = L/2
 
+If you can't measure this set it to 0.001/(phase resistance).
+
 ### moment of inertia conf0.j (kg*m^2) ###
 1. read moment of inertia from datasheet
 
@@ -649,6 +550,7 @@ Unfortunately servo motor datasheets often lack a good description of the parame
 2. turn the motor one rotation and count the number N of positions it snaps in conf0.polecount = N
 
 ### torque constant conf0.psi (Nm/A) ###
+The default value works for most motors. Normaly you don't have to measure this!
 There is no common ground for the toque constant. Some manufacturers state the current in RMS, others in peak-to-peak. We also stumbled over values that were neither.
 
 How to determine psi:
@@ -674,23 +576,16 @@ psi = 60.0 / #POLE_PAIRS / sqrt(3) / 2.0 / PI / KV
 
 
 #### PID ####
+The default values work for most motors. Normaly you don't have to tune this.
+The STMBL PID works differnt than common PID loops. Understand the https://github.com/rene-dev/stmbl/blob/master/shared/comps/pid.c[code] and it's interaction with the https://github.com/rene-dev/stmbl/blob/master/shared/comps/pmsm_limits.c[motor model] first!
 
-In all modes:
-* conf0.cur_p pid current proportional gain
-* conf0.cur_i pid current integral gain
-* conf0.cur_ff pid current ff0 gain
-
-When driven in velocity mode (default)
-* conf0.pos_p pid velocity proportional gain (1/s)
-* conf0.acc_p pid acceleration proportional gain (1/s)
-* conf0.acc_pi pid acceleration integral gain (1/s)
-
-When driven in position mode (e.g. via serial link to LinuxCNC)
-* conf0.pos_p pid position proportional gain (1/s)
-* conf0.vel_p pid velocity proportional gain (1/s)
-* conf0.vel_i pid velocity integral gain (1/s)
-* FIXME: conf0.vel_g pid velocity
-* FIXME: conf0.g pid
+* conf0.pos_p position pid proportional gain (1/s)
+* conf0.vel_p velocity pid proportional gain (1/s)
+* conf0.vel_i velocity pid integral gain
+* conf0.cur_p current pid proportional gain (V/A)
+* conf0.cur_i current pid integral gain
+* conf0.cur_ff current pid resistance feedforward gain
+* conf0.cur_ind current pid BEMF feedforward gain
 
 
 #### Command ####
@@ -702,27 +597,19 @@ Exceeding a limit results in an action.
 * conf0.max_dc_volt voltage limit (V)
   * disable drive
 * conf0.high_dc_volt brake resistor limit (V)
-  * activate brake resistor
+  * activate brake resistor (Note: there is no build in brake resistor in STMBL V3 or V4)
 * conf0.low_dc_volt voltage limit (V)
   * disable drive
-* conf0.max_temp temperature limit (°C)
+* conf0.max_hv_temp temperature limit (°C)
   * disable drive
-* conf0.high_temp temperature limit (°C)
+* conf0.high_hv_temp temperature limit (°C)
   * reduce max current
-* conf0.fan_temp temperature limit (°C)
+* conf0.fan_hv_temp temperature limit (°C)
   * activate fan
 * conf0.max_pos_error max positon error (rad)
   * disable drive
 * conf0.max_sat max saturation time (s)
   * disable drive
-
-
-== Autophasing
-Autophasing is the routine used to determine the relative position of encoder
-with regard to magnetic orientation of the rotor.
-Make sure to set the motor parameters: conf0.r, conf0.l, conf0.j, conf0.polecount before.
-Also check feedback before proceeding.
-TODO
 
 == Pinouts
 
@@ -796,10 +683,10 @@ To use stmbl with 7I74 or 7I44 you need to make a custom cable.
 |===
 
 # Version 4 #
-The same applys for version 4. additionally, version 4 can also plug directly into a 7I74 or 7I44.
+Version 4 can plug directly into a 7I74 or 7I44.
 
 # STMBL config
-    # At the beginning of your STMBL config, load sserial:
+    # At the end of your STMBL config, load sserial:
     link sserial
 
     # set the scale
@@ -807,7 +694,6 @@ The same applys for version 4. additionally, version 4 can also plug directly in
 # Example: HAL config for Position mode with Position feedback ##
 
 This is an example for one axis, Mesa 5i25 and one stmbl board, added to a .hal file in a machine config:
-
 
     # This is an example for linuxcnc hal in position mode for the x-axis:
     net xposcmd joint.0.motor-pos-cmd  => hm2_5i25.0.stbl.0.0.pos_cmd
@@ -855,7 +741,7 @@ different class of faults.
 1. Normal operation
  * Green LED at power input
 2. Errors
- * Red LED under fan blinks fast - Bootloader but no firmware
+ * Red LED under fan blinks fast - Bootloader but no or broken firmware
  * Red LED under fan blinks slow - No communication with F4
  * Red LED under fan does not blink _AND_ F4 not plugged in - No firmware or bootloader
 
