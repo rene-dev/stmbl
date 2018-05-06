@@ -8,11 +8,8 @@ load vel
 load pid
 load fault
 load hv
-load iit
 load sim
-load stp
 load io
-load pe
 link conf
 hv0.rt_prio = 0.9
 hv0.frt_prio = 1
@@ -26,10 +23,7 @@ vel2.rt_prio = 6
 io0.rt_prio = 7
 pid0.rt_prio = 8
 fault0.rt_prio = 10
-iit0.rt_prio = 12
 sim0.rt_prio = 13
-stp0.rt_prio = 14
-pe0.rt_prio = 15
 term0.rt_prio = 16
 rev0.rev = conf0.cmd_rev
 fb_switch0.mot_rev = conf0.mot_fb_rev

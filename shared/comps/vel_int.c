@@ -12,12 +12,16 @@ HAL_PIN(pos_out);
 HAL_PIN(vel_in);
 HAL_PIN(vel_out);
 
+HAL_PIN(cmd_freq);
+HAL_PIN(real_cmd_freq);
+
 HAL_PIN(wd);
 HAL_PIN(error);
 
 struct vel_int_ctx_t {
   float pos;
   float counter;
+  float cmd_freq;
 };
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -34,6 +38,9 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
   PIN(wd)    = 0.002;
   PIN(error) = 0.0;
+
+  PIN(cmd_freq) = 1000.0;
+  ctx->cmd_freq = PIN(cmd_freq);
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -54,9 +61,14 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   if(EDGE(p)) {
     ctx->counter = 0.0;
     ctx->pos     = p;
+    ctx->cmd_freq += 1.0;
   } else {
     ctx->pos += v * period;
   }
+
+  ctx->cmd_freq -= ctx->cmd_freq * period;
+
+  PIN(real_cmd_freq) = ctx->cmd_freq * 0.001 + PIN(real_cmd_freq) * 0.999;
 
   ctx->pos = mod(ctx->pos);
 
