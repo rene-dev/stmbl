@@ -498,7 +498,7 @@ Follow the <<Updating Firmware>> instructions and use the
 
 command.
 
-=== Flashing the F3 (high voltage board) with no bootloader
+=== Flashing the HV board with no bootloader
 
 Connect the USB cable to the HV board and short the
 boot pads on the HV board while connection 24V to the HV input.
