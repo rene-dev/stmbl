@@ -17,8 +17,7 @@ heatsink_w = 46;
 case_h = 69;
 led_r = 0.75;
 $fn = 20;
-back_cut = 6 + pcb_t + 7;
-back_cut = 20;
+back_cut = 32;
 
 f4_h = 52.25;
 fan_h = 45;
@@ -30,8 +29,8 @@ module bend_gap(l){
   num_slots = max(floor(l1 / slot_l), 1);
   slot_l1 = l1 / num_slots;
   color(c) translate([0, 0, -1]){
-    cylinder(r = gap_w / 2, h = wall_t + 2);
-    translate([l, 0, 0]) cylinder(r = gap_w / 2, h = wall_t + 2);
+    cylinder(r = gap_w / 2 * 1.5, h = wall_t + 2);
+    translate([l, 0, 0]) cylinder(r = gap_w / 2 * 1.5, h = wall_t + 2);
     for(a = [0:num_slots - 1]){
       translate([a * slot_l1, 0, 0]){
         hull(){
@@ -45,8 +44,8 @@ module bend_gap(l){
 
 module bend_bridge(l){
   color(c) hull(){
-    translate([bend_a / 2, 0, 0]) cylinder(r = bend_a / 2, h = wall_t);
-    translate([l - bend_a / 2, 0, 0]) cylinder(r = bend_a / 2, h = wall_t);
+    translate([bend_a, 0, 0]) cylinder(r = bend_a, h = wall_t);
+    translate([l - bend_a, 0, 0]) cylinder(r = bend_a, h = wall_t);
   }
 }
 
@@ -165,11 +164,6 @@ module back_right(){
       translate([-corner_r, -case_h + corner_r, 0]) cylinder(r = corner_r, h = wall_t);
     }
     translate([-heatsink_w, 0, 0]) rotate([0, 0, 180]) back_cuts();
-    //translate([-heatsink_w + 28.25 + space, -case_h + 46.75 + space + 8, -1]) rotate([0, 0, 180]) cube([28.25 + space * 2, 8 + space * 2 + 3, wall_t + 2]); // uvw
-    //translate([-17.75 - 3.14,-case_h + 46.75, -1]) rotate([0, 0, 180]) cube([28.25 - 3.14 * 2, 3 + space, wall_t + 2]); // uvw
-    //translate([0,-case_h + 46.75 + 8 + space, -1]) rotate([0, 0, 180]) cube([9 + space, 7 + space * 2, wall_t + 2]); // mot temp
-    //translate([-23.5,-case_h + 46.75 + 8  + pcb_t + 0.5, -1]) cylinder(r = led_r + space, h = wall_t + 2); // led
-    //translate([-5, -2.6, -1]) cylinder(r = 1.5 + space / 2, h = wall_t + 2); // m3
   }
 }
 
@@ -201,7 +195,7 @@ module case(){
   difference(){
     union(){
       up();
-      translate([0, - bend_a / 2, 0]) bend_bridge(heatsink_l);
+      translate([0, -bend_a / 2, 0]) bend_bridge(heatsink_l);
       translate([0, heatsink_w + bend_a / 2, 0]) bend_bridge(heatsink_l);
     }
     translate([0, - bend_a / 2, 0]) bend_gap(heatsink_l);
@@ -239,10 +233,10 @@ module case(){
     difference(){
       union(){
         right();
-        translate([0, - bend_a / 2, 0]) bend_bridge(heatsink_l);
-        translate([- bend_a / 2, 0, 0]) rotate([0, 0, 90]) bend_bridge(46.75 + 8 - 7 - space);
-        translate([bend_a / 2 + heatsink_l, 0, 0]) rotate([0, 0, 90]) bend_bridge(52.25 + 4 + 3);
-        translate([- bend_a / 2, case_h, 0]) rotate([0, 0, -90]) bend_bridge(case_h - 46.75 - 8 - space);
+        translate([0, -bend_a / 2, 0]) bend_bridge(heatsink_l);
+        translate([-bend_a / 2, 0, 0]) rotate([0, 0, 90]) bend_bridge(46.75 + 8 - 7 - space);
+        translate([heatsink_l + bend_a / 2, 0, 0]) rotate([0, 0, 90]) bend_bridge(52.25 + 4 + 3);
+        translate([-bend_a / 2, 46.75 + 8 + space, 0]) rotate([0, 0, 90]) bend_bridge(case_h - 46.75 - 8 - space);
       }
       translate([0, - bend_a / 2, 0]) bend_gap(heatsink_l);
       translate([- bend_a / 2, 0, 0]) rotate([0, 0, 90]) bend_gap(46.75 + 8 - 7 - space);
@@ -252,7 +246,7 @@ module case(){
     translate([- bend_a, 0, 0]) rotate([0, -bend * 90, 0]) difference(){
       back_right();
       translate([bend_a / 2, 0, 0]) rotate([0, 0, 90]) bend_gap(46.75 + 8 - 7 - space);
-      translate([bend_a / 2, case_h, 0]) rotate([0, 0, -90]) bend_gap(case_h - 46.75 - 8 - space);
+      translate([bend_a / 2, 46.75 + 8 + space, 0]) rotate([0, 0, 90]) bend_gap(case_h - 46.75 - 8 - space);
     }
     translate([heatsink_l + bend_a, 0, 0]) rotate([0, bend * 90, 0]) difference(){
       front_right();
