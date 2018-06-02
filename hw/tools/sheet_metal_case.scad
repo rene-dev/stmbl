@@ -81,7 +81,7 @@ module up_cuts(){
   translate([49.25, 6 - 0.5, -1]) cylinder(r = led_r + space, h = wall_t + 2); // led
   translate([54.5, 6 - 0.5, -1]) cylinder(r = led_r + space, h = wall_t + 2); // led
   translate([9.5 - space, 6 + pcb_t - space, -1]) cube([31.5 + space * 2, 7 + space * 2, wall_t + 2]); // ain + cmd
-  //translate([41.75 - space, 6 + pcb_t - space, -1]) cube([15.25 + space * 2, 5 + space * 2, wall_t + 2]); // io
+  translate([41.75 - space - 1, 6 + pcb_t - space, -1]) cube([15.25 + space * 2 + 1, 5 + space * 2, wall_t + 2]); // io
 }
 
 module front_cuts(){
