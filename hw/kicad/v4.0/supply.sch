@@ -779,7 +779,7 @@ L stmbl:R R146
 U 1 1 5812447C
 P 7450 5100
 F 0 "R146" V 7530 5100 50  0000 C CNN
-F 1 "1k" V 7450 5100 50  0000 C CNN
+F 1 "3.9k" V 7450 5100 50  0000 C CNN
 F 2 "stmbl:R_0603" V 7380 5100 30  0001 C CNN
 F 3 "" H 7450 5100 30  0000 C CNN
 F 4 "" H 7450 5100 30  0001 C CNN "InternalName"
@@ -825,7 +825,7 @@ $EndComp
 Text Notes 9100 2750 0    60   ~ 0
 0.81V * (51k + 3.9k + 10k) / 10k = 5.25V
 Text Notes 9100 2900 0    60   ~ 0
-0.81V * (51k + 1k + 3.9k) / 3.9k = 11.6V
+0.81V * (51k + 3.9k + 3.9k) / 3.9k = 12.21V
 $Comp
 L stmbl:D_Schottky D22
 U 1 1 581AE161

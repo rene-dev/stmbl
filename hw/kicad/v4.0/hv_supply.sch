@@ -724,17 +724,17 @@ Wire Wire Line
 $Comp
 L stmbl:R R161
 U 1 1 5886A2CE
-P 8450 4250
-F 0 "R161" V 8530 4250 50  0000 C CNN
-F 1 "3.9k" V 8450 4250 50  0000 C CNN
-F 2 "stmbl:R_0603" V 8380 4250 30  0001 C CNN
-F 3 "" H 8450 4250 30  0000 C CNN
-F 4 "" H 8450 4250 30  0001 C CNN "InternalName"
-F 5 "" H 8450 4250 30  0001 C CNN "Manufacturer No"
-F 6 "" H 8450 4250 30  0001 C CNN "Voltage"
-F 7 "" H 8450 4250 30  0001 C CNN "Source"
-F 8 "1%" H 8450 4250 30  0001 C CNN "Tolerance"
-	1    8450 4250
+P 8700 4250
+F 0 "R161" V 8780 4250 50  0000 C CNN
+F 1 "3.9k" V 8700 4250 50  0000 C CNN
+F 2 "stmbl:R_0603" V 8630 4250 30  0001 C CNN
+F 3 "" H 8700 4250 30  0000 C CNN
+F 4 "" H 8700 4250 30  0001 C CNN "InternalName"
+F 5 "" H 8700 4250 30  0001 C CNN "Manufacturer No"
+F 6 "" H 8700 4250 30  0001 C CNN "Voltage"
+F 7 "" H 8700 4250 30  0001 C CNN "Source"
+F 8 "1%" H 8700 4250 30  0001 C CNN "Tolerance"
+	1    8700 4250
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -842,19 +842,45 @@ Wire Wire Line
 Wire Wire Line
 	5600 3100 6000 3100
 $Comp
-L stmbl:CP C70
-U 1 1 5AC60AA6
+L stmbl:C C70
+U 1 1 5B1EE673
 P 8200 4250
 F 0 "C70" H 8225 4350 50  0000 L CNN
-F 1 "22µ" H 8225 4150 50  0000 L CNN
-F 2 "stmbl:C_Radial_D6.5_L11_P2.5" H 8238 4100 50  0000 C CNN
-F 3 "" H 8200 4250 50  0000 C CNN
-F 4 "" H 8200 4250 50  0001 C CNN "InternalName"
-F 5 "" H 8200 4250 50  0001 C CNN "Manufacturer No"
-F 6 "50V" H 8200 4250 50  0001 C CNN "Voltage"
-F 7 "" H 8200 4250 50  0001 C CNN "Source"
-F 8 "" H 8200 4250 50  0001 C CNN "Tolerance"
+F 1 "10µ" H 8225 4150 50  0000 L CNN
+F 2 "stmbl:C_0805" H 8238 4100 30  0001 C CNN
+F 3 "" H 8200 4250 60  0000 C CNN
+F 4 "25V" H 8200 4250 60  0001 C CNN "Voltage"
+F 5 "" H 8200 4250 60  0001 C CNN "InternalName"
+F 6 "" H 8200 4250 60  0001 C CNN "Manufacturer No"
+F 7 "" H 8200 4250 60  0001 C CNN "Source"
+F 8 "X7R" H 8200 4250 60  0001 C CNN "Tolerance"
 	1    8200 4250
 	1    0    0    -1  
 $EndComp
+$Comp
+L stmbl:C C145
+U 1 1 5B1EE7AD
+P 8450 4250
+F 0 "C145" H 8475 4350 50  0000 L CNN
+F 1 "10µ" H 8475 4150 50  0000 L CNN
+F 2 "stmbl:C_0805" H 8488 4100 30  0001 C CNN
+F 3 "" H 8450 4250 60  0000 C CNN
+F 4 "25V" H 8450 4250 60  0001 C CNN "Voltage"
+F 5 "" H 8450 4250 60  0001 C CNN "InternalName"
+F 6 "" H 8450 4250 60  0001 C CNN "Manufacturer No"
+F 7 "" H 8450 4250 60  0001 C CNN "Source"
+F 8 "X7R" H 8450 4250 60  0001 C CNN "Tolerance"
+	1    8450 4250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8450 4550 8700 4550
+Wire Wire Line
+	8700 4550 8700 4400
+Connection ~ 8450 4550
+Wire Wire Line
+	8450 4000 8700 4000
+Wire Wire Line
+	8700 4000 8700 4100
+Connection ~ 8450 4000
 $EndSCHEMATC
