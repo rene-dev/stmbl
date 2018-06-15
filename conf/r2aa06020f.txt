@@ -1,0 +1,11 @@
+link pid
+link pmsm
+link encs_fb0
+link misc
+link jog_cmd
+conf0.r = 2.7
+conf0.l = 0.0007
+conf0.j = 0.0000219
+conf0.max_force = 2.2
+conf0.max_ac_cur = 5.6
+conf0.polecount = 5

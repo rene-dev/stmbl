@@ -52,29 +52,32 @@ volatile uint32_t reply_buf[NUM_OF_SAMPLES_S + 1];
 volatile uint32_t request_buf[24];
 DMA_InitTypeDef dma_tx_config;
 DMA_InitTypeDef dma_rx_config;
+GPIO_InitTypeDef GPIO_InitStruct_tx;
+GPIO_InitTypeDef GPIO_InitStruct_rx;
 
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct encs_ctx_t *ctx = (struct encs_ctx_t *)ctx_ptr;
   struct encs_pin_ctx_t *pins = (struct encs_pin_ctx_t *)pin_ptr;
 
-  GPIO_InitTypeDef GPIO_InitStruct;
+  
   //TX enable
-  GPIO_InitStruct.GPIO_Pin   = FB0_Z_TXEN_PIN;
-  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
-  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_25MHz;
-  GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-  GPIO_Init(FB0_Z_TXEN_PORT, &GPIO_InitStruct);
+  GPIO_InitStruct_tx.GPIO_Pin   = FB0_Z_TXEN_PIN;
+  GPIO_InitStruct_tx.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStruct_tx.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct_tx.GPIO_Speed = GPIO_Speed_25MHz;
+  GPIO_InitStruct_tx.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_Init(FB0_Z_TXEN_PORT, &GPIO_InitStruct_tx);
   GPIO_ResetBits(FB0_Z_TXEN_PORT, FB0_Z_TXEN_PIN);
 
   //TX
-  GPIO_InitStruct.GPIO_Pin   = FB0_Z_PIN;
-  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
-  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-  GPIO_Init(FB0_Z_PORT, &GPIO_InitStruct);
+  GPIO_InitStruct_tx.GPIO_Pin   = FB0_Z_PIN;
+  GPIO_Init(FB0_Z_PORT, &GPIO_InitStruct_tx);
   GPIO_ResetBits(FB0_Z_PORT, FB0_Z_PIN);
+
+  GPIO_InitStruct_rx.GPIO_Pin   = FB0_Z_PIN;
+  GPIO_InitStruct_rx.GPIO_Mode  = GPIO_Mode_IN;
+  GPIO_InitStruct_rx.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStruct_rx.GPIO_PuPd  = GPIO_PuPd_NOPULL;
 
   //RX
   //v3 only
@@ -178,6 +181,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   if(PIN(en) > 0.0) {
     //request
+    GPIO_Init(FB0_Z_PORT, &GPIO_InitStruct_tx);
     TIM8->ARR = 32;  //2.545 Mhz
     DMA_Cmd(DMA2_Stream1, DISABLE);
     DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
@@ -187,8 +191,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     //wait for DMA transfer complete
     while(DMA_GetFlagStatus(DMA2_Stream1, DMA_FLAG_TCIF1) == RESET)
       ;
-    //TODO: set pin to input
+
     //reply
+    GPIO_Init(FB0_Z_PORT, &GPIO_InitStruct_rx);
     TIM8->ARR = 4;  //16.8 Mhz
     DMA_Cmd(DMA2_Stream1, DISABLE);
     DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);

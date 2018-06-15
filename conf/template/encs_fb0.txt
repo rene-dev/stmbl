@@ -1,0 +1,10 @@
+load encs
+encs0.rt_prio = 2
+fb_switch0.mot_pos = encs0.pos
+fb_switch0.mot_abs_pos = encs0.pos
+fb_switch0.mot_polecount = conf0.mot_fb_polecount
+fb_switch0.mot_state = encs0.state
+fault0.mot_fb_error = encs0.error
+io0.fb0y = encs0.error
+io0.fb0g = 1
+fb_switch0.mot_state = 3
