@@ -27,6 +27,7 @@ F 5 "ESMR401VSN271MQ30S" H 3050 4400 60  0001 C CNN "Manufacturer No"
 F 6 "400V" H 3050 4400 60  0001 C CNN "Voltage"
 F 7 "" H 3050 4400 60  0001 C CNN "Source"
 F 8 "" H 3050 4400 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    3050 4400
 	1    0    0    -1  
 $EndComp
@@ -43,6 +44,7 @@ F 5 "ESMR401VSN271MQ30S" H 3350 4400 60  0001 C CNN "Manufacturer No"
 F 6 "400V" H 3350 4400 60  0001 C CNN "Voltage"
 F 7 "" H 3350 4400 60  0001 C CNN "Source"
 F 8 "" H 3350 4400 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    3350 4400
 	1    0    0    -1  
 $EndComp
@@ -59,6 +61,7 @@ F 5 "C1808W154KCRACTU" H 4250 4400 60  0001 C CNN "Manufacturer No"
 F 6 "500V" H 4250 4400 60  0001 C CNN "Voltage"
 F 7 "" H 4250 4400 60  0001 C CNN "Source"
 F 8 "X7R" H 4250 4400 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4250 4400
 	1    0    0    -1  
 $EndComp
@@ -75,6 +78,7 @@ F 5 "C1808W154KCRACTU" H 4550 4400 60  0001 C CNN "Manufacturer No"
 F 6 "500V" H 4550 4400 60  0001 C CNN "Voltage"
 F 7 "" H 4550 4400 60  0001 C CNN "Source"
 F 8 "X7R" H 4550 4400 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4550 4400
 	1    0    0    -1  
 $EndComp
@@ -97,6 +101,7 @@ F 5 "" H 5600 3050 60  0001 C CNN "Manufacturer No"
 F 6 "25V" H 5600 3050 60  0001 C CNN "Voltage"
 F 7 "" H 5600 3050 60  0001 C CNN "Source"
 F 8 "X7R" H 5600 3050 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5600 3050
 	0    -1   -1   0   
 $EndComp
@@ -178,6 +183,7 @@ F 5 "" H 6450 4050 50  0001 C CNN "Voltage"
 F 6 "" H 6450 4050 50  0001 C CNN "Source"
 F 7 "" H 6450 4050 60  0001 C CNN "InternalName"
 F 8 "" H 6450 4050 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    6450 4050
 	1    0    0    -1  
 $EndComp
@@ -194,6 +200,7 @@ F 5 "" H 5600 3450 60  0001 C CNN "Manufacturer No"
 F 6 "25V" H 5600 3450 60  0001 C CNN "Voltage"
 F 7 "" H 5600 3450 60  0001 C CNN "Source"
 F 8 "X7R" H 5600 3450 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5600 3450
 	0    -1   -1   0   
 $EndComp
@@ -217,6 +224,7 @@ F 5 "" H 5600 3850 60  0001 C CNN "Manufacturer No"
 F 6 "25V" H 5600 3850 60  0001 C CNN "Voltage"
 F 7 "" H 5600 3850 60  0001 C CNN "Source"
 F 8 "X7R" H 5600 3850 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5600 3850
 	0    -1   -1   0   
 $EndComp
@@ -240,6 +248,7 @@ F 5 "CSS2H-2512K-3L00F" H 5400 4550 30  0001 C CNN "Manufacturer No"
 F 6 "" H 5400 4550 30  0001 C CNN "Voltage"
 F 7 "" H 5400 4550 30  0001 C CNN "Source"
 F 8 "1%" H 5400 4550 30  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5400 4550
 	0    1    1    0   
 $EndComp
@@ -256,6 +265,7 @@ F 5 "CSS2H-2512K-3L00F" H 5400 4750 30  0001 C CNN "Manufacturer No"
 F 6 "" H 5400 4750 30  0001 C CNN "Voltage"
 F 7 "" H 5400 4750 30  0001 C CNN "Source"
 F 8 "1%" H 5400 4750 30  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5400 4750
 	0    1    1    0   
 $EndComp
@@ -272,6 +282,7 @@ F 5 "CSS2H-2512K-3L00F" H 5400 4950 30  0001 C CNN "Manufacturer No"
 F 6 "" H 5400 4950 30  0001 C CNN "Voltage"
 F 7 "" H 5400 4950 30  0001 C CNN "Source"
 F 8 "1%" H 5400 4950 30  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5400 4950
 	0    1    1    0   
 $EndComp
@@ -337,6 +348,7 @@ F 5 "" H 7800 4900 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 7800 4900 60  0001 C CNN "Voltage"
 F 7 "" H 7800 4900 60  0001 C CNN "Source"
 F 8 "X7R" H 7800 4900 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    7800 4900
 	1    0    0    -1  
 $EndComp
@@ -355,6 +367,7 @@ F 5 "Phoenix 1757255" H 5450 2000 60  0001 C CNN "Manufacturer No"
 F 6 "" H 5450 2000 60  0001 C CNN "Voltage"
 F 7 "" H 5450 2000 60  0001 C CNN "Source"
 F 8 "" H 5450 2000 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5450 2000
 	1    0    0    -1  
 $EndComp
@@ -371,6 +384,7 @@ F 5 "Phoenix 1757242" H 3900 1950 60  0001 C CNN "Manufacturer No"
 F 6 "" H 3900 1950 60  0001 C CNN "Voltage"
 F 7 "" H 3900 1950 60  0001 C CNN "Source"
 F 8 "" H 3900 1950 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    3900 1950
 	-1   0    0    1   
 $EndComp
@@ -461,6 +475,7 @@ F 5 "" H 7800 4300 30  0001 C CNN "Manufacturer No"
 F 6 "" H 7800 4300 30  0001 C CNN "Voltage"
 F 7 "" H 7800 4300 30  0001 C CNN "Source"
 F 8 "1%" H 7800 4300 30  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    7800 4300
 	1    0    0    -1  
 $EndComp
@@ -494,6 +509,7 @@ F 5 "C1808W154KCRACTU" H 4850 4400 60  0001 C CNN "Manufacturer No"
 F 6 "500V" H 4850 4400 60  0001 C CNN "Voltage"
 F 7 "" H 4850 4400 60  0001 C CNN "Source"
 F 8 "X7R" H 4850 4400 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4850 4400
 	1    0    0    -1  
 $EndComp
@@ -510,6 +526,7 @@ F 5 "C1808W154KCRACTU" H 3950 4400 60  0001 C CNN "Manufacturer No"
 F 6 "500V" H 3950 4400 60  0001 C CNN "Voltage"
 F 7 "" H 3950 4400 60  0001 C CNN "Source"
 F 8 "X7R" H 3950 4400 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    3950 4400
 	1    0    0    -1  
 $EndComp
@@ -526,6 +543,7 @@ F 5 "C1808W154KCRACTU" H 3650 4400 60  0001 C CNN "Manufacturer No"
 F 6 "500V" H 3650 4400 60  0001 C CNN "Voltage"
 F 7 "" H 3650 4400 60  0001 C CNN "Source"
 F 8 "X7R" H 3650 4400 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    3650 4400
 	1    0    0    -1  
 $EndComp
@@ -548,6 +566,7 @@ F 5 "" H 8100 4900 60  0001 C CNN "Manufacturer No"
 F 6 "25V" H 8100 4900 60  0001 C CNN "Voltage"
 F 7 "" H 8100 4900 60  0001 C CNN "Source"
 F 8 "X7R" H 8100 4900 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    8100 4900
 	1    0    0    -1  
 $EndComp
@@ -566,6 +585,7 @@ F 5 "" H 8400 4900 60  0001 C CNN "InternalName"
 F 6 "" H 8400 4900 60  0001 C CNN "Manufacturer No"
 F 7 "" H 8400 4900 60  0001 C CNN "Source"
 F 8 "X7R" H 8400 4900 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    8400 4900
 	1    0    0    1   
 $EndComp
@@ -584,6 +604,7 @@ F 5 "" H 8800 4900 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 8800 4900 60  0001 C CNN "Voltage"
 F 7 "" H 8800 4900 60  0001 C CNN "Source"
 F 8 "X7R" H 8800 4900 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    8800 4900
 	1    0    0    -1  
 $EndComp

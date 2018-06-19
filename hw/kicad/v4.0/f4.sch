@@ -27,6 +27,7 @@ F 5 "" H 10200 5500 50  0001 C CNN "InternalName"
 F 6 "" H 10200 5500 50  0001 C CNN "Voltage"
 F 7 "" H 10200 5500 50  0001 C CNN "Source"
 F 8 "" H 10200 5500 50  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    10200 5500
 	1    0    0    -1  
 $EndComp
@@ -43,6 +44,7 @@ F 5 "" H 4700 3700 50  0001 C CNN "Voltage"
 F 6 "https://de.aliexpress.com/item/1LOT-10PCS-Crystal-8MHZ-20PF-20PPM-4P-5032-SeriesYSX531SL/32534814045.html" H 4700 3950 50  0001 C CNN "Source"
 F 7 "" H 4700 3700 50  0001 C CNN "Tolerance"
 F 8 "" H 4700 3700 60  0001 C CNN "InternalName"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4700 3700
 	0    1    1    0   
 $EndComp
@@ -59,6 +61,7 @@ F 5 "" H 4350 3400 60  0001 C CNN "InternalName"
 F 6 "" H 4350 3400 60  0001 C CNN "Manufacturer No"
 F 7 "" H 4350 3400 60  0001 C CNN "Source"
 F 8 "X7R" H 4350 3400 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4350 3400
 	0    1    1    0   
 $EndComp
@@ -75,6 +78,7 @@ F 5 "" H 4350 4000 60  0001 C CNN "InternalName"
 F 6 "" H 4350 4000 60  0001 C CNN "Manufacturer No"
 F 7 "" H 4350 4000 60  0001 C CNN "Source"
 F 8 "X7R" H 4350 4000 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4350 4000
 	0    1    1    0   
 $EndComp
@@ -113,6 +117,7 @@ F 5 "" H 11600 8750 60  0001 C CNN "InternalName"
 F 6 "" H 11600 8750 60  0001 C CNN "Manufacturer No"
 F 7 "" H 11600 8750 60  0001 C CNN "Source"
 F 8 "X7R" H 11600 8750 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    11600 8750
 	1    0    0    -1  
 $EndComp
@@ -129,6 +134,7 @@ F 5 "" H 11100 8750 60  0001 C CNN "InternalName"
 F 6 "" H 11100 8750 60  0001 C CNN "Manufacturer No"
 F 7 "" H 11100 8750 60  0001 C CNN "Source"
 F 8 "X7R" H 11100 8750 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    11100 8750
 	1    0    0    -1  
 $EndComp
@@ -222,6 +228,7 @@ F 5 "" H 11400 2150 60  0001 C CNN "InternalName"
 F 6 "" H 11400 2150 60  0001 C CNN "Manufacturer No"
 F 7 "" H 11400 2150 60  0001 C CNN "Source"
 F 8 "X7R" H 11400 2150 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    11400 2150
 	1    0    0    -1  
 $EndComp
@@ -238,6 +245,7 @@ F 5 "" H 10900 2150 60  0001 C CNN "InternalName"
 F 6 "" H 10900 2150 60  0001 C CNN "Manufacturer No"
 F 7 "" H 10900 2150 60  0001 C CNN "Source"
 F 8 "X7R" H 10900 2150 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    10900 2150
 	1    0    0    -1  
 $EndComp
@@ -254,6 +262,7 @@ F 5 "" H 10600 2150 60  0001 C CNN "InternalName"
 F 6 "" H 10600 2150 60  0001 C CNN "Manufacturer No"
 F 7 "" H 10600 2150 60  0001 C CNN "Source"
 F 8 "X7R" H 10600 2150 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    10600 2150
 	1    0    0    -1  
 $EndComp
@@ -270,6 +279,7 @@ F 5 "" H 10300 2150 60  0001 C CNN "InternalName"
 F 6 "" H 10300 2150 60  0001 C CNN "Manufacturer No"
 F 7 "" H 10300 2150 60  0001 C CNN "Source"
 F 8 "X7R" H 10300 2150 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    10300 2150
 	1    0    0    -1  
 $EndComp
@@ -286,6 +296,7 @@ F 5 "" H 10000 2150 60  0001 C CNN "InternalName"
 F 6 "" H 10000 2150 60  0001 C CNN "Manufacturer No"
 F 7 "" H 10000 2150 60  0001 C CNN "Source"
 F 8 "X7R" H 10000 2150 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    10000 2150
 	1    0    0    -1  
 $EndComp
@@ -302,6 +313,7 @@ F 5 "" H 9700 2150 60  0001 C CNN "InternalName"
 F 6 "" H 9700 2150 60  0001 C CNN "Manufacturer No"
 F 7 "" H 9700 2150 60  0001 C CNN "Source"
 F 8 "X7R" H 9700 2150 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    9700 2150
 	1    0    0    -1  
 $EndComp
@@ -318,6 +330,7 @@ F 5 "" H 9400 2150 60  0001 C CNN "InternalName"
 F 6 "" H 9400 2150 60  0001 C CNN "Manufacturer No"
 F 7 "" H 9400 2150 60  0001 C CNN "Source"
 F 8 "X7R" H 9400 2150 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    9400 2150
 	1    0    0    -1  
 $EndComp
@@ -334,6 +347,7 @@ F 5 "" H 8400 2150 60  0001 C CNN "InternalName"
 F 6 "" H 8400 2150 60  0001 C CNN "Manufacturer No"
 F 7 "" H 8400 2150 60  0001 C CNN "Source"
 F 8 "X7R" H 8400 2150 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    8400 2150
 	1    0    0    -1  
 $EndComp
@@ -449,6 +463,7 @@ F 5 "https://de.aliexpress.com/item/500-PCS-LOT-patch-magnetic-bead-FB-BLM18AG22
 F 6 "" H 8900 2400 60  0001 C CNN "InternalName"
 F 7 "" H 8900 2400 60  0001 C CNN "Voltage"
 F 8 "" H 8900 2400 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    8900 2400
 	0    -1   -1   0   
 $EndComp
@@ -465,6 +480,7 @@ F 5 "" H 4600 2850 60  0001 C CNN "InternalName"
 F 6 "" H 4600 2850 60  0001 C CNN "Manufacturer No"
 F 7 "" H 4600 2850 60  0001 C CNN "Source"
 F 8 "X7R" H 4600 2850 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4600 2850
 	1    0    0    -1  
 $EndComp
@@ -492,6 +508,7 @@ F 5 "https://de.aliexpress.com/item/Wholesale-100Pcs-lot-5-Pins-Micro-USB-SMD-Fe
 F 6 "" V 800 5900 60  0001 C CNN "InternalName"
 F 7 "" V 800 5900 60  0001 C CNN "Voltage"
 F 8 "" V 800 5900 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    850  6000
 	0    -1   1    0   
 $EndComp
@@ -548,6 +565,11 @@ F 1 "USBLC6-4SC6" H 2800 6800 50  0000 C CNN
 F 2 "stmbl:SOT-23-6" H 2800 6550 60  0001 C CNN
 F 3 "" H 2800 6550 60  0000 C CNN
 F 4 "USBLC6-4SC6" H 2101 6998 50  0001 C CNN "Manufacturer No"
+F 5 "" H 0   0   50  0001 C CNN "Description"
+F 6 "" H 0   0   50  0001 C CNN "InternalName"
+F 7 "" H 0   0   50  0001 C CNN "Source"
+F 8 "" H 0   0   50  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Voltage"
 	1    2800 6550
 	1    0    0    -1  
 $EndComp
@@ -564,6 +586,7 @@ F 5 "" H 7850 9050 30  0001 C CNN "InternalName"
 F 6 "" H 7850 9050 30  0001 C CNN "Manufacturer No"
 F 7 "" H 7850 9050 30  0001 C CNN "Voltage"
 F 8 "" H 7850 9050 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    7850 9050
 	1    0    0    -1  
 $EndComp
@@ -580,6 +603,7 @@ F 5 "" H 7850 9550 30  0001 C CNN "InternalName"
 F 6 "" H 7850 9550 30  0001 C CNN "Manufacturer No"
 F 7 "" H 7850 9550 30  0001 C CNN "Voltage"
 F 8 "" H 7850 9550 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    7850 9550
 	1    0    0    -1  
 $EndComp
@@ -607,6 +631,7 @@ F 5 "" H 8750 9050 30  0001 C CNN "InternalName"
 F 6 "" H 8750 9050 30  0001 C CNN "Manufacturer No"
 F 7 "" H 8750 9050 30  0001 C CNN "Voltage"
 F 8 "" H 8750 9050 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    8750 9050
 	1    0    0    -1  
 $EndComp
@@ -623,6 +648,7 @@ F 5 "" H 8750 9550 30  0001 C CNN "InternalName"
 F 6 "" H 8750 9550 30  0001 C CNN "Manufacturer No"
 F 7 "" H 8750 9550 30  0001 C CNN "Voltage"
 F 8 "" H 8750 9550 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    8750 9550
 	1    0    0    -1  
 $EndComp
@@ -650,6 +676,7 @@ F 5 "" H 8950 9550 60  0001 C CNN "InternalName"
 F 6 "" H 8950 9550 60  0001 C CNN "Manufacturer No"
 F 7 "" H 8950 9550 60  0001 C CNN "Source"
 F 8 "X7R" H 8950 9550 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    8950 9550
 	1    0    0    -1  
 $EndComp
@@ -666,6 +693,7 @@ F 5 "" H 8050 9550 60  0001 C CNN "InternalName"
 F 6 "" H 8050 9550 60  0001 C CNN "Manufacturer No"
 F 7 "" H 8050 9550 60  0001 C CNN "Source"
 F 8 "X7R" H 8050 9550 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    8050 9550
 	1    0    0    -1  
 $EndComp
@@ -682,6 +710,7 @@ F 5 "" H 4850 2750 30  0001 C CNN "InternalName"
 F 6 "" H 4850 2750 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4850 2750 30  0001 C CNN "Voltage"
 F 8 "" H 4850 2750 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4850 2750
 	1    0    0    -1  
 $EndComp
@@ -709,6 +738,7 @@ F 5 "" H 5100 2800 60  0001 C CNN "Manufacturer No"
 F 6 "" H 5100 2800 60  0001 C CNN "Voltage"
 F 7 "" H 5100 2800 60  0001 C CNN "Source"
 F 8 "" H 5100 2800 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5100 2800
 	0    1    1    0   
 $EndComp
@@ -758,6 +788,7 @@ F 5 "" H 2800 7050 60  0001 C CNN "InternalName"
 F 6 "" H 2800 7050 60  0001 C CNN "Manufacturer No"
 F 7 "" H 2800 7050 60  0001 C CNN "Source"
 F 8 "X7R" H 2800 7050 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    2800 7050
 	0    1    1    0   
 $EndComp
@@ -774,6 +805,7 @@ F 5 "" H 8100 2150 60  0001 C CNN "InternalName"
 F 6 "" H 8100 2150 60  0001 C CNN "Manufacturer No"
 F 7 "" H 8100 2150 60  0001 C CNN "Source"
 F 8 "X7R" H 8100 2150 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    8100 2150
 	1    0    0    -1  
 $EndComp
@@ -801,6 +833,7 @@ F 5 "" H 850 6650 60  0001 C CNN "InternalName"
 F 6 "" H 850 6650 60  0001 C CNN "Manufacturer No"
 F 7 "" H 850 6650 60  0001 C CNN "Source"
 F 8 "X7R" H 850 6650 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    850  6650
 	1    0    0    -1  
 $EndComp
@@ -817,6 +850,7 @@ F 5 "" H 650 6650 30  0001 C CNN "InternalName"
 F 6 "" H 650 6650 30  0001 C CNN "Manufacturer No"
 F 7 "" H 650 6650 30  0001 C CNN "Voltage"
 F 8 "" H 650 6650 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    650  6650
 	1    0    0    -1  
 $EndComp
@@ -829,6 +863,11 @@ F 1 "USBLC6-4SC6" H 4600 10400 50  0000 C CNN
 F 2 "stmbl:SOT-23-6" H 4600 10150 60  0001 C CNN
 F 3 "" H 4600 10150 60  0000 C CNN
 F 4 "USBLC6-4SC6" H 3901 10598 50  0001 C CNN "Manufacturer No"
+F 5 "" H 0   0   50  0001 C CNN "Description"
+F 6 "" H 0   0   50  0001 C CNN "InternalName"
+F 7 "" H 0   0   50  0001 C CNN "Source"
+F 8 "" H 0   0   50  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Voltage"
 	1    4600 10150
 	1    0    0    -1  
 $EndComp
@@ -841,6 +880,11 @@ F 1 "USBLC6-4SC6" H 2800 2200 50  0000 C CNN
 F 2 "stmbl:SOT-23-6" H 2800 1950 60  0001 C CNN
 F 3 "" H 2800 1950 60  0000 C CNN
 F 4 "USBLC6-4SC6" H 2800 1950 50  0001 C CNN "Manufacturer No"
+F 5 "" H 0   0   50  0001 C CNN "Description"
+F 6 "" H 0   0   50  0001 C CNN "InternalName"
+F 7 "" H 0   0   50  0001 C CNN "Source"
+F 8 "" H 0   0   50  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Voltage"
 	1    2800 1950
 	-1   0    0    -1  
 $EndComp
@@ -853,6 +897,11 @@ F 1 "USBLC6-4SC6" H 2800 2900 50  0000 C CNN
 F 2 "stmbl:SOT-23-6" H 2800 2650 60  0001 C CNN
 F 3 "" H 2800 2650 60  0000 C CNN
 F 4 "USBLC6-4SC6" H 2101 3098 50  0001 C CNN "Manufacturer No"
+F 5 "" H 0   0   50  0001 C CNN "Description"
+F 6 "" H 0   0   50  0001 C CNN "InternalName"
+F 7 "" H 0   0   50  0001 C CNN "Source"
+F 8 "" H 0   0   50  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Voltage"
 	1    2800 2650
 	-1   0    0    -1  
 $EndComp
@@ -869,6 +918,7 @@ F 5 "" H 2150 3450 60  0001 C CNN "InternalName"
 F 6 "" H 2150 3450 60  0001 C CNN "Manufacturer No"
 F 7 "" H 2150 3450 60  0001 C CNN "Source"
 F 8 "X7R" H 2150 3450 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    2150 3450
 	1    0    0    -1  
 $EndComp
@@ -885,6 +935,7 @@ F 5 "" H 2600 3450 60  0001 C CNN "InternalName"
 F 6 "" H 2600 3450 60  0001 C CNN "Manufacturer No"
 F 7 "" H 2600 3450 60  0001 C CNN "Source"
 F 8 "X7R" H 2600 3450 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    2600 3450
 	1    0    0    -1  
 $EndComp
@@ -901,6 +952,7 @@ F 5 "" H 4750 9250 60  0001 C CNN "InternalName"
 F 6 "" H 4750 9250 60  0001 C CNN "Manufacturer No"
 F 7 "" H 4750 9250 60  0001 C CNN "Source"
 F 8 "X7R" H 4750 9250 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4750 9250
 	1    0    0    -1  
 $EndComp
@@ -1016,6 +1068,7 @@ F 5 "" H 4950 4000 30  0001 C CNN "InternalName"
 F 6 "" H 4950 4000 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4950 4000 30  0001 C CNN "Voltage"
 F 8 "" H 4950 4000 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4950 4000
 	0    1    1    0   
 $EndComp

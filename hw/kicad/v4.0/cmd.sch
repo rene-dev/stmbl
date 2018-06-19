@@ -29,6 +29,7 @@ F 5 "" H 5450 1400 60  0001 C CNN "InternalName"
 F 6 "" H 5450 1400 60  0001 C CNN "Voltage"
 F 7 "" H 5450 1400 60  0001 C CNN "Source"
 F 8 "" H 5450 1400 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5450 1400
 	-1   0    0    -1  
 $EndComp
@@ -45,6 +46,7 @@ F 5 "https://de.aliexpress.com/item/Free-shipping-50pcs-lot-RJ45-connector-RJ45-
 F 6 "" H 3000 3450 60  0001 C CNN "InternalName"
 F 7 "" H 3000 3450 60  0001 C CNN "Voltage"
 F 8 "" H 3000 3450 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    3000 3500
 	0    -1   1    0   
 $EndComp
@@ -61,6 +63,7 @@ F 5 "" H 4900 1400 50  0001 C CNN "Voltage"
 F 6 "" H 4900 1400 50  0001 C CNN "Source"
 F 7 "1%" H 4900 1400 50  0001 C CNN "Tolerance"
 F 8 "" H 4900 1400 30  0001 C CNN "InternalName"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 1400
 	1    0    0    -1  
 $EndComp
@@ -77,6 +80,7 @@ F 5 "50V" H 6525 1600 50  0001 C CNN "Voltage"
 F 6 "" H 6500 1400 60  0001 C CNN "InternalName"
 F 7 "" H 6500 1400 60  0001 C CNN "Manufacturer No"
 F 8 "" H 6500 1400 60  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    6500 1400
 	1    0    0    -1  
 $EndComp
@@ -106,6 +110,7 @@ F 5 "" H 5450 2800 60  0001 C CNN "InternalName"
 F 6 "" H 5450 2800 60  0001 C CNN "Voltage"
 F 7 "" H 5450 2800 60  0001 C CNN "Source"
 F 8 "" H 5450 2800 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5450 2800
 	-1   0    0    -1  
 $EndComp
@@ -122,6 +127,7 @@ F 5 "" H 4900 2800 30  0001 C CNN "InternalName"
 F 6 "" H 4900 2800 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4900 2800 30  0001 C CNN "Voltage"
 F 8 "" H 4900 2800 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 2800
 	1    0    0    -1  
 $EndComp
@@ -138,6 +144,7 @@ F 5 "50V" H 6500 2800 50  0001 C CNN "Voltage"
 F 6 "" H 6500 2800 60  0001 C CNN "InternalName"
 F 7 "" H 6500 2800 60  0001 C CNN "Manufacturer No"
 F 8 "" H 6500 2800 60  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    6500 2800
 	1    0    0    -1  
 $EndComp
@@ -167,6 +174,7 @@ F 5 "" H 5450 4200 60  0001 C CNN "InternalName"
 F 6 "" H 5450 4200 60  0001 C CNN "Voltage"
 F 7 "" H 5450 4200 60  0001 C CNN "Source"
 F 8 "" H 5450 4200 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5450 4200
 	-1   0    0    -1  
 $EndComp
@@ -183,6 +191,7 @@ F 5 "" H 4900 4200 30  0001 C CNN "InternalName"
 F 6 "" H 4900 4200 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4900 4200 30  0001 C CNN "Voltage"
 F 8 "" H 4900 4200 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 4200
 	1    0    0    -1  
 $EndComp
@@ -199,6 +208,7 @@ F 5 "50V" H 6525 4400 50  0001 C CNN "Voltage"
 F 6 "" H 6500 4200 60  0001 C CNN "InternalName"
 F 7 "" H 6500 4200 60  0001 C CNN "Manufacturer No"
 F 8 "" H 6500 4200 60  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    6500 4200
 	1    0    0    -1  
 $EndComp
@@ -228,6 +238,7 @@ F 5 "" H 5450 5600 60  0001 C CNN "InternalName"
 F 6 "" H 5450 5600 60  0001 C CNN "Voltage"
 F 7 "" H 5450 5600 60  0001 C CNN "Source"
 F 8 "" H 5450 5600 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    5450 5600
 	-1   0    0    -1  
 $EndComp
@@ -244,6 +255,7 @@ F 5 "" H 4900 5600 30  0001 C CNN "InternalName"
 F 6 "" H 4900 5600 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4900 5600 30  0001 C CNN "Voltage"
 F 8 "" H 4900 5600 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 5600
 	1    0    0    -1  
 $EndComp
@@ -260,6 +272,7 @@ F 5 "50V" H 6525 5800 50  0001 C CNN "Voltage"
 F 6 "" H 6500 5600 60  0001 C CNN "InternalName"
 F 7 "" H 6500 5600 60  0001 C CNN "Manufacturer No"
 F 8 "" H 6500 5600 60  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    6500 5600
 	1    0    0    -1  
 $EndComp
@@ -287,6 +300,7 @@ F 5 "" H 3100 4350 30  0001 C CNN "InternalName"
 F 6 "" H 3100 4350 30  0001 C CNN "Manufacturer No"
 F 7 "" H 3100 4350 30  0001 C CNN "Voltage"
 F 8 "" H 3100 4350 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    3100 4350
 	1    0    0    -1  
 $EndComp
@@ -303,6 +317,7 @@ F 5 "50V" H 2925 4550 50  0001 C CNN "Voltage"
 F 6 "" H 2900 4350 60  0001 C CNN "InternalName"
 F 7 "" H 2900 4350 60  0001 C CNN "Manufacturer No"
 F 8 "" H 2900 4350 60  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    2900 4350
 	1    0    0    -1  
 $EndComp
@@ -352,6 +367,7 @@ F 5 "" H 2300 3200 30  0001 C CNN "InternalName"
 F 6 "" H 2300 3200 30  0001 C CNN "Manufacturer No"
 F 7 "" H 2300 3200 30  0001 C CNN "Voltage"
 F 8 "" H 2300 3200 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    2300 3200
 	0    1    1    0   
 $EndComp
@@ -368,6 +384,7 @@ F 5 "" H 2300 3900 30  0001 C CNN "InternalName"
 F 6 "" H 2300 3900 30  0001 C CNN "Manufacturer No"
 F 7 "" H 2300 3900 30  0001 C CNN "Voltage"
 F 8 "" H 2300 3900 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    2300 3900
 	0    1    1    0   
 $EndComp
@@ -384,6 +401,7 @@ F 5 "" H 4900 1000 30  0001 C CNN "InternalName"
 F 6 "" H 4900 1000 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4900 1000 30  0001 C CNN "Voltage"
 F 8 "" H 4900 1000 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 1000
 	1    0    0    -1  
 $EndComp
@@ -400,6 +418,7 @@ F 5 "" H 4900 1800 30  0001 C CNN "InternalName"
 F 6 "" H 4900 1800 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4900 1800 30  0001 C CNN "Voltage"
 F 8 "" H 4900 1800 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 1800
 	1    0    0    -1  
 $EndComp
@@ -416,6 +435,7 @@ F 5 "" H 4900 2400 30  0001 C CNN "InternalName"
 F 6 "" H 4900 2400 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4900 2400 30  0001 C CNN "Voltage"
 F 8 "" H 4900 2400 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 2400
 	1    0    0    -1  
 $EndComp
@@ -432,6 +452,7 @@ F 5 "" H 4900 3200 30  0001 C CNN "InternalName"
 F 6 "" H 4900 3200 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4900 3200 30  0001 C CNN "Voltage"
 F 8 "" H 4900 3200 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 3200
 	1    0    0    -1  
 $EndComp
@@ -448,6 +469,7 @@ F 5 "" H 4900 3800 30  0001 C CNN "InternalName"
 F 6 "" H 4900 3800 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4900 3800 30  0001 C CNN "Voltage"
 F 8 "" H 4900 3800 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 3800
 	1    0    0    -1  
 $EndComp
@@ -464,6 +486,7 @@ F 5 "" H 4900 4600 30  0001 C CNN "InternalName"
 F 6 "" H 4900 4600 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4900 4600 30  0001 C CNN "Voltage"
 F 8 "" H 4900 4600 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 4600
 	1    0    0    -1  
 $EndComp
@@ -480,6 +503,7 @@ F 5 "" H 4900 5200 30  0001 C CNN "InternalName"
 F 6 "" H 4900 5200 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4900 5200 30  0001 C CNN "Voltage"
 F 8 "" H 4900 5200 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 5200
 	1    0    0    -1  
 $EndComp
@@ -496,6 +520,7 @@ F 5 "" H 4900 6000 30  0001 C CNN "InternalName"
 F 6 "" H 4900 6000 30  0001 C CNN "Manufacturer No"
 F 7 "" H 4900 6000 30  0001 C CNN "Voltage"
 F 8 "" H 4900 6000 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4900 6000
 	1    0    0    -1  
 $EndComp
@@ -512,6 +537,7 @@ F 5 "" H 6900 1600 30  0001 C CNN "InternalName"
 F 6 "" H 6900 1600 30  0001 C CNN "Manufacturer No"
 F 7 "" H 6900 1600 30  0001 C CNN "Voltage"
 F 8 "" H 6900 1600 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    6900 1600
 	1    0    0    -1  
 $EndComp
@@ -539,6 +565,7 @@ F 5 "" H 6900 3000 50  0001 C CNN "Voltage"
 F 6 "" H 6900 3000 50  0001 C CNN "Source"
 F 7 "1%" H 6980 3100 50  0001 C CNN "Tolerance"
 F 8 "" H 6900 3000 30  0001 C CNN "InternalName"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    6900 3000
 	1    0    0    -1  
 $EndComp
@@ -566,6 +593,7 @@ F 5 "" H 6900 4400 30  0001 C CNN "InternalName"
 F 6 "" H 6900 4400 30  0001 C CNN "Manufacturer No"
 F 7 "" H 6900 4400 30  0001 C CNN "Voltage"
 F 8 "" H 6900 4400 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    6900 4400
 	1    0    0    -1  
 $EndComp
@@ -593,6 +621,7 @@ F 5 "" H 6900 5800 30  0001 C CNN "InternalName"
 F 6 "" H 6900 5800 30  0001 C CNN "Manufacturer No"
 F 7 "" H 6900 5800 30  0001 C CNN "Voltage"
 F 8 "" H 6900 5800 30  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    6900 5800
 	1    0    0    -1  
 $EndComp
@@ -620,6 +649,7 @@ F 5 "https://de.aliexpress.com/item/500-PCS-LOT-patch-magnetic-bead-FB-BLM18AG22
 F 6 "" H 7700 950 50  0001 C CNN "InternalName"
 F 7 "" H 7700 950 50  0001 C CNN "Voltage"
 F 8 "" H 7700 950 50  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    7700 950 
 	0    -1   -1   0   
 $EndComp
@@ -636,6 +666,7 @@ F 5 "50V" H 8125 1400 50  0001 C CNN "Voltage"
 F 6 "" H 8100 1200 60  0001 C CNN "InternalName"
 F 7 "" H 8100 1200 60  0001 C CNN "Manufacturer No"
 F 8 "" H 8100 1200 60  0001 C CNN "Source"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    8100 1200
 	1    0    0    -1  
 $EndComp
@@ -663,6 +694,7 @@ F 5 "" H 4400 4200 60  0001 C CNN "InternalName"
 F 6 "" H 4400 4200 60  0001 C CNN "Voltage"
 F 7 "" H 4400 4200 60  0001 C CNN "Source"
 F 8 "" H 4400 4200 60  0001 C CNN "Tolerance"
+F 9 "" H 0   0   50  0001 C CNN "Description"
 	1    4400 4200
 	-1   0    0    -1  
 $EndComp
