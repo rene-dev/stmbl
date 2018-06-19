@@ -1070,6 +1070,31 @@ X ~ 2 0 -250 100 U 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
+# stmbl:fan
+#
+DEF stmbl:fan U 0 40 Y Y 1 F N
+F0 "U" 0 -250 60 H V C CNN
+F1 "stmbl:fan" 0 250 60 H V C CNN
+F2 "" 0 0 60 H I C CNN
+F3 "" 0 0 60 H I C CNN
+DRAW
+C 0 0 200 0 1 0 N
+S -200 200 200 -200 0 1 0 N
+ENDDRAW
+ENDDEF
+#
+# stmbl:heatsink
+#
+DEF stmbl:heatsink U 0 40 Y Y 1 F N
+F0 "U" 0 -300 60 H V C CNN
+F1 "stmbl:heatsink" 0 200 60 H V C CNN
+F2 "" 0 0 60 H I C CNN
+F3 "" 0 0 60 H I C CNN
+DRAW
+P 21 0 1 0 -200 150 250 150 250 -250 200 -250 200 50 150 50 150 -250 100 -250 100 50 50 50 50 -250 0 -250 0 50 -50 50 -50 -250 -100 -250 -100 50 -150 50 -150 -250 -200 -250 -200 150 N
+ENDDRAW
+ENDDEF
+#
 # stmbl:lnk304D
 #
 DEF stmbl:lnk304D U 0 40 Y Y 1 F N
