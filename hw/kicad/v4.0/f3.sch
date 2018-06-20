@@ -34,12 +34,12 @@ F 1 "100n" H 9725 850 50  0000 L CNN
 F 2 "stmbl:C_0603" H 9738 800 30  0001 C CNN
 F 3 "" H 9700 950 60  0000 C CNN
 F 4 "" H 9700 950 60  0001 C CNN "InternalName"
-F 5 "CL10B104MA8NNNC" H 9700 950 60  0001 C CNN "Manufacturer No"
+F 5 "" H 9700 950 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 9700 950 60  0001 C CNN "Voltage"
 F 7 "" H 9700 950 60  0001 C CNN "Source"
-F 8 "X7R" H 9700 950 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 9700 950 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    9700 950 
 	1    0    0    -1  
 $EndComp
@@ -74,12 +74,12 @@ F 1 "100n" H 9825 850 50  0000 L CNN
 F 2 "stmbl:C_0603" H 9838 800 30  0001 C CNN
 F 3 "" H 9800 950 60  0000 C CNN
 F 4 "" H 9800 950 60  0001 C CNN "InternalName"
-F 5 "CL10B104MA8NNNC" H 9800 950 60  0001 C CNN "Manufacturer No"
+F 5 "" H 9800 950 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 9800 950 60  0001 C CNN "Voltage"
 F 7 "" H 9800 950 60  0001 C CNN "Source"
-F 8 "X7R" H 9800 950 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 9800 950 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    9800 950 
 	1    0    0    -1  
 $EndComp
@@ -92,12 +92,12 @@ F 1 "100n" H 9925 850 50  0000 L CNN
 F 2 "stmbl:C_0603" H 9938 800 30  0001 C CNN
 F 3 "" H 9900 950 60  0000 C CNN
 F 4 "" H 9900 950 60  0001 C CNN "InternalName"
-F 5 "CL10B104MA8NNNC" H 9900 950 60  0001 C CNN "Manufacturer No"
+F 5 "" H 9900 950 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 9900 950 60  0001 C CNN "Voltage"
 F 7 "" H 9900 950 60  0001 C CNN "Source"
-F 8 "X7R" H 9900 950 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 9900 950 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    9900 950 
 	1    0    0    -1  
 $EndComp
@@ -110,12 +110,12 @@ F 1 "100n" H 10025 850 50  0000 L CNN
 F 2 "stmbl:C_0603" H 10038 800 30  0001 C CNN
 F 3 "" H 10000 950 60  0000 C CNN
 F 4 "" H 10000 950 60  0001 C CNN "InternalName"
-F 5 "CL10B104MA8NNNC" H 10000 950 60  0001 C CNN "Manufacturer No"
+F 5 "" H 10000 950 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 10000 950 60  0001 C CNN "Voltage"
 F 7 "" H 10000 950 60  0001 C CNN "Source"
-F 8 "X7R" H 10000 950 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 10000 950 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    10000 950 
 	1    0    0    -1  
 $EndComp
@@ -157,12 +157,12 @@ F 1 "18p" H 8375 1900 50  0000 L CNN
 F 2 "stmbl:C_0603" H 8388 1850 30  0001 C CNN
 F 3 "" H 8350 2000 60  0000 C CNN
 F 4 "" H 8350 2000 60  0001 C CNN "InternalName"
-F 5 "CL10C180JB8NNNC" H 8350 2000 60  0001 C CNN "Manufacturer No"
+F 5 "" H 8350 2000 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 8350 2000 60  0001 C CNN "Voltage"
 F 7 "" H 8350 2000 60  0001 C CNN "Source"
-F 8 "X7R" H 8350 2000 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 8350 2000 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    8350 2000
 	0    1    1    0   
 $EndComp
@@ -186,12 +186,12 @@ F 1 "18p" H 8375 2200 50  0000 L CNN
 F 2 "stmbl:C_0603" H 8388 2150 30  0001 C CNN
 F 3 "" H 8350 2300 60  0000 C CNN
 F 4 "" H 8350 2300 60  0001 C CNN "InternalName"
-F 5 "CL10C180JB8NNNC" H 8350 2300 60  0001 C CNN "Manufacturer No"
+F 5 "" H 8350 2300 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 8350 2300 60  0001 C CNN "Voltage"
 F 7 "" H 8350 2300 60  0001 C CNN "Source"
-F 8 "X7R" H 8350 2300 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 8350 2300 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    8350 2300
 	0    1    1    0   
 $EndComp
@@ -204,12 +204,12 @@ F 1 "100n" H 7825 2050 50  0000 L CNN
 F 2 "stmbl:C_0603" H 7838 2000 30  0001 C CNN
 F 3 "" H 7800 2150 60  0000 C CNN
 F 4 "" H 7800 2150 60  0001 C CNN "InternalName"
-F 5 "CL10B104MA8NNNC" H 7800 2150 60  0001 C CNN "Manufacturer No"
+F 5 "" H 7800 2150 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 7800 2150 60  0001 C CNN "Voltage"
 F 7 "" H 7800 2150 60  0001 C CNN "Source"
-F 8 "X7R" H 7800 2150 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 7800 2150 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    7800 2150
 	1    0    0    -1  
 $EndComp
@@ -244,12 +244,12 @@ F 1 "100n" H 8875 1400 50  0000 L CNN
 F 2 "stmbl:C_0603" H 8888 1350 30  0001 C CNN
 F 3 "" H 8850 1500 60  0000 C CNN
 F 4 "" H 8850 1500 60  0001 C CNN "InternalName"
-F 5 "CL10B104MA8NNNC" H 8850 1500 60  0001 C CNN "Manufacturer No"
+F 5 "" H 8850 1500 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 8850 1500 60  0001 C CNN "Voltage"
 F 7 "" H 8850 1500 60  0001 C CNN "Source"
-F 8 "X7R" H 8850 1500 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 8850 1500 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    8850 1500
 	0    1    1    0   
 $EndComp
@@ -328,12 +328,12 @@ F 1 "1k" V 7500 1950 50  0000 C CNN
 F 2 "stmbl:R_0603" V 7430 1950 30  0001 C CNN
 F 3 "" H 7500 1950 30  0000 C CNN
 F 4 "" H 7500 1950 30  0001 C CNN "InternalName"
-F 5 "RC0603JR-071KL" H 7500 1950 30  0001 C CNN "Manufacturer No"
+F 5 "" H 7500 1950 30  0001 C CNN "Manufacturer No"
 F 6 "" H 7500 1950 30  0001 C CNN "Voltage"
 F 7 "" H 7500 1950 30  0001 C CNN "Source"
 F 8 "1%" H 7500 1950 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Yageo" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    7500 1950
 	1    0    0    -1  
 $EndComp
@@ -444,12 +444,12 @@ F 1 "1k" V 10750 4400 50  0000 C CNN
 F 2 "stmbl:R_0603" V 10680 4400 30  0001 C CNN
 F 3 "" H 10750 4400 30  0000 C CNN
 F 4 "" H 10750 4400 30  0001 C CNN "InternalName"
-F 5 "RC0603JR-071KL" H 10750 4400 30  0001 C CNN "Manufacturer No"
+F 5 "" H 10750 4400 30  0001 C CNN "Manufacturer No"
 F 6 "" H 10750 4400 30  0001 C CNN "Voltage"
 F 7 "" H 10750 4400 30  0001 C CNN "Source"
 F 8 "1%" H 10750 4400 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Yageo" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    10750 4400
 	0    1    1    0   
 $EndComp
@@ -558,12 +558,12 @@ F 1 "470" V 11350 3600 50  0000 C CNN
 F 2 "stmbl:R_0603" V 11280 3600 30  0001 C CNN
 F 3 "" H 11350 3600 30  0000 C CNN
 F 4 "" H 11350 3600 30  0001 C CNN "InternalName"
-F 5 "RC0603JR-07470RL" H 11350 3600 30  0001 C CNN "Manufacturer No"
+F 5 "" H 11350 3600 30  0001 C CNN "Manufacturer No"
 F 6 "" H 11350 3600 30  0001 C CNN "Voltage"
 F 7 "" H 11350 3600 30  0001 C CNN "Source"
 F 8 "1%" H 11350 3600 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Yageo" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    11350 3600
 	0    1    1    0   
 $EndComp
@@ -596,12 +596,12 @@ F 1 "100n" H 11025 900 50  0000 L CNN
 F 2 "stmbl:C_0603" H 11038 850 30  0001 C CNN
 F 3 "" H 11000 1000 60  0000 C CNN
 F 4 "" H 11000 1000 60  0001 C CNN "InternalName"
-F 5 "CL10B104MA8NNNC" H 11000 1000 60  0001 C CNN "Manufacturer No"
+F 5 "" H 11000 1000 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 11000 1000 60  0001 C CNN "Voltage"
 F 7 "" H 11000 1000 60  0001 C CNN "Source"
-F 8 "X7R" H 11000 1000 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 11000 1000 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    11000 1000
 	1    0    0    -1  
 $EndComp
@@ -625,12 +625,12 @@ F 1 "100n" H 7475 6500 50  0000 L CNN
 F 2 "stmbl:C_0603" H 7488 6450 30  0001 C CNN
 F 3 "" H 7450 6600 60  0000 C CNN
 F 4 "" H 7450 6600 60  0001 C CNN "InternalName"
-F 5 "CL10B104MA8NNNC" H 7450 6600 60  0001 C CNN "Manufacturer No"
+F 5 "" H 7450 6600 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 7450 6600 60  0001 C CNN "Voltage"
 F 7 "" H 7450 6600 60  0001 C CNN "Source"
-F 8 "X7R" H 7450 6600 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 7450 6600 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    7450 6600
 	1    0    0    -1  
 $EndComp
@@ -685,12 +685,12 @@ F 1 "100n" H 4125 6400 50  0000 L CNN
 F 2 "stmbl:C_0603" H 4138 6350 30  0001 C CNN
 F 3 "" H 4100 6500 60  0000 C CNN
 F 4 "" H 4100 6500 60  0001 C CNN "InternalName"
-F 5 "CL10B104MA8NNNC" H 4100 6500 60  0001 C CNN "Manufacturer No"
+F 5 "" H 4100 6500 60  0001 C CNN "Manufacturer No"
 F 6 "50V" H 4100 6500 60  0001 C CNN "Voltage"
 F 7 "" H 4100 6500 60  0001 C CNN "Source"
-F 8 "X7R" H 4100 6500 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 4100 6500 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    4100 6500
 	1    0    0    -1  
 $EndComp
@@ -1009,12 +1009,12 @@ F 1 "22" V 7550 5550 50  0000 C CNN
 F 2 "stmbl:R_0603" V 7480 5550 30  0001 C CNN
 F 3 "" H 7550 5550 30  0000 C CNN
 F 4 "" H 7550 5550 30  0001 C CNN "InternalName"
-F 5 "RC0603JR-0722RL" H 7550 5550 30  0001 C CNN "Manufacturer No"
+F 5 "" H 7550 5550 30  0001 C CNN "Manufacturer No"
 F 6 "" H 7550 5550 30  0001 C CNN "Voltage"
 F 7 "" H 7550 5550 30  0001 C CNN "Source"
 F 8 "1%" H 7550 5550 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Yageo" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    7550 5550
 	0    1    1    0   
 $EndComp
@@ -1034,12 +1034,12 @@ F 1 "22" V 7550 5650 50  0000 C CNN
 F 2 "stmbl:R_0603" V 7480 5650 30  0001 C CNN
 F 3 "" H 7550 5650 30  0000 C CNN
 F 4 "" H 7550 5650 30  0001 C CNN "InternalName"
-F 5 "RC0603JR-0722RL" H 7550 5650 30  0001 C CNN "Manufacturer No"
+F 5 "" H 7550 5650 30  0001 C CNN "Manufacturer No"
 F 6 "" H 7550 5650 30  0001 C CNN "Voltage"
 F 7 "" H 7550 5650 30  0001 C CNN "Source"
 F 8 "1%" H 7550 5650 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Yageo" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    7550 5650
 	0    1    1    0   
 $EndComp
@@ -1052,12 +1052,12 @@ F 1 "1.5k" V 7300 5300 50  0000 C CNN
 F 2 "stmbl:R_0603" V 7230 5300 30  0001 C CNN
 F 3 "" H 7300 5300 30  0000 C CNN
 F 4 "" H 7300 5300 30  0001 C CNN "InternalName"
-F 5 "RC0603JR-071K5L" H 7300 5300 30  0001 C CNN "Manufacturer No"
+F 5 "" H 7300 5300 30  0001 C CNN "Manufacturer No"
 F 6 "" H 7300 5300 30  0001 C CNN "Voltage"
 F 7 "" H 7300 5300 30  0001 C CNN "Source"
 F 8 "1%" H 7300 5300 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Yageo" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    7300 5300
 	-1   0    0    1   
 $EndComp
@@ -1139,12 +1139,12 @@ F 1 "1k" V 8850 2300 50  0000 C CNN
 F 2 "stmbl:R_0603" V 8780 2300 30  0001 C CNN
 F 3 "" H 8850 2300 30  0000 C CNN
 F 4 "" H 8850 2300 30  0001 C CNN "InternalName"
-F 5 "RC0603JR-071KL" H 8850 2300 30  0001 C CNN "Manufacturer No"
+F 5 "" H 8850 2300 30  0001 C CNN "Manufacturer No"
 F 6 "" H 8850 2300 30  0001 C CNN "Voltage"
 F 7 "" H 8850 2300 30  0001 C CNN "Source"
 F 8 "1%" H 8850 2300 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Yageo" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    8850 2300
 	0    1    1    0   
 $EndComp
@@ -1349,12 +1349,12 @@ F 1 "2.2µ" H 10225 850 50  0000 L CNN
 F 2 "stmbl:C_0603" H 10238 800 30  0001 C CNN
 F 3 "" H 10200 950 60  0000 C CNN
 F 4 "" H 10200 950 60  0001 C CNN "InternalName"
-F 5 "CL10A225KL8NNNC" H 10200 950 60  0001 C CNN "Manufacturer No"
+F 5 "" H 10200 950 60  0001 C CNN "Manufacturer No"
 F 6 "35V" H 10200 950 60  0001 C CNN "Voltage"
 F 7 "" H 10200 950 60  0001 C CNN "Source"
 F 8 "X5R" H 10200 950 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
-F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
+F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    10200 950 
 	1    0    0    -1  
 $EndComp
