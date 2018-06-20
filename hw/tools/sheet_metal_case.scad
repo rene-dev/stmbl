@@ -52,7 +52,7 @@ module bend_bridge(l){
 module back_cuts(){
   color(c) union(){
     translate([-6 - pcb_t + space, - 3.75 + space, -1]) rotate([0, 0, 180]) cube([7 + space * 3, 31.5 + space * 2, wall_t + 2]); // 24V + out
-    translate([0, - 43.75 + space, -1]) rotate([0, 0, 180]) cube([28.25 + space * 2, 8 + space * 2 + 3, wall_t + 2]); // uvw
+    translate([0, - 43.75 + space, -1]) rotate([0, 0, 180]) cube([28.5 + space * 2, 8 + space * 2 + 3, wall_t + 2]); // uvw
     //translate([-3.14, - 46.75 + space + 3, -1]) rotate([0, 0, 180]) cube([28.25 - 3.14 * 2, 3 + space, wall_t + 2]); // uvw
     translate([-6 + led_r, -8 + space, -1]) cylinder(r = led_r + space, h = wall_t + 2); // led
     translate([-6 + led_r, -17 + space, -1]) cylinder(r = led_r + space, h = wall_t + 2); // led
@@ -88,6 +88,99 @@ module front_cuts(){
 
 }
 
+module up_text(){
+  color("white") hull() {
+      translate([0, 0, 0]) cylinder(r = 1, h = 0.1);
+      translate([60, 0, 0]) cylinder(r = 1, h = 0.1);
+      translate([0, 20, 0]) cylinder(r = 1, h = 0.1);
+      translate([60, 20, 0]) cylinder(r = 1, h = 0.1);
+    }
+    color("black") translate([30, 12.5, 0]) linear_extrude(height = 0.2, convexity = 4) text("STMBL V4", size= 7.5, halign = "center");
+    color("black") translate([30, 8, 0]) linear_extrude(height = 0.2, convexity = 4) text("https://github.com/rene-dev/stmbl", size= 2.5, halign = "center");
+    
+    color("black") translate([12 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("24V",size = 2, valign = "center");
+    color("black") translate([15.5 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("AIN0",size = 2, valign = "center");
+    color("black") translate([19 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("GND",size = 2, valign = "center");
+    
+    color("black") translate([22.5 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("24V",size = 2, valign = "center");
+    color("black") translate([26 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("AIN1",size = 2, valign = "center");
+    color("black") translate([29.5 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("GND",size = 2, valign = "center");
+    
+    color("black") translate([35 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("A",size = 2, valign = "center");
+    color("black") translate([38.5 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("B",size = 2, valign = "center");
+
+    color("black") translate([44 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("GO",size = 2, valign = "center");
+    color("black") translate([49.25 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("RDY",size = 2, valign = "center");
+    color("black") translate([54.5 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("ERR",size = 2, valign = "center");
+
+    color("black") translate([64.5 - 10, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("USB",size = 2, valign = "center");
+}
+
+module front_text(){
+  color("white") hull() {
+      translate([0, 0, 0]) cylinder(r = 1, h = 0.1);
+      translate([45, 0, 0]) cylinder(r = 1, h = 0.1);
+      translate([0, 20, 0]) cylinder(r = 1, h = 0.1);
+      translate([45, 20, 0]) cylinder(r = 1, h = 0.1);
+    }
+    color("black") translate([9.75 - 5, 0, 0]) linear_extrude(height = 0.2, convexity = 4) text("CMD", size= 2, halign = "center");
+    color("black") translate([26.25 - 5, 0, 0]) linear_extrude(height = 0.2, convexity = 4) text("FB0", size= 2, halign = "center");
+    color("black") translate([42.75 - 5, 0, 0]) linear_extrude(height = 0.2, convexity = 4) text("FB1", size= 2, halign = "center");
+    
+    color("black") translate([0, 20, 0]) linear_extrude(height = 0.2, convexity = 4) text("      ENC RES  UART SPI   SS  S/D", size= 1.5, valign = "center", font = "Courier New");
+    color("black") translate([0, 18, 0]) linear_extrude(height = 0.2, convexity = 4) text("1 OrS A+  SIN+ RX+  MISO+ RX+ STP+", size= 1.5, valign = "center", font = "Courier New");
+    color("black") translate([0, 16, 0]) linear_extrude(height = 0.2, convexity = 4) text("2 Or  A-  SIN- RX-  MISO- RX- STP-", size= 1.5, valign = "center", font = "Courier New");
+    color("black") translate([0, 14, 0]) linear_extrude(height = 0.2, convexity = 4) text("3 GrS B+  COS+ CLK+ CLK+  TX+ DIR+", size= 1.5, valign = "center", font = "Courier New");
+    color("black") translate([0, 12, 0]) linear_extrude(height = 0.2, convexity = 4) text("4 Bl  C-  REF- TX-  MOSI-     ERR-", size= 1.5, valign = "center", font = "Courier New");
+    color("black") translate([0, 10, 0]) linear_extrude(height = 0.2, convexity = 4) text("5 BlS C+  REF+ TX+  MOSI+     ERR+", size= 1.5, valign = "center", font = "Courier New");
+    color("black") translate([0,  8, 0]) linear_extrude(height = 0.2, convexity = 4) text("6 Gr  B-  COS- CLK- CLK-  TX- DIR-", size= 1.5, valign = "center", font = "Courier New");
+    color("black") translate([0,  6, 0]) linear_extrude(height = 0.2, convexity = 4) text("7 BrS VCC AIN  VCC  VCC       EN+", size= 1.5, valign = "center", font = "Courier New");
+    color("black") translate([0,  4, 0]) linear_extrude(height = 0.2, convexity = 4) text("8 Br  GND GND  GND  GND       EN-", size= 1.5, valign = "center", font = "Courier New");
+}
+
+module back_text(){
+  color("white") hull() {
+      translate([0, 0, 0]) cylinder(r = 1, h = 0.1);
+      translate([30, 0, 0]) cylinder(r = 1, h = 0.1);
+      translate([0, 7.5, 0]) cylinder(r = 1, h = 0.1);
+      translate([30, 7.5, 0]) cylinder(r = 1, h = 0.1);
+    }
+    
+
+    color("black") translate([6.25 - 4.5, 7.5, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("GND",size = 2, halign = "right", valign = "center");
+    color("black") translate([6.25 + 3.5 - 4.5, 7.5, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("24V",size = 2, halign = "right", valign = "center");
+    
+    color("black") translate([15.25 + 0 * 3.5- 4.5, 7.5, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("OUT0",size = 2, halign = "right", valign = "center");
+    color("black") translate([15.25 + 1 * 3.5 - 4.5, 7.5, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("24V",size = 2, halign = "right", valign = "center");
+    color("black") translate([15.25 + 2 * 3.5 - 4.5, 7.5, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("OUT1",size = 2, halign = "right", valign = "center");
+    color("black") translate([15.25 + 3 * 3.5 - 4.5, 7.5, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("24V",size = 2, halign = "right", valign = "center");
+    color("black") translate([15.25 + 4 * 3.5 - 4.5, 7.5, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("OUT2",size = 2, halign = "right", valign = "center");
+    color("black") translate([15.25 + 5 * 3.5 - 4.5, 7.5, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("24V",size = 2, halign = "right", valign = "center");
+}
+
+module back_text2(){
+  color("white") hull() {
+      translate([0, 0, 0]) cylinder(r = 1, h = 0.1);
+      translate([43, 0, 0]) cylinder(r = 1, h = 0.1);
+      translate([0, 6, 0]) cylinder(r = 1, h = 0.1);
+      translate([43, 6, 0]) cylinder(r = 1, h = 0.1);
+    }
+    
+
+    color("black") translate([3 - 1, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("TIN",size = 2, halign = "left", valign = "center");
+    color("black") translate([3 + 3.5 - 1, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("GND",size = 2, halign = "left", valign = "center");
+    
+    //color("black") translate([15 - 1, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("max",size = 2, halign = "left", valign = "center");
+    //color("black") translate([18 - 1, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("400V",size = 2, halign = "left", valign = "center");
+    
+    color("black") translate([21 - 1, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("320V",size = 2, halign = "left", valign = "center");
+    color("black") translate([21 + 5.08 - 1, 0, 0]) rotate([0, 0, 90]) linear_extrude(height=0.2, convexity=4) text("GND",size = 2, halign = "left", valign = "center");
+    
+    color("black") translate([32.75 - 1, 0, 0]) rotate([0, 0, 0]) linear_extrude(height=0.2, convexity=4) text("W",size = 2, halign = "center", valign = "bottom");
+    color("black") translate([32.75 + 5.08 - 1, 0, 0]) rotate([0, 0, 0]) linear_extrude(height=0.2, convexity=4) text("V",size = 2, halign = "center", valign = "bottom");
+    color("black") translate([32.75 + 2 * 5.08 - 1, 0, 0]) rotate([0, 0, 0]) linear_extrude(height=0.2, convexity=4) text("U",size = 2, halign = "center", valign = "bottom");
+}
+
 module up(){
   color(c) difference(){
     hull(){
@@ -98,26 +191,19 @@ module up(){
     }
     up_cuts();
   }
+  translate([10, 17.5, wall_t]) up_text();
 }
 
 module front_left(){
   color(c) difference(){
-    union(){
       hull(){
         translate([corner_r, -corner_r, 0]) cylinder(r = corner_r, h = wall_t);
         translate([6 + pcb_t - space - corner_r, -corner_r, 0]) cylinder(r = corner_r, h = wall_t);
         translate([6 + pcb_t - space - corner_r, -52.25 - 4 - 3 + corner_r, 0]) cylinder(r = corner_r, h = wall_t);
         translate([corner_r, -52.25 - 4 - 3 + corner_r, 0]) cylinder(r = corner_r, h = wall_t);
       }
-      *translate([0, -51 - space, 0]) hull(){
-        translate([corner_r, -corner_r, 0]) cylinder(r = corner_r, h = wall_t);
-        translate([heatsink_w - 23.5 - pcb_t - corner_r, -corner_r, 0]) cylinder(r = corner_r, h = wall_t);
-        translate([heatsink_w - 23.5 - pcb_t - corner_r, -1.25 - 4 - 3 + space + corner_r, 0]) cylinder(r = corner_r, h = wall_t);
-        translate([corner_r, -1.25 - 4 - 3 + space + corner_r, 0]) cylinder(r = corner_r, h = wall_t);
-      }
-    }
-    *translate([45 / 2, -52.25 - 45 / 2, -1]) cylinder(r = 45 / 2, h = wall_t + 2);
     translate([4.4, -52.25 - 4, -1]) cylinder(r = 4 / 2 + space / 2, h = wall_t + 2); // m4
+
   }
 }
 
@@ -138,9 +224,9 @@ module front_right(){
         }
         
       }
-      *translate([45 / 2, 52.25 + 45 / 2, -1]) cylinder(r = 45 / 2, h = wall_t + 2);
       translate([4.4, 52.25 + 4, -1]) cylinder(r = 4 / 2 + space / 2, h = wall_t + 2); // m4
   }
+      translate([23, 5, wall_t]) rotate([0, 0, 90]) front_text();
 }
 
 module back_left(){
@@ -153,6 +239,8 @@ module back_left(){
     }
     back_cuts();
   }
+  translate([-25, -4.5, wall_t]) rotate([0, 0, -90]) back_text();
+  translate([-44.5, -42.5, wall_t]) rotate([0, 0, 0]) back_text2();
 }
 
 module back_right(){
@@ -255,5 +343,7 @@ module case(){
   }
 }
 
-projection(cut = false) 
+//projection(cut = false) 
 case();
+//projection(cut = false) 
+//up_text();

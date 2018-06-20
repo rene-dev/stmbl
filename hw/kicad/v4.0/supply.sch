@@ -40,8 +40,8 @@ F 0 "C18" H 2725 5450 50  0000 L CNN
 F 1 "2.2µ" H 2725 5250 50  0000 L CNN
 F 2 "stmbl:C_0603" H 2738 5200 30  0001 C CNN
 F 3 "" H 2700 5350 60  0000 C CNN
-F 4 "25V" H 2700 5350 60  0001 C CNN "Voltage"
-F 5 "X7R" H 2700 5350 60  0001 C CNN "Tolerance"
+F 4 "35V" H 2700 5350 60  0001 C CNN "Voltage"
+F 5 "X5R" H 2700 5350 60  0001 C CNN "Tolerance"
 F 6 "" H 0   0   50  0001 C CNN "Description"
 F 7 "" H 0   0   50  0001 C CNN "InternalName"
 F 8 "CL10A225KL8NNNC" H 0   0   50  0001 C CNN "Manufacturer No"
@@ -58,8 +58,8 @@ F 0 "C8" H 1525 5450 50  0000 L CNN
 F 1 "2.2µ" H 1525 5250 50  0000 L CNN
 F 2 "stmbl:C_0603" H 1538 5200 30  0001 C CNN
 F 3 "" H 1500 5350 60  0000 C CNN
-F 4 "25V" H 1500 5350 60  0001 C CNN "Voltage"
-F 5 "X7R" H 1500 5350 60  0001 C CNN "Tolerance"
+F 4 "35V" H 1500 5350 60  0001 C CNN "Voltage"
+F 5 "X5R" H 1500 5350 60  0001 C CNN "Tolerance"
 F 6 "" H 0   0   50  0001 C CNN "Description"
 F 7 "" H 0   0   50  0001 C CNN "InternalName"
 F 8 "CL10A225KL8NNNC" H 0   0   50  0001 C CNN "Manufacturer No"
@@ -96,7 +96,7 @@ U 1 1 566CDEAC
 P 800 3000
 F 0 "P3" H 800 3150 50  0000 C CNN
 F 1 "CONN_01X02" V 900 3000 50  0000 C CNN
-F 2 "stmbl:akl182-2" H 800 3000 60  0001 C CNN
+F 2 "stmbl:RM3.5_1x2" H 800 3000 60  0001 C CNN
 F 3 "" H 800 3000 60  0000 C CNN
 F 4 "" H 800 3000 60  0001 C CNN "InternalName"
 F 5 "1844210" H 800 3000 60  0001 C CNN "Manufacturer No"
@@ -567,9 +567,9 @@ F 2 "stmbl:C_0603" H 2538 3000 30  0001 C CNN
 F 3 "" H 2500 3150 60  0000 C CNN
 F 4 "" H 2500 3150 60  0001 C CNN "InternalName"
 F 5 "CL10A225KL8NNNC" H 2500 3150 60  0001 C CNN "Manufacturer No"
-F 6 "25V" H 2500 3150 60  0001 C CNN "Voltage"
+F 6 "35V" H 2500 3150 60  0001 C CNN "Voltage"
 F 7 "" H 2500 3150 60  0001 C CNN "Source"
-F 8 "X7R" H 2500 3150 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 2500 3150 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    2500 3150
@@ -585,9 +585,9 @@ F 2 "stmbl:C_0603" H 5338 5200 30  0001 C CNN
 F 3 "" H 5300 5350 60  0000 C CNN
 F 4 "" H 5300 5350 60  0001 C CNN "InternalName"
 F 5 "CL10A225KL8NNNC" H 5300 5350 60  0001 C CNN "Manufacturer No"
-F 6 "25V" H 5300 5350 60  0001 C CNN "Voltage"
+F 6 "35V" H 5300 5350 60  0001 C CNN "Voltage"
 F 7 "" H 5300 5350 60  0001 C CNN "Source"
-F 8 "X7R" H 5300 5350 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 5300 5350 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    5300 5350
@@ -985,11 +985,11 @@ F 0 "C136" H 7975 5450 50  0000 L CNN
 F 1 "2.2µ" H 7975 5250 50  0000 L CNN
 F 2 "stmbl:C_0603" H 7988 5200 30  0001 C CNN
 F 3 "" H 7950 5350 60  0000 C CNN
-F 4 "25V" H 7950 5350 60  0001 C CNN "Voltage"
+F 4 "35V" H 7950 5350 60  0001 C CNN "Voltage"
 F 5 "" H 7950 5350 60  0001 C CNN "InternalName"
 F 6 "CL10A225KL8NNNC" H 7950 5350 60  0001 C CNN "Manufacturer No"
 F 7 "" H 7950 5350 60  0001 C CNN "Source"
-F 8 "X7R" H 7950 5350 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 7950 5350 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    7950 5350
@@ -1003,11 +1003,11 @@ F 0 "C135" H 7975 3650 50  0000 L CNN
 F 1 "2.2µ" H 7975 3450 50  0000 L CNN
 F 2 "stmbl:C_0603" H 7988 3400 30  0001 C CNN
 F 3 "" H 7950 3550 60  0000 C CNN
-F 4 "25V" H 7950 3550 60  0001 C CNN "Voltage"
+F 4 "35V" H 7950 3550 60  0001 C CNN "Voltage"
 F 5 "" H 7950 3550 60  0001 C CNN "InternalName"
 F 6 "CL10A225KL8NNNC" H 7950 3550 60  0001 C CNN "Manufacturer No"
 F 7 "" H 7950 3550 60  0001 C CNN "Source"
-F 8 "X7R" H 7950 3550 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 7950 3550 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    7950 3550
@@ -1021,11 +1021,11 @@ F 0 "C134" H 7975 2150 50  0000 L CNN
 F 1 "2.2µ" H 7975 1950 50  0000 L CNN
 F 2 "stmbl:C_0603" H 7988 1900 30  0001 C CNN
 F 3 "" H 7950 2050 60  0000 C CNN
-F 4 "25V" H 7950 2050 60  0001 C CNN "Voltage"
+F 4 "35V" H 7950 2050 60  0001 C CNN "Voltage"
 F 5 "" H 7950 2050 60  0001 C CNN "InternalName"
 F 6 "CL10A225KL8NNNC" H 7950 2050 60  0001 C CNN "Manufacturer No"
 F 7 "" H 7950 2050 60  0001 C CNN "Source"
-F 8 "X7R" H 7950 2050 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 7950 2050 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    7950 2050
@@ -1095,9 +1095,9 @@ F 2 "stmbl:C_0603" H 5338 3400 30  0001 C CNN
 F 3 "" H 5300 3550 60  0000 C CNN
 F 4 "" H 5300 3550 60  0001 C CNN "InternalName"
 F 5 "CL10A225KL8NNNC" H 5300 3550 60  0001 C CNN "Manufacturer No"
-F 6 "25V" H 5300 3550 60  0001 C CNN "Voltage"
+F 6 "35V" H 5300 3550 60  0001 C CNN "Voltage"
 F 7 "" H 5300 3550 60  0001 C CNN "Source"
-F 8 "X7R" H 5300 3550 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 5300 3550 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    5300 3550
@@ -1113,9 +1113,9 @@ F 2 "stmbl:C_0603" H 5338 1900 30  0001 C CNN
 F 3 "" H 5300 2050 60  0000 C CNN
 F 4 "" H 5300 2050 60  0001 C CNN "InternalName"
 F 5 "CL10A225KL8NNNC" H 5300 2050 60  0001 C CNN "Manufacturer No"
-F 6 "25V" H 5300 2050 60  0001 C CNN "Voltage"
+F 6 "35V" H 5300 2050 60  0001 C CNN "Voltage"
 F 7 "" H 5300 2050 60  0001 C CNN "Source"
-F 8 "X7R" H 5300 2050 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 5300 2050 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    5300 2050
@@ -1149,9 +1149,9 @@ F 2 "stmbl:C_0603" H 2788 3000 30  0001 C CNN
 F 3 "" H 2750 3150 60  0000 C CNN
 F 4 "" H 2750 3150 60  0001 C CNN "InternalName"
 F 5 "CL10A225KL8NNNC" H 2750 3150 60  0001 C CNN "Manufacturer No"
-F 6 "25V" H 2750 3150 60  0001 C CNN "Voltage"
+F 6 "35V" H 2750 3150 60  0001 C CNN "Voltage"
 F 7 "" H 2750 3150 60  0001 C CNN "Source"
-F 8 "X7R" H 2750 3150 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 2750 3150 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    2750 3150
@@ -1167,9 +1167,9 @@ F 2 "stmbl:C_0603" H 3038 3000 30  0001 C CNN
 F 3 "" H 3000 3150 60  0000 C CNN
 F 4 "" H 3000 3150 60  0001 C CNN "InternalName"
 F 5 "CL10A225KL8NNNC" H 3000 3150 60  0001 C CNN "Manufacturer No"
-F 6 "25V" H 3000 3150 60  0001 C CNN "Voltage"
+F 6 "35V" H 3000 3150 60  0001 C CNN "Voltage"
 F 7 "" H 3000 3150 60  0001 C CNN "Source"
-F 8 "X7R" H 3000 3150 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 3000 3150 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    3000 3150
@@ -1185,9 +1185,9 @@ F 2 "stmbl:C_0603" H 3288 3000 30  0001 C CNN
 F 3 "" H 3250 3150 60  0000 C CNN
 F 4 "" H 3250 3150 60  0001 C CNN "InternalName"
 F 5 "CL10A225KL8NNNC" H 3250 3150 60  0001 C CNN "Manufacturer No"
-F 6 "25V" H 3250 3150 60  0001 C CNN "Voltage"
+F 6 "35V" H 3250 3150 60  0001 C CNN "Voltage"
 F 7 "" H 3250 3150 60  0001 C CNN "Source"
-F 8 "X7R" H 3250 3150 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 3250 3150 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    3250 3150
@@ -1203,9 +1203,9 @@ F 2 "stmbl:C_0603" H 3538 3000 30  0001 C CNN
 F 3 "" H 3500 3150 60  0000 C CNN
 F 4 "" H 3500 3150 60  0001 C CNN "InternalName"
 F 5 "CL10A225KL8NNNC" H 3500 3150 60  0001 C CNN "Manufacturer No"
-F 6 "25V" H 3500 3150 60  0001 C CNN "Voltage"
+F 6 "35V" H 3500 3150 60  0001 C CNN "Voltage"
 F 7 "" H 3500 3150 60  0001 C CNN "Source"
-F 8 "X7R" H 3500 3150 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 3500 3150 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    3500 3150
@@ -1381,9 +1381,9 @@ F 2 "stmbl:C_0603" H 3788 3000 30  0001 C CNN
 F 3 "" H 3750 3150 60  0000 C CNN
 F 4 "" H 3750 3150 60  0001 C CNN "InternalName"
 F 5 "CL10A225KL8NNNC" H 3750 3150 60  0001 C CNN "Manufacturer No"
-F 6 "25V" H 3750 3150 60  0001 C CNN "Voltage"
+F 6 "35V" H 3750 3150 60  0001 C CNN "Voltage"
 F 7 "" H 3750 3150 60  0001 C CNN "Source"
-F 8 "X7R" H 3750 3150 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 3750 3150 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    3750 3150

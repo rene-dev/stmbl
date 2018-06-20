@@ -1350,9 +1350,9 @@ F 2 "stmbl:C_0603" H 10238 800 30  0001 C CNN
 F 3 "" H 10200 950 60  0000 C CNN
 F 4 "" H 10200 950 60  0001 C CNN "InternalName"
 F 5 "CL10A225KL8NNNC" H 10200 950 60  0001 C CNN "Manufacturer No"
-F 6 "25V" H 10200 950 60  0001 C CNN "Voltage"
+F 6 "35V" H 10200 950 60  0001 C CNN "Voltage"
 F 7 "" H 10200 950 60  0001 C CNN "Source"
-F 8 "X7R" H 10200 950 60  0001 C CNN "Tolerance"
+F 8 "X5R" H 10200 950 60  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "Samsung" H 0   0   50  0001 C CNN "Manufacturer"
 	1    10200 950 
