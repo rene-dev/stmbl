@@ -32,6 +32,7 @@ HAL_COMP(encs);
 
 HAL_PIN(pos);
 HAL_PIN(error);
+HAL_PIN(state);
 
 volatile uint32_t request_buf[24];
 volatile uint16_t tim_data[300];
@@ -232,8 +233,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   if(!data.sanyo.start1 && !data.sanyo.start2 && !data.sanyo.start3 && data.sanyo.stop1 && data.sanyo.stop2 && data.sanyo.stop3){
     PIN(pos) = ((float)data.sanyo.pos0_15 / 65536.0f + data.sanyo.pos16) * M_PI - M_PI;
     PIN(error) = 0;
+    PIN(state) = 3;
   }else{
     PIN(error) = 1;
+    PIN(state) = 0;
   }
 
   //request

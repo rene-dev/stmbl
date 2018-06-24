@@ -14,7 +14,7 @@ HAL_PIN(a);
 HAL_PIN(b);
 HAL_PIN(fault);
 HAL_PIN(mode);   // 0 = quad, 1 = step/dir, 2 = dir/step, 3 = up/down
-HAL_PIN(remap);  // 0 = cmd, 1 = fb0, 2 = fb1
+HAL_PIN(remap);  // 0 = cmd, 1 = fb0, 2 = fb1, 3 = cmd bene style
 
 struct enc_cmd_ctx_t {
   int e_res;
@@ -96,6 +96,22 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
       ctx->tim_rcc      = FB1_ENC_TIM_RCC;
       ctx->tim          = FB1_ENC_TIM;
       RCC_APB2PeriphClockCmd(ctx->tim_rcc, ENABLE);
+      break;
+    case 3:
+      ctx->a_pin        = GPIO_Pin_8;
+      ctx->b_pin        = GPIO_Pin_9;
+      ctx->c_pin        = GPIO_Pin_8;
+      ctx->c_en_pin     = GPIO_Pin_2;
+      ctx->a_port       = GPIOA;
+      ctx->b_port       = GPIOA;
+      ctx->c_port       = GPIOB;
+      ctx->c_en_port    = GPIOB;
+      ctx->a_pin_source = GPIO_PinSource8;
+      ctx->b_pin_source = GPIO_PinSource9;
+      ctx->tim_af       = FB1_ENC_TIM_AF;
+      ctx->tim_rcc      = FB1_ENC_TIM_RCC;
+      ctx->tim          = FB1_ENC_TIM;
+      RCC_APB1PeriphClockCmd(ctx->tim_rcc, ENABLE);
       break;
     default:
       return;

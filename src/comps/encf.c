@@ -190,7 +190,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 
   uint8_t bits_sum = 0;
   for(int i = 1; i < count; i++) {  //each capture form dma
-    //1 bit = 82 ticks (1.024e-6)/(1/82e6)
+    //1 bit = 80 ticks 82e6/1.024e6
     //calculate time between edges
     uint16_t diff = tim_data[i] - tim_data[i - 1];
     //number of bits to set
