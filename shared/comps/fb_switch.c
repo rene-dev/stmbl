@@ -7,6 +7,8 @@
 HAL_COMP(fb_switch);
 
 HAL_PIN(polecount);
+HAL_PIN(track_fb);
+HAL_PIN(first);
 
 HAL_PIN(pos_fb);
 HAL_PIN(vel_fb);
@@ -24,6 +26,8 @@ HAL_PIN(mot_state);  // 0 = disabled, 1 = inc, 2 = start abs, 3 = abs
 HAL_PIN(mot_rev);
 HAL_PIN(mot_fb_no_offset);
 HAL_PIN(mot_abs_fb_no_offset);
+
+HAL_PIN(plot_fb_pos);
 
 HAL_PIN(com_pos);
 HAL_PIN(com_abs_pos);
@@ -56,6 +60,7 @@ struct fb_switch_ctx_t {
   float com_offset;
   float phase_timer;
   int32_t phase_state;
+  int32_t first_enable;
 };
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -67,6 +72,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   ctx->com_offset      = 0.0;
   PIN(phase_cur)       = 1.0;
   PIN(phase_time)      = 1.0;
+  ctx->first_enable = 1;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -110,14 +116,18 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(joint_fb_no_offset)   = joint_pos;
 
   PIN(pos_fb) = mod(mot_pos + ctx->cmd_offset);
+  PIN(plot_fb_pos) = PIN(pos_fb);
   PIN(vel_fb) = mot_pos;
 
   if(PIN(en) <= 0.0) {
     PIN(state)           = 0.0;
     ctx->current_com_pos = 10;
     ctx->com_offset      = 0.0;
-    ctx->cmd_offset      = minus(PIN(cmd_pos), mot_pos);
-    PIN(pos_fb)          = mod(mot_pos);
+    if((PIN(track_fb) <= 0.0 || ctx->first_enable > 0) && PIN(mot_state) > 0.0){
+      ctx->first_enable = 0;
+      ctx->cmd_offset      = minus(PIN(cmd_pos), mot_pos);
+    }
+    PIN(plot_fb_pos)          = mod(mot_pos);
     PIN(id)              = 0.0;
   } else {
     PIN(state) = 1.0;
@@ -147,6 +157,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
         ctx->current_com_pos = 4.0;
       }
     }
+
+    PIN(first) = ctx->first_enable;
 
 
     switch(ctx->current_com_pos) {

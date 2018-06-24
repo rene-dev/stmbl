@@ -222,7 +222,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     ctx->sat = MAX(ctx->sat, 0.0);
   } else {
     ctx->torque_sum = 0.0;
-    pos_error       = 0.0;
+    // pos_error       = 0.0;
     vel_cmd         = 0.0;
     vel_error       = 0.0;
     acc_cmd         = 0.0;
