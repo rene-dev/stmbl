@@ -205,6 +205,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   send_to_bootloader = 0;
   flash_state        = SLAVE_IN_APP;
   ctx->send_state = 0;
+  PIN(ignore_fault_pin) = 1;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
