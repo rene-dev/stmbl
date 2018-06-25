@@ -1055,21 +1055,6 @@ X VPP 1 0 0 0 U 50 50 1 1 W N
 ENDDRAW
 ENDDEF
 #
-# stmbl:VR
-#
-DEF stmbl:VR VR 0 0 N Y 1 F N
-F0 "VR" 60 -46 50 V V C TNN
-F1 "stmbl:VR" 0 0 50 V V C CNN
-F2 "" 0 0 50 H V C CNN
-F3 "" 0 0 50 H V C CNN
-DRAW
-S -40 150 40 -150 0 1 0 N
-P 5 0 1 0 -60 -100 -60 -60 60 60 60 100 60 100 N
-X ~ 1 0 250 100 D 50 50 1 1 P
-X ~ 2 0 -250 100 U 50 50 1 1 P
-ENDDRAW
-ENDDEF
-#
 # stmbl:fan
 #
 DEF stmbl:fan U 0 40 Y Y 1 F N

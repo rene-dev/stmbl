@@ -1122,24 +1122,6 @@ F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
 	1    0    0    -1  
 $EndComp
 $Comp
-L stmbl:VR VR1
-U 1 1 582FC365
-P 1200 3050
-F 0 "VR1" V 1260 3004 50  0000 C TNN
-F 1 "24V" V 1200 3050 50  0000 C CNN
-F 2 "stmbl:R_0805" H 1200 3050 50  0001 C CNN
-F 3 "" H 1200 3050 50  0000 C CNN
-F 4 "" H 1200 3050 50  0001 C CNN "Manufacturer No"
-F 5 "24V" H 1200 3050 50  0001 C CNN "Voltage"
-F 6 " " H 1200 3050 50  0001 C CNN "Source"
-F 7 "" H 0   0   50  0001 C CNN "Description"
-F 8 "" H 0   0   50  0001 C CNN "InternalName"
-F 9 "" H 0   0   50  0001 C CNN "Tolerance"
-F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
-	1    1200 3050
-	1    0    0    -1  
-$EndComp
-$Comp
 L stmbl:C C62
 U 1 1 583297B2
 P 2750 3150
@@ -1574,8 +1556,6 @@ Wire Wire Line
 Wire Wire Line
 	1750 2900 2000 2900
 Connection ~ 1750 3450
-Wire Wire Line
-	1100 2650 1200 2650
 Connection ~ 1750 2900
 Wire Wire Line
 	1400 2650 1400 2750
@@ -1692,15 +1672,7 @@ Connection ~ 5300 1500
 Wire Wire Line
 	5300 2200 5300 2300
 Connection ~ 5300 2300
-Wire Wire Line
-	1100 3450 1200 3450
 Connection ~ 5700 2300
-Wire Wire Line
-	1200 2800 1200 2650
-Connection ~ 1200 2650
-Wire Wire Line
-	1200 3300 1200 3450
-Connection ~ 1200 3450
 Wire Wire Line
 	3500 3450 3500 3300
 Connection ~ 2500 3450
@@ -1960,10 +1932,6 @@ Wire Wire Line
 Wire Wire Line
 	5700 2300 6700 2300
 Wire Wire Line
-	1200 2650 1400 2650
-Wire Wire Line
-	1200 3450 1400 3450
-Wire Wire Line
 	2500 3450 2500 3550
 Wire Wire Line
 	2500 3450 2750 3450
@@ -2013,4 +1981,8 @@ Wire Wire Line
 	3250 2400 4000 2400
 Text Notes 9100 2600 0    60   ~ 0
 0.81V * (51k + 1k + 10k) / 10k = 5.02V
+Wire Wire Line
+	1100 3450 1400 3450
+Wire Wire Line
+	1100 2650 1400 2650
 $EndSCHEMATC
