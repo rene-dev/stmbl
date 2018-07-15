@@ -40,6 +40,7 @@ https://github.com/rene-dev/stmbl/wiki/PCB
 
 ##### Driving a Bosch Turboscara
 https://www.youtube.com/watch?v=d6NH1W7DUnQ
+https://www.youtube.com/watch?v=oTllxnYAgFc
 
 ##### Driving a Manutec Robot
 https://www.youtube.com/watch?v=gwgnAeGjZrA  
