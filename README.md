@@ -17,14 +17,14 @@ any responsibility for such compliance.
 
 This software is released under the GPLv3.
 
-stmbl
+STMBL
 =====
 There is work in progress on documentation: https://github.com/rene-dev/stmbl/blob/master/docs/src/Getting%20Started.adoc
 
 **IRC: #stmbl on irc.hackint.eu**
 https://webirc.hackint.org/#stmbl
 
-stmbl is an open source servo drive designed for Retrofitting CNC machines and Robots. It supports Industrial AC and DC servos with up to 320V and 2kW (see [specs](https://github.com/rene-dev/stmbl/wiki/specs) for details).
+STMBL is an open source servo drive designed for Retrofitting CNC machines and Robots. It supports Industrial AC and DC servos with up to 320V and 2kW (see [specs](https://github.com/rene-dev/stmbl/wiki/specs) for details).
 
 Documentation about the PCB and pinout of the feedback connector:
 
