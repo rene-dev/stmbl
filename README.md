@@ -79,7 +79,7 @@ https://www.youtube.com/watch?v=-E1o_5cFyto
 * AC Async
 
 #### Directories
-* hw/spice/ Spice simulation for resolver interface
-* hw/kicad/v4.0/ kicad files for version 4
-* src/ STM32F4 code, command, feedback and control loop
-* stm32f303/ STM32F3 code, running on the HV side, generating PWM
+* [hw/spice/](hw/spice/) Spice simulation for resolver interface
+* [hw/kicad/v4.0/](hw/kicad/v4.0/) kicad files for version 4
+* [src/](src/) STM32F4 code, command, feedback and control loop
+* [stm32f303/](stm32f303/) STM32F3 code, running on the HV side, generating PWM
