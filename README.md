@@ -35,6 +35,8 @@ https://github.com/rene-dev/stmbl/wiki/PCB
 ##### Hardware version 4.2
 ![top](https://github.com/rene-dev/rene-dev.github.io/raw/master/IMG_3592.JPG)
 ![bot](https://github.com/rene-dev/rene-dev.github.io/raw/master/IMG_3590.JPG)
+![case1](https://github.com/rene-dev/rene-dev.github.io/raw/master/stmblcase1.jpg)
+![case2](https://github.com/rene-dev/rene-dev.github.io/raw/master/stmblcase2.jpg)
 
 ##### Driving a Bosch Turboscara
 https://www.youtube.com/watch?v=d6NH1W7DUnQ
@@ -77,7 +79,7 @@ https://www.youtube.com/watch?v=-E1o_5cFyto
 * AC Async
 
 #### Directories
-* [hw/spice/](hw/spice/) Spice simulation for resolver interface
-* [hw/kicad/v4.0/](hw/kicad/v4.0/) kicad files for version 4
-* [src/](src/) STM32F4 code, command, feedback and control loop
-* [stm32f303/](stm32f303/) STM32F3 code, running on the HV side, generating PWM
+* hw/spice/ Spice simulation for resolver interface
+* hw/kicad/v4.0/ kicad files for version 4
+* src/ STM32F4 code, command, feedback and control loop
+* stm32f303/ STM32F3 code, running on the HV side, generating PWM
