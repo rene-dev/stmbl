@@ -56,9 +56,9 @@ https://www.youtube.com/watch?v=-E1o_5cFyto
 
 #### Supported Motors
 * Synchronous AC Servos
+* Asynchronous AC Servos
 * DC Servos
 * 2 Phase HF spindle motors
-* IRAMX Hardware testet up to 320V
 
 #### Supported Feedback systems
 * Resolvers
@@ -82,7 +82,7 @@ https://www.youtube.com/watch?v=-E1o_5cFyto
 * RS485
 
 #### TODO
-* AC Async
+* Sensorless FOC
 
 #### Directories
 * [hw/spice/](hw/spice/) Spice simulation for resolver interface
