@@ -48,6 +48,9 @@ https://www.youtube.com/watch?v=wXLcAZwjlzE
 ##### Driving a Weeke BP12 VMC
 https://www.youtube.com/watch?v=24LftGNp4MI
 
+#### Driving a Haas VF0 (Spindle + Axes)
+https://www.youtube.com/watch?v=kqenepupJIs
+
 ##### Drivetest
 https://www.youtube.com/watch?v=-E1o_5cFyto
 
