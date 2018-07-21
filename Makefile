@@ -88,6 +88,8 @@ COMPS += shared/comps/idx_home.c
 COMPS += shared/comps/move.c
 COMPS += shared/comps/ac.c
 COMPS += shared/comps/not.c
+COMPS += shared/comps/and.c
+COMPS += shared/comps/or.c
 COMPS += shared/comps/jog.c
 
 SOURCES += $(COMPS)
