@@ -111,7 +111,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
       ctx->tim_af       = FB1_ENC_TIM_AF;
       ctx->tim_rcc      = FB1_ENC_TIM_RCC;
       ctx->tim          = FB1_ENC_TIM;
-      RCC_APB1PeriphClockCmd(ctx->tim_rcc, ENABLE);
+      RCC_APB2PeriphClockCmd(ctx->tim_rcc, ENABLE);
       break;
     default:
       return;
