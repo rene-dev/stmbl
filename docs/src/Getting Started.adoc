@@ -189,6 +189,37 @@ The rotation speed can be altered by changing the sim0 frequency:
 STMBL v4 HAL contains a number of components that have built-in linking
 behaviour. 
 
+== Resolvers
+ resolver phase - Setting the phase is very importatnt to get resolver output. 
+ 'res0.phase = X' sets the phase. 
+ The number is between 0 and 1. Set for the highest output.
+ Resolver speed - In motor drives resolver speed is typically 1.
+ one rotation of the resolver = one rotation of the motor.
+ You will want to add these settings to the config,
+ so that the drive powers up with the settings as default.
+
+== Motor pole count / setting motor feedback offset
+ Motor pole count in data sheets is often a total pole count rather
+ then stmbl required 'pole pair' count.
+ This is easy to see when running the com_test: type 'link com_test'
+ This should start the motor turning slowly in open loop, while displaying on the graph.
+ Ideally the green and black lines will match closely.
+ If they are not the same speed (same number of peaks) then the motor poles setting is wrong.
+ 'conf0.polecount' can be set without stopping the test.
+ Set it till the number of green and black peaks are the same.
+ 
+ Now the peaks may be offset on the graph.
+ 'conf0.motor_fb_offset' will set this. Adjust this number till the black and grean lines match.
+ You'll want to add these settings to the config so the drive starts with these defaults.
+
+== Jogging test
+ If you set the jogging checkbox at the top of servo term and then enable the drive with:
+ 'fault0.en = 1'
+ Then using the left and right cursor keys should jog the motor.
+ the escape key will disable the drive quickly if something is not quite right.
+ If there is a fault then you will need to toggle the enable pin to 0 and back to 1 again.
+ If the drive oscallates try adjusting the 'conf0.j' setting for inertia.
+ 
 == Drive the motor with a sine wave ###
 1. Connect it `rev0.in = sim0.msin`
 2. Set amplitude `sim0.amp = 1` (in rad)
