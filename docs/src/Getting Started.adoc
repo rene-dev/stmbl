@@ -518,7 +518,7 @@ command.
 * conf0.r phase-neutral resistance (ohm)
 * conf0.l phase-neutral inductance (henry)
 * conf0.j inertia (kg*m^2)
-* conf0.psi torque constant (Nm/A)
+* conf0.psi torque constant (V*s/rad)
 * conf0.polecount number of pole pairs
 * conf0.max_vel max velocity (rad/s)
 * conf0.max_acc max acceleration (rad/s^2)
@@ -554,6 +554,7 @@ The default value works for most motors. Normaly you don't have to measure this!
 There is no common ground for the toque constant. Some manufacturers state the current in RMS, others in peak-to-peak. We also stumbled over values that were neither.
 
 How to determine psi:
+
 #### Scope ####
 1. Drive motor at constant speed (lathe, power drill, ...)
 2. Connect an oscilloscope between two phases and measure frequency F (Hz) and peak, line-to-line voltage U0 (V)
