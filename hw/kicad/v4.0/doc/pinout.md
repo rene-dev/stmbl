@@ -95,3 +95,4 @@
 | iw_out | pa2 | opamp1_out, adc1_in3 |
 | i_ref | pa4 | dac_out1 |
 | hv | pb12 | adc4_in3 |
+| brk | pb2 ||
