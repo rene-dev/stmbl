@@ -8,6 +8,8 @@
 #define HV_FAULT_POLARITY GPIO_PIN_RESET
 #define LED_PIN GPIO_PIN_8
 #define LED_PORT GPIOA
+#define BRK_PIN GPIO_PIN_2
+#define BRK_PORT GPIOB
 
 #define VDIVUP 249000.0 * 2.0  //HV div pullup R1,R12
 #define VDIVDOWN 3900.0        //HV div pulldown R2,R9

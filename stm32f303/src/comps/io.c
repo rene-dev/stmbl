@@ -50,6 +50,8 @@ HAL_PIN(hv_en);
 HAL_PIN(fault);
 HAL_PIN(ignore_fault_pin);
 
+HAL_PIN(brk_present);
+HAL_PIN(brk);
 
 
 volatile uint32_t adc_12_buf[6];
@@ -111,6 +113,10 @@ float r2temp(float r) {
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct io_ctx_t *ctx      = (struct io_ctx_t *)ctx_ptr;
   struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
+
+  PIN(brk_present) = 0.0; 
+  PIN(brk) = 0.0;
+
   GPIO_InitTypeDef GPIO_InitStruct;
   //LED
   GPIO_InitStruct.Pin   = LED_PIN;
@@ -118,6 +124,19 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_InitStruct.Pull  = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_PORT, &GPIO_InitStruct);
+
+  // BRK
+  GPIO_InitStruct.Pin   = BRK_PIN;
+  GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(BRK_PORT, &GPIO_InitStruct);
+
+  if(HAL_GPIO_ReadPin(BRK_PORT, BRK_PIN)){ // BRK circuit detected
+    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    HAL_GPIO_Init(BRK_PORT, &GPIO_InitStruct);
+    PIN(brk_present) = 1.0;
+  }
 
   DMA1_Channel1->CCR &= (uint16_t)(~DMA_CCR_EN);
   DMA1_Channel1->CPAR  = (uint32_t) & (ADC12_COMMON->CDR);
@@ -266,6 +285,13 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       //clear driver enable pin
       HAL_GPIO_WritePin(HV_EN_PORT, HV_EN_PIN, GPIO_PIN_RESET);
 #endif
+    }
+
+    if(PIN(brk) > 0.0) {
+      HAL_GPIO_WritePin(BRK_PORT, BRK_PIN, GPIO_PIN_RESET);
+    }
+    else{
+      HAL_GPIO_WritePin(BRK_PORT, BRK_PIN, GPIO_PIN_SET);
     }
   }
 
