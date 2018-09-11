@@ -173,13 +173,13 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     ctx->state      = SOFT_FAULT;
   }
 
-  if(ABS(PIN(pos_error)) > PIN(max_pos_error)) {
+  if(PIN(max_pos_error) > 0 && (ABS(PIN(pos_error)) > PIN(max_pos_error))) {
     ctx->fault      = POS_ERROR;
     PIN(last_fault) = ctx->fault;
     ctx->state      = SOFT_FAULT;
   }
 
-  if(PIN(sat) > PIN(max_sat)) {
+  if(PIN(max_sat) > 0 && (PIN(sat) > PIN(max_sat))) {
     ctx->fault      = SAT_ERROR;
     PIN(last_fault) = ctx->fault;
     ctx->state      = SOFT_FAULT;
