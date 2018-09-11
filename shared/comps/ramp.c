@@ -6,24 +6,31 @@ HAL_COMP(ramp);
 
 // input
 HAL_PIN(vel_ext_cmd);
-HAL_PIN(vel_fb);
 
-HAL_PIN(max_torque);
-HAL_PIN(torque_fb);
-HAL_PIN(scale);
+HAL_PIN(max_speed);
+HAL_PIN(max_slip_speed);
 HAL_PIN(max_acc);
 
 // output
 HAL_PIN(vel_cmd);
+HAL_PIN(mode);
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct ramp_ctx_t *ctx      = (struct ramp_ctx_t *)ctx_ptr;
   struct ramp_pin_ctx_t *pins = (struct ramp_pin_ctx_t *)pin_ptr;
+  
+  float vel_ext_cmd = LIMIT(PIN(vel_ext_cmd), PIN(max_speed));
 
-  float vel_error = PIN(vel_ext_cmd) - PIN(vel_fb);
+  float vel_error = vel_ext_cmd - PIN(vel_cmd);
 
-  PIN(vel_cmd) = PIN(vel_fb) + LIMIT(vel_error, PIN(max_acc) * period) * LIMIT(5.0 * (1.0 - ABS(PIN(torque_fb)) / MAX(PIN(scale) * PIN(max_torque), 0.01)), 1.0);
-  ;
+  PIN(vel_cmd) += LIMIT(vel_error, PIN(max_acc) * period);
+
+  if(ABS(PIN(vel_cmd)) > PIN(max_slip_speed)){
+    PIN(mode) = 1;
+  }
+  else{
+    PIN(mode) = 0;
+  }
 }
 
 hal_comp_t ramp_comp_struct = {
