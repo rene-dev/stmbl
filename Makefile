@@ -91,6 +91,7 @@ COMPS += shared/comps/not.c
 COMPS += shared/comps/and.c
 COMPS += shared/comps/or.c
 COMPS += shared/comps/jog.c
+COMPS += shared/comps/velbuf.c
 
 SOURCES += $(COMPS)
 
