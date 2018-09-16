@@ -10,6 +10,7 @@ load fault
 load hv
 load sim
 load io
+load iit
 link conf
 hv0.rt_prio = 0.9
 hv0.frt_prio = 1
@@ -23,6 +24,7 @@ vel2.rt_prio = 6
 io0.rt_prio = 7
 pid0.rt_prio = 8
 fault0.rt_prio = 10
+iit0.rt_prio = 13
 sim0.rt_prio = 13
 term0.rt_prio = 16
 rev0.rev = conf0.cmd_rev
@@ -117,3 +119,8 @@ pe0.vel = vel1.vel
 pe0.r = conf0.r
 pe0.j = conf0.j
 pe0.cap = 0.00054
+iit0.max_temp = conf0.max_mot_temp
+iit0.high_temp = conf0.high_mot_temp
+iit0.max_cur = conf0.max_ac_cur
+fault0.mot_temp = iit0.temp
+iit0.cur = hv0.abs_cur
