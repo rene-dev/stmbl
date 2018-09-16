@@ -38,7 +38,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct iit_pin_ctx_t *pins = (struct iit_pin_ctx_t *)pin_ptr;
 
   float cur_n = PIN(max_cur) / MAX(PIN(cur_boost), 1.0);
-  float max_e = cur_n * cur_n * MAX(PIN(max_time), 0.1);
+  float max_e = PIN(max_cur) * PIN(max_cur) * MAX(PIN(max_time), 0.1);
 
   float temp = ctx->e / max_e * PIN(max_temp) + PIN(amb_temp);
 
