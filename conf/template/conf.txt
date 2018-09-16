@@ -2,6 +2,8 @@ load conf
 conf0.r = 1
 conf0.l = 0.01
 conf0.j = 0.000025
+conf0.j_load = 0.0
+conf0.j_lpf = 100.0
 conf0.psi = 0.055
 conf0.polecount = 2
 conf0.mot_fb_polecount = 1

@@ -7,7 +7,9 @@ HAL_COMP(conf);
 
 HAL_PIN(r); // phase resistance [ohm]
 HAL_PIN(l); // phase inductance [H]
-HAL_PIN(j); // motor + load inertia [kg*m^2]
+HAL_PIN(j); // motor inertia [kg*m^2]
+HAL_PIN(j_load); // load inertia [kg*m^2]
+HAL_PIN(j_lpf); // motor to load bandwidth [Hz]
 HAL_PIN(psi); // electrical torque constant [V*s/rad]
 HAL_PIN(polecount); // #motor pole pairs
 HAL_PIN(out_rev); // motor direction
