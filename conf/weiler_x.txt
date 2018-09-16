@@ -1,6 +1,6 @@
 link pid
 link pmsm
-sleep 500
+sleep 0.5
 link enc_fb0
 link misc
 link sserial
