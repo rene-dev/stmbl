@@ -78,7 +78,7 @@ sanyo_t data;
 
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   // struct encs_ctx_t *ctx = (struct encs_ctx_t *)ctx_ptr;
-  struct encs_pin_ctx_t *pins = (struct encs_pin_ctx_t *)pin_ptr;
+  // struct encs_pin_ctx_t *pins = (struct encs_pin_ctx_t *)pin_ptr;
 
   //TX enable
   GPIO_InitTypeDef GPIO_InitStruct;
