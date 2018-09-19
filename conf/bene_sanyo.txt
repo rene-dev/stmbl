@@ -3,14 +3,41 @@ link pmsm
 link encs_fb0
 link enc_cmd
 link misc
-link jog_cmd
 enc_cmd0.mode = 1
 enc_cmd0.remap = 3
-fault0.en = io0.C12
-enc_cmd0.fault = fault0.fault
-conf0.r = 12
-conf0.l = 0.00066
-conf0.j = 0.00000247
-conf0.max_force = 0.4
-conf0.max_ac_cur = 2
+load not
+load not
+load not
+load and
+not0.rt_prio = 11
+not1.rt_prio = 11
+not2.rt_prio = 13
+and0.rt_prio = 12
+not0.in = io0.C12
+fault0.en = not0.out
+not1.in = fault0.fault
+and0.in0 = not1.out
+and0.in1 = fault0.en
+and0.in2 = 1
+and0.in3 = 1
+not2.in = and0.out
+enc_cmd0.fault = not2.out
 conf0.polecount = 5
+fb_switch0.fb_track = 1
+conf0.cmd_res = 32768 #cmd counts / rev * 2
+
+#r2aa08075
+conf0.r = 0.4
+conf0.l = 0.0012
+conf0.j = 0.0003
+conf0.max_force = 5
+conf0.max_ac_cur = 12
+conf0.cur_i = 0.00001
+
+#q1aa0604
+conf0.r = 0.4
+conf0.l = 0.0012
+conf0.j = 0.000025
+conf0.max_force = 4
+conf0.max_ac_cur = 8
+conf0.cur_i = 0.00015
