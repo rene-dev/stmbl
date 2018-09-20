@@ -25,19 +25,33 @@ enc_cmd0.fault = not2.out
 conf0.polecount = 5
 fb_switch0.fb_track = 1
 conf0.cmd_res = 32768 #cmd counts / rev * 2
+fb_switch0.track_fb = 1
+conf0.max_vel = 350
+conf0.max_acc = 40000
+conf0.vel_g = 0.2
 
-#r2aa08075
+#r2aa08075 X-axis
 conf0.r = 0.4
-conf0.l = 0.0012
-conf0.j = 0.0003
+conf0.l = 0.0011
+conf0.j = 0.0005
 conf0.max_force = 5
 conf0.max_ac_cur = 12
 conf0.cur_i = 0.00001
 
-#q1aa0604
+#r2aa08075 Y-axis
 conf0.r = 0.4
-conf0.l = 0.0012
-conf0.j = 0.000025
-conf0.max_force = 4
+conf0.l = 0.0011
+conf0.j = 0.00063
+conf0.max_force = 5
+conf0.max_ac_cur = 12
+conf0.cur_i = 0.00001
+fb_switch0.track_fb = 1
+
+#r2aa0604 Z-axis
+conf0.r = 1.4
+conf0.l = 0.0037
+conf0.j = 0.00008
+conf0.max_force = 3
 conf0.max_ac_cur = 8
 conf0.cur_i = 0.00015
+fb_switch0.track_fb = 1
