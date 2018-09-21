@@ -186,7 +186,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     //vel_cmd = CLAMP(vel_cmd, vel_fb + acc_min * period, vel_fb + acc_max * period); // adaptive loop clamping
     vel_cmd = CLAMP(vel_cmd, vel_min * vel_g, vel_max * vel_g);  // p clamping
     vel_cmd += vel_ext_cmd;                                      // ff
-    vel_sat = SAT2(vel_cmd, vel_min * 0.99, vel_max * 0.99);
+    vel_sat = SAT2(vel_cmd, vel_min * 0.99, vel_max * 0.99);  // TODO include vel_g
     vel_cmd = CLAMP(vel_cmd, vel_min, vel_max);  // clamping
 
     // vel -> acc
@@ -194,7 +194,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     acc_cmd   = vel_error * vel_p;                                 // p
     acc_cmd   = CLAMP(acc_cmd, acc_min * acc_g, acc_max * acc_g);  // p clamping
     acc_cmd += acc_ext_cmd;                                        // ff
-    acc_sat = SAT2(acc_cmd, acc_min * 0.99, acc_max * 0.99);
+    acc_sat = SAT2(acc_cmd, acc_min * 0.99, acc_max * 0.99);  // TODO include acc_g
     acc_cmd = CLAMP(acc_cmd, acc_min, acc_max);  // clamping
 
     // acc -> torque
