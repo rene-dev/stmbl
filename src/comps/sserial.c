@@ -212,8 +212,8 @@ static void send(uint8_t len, uint8_t docrc) {
 //USART1 RX DMA2 stream5 channel4
 
 //v4.1
-//pa0 usart4 tx DMA1 stream4 channel4
-//pa10 usart1 rx DMA2 stream5 channel4
+//pa0 usart4 tx DMA1 stream4 channel4 CMD_36
+//pa10 usart1 rx DMA2 stream5 channel4 CMD_12
 
 //TODO: lbp command 0xe6 to set mode
 
