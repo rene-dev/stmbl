@@ -1,0 +1,7 @@
+load velbuf
+velbuf0.rt_prio = 6
+vel0.rt_prio = 0
+velbuf0.pos_in = rev0.out
+pid0.vel_ext_cmd = velbuf0.vel
+rev0.in_d = velbuf0.vel
+term0.wave2 = velbuf0.vel

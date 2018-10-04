@@ -30,6 +30,7 @@ rev0.in_d = vel_int0.vel_out
 pid0.vel_ext_cmd = rev0.out_d
 vel_int0.wd = 0.002
 vel0.en = 0
+velbuf0.rt_prio = 0
 io0.cmdy = sserial0.error
 io0.cmdg = 1
 sserial0.in0 = io0.ind0
