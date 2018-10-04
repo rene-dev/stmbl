@@ -1,0 +1,18 @@
+load sserial
+sserial0.rt_prio = 2.0
+sserial0.frt_prio = 2.0
+fault0.en = sserial0.enable
+sserial0.fault = fault0.fault
+fault0.cmd_error = sserial0.error
+sserial0.vel_fb = avg0.out
+io0.cmdy = sserial0.error
+io0.cmdg = 1
+sserial0.in0 = io0.ind0
+sserial0.in1 = io0.ind1
+io0.out0 = sserial0.out0
+io0.out1 = sserial0.out1
+io0.out2 = sserial0.out2
+fault0.brake_release = sserial0.out3
+term0.wave2 = linrev0.cmd_d_out
+avg0.in = sserial0.pos_cmd_d
+sserial0.current = hv0.abs_cur
