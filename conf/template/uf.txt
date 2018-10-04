@@ -1,0 +1,61 @@
+load adc
+load fault
+load hv
+load sim
+load io
+load iit
+link conf
+load uf
+hv0.rt_prio = 0.9
+hv0.frt_prio = 1
+adc0.rt_prio = 1
+uf0.rt_prio = 6
+io0.rt_prio = 7
+fault0.rt_prio = 10
+iit0.rt_prio = 13
+sim0.rt_prio = 13
+term0.rt_prio = 16
+fault0.max_sat = conf0.max_sat
+fault0.max_pos_error = conf0.max_pos_error
+fault0.max_vel_error = conf0.max_vel_error
+fault0.max_dc_cur = conf0.max_dc_cur
+fault0.max_ac_cur = conf0.max_ac_cur
+fault0.max_dc_volt = conf0.max_dc_volt
+fault0.high_dc_volt = conf0.max_dc_volt
+fault0.min_dc_volt = conf0.min_dc_volt
+fault0.max_hv_temp = conf0.max_hv_temp
+fault0.max_mot_temp = conf0.max_mot_temp
+fault0.high_hv_temp = conf0.high_hv_temp
+fault0.high_mot_temp = conf0.high_mot_temp
+fault0.fan_hv_temp = conf0.fan_hv_temp
+fault0.fan_mot_temp = conf0.fan_mot_temp
+hv0.rev = conf0.out_rev
+hv0.r = conf0.r
+hv0.l = conf0.l
+hv0.psi = conf0.psi
+hv0.cur_p = conf0.cur_p
+hv0.cur_i = conf0.cur_i
+hv0.cur_ff = conf0.cur_ff
+hv0.cur_ind = conf0.cur_ind
+hv0.max_cur = conf0.max_ac_cur
+uf0.polecount = conf0.polecount
+uf0.scale = fault0.scale
+uf0.cur = hv0.abs_cur
+hv0.pos = uf0.com_pos
+hv0.d_cmd = uf0.u_cmd
+hv0.cmd_mode = 0
+hv0.phase_mode = 2
+fault0.dc_volt = hv0.dc_volt
+fault0.hv_temp = hv0.hv_temp
+fault0.dc_cur = hv0.dc_cur
+fault0.hv_error = hv0.fault
+hv0.en = fault0.en_out
+hv0.scale = fault0.scale
+io0.fan = fault0.hv_fan
+io0.fault = fault0.fault
+io0.state = fault0.state
+iit0.max_temp = conf0.max_mot_temp
+iit0.high_temp = conf0.high_mot_temp
+iit0.max_cur = conf0.max_ac_cur
+fault0.mot_temp = iit0.temp
+iit0.cur = hv0.abs_cur

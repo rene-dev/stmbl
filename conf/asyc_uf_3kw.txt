@@ -1,0 +1,36 @@
+link uf
+load avg
+avg0.rt_prio = 5
+conf0.r = 1.4
+conf0.l = 0.0013
+conf0.polecount = 1
+uf0.u_n = 155.0
+uf0.vel_n = 2513.0
+conf0.max_ac_cur = 20
+iit0.cur_boost = 1.5
+iit0.max_time = 60
+uf0.cur_n = 12
+
+avg0.mult = 105.0
+avg0.in = io0.in0
+uf0.vel_cmd = avg0.out
+
+fault0.fb_ready = 1
+fault0.cmd_ready = 1
+fault0.en = io0.ind1
+
+term0.wave0 = avg0.in
+term0.wave1 = avg0.out
+term0.wave2 = uf0.u_cmd
+term0.wave3 = hv0.abs_cur
+
+term0.gain0 = 1
+term0.gain1 = 0.05
+term0.gain2 = 0.5
+term0.gain3 = 10
+
+avg0.mult = 0.1047
+avg0.in = 0
+avg0.lpf = 0.1
+
+conf0.out_rev = 1
