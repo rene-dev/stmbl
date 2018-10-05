@@ -785,6 +785,13 @@ uint32_t hal_parse(char *cmd) {
 }
 
 uint32_t hal_parse_(char *cmd) {
+  if(cmd == 0){
+    return(2);
+  }
+  if(cmd[0] == '\n'){
+    return(2);
+  }
+
   if(call_cmd(cmd)) {
     return (1);
   }

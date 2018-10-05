@@ -29,6 +29,7 @@ fault0.high_hv_temp = conf0.high_hv_temp
 fault0.high_mot_temp = conf0.high_mot_temp
 fault0.fan_hv_temp = conf0.fan_hv_temp
 fault0.fan_mot_temp = conf0.fan_mot_temp
+fault0.ac_cur = hv0.abs_cur
 hv0.rev = conf0.out_rev
 hv0.r = conf0.r
 hv0.l = conf0.l
