@@ -46,6 +46,7 @@ else
 endif
 
 COMPS += src/comps/encm.c
+COMPS += src/comps/smartabs.c
 COMPS += src/comps/adc.c
 COMPS += src/comps/enc_fb.c
 COMPS += src/comps/conf.c
