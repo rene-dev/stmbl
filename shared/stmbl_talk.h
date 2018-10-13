@@ -5,7 +5,7 @@
 typedef struct {
   uint32_t crc;        // can be 0 for eth comm
   uint8_t slave_addr;  // calc from uid, overwrite in config
-  uint8_t len;         // #data in byte
+  uint8_t len;         // #data in words
   uint8_t conf_addr;
   struct {
     enum stmbl_talk_cmd_t {
