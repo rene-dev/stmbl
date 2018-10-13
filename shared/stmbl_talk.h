@@ -17,7 +17,7 @@ typedef struct {
       // ENABLE,
       // DISABLE, // proc / conf data = default
     } cmd : 4;
-    uint8_t counter : 4;  // packet counter, mosi: ++, miso: same as request
+    uint8_t counter : 4;  // packet counter, master: ++, slave: same as request
   } flags;
   union {
     float f32;
