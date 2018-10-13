@@ -23,7 +23,6 @@ and0.in3 = 1
 not2.in = and0.out
 enc_cmd0.fault = not2.out
 conf0.polecount = 5
-fb_switch0.fb_track = 1
 conf0.cmd_res = 32768 #cmd counts / rev * 2
 fb_switch0.track_fb = 1
 conf0.max_vel = 350
