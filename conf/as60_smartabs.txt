@@ -1,0 +1,11 @@
+link pid
+link pmsm
+link smartabs_fb0
+link misc
+conf0.r = 1.6
+conf0.l = 0.008
+conf0.j = 0.00007
+conf0.cur_i = 0.0004
+conf0.max_force = 5.7
+conf0.max_ac_cur = 9
+conf0.polecount = 4

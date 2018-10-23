@@ -106,6 +106,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     PIN(a5) = ctx->rxbuf[5];
     uint32_t tpos = ((ctx->rxbuf[4] & 0x01) << 16) + (ctx->rxbuf[3] << 8) + ctx->rxbuf[2];
     PIN(pos) = (tpos * M_PI * 2.0 / 131072.0) - M_PI;
+    PIN(state) = 3;
+    PIN(error) = 0;
   } else {
     ctx->error++;  //TODO: overflow...
     PIN(error) = ctx->error;
