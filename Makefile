@@ -96,6 +96,9 @@ COMPS += shared/comps/jog.c
 COMPS += shared/comps/velbuf.c
 COMPS += shared/comps/avg.c
 COMPS += shared/comps/mux.c
+COMPS += shared/comps/veltopos.c
+COMPS += shared/comps/wobl.c
+COMPS += shared/comps/debounce.c
 
 SOURCES += $(COMPS)
 
