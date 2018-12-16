@@ -18,7 +18,7 @@ struct encm_ctx_t {
   uint8_t rxbuf[15];
 };
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct encm_ctx_t *ctx = (struct encm_ctx_t *)ctx_ptr;
   // struct encm_pin_ctx_t * pins = (struct encm_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -146,7 +146,8 @@ hal_comp_t encm_comp_struct = {
     .nrt       = 0,
     .rt        = rt_func,
     .frt       = 0,
-    .nrt_init  = nrt_init,
+    .nrt_init  = 0,
+    .hw_init   = hw_init,
     .rt_start  = 0,
     .frt_start = 0,
     .rt_stop   = 0,
