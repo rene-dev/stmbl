@@ -8,7 +8,7 @@ HAL_COMP(fb_switch);
 
 HAL_PIN(polecount);
 HAL_PIN(track_fb);
-HAL_PIN(first);
+HAL_PIN(offset_first_enable);
 
 HAL_PIN(pos_fb);
 HAL_PIN(vel_fb);
@@ -60,7 +60,6 @@ struct fb_switch_ctx_t {
   float com_offset;
   float phase_timer;
   int32_t phase_state;
-  int32_t first_enable;
 };
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -72,7 +71,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   ctx->com_offset      = 0.0;
   PIN(phase_cur)       = 1.0;
   PIN(phase_time)      = 1.0;
-  ctx->first_enable = 1;
+  PIN(offset_first_enable) = 1.0;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
@@ -123,8 +122,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     PIN(state)           = 0.0;
     ctx->current_com_pos = 10;
     ctx->com_offset      = 0.0;
-    if((PIN(track_fb) <= 0.0 || ctx->first_enable > 0) && PIN(mot_state) > 0.0){
-      ctx->first_enable = 0;
+    if((PIN(track_fb) <= 0.0 || PIN(offset_first_enable) > 0) && PIN(mot_state) > 0.0){
+      PIN(offset_first_enable) = 0;
       ctx->cmd_offset      = minus(PIN(cmd_pos), mot_pos);
     }
     PIN(plot_fb_pos)          = mod(mot_pos);
@@ -157,9 +156,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
         ctx->current_com_pos = 4.0;
       }
     }
-
-    PIN(first) = ctx->first_enable;
-
 
     switch(ctx->current_com_pos) {
       case 4: // autophasing + mot fb -> com fb
