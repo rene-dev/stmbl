@@ -88,3 +88,17 @@ void deleteconf(char *ptr) {
   config[0] = '\0';
 }
 COMMAND("deleteconf", deleteconf, "delete config");
+
+void hardboot(char *ptr) {
+  printf("erasing flash page...\n");
+  FLASH_Unlock();
+  if(FLASH_EraseSector(FLASH_Sector_4, VoltageRange_3) != FLASH_COMPLETE) {
+    printf("error!\n");
+    FLASH_Lock();
+    return;
+  }
+  printf("OK, call bootloader\n");
+  FLASH_Lock();
+  NVIC_SystemReset();
+}
+COMMAND("hadboot", hardboot, "destroy firmware to force bootloader");
