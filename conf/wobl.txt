@@ -1,0 +1,51 @@
+link pid
+link pmsm
+link encm_fb0
+link misc
+conf0.r = 1.2
+conf0.l = 0.005
+conf0.j = 0.00005
+conf0.polecount = 2
+conf0.max_ac_cur = 10
+conf0.max_force = 4
+conf0.mot_fb_offset = 1.57
+conf0.max_vel = 837
+load avg
+load avg
+load avg
+load debounce
+load wobl
+avg0.rt_prio = 10
+avg1.rt_prio = 10
+avg2.rt_prio = 10
+debounce0.rt_prio = 10
+wobl0.frt_prio = 10
+io0.frt_prio = 10
+debounce0.debounce_time = 1
+debounce0.in = 1
+fault0.en = debounce0.out
+wobl0.en = debounce0.out
+avg0.in = io0.in0
+avg1.in = io0.in1
+avg2.in = adc0.cos1
+wobl0.freq = avg0.out
+wobl0.freq_diff = avg1.out
+rev0.in = wobl0.pos
+io0.out0 = wobl0.out
+io0.out1 = wobl0.out
+io0.out2 = wobl0.out
+conf0.vel_g = 0.05
+
+avg0.mult = 5.0
+avg1.mult = 0.1
+avg2.mult = 1
+avg0.offset = -1.2
+wobl0.home_pos = 0.0
+wobl0.duty = 0.1
+wobl0.amp = 0.1
+fb_switch0.offset_first_enable = 0
+fb_switch0.track_fb = 1
+conf0.max_pos_error = 0
+wobl0.home_pos = 1.2
+wobl0.amp = avg2.out
+avg2.mult = 0.01
