@@ -101,4 +101,4 @@ void hardboot(char *ptr) {
   FLASH_Lock();
   NVIC_SystemReset();
 }
-COMMAND("hadboot", hardboot, "destroy firmware to force bootloader");
+COMMAND("hardboot", hardboot, "destroy firmware to force bootloader");
