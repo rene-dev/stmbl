@@ -342,20 +342,22 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   else
     GPIO_ResetBits(GPIOD, GPIO_Pin_5);
 
-  if(PIN(out0) > 0)
-    GPIO_SetBits(GPIOE, GPIO_Pin_4);
-  else
-    GPIO_ResetBits(GPIOE, GPIO_Pin_4);
+  if(!(PIN(frt_prio) > 0)){//optional fast outputs in fast-rt
+    if(PIN(out0) > 0)
+      GPIO_SetBits(GPIOE, GPIO_Pin_4);
+    else
+      GPIO_ResetBits(GPIOE, GPIO_Pin_4);
 
-  if(PIN(out1) > 0)
-    GPIO_SetBits(GPIOE, GPIO_Pin_5);
-  else
-    GPIO_ResetBits(GPIOE, GPIO_Pin_5);
+    if(PIN(out1) > 0)
+      GPIO_SetBits(GPIOE, GPIO_Pin_5);
+    else
+      GPIO_ResetBits(GPIOE, GPIO_Pin_5);
 
-  if(PIN(out2) > 0)
-    GPIO_SetBits(GPIOE, GPIO_Pin_6);
-  else
-    GPIO_ResetBits(GPIOE, GPIO_Pin_6);
+    if(PIN(out2) > 0)
+      GPIO_SetBits(GPIOE, GPIO_Pin_6);
+    else
+      GPIO_ResetBits(GPIOE, GPIO_Pin_6);
+  }
 
   if(PIN(fb0g) > 0)
     GPIO_SetBits(GPIOD, GPIO_Pin_8);
@@ -463,11 +465,30 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(fb1z) = GPIO_ReadInputDataBit(FB1_Z_PORT, FB1_Z_PIN);
 }
 
+static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
+  struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
+  if(PIN(out0) > 0)
+    GPIO_SetBits(GPIOE, GPIO_Pin_4);
+  else
+    GPIO_ResetBits(GPIOE, GPIO_Pin_4);
+
+  if(PIN(out1) > 0)
+    GPIO_SetBits(GPIOE, GPIO_Pin_5);
+  else
+    GPIO_ResetBits(GPIOE, GPIO_Pin_5);
+
+  if(PIN(out2) > 0)
+    GPIO_SetBits(GPIOE, GPIO_Pin_6);
+  else
+    GPIO_ResetBits(GPIOE, GPIO_Pin_6);
+}
+
 hal_comp_t io_comp_struct = {
     .name      = "io",
     .nrt       = 0,
     .rt        = rt_func,
-    .frt       = 0,
+    .frt       = frt_func,
     .nrt_init  = nrt_init,
     .hw_init   = hw_init,
     .rt_start  = 0,

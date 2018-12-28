@@ -21,7 +21,7 @@ struct wobl_ctx_t {
   float ang2;
 };
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct wobl_ctx_t *ctx      = (struct wobl_ctx_t *)ctx_ptr;
   struct wobl_pin_ctx_t *pins = (struct wobl_pin_ctx_t *)pin_ptr;
     
@@ -45,8 +45,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 hal_comp_t wobl_comp_struct = {
     .name      = "wobl",
     .nrt       = 0,
-    .rt        = rt_func,
-    .frt       = 0,
+    .rt        = 0,
+    .frt       = frt_func,
     .nrt_init  = 0,
     .rt_start  = 0,
     .frt_start = 0,
