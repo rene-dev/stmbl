@@ -32,7 +32,7 @@ https://github.com/rene-dev/stmbl/wiki/Pinouts
 
 https://github.com/rene-dev/stmbl/wiki/PCB
 
-##### Hardware version 4.2
+##### Hardware version 4.1
 ![top](https://github.com/rene-dev/rene-dev.github.io/raw/master/IMG_3592.JPG)
 ![bot](https://github.com/rene-dev/rene-dev.github.io/raw/master/IMG_3590.JPG)
 ![case1](https://github.com/rene-dev/rene-dev.github.io/raw/master/stmblcase1.jpg)
