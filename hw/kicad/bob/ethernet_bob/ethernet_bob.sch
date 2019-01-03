@@ -87,7 +87,7 @@ F0 "rs485" 60
 F1 "rs485.sch" 60
 $EndSheet
 $Comp
-L conn:CONN_01X01 J3
+L Connector:Conn_01x01 J3
 U 1 1 59A7C874
 P 8050 2500
 F 0 "J3" V 8015 2412 50  0000 R CNN
@@ -98,7 +98,7 @@ F 3 "" H 8050 2500 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L conn:CONN_01X01 J2
+L Connector:Conn_01x01 J2
 U 1 1 59A81F51
 P 7950 4850
 F 0 "J2" V 7822 4928 50  0000 L CNN

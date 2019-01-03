@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L ksz8081:KSZ8081 U1
+L stmbl:KSZ8081 U1
 U 1 1 57A86274
 P 3150 4450
 AR Path="/57A86274" Ref="U1"  Part="1" 
@@ -166,9 +166,9 @@ F 3 "" H 950 1400 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	800  1400 1100 1400
+	800  1400 950  1400
 Wire Wire Line
-	800  1100 1100 1100
+	800  1100 950  1100
 Connection ~ 950  1400
 Connection ~ 950  1100
 $Comp
@@ -291,13 +291,11 @@ Wire Wire Line
 	8850 4450 8950 4450
 Wire Wire Line
 	9250 4450 9300 4450
-Text HLabel 4500 3950 2    60   Input ~ 0
+Text HLabel 4500 3800 2    60   Input ~ 0
 LED1K
 Wire Wire Line
-	4400 3950 4500 3950
-Connection ~ 1700 1100
-Connection ~ 1700 1400
-Text HLabel 4450 3850 2    60   Input ~ 0
+	4400 3800 4500 3800
+Text HLabel 4450 3700 2    60   Input ~ 0
 PHY_RST
 Text HLabel 3500 6100 3    60   Input ~ 0
 PHY_CRS
@@ -322,8 +320,6 @@ PHY_X0
 Wire Wire Line
 	2600 5750 2600 5700
 Wire Wire Line
-	2700 5700 2700 5900
-Wire Wire Line
 	2800 5700 2800 5900
 Wire Wire Line
 	3000 5700 3000 6100
@@ -336,13 +332,13 @@ Wire Wire Line
 Wire Wire Line
 	4400 4100 4450 4100
 Wire Wire Line
-	4450 3850 4400 3850
+	4450 3700 4400 3700
 Wire Wire Line
 	3500 5750 3500 5700
 Text HLabel 5600 4800 2    60   Input ~ 0
 PHY_INTRP
 Wire Wire Line
-	4400 4800 5600 4800
+	4400 4800 5400 4800
 $Comp
 L device:R R1
 U 1 1 57A8A923
@@ -356,7 +352,6 @@ F 3 "" H 2800 6050 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	2800 6200 2800 6350
-Connection ~ 2800 6350
 $Comp
 L device:R R2
 U 1 1 57A8AE8E
@@ -387,7 +382,7 @@ Connection ~ 5400 4800
 Wire Notes Line
 	2500 1700 2500 650 
 $Comp
-L hr911105_rj45:HR911105_RJ45 J1
+L stmbl:HY951180A_RJ45 J1
 U 1 1 57A97953
 P 9300 3450
 F 0 "J1" H 9256 4197 60  0000 C CNN
@@ -400,7 +395,7 @@ $EndComp
 Wire Wire Line
 	8750 3400 7900 3400
 Wire Wire Line
-	7700 3800 8200 3800
+	7700 3800 7900 3800
 Wire Wire Line
 	7900 3400 7900 3500
 Wire Wire Line
@@ -553,23 +548,10 @@ F 3 "" H 1550 2150 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	1250 2150 1400 2150
-$Comp
-L device:R R19
-U 1 1 580E33D0
-P 2700 6050
-F 0 "R19" H 2700 6200 50  0000 L CNN
-F 1 "1k" H 2700 5900 50  0000 L CNN
-F 2 "Resistors_SMD:R_0603" V 2630 6050 50  0001 C CNN
-F 3 "" H 2700 6050 50  0000 C CNN
-	1    2700 6050
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
-	2700 6250 2700 6200
+	1400 1100 1550 1100
 Wire Wire Line
-	1400 1100 1700 1100
-Wire Wire Line
-	1400 1400 1700 1400
+	1400 1400 1550 1400
 $Comp
 L device:C C23
 U 1 1 580E58F4
@@ -604,9 +586,9 @@ F 3 "" H 2050 1400 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1900 1400 2200 1400
+	1900 1400 2050 1400
 Wire Wire Line
-	1900 1100 2200 1100
+	1900 1100 2050 1100
 Connection ~ 2050 1400
 Connection ~ 2050 1100
 $Comp
@@ -682,71 +664,31 @@ Wire Wire Line
 	8700 4000 8750 4000
 Wire Wire Line
 	8700 4100 8750 4100
-$Comp
-L crystal_smd:CRYSTAL_SMD X2
-U 1 1 59AB4D47
-P 1700 5950
-F 0 "X2" H 1700 6170 50  0000 C CNN
-F 1 "CRYSTAL_SMD" H 1700 6079 50  0000 C CNN
-F 2 "Crystals:Crystal_SMD_0603-4pin_6.0x3.5mm" H 1700 5950 50  0001 C CNN
-F 3 "" H 1700 5950 50  0000 C CNN
-	1    1700 5950
-	1    0    0    -1  
-$EndComp
-$Comp
-L device:C C27
-U 1 1 59AB4F41
-P 1500 6200
-F 0 "C27" H 1550 6300 40  0000 L CNN
-F 1 "100n" H 1500 6100 40  0000 L CNN
-F 2 "stmbl:C_0603" H 1538 6050 30  0001 C CNN
-F 3 "" H 1500 6200 60  0000 C CNN
-	1    1500 6200
-	1    0    0    -1  
-$EndComp
-$Comp
-L device:C C28
-U 1 1 59AB4FB7
-P 1900 6200
-F 0 "C28" H 1950 6300 40  0000 L CNN
-F 1 "100n" H 1900 6100 40  0000 L CNN
-F 2 "stmbl:C_0603" H 1938 6050 30  0001 C CNN
-F 3 "" H 1900 6200 60  0000 C CNN
-	1    1900 6200
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1500 5700 1500 6050
-Wire Wire Line
-	1900 5850 1900 6050
-Wire Wire Line
-	2600 5700 1500 5700
-Connection ~ 1500 5950
-Wire Wire Line
-	1900 5850 2700 5850
-Connection ~ 2700 5850
-Connection ~ 1900 5950
-Wire Wire Line
-	1500 6350 1900 6350
-Wire Wire Line
-	1650 6050 1650 6350
-Connection ~ 1650 6350
-Wire Wire Line
-	1750 6050 1750 6350
-Connection ~ 1750 6350
-$Comp
-L power:GND #PWR067
-U 1 1 59AB8568
-P 1650 6350
-F 0 "#PWR067" H 1650 6100 50  0001 C CNN
-F 1 "GND" H 1655 6177 50  0000 C CNN
-F 2 "" H 1650 6350 50  0000 C CNN
-F 3 "" H 1650 6350 50  0000 C CNN
-	1    1650 6350
-	1    0    0    -1  
-$EndComp
 Text HLabel 3600 6100 3    60   Input ~ 0
 PHY_REFCLK
 Wire Wire Line
 	3600 5700 3600 6100
+Wire Wire Line
+	7900 3800 8200 3800
+Wire Wire Line
+	950  1400 1100 1400
+Wire Wire Line
+	950  1100 1100 1100
+Wire Wire Line
+	1550 1400 1700 1400
+Wire Wire Line
+	1550 1100 1700 1100
+Wire Wire Line
+	5400 4800 5600 4800
+Wire Wire Line
+	2050 1400 2200 1400
+Wire Wire Line
+	2050 1100 2200 1100
+Wire Wire Line
+	2700 5700 2700 6250
+Wire Wire Line
+	4400 4000 4450 4000
+Wire Wire Line
+	4450 4000 4450 4100
+Connection ~ 4450 4100
 $EndSCHEMATC
