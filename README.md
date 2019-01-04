@@ -69,6 +69,7 @@ https://www.youtube.com/watch?v=-E1o_5cFyto
 * Sanyo Denki absolute encoders
 * Yaskawa absolute encoders
 * Sick HIPERFACE®
+* Tamagawa SmartAbs
 
 ##### Planned:
 * EnDat
