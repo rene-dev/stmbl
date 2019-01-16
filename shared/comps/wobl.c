@@ -15,6 +15,7 @@ HAL_PIN(en);
 
 HAL_PIN(pos);
 HAL_PIN(out);
+HAL_PIN(out_freq);
 
 struct wobl_ctx_t {
   float ang;
@@ -38,6 +39,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
   }
 
   PIN(pos) = PIN(home_pos) + sinf(ctx->ang) * PIN(amp);
+  PIN(out_freq) = PIN(freq) + PIN(freq_diff);
   PIN(out) = ((sinf(ctx->ang2) / 2 - 0.5 + PIN(duty)) > 0.0) ? 1.0 : 0.0;
 
 }

@@ -20,6 +20,11 @@ HAL_PIN(out0);
 HAL_PIN(out1);
 HAL_PIN(out2);
 
+HAL_PIN(out_freq);
+HAL_PIN(out_arr);
+HAL_PIN(out_cnt);
+HAL_PIN(out_ccr1);
+
 HAL_PIN(in0);    //input 0, analog
 HAL_PIN(in1);    //input 1, analog
 HAL_PIN(ind0);   //input 0, digital
@@ -100,6 +105,16 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_Init(GPIOD, &GPIO_InitStructure);
 
+  // out1, out2 pwm tim9
+  GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_5 | GPIO_Pin_6;
+  GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOE, &GPIO_InitStructure);
+  GPIO_PinAFConfig(GPIOE, GPIO_PinSource5, GPIO_AF_TIM9);
+  GPIO_PinAFConfig(GPIOE, GPIO_PinSource6, GPIO_AF_TIM9);
+
   if(PIN(swd_remap) > 0) {
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_13 | GPIO_Pin_14;
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN;
@@ -160,13 +175,24 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
   GPIO_Init(GPIOE, &GPIO_InitStructure);
 
-  //out1
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
-  GPIO_Init(GPIOE, &GPIO_InitStructure);
+  // //out1
+  // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+  // GPIO_Init(GPIOE, &GPIO_InitStructure);
 
-  //out2
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-  GPIO_Init(GPIOE, &GPIO_InitStructure);
+  // //out2
+  // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+  // GPIO_Init(GPIOE, &GPIO_InitStructure);
+
+  RCC->APB2ENR |= RCC_APB2ENR_TIM9EN;
+
+  TIM9->ARR = 186000000 / 300 / 15000; // 15000Hz 
+  TIM9->PSC = 300 - 1; // 186e6 / 300 = 620000Hz max freq
+  TIM9->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2; // pwm mode 1
+  TIM9->CCER = TIM_CCER_CC1E | TIM_CCER_CC2E; // cc1, cc2 enable
+  TIM9->CCR1 = 0;
+  TIM9->CCR2 = 0;
+  TIM9->CR1 = TIM_CR1_ARPE; // preloade
+  TIM9->CR1 |= TIM_CR1_CEN; // counter enable
 
   //fb0 green
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
@@ -342,22 +368,28 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   else
     GPIO_ResetBits(GPIOD, GPIO_Pin_5);
 
-  if(!(PIN(frt_prio) > 0)){//optional fast outputs in fast-rt
-    if(PIN(out0) > 0)
-      GPIO_SetBits(GPIOE, GPIO_Pin_4);
-    else
-      GPIO_ResetBits(GPIOE, GPIO_Pin_4);
+  if(PIN(out0) > 0)
+    GPIO_SetBits(GPIOE, GPIO_Pin_4);
+  else
+    GPIO_ResetBits(GPIOE, GPIO_Pin_4);
 
-    if(PIN(out1) > 0)
-      GPIO_SetBits(GPIOE, GPIO_Pin_5);
-    else
-      GPIO_ResetBits(GPIOE, GPIO_Pin_5);
+  // if(PIN(out1) > 0)
+  //   GPIO_SetBits(GPIOE, GPIO_Pin_5);
+  // else
+  //   GPIO_ResetBits(GPIOE, GPIO_Pin_5);
 
-    if(PIN(out2) > 0)
-      GPIO_SetBits(GPIOE, GPIO_Pin_6);
-    else
-      GPIO_ResetBits(GPIOE, GPIO_Pin_6);
-  }
+  // if(PIN(out2) > 0)
+  //   GPIO_SetBits(GPIOE, GPIO_Pin_6);
+  // else
+  //   GPIO_ResetBits(GPIOE, GPIO_Pin_6);
+
+  TIM9->ARR = 186000000 / 300 / MAX(PIN(out_freq), 10);
+  TIM9->CCR1 = CLAMP(PIN(out1), 0, 1) * TIM9->ARR;
+  TIM9->CCR2 = CLAMP(PIN(out2), 0, 1) * TIM9->ARR;
+
+  PIN(out_cnt) = TIM9->CNT;
+  PIN(out_arr) = TIM9->ARR;
+  PIN(out_ccr1) = TIM9->CCR1;
 
   if(PIN(fb0g) > 0)
     GPIO_SetBits(GPIOD, GPIO_Pin_8);
@@ -465,30 +497,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(fb1z) = GPIO_ReadInputDataBit(FB1_Z_PORT, FB1_Z_PIN);
 }
 
-static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
-  struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
-  if(PIN(out0) > 0)
-    GPIO_SetBits(GPIOE, GPIO_Pin_4);
-  else
-    GPIO_ResetBits(GPIOE, GPIO_Pin_4);
-
-  if(PIN(out1) > 0)
-    GPIO_SetBits(GPIOE, GPIO_Pin_5);
-  else
-    GPIO_ResetBits(GPIOE, GPIO_Pin_5);
-
-  if(PIN(out2) > 0)
-    GPIO_SetBits(GPIOE, GPIO_Pin_6);
-  else
-    GPIO_ResetBits(GPIOE, GPIO_Pin_6);
-}
-
 hal_comp_t io_comp_struct = {
     .name      = "io",
     .nrt       = 0,
     .rt        = rt_func,
-    .frt       = frt_func,
+    .frt       = 0,
     .nrt_init  = nrt_init,
     .hw_init   = hw_init,
     .rt_start  = 0,
