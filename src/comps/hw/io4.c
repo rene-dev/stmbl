@@ -82,6 +82,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(th1)                  = 12.0;
   PIN(fbth0)                = 2.5;
   PIN(fbth1)                = 2.5;
+  PIN(out_freq)             = 15000;
 }
 
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
