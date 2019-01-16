@@ -30,14 +30,14 @@ avg2.in = adc0.cos1
 wobl0.freq = avg0.out
 wobl0.freq_diff = avg1.out
 rev0.in = wobl0.pos
-conf0.vel_g = 0.05
+conf0.vel_g = 0.01
 
 avg0.mult = 5.0
-avg1.mult = 0.4
+avg1.mult = 0.6
 avg2.mult = 1
 avg0.offset = -1.2
 wobl0.home_pos = 0.0
-wobl0.duty = 0.01
+wobl0.duty = 0.03
 fb_switch0.offset_first_enable = 0
 fb_switch0.track_fb = 1
 conf0.max_pos_error = 0
