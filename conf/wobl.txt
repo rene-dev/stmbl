@@ -30,7 +30,7 @@ avg2.in = adc0.cos1
 wobl0.freq = avg0.out
 wobl0.freq_diff = avg1.out
 rev0.in = wobl0.pos
-conf0.vel_g = 0.01
+conf0.vel_g = 0.001
 
 avg0.mult = 5.0
 avg1.mult = 0.6
