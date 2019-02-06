@@ -37,7 +37,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(enu)     = 1.0;
   PIN(env)     = 1.0;
   PIN(enw)     = 1.0;
-  PIN(min_on)  = 0.00000035;
+  PIN(min_on)  = 0.000005;
   PIN(min_off) = 0.000005;
   PIN(arr)     = PWM_RES;
 }

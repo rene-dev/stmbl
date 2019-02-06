@@ -1,0 +1,72 @@
+load enc_fb
+enc_fb0.rt_prio = 2
+enc_fb0.res = conf0.mot_fb_res
+load vel
+vel0.rt_prio = 2.1
+vel0.en = 1
+vel0.pos_in = enc_fb0.pos
+
+link uf
+load avg
+load ramp
+ramp0.rt_prio = 5.1
+avg0.rt_prio = 5
+
+conf0.max_acc = 300
+conf0.max_vel = 900
+conf0.r = 1.4
+conf0.l = 0.0013
+conf0.j = 0.015
+conf0.polecount = 2
+conf0.max_force = 50
+conf0.max_ac_cur = 25
+conf0.mot_fb_res = 2000
+conf0.max_dc_volt = 390
+conf0.high_dc_volt = 375
+
+uf0.u_n = 80.0
+uf0.vel_n = 182.0
+iit0.cur_boost = 1.2
+iit0.max_time = 60
+uf0.cur_n = 18
+
+ramp0.max_acc = conf0.max_acc
+ramp0.max_speed = conf0.max_vel
+ramp0.vel_ext_cmd = avg0.out
+uf0.vel_cmd = ramp0.vel_cmd
+
+fault0.fb_ready = 1
+
+avg0.mult = 6.5
+avg0.lpf = 10
+
+link sserial_uf
+load avg
+avg1.rt_prio = 2.1
+avg1.mult = 0.158
+avg1.in = vel0.vel
+sserial0.vel_fb = avg1.out
+avg1.lpf = 10
+
+term0.wave0 = ramp0.vel_ext_cmd
+term0.wave1 = ramp0.vel_cmd
+term0.wave2 = hv0.abs_cur
+term0.wave3 = 20
+term0.gain0 = 0.1
+term0.gain1 = 0.1
+term0.gain2 = 5
+term0.gain3 = 5
+term0.gain4 = 100
+term0.gain5 = 0.2
+term0.wave4 = uf0.load
+
+load avg
+avg2.rt_prio = 2.3
+avg2.in = uf0.load
+avg2.offset = conf0.max_acc
+avg2.mult = -330
+avg1.lpf = 10
+ramp0.max_acc = avg2.out
+term0.wave5 = avg2.out
+hv0.q_cmd = 3
+hv0.dac = 2000
