@@ -83,9 +83,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float kpq  = lq * PIN(kp) / period / 2.0;
   float kiq  = rq * PIN(ki) / lq;
 
-  float max_cur = MAX(PIN(max_cur), 0.0);
-  float idc     = LIMIT(PIN(id_cmd), max_cur);
-  float iqc     = LIMIT(PIN(iq_cmd), max_cur);
+  float max_cur = MAX(PIN(max_cur), 0.01);
+  float idc     = PIN(id_cmd);
+  float iqc     = PIN(iq_cmd);
 
   float max_volt = PIN(pwm_volt);
 
@@ -96,12 +96,25 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   // PIN(ac_current)  = ac_current;
 
   float k;
-  float abscur = idc * idc + iqc * iqc;
-  if(abscur > max_cur * max_cur) {
-    k = max_cur * max_cur / abscur;
-    idc *= k;
-    iqc *= k;
+  float abscur;
+  
+  if(PIN(cmd_mode) == VOLT_MODE) {
+    abscur = id * id + iq * iq; // clamp over fb
+    if(abscur > max_cur * max_cur) {
+      idc = 0;
+      iqc = 0;
+    }
   }
+  else{
+    abscur = idc * idc + iqc * iqc; // clamp cmd
+    if(abscur > max_cur * max_cur) {
+      k = max_cur * max_cur / abscur;
+      idc *= k;
+      iqc *= k;
+    }
+  }
+
+
 
   float vel   = PIN(vel);
   float psi_d = ld * id + PIN(psi);
@@ -127,8 +140,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   uq += ctx->iq_error_sum;
 
   if(PIN(cmd_mode) == VOLT_MODE) {
-    ud                = LIMIT(PIN(id_cmd), max_volt);
-    uq                = LIMIT(PIN(iq_cmd), max_volt);
+    ud                = LIMIT(idc, max_volt);
+    uq                = LIMIT(iqc, max_volt);
     ctx->id_error_sum = 0.0;
     ctx->iq_error_sum = 0.0;
     id_error          = 0.0;
