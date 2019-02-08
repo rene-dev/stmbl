@@ -59,11 +59,14 @@ load not
 not0.rt_prio = 5
 load and
 and0.rt_prio = 5
+load not
+not1.rt_prio = 5
 
 and0.in0 = ramp0.at_speed
 and0.in1 = io0.ind0
 io0.out0 = and0.out
-io0.out1 = fault0.fault
+not1.in = fault0.fault
+io0.out1 = not1.out
 not0.in = fault0.en_out
 io0.out2 = not0.out
 and0.in2 = 1
