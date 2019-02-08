@@ -1,0 +1,71 @@
+link uf
+load avg
+load ramp
+ramp0.rt_prio = 5.1
+avg0.rt_prio = 5
+
+conf0.max_acc = 2600
+conf0.max_vel = 2600
+conf0.r = 1.4
+conf0.l = 0.0013
+conf0.j = 0.015
+conf0.polecount = 1
+conf0.max_ac_cur = 25
+conf0.max_dc_volt = 390
+conf0.high_dc_volt = 375
+
+uf0.u_n = 155.0
+uf0.vel_n = 2513.0
+conf0.max_ac_cur = 12
+iit0.cur_boost = 1.5
+iit0.max_time = 300
+uf0.cur_n = 8
+
+ramp0.max_acc = conf0.max_acc
+ramp0.max_vel = conf0.max_vel
+ramp0.vel_ext_cmd = avg0.out
+uf0.vel_cmd = ramp0.vel_cmd
+ramp0.load = uf0.load 
+
+fault0.fb_ready = 1
+
+avg0.mult = 260
+avg0.lpf = 10
+
+term0.wave0 = ramp0.vel_ext_cmd
+term0.wave1 = ramp0.vel_cmd
+term0.wave2 = hv0.abs_cur
+term0.wave3 = conf0.max_ac_cur
+term0.wave4 = uf0.load
+term0.gain0 = 0.04
+term0.gain1 = 0.04
+term0.gain2 = 5
+term0.gain3 = 5
+term0.gain4 = 100
+term0.gain5 = 0.2
+
+load avg
+avg1.rt_prio = 2.3
+avg1.in = uf0.load
+avg1.mult = 1
+avg1.lpf = 10
+term0.wave5 = avg1.out
+
+ramp0.en = io0.ind0
+avg0.in = io0.in1
+fault0.en = ramp0.en_out
+
+load not
+not0.rt_prio = 5
+load and
+and0.rt_prio = 5
+
+and0.in0 = ramp0.at_speed
+and0.in1 = io0.ind0
+io0.out0 = and0.out
+io0.out1 = fault0.fault
+not0.in = fault0.en_out
+io0.out2 = not0.out
+and0.in2 = 1
+and0.in3 = 1
+hv0.q_cmd = 5
