@@ -28,8 +28,8 @@
 HAL_COMP(hx);
 
 HAL_PIN(out);
-HAL_PIN(out2);
-HAL_PIN(out3);
+HAL_PIN(gain);
+HAL_PIN(offset);
 
 struct hx_ctx_t {
   uint32_t error;
@@ -92,12 +92,8 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     if(value & 0x800000){//if 24th bit is set, pad others, to get 2 complement number
       value |= 0xff000000;
     }
-    PIN(out) = value;
     int32_t sint = *((int32_t*)(&value));
-    //PIN(out2) = *((int32_t*)(&value));
-    PIN(out2) = sint;
-    PIN(out3) = (float)sint/(float)0x7fffff;
-
+    PIN(out) = ((float)sint/(float)0x7fffff)*PIN(gain)+PIN(offset);
   }
 }
 
