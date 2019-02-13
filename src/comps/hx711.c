@@ -1,0 +1,117 @@
+/*
+* This file is part of the stmbl project.
+*
+* Copyright (C) 2019 Rene Hopf <renehopf@mac.com>
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "commands.h"
+#include "hal.h"
+#include "math.h"
+#include "defines.h"
+#include "angle.h"
+#include "stm32f4xx_conf.h"
+#include "hw/hw.h"
+
+HAL_COMP(hx);
+
+HAL_PIN(out);
+HAL_PIN(out2);
+HAL_PIN(out3);
+
+struct hx_ctx_t {
+  uint32_t error;
+};
+
+static void nopsleep(uint32_t t){
+  while(t > 0){
+    asm volatile("nop");
+    t--;
+  }
+}
+
+static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  struct hx_ctx_t *ctx = (struct hx_ctx_t *)ctx_ptr;
+  // struct hx_pin_ctx_t * pins = (struct hx_pin_ctx_t *)pin_ptr;
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  //TX enable Z
+  GPIO_InitStruct.GPIO_Pin   = FB1_Z_TXEN_PIN;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_Init(FB1_Z_TXEN_PORT, &GPIO_InitStruct);
+  GPIO_SetBits(FB1_Z_TXEN_PORT, FB1_Z_TXEN_PIN);
+
+  // output Z
+  GPIO_InitStruct.GPIO_Pin   = FB1_Z_PIN;
+  GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_OUT;
+  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+  GPIO_Init(FB1_Z_PORT, &GPIO_InitStruct);
+}
+
+//TODO: plausibility, saturation, channel/gain config, 2 chips
+
+static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+  struct hx_ctx_t *ctx      = (struct hx_ctx_t *)ctx_ptr;
+  struct hx_pin_ctx_t *pins = (struct hx_pin_ctx_t *)pin_ptr;
+  uint32_t value = 0;
+
+  if(!GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN)){//data line low = conversion ready
+    for(int i = 0 ; i < 24;i++){
+      nopsleep(20);
+      GPIO_SetBits(FB1_Z_PORT, FB1_Z_PIN);
+      nopsleep(20);
+      GPIO_ResetBits(FB1_Z_PORT, FB1_Z_PIN);
+      if(GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN)){//dout = 1
+        value++;
+      }
+      value = value << 1;
+    }
+    //clock additional config bits
+    nopsleep(20);
+    GPIO_SetBits(FB1_Z_PORT, FB1_Z_PIN);
+    nopsleep(20);
+    GPIO_ResetBits(FB1_Z_PORT, FB1_Z_PIN);
+
+    if(value & 0x800000){//if 24th bit is set, pad others, to get 2 complement number
+      value |= 0xff000000;
+    }
+    PIN(out) = value;
+    int32_t sint = *((int32_t*)(&value));
+    //PIN(out2) = *((int32_t*)(&value));
+    PIN(out2) = sint;
+    PIN(out3) = (float)sint/(float)0x7fffff;
+
+  }
+}
+
+hal_comp_t hx_comp_struct = {
+    .name      = "hx",
+    .nrt       = 0,
+    .rt        = rt_func,
+    .frt       = 0,
+    .nrt_init  = 0,
+    .hw_init   = hw_init,
+    .rt_start  = 0,
+    .frt_start = 0,
+    .rt_stop   = 0,
+    .frt_stop  = 0,
+    .ctx_size  = sizeof(struct hx_ctx_t),
+    .pin_count = sizeof(struct hx_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+};

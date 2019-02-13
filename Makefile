@@ -51,6 +51,7 @@ COMPS += src/comps/adc.c
 COMPS += src/comps/enc_fb.c
 COMPS += src/comps/conf.c
 COMPS += src/comps/res.c
+COMPS += src/comps/hx711.c
 
 COMPS += shared/comps/sim.c
 COMPS += shared/comps/term.c
