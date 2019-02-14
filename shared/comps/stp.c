@@ -6,72 +6,93 @@
 HAL_COMP(stp);
 
 HAL_PIN(target);
+HAL_PIN(vel_ext_cmd);
+HAL_PIN(acc_ext_cmd);
 HAL_PIN(jog);
 
-HAL_PIN(pos_out);
-HAL_PIN(vel_out);
-HAL_PIN(acc_out);
+HAL_PIN(pos);
+HAL_PIN(mpos);
+HAL_PIN(vel_cmd);
+HAL_PIN(acc_cmd);
 
+HAL_PIN(max_pos);
+HAL_PIN(min_pos);
 HAL_PIN(max_vel);
 HAL_PIN(max_acc);
 
 HAL_PIN(dtg);
-
-struct stp_ctx_t {
-  float p0;
-  float p;
-  float v0;
-  float pold;
-  float vold;
-};
+HAL_PIN(ttg);
+HAL_PIN(at_target);
 
 static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct stp_ctx_t *ctx      = (struct stp_ctx_t *)ctx_ptr;
+  // struct stp_ctx_t *ctx      = (struct stp_ctx_t *)ctx_ptr;
   struct stp_pin_ctx_t *pins = (struct stp_pin_ctx_t *)pin_ptr;
-  ctx->p0                    = 0.0;
-  ctx->p                     = 0.0;
-  ctx->v0                    = 0.0;
-  ctx->pold                  = 0.0;
-  ctx->vold                  = 0.0;
   PIN(target)                = 0.0;
   PIN(max_vel)               = 1.0 * 2.0 * M_PI;
   PIN(max_acc)               = 10.0 * 2.0 * M_PI;
+  PIN(max_pos)               = 10.0 * 2.0 * M_PI;
+  PIN(min_pos)               = -10.0 * 2.0 * M_PI;
 }
 
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct stp_ctx_t *ctx      = (struct stp_ctx_t *)ctx_ptr;
+  // struct stp_ctx_t *ctx      = (struct stp_ctx_t *)ctx_ptr;
   struct stp_pin_ctx_t *pins = (struct stp_pin_ctx_t *)pin_ptr;
 
-  PIN(target) += LIMIT(PIN(jog), 1.0) * PIN(max_vel) * period;
+  float max_acc = MAX(PIN(max_acc), 0.01);
+  float max_vel = MAX(PIN(max_vel), 0.01);
+  
+  // jog input
 
-  float p1 = PIN(target);
+  float acc_ext_cmd = LIMIT(PIN(acc_ext_cmd), PIN(max_acc) * 0.99);
+  float vel_ext_cmd = LIMIT(PIN(vel_ext_cmd) + PIN(jog) * max_vel, PIN(max_vel) * 0.99);
+  PIN(target) += vel_ext_cmd * period + acc_ext_cmd * period * period / 2.0;
+  vel_ext_cmd += acc_ext_cmd * period;
+  vel_ext_cmd = LIMIT(vel_ext_cmd, PIN(max_vel) * 0.99);
+  PIN(vel_ext_cmd) = vel_ext_cmd;
 
-  float vmax = PIN(max_vel);
-  float amax = MAX(PIN(max_acc), 0.1);
+  // pos input
+  float target = CLAMP(PIN(target), PIN(min_pos), PIN(max_pos));
+  PIN(target) = target;
 
-  float vel = SIGN(p1 - ctx->p0) * amax * sqrtf(2.0 * ABS(p1 - ctx->p0) / amax);
+  // update
+  PIN(pos) += PIN(vel_cmd) * period + PIN(acc_cmd) * period * period / 2.0;
+  PIN(vel_cmd) += PIN(acc_cmd) * period;
 
-  vel = LIMIT(vel, vmax);
-  vel = CLAMP(vel, ctx->v0 - amax * period, ctx->v0 + amax * period);
+  // distance to go
+  float to_go = target - PIN(pos);
 
-  if(ABS(vel) > ABS(p1 - ctx->p0) / period) {
-    vel = (p1 - ctx->p0) / period;
+  // time to go
+  float time_to_go = sqrtf(2.0 * ABS(to_go) / max_acc);
+
+  // real time to go
+  int periods_to_go = ceilf(time_to_go / period);
+
+  // calc new acc
+  float acc = 0.0;
+  if(periods_to_go){
+    acc = 2.0 * to_go / (periods_to_go * periods_to_go * period * period);
+  }
+  if(time_to_go < period / 2.0){
+    acc = 0;
+    PIN(pos) = target;
   }
 
-  float acc = (vel - ctx->vold) / period;
-  ctx->vold = vel;
+  float vel = acc * periods_to_go * period;
+  vel = LIMIT(vel, max_vel);
+  acc = (vel - PIN(vel_cmd)) / period;
+  acc = LIMIT(acc, max_acc);
 
-  ctx->v0 = vel;
-  ctx->p0 += ctx->v0 * period;
-  ctx->p += ctx->p0 - ctx->pold;
-  ctx->pold = ctx->p0;
+  PIN(acc_cmd) = acc;
+  PIN(dtg) = to_go;
+  PIN(ttg) = periods_to_go * period;
+  PIN(mpos) = mod(PIN(pos));
 
-  //p += vel * period;
-
-  PIN(pos_out) = mod(ctx->p);
-  PIN(vel_out) = vel;
-  PIN(acc_out) = acc;
-  PIN(dtg)     = p1 - ctx->p0;
+  if((periods_to_go <= 1) & (ABS(PIN(vel_cmd)) < max_vel / 10000.0)){
+    PIN(at_target) = 1.0;
+  }
+  else{
+    PIN(at_target) = 0.0;
+  }
 }
 
 const hal_comp_t stp_comp_struct = {
@@ -85,6 +106,6 @@ const hal_comp_t stp_comp_struct = {
     .frt_start = 0,
     .rt_stop   = 0,
     .frt_stop  = 0,
-    .ctx_size  = sizeof(struct stp_ctx_t),
+    .ctx_size  = 0,
     .pin_count = sizeof(struct stp_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
 };
