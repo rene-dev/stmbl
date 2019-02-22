@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:diff_driver-cache
 EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
@@ -172,9 +173,7 @@ Wire Wire Line
 Wire Wire Line
 	5700 4450 6150 4450
 Wire Wire Line
-	6700 3400 6700 3700
-Wire Wire Line
-	6500 3650 6500 3950
+	6500 3650 6500 3700
 Wire Wire Line
 	6250 4350 6700 4350
 Wire Wire Line
@@ -428,21 +427,27 @@ Wire Wire Line
 Wire Wire Line
 	6700 5450 6700 5500
 Wire Wire Line
-	5700 3850 6700 3850
-Wire Wire Line
-	6700 3700 5700 3700
-Wire Wire Line
 	5700 3700 5700 3650
-Connection ~ 6700 3700
-Wire Wire Line
-	6700 3700 6700 3750
-Wire Wire Line
-	6250 4350 6250 3550
 Wire Wire Line
 	6250 3550 5700 3550
 Wire Wire Line
-	6500 3650 6500 3400
+	6700 3400 6700 3750
 Wire Wire Line
-	6500 3400 5700 3400
-Connection ~ 6500 3650
+	6700 3850 6250 3850
+Wire Wire Line
+	6250 3850 6250 3550
+Wire Wire Line
+	6700 3400 5700 3400
+Connection ~ 6700 3400
+Wire Wire Line
+	5700 3700 6500 3700
+Connection ~ 6500 3700
+Wire Wire Line
+	6500 3700 6500 3950
+Wire Wire Line
+	6250 4350 6250 3900
+Wire Wire Line
+	6250 3900 5700 3900
+Wire Wire Line
+	5700 3900 5700 3850
 $EndSCHEMATC
