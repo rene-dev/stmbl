@@ -1,36 +1,6 @@
-EESchema Schematic File Version 2
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:stmbl
+EESchema Schematic File Version 4
 LIBS:mesabob-cache
-EELAYER 26 0
+EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -45,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L CONN_02X13 P1
+L mesabob-rescue:CONN_02X13 P1
 U 1 1 5923363F
 P 5850 2100
 F 0 "P1" H 5850 2915 50  0000 C CNN
@@ -56,7 +26,7 @@ F 3 "" H 5850 950 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR01
+L power:GND #PWR01
 U 1 1 59233773
 P 6200 1900
 F 0 "#PWR01" H 6200 1650 50  0001 C CNN
@@ -67,7 +37,7 @@ F 3 "" H 6200 1900 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L +5V #PWR03
+L power:+5V #PWR03
 U 1 1 592338B3
 P 6200 2300
 F 0 "#PWR03" H 6200 2150 50  0001 C CNN
@@ -238,11 +208,11 @@ Wire Wire Line
 Wire Wire Line
 	8250 1150 8150 1150
 Wire Wire Line
-	6100 1900 6200 1900
+	6100 1900 6150 1900
 Wire Wire Line
 	6100 2000 6150 2000
 Wire Wire Line
-	6150 1900 6150 2200
+	6150 1900 6150 2000
 Connection ~ 6150 1900
 Wire Wire Line
 	6150 2100 6100 2100
@@ -251,11 +221,11 @@ Wire Wire Line
 	6150 2200 6100 2200
 Connection ~ 6150 2100
 Wire Wire Line
-	6100 2300 6200 2300
+	6100 2300 6150 2300
 Wire Wire Line
 	6100 2400 6150 2400
 Wire Wire Line
-	6150 2300 6150 2600
+	6150 2300 6150 2400
 Connection ~ 6150 2300
 Wire Wire Line
 	6150 2500 6100 2500
@@ -295,4 +265,97 @@ Wire Wire Line
 	6200 1700 6100 1700
 Wire Wire Line
 	6100 1800 6200 1800
+Wire Wire Line
+	6150 1900 6200 1900
+Wire Wire Line
+	6150 2000 6150 2100
+Wire Wire Line
+	6150 2100 6150 2200
+Wire Wire Line
+	6150 2300 6200 2300
+Wire Wire Line
+	6150 2400 6150 2500
+Wire Wire Line
+	6150 2500 6150 2600
+$Comp
+L power:+5V #PWR0101
+U 1 1 5D7B8B0E
+P 5850 3150
+F 0 "#PWR0101" H 5850 3000 50  0001 C CNN
+F 1 "+5V" V 5865 3278 50  0000 L CNN
+F 2 "" H 5850 3150 50  0000 C CNN
+F 3 "" H 5850 3150 50  0000 C CNN
+	1    5850 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0102
+U 1 1 5D7B8FC0
+P 5850 3700
+F 0 "#PWR0102" H 5850 3450 50  0001 C CNN
+F 1 "GND" V 5855 3572 50  0000 R CNN
+F 2 "" H 5850 3700 50  0000 C CNN
+F 3 "" H 5850 3700 50  0000 C CNN
+	1    5850 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP C9
+U 1 1 5D7B9475
+P 5500 3400
+F 0 "C9" H 5618 3446 50  0000 L CNN
+F 1 "CP" H 5618 3355 50  0000 L CNN
+F 2 "Capacitor_Tantalum_SMD:CP_EIA-2012-12_Kemet-R" H 5538 3250 50  0001 C CNN
+F 3 "~" H 5500 3400 50  0001 C CNN
+	1    5500 3400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP C10
+U 1 1 5D7B97B0
+P 5850 3400
+F 0 "C10" H 5968 3446 50  0000 L CNN
+F 1 "CP" H 5968 3355 50  0000 L CNN
+F 2 "Capacitor_Tantalum_SMD:CP_EIA-2012-12_Kemet-R" H 5888 3250 50  0001 C CNN
+F 3 "~" H 5850 3400 50  0001 C CNN
+	1    5850 3400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP C11
+U 1 1 5D7B9D63
+P 6200 3400
+F 0 "C11" H 6318 3446 50  0000 L CNN
+F 1 "CP" H 6318 3355 50  0000 L CNN
+F 2 "Capacitor_Tantalum_SMD:CP_EIA-2012-12_Kemet-R" H 6238 3250 50  0001 C CNN
+F 3 "~" H 6200 3400 50  0001 C CNN
+	1    6200 3400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5500 3550 5500 3650
+Wire Wire Line
+	5500 3650 5850 3650
+Wire Wire Line
+	6200 3650 6200 3550
+Wire Wire Line
+	5850 3550 5850 3650
+Connection ~ 5850 3650
+Wire Wire Line
+	5850 3650 6200 3650
+Wire Wire Line
+	5850 3650 5850 3700
+Wire Wire Line
+	5500 3250 5500 3200
+Wire Wire Line
+	5500 3200 5850 3200
+Wire Wire Line
+	6200 3200 6200 3250
+Wire Wire Line
+	5850 3150 5850 3200
+Connection ~ 5850 3200
+Wire Wire Line
+	5850 3200 6200 3200
+Wire Wire Line
+	5850 3200 5850 3250
 $EndSCHEMATC
