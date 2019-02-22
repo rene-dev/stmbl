@@ -1,10 +1,10 @@
 EESchema Schematic File Version 4
 LIBS:ethernet_bob-cache
-EELAYER 26 0
+EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 3 6
+Sheet 2 6
 Title ""
 Date ""
 Rev ""
@@ -26,7 +26,7 @@ F 3 "" H 6300 3500 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR020
+L ethernet_bob-rescue:+3.3V- #PWR020
 U 1 1 57FEA6EF
 P 6800 3100
 AR Path="/57FEA6EF" Ref="#PWR020"  Part="1" 

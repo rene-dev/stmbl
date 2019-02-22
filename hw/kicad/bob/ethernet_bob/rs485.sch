@@ -1,10 +1,10 @@
 EESchema Schematic File Version 4
 LIBS:ethernet_bob-cache
-EELAYER 26 0
+EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 6 6
+Sheet 5 6
 Title ""
 Date ""
 Rev ""
@@ -93,7 +93,7 @@ $EndComp
 Connection ~ 7050 2750
 Connection ~ 7200 3050
 $Comp
-L R R20
+L ethernet_bob-rescue:R- R20
 U 1 1 58278682
 P 6950 3550
 F 0 "R20" H 7020 3596 50  0000 L CNN
@@ -178,7 +178,7 @@ F 3 "" H 6700 2750 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x04 P6
+L stmbl:CONN_01X04 P6
 U 1 1 582DD6E5
 P 7550 3550
 F 0 "P6" H 7628 3591 50  0000 L CNN

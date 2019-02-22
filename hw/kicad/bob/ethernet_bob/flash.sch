@@ -1,6 +1,6 @@
 EESchema Schematic File Version 4
 LIBS:ethernet_bob-cache
-EELAYER 26 0
+EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L memory:CAT250_EEPROM U4
+L Memory_EEPROM:CAT250xxx U4
 U 1 1 57FEAF7D
 P 5550 3950
 F 0 "U4" H 5550 4428 50  0000 C CNN
@@ -26,7 +26,7 @@ F 3 "" H 5200 3900 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C22
+L ethernet_bob-rescue:C- C22
 U 1 1 57FEAFCC
 P 7350 4000
 F 0 "C22" H 7465 4046 50  0000 L CNN
@@ -37,7 +37,7 @@ F 3 "" H 7350 4000 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR022
+L ethernet_bob-rescue:+3.3V- #PWR022
 U 1 1 57FEB05E
 P 7350 3750
 AR Path="/57FEB05E" Ref="#PWR022"  Part="1" 
@@ -50,7 +50,7 @@ F 3 "" H 7350 3750 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR023
+L ethernet_bob-rescue:GND- #PWR023
 U 1 1 57FEB078
 P 7350 4250
 F 0 "#PWR023" H 7350 4000 50  0001 C CNN
@@ -61,7 +61,7 @@ F 3 "" H 7350 4250 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR024
+L ethernet_bob-rescue:GND- #PWR024
 U 1 1 57FEB090
 P 5550 4300
 F 0 "#PWR024" H 5550 4050 50  0001 C CNN
@@ -78,7 +78,7 @@ Wire Wire Line
 Wire Wire Line
 	5550 4300 5550 4250
 $Comp
-L +3.3V #PWR025
+L ethernet_bob-rescue:+3.3V- #PWR025
 U 1 1 57FEB0B4
 P 5550 3600
 AR Path="/57FEB0B4" Ref="#PWR025"  Part="1" 
