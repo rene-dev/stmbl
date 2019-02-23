@@ -1,10 +1,10 @@
 EESchema Schematic File Version 4
 LIBS:ethernet_bob-cache
-EELAYER 26 0
+EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 6
+Sheet 6 6
 Title ""
 Date ""
 Rev ""
@@ -22,7 +22,7 @@ AR Path="/57A86274" Ref="U1"  Part="1"
 AR Path="/57A86254/57A86274" Ref="U1"  Part="1" 
 F 0 "U1" H 3100 4750 60  0000 L CNN
 F 1 "KSZ8081" H 2950 4650 60  0000 L CNN
-F 2 "Housings_DFN_QFN:QFN-24-1EP_4x4mm_Pitch0.5mm" H 3100 4350 30  0000 L CNN
+F 2 "stmbl:QFN-24-1EP_4x4mm_Pitch0.5mm" H 3100 4350 30  0000 L CNN
 F 3 "" H 3150 4450 60  0000 C CNN
 	1    3150 4450
 	1    0    0    -1  
@@ -56,7 +56,7 @@ Wire Wire Line
 Wire Wire Line
 	8650 3150 8750 3150
 $Comp
-L device:C C6
+L stmbl:C C6
 U 1 1 57A8653A
 P 7700 3650
 F 0 "C6" H 7750 3750 40  0000 L CNN
@@ -67,7 +67,7 @@ F 3 "" H 7700 3650 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:C C7
+L stmbl:C C7
 U 1 1 57A865A9
 P 7900 3650
 F 0 "C7" H 8000 3750 40  0000 L CNN
@@ -120,23 +120,23 @@ F 3 "" H 1250 2150 50  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L device:C C1
+L stmbl:C C1
 U 1 1 57A872F4
 P 800 1250
 F 0 "C1" H 850 1350 40  0000 L CNN
 F 1 "100n" H 800 1150 40  0000 L CNN
-F 2 "Capacitors_SMD:C_0603" H 838 1100 30  0001 C CNN
+F 2 "stmbl:C_0603" H 838 1100 30  0001 C CNN
 F 3 "" H 800 1250 60  0000 C CNN
 	1    800  1250
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:C C2
+L stmbl:C C2
 U 1 1 57A874A4
 P 1100 1250
 F 0 "C2" H 1150 1350 40  0000 L CNN
 F 1 "22µ" H 1100 1150 40  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 1138 1100 30  0001 C CNN
+F 2 "stmbl:C_0805" H 1138 1100 30  0001 C CNN
 F 3 "" H 1100 1250 60  0000 C CNN
 	1    1100 1250
 	1    0    0    -1  
@@ -172,23 +172,23 @@ Wire Wire Line
 Connection ~ 950  1400
 Connection ~ 950  1100
 $Comp
-L device:C C3
+L stmbl:C C3
 U 1 1 57A8773B
 P 1400 1250
 F 0 "C3" H 1450 1350 40  0000 L CNN
 F 1 "100n" H 1400 1150 40  0000 L CNN
-F 2 "Capacitors_SMD:C_0603" H 1438 1100 30  0001 C CNN
+F 2 "stmbl:C_0603" H 1438 1100 30  0001 C CNN
 F 3 "" H 1400 1250 60  0000 C CNN
 	1    1400 1250
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:C C4
+L stmbl:C C4
 U 1 1 57A87741
 P 1700 1250
 F 0 "C4" H 1750 1350 40  0000 L CNN
 F 1 "22µ" H 1700 1150 40  0000 L CNN
-F 2 "Capacitors_SMD:C_0805" H 1738 1100 30  0001 C CNN
+F 2 "stmbl:C_0805" H 1738 1100 30  0001 C CNN
 F 3 "" H 1700 1250 60  0000 C CNN
 	1    1700 1250
 	1    0    0    -1  
@@ -277,7 +277,7 @@ Wire Wire Line
 Text HLabel 9300 4450 2    60   Input ~ 0
 LED1A
 $Comp
-L device:R R4
+L stmbl:R R4
 U 1 1 57A88737
 P 9100 4450
 F 0 "R4" V 9307 4450 50  0000 C CNN
@@ -337,10 +337,8 @@ Wire Wire Line
 	3500 5750 3500 5700
 Text HLabel 5600 4800 2    60   Input ~ 0
 PHY_INTRP
-Wire Wire Line
-	4400 4800 5400 4800
 $Comp
-L device:R R1
+L stmbl:R R1
 U 1 1 57A8A923
 P 2800 6050
 F 0 "R1" H 2800 6200 50  0000 L CNN
@@ -352,33 +350,6 @@ F 3 "" H 2800 6050 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	2800 6200 2800 6350
-$Comp
-L device:R R2
-U 1 1 57A8AE8E
-P 5400 4650
-F 0 "R2" H 5400 4800 50  0000 L CNN
-F 1 "1k" H 5500 4550 50  0000 L CNN
-F 2 "Resistors_SMD:R_0603" V 5330 4650 50  0001 C CNN
-F 3 "" H 5400 4650 50  0000 C CNN
-	1    5400 4650
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+3.3V #PWR011
-U 1 1 57A8AF58
-P 5400 4450
-AR Path="/57A8AF58" Ref="#PWR011"  Part="1" 
-AR Path="/57A86254/57A8AF58" Ref="#PWR011"  Part="1" 
-F 0 "#PWR011" H 5400 4300 50  0001 C CNN
-F 1 "+3.3V" H 5415 4623 50  0000 C CNN
-F 2 "" H 5400 4450 50  0000 C CNN
-F 3 "" H 5400 4450 50  0000 C CNN
-	1    5400 4450
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5400 4500 5400 4450
-Connection ~ 5400 4800
 Wire Notes Line
 	2500 1700 2500 650 
 $Comp
@@ -387,7 +358,7 @@ U 1 1 57A97953
 P 9300 3450
 F 0 "J1" H 9256 4197 60  0000 C CNN
 F 1 "HR911105_RJ45" H 9256 4091 60  0000 C CNN
-F 2 "rj45_MHRJJ88NFVS:HY951180A" H 9300 3450 60  0001 C CNN
+F 2 "stmbl:HY951180A_RJ45" H 9300 3450 60  0001 C CNN
 F 3 "" H 9300 3450 60  0001 C CNN
 	1    9300 3450
 	1    0    0    -1  
@@ -403,7 +374,7 @@ Wire Wire Line
 Wire Wire Line
 	8650 3500 8750 3500
 $Comp
-L device:R R10
+L stmbl:R R10
 U 1 1 57A9BC1A
 P 3200 5900
 F 0 "R10" H 3200 6050 50  0000 L CNN
@@ -414,7 +385,7 @@ F 3 "" H 3200 5900 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R12
+L stmbl:R R12
 U 1 1 57A9BC6A
 P 3300 5900
 F 0 "R12" H 3300 6050 50  0000 L CNN
@@ -429,7 +400,7 @@ Wire Wire Line
 Wire Wire Line
 	3300 6050 3300 6100
 $Comp
-L device:R R15
+L stmbl:R R15
 U 1 1 57A9CAF8
 P 4600 4500
 F 0 "R15" H 4600 4650 50  0000 L CNN
@@ -440,7 +411,7 @@ F 3 "" H 4600 4500 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L device:R R14
+L stmbl:R R14
 U 1 1 57A9CB4A
 P 4600 4400
 F 0 "R14" H 4600 4550 50  0000 L CNN
@@ -451,7 +422,7 @@ F 3 "" H 4600 4400 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L device:R R13
+L stmbl:R R13
 U 1 1 57A9CB9F
 P 4600 4300
 F 0 "R13" H 4600 4450 50  0000 L CNN
@@ -468,7 +439,7 @@ Wire Wire Line
 Wire Wire Line
 	4750 4500 4800 4500
 $Comp
-L device:R R5
+L stmbl:R R5
 U 1 1 57A9CFEE
 P 3500 5900
 F 0 "R5" H 3500 6050 50  0000 L CNN
@@ -525,7 +496,7 @@ Wire Wire Line
 Text HLabel 4800 5000 2    60   Input ~ 0
 PHY_RXER
 $Comp
-L device:R R17
+L stmbl:R R17
 U 1 1 57A9C5B8
 P 4600 5000
 F 0 "R17" H 4600 5150 50  0000 L CNN
@@ -536,7 +507,7 @@ F 3 "" H 4600 5000 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L device:R R16
+L stmbl:R R16
 U 1 1 580E2BD7
 P 1550 2150
 F 0 "R16" V 1343 2150 50  0000 C CNN
@@ -553,7 +524,7 @@ Wire Wire Line
 Wire Wire Line
 	1400 1400 1550 1400
 $Comp
-L device:C C23
+L stmbl:C C23
 U 1 1 580E58F4
 P 1900 1250
 F 0 "C23" H 1950 1350 40  0000 L CNN
@@ -564,7 +535,7 @@ F 3 "" H 1900 1250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:C C24
+L stmbl:C C24
 U 1 1 580E58FA
 P 2200 1250
 F 0 "C24" H 2250 1350 40  0000 L CNN
@@ -642,7 +613,7 @@ $EndComp
 Text HLabel 9300 4750 2    60   Input ~ 0
 LED2A
 $Comp
-L device:R R21
+L stmbl:R R21
 U 1 1 582F6846
 P 9100 4750
 F 0 "R21" V 9307 4750 50  0000 C CNN
@@ -679,8 +650,6 @@ Wire Wire Line
 Wire Wire Line
 	1550 1100 1700 1100
 Wire Wire Line
-	5400 4800 5600 4800
-Wire Wire Line
 	2050 1400 2200 1400
 Wire Wire Line
 	2050 1100 2200 1100
@@ -691,4 +660,6 @@ Wire Wire Line
 Wire Wire Line
 	4450 4000 4450 4100
 Connection ~ 4450 4100
+Wire Wire Line
+	4400 4800 5600 4800
 $EndSCHEMATC
