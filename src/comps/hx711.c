@@ -30,6 +30,7 @@ HAL_COMP(hx);
 HAL_PIN(out);
 HAL_PIN(gain);
 HAL_PIN(offset);
+HAL_PIN(sleep);
 
 struct hx_ctx_t {
   uint32_t error;
@@ -44,7 +45,7 @@ static void nopsleep(uint32_t t){
 
 static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   struct hx_ctx_t *ctx = (struct hx_ctx_t *)ctx_ptr;
-  // struct hx_pin_ctx_t * pins = (struct hx_pin_ctx_t *)pin_ptr;
+  struct hx_pin_ctx_t * pins = (struct hx_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
 
   //TX enable Z
@@ -63,6 +64,8 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(FB1_Z_PORT, &GPIO_InitStruct);
+
+  PIN(sleep) = 20;
 }
 
 //TODO: plausibility, saturation, channel/gain config, 2 chips
@@ -72,11 +75,13 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   struct hx_pin_ctx_t *pins = (struct hx_pin_ctx_t *)pin_ptr;
   uint32_t value = 0;
 
+  int sleep = CLAMP(PIN(sleep), 1, 100);
+
   if(!GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN)){//data line low = conversion ready
     for(int i = 0 ; i < 24;i++){
-      nopsleep(20);
+      nopsleep(sleep);
       GPIO_SetBits(FB1_Z_PORT, FB1_Z_PIN);
-      nopsleep(20);
+      nopsleep(sleep);
       GPIO_ResetBits(FB1_Z_PORT, FB1_Z_PIN);
       if(GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN)){//dout = 1
         value++;
@@ -84,9 +89,9 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       value = value << 1;
     }
     //clock additional config bits
-    nopsleep(20);
+    nopsleep(sleep);
     GPIO_SetBits(FB1_Z_PORT, FB1_Z_PIN);
-    nopsleep(20);
+    nopsleep(sleep);
     GPIO_ResetBits(FB1_Z_PORT, FB1_Z_PIN);
 
     if(value & 0x800000){//if 24th bit is set, pad others, to get 2 complement number
