@@ -37,89 +37,89 @@ F 3 "" H 10100 5700 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 11ua-rescue:R R4
+L stmbl:R R4
 U 1 1 592E0847
 P 8150 8200
 F 0 "R4" V 7943 8200 50  0000 C CNN
 F 1 "100k" V 8034 8200 50  0000 C CNN
-F 2 "stmbl:R_0603" V 8080 8200 50  0001 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 8080 8200 50  0001 C CNN
 F 3 "" H 8150 8200 50  0001 C CNN
 	1    8150 8200
 	0    1    1    0   
 $EndComp
 $Comp
-L 11ua-rescue:R R3
+L stmbl:R R3
 U 1 1 592E08D0
 P 7800 3500
 F 0 "R3" V 7593 3500 50  0000 C CNN
 F 1 "100k" V 7684 3500 50  0000 C CNN
-F 2 "stmbl:R_0603" V 7730 3500 50  0001 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 7730 3500 50  0001 C CNN
 F 3 "" H 7800 3500 50  0001 C CNN
 	1    7800 3500
 	0    1    1    0   
 $EndComp
 $Comp
-L 11ua-rescue:C C4
+L stmbl:C C4
 U 1 1 592E0942
 P 7800 3850
 F 0 "C4" V 7548 3850 50  0000 C CNN
 F 1 "27p" V 7639 3850 50  0000 C CNN
-F 2 "stmbl:C_0603" H 7838 3700 50  0001 C CNN
+F 2 "stmbl-kicad-lib:C_0603" H 7838 3700 50  0001 C CNN
 F 3 "" H 7800 3850 50  0001 C CNN
 	1    7800 3850
 	0    1    1    0   
 $EndComp
 $Comp
-L 11ua-rescue:C C3
+L stmbl:C C3
 U 1 1 592E0986
 P 7550 8550
 F 0 "C3" V 7298 8550 50  0000 C CNN
 F 1 "27p" V 7389 8550 50  0000 C CNN
-F 2 "stmbl:C_0603" H 7588 8400 50  0001 C CNN
+F 2 "stmbl-kicad-lib:C_0603" H 7588 8400 50  0001 C CNN
 F 3 "" H 7550 8550 50  0001 C CNN
 	1    7550 8550
 	0    1    1    0   
 $EndComp
 $Comp
-L 11ua-rescue:R R1
+L stmbl:R R1
 U 1 1 592E0C0B
 P 7700 2150
 F 0 "R1" V 7493 2150 50  0000 C CNN
 F 1 "100k" V 7584 2150 50  0000 C CNN
-F 2 "stmbl:R_0603" V 7630 2150 50  0001 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 7630 2150 50  0001 C CNN
 F 3 "" H 7700 2150 50  0001 C CNN
 	1    7700 2150
 	0    1    1    0   
 $EndComp
 $Comp
-L 11ua-rescue:C C1
+L stmbl:C C1
 U 1 1 592E0C46
 P 7750 1750
 F 0 "C1" V 7498 1750 50  0000 C CNN
 F 1 "27p" V 7589 1750 50  0000 C CNN
-F 2 "stmbl:C_0603" H 7788 1600 50  0001 C CNN
+F 2 "stmbl-kicad-lib:C_0603" H 7788 1600 50  0001 C CNN
 F 3 "" H 7750 1750 50  0001 C CNN
 	1    7750 1750
 	0    1    1    0   
 $EndComp
 $Comp
-L 11ua-rescue:R R2
+L stmbl:R R2
 U 1 1 592E0DC4
 P 8100 7100
 F 0 "R2" V 7893 7100 50  0000 C CNN
 F 1 "100k" V 7984 7100 50  0000 C CNN
-F 2 "stmbl:R_0603" V 8030 7100 50  0001 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 8030 7100 50  0001 C CNN
 F 3 "" H 8100 7100 50  0001 C CNN
 	1    8100 7100
 	0    1    1    0   
 $EndComp
 $Comp
-L 11ua-rescue:C C2
+L stmbl:C C2
 U 1 1 592E0E05
 P 7600 6850
 F 0 "C2" V 7348 6850 50  0000 C CNN
 F 1 "27p" V 7439 6850 50  0000 C CNN
-F 2 "stmbl:C_0603" H 7638 6700 50  0001 C CNN
+F 2 "stmbl-kicad-lib:C_0603" H 7638 6700 50  0001 C CNN
 F 3 "" H 7600 6850 50  0001 C CNN
 	1    7600 6850
 	0    1    1    0   
@@ -210,23 +210,23 @@ Wire Wire Line
 	7900 2150 7900 1750
 Connection ~ 7900 2150
 $Comp
-L 11ua-rescue:R R7
+L stmbl:R R7
 U 1 1 592E1BC6
 P 11950 6350
 F 0 "R7" H 11880 6304 50  0000 R CNN
 F 1 "120" H 11880 6395 50  0000 R CNN
-F 2 "stmbl:R_0603" V 11880 6350 50  0001 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 11880 6350 50  0001 C CNN
 F 3 "" H 11950 6350 50  0001 C CNN
 	1    11950 6350
 	1    0    0    1   
 $EndComp
 $Comp
-L 11ua-rescue:R R8
+L stmbl:R R8
 U 1 1 592E1BCC
 P 11950 6850
 F 0 "R8" H 11880 6804 50  0000 R CNN
 F 1 "120" H 11880 6895 50  0000 R CNN
-F 2 "stmbl:R_0603" V 11880 6850 50  0001 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 11880 6850 50  0001 C CNN
 F 3 "" H 11950 6850 50  0001 C CNN
 	1    11950 6850
 	1    0    0    1   
@@ -254,12 +254,12 @@ F 3 "" H 11950 7100 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L 11ua-rescue:C C6
+L stmbl:C C6
 U 1 1 592E1BDE
 P 12300 6800
 F 0 "C6" H 12185 6754 50  0000 R CNN
 F 1 "100n" H 12185 6845 50  0000 R CNN
-F 2 "stmbl:C_0603" H 12338 6650 50  0001 C CNN
+F 2 "stmbl-kicad-lib:C_0603" H 12338 6650 50  0001 C CNN
 F 3 "" H 12300 6800 50  0001 C CNN
 	1    12300 6800
 	1    0    0    1   
@@ -276,7 +276,6 @@ Wire Wire Line
 	12300 7000 12300 6950
 Wire Wire Line
 	11950 6100 11950 6200
-Connection ~ 12300 6650
 Connection ~ 11950 6650
 Wire Wire Line
 	8350 6850 8350 7100
@@ -320,14 +319,9 @@ Wire Wire Line
 Wire Wire Line
 	8400 7650 9450 7650
 Wire Wire Line
-	12300 6650 11950 6650
-Wire Wire Line
 	11950 6650 11950 6500
 Wire Wire Line
 	8350 7100 8350 7500
-Wire Wire Line
-	12850 6650 12300 6650
-Connection ~ 11950 7000
 $Comp
 L power:GND #PWR0101
 U 1 1 5C724DA8
@@ -351,45 +345,45 @@ F 3 "" H 14450 6300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 11ua-rescue:R R10
+L stmbl:R R10
 U 1 1 5C724DB4
 P 7500 5900
 F 0 "R10" V 7293 5900 50  0000 C CNN
 F 1 "100k" V 7384 5900 50  0000 C CNN
-F 2 "stmbl:R_0603" V 7430 5900 50  0001 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 7430 5900 50  0001 C CNN
 F 3 "" H 7500 5900 50  0001 C CNN
 	1    7500 5900
 	0    1    1    0   
 $EndComp
 $Comp
-L 11ua-rescue:C C7
+L stmbl:C C7
 U 1 1 5C724DBA
 P 6900 6250
 F 0 "C7" V 6648 6250 50  0000 C CNN
 F 1 "27p" V 6739 6250 50  0000 C CNN
-F 2 "stmbl:C_0603" H 6938 6100 50  0001 C CNN
+F 2 "stmbl-kicad-lib:C_0603" H 6938 6100 50  0001 C CNN
 F 3 "" H 6900 6250 50  0001 C CNN
 	1    6900 6250
 	0    1    1    0   
 $EndComp
 $Comp
-L 11ua-rescue:R R9
+L stmbl:R R9
 U 1 1 5C724DC0
 P 7450 4800
 F 0 "R9" V 7243 4800 50  0000 C CNN
 F 1 "100k" V 7334 4800 50  0000 C CNN
-F 2 "stmbl:R_0603" V 7380 4800 50  0001 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 7380 4800 50  0001 C CNN
 F 3 "" H 7450 4800 50  0001 C CNN
 	1    7450 4800
 	0    1    1    0   
 $EndComp
 $Comp
-L 11ua-rescue:C C8
+L stmbl:C C8
 U 1 1 5C724DC6
 P 6950 4550
 F 0 "C8" V 6698 4550 50  0000 C CNN
 F 1 "27p" V 6789 4550 50  0000 C CNN
-F 2 "stmbl:C_0603" H 6988 4400 50  0001 C CNN
+F 2 "stmbl-kicad-lib:C_0603" H 6988 4400 50  0001 C CNN
 F 3 "" H 6950 4550 50  0001 C CNN
 	1    6950 4550
 	0    1    1    0   
@@ -470,61 +464,6 @@ Wire Wire Line
 Wire Wire Line
 	5450 4900 5450 5300
 Connection ~ 5450 5300
-$Comp
-L Comparator:LM339 U1
-U 1 1 5C70CB52
-P 13150 6750
-F 0 "U1" H 13150 7117 50  0000 C CNN
-F 1 "LM339" H 13150 7026 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 13100 6850 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm339.pdf" H 13200 6950 50  0001 C CNN
-	1    13150 6750
-	1    0    0    -1  
-$EndComp
-$Comp
-L Comparator:LM339 U1
-U 2 1 5C71055B
-P 7750 2800
-F 0 "U1" H 7750 3167 50  0000 C CNN
-F 1 "LM339" H 7750 3076 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 7700 2900 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm339.pdf" H 7800 3000 50  0001 C CNN
-	2    7750 2800
-	1    0    0    -1  
-$EndComp
-$Comp
-L Comparator:LM339 U1
-U 3 1 5C7120E4
-P 7750 7650
-F 0 "U1" H 7750 8017 50  0000 C CNN
-F 1 "LM339" H 7750 7926 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 7700 7750 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm339.pdf" H 7800 7850 50  0001 C CNN
-	3    7750 7650
-	1    0    0    -1  
-$EndComp
-$Comp
-L Comparator:LM339 U1
-U 4 1 5C7131F1
-P 7100 5350
-F 0 "U1" H 7100 5717 50  0000 C CNN
-F 1 "LM339" H 7100 5626 50  0000 C CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 7050 5450 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm339.pdf" H 7150 5550 50  0001 C CNN
-	4    7100 5350
-	1    0    0    -1  
-$EndComp
-$Comp
-L Comparator:LM339 U1
-U 5 1 5C713DFB
-P 14550 6650
-F 0 "U1" H 14508 6696 50  0000 L CNN
-F 1 "LM339" H 14508 6605 50  0000 L CNN
-F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 14500 6750 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/lm339.pdf" H 14600 6850 50  0001 C CNN
-	5    14550 6650
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	14450 6950 14450 7000
 Wire Wire Line
@@ -541,34 +480,34 @@ F 3 "" H 13200 5250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 11ua-rescue:C C10
+L stmbl:C C10
 U 1 1 5C74F384
 P 12500 5500
 F 0 "C10" H 12615 5546 50  0000 L CNN
 F 1 "C" H 12615 5455 50  0000 L CNN
-F 2 "stmbl:C_0603" H 12538 5350 50  0001 C CNN
+F 2 "stmbl-kicad-lib:C_0603" H 12538 5350 50  0001 C CNN
 F 3 "" H 12500 5500 50  0001 C CNN
 	1    12500 5500
 	1    0    0    -1  
 $EndComp
 $Comp
-L 11ua-rescue:C C11
+L stmbl:C C11
 U 1 1 5C74FF0F
 P 12800 5500
 F 0 "C11" H 12915 5546 50  0000 L CNN
 F 1 "C" H 12915 5455 50  0000 L CNN
-F 2 "stmbl:C_0603" H 12838 5350 50  0001 C CNN
+F 2 "stmbl-kicad-lib:C_0603" H 12838 5350 50  0001 C CNN
 F 3 "" H 12800 5500 50  0001 C CNN
 	1    12800 5500
 	1    0    0    -1  
 $EndComp
 $Comp
-L 11ua-rescue:C C12
+L stmbl:C C12
 U 1 1 5C7501E4
 P 13100 5500
 F 0 "C12" H 13215 5546 50  0000 L CNN
 F 1 "C" H 13215 5455 50  0000 L CNN
-F 2 "stmbl:C_0603" H 13138 5350 50  0001 C CNN
+F 2 "stmbl-kicad-lib:C_0603" H 13138 5350 50  0001 C CNN
 F 3 "" H 13100 5500 50  0001 C CNN
 	1    13100 5500
 	1    0    0    -1  
@@ -666,8 +605,6 @@ Wire Wire Line
 	13450 6750 13600 6750
 Connection ~ 13600 6750
 Wire Wire Line
-	13600 6750 13750 6750
-Wire Wire Line
 	7700 5200 8900 5200
 Wire Wire Line
 	7900 2150 9000 2150
@@ -695,19 +632,16 @@ Connection ~ 8950 7500
 Wire Wire Line
 	8950 7500 9650 7500
 $Comp
-L 11ua-rescue:C C5
+L stmbl:C C5
 U 1 1 5D7971E6
 P 13750 6900
 F 0 "C5" H 13635 6854 50  0000 R CNN
 F 1 "100n" H 13635 6945 50  0000 R CNN
-F 2 "stmbl:C_0603" H 13788 6750 50  0001 C CNN
+F 2 "stmbl-kicad-lib:C_0603" H 13788 6750 50  0001 C CNN
 F 3 "" H 13750 6900 50  0001 C CNN
 	1    13750 6900
 	1    0    0    1   
 $EndComp
-Connection ~ 13750 6750
-Wire Wire Line
-	13750 6750 13850 6750
 $Comp
 L power:GND #PWR0103
 U 1 1 5D7977A3
@@ -832,10 +766,10 @@ Wire Wire Line
 Wire Wire Line
 	8950 5500 8950 5900
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0104
 U 1 1 5D872060
 P 10700 6150
-F 0 "#PWR?" H 10700 5900 50  0001 C CNN
+F 0 "#PWR0104" H 10700 5900 50  0001 C CNN
 F 1 "GND" H 10705 5977 50  0000 C CNN
 F 2 "" H 10700 6150 50  0001 C CNN
 F 3 "" H 10700 6150 50  0001 C CNN
@@ -843,14 +777,79 @@ F 3 "" H 10700 6150 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0105
 U 1 1 5D872536
 P 3900 6150
-F 0 "#PWR?" H 3900 5900 50  0001 C CNN
+F 0 "#PWR0105" H 3900 5900 50  0001 C CNN
 F 1 "GND" H 3905 5977 50  0000 C CNN
 F 2 "" H 3900 6150 50  0001 C CNN
 F 3 "" H 3900 6150 50  0001 C CNN
 	1    3900 6150
 	-1   0    0    -1  
 $EndComp
+Wire Wire Line
+	11950 6650 12300 6650
+Wire Wire Line
+	13600 6750 13750 6750
+$Comp
+L Amplifier_Operational:OPA4376 U1
+U 1 1 5C9610B8
+P 7100 5350
+F 0 "U1" H 7100 5717 50  0000 C CNN
+F 1 "OPA4376" H 7100 5626 50  0000 C CNN
+F 2 "Housings_SSOP:TSSOP-14_4.4x5mm_Pitch0.65mm" H 7050 5450 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/opa376.pdf" H 7150 5550 50  0001 C CNN
+	1    7100 5350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:OPA4376 U1
+U 2 1 5C965FAD
+P 7750 7650
+F 0 "U1" H 7750 8017 50  0000 C CNN
+F 1 "OPA4376" H 7750 7926 50  0000 C CNN
+F 2 "Housings_SSOP:TSSOP-14_4.4x5mm_Pitch0.65mm" H 7700 7750 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/opa376.pdf" H 7800 7850 50  0001 C CNN
+	2    7750 7650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:OPA4376 U1
+U 3 1 5C967BBE
+P 7750 2800
+F 0 "U1" H 7750 3167 50  0000 C CNN
+F 1 "OPA4376" H 7750 3076 50  0000 C CNN
+F 2 "Housings_SSOP:TSSOP-14_4.4x5mm_Pitch0.65mm" H 7700 2900 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/opa376.pdf" H 7800 3000 50  0001 C CNN
+	3    7750 2800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:OPA4376 U1
+U 4 1 5C967BC8
+P 13150 6750
+F 0 "U1" H 13150 7117 50  0000 C CNN
+F 1 "OPA4376" H 13150 7026 50  0000 C CNN
+F 2 "Housings_SSOP:TSSOP-14_4.4x5mm_Pitch0.65mm" H 13100 6850 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/opa376.pdf" H 13200 6950 50  0001 C CNN
+	4    13150 6750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:OPA4376 U1
+U 5 1 5C970EA7
+P 14550 6650
+F 0 "U1" H 14508 6696 50  0000 L CNN
+F 1 "OPA4376" H 14508 6605 50  0000 L CNN
+F 2 "Housings_SSOP:TSSOP-14_4.4x5mm_Pitch0.65mm" H 14500 6750 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/opa376.pdf" H 14600 6850 50  0001 C CNN
+	5    14550 6650
+	1    0    0    -1  
+$EndComp
+Connection ~ 13750 6750
+Wire Wire Line
+	13750 6750 13850 6750
+Connection ~ 12300 6650
+Wire Wire Line
+	12300 6650 12850 6650
 $EndSCHEMATC
