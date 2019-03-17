@@ -48,7 +48,6 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   PIN(target) += vel_ext_cmd * period + acc_ext_cmd * period * period / 2.0;
   vel_ext_cmd += acc_ext_cmd * period;
   vel_ext_cmd = LIMIT(vel_ext_cmd, PIN(max_vel) * 0.99);
-  PIN(vel_ext_cmd) = vel_ext_cmd;
 
   // pos input
   float target = CLAMP(PIN(target), PIN(min_pos), PIN(max_pos));
