@@ -594,4 +594,62 @@ F 3 "" H 4150 2600 50  0000 C CNN
 	1    4150 2600
 	0    1    1    0   
 $EndComp
+Text GLabel 6600 4100 0    60   Input ~ 0
+PD0
+Text GLabel 6900 4350 3    60   Input ~ 0
+CAN_RXD
+$Comp
+L Jumper:SolderJumper_3_Bridged12 JP1
+U 1 1 5C933169
+P 6900 4100
+F 0 "JP1" H 6900 4305 50  0000 C CNN
+F 1 "SolderJumper_3_Bridged12" H 6900 4214 50  0000 C CNN
+F 2 "stmbl-kicad-lib:SOLDER_JUMPER_3_NC" H 6900 4100 50  0001 C CNN
+F 3 "~" H 6900 4100 50  0001 C CNN
+	1    6900 4100
+	1    0    0    -1  
+$EndComp
+Text GLabel 7200 4100 2    60   Input ~ 0
+PB5
+Wire Wire Line
+	6900 4250 6900 4350
+Wire Wire Line
+	6600 4100 6700 4100
+Wire Wire Line
+	7100 4100 7200 4100
+$Comp
+L Jumper:SolderJumper_3_Bridged12 JP2
+U 1 1 5C949A52
+P 6900 5000
+F 0 "JP2" H 6900 5205 50  0000 C CNN
+F 1 "SolderJumper_3_Bridged12" H 6900 5114 50  0000 C CNN
+F 2 "stmbl-kicad-lib:SOLDER_JUMPER_3_NC" H 6900 5000 50  0001 C CNN
+F 3 "~" H 6900 5000 50  0001 C CNN
+	1    6900 5000
+	1    0    0    -1  
+$EndComp
+Text GLabel 6600 5000 0    60   Input ~ 0
+PD1
+Wire Wire Line
+	6600 5000 6700 5000
+Text GLabel 7200 5000 2    60   Input ~ 0
+PB6
+Wire Wire Line
+	7200 5000 7100 5000
+Text GLabel 6900 5250 3    60   Input ~ 0
+CAN_TXD
+Wire Wire Line
+	6900 5250 6900 5150
+Text GLabel 6300 5850 0    60   Input ~ 0
+PE1
+Text GLabel 6450 5850 2    60   Input ~ 0
+LIN_TX
+Wire Wire Line
+	6300 5850 6450 5850
+Text GLabel 6300 6000 0    60   Input ~ 0
+PE0
+Text GLabel 6450 6000 2    60   Input ~ 0
+LIN_RX
+Wire Wire Line
+	6300 6000 6450 6000
 $EndSCHEMATC

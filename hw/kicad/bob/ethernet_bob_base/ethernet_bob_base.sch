@@ -349,22 +349,22 @@ Wire Wire Line
 	3900 7150 3900 7100
 Wire Wire Line
 	3800 6800 3900 6800
-Text GLabel 7550 1800 0    50   Input ~ 0
+Text GLabel 6700 1800 0    50   Input ~ 0
 PWM0
-Text GLabel 7550 1900 0    50   Input ~ 0
+Text GLabel 6700 1900 0    50   Input ~ 0
 PWM1
-Text GLabel 7550 4500 0    50   Input ~ 0
+Text GLabel 6700 4500 0    50   Input ~ 0
 PWM2
-Text GLabel 7550 4600 0    50   Input ~ 0
+Text GLabel 6700 4600 0    50   Input ~ 0
 PWM3
 Wire Wire Line
-	7550 4500 7650 4500
+	6700 4500 7650 4500
 Wire Wire Line
-	7550 4600 7650 4600
+	6700 4600 7650 4600
 Wire Wire Line
-	7550 1900 7650 1900
+	6700 1900 7650 1900
 Wire Wire Line
-	7550 1800 7650 1800
+	6700 1800 7650 1800
 Text GLabel 6700 1700 0    50   Input ~ 0
 HSDRV_EN
 Text GLabel 6700 1150 0    50   Input ~ 0
@@ -394,4 +394,244 @@ U 5C918DC5
 F0 "psu" 50
 F1 "psu.sch" 50
 $EndSheet
+$Comp
+L Connector:Conn_01x02_Male J3
+U 1 1 5C968561
+P 10150 2000
+F 0 "J3" H 10122 1882 50  0000 R CNN
+F 1 "Conn_01x02_Male" H 10122 1973 50  0000 R CNN
+F 2 "stmbl-kicad-lib:RM3.5_1x2_UP" H 10150 2000 50  0001 C CNN
+F 3 "~" H 10150 2000 50  0001 C CNN
+	1    10150 2000
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8950 2350 9950 2350
+Wire Wire Line
+	9950 2350 9950 2000
+Wire Wire Line
+	9950 2000 9550 2000
+Wire Wire Line
+	9550 2000 9550 1550
+Wire Wire Line
+	9550 1550 8950 1550
+Connection ~ 9950 2000
+Wire Wire Line
+	8950 1650 9950 1650
+Wire Wire Line
+	9950 1650 9950 1900
+Wire Wire Line
+	8950 2250 9850 2250
+Wire Wire Line
+	9850 2250 9850 1900
+Wire Wire Line
+	9850 1900 9950 1900
+Connection ~ 9950 1900
+$Comp
+L Connector:Conn_01x02_Male J4
+U 1 1 5C96EB9D
+P 10150 4700
+F 0 "J4" H 10122 4582 50  0000 R CNN
+F 1 "Conn_01x02_Male" H 10122 4673 50  0000 R CNN
+F 2 "stmbl-kicad-lib:RM3.5_1x2_UP" H 10150 4700 50  0001 C CNN
+F 3 "~" H 10150 4700 50  0001 C CNN
+	1    10150 4700
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8950 5050 9950 5050
+Wire Wire Line
+	9950 5050 9950 4700
+Wire Wire Line
+	9950 4700 9550 4700
+Wire Wire Line
+	9550 4700 9550 4250
+Wire Wire Line
+	9550 4250 8950 4250
+Connection ~ 9950 4700
+Wire Wire Line
+	8950 4350 9950 4350
+Wire Wire Line
+	9950 4350 9950 4600
+Wire Wire Line
+	8950 4950 9850 4950
+Wire Wire Line
+	9850 4950 9850 4600
+Wire Wire Line
+	9850 4600 9950 4600
+Connection ~ 9950 4600
+$Comp
+L stmbl:VD #PWR0131
+U 1 1 5C97367C
+P 8500 3550
+F 0 "#PWR0131" H 8500 3400 50  0001 C CNN
+F 1 "VD" H 8517 3723 50  0000 C CNN
+F 2 "" H 8500 3550 50  0001 C CNN
+F 3 "" H 8500 3550 50  0001 C CNN
+	1    8500 3550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8500 3550 8500 3600
+$Comp
+L stmbl:VD #PWR0135
+U 1 1 5C97629E
+P 8500 850
+F 0 "#PWR0135" H 8500 700 50  0001 C CNN
+F 1 "VD" H 8517 1023 50  0000 C CNN
+F 2 "" H 8500 850 50  0001 C CNN
+F 3 "" H 8500 850 50  0001 C CNN
+	1    8500 850 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8500 850  8500 900 
+Text Label 7150 1150 0    50   ~ 0
+HSDRV_SCLK
+Text Label 7150 1250 0    50   ~ 0
+HSDRV_DI
+Text Label 7150 1450 0    50   ~ 0
+HSDRV_CS
+Text Label 7150 1700 0    50   ~ 0
+HSDRV_EN
+Text Label 7150 1350 0    50   ~ 0
+HSDRV_DO
+Text Label 7150 1800 0    50   ~ 0
+HSDRV_PWM0
+Text Label 7150 1900 0    50   ~ 0
+HSDRV_PWM1
+Text Label 7150 4500 0    50   ~ 0
+HSDRV_PWM2
+Text Label 7150 4600 0    50   ~ 0
+HSDRV_PWM3
+Wire Wire Line
+	8500 3600 9150 3600
+Wire Wire Line
+	9150 3600 9150 3850
+Wire Wire Line
+	9150 4550 8950 4550
+Connection ~ 8500 3600
+Wire Wire Line
+	8500 3600 8500 3650
+Wire Wire Line
+	8950 4450 9150 4450
+Connection ~ 9150 4450
+Wire Wire Line
+	9150 4450 9150 4550
+Wire Wire Line
+	8950 4150 9150 4150
+Connection ~ 9150 4150
+Wire Wire Line
+	9150 4150 9150 4450
+Wire Wire Line
+	8950 4050 9150 4050
+Connection ~ 9150 4050
+Wire Wire Line
+	9150 4050 9150 4150
+Wire Wire Line
+	8950 3950 9150 3950
+Connection ~ 9150 3950
+Wire Wire Line
+	9150 3950 9150 4050
+Wire Wire Line
+	8950 3850 9150 3850
+Connection ~ 9150 3850
+Wire Wire Line
+	9150 3850 9150 3950
+Wire Wire Line
+	8950 1850 9150 1850
+Wire Wire Line
+	9150 1850 9150 1750
+Wire Wire Line
+	9150 900  8500 900 
+Connection ~ 8500 900 
+Wire Wire Line
+	8500 900  8500 950 
+Wire Wire Line
+	8950 1150 9150 1150
+Connection ~ 9150 1150
+Wire Wire Line
+	9150 1150 9150 900 
+Wire Wire Line
+	8950 1250 9150 1250
+Connection ~ 9150 1250
+Wire Wire Line
+	9150 1250 9150 1150
+Wire Wire Line
+	8950 1350 9150 1350
+Connection ~ 9150 1350
+Wire Wire Line
+	9150 1350 9150 1250
+Wire Wire Line
+	8950 1450 9150 1450
+Connection ~ 9150 1450
+Wire Wire Line
+	9150 1450 9150 1350
+Wire Wire Line
+	8950 1750 9150 1750
+Connection ~ 9150 1750
+Wire Wire Line
+	9150 1750 9150 1450
+$Comp
+L Connector:Conn_01x06_Male J5
+U 1 1 5C99F589
+P 10550 2550
+F 0 "J5" H 10522 2432 50  0000 R CNN
+F 1 "Conn_01x06_Male" H 10522 2523 50  0000 R CNN
+F 2 "stmbl-kicad-lib:RM3.5_1x6_UP" H 10550 2550 50  0001 C CNN
+F 3 "~" H 10550 2550 50  0001 C CNN
+	1    10550 2550
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	8950 2750 10350 2750
+Wire Wire Line
+	8950 2650 10350 2650
+Wire Wire Line
+	8950 2550 10350 2550
+Wire Wire Line
+	8950 2450 10350 2450
+Wire Wire Line
+	8950 2150 10050 2150
+Wire Wire Line
+	10050 2150 10050 2350
+Wire Wire Line
+	10050 2350 10350 2350
+Wire Wire Line
+	8950 2050 10150 2050
+Wire Wire Line
+	10150 2050 10150 2250
+Wire Wire Line
+	10150 2250 10350 2250
+$Comp
+L Connector:Conn_01x06_Male J6
+U 1 1 5C9B383F
+P 10550 5150
+F 0 "J6" H 10522 5124 50  0000 R CNN
+F 1 "Conn_01x06_Male" H 10522 5033 50  0000 R CNN
+F 2 "stmbl-kicad-lib:RM3.5_1x6_UP" H 10550 5150 50  0001 C CNN
+F 3 "~" H 10550 5150 50  0001 C CNN
+	1    10550 5150
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	8950 5450 10350 5450
+Wire Wire Line
+	8950 5350 10350 5350
+Wire Wire Line
+	8950 5250 10350 5250
+Wire Wire Line
+	8950 5150 10350 5150
+Wire Wire Line
+	8950 4850 10050 4850
+Wire Wire Line
+	10050 4850 10050 5050
+Wire Wire Line
+	10050 5050 10350 5050
+Wire Wire Line
+	8950 4750 10150 4750
+Wire Wire Line
+	10150 4750 10150 4950
+Wire Wire Line
+	10150 4950 10350 4950
 $EndSCHEMATC
