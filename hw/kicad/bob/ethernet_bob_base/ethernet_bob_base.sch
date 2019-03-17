@@ -1,0 +1,397 @@
+EESchema Schematic File Version 4
+LIBS:ethernet_bob_base-cache
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 3
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L stmbl:MC33879A U5
+U 1 1 5C9EA302
+P 8300 4650
+F 0 "U5" H 8300 5831 50  0000 C CNN
+F 1 "MC33879A" H 8300 5740 50  0000 C CNN
+F 2 "stmbl-kicad-lib:SOICW_32_EPAD" H 8300 4350 50  0001 C CNN
+F 3 "" H 8300 4350 50  0001 C CNN
+	1    8300 4650
+	1    0    0    -1  
+$EndComp
+$Sheet
+S 900  800  1050 800 
+U 5C9EC0CA
+F0 "eth_bob_conn.sch" 50
+F1 "eth_bob_conn.sch" 50
+$EndSheet
+$Comp
+L Interface_CAN_LIN:TJA1021T U2
+U 1 1 5C8E6066
+P 3300 5250
+F 0 "U2" H 3300 5831 50  0000 C CNN
+F 1 "TJA1021T" H 3300 5740 50  0000 C CNN
+F 2 "stmbl-kicad-lib:SOIC-8-N" H 3300 4750 50  0001 C CIN
+F 3 "http://www.nxp.com/documents/data_sheet/TJA1021.pdf" H 2900 5700 50  0001 C CNN
+	1    3300 5250
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Interface_CAN_LIN:MCP2551-I-SN U3
+U 1 1 5C8E631D
+P 3300 6600
+F 0 "U3" H 3300 7181 50  0000 C CNN
+F 1 "MCP2551-I-SN" H 3300 7090 50  0000 C CNN
+F 2 "stmbl-kicad-lib:SOIC-8-N" H 3300 6100 50  0001 C CIN
+F 3 "http://ww1.microchip.com/downloads/en/devicedoc/21667d.pdf" H 3300 6600 50  0001 C CNN
+	1    3300 6600
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	7850 5600 7850 5750
+Wire Wire Line
+	7850 5750 8300 5750
+Wire Wire Line
+	8550 5750 8550 5600
+Wire Wire Line
+	7850 2900 7850 3050
+Wire Wire Line
+	7850 3050 8250 3050
+Wire Wire Line
+	8550 3050 8550 2900
+$Comp
+L Connector:DB9_Male J1
+U 1 1 5C8F3703
+P 1850 6600
+F 0 "J1" H 1768 5908 50  0000 C CNN
+F 1 "DB9_Male" H 1768 5999 50  0000 C CNN
+F 2 "Connectors_DSub:DSUB-9_Male_Vertical_Pitch2.77x2.84mm_MountingHoles" H 1850 6600 50  0001 C CNN
+F 3 " ~" H 1850 6600 50  0001 C CNN
+	1    1850 6600
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2150 6400 2550 6400
+Wire Wire Line
+	2550 6400 2550 6700
+Wire Wire Line
+	2550 6700 2800 6700
+Wire Wire Line
+	2800 6500 2150 6500
+$Comp
+L stmbl:GND #PWR0118
+U 1 1 5C8F652A
+P 3300 7100
+F 0 "#PWR0118" H 3300 6850 50  0001 C CNN
+F 1 "GND" H 3305 6927 50  0000 C CNN
+F 2 "" H 3300 7100 50  0001 C CNN
+F 3 "" H 3300 7100 50  0001 C CNN
+	1    3300 7100
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:GND #PWR0119
+U 1 1 5C8F6B70
+P 2250 6600
+F 0 "#PWR0119" H 2250 6350 50  0001 C CNN
+F 1 "GND" V 2255 6472 50  0000 R CNN
+F 2 "" H 2250 6600 50  0001 C CNN
+F 3 "" H 2250 6600 50  0001 C CNN
+	1    2250 6600
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2150 6600 2250 6600
+Wire Wire Line
+	3300 7000 3300 7100
+$Comp
+L stmbl:GND #PWR0120
+U 1 1 5C8F7490
+P 2250 6300
+F 0 "#PWR0120" H 2250 6050 50  0001 C CNN
+F 1 "GND" V 2255 6172 50  0000 R CNN
+F 2 "" H 2250 6300 50  0001 C CNN
+F 3 "" H 2250 6300 50  0001 C CNN
+	1    2250 6300
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2250 6300 2150 6300
+$Comp
+L stmbl:+12V #PWR0121
+U 1 1 5C8F80EB
+P 2250 6900
+F 0 "#PWR0121" H 2250 6750 50  0001 C CNN
+F 1 "+12V" V 2265 7028 50  0000 L CNN
+F 2 "" H 2250 6900 50  0001 C CNN
+F 3 "" H 2250 6900 50  0001 C CNN
+	1    2250 6900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2250 6900 2150 6900
+$Comp
+L stmbl:+3.3V #PWR0122
+U 1 1 5C8FC3B6
+P 3300 6100
+F 0 "#PWR0122" H 3300 5950 50  0001 C CNN
+F 1 "+3.3V" H 3315 6273 50  0000 C CNN
+F 2 "" H 3300 6100 50  0001 C CNN
+F 3 "" H 3300 6100 50  0001 C CNN
+	1    3300 6100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3300 6100 3300 6200
+$Comp
+L stmbl:+3.3V #PWR0123
+U 1 1 5C8FCC27
+P 3300 4750
+F 0 "#PWR0123" H 3300 4600 50  0001 C CNN
+F 1 "+3.3V" H 3315 4923 50  0000 C CNN
+F 2 "" H 3300 4750 50  0001 C CNN
+F 3 "" H 3300 4750 50  0001 C CNN
+	1    3300 4750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3300 4750 3300 4850
+$Comp
+L stmbl:GND #PWR0124
+U 1 1 5C8FD83A
+P 3300 5750
+F 0 "#PWR0124" H 3300 5500 50  0001 C CNN
+F 1 "GND" H 3305 5577 50  0000 C CNN
+F 2 "" H 3300 5750 50  0001 C CNN
+F 3 "" H 3300 5750 50  0001 C CNN
+	1    3300 5750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3300 5650 3300 5750
+$Comp
+L Connector:Conn_01x02_Male J2
+U 1 1 5C8FEAEC
+P 1950 5350
+F 0 "J2" H 2058 5531 50  0000 C CNN
+F 1 "Conn_01x02_Male" H 2058 5440 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm" H 1950 5350 50  0001 C CNN
+F 3 "~" H 1950 5350 50  0001 C CNN
+	1    1950 5350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2150 5350 2800 5350
+$Comp
+L stmbl:GND #PWR0125
+U 1 1 5C8FFCAB
+P 2250 5450
+F 0 "#PWR0125" H 2250 5200 50  0001 C CNN
+F 1 "GND" V 2255 5322 50  0000 R CNN
+F 2 "" H 2250 5450 50  0001 C CNN
+F 3 "" H 2250 5450 50  0001 C CNN
+	1    2250 5450
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2150 5450 2250 5450
+$Comp
+L stmbl:MC33879A U4
+U 1 1 5C9E951E
+P 8300 1950
+F 0 "U4" H 8300 3131 50  0000 C CNN
+F 1 "MC33879A" H 8300 3040 50  0000 C CNN
+F 2 "stmbl-kicad-lib:SOICW_32_EPAD" H 8300 1650 50  0001 C CNN
+F 3 "" H 8300 1650 50  0001 C CNN
+	1    8300 1950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7650 1350 7000 1350
+Wire Wire Line
+	7000 1350 7000 3950
+Wire Wire Line
+	7000 3950 7650 3950
+Wire Wire Line
+	7650 4150 6900 4150
+Wire Wire Line
+	6900 4150 6900 1450
+Wire Wire Line
+	6900 1450 7650 1450
+Wire Wire Line
+	7650 3850 7100 3850
+Wire Wire Line
+	7100 1150 7650 1150
+Wire Wire Line
+	7650 1700 6800 1700
+Wire Wire Line
+	6800 4400 7650 4400
+$Comp
+L stmbl:GND #PWR0126
+U 1 1 5C903588
+P 8250 3050
+F 0 "#PWR0126" H 8250 2800 50  0001 C CNN
+F 1 "GND" H 8255 2877 50  0000 C CNN
+F 2 "" H 8250 3050 50  0001 C CNN
+F 3 "" H 8250 3050 50  0001 C CNN
+	1    8250 3050
+	1    0    0    -1  
+$EndComp
+Connection ~ 8250 3050
+Wire Wire Line
+	8250 3050 8550 3050
+$Comp
+L stmbl:GND #PWR0127
+U 1 1 5C903B1C
+P 8300 5750
+F 0 "#PWR0127" H 8300 5500 50  0001 C CNN
+F 1 "GND" H 8305 5577 50  0000 C CNN
+F 2 "" H 8300 5750 50  0001 C CNN
+F 3 "" H 8300 5750 50  0001 C CNN
+	1    8300 5750
+	1    0    0    -1  
+$EndComp
+Connection ~ 8300 5750
+Wire Wire Line
+	8300 5750 8550 5750
+$Comp
+L stmbl:+3.3V #PWR0128
+U 1 1 5C9042E8
+P 8100 3550
+F 0 "#PWR0128" H 8100 3400 50  0001 C CNN
+F 1 "+3.3V" H 8115 3723 50  0000 C CNN
+F 2 "" H 8100 3550 50  0001 C CNN
+F 3 "" H 8100 3550 50  0001 C CNN
+	1    8100 3550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8100 3550 8100 3650
+$Comp
+L stmbl:+3.3V #PWR0129
+U 1 1 5C905130
+P 8100 850
+F 0 "#PWR0129" H 8100 700 50  0001 C CNN
+F 1 "+3.3V" H 8115 1023 50  0000 C CNN
+F 2 "" H 8100 850 50  0001 C CNN
+F 3 "" H 8100 850 50  0001 C CNN
+	1    8100 850 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8100 850  8100 950 
+$Comp
+L Connector:TestPoint TP1
+U 1 1 5C906D12
+P 2650 5150
+F 0 "TP1" V 2845 5222 50  0000 C CNN
+F 1 "TestPoint" V 2754 5222 50  0000 C CNN
+F 2 "Measurement_Points:Measurement_Point_Round-TH_Small" H 2850 5150 50  0001 C CNN
+F 3 "~" H 2850 5150 50  0001 C CNN
+	1    2650 5150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2650 5150 2800 5150
+Text GLabel 3900 5050 2    50   Input ~ 0
+LIN_TXD
+Text GLabel 3900 5150 2    50   Input ~ 0
+LIN_RXD
+Text GLabel 3900 5350 2    50   Input ~ 0
+LIN_SLP
+Text GLabel 3900 5450 2    50   Input ~ 0
+LIN_WAKE
+Text GLabel 3900 6400 2    50   Input ~ 0
+CAN_TXD
+Text GLabel 3900 6500 2    50   Input ~ 0
+CAN_RXD
+Wire Wire Line
+	3800 5050 3900 5050
+Wire Wire Line
+	3800 5150 3900 5150
+Wire Wire Line
+	3800 5350 3900 5350
+Wire Wire Line
+	3800 5450 3900 5450
+Wire Wire Line
+	3800 6400 3900 6400
+Wire Wire Line
+	3800 6500 3900 6500
+$Comp
+L stmbl:R R1
+U 1 1 5C90C36F
+P 3900 6950
+F 0 "R1" H 3970 6996 50  0000 L CNN
+F 1 "R" H 3970 6905 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3830 6950 50  0001 C CNN
+F 3 "" H 3900 6950 50  0000 C CNN
+	1    3900 6950
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:GND #PWR0130
+U 1 1 5C90CBAD
+P 3900 7150
+F 0 "#PWR0130" H 3900 6900 50  0001 C CNN
+F 1 "GND" H 3905 6977 50  0000 C CNN
+F 2 "" H 3900 7150 50  0001 C CNN
+F 3 "" H 3900 7150 50  0001 C CNN
+	1    3900 7150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3900 7150 3900 7100
+Wire Wire Line
+	3800 6800 3900 6800
+Text GLabel 7550 1800 0    50   Input ~ 0
+PWM0
+Text GLabel 7550 1900 0    50   Input ~ 0
+PWM1
+Text GLabel 7550 4500 0    50   Input ~ 0
+PWM2
+Text GLabel 7550 4600 0    50   Input ~ 0
+PWM3
+Wire Wire Line
+	7550 4500 7650 4500
+Wire Wire Line
+	7550 4600 7650 4600
+Wire Wire Line
+	7550 1900 7650 1900
+Wire Wire Line
+	7550 1800 7650 1800
+Text GLabel 6700 1700 0    50   Input ~ 0
+HSDRV_EN
+Text GLabel 6700 1150 0    50   Input ~ 0
+HSDRV_SCLK
+Wire Wire Line
+	6800 1700 6800 4400
+Wire Wire Line
+	7100 1150 7100 3850
+Wire Wire Line
+	6700 1700 6800 1700
+Connection ~ 6800 1700
+Wire Wire Line
+	6700 1150 7100 1150
+Connection ~ 7100 1150
+Text GLabel 6700 1250 0    50   Input ~ 0
+HSDRV_DI
+Wire Wire Line
+	6700 1250 7650 1250
+Text GLabel 6700 1450 0    50   Input ~ 0
+HSDRV_CS
+Wire Wire Line
+	6700 1450 6900 1450
+Connection ~ 6900 1450
+$Sheet
+S 900  2200 1000 600 
+U 5C918DC5
+F0 "psu" 50
+F1 "psu.sch" 50
+$EndSheet
+$EndSCHEMATC

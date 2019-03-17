@@ -1,0 +1,365 @@
+EESchema Schematic File Version 4
+LIBS:ethernet_bob_base-cache
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 3 3
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L stmbl:C C3
+U 1 1 5C8F640C
+P 2650 2700
+F 0 "C3" H 2765 2746 50  0000 L CNN
+F 1 "220n" H 2765 2655 50  0000 L CNN
+F 2 "stmbl:C_0805" H 2688 2550 50  0001 C CNN
+F 3 "" H 2650 2700 50  0001 C CNN
+	1    2650 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C6
+U 1 1 5C8F6412
+P 5100 2400
+F 0 "C6" H 5215 2446 50  0000 L CNN
+F 1 "10n" H 5215 2355 50  0000 L CNN
+F 2 "stmbl:C_0603" H 5138 2250 50  0001 C CNN
+F 3 "" H 5100 2400 50  0001 C CNN
+	1    5100 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:INDUCTOR L1
+U 1 1 5C8F641C
+P 5550 2550
+F 0 "L1" V 5775 2550 50  0000 C CNN
+F 1 "22µ 650mA" V 5684 2550 50  0000 C CNN
+F 2 "stmbl:SMD_INDUCTOR_32x25" H 5550 2550 50  0001 C CNN
+F 3 "" H 5550 2550 50  0001 C CNN
+F 4 " LQH2HPZ220MJRL" H 5550 2550 50  0001 C CNN "Manufacturer No"
+F 5 " " H 5550 2550 50  0001 C CNN "Voltage"
+F 6 " " H 5550 2550 50  0001 C CNN "Source"
+F 7 " " H 5550 2550 50  0001 C CNN "Tolerance"
+	1    5550 2550
+	0    -1   -1   0   
+$EndComp
+$Comp
+L stmbl:R R5
+U 1 1 5C8F6422
+P 5850 2700
+F 0 "R5" H 5920 2746 50  0000 L CNN
+F 1 "3.09k" H 5920 2655 50  0000 L CNN
+F 2 "stmbl:R_0603" V 5780 2700 50  0001 C CNN
+F 3 "" H 5850 2700 50  0001 C CNN
+	1    5850 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R6
+U 1 1 5C8F6428
+P 5850 3000
+F 0 "R6" H 5920 3046 50  0000 L CNN
+F 1 "1k" H 5920 2955 50  0000 L CNN
+F 2 "stmbl:R_0603" V 5780 3000 50  0001 C CNN
+F 3 "" H 5850 3000 50  0001 C CNN
+	1    5850 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C8
+U 1 1 5C8F642E
+P 6550 2700
+F 0 "C8" H 6665 2746 50  0000 L CNN
+F 1 "10µ" H 6665 2655 50  0000 L CNN
+F 2 "stmbl:C_0805" H 6588 2550 50  0001 C CNN
+F 3 "" H 6550 2700 50  0001 C CNN
+	1    6550 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C9
+U 1 1 5C8F6434
+P 6900 2700
+F 0 "C9" H 7015 2746 50  0000 L CNN
+F 1 "10µ" H 7015 2655 50  0000 L CNN
+F 2 "stmbl:C_0805" H 6938 2550 50  0001 C CNN
+F 3 "" H 6900 2700 50  0001 C CNN
+	1    6900 2700
+	1    0    0    -1  
+$EndComp
+Connection ~ 5250 3150
+Wire Wire Line
+	6900 3150 6900 2850
+Wire Wire Line
+	6550 2850 6550 3150
+Connection ~ 6550 3150
+Wire Wire Line
+	6550 3150 6900 3150
+$Comp
+L stmbl:+5V #PWR0132
+U 1 1 5C8F645E
+P 6700 2550
+F 0 "#PWR0132" H 6700 2400 50  0001 C CNN
+F 1 "+5V" H 6715 2723 50  0000 C CNN
+F 2 "" H 6700 2550 50  0000 C CNN
+F 3 "" H 6700 2550 50  0000 C CNN
+	1    6700 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:GND #PWR0133
+U 1 1 5C8F6464
+P 5250 3150
+F 0 "#PWR0133" H 5250 2900 50  0001 C CNN
+F 1 "GND" H 5255 2977 50  0000 C CNN
+F 2 "" H 5250 3150 50  0000 C CNN
+F 3 "" H 5250 3150 50  0000 C CNN
+	1    5250 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:CP C1
+U 1 1 5C8F6479
+P 1850 2700
+F 0 "C1" H 1968 2791 50  0000 L CNN
+F 1 "20µ" H 1968 2700 50  0000 L CNN
+F 2 "Capacitors_SMD:CP_Elec_6.3x7.7" H 2750 2300 50  0001 L CNN
+F 3 "" H 1850 2700 50  0000 C CNN
+	1    1850 2700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1850 2850 1850 3150
+$Comp
+L stmbl:C C2
+U 1 1 5C8F6480
+P 2250 2700
+F 0 "C2" H 2365 2746 50  0000 L CNN
+F 1 "100n" H 2365 2655 50  0000 L CNN
+F 2 "stmbl:C_0805" H 2288 2550 50  0001 C CNN
+F 3 "" H 2250 2700 50  0001 C CNN
+	1    2250 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:VD #PWR0134
+U 1 1 5C8F6488
+P 2250 2400
+F 0 "#PWR0134" H 2250 2250 50  0001 C CNN
+F 1 "VD" H 2267 2573 50  0000 C CNN
+F 2 "" H 2250 2400 50  0001 C CNN
+F 3 "" H 2250 2400 50  0001 C CNN
+	1    2250 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:CP C7
+U 1 1 5C8F649C
+P 6150 2700
+F 0 "C7" H 6268 2791 50  0000 L CNN
+F 1 "20µ" H 6268 2700 50  0000 L CNN
+F 2 "Capacitors_SMD:CP_Elec_6.3x7.7" H 6268 2609 50  0001 L CNN
+F 3 "" H 6150 2700 50  0000 C CNN
+	1    6150 2700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6150 2850 6150 3150
+Connection ~ 6150 3150
+Wire Wire Line
+	6150 3150 6550 3150
+Wire Wire Line
+	4750 2450 4800 2450
+Wire Wire Line
+	4800 2450 4800 2250
+Wire Wire Line
+	4800 2250 5100 2250
+Wire Wire Line
+	5850 2850 4750 2850
+Wire Wire Line
+	4750 2850 4750 2750
+Wire Wire Line
+	4750 2950 4850 2950
+$Comp
+L stmbl:R R4
+U 1 1 5C8F64BE
+P 3750 2600
+F 0 "R4" V 3650 2500 50  0000 L CNN
+F 1 "100k" V 3850 2500 50  0000 L CNN
+F 2 "stmbl:R_0603" V 3680 2600 50  0001 C CNN
+F 3 "" H 3750 2600 50  0001 C CNN
+	1    3750 2600
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3900 2550 3950 2550
+$Comp
+L stmbl:R R2
+U 1 1 5C8F64C5
+P 3350 2600
+F 0 "R2" H 3420 2646 50  0000 L CNN
+F 1 "127k" H 3420 2555 50  0000 L CNN
+F 2 "stmbl:R_0603" V 3280 2600 50  0001 C CNN
+F 3 "" H 3350 2600 50  0001 C CNN
+	1    3350 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R3
+U 1 1 5C8F64CB
+P 3350 2950
+F 0 "R3" H 3420 2996 50  0000 L CNN
+F 1 "25k" H 3420 2905 50  0000 L CNN
+F 2 "stmbl:R_0603" V 3280 2950 50  0001 C CNN
+F 3 "" H 3350 2950 50  0001 C CNN
+	1    3350 2950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3350 3100 3350 3150
+Connection ~ 3350 3150
+Wire Wire Line
+	3350 3150 3150 3150
+Wire Wire Line
+	3350 2800 3950 2800
+Wire Wire Line
+	3950 2800 3950 2750
+Connection ~ 3350 2800
+Wire Wire Line
+	3900 2550 3900 2600
+$Comp
+L stmbl:C C4
+U 1 1 5C8F64DC
+P 3150 2950
+F 0 "C4" H 2850 3000 50  0000 L CNN
+F 1 "100n" H 2850 2900 50  0000 L CNN
+F 2 "stmbl:C_0603" H 3188 2800 50  0001 C CNN
+F 3 "" H 3150 2950 50  0001 C CNN
+F 4 " " H 3150 2950 50  0001 C CNN "Manufacturer No"
+F 5 " " H 3150 2950 50  0001 C CNN "Voltage"
+F 6 " " H 3150 2950 50  0001 C CNN "Source"
+F 7 " " H 3150 2950 50  0001 C CNN "Tolerance"
+	1    3150 2950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3150 3100 3150 3150
+Connection ~ 3150 3150
+Wire Wire Line
+	3350 2800 3150 2800
+Wire Wire Line
+	1850 3150 2250 3150
+Wire Wire Line
+	1850 2450 2250 2450
+Wire Wire Line
+	1850 2450 1850 2550
+Wire Wire Line
+	2250 2400 2250 2450
+Wire Wire Line
+	2650 2450 2650 2550
+Connection ~ 2650 2450
+Wire Wire Line
+	2250 2850 2250 3150
+Connection ~ 2250 3150
+Wire Wire Line
+	2250 3150 2650 3150
+Wire Wire Line
+	2650 2850 2650 3150
+Connection ~ 2650 3150
+Wire Wire Line
+	2650 3150 3150 3150
+Wire Wire Line
+	3350 2750 3350 2800
+Wire Wire Line
+	3600 2600 3600 2450
+Connection ~ 3600 2450
+Wire Wire Line
+	3600 2450 3950 2450
+Connection ~ 2250 2450
+Wire Wire Line
+	2250 2450 2650 2450
+Wire Wire Line
+	2250 2450 2250 2550
+$Comp
+L stmbl:C C5
+U 1 1 5C8F64FB
+P 5000 2950
+F 0 "C5" H 5115 2996 50  0000 L CNN
+F 1 "1µ" H 5115 2905 50  0000 L CNN
+F 2 "stmbl:C_0805" H 5038 2800 50  0001 C CNN
+F 3 "" H 5000 2950 50  0001 C CNN
+	1    5000 2950
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5150 2950 5250 2950
+Wire Wire Line
+	5250 2950 5250 3150
+Wire Wire Line
+	5250 3150 5850 3150
+Wire Wire Line
+	4750 2550 5100 2550
+Wire Wire Line
+	3350 3150 4250 3150
+Wire Wire Line
+	2650 2450 3350 2450
+Wire Wire Line
+	5850 2550 6150 2550
+Wire Wire Line
+	4350 3150 5250 3150
+$Comp
+L stmbl:LM5017MR U1
+U 1 1 5C91A99D
+P 4350 2650
+F 0 "U1" H 4350 3117 50  0000 C CNN
+F 1 "LM5017MR" H 4350 3026 50  0000 C CNN
+F 2 "stmbl-kicad-lib:SO8_PowerPAD" H 4400 2200 50  0001 L CIN
+F 3 "" H 4350 2650 50  0001 C CNN
+	1    4350 2650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4250 3150 4350 3150
+Connection ~ 4250 3150
+Connection ~ 4350 3150
+Connection ~ 5100 2550
+Wire Wire Line
+	5100 2550 5250 2550
+Connection ~ 6150 2550
+Wire Wire Line
+	6150 2550 6550 2550
+Connection ~ 6550 2550
+Wire Wire Line
+	6550 2550 6700 2550
+Connection ~ 3350 2450
+Wire Wire Line
+	3350 2450 3600 2450
+Connection ~ 6700 2550
+Wire Wire Line
+	6700 2550 6900 2550
+Text Label 3900 2550 2    50   ~ 0
+RON
+Text Label 3500 2800 0    50   ~ 0
+ULVO
+Connection ~ 5850 2850
+Text Label 5350 2850 0    50   ~ 0
+VFB
+Text Label 5000 2250 0    50   ~ 0
+BST
+Text Label 4850 2550 0    50   ~ 0
+SW
+Text Label 4800 2950 0    50   ~ 0
+VCC
+Connection ~ 5850 3150
+Wire Wire Line
+	5850 3150 6150 3150
+Connection ~ 5850 2550
+$EndSCHEMATC
