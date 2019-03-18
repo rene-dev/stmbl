@@ -594,88 +594,88 @@ F 3 "" H 4150 2600 50  0000 C CNN
 	1    4150 2600
 	0    1    1    0   
 $EndComp
-Text GLabel 6600 4100 0    60   Input ~ 0
+Text GLabel 9900 1600 0    60   Input ~ 0
 PD0
-Text GLabel 6900 4350 3    60   Input ~ 0
+Text GLabel 10200 1850 3    60   Input ~ 0
 CAN_RXD
 $Comp
 L Jumper:SolderJumper_3_Bridged12 JP1
 U 1 1 5C933169
-P 6900 4100
-F 0 "JP1" H 6900 4305 50  0000 C CNN
-F 1 "SolderJumper_3_Bridged12" H 6900 4214 50  0000 C CNN
-F 2 "stmbl-kicad-lib:SOLDER_JUMPER_3_NC" H 6900 4100 50  0001 C CNN
-F 3 "~" H 6900 4100 50  0001 C CNN
-	1    6900 4100
+P 10200 1600
+F 0 "JP1" H 10200 1805 50  0000 C CNN
+F 1 "SolderJumper_3_Bridged12" H 10200 1714 50  0000 C CNN
+F 2 "stmbl-kicad-lib:SOLDER_JUMPER_3_NC" H 10200 1600 50  0001 C CNN
+F 3 "~" H 10200 1600 50  0001 C CNN
+	1    10200 1600
 	1    0    0    -1  
 $EndComp
-Text GLabel 7200 4100 2    60   Input ~ 0
+Text GLabel 10500 1600 2    60   Input ~ 0
 PB5
 Wire Wire Line
-	6900 4250 6900 4350
+	10200 1750 10200 1850
 Wire Wire Line
-	6600 4100 6700 4100
+	9900 1600 10000 1600
 Wire Wire Line
-	7100 4100 7200 4100
+	10400 1600 10500 1600
 $Comp
 L Jumper:SolderJumper_3_Bridged12 JP2
 U 1 1 5C949A52
-P 6900 5000
-F 0 "JP2" H 6900 5205 50  0000 C CNN
-F 1 "SolderJumper_3_Bridged12" H 6900 5114 50  0000 C CNN
-F 2 "stmbl-kicad-lib:SOLDER_JUMPER_3_NC" H 6900 5000 50  0001 C CNN
-F 3 "~" H 6900 5000 50  0001 C CNN
-	1    6900 5000
+P 10200 2500
+F 0 "JP2" H 10200 2705 50  0000 C CNN
+F 1 "SolderJumper_3_Bridged12" H 10200 2614 50  0000 C CNN
+F 2 "stmbl-kicad-lib:SOLDER_JUMPER_3_NC" H 10200 2500 50  0001 C CNN
+F 3 "~" H 10200 2500 50  0001 C CNN
+	1    10200 2500
 	1    0    0    -1  
 $EndComp
-Text GLabel 6600 5000 0    60   Input ~ 0
+Text GLabel 9900 2500 0    60   Input ~ 0
 PD1
 Wire Wire Line
-	6600 5000 6700 5000
-Text GLabel 7200 5000 2    60   Input ~ 0
+	9900 2500 10000 2500
+Text GLabel 10500 2500 2    60   Input ~ 0
 PB6
 Wire Wire Line
-	7200 5000 7100 5000
-Text GLabel 6900 5250 3    60   Input ~ 0
+	10500 2500 10400 2500
+Text GLabel 10200 2750 3    60   Input ~ 0
 CAN_TXD
 Wire Wire Line
-	6900 5250 6900 5150
-Text GLabel 6300 5850 0    60   Input ~ 0
+	10200 2750 10200 2650
+Text GLabel 9600 3350 0    60   Input ~ 0
 PE1
-Text GLabel 6450 5850 2    60   Input ~ 0
+Text GLabel 9750 3350 2    60   Input ~ 0
 LIN_TXD
 Wire Wire Line
-	6300 5850 6450 5850
-Text GLabel 6300 6000 0    60   Input ~ 0
+	9600 3350 9750 3350
+Text GLabel 9600 3500 0    60   Input ~ 0
 PE0
-Text GLabel 6450 6000 2    60   Input ~ 0
+Text GLabel 9750 3500 2    60   Input ~ 0
 LIN_RXD
 Wire Wire Line
-	6300 6000 6450 6000
+	9600 3500 9750 3500
 $Comp
 L stmbl:+5VP #PWR0138
 U 1 1 5CA1C9C6
-P 5650 4300
-F 0 "#PWR0138" H 5650 4150 50  0001 C CNN
-F 1 "+5VP" V 5665 4428 50  0000 L CNN
-F 2 "" H 5650 4300 50  0000 C CNN
-F 3 "" H 5650 4300 50  0000 C CNN
-	1    5650 4300
+P 8950 1800
+F 0 "#PWR0138" H 8950 1650 50  0001 C CNN
+F 1 "+5VP" V 8965 1928 50  0000 L CNN
+F 2 "" H 8950 1800 50  0000 C CNN
+F 3 "" H 8950 1800 50  0000 C CNN
+	1    8950 1800
 	1    0    0    -1  
 $EndComp
 $Comp
 L stmbl:+5V #PWR0139
 U 1 1 5CA1D9E4
-P 5850 4300
-F 0 "#PWR0139" H 5850 4150 50  0001 C CNN
-F 1 "+5V" H 5865 4473 50  0000 C CNN
-F 2 "" H 5850 4300 50  0001 C CNN
-F 3 "" H 5850 4300 50  0001 C CNN
-	1    5850 4300
+P 9150 1800
+F 0 "#PWR0139" H 9150 1650 50  0001 C CNN
+F 1 "+5V" H 9165 1973 50  0000 C CNN
+F 2 "" H 9150 1800 50  0001 C CNN
+F 3 "" H 9150 1800 50  0001 C CNN
+	1    9150 1800
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	5650 4300 5850 4300
+	8950 1800 9150 1800
 Text GLabel 6600 3050 0    60   Input ~ 0
 PB10
 Text GLabel 6600 2950 0    60   Input ~ 0
@@ -700,18 +700,18 @@ Wire Wire Line
 	6600 3150 6800 3150
 Wire Wire Line
 	6600 3250 6800 3250
-Text GLabel 6300 6250 0    60   Input ~ 0
+Text GLabel 9600 3750 0    60   Input ~ 0
 PC7
-Text GLabel 6450 6250 2    60   Input ~ 0
+Text GLabel 9750 3750 2    60   Input ~ 0
 PWM3
-Text GLabel 6300 6150 0    60   Input ~ 0
+Text GLabel 9600 3650 0    60   Input ~ 0
 PC6
-Text GLabel 6450 6150 2    60   Input ~ 0
+Text GLabel 9750 3650 2    60   Input ~ 0
 PWM2
 Wire Wire Line
-	6300 6150 6450 6150
+	9600 3650 9750 3650
 Wire Wire Line
-	6300 6250 6450 6250
+	9600 3750 9750 3750
 Text GLabel 6600 3350 0    60   Input ~ 0
 PD11
 Text GLabel 6800 3350 2    60   Input ~ 0
@@ -724,4 +724,100 @@ Text GLabel 6800 3450 2    60   Input ~ 0
 PWM0
 Wire Wire Line
 	6600 3450 6800 3450
+Text GLabel 6550 1750 0    60   Input ~ 0
+PC0
+Wire Wire Line
+	6550 1750 6750 1750
+Text GLabel 6550 1850 0    60   Input ~ 0
+PC2
+Wire Wire Line
+	6550 1850 6750 1850
+Text GLabel 6550 1950 0    60   Input ~ 0
+PC3
+Wire Wire Line
+	6550 1950 6750 1950
+Text GLabel 6550 2050 0    60   Input ~ 0
+PA0
+Wire Wire Line
+	6550 2050 6750 2050
+Text GLabel 6550 2250 0    60   Input ~ 0
+PA4
+Wire Wire Line
+	6550 2150 6750 2150
+Text GLabel 6550 2150 0    60   Input ~ 0
+PA5
+Wire Wire Line
+	6550 2250 6750 2250
+Text GLabel 6550 2350 0    60   Input ~ 0
+PA6
+Wire Wire Line
+	6550 2350 6750 2350
+Text GLabel 6550 2450 0    60   Input ~ 0
+PB1
+Wire Wire Line
+	6550 2450 6750 2450
+Text GLabel 6750 1750 2    60   Input ~ 0
+ADC0
+Text GLabel 6750 1850 2    60   Input ~ 0
+ADC1
+Text GLabel 6750 1950 2    60   Input ~ 0
+ADC2
+Text GLabel 6750 2050 2    60   Input ~ 0
+ADC3
+Text GLabel 6750 2150 2    60   Input ~ 0
+ADC4
+Text GLabel 6750 2250 2    60   Input ~ 0
+ADC5
+Text GLabel 6750 2350 2    60   Input ~ 0
+ADC6
+Text GLabel 6750 2450 2    60   Input ~ 0
+ADC7
+Text GLabel 6850 4250 2    60   Input ~ 0
+ADC8
+Text GLabel 6850 4350 2    60   Input ~ 0
+ADC9
+Text GLabel 6850 4450 2    60   Input ~ 0
+ADC10
+Text GLabel 6850 4550 2    60   Input ~ 0
+ADC11
+Text GLabel 6850 4650 2    60   Input ~ 0
+ADC12
+Text GLabel 6850 4750 2    60   Input ~ 0
+ADC13
+Text GLabel 6850 4850 2    60   Input ~ 0
+ADC14
+Text GLabel 6850 4950 2    60   Input ~ 0
+ADC15
+Wire Wire Line
+	6650 4250 6850 4250
+Wire Wire Line
+	6650 4350 6850 4350
+Wire Wire Line
+	6650 4450 6850 4450
+Wire Wire Line
+	6650 4550 6850 4550
+Wire Wire Line
+	6650 4650 6850 4650
+Wire Wire Line
+	6650 4750 6850 4750
+Wire Wire Line
+	6650 4850 6850 4850
+Wire Wire Line
+	6650 4950 6850 4950
+Text GLabel 6650 4450 0    60   Input ~ 0
+PC15
+Text GLabel 6650 4350 0    60   Input ~ 0
+PC13
+Text GLabel 6650 4250 0    60   Input ~ 0
+PE5
+Text GLabel 6650 4950 0    60   Input ~ 0
+PB9
+Text GLabel 6650 4850 0    60   Input ~ 0
+PB7
+Text GLabel 6650 4750 0    60   Input ~ 0
+PB4
+Text GLabel 6650 4550 0    60   Input ~ 0
+PC14
+Text GLabel 6650 4650 0    60   Input ~ 0
+PB3
 $EndSCHEMATC

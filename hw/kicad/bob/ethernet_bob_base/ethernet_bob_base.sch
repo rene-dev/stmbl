@@ -768,4 +768,1108 @@ F 3 "" H 5350 5500 50  0001 C CNN
 	1    5350 5500
 	1    0    0    -1  
 $EndComp
+$Comp
+L stmbl:C C18
+U 1 1 5CAECD11
+P 3550 1250
+F 0 "C18" H 3665 1296 50  0000 L CNN
+F 1 "C" H 3665 1205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 3588 1100 50  0001 C CNN
+F 3 "" H 3550 1250 50  0000 C CNN
+	1    3550 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C22
+U 1 1 5CAEDC2D
+P 4000 1250
+F 0 "C22" H 4115 1296 50  0000 L CNN
+F 1 "C" H 4115 1205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4038 1100 50  0001 C CNN
+F 3 "" H 4000 1250 50  0000 C CNN
+	1    4000 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C26
+U 1 1 5CAF4F54
+P 4450 1250
+F 0 "C26" H 4565 1296 50  0000 L CNN
+F 1 "C" H 4565 1205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4488 1100 50  0001 C CNN
+F 3 "" H 4450 1250 50  0000 C CNN
+	1    4450 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C30
+U 1 1 5CAFBBBF
+P 4900 1250
+F 0 "C30" H 5015 1296 50  0000 L CNN
+F 1 "C" H 5015 1205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4938 1100 50  0001 C CNN
+F 3 "" H 4900 1250 50  0000 C CNN
+	1    4900 1250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2900 700  3000 700 
+Wire Wire Line
+	2900 800  3000 800 
+Wire Wire Line
+	2900 900  3000 900 
+Wire Wire Line
+	2900 1000 3000 1000
+Wire Wire Line
+	3300 700  3450 700 
+Wire Wire Line
+	3300 800  3900 800 
+Wire Wire Line
+	3300 900  4350 900 
+Wire Wire Line
+	3300 1000 4800 1000
+Wire Wire Line
+	3350 1100 3450 1100
+Wire Wire Line
+	3800 1100 3900 1100
+Wire Wire Line
+	4250 1100 4350 1100
+Wire Wire Line
+	4700 1100 4800 1100
+Wire Wire Line
+	3450 1100 3450 700 
+Connection ~ 3450 1100
+Wire Wire Line
+	3450 1100 3550 1100
+Connection ~ 3450 700 
+Wire Wire Line
+	3450 700  5150 700 
+Wire Wire Line
+	3900 1100 3900 800 
+Connection ~ 3900 1100
+Wire Wire Line
+	3900 1100 4000 1100
+Connection ~ 3900 800 
+Wire Wire Line
+	3900 800  5150 800 
+Wire Wire Line
+	4350 1100 4350 900 
+Connection ~ 4350 1100
+Wire Wire Line
+	4350 1100 4450 1100
+Connection ~ 4350 900 
+Wire Wire Line
+	4350 900  5150 900 
+Wire Wire Line
+	4800 1100 4800 1000
+Connection ~ 4800 1100
+Wire Wire Line
+	4800 1100 4900 1100
+Connection ~ 4800 1000
+Wire Wire Line
+	4800 1000 5150 1000
+Wire Wire Line
+	3350 1400 3350 1450
+Wire Wire Line
+	3350 1450 3550 1450
+Wire Wire Line
+	4900 1450 4900 1400
+Wire Wire Line
+	4700 1400 4700 1450
+Connection ~ 4700 1450
+Wire Wire Line
+	4700 1450 4900 1450
+Wire Wire Line
+	4450 1400 4450 1450
+Connection ~ 4450 1450
+Wire Wire Line
+	4450 1450 4700 1450
+Wire Wire Line
+	4250 1400 4250 1450
+Connection ~ 4250 1450
+Wire Wire Line
+	4250 1450 4450 1450
+Wire Wire Line
+	4000 1400 4000 1450
+Connection ~ 4000 1450
+Wire Wire Line
+	4000 1450 4150 1450
+Wire Wire Line
+	3800 1400 3800 1450
+Connection ~ 3800 1450
+Wire Wire Line
+	3800 1450 4000 1450
+Wire Wire Line
+	3550 1400 3550 1450
+Connection ~ 3550 1450
+Wire Wire Line
+	3550 1450 3800 1450
+$Comp
+L Connector:Conn_01x04_Male J9
+U 1 1 5CBCF13C
+P 2700 800
+F 0 "J9" H 2808 1081 50  0000 C CNN
+F 1 "Conn_01x04_Male" H 2808 990 50  0000 C CNN
+F 2 "stmbl-kicad-lib:RM3.5_1x4_UP" H 2700 800 50  0001 C CNN
+F 3 "~" H 2700 800 50  0001 C CNN
+	1    2700 800 
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R23
+U 1 1 5CBD048F
+P 3350 1250
+F 0 "R23" H 3420 1296 50  0000 L CNN
+F 1 "R" H 3420 1205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3280 1250 50  0001 C CNN
+F 3 "" H 3350 1250 50  0000 C CNN
+	1    3350 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R27
+U 1 1 5CBD0C24
+P 3800 1250
+F 0 "R27" H 3870 1296 50  0000 L CNN
+F 1 "R" H 3870 1205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3730 1250 50  0001 C CNN
+F 3 "" H 3800 1250 50  0000 C CNN
+	1    3800 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R31
+U 1 1 5CBD0E4E
+P 4250 1250
+F 0 "R31" H 4320 1296 50  0000 L CNN
+F 1 "R" H 4320 1205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 4180 1250 50  0001 C CNN
+F 3 "" H 4250 1250 50  0000 C CNN
+	1    4250 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R35
+U 1 1 5CBD0FCA
+P 4700 1250
+F 0 "R35" H 4770 1296 50  0000 L CNN
+F 1 "R" H 4770 1205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 4630 1250 50  0001 C CNN
+F 3 "" H 4700 1250 50  0000 C CNN
+	1    4700 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R10
+U 1 1 5CBD1380
+P 3150 1000
+F 0 "R10" V 2943 1000 50  0000 C CNN
+F 1 "R" V 3034 1000 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 1000 50  0001 C CNN
+F 3 "" H 3150 1000 50  0000 C CNN
+	1    3150 1000
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R9
+U 1 1 5CBD197E
+P 3150 900
+F 0 "R9" V 2943 900 50  0000 C CNN
+F 1 "R" V 3034 900 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 900 50  0001 C CNN
+F 3 "" H 3150 900 50  0000 C CNN
+	1    3150 900 
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R8
+U 1 1 5CBD1B9C
+P 3150 800
+F 0 "R8" V 2943 800 50  0000 C CNN
+F 1 "R" V 3034 800 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 800 50  0001 C CNN
+F 3 "" H 3150 800 50  0000 C CNN
+	1    3150 800 
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R7
+U 1 1 5CBD1D96
+P 3150 700
+F 0 "R7" V 2943 700 50  0000 C CNN
+F 1 "R" V 3034 700 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 700 50  0001 C CNN
+F 3 "" H 3150 700 50  0000 C CNN
+	1    3150 700 
+	0    1    1    0   
+$EndComp
+Text GLabel 5150 700  2    50   Input ~ 0
+ADC0
+Text GLabel 5150 800  2    50   Input ~ 0
+ADC1
+Text GLabel 5150 900  2    50   Input ~ 0
+ADC2
+Text GLabel 5150 1000 2    50   Input ~ 0
+ADC3
+Text GLabel 5150 1700 2    50   Input ~ 0
+ADC4
+Text GLabel 5150 1800 2    50   Input ~ 0
+ADC5
+Text GLabel 5150 1900 2    50   Input ~ 0
+ADC6
+Text GLabel 5150 2000 2    50   Input ~ 0
+ADC7
+$Comp
+L stmbl:GND #PWR0146
+U 1 1 5CBD284E
+P 4150 1450
+F 0 "#PWR0146" H 4150 1200 50  0001 C CNN
+F 1 "GND" H 4155 1277 50  0000 C CNN
+F 2 "" H 4150 1450 50  0001 C CNN
+F 3 "" H 4150 1450 50  0001 C CNN
+	1    4150 1450
+	1    0    0    -1  
+$EndComp
+Connection ~ 4150 1450
+Wire Wire Line
+	4150 1450 4250 1450
+$Comp
+L stmbl:C C19
+U 1 1 5CBDDF9F
+P 3550 2250
+F 0 "C19" H 3665 2296 50  0000 L CNN
+F 1 "C" H 3665 2205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 3588 2100 50  0001 C CNN
+F 3 "" H 3550 2250 50  0000 C CNN
+	1    3550 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C23
+U 1 1 5CBDDFA9
+P 4000 2250
+F 0 "C23" H 4115 2296 50  0000 L CNN
+F 1 "C" H 4115 2205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4038 2100 50  0001 C CNN
+F 3 "" H 4000 2250 50  0000 C CNN
+	1    4000 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C27
+U 1 1 5CBDDFB3
+P 4450 2250
+F 0 "C27" H 4565 2296 50  0000 L CNN
+F 1 "C" H 4565 2205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4488 2100 50  0001 C CNN
+F 3 "" H 4450 2250 50  0000 C CNN
+	1    4450 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C31
+U 1 1 5CBDDFBD
+P 4900 2250
+F 0 "C31" H 5015 2296 50  0000 L CNN
+F 1 "C" H 5015 2205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4938 2100 50  0001 C CNN
+F 3 "" H 4900 2250 50  0000 C CNN
+	1    4900 2250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2900 1700 3000 1700
+Wire Wire Line
+	2900 1800 3000 1800
+Wire Wire Line
+	2900 1900 3000 1900
+Wire Wire Line
+	2900 2000 3000 2000
+Wire Wire Line
+	3300 1700 3450 1700
+Wire Wire Line
+	3300 1800 3900 1800
+Wire Wire Line
+	3300 1900 4350 1900
+Wire Wire Line
+	3300 2000 4800 2000
+Wire Wire Line
+	3350 2100 3450 2100
+Wire Wire Line
+	3800 2100 3900 2100
+Wire Wire Line
+	4250 2100 4350 2100
+Wire Wire Line
+	4700 2100 4800 2100
+Wire Wire Line
+	3450 2100 3450 1700
+Connection ~ 3450 2100
+Wire Wire Line
+	3450 2100 3550 2100
+Connection ~ 3450 1700
+Wire Wire Line
+	3450 1700 5150 1700
+Wire Wire Line
+	3900 2100 3900 1800
+Connection ~ 3900 2100
+Wire Wire Line
+	3900 2100 4000 2100
+Connection ~ 3900 1800
+Wire Wire Line
+	3900 1800 5150 1800
+Wire Wire Line
+	4350 2100 4350 1900
+Connection ~ 4350 2100
+Wire Wire Line
+	4350 2100 4450 2100
+Connection ~ 4350 1900
+Wire Wire Line
+	4350 1900 5150 1900
+Wire Wire Line
+	4800 2100 4800 2000
+Connection ~ 4800 2100
+Wire Wire Line
+	4800 2100 4900 2100
+Connection ~ 4800 2000
+Wire Wire Line
+	4800 2000 5150 2000
+Wire Wire Line
+	3350 2400 3350 2450
+Wire Wire Line
+	3350 2450 3550 2450
+Wire Wire Line
+	4900 2450 4900 2400
+Wire Wire Line
+	4700 2400 4700 2450
+Connection ~ 4700 2450
+Wire Wire Line
+	4700 2450 4900 2450
+Wire Wire Line
+	4450 2400 4450 2450
+Connection ~ 4450 2450
+Wire Wire Line
+	4450 2450 4700 2450
+Wire Wire Line
+	4250 2400 4250 2450
+Connection ~ 4250 2450
+Wire Wire Line
+	4250 2450 4450 2450
+Wire Wire Line
+	4000 2400 4000 2450
+Connection ~ 4000 2450
+Wire Wire Line
+	3800 2400 3800 2450
+Connection ~ 3800 2450
+Wire Wire Line
+	3800 2450 4000 2450
+Wire Wire Line
+	3550 2400 3550 2450
+Connection ~ 3550 2450
+Wire Wire Line
+	3550 2450 3800 2450
+$Comp
+L Connector:Conn_01x04_Male J10
+U 1 1 5CBDDFFC
+P 2700 1800
+F 0 "J10" H 2808 2081 50  0000 C CNN
+F 1 "Conn_01x04_Male" H 2808 1990 50  0000 C CNN
+F 2 "stmbl-kicad-lib:RM3.5_1x4_UP" H 2700 1800 50  0001 C CNN
+F 3 "~" H 2700 1800 50  0001 C CNN
+	1    2700 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R24
+U 1 1 5CBDE006
+P 3350 2250
+F 0 "R24" H 3420 2296 50  0000 L CNN
+F 1 "R" H 3420 2205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3280 2250 50  0001 C CNN
+F 3 "" H 3350 2250 50  0000 C CNN
+	1    3350 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R28
+U 1 1 5CBDE010
+P 3800 2250
+F 0 "R28" H 3870 2296 50  0000 L CNN
+F 1 "R" H 3870 2205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3730 2250 50  0001 C CNN
+F 3 "" H 3800 2250 50  0000 C CNN
+	1    3800 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R32
+U 1 1 5CBDE01A
+P 4250 2250
+F 0 "R32" H 4320 2296 50  0000 L CNN
+F 1 "R" H 4320 2205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 4180 2250 50  0001 C CNN
+F 3 "" H 4250 2250 50  0000 C CNN
+	1    4250 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R36
+U 1 1 5CBDE024
+P 4700 2250
+F 0 "R36" H 4770 2296 50  0000 L CNN
+F 1 "R" H 4770 2205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 4630 2250 50  0001 C CNN
+F 3 "" H 4700 2250 50  0000 C CNN
+	1    4700 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R14
+U 1 1 5CBDE02E
+P 3150 2000
+F 0 "R14" V 2943 2000 50  0000 C CNN
+F 1 "R" V 3034 2000 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 2000 50  0001 C CNN
+F 3 "" H 3150 2000 50  0000 C CNN
+	1    3150 2000
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R13
+U 1 1 5CBDE038
+P 3150 1900
+F 0 "R13" V 2943 1900 50  0000 C CNN
+F 1 "R" V 3034 1900 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 1900 50  0001 C CNN
+F 3 "" H 3150 1900 50  0000 C CNN
+	1    3150 1900
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R12
+U 1 1 5CBDE042
+P 3150 1800
+F 0 "R12" V 2943 1800 50  0000 C CNN
+F 1 "R" V 3034 1800 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 1800 50  0001 C CNN
+F 3 "" H 3150 1800 50  0000 C CNN
+	1    3150 1800
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R11
+U 1 1 5CBDE04C
+P 3150 1700
+F 0 "R11" V 2943 1700 50  0000 C CNN
+F 1 "R" V 3034 1700 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 1700 50  0001 C CNN
+F 3 "" H 3150 1700 50  0000 C CNN
+	1    3150 1700
+	0    1    1    0   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H1
+U 1 1 5CD62EF0
+P 1200 4050
+F 0 "H1" H 1300 4099 50  0000 L CNN
+F 1 "MountingHole_Pad" H 1300 4008 50  0000 L CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_Pad_Via" H 1200 4050 50  0001 C CNN
+F 3 "~" H 1200 4050 50  0001 C CNN
+	1    1200 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H2
+U 1 1 5CD63280
+P 1450 4050
+F 0 "H2" H 1550 4099 50  0000 L CNN
+F 1 "MountingHole_Pad" H 1550 4008 50  0000 L CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_Pad_Via" H 1450 4050 50  0001 C CNN
+F 3 "~" H 1450 4050 50  0001 C CNN
+	1    1450 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H3
+U 1 1 5CD63402
+P 1700 4050
+F 0 "H3" H 1800 4099 50  0000 L CNN
+F 1 "MountingHole_Pad" H 1800 4008 50  0000 L CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_Pad_Via" H 1700 4050 50  0001 C CNN
+F 3 "~" H 1700 4050 50  0001 C CNN
+	1    1700 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H4
+U 1 1 5CD635C7
+P 1950 4050
+F 0 "H4" H 2050 4099 50  0000 L CNN
+F 1 "MountingHole_Pad" H 2050 4008 50  0000 L CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_Pad_Via" H 1950 4050 50  0001 C CNN
+F 3 "~" H 1950 4050 50  0001 C CNN
+	1    1950 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:GND #PWR0150
+U 1 1 5CD63753
+P 1550 4300
+F 0 "#PWR0150" H 1550 4050 50  0001 C CNN
+F 1 "GND" H 1555 4127 50  0000 C CNN
+F 2 "" H 1550 4300 50  0001 C CNN
+F 3 "" H 1550 4300 50  0001 C CNN
+	1    1550 4300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1200 4150 1200 4250
+Wire Wire Line
+	1200 4250 1450 4250
+Wire Wire Line
+	1950 4250 1950 4150
+Wire Wire Line
+	1700 4150 1700 4250
+Connection ~ 1700 4250
+Wire Wire Line
+	1700 4250 1950 4250
+Wire Wire Line
+	1450 4150 1450 4250
+Connection ~ 1450 4250
+Wire Wire Line
+	1450 4250 1550 4250
+Wire Wire Line
+	1550 4250 1550 4300
+Connection ~ 1550 4250
+Wire Wire Line
+	1550 4250 1700 4250
+Connection ~ 4150 4450
+$Comp
+L stmbl:GND #PWR0149
+U 1 1 5CCDA261
+P 4150 4450
+F 0 "#PWR0149" H 4150 4200 50  0001 C CNN
+F 1 "GND" H 4155 4277 50  0000 C CNN
+F 2 "" H 4150 4450 50  0001 C CNN
+F 3 "" H 4150 4450 50  0001 C CNN
+	1    4150 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R19
+U 1 1 5CCDA257
+P 3150 3700
+F 0 "R19" V 2943 3700 50  0000 C CNN
+F 1 "R" V 3034 3700 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 3700 50  0001 C CNN
+F 3 "" H 3150 3700 50  0000 C CNN
+	1    3150 3700
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R20
+U 1 1 5CCDA24D
+P 3150 3800
+F 0 "R20" V 2943 3800 50  0000 C CNN
+F 1 "R" V 3034 3800 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 3800 50  0001 C CNN
+F 3 "" H 3150 3800 50  0000 C CNN
+	1    3150 3800
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R21
+U 1 1 5CCDA243
+P 3150 3900
+F 0 "R21" V 2943 3900 50  0000 C CNN
+F 1 "R" V 3034 3900 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 3900 50  0001 C CNN
+F 3 "" H 3150 3900 50  0000 C CNN
+	1    3150 3900
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R22
+U 1 1 5CCDA239
+P 3150 4000
+F 0 "R22" V 2943 4000 50  0000 C CNN
+F 1 "R" V 3034 4000 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 4000 50  0001 C CNN
+F 3 "" H 3150 4000 50  0000 C CNN
+	1    3150 4000
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R38
+U 1 1 5CCDA22F
+P 4700 4250
+F 0 "R38" H 4770 4296 50  0000 L CNN
+F 1 "R" H 4770 4205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 4630 4250 50  0001 C CNN
+F 3 "" H 4700 4250 50  0000 C CNN
+	1    4700 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R34
+U 1 1 5CCDA225
+P 4250 4250
+F 0 "R34" H 4320 4296 50  0000 L CNN
+F 1 "R" H 4320 4205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 4180 4250 50  0001 C CNN
+F 3 "" H 4250 4250 50  0000 C CNN
+	1    4250 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R30
+U 1 1 5CCDA21B
+P 3800 4250
+F 0 "R30" H 3870 4296 50  0000 L CNN
+F 1 "R" H 3870 4205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3730 4250 50  0001 C CNN
+F 3 "" H 3800 4250 50  0000 C CNN
+	1    3800 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R26
+U 1 1 5CCDA211
+P 3350 4250
+F 0 "R26" H 3420 4296 50  0000 L CNN
+F 1 "R" H 3420 4205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3280 4250 50  0001 C CNN
+F 3 "" H 3350 4250 50  0000 C CNN
+	1    3350 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x04_Male J12
+U 1 1 5CCDA207
+P 2700 3800
+F 0 "J12" H 2808 4081 50  0000 C CNN
+F 1 "Conn_01x04_Male" H 2808 3990 50  0000 C CNN
+F 2 "stmbl-kicad-lib:RM3.5_1x4_UP" H 2700 3800 50  0001 C CNN
+F 3 "~" H 2700 3800 50  0001 C CNN
+	1    2700 3800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3550 4400 3550 4450
+Wire Wire Line
+	3550 4450 3800 4450
+Connection ~ 3800 4450
+Wire Wire Line
+	3800 4400 3800 4450
+Wire Wire Line
+	3800 4450 4000 4450
+Wire Wire Line
+	4000 4450 4150 4450
+Connection ~ 4000 4450
+Wire Wire Line
+	4000 4400 4000 4450
+Wire Wire Line
+	4150 4450 4250 4450
+Connection ~ 4250 4450
+Wire Wire Line
+	4250 4400 4250 4450
+Wire Wire Line
+	4250 4450 4450 4450
+Connection ~ 4450 4450
+Wire Wire Line
+	4450 4400 4450 4450
+Wire Wire Line
+	4450 4450 4700 4450
+Wire Wire Line
+	4700 4450 4900 4450
+Connection ~ 4700 4450
+Wire Wire Line
+	4700 4400 4700 4450
+Wire Wire Line
+	4900 4450 4900 4400
+Connection ~ 3550 4450
+Wire Wire Line
+	3350 4450 3550 4450
+Wire Wire Line
+	3350 4400 3350 4450
+Wire Wire Line
+	4800 4000 5150 4000
+Wire Wire Line
+	4800 4100 4900 4100
+Wire Wire Line
+	4800 4100 4800 4000
+Wire Wire Line
+	4350 3900 5150 3900
+Wire Wire Line
+	4350 4100 4450 4100
+Wire Wire Line
+	4350 4100 4350 3900
+Wire Wire Line
+	3900 3800 5150 3800
+Wire Wire Line
+	3900 4100 4000 4100
+Wire Wire Line
+	3900 4100 3900 3800
+Wire Wire Line
+	3450 3700 5150 3700
+Wire Wire Line
+	3450 4100 3550 4100
+Wire Wire Line
+	3450 4100 3450 3700
+Connection ~ 4800 4100
+Wire Wire Line
+	4700 4100 4800 4100
+Connection ~ 4350 4100
+Wire Wire Line
+	4250 4100 4350 4100
+Connection ~ 3900 4100
+Wire Wire Line
+	3800 4100 3900 4100
+Connection ~ 3450 4100
+Wire Wire Line
+	3350 4100 3450 4100
+Connection ~ 4800 4000
+Wire Wire Line
+	3300 4000 4800 4000
+Connection ~ 4350 3900
+Wire Wire Line
+	3300 3900 4350 3900
+Connection ~ 3900 3800
+Wire Wire Line
+	3300 3800 3900 3800
+Connection ~ 3450 3700
+Wire Wire Line
+	3300 3700 3450 3700
+Wire Wire Line
+	2900 4000 3000 4000
+Wire Wire Line
+	2900 3900 3000 3900
+Wire Wire Line
+	2900 3800 3000 3800
+Wire Wire Line
+	2900 3700 3000 3700
+$Comp
+L stmbl:C C33
+U 1 1 5CCDA1C8
+P 4900 4250
+F 0 "C33" H 5015 4296 50  0000 L CNN
+F 1 "C" H 5015 4205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4938 4100 50  0001 C CNN
+F 3 "" H 4900 4250 50  0000 C CNN
+	1    4900 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C29
+U 1 1 5CCDA1BE
+P 4450 4250
+F 0 "C29" H 4565 4296 50  0000 L CNN
+F 1 "C" H 4565 4205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4488 4100 50  0001 C CNN
+F 3 "" H 4450 4250 50  0000 C CNN
+	1    4450 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C25
+U 1 1 5CCDA1B4
+P 4000 4250
+F 0 "C25" H 4115 4296 50  0000 L CNN
+F 1 "C" H 4115 4205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4038 4100 50  0001 C CNN
+F 3 "" H 4000 4250 50  0000 C CNN
+	1    4000 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C21
+U 1 1 5CCDA1AA
+P 3550 4250
+F 0 "C21" H 3665 4296 50  0000 L CNN
+F 1 "C" H 3665 4205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 3588 4100 50  0001 C CNN
+F 3 "" H 3550 4250 50  0000 C CNN
+	1    3550 4250
+	1    0    0    -1  
+$EndComp
+Connection ~ 4150 3450
+$Comp
+L stmbl:GND #PWR0148
+U 1 1 5CC4401E
+P 4150 3450
+F 0 "#PWR0148" H 4150 3200 50  0001 C CNN
+F 1 "GND" H 4155 3277 50  0000 C CNN
+F 2 "" H 4150 3450 50  0001 C CNN
+F 3 "" H 4150 3450 50  0001 C CNN
+	1    4150 3450
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R15
+U 1 1 5CC44014
+P 3150 2700
+F 0 "R15" V 2943 2700 50  0000 C CNN
+F 1 "R" V 3034 2700 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 2700 50  0001 C CNN
+F 3 "" H 3150 2700 50  0000 C CNN
+	1    3150 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R16
+U 1 1 5CC4400A
+P 3150 2800
+F 0 "R16" V 2943 2800 50  0000 C CNN
+F 1 "R" V 3034 2800 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 2800 50  0001 C CNN
+F 3 "" H 3150 2800 50  0000 C CNN
+	1    3150 2800
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R17
+U 1 1 5CC44000
+P 3150 2900
+F 0 "R17" V 2943 2900 50  0000 C CNN
+F 1 "R" V 3034 2900 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 2900 50  0001 C CNN
+F 3 "" H 3150 2900 50  0000 C CNN
+	1    3150 2900
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R18
+U 1 1 5CC43FF6
+P 3150 3000
+F 0 "R18" V 2943 3000 50  0000 C CNN
+F 1 "R" V 3034 3000 50  0000 C CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3080 3000 50  0001 C CNN
+F 3 "" H 3150 3000 50  0000 C CNN
+	1    3150 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L stmbl:R R37
+U 1 1 5CC43FEC
+P 4700 3250
+F 0 "R37" H 4770 3296 50  0000 L CNN
+F 1 "R" H 4770 3205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 4630 3250 50  0001 C CNN
+F 3 "" H 4700 3250 50  0000 C CNN
+	1    4700 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R33
+U 1 1 5CC43FE2
+P 4250 3250
+F 0 "R33" H 4320 3296 50  0000 L CNN
+F 1 "R" H 4320 3205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 4180 3250 50  0001 C CNN
+F 3 "" H 4250 3250 50  0000 C CNN
+	1    4250 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R29
+U 1 1 5CC43FD8
+P 3800 3250
+F 0 "R29" H 3870 3296 50  0000 L CNN
+F 1 "R" H 3870 3205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3730 3250 50  0001 C CNN
+F 3 "" H 3800 3250 50  0000 C CNN
+	1    3800 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:R R25
+U 1 1 5CC43FCE
+P 3350 3250
+F 0 "R25" H 3420 3296 50  0000 L CNN
+F 1 "R" H 3420 3205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:R_0603" V 3280 3250 50  0001 C CNN
+F 3 "" H 3350 3250 50  0000 C CNN
+	1    3350 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x04_Male J11
+U 1 1 5CC43FC4
+P 2700 2800
+F 0 "J11" H 2808 3081 50  0000 C CNN
+F 1 "Conn_01x04_Male" H 2808 2990 50  0000 C CNN
+F 2 "stmbl-kicad-lib:RM3.5_1x4_UP" H 2700 2800 50  0001 C CNN
+F 3 "~" H 2700 2800 50  0001 C CNN
+	1    2700 2800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3550 3400 3550 3450
+Wire Wire Line
+	3550 3450 3800 3450
+Connection ~ 3800 3450
+Wire Wire Line
+	3800 3400 3800 3450
+Wire Wire Line
+	3800 3450 4000 3450
+Wire Wire Line
+	4000 3450 4150 3450
+Connection ~ 4000 3450
+Wire Wire Line
+	4000 3400 4000 3450
+Wire Wire Line
+	4150 3450 4250 3450
+Connection ~ 4250 3450
+Wire Wire Line
+	4250 3400 4250 3450
+Wire Wire Line
+	4250 3450 4450 3450
+Connection ~ 4450 3450
+Wire Wire Line
+	4450 3400 4450 3450
+Wire Wire Line
+	4450 3450 4700 3450
+Wire Wire Line
+	4700 3450 4900 3450
+Connection ~ 4700 3450
+Wire Wire Line
+	4700 3400 4700 3450
+Wire Wire Line
+	4900 3450 4900 3400
+Connection ~ 3550 3450
+Wire Wire Line
+	3350 3450 3550 3450
+Wire Wire Line
+	3350 3400 3350 3450
+Wire Wire Line
+	4800 3000 5150 3000
+Wire Wire Line
+	4800 3100 4900 3100
+Wire Wire Line
+	4800 3100 4800 3000
+Wire Wire Line
+	4350 2900 5150 2900
+Wire Wire Line
+	4350 3100 4450 3100
+Wire Wire Line
+	4350 3100 4350 2900
+Wire Wire Line
+	3900 2800 5150 2800
+Wire Wire Line
+	3900 3100 4000 3100
+Wire Wire Line
+	3900 3100 3900 2800
+Wire Wire Line
+	3450 2700 5150 2700
+Wire Wire Line
+	3450 3100 3550 3100
+Wire Wire Line
+	3450 3100 3450 2700
+Connection ~ 4800 3100
+Wire Wire Line
+	4700 3100 4800 3100
+Connection ~ 4350 3100
+Wire Wire Line
+	4250 3100 4350 3100
+Connection ~ 3900 3100
+Wire Wire Line
+	3800 3100 3900 3100
+Connection ~ 3450 3100
+Wire Wire Line
+	3350 3100 3450 3100
+Connection ~ 4800 3000
+Wire Wire Line
+	3300 3000 4800 3000
+Connection ~ 4350 2900
+Wire Wire Line
+	3300 2900 4350 2900
+Connection ~ 3900 2800
+Wire Wire Line
+	3300 2800 3900 2800
+Connection ~ 3450 2700
+Wire Wire Line
+	3300 2700 3450 2700
+Wire Wire Line
+	2900 3000 3000 3000
+Wire Wire Line
+	2900 2900 3000 2900
+Wire Wire Line
+	2900 2800 3000 2800
+Wire Wire Line
+	2900 2700 3000 2700
+$Comp
+L stmbl:C C32
+U 1 1 5CC43F85
+P 4900 3250
+F 0 "C32" H 5015 3296 50  0000 L CNN
+F 1 "C" H 5015 3205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4938 3100 50  0001 C CNN
+F 3 "" H 4900 3250 50  0000 C CNN
+	1    4900 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C28
+U 1 1 5CC43F7B
+P 4450 3250
+F 0 "C28" H 4565 3296 50  0000 L CNN
+F 1 "C" H 4565 3205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4488 3100 50  0001 C CNN
+F 3 "" H 4450 3250 50  0000 C CNN
+	1    4450 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C24
+U 1 1 5CC43F71
+P 4000 3250
+F 0 "C24" H 4115 3296 50  0000 L CNN
+F 1 "C" H 4115 3205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 4038 3100 50  0001 C CNN
+F 3 "" H 4000 3250 50  0000 C CNN
+	1    4000 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:C C20
+U 1 1 5CC43F67
+P 3550 3250
+F 0 "C20" H 3665 3296 50  0000 L CNN
+F 1 "C" H 3665 3205 50  0000 L CNN
+F 2 "stmbl-kicad-lib:C_0805" H 3588 3100 50  0001 C CNN
+F 3 "" H 3550 3250 50  0000 C CNN
+	1    3550 3250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4150 2450 4250 2450
+Wire Wire Line
+	4000 2450 4150 2450
+Connection ~ 4150 2450
+$Comp
+L stmbl:GND #PWR0147
+U 1 1 5CBDE05A
+P 4150 2450
+F 0 "#PWR0147" H 4150 2200 50  0001 C CNN
+F 1 "GND" H 4155 2277 50  0000 C CNN
+F 2 "" H 4150 2450 50  0001 C CNN
+F 3 "" H 4150 2450 50  0001 C CNN
+	1    4150 2450
+	1    0    0    -1  
+$EndComp
+Text GLabel 5150 4000 2    50   Input ~ 0
+ADC15
+Text GLabel 5150 3900 2    50   Input ~ 0
+ADC14
+Text GLabel 5150 3800 2    50   Input ~ 0
+ADC13
+Text GLabel 5150 3700 2    50   Input ~ 0
+ADC12
+Text GLabel 5150 3000 2    50   Input ~ 0
+ADC11
+Text GLabel 5150 2900 2    50   Input ~ 0
+ADC10
+Text GLabel 5150 2800 2    50   Input ~ 0
+ADC9
+Text GLabel 5150 2700 2    50   Input ~ 0
+ADC8
 $EndSCHEMATC
