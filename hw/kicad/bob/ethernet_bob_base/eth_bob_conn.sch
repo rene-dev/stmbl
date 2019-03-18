@@ -643,13 +643,85 @@ Wire Wire Line
 Text GLabel 6300 5850 0    60   Input ~ 0
 PE1
 Text GLabel 6450 5850 2    60   Input ~ 0
-LIN_TX
+LIN_TXD
 Wire Wire Line
 	6300 5850 6450 5850
 Text GLabel 6300 6000 0    60   Input ~ 0
 PE0
 Text GLabel 6450 6000 2    60   Input ~ 0
-LIN_RX
+LIN_RXD
 Wire Wire Line
 	6300 6000 6450 6000
+$Comp
+L stmbl:+5VP #PWR0138
+U 1 1 5CA1C9C6
+P 5650 4300
+F 0 "#PWR0138" H 5650 4150 50  0001 C CNN
+F 1 "+5VP" V 5665 4428 50  0000 L CNN
+F 2 "" H 5650 4300 50  0000 C CNN
+F 3 "" H 5650 4300 50  0000 C CNN
+	1    5650 4300
+	1    0    0    -1  
+$EndComp
+$Comp
+L stmbl:+5V #PWR0139
+U 1 1 5CA1D9E4
+P 5850 4300
+F 0 "#PWR0139" H 5850 4150 50  0001 C CNN
+F 1 "+5V" H 5865 4473 50  0000 C CNN
+F 2 "" H 5850 4300 50  0001 C CNN
+F 3 "" H 5850 4300 50  0001 C CNN
+	1    5850 4300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5650 4300 5850 4300
+Text GLabel 6600 3050 0    60   Input ~ 0
+PB10
+Text GLabel 6600 2950 0    60   Input ~ 0
+PB15
+Text GLabel 6800 3050 2    60   Input ~ 0
+HSDRV_SCLK
+Text GLabel 6800 2950 2    60   Input ~ 0
+HSDRV_DI
+Text GLabel 6600 3150 0    60   Input ~ 0
+PD15
+Text GLabel 6800 3150 2    60   Input ~ 0
+HSDRV_EN
+Text GLabel 6600 3250 0    60   Input ~ 0
+PD14
+Text GLabel 6800 3250 2    60   Input ~ 0
+HSDRV_CS
+Wire Wire Line
+	6600 2950 6800 2950
+Wire Wire Line
+	6600 3050 6800 3050
+Wire Wire Line
+	6600 3150 6800 3150
+Wire Wire Line
+	6600 3250 6800 3250
+Text GLabel 6300 6250 0    60   Input ~ 0
+PC7
+Text GLabel 6450 6250 2    60   Input ~ 0
+PWM3
+Text GLabel 6300 6150 0    60   Input ~ 0
+PC6
+Text GLabel 6450 6150 2    60   Input ~ 0
+PWM2
+Wire Wire Line
+	6300 6150 6450 6150
+Wire Wire Line
+	6300 6250 6450 6250
+Text GLabel 6600 3350 0    60   Input ~ 0
+PD11
+Text GLabel 6800 3350 2    60   Input ~ 0
+PWM1
+Wire Wire Line
+	6600 3350 6800 3350
+Text GLabel 6600 3450 0    60   Input ~ 0
+PD12
+Text GLabel 6800 3450 2    60   Input ~ 0
+PWM0
+Wire Wire Line
+	6600 3450 6800 3450
 $EndSCHEMATC
