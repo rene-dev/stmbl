@@ -12,5 +12,5 @@ io0.out0 = fault0.mot_brake
 conf0.max_ac_cur = 10
 conf0.max_force = 3
 res0.freq = 5000
-res0.phase = 0.4
+res0.phase = 0.8
 conf0.mot_fb_offset = -0.255
