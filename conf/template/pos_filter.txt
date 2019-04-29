@@ -1,6 +1,7 @@
 load pos_filter
 pos_filter0.rt_prio = 6
 vel0.rt_prio = 0
+pos_filter0.en = fault0.en_fb
 pos_filter0.pos_in = rev0.out
 pos_filter0.vel_in = rev0.out_d
 pos_filter0.bandwidth = 1000

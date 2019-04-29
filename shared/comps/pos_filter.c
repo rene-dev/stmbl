@@ -11,8 +11,10 @@ HAL_PIN(acc_out);
 
 HAL_PIN(bandwidth);
 
+HAL_PIN(en);
+
 static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
-  struct pos_filter_ctx_t *ctx      = (struct pos_filter_ctx_t *)ctx_ptr;
+  //struct pos_filter_ctx_t *ctx      = (struct pos_filter_ctx_t *)ctx_ptr;
   struct pos_filter_pin_ctx_t *pins = (struct pos_filter_pin_ctx_t *)pin_ptr;
 
   float ki = 2.0 * PIN(bandwidth);
@@ -21,9 +23,17 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float pos_error = PIN(pos_in) - PIN(pos_out);
   float vel_error = PIN(vel_in) - PIN(vel_out);
   
-  PIN(acc_out) = kp * pos_error + ki * vel_error;
-  PIN(vel_out) += period * PIN(acc_out);
-  PIN(pos_out) += period * PIN(vel_out);
+
+  if(PIN(en) > 0.0){
+    PIN(acc_out) = kp * pos_error + ki * vel_error;
+    PIN(vel_out) += period * PIN(acc_out);
+    PIN(pos_out) += period * PIN(vel_out);
+  }
+  else{
+    PIN(acc_out) = 0;
+    PIN(vel_out) = PIN(vel_in);
+    PIN(pos_out) = PIN(pos_in);
+  }
 }
 
 const hal_comp_t pos_filter_comp_struct = {
