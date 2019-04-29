@@ -96,8 +96,8 @@ typedef struct hal_comp_inst_t {
   } state;
 } hal_comp_inst_t;
 
-#define PIN(p) (pins->p.source->source->value)
-#define PINA(p, i) (pins->p[i].source->source->value)
+#define PIN(p) (pins->p.source->value)
+#define PINA(p, i) (pins->p[i].source->value)
 
 typedef struct {
   volatile uint32_t active_rt_func;

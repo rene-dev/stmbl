@@ -183,6 +183,7 @@ int main(void) {
   load_comp(comp_by_name("term"));
   hal_parse("flashloadconf");
   hal_parse("loadconf");
+  hal_parse("relink");
   hal_parse("start");
 
   TIM_Cmd(TIM_MASTER, ENABLE);
