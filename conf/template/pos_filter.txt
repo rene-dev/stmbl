@@ -1,11 +1,11 @@
 load pos_filter
-pos_filter0.rt_prio = 6
+pos_filter-1.rt_prio = 6
 vel0.rt_prio = 0
-pos_filter0.en = fault0.en_fb
-pos_filter0.pos_in = rev0.out
-pos_filter0.vel_in = rev0.out_d
-pos_filter0.bandwidth = 1000
-term0.wave2 = pos_filter0.vel_out
-reslimit0.pos_in = pos_filter0.pos_out
-pid0.vel_ext_cmd = pos_filter0.vel_out
-pid0.acc_ext_cmd = pos_filter0.acc_out
+pos_filter-1.en = fault0.en_fb
+pos_filter-1.pos_in = rev0.out
+pos_filter-1.vel_in = rev0.out_d
+pos_filter-1.bandwidth = 1000
+term0.wave2 = pos_filter-1.vel_out
+reslimit0.pos_in = pos_filter-1.pos_out
+pid0.vel_ext_cmd = pos_filter-1.vel_out
+pid0.acc_ext_cmd = pos_filter-1.acc_out
