@@ -200,7 +200,7 @@ void hal_term_print_info(char *ptr) {
     pins = (struct pin_ctx_t *)(hal.rt_comps[j]->pin_insts);
     cct  = (float)hal.rt_comps[j]->rt_ticks / hal_get_systick_freq();
     mcct = (float)hal.rt_comps[j]->rt_max_ticks / hal_get_systick_freq();
-    printf("%s(%f) %f(max %f)us", hal.rt_comps[j]->comp->name, PIN(rt_prio), cct * 1000000.0, mcct * 1000000.0);
+    printf("%s%u(%f) %f(max %f)us", hal.rt_comps[j]->comp->name, (unsigned int) hal.rt_comps[j]->instance, PIN(rt_prio), cct * 1000000.0, mcct * 1000000.0);
     if(pe > 0.0) {
       printf(" = %f(max %f)%%\n", cct / pe * 100.0, mcct / pe * 100.0);
     } else {
@@ -799,13 +799,13 @@ uint32_t hal_parse_(char *cmd) {
   int32_t foo = 0;
 
   char sinkc[64];
-  uint32_t sinki = 0;
+  int32_t sinki = 0;
   char sinkp[64];
 
   float value = 0.0;
 
   char sourcec[64];
-  uint32_t sourcei = 0;
+  int32_t sourcei = 0;
   char sourcep[64];
 
   volatile hal_pin_inst_t *sink;
@@ -813,7 +813,15 @@ uint32_t hal_parse_(char *cmd) {
 
   uint32_t found = 0;
 
-  foo = sscanf(cmd, " %[a-zA-Z_]%lu.%[a-zA-Z0-9_] = %f", sinkc, &sinki, sinkp, &value);
+  foo = sscanf(cmd, " %[a-zA-Z_]%li.%[a-zA-Z0-9_] = %f", sinkc, &sinki, sinkp, &value);
+  if(sinki < 0){
+    for(int i = 0; i < hal.comp_inst_count; i++) {
+       if(!strcmp(hal.comp_insts[i].comp->name, sinkc)) {
+         sinki++;
+       }
+    }
+  }
+
   switch(foo) {
     case 0:
       break;
@@ -850,7 +858,22 @@ uint32_t hal_parse_(char *cmd) {
       }
       break;
     case 3:
-      foo = sscanf(cmd, " %[a-zA-Z_]%lu.%[a-zA-Z0-9_] = %[a-zA-Z_]%lu.%[a-zA-Z0-9_]", sinkc, &sinki, sinkp, sourcec, &sourcei, sourcep);
+      foo = sscanf(cmd, " %[a-zA-Z_]%li.%[a-zA-Z0-9_] = %[a-zA-Z_]%li.%[a-zA-Z0-9_]", sinkc, &sinki, sinkp, sourcec, &sourcei, sourcep);
+      if(sinki < 0){
+        for(int i = 0; i < hal.comp_inst_count; i++) {
+          if(!strcmp(hal.comp_insts[i].comp->name, sinkc)) {
+            sinki++;
+          }
+        }
+      } 
+      if(sourcei < 0){
+        for(int i = 0; i < hal.comp_inst_count; i++) {
+          if(!strcmp(hal.comp_insts[i].comp->name, sourcec)) {
+            sourcei++;
+          }
+        }
+      }
+
       if(foo == 6) {  // link pins
         sink   = pin_inst_by_name(sinkc, sinki, sinkp);
         source = pin_inst_by_name(sourcec, sourcei, sourcep);
