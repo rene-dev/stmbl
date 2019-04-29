@@ -100,6 +100,7 @@ COMPS += shared/comps/mux.c
 COMPS += shared/comps/veltopos.c
 COMPS += shared/comps/wobl.c
 COMPS += shared/comps/debounce.c
+COMPS += shared/comps/pos_filter.c
 
 SOURCES += $(COMPS)
 
