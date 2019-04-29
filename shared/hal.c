@@ -989,3 +989,13 @@ void hal_linked_pins(char *ptr){
 }
 
 COMMAND("linked", hal_linked_pins, "show linked pins");
+
+void hal_relink_pins(char *ptr){
+  for(int i = 0; i < hal.comp_inst_count; i++) {
+    for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++) {
+      hal.comp_insts[i].pin_insts[j].source = hal.comp_insts[i].pin_insts[j].source->source;
+    }
+  }
+}
+
+COMMAND("relink", hal_relink_pins, "relink all hal pins (a = b, b = c => a = c, b = c)");
