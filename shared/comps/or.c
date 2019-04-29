@@ -9,7 +9,7 @@ HAL_PIN(in3);
 
 HAL_PIN(out);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct or_pin_ctx_t *pins = (struct or_pin_ctx_t *)pin_ptr;
 
   PIN(out) = (PIN(in0) > 0.0) | (PIN(in1) > 0.0) | (PIN(in2) > 0.0) | (PIN(in3) > 0.0);

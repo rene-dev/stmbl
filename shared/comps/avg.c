@@ -9,7 +9,7 @@ HAL_PIN(lpf);
 HAL_PIN(mult);
 HAL_PIN(offset);
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct avg_ctx_t * ctx = (struct avg_ctx_t *)ctx_ptr;
   struct avg_pin_ctx_t *pins = (struct avg_pin_ctx_t *)pin_ptr;
   PIN(lpf) = 100;
@@ -18,7 +18,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 }
 
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct avg_pin_ctx_t *pins = (struct avg_pin_ctx_t *)pin_ptr;
   PIN(out) = (PIN(in) * PIN(mult) + PIN(offset)) * LP_HZ(PIN(lpf)) + (1.0 - LP_HZ(PIN(lpf))) * PIN(out);
 }

@@ -22,14 +22,14 @@ HAL_PIN(at_speed);
 HAL_PIN(en_out);
 
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct ramp_ctx_t *ctx      = (struct ramp_ctx_t *)ctx_ptr;
   struct ramp_pin_ctx_t *pins = (struct ramp_pin_ctx_t *)pin_ptr;
 
   PIN(at_speed_th) = 0.01;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct ramp_ctx_t *ctx      = (struct ramp_ctx_t *)ctx_ptr;
   struct ramp_pin_ctx_t *pins = (struct ramp_pin_ctx_t *)pin_ptr;
   

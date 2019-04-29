@@ -27,7 +27,7 @@ HAL_PIN(y);
 HAL_PIN(d);
 HAL_PIN(q);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct dq_ctx_t * ctx = (struct dq_ctx_t *)ctx_ptr;
   struct dq_pin_ctx_t *pins = (struct dq_pin_ctx_t *)pin_ptr;
 

@@ -11,7 +11,7 @@ HAL_COMP(o_fb);
 HAL_PIN(a);
 HAL_PIN(b);
 
-static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct o_fb_ctx_t * ctx = (struct o_fb_ctx_t *)ctx_ptr;
   // struct o_fb_pin_ctx_t * pins = (struct o_fb_pin_ctx_t *)pin_ptr;
 
@@ -38,7 +38,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 }
 
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct o_fb_ctx_t * ctx = (struct o_fb_ctx_t *)ctx_ptr;
   struct o_fb_pin_ctx_t *pins = (struct o_fb_pin_ctx_t *)pin_ptr;
 

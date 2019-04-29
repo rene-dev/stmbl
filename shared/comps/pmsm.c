@@ -58,7 +58,7 @@ struct pmsm_ctx_t {
 };
 
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct pmsm_ctx_t *ctx      = (struct pmsm_ctx_t *)ctx_ptr;
   struct pmsm_pin_ctx_t *pins = (struct pmsm_pin_ctx_t *)pin_ptr;
 
@@ -86,7 +86,7 @@ float drop(float i, float v) {
   return (i / v);
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct pmsm_ctx_t *ctx      = (struct pmsm_ctx_t *)ctx_ptr;
   struct pmsm_pin_ctx_t *pins = (struct pmsm_pin_ctx_t *)pin_ptr;
 

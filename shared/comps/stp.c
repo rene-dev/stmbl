@@ -24,7 +24,7 @@ HAL_PIN(dtg);
 HAL_PIN(ttg);
 HAL_PIN(at_target);
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct stp_ctx_t *ctx      = (struct stp_ctx_t *)ctx_ptr;
   struct stp_pin_ctx_t *pins = (struct stp_pin_ctx_t *)pin_ptr;
   PIN(target)                = 0.0;
@@ -34,7 +34,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(min_pos)               = -10.0 * 2.0 * M_PI;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct stp_ctx_t *ctx      = (struct stp_ctx_t *)ctx_ptr;
   struct stp_pin_ctx_t *pins = (struct stp_pin_ctx_t *)pin_ptr;
 

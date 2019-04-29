@@ -43,7 +43,7 @@ static void nopsleep(uint32_t t){
   }
 }
 
-static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct hx_ctx_t *ctx = (struct hx_ctx_t *)ctx_ptr;
   struct hx_pin_ctx_t * pins = (struct hx_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -70,7 +70,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
 //TODO: plausibility, saturation, channel/gain config, 2 chips
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct hx_ctx_t *ctx      = (struct hx_ctx_t *)ctx_ptr;
   struct hx_pin_ctx_t *pins = (struct hx_pin_ctx_t *)pin_ptr;
   uint32_t value = 0;

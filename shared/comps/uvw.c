@@ -27,7 +27,7 @@ HAL_PIN(pos);
 HAL_PIN(rpos);
 HAL_PIN(state);
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct uvw_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
   struct uvw_pin_ctx_t *pins = (struct uvw_pin_ctx_t *)pin_ptr;
 
@@ -42,7 +42,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(state) = 3.0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct uvw_ctx_t * ctx = (struct uvw_ctx_t *)ctx_ptr;
   struct uvw_pin_ctx_t *pins = (struct uvw_pin_ctx_t *)pin_ptr;
 

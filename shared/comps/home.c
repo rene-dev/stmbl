@@ -31,14 +31,14 @@ HAL_PIN(home_offset);
 HAL_PIN(re_home);
 HAL_PIN(limit_fault);
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr){
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr){
   struct home_pin_ctx_t *pins = (struct home_pin_ctx_t *)pin_ptr;
   PIN(state) = 0;
   PIN(re_home) = 1;
   PIN(home_polarity) = 1.0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct home_ctx_t *ctx      = (struct home_ctx_t *)ctx_ptr;
   struct home_pin_ctx_t *pins = (struct home_pin_ctx_t *)pin_ptr;
 

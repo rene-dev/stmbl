@@ -15,7 +15,7 @@ HAL_PIN(torque);
 // cur cmd out
 HAL_PIN(cur);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct dc_ttc_ctx_t * ctx = (struct dc_ttc_ctx_t *)ctx_ptr;
   struct dc_ttc_pin_ctx_t *pins = (struct dc_ttc_pin_ctx_t *)pin_ptr;
 

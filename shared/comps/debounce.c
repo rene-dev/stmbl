@@ -11,7 +11,7 @@ HAL_PIN(out);
 HAL_PIN(debounce_time);
 HAL_PIN(timer);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct debounce_ctx_t *ctx      = (struct debounce_ctx_t *)ctx_ptr;
   struct debounce_pin_ctx_t *pins = (struct debounce_pin_ctx_t *)pin_ptr;
 

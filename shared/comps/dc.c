@@ -13,7 +13,7 @@ HAL_PIN(u);
 HAL_PIN(v);
 HAL_PIN(w);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
   struct dc_pin_ctx_t *pins = (struct dc_pin_ctx_t *)pin_ptr;
 

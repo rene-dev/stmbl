@@ -28,12 +28,12 @@ COMMAND("jogl", jog_left, "Jog left");
 COMMAND("jogr", jog_right, "Jog right");
 COMMAND("jogx", jog_stop, "Stop jog");
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   jog_timeout = 0.0;
   jog         = 0.0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct jog_pin_ctx_t *pins = (struct jog_pin_ctx_t *)pin_ptr;
 
   if(jog_timeout < 0.75) {

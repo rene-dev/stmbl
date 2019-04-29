@@ -107,7 +107,7 @@ void hv_send(char *ptr) {
 }
 COMMAND("hv", hv_send, "send command to hv board");
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
@@ -208,12 +208,12 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(ignore_fault_pin) = 1;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx = (struct hv_ctx_t *)ctx_ptr;
   ctx->frt_slot        = 0;
 }
 
-static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void frt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
   ctx->frt_slot++;
@@ -524,7 +524,7 @@ void send_boot(char *ptr) {
 }
 COMMAND("hv_update", send_boot, "try hv update");
 
-static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx = (struct hv_ctx_t *)ctx_ptr;
   // struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
   char c;
