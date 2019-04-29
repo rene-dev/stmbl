@@ -200,7 +200,7 @@ void hal_term_print_info(char *ptr) {
     pins = (struct pin_ctx_t *)(hal.rt_comps[j]->pin_insts);
     cct  = (float)hal.rt_comps[j]->rt_ticks / hal_get_systick_freq();
     mcct = (float)hal.rt_comps[j]->rt_max_ticks / hal_get_systick_freq();
-    printf("%s%u(%f) %f(max %f)us", hal.rt_comps[j]->comp->name, (unsigned int) hal.rt_comps[j]->instance, PIN(rt_prio), cct * 1000000.0, mcct * 1000000.0);
+    printf("%s%lu(%f) %f(max %f)us", hal.rt_comps[j]->comp->name, hal.rt_comps[j]->instance, PIN(rt_prio), cct * 1000000.0, mcct * 1000000.0);
     if(pe > 0.0) {
       printf(" = %f(max %f)%%\n", cct / pe * 100.0, mcct / pe * 100.0);
     } else {
