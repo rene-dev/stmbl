@@ -38,6 +38,8 @@ HAL_PIN(u1);
 HAL_PIN(i0);
 HAL_PIN(i1);
 
+HAL_PIN(et);
+
 HAL_PIN(drop);
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -124,6 +126,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
         PIN(uq_cmd) = 0.0;
         PIN(en_out) = 0.0;
         PIN(timer) = 0.0;
+        PIN(et) = PIN(ld) / PIN(r);
   }
 }
 
