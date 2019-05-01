@@ -49,7 +49,7 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(r_test_cur) = 5;
   PIN(r_test_time) = 0.5;
   PIN(l_test_volt) = 10;
-  PIN(l_test_time) = 1;
+  PIN(l_test_time) = 1.5;
   PIN(ki) = 10;
 }
 
@@ -127,6 +127,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
         PIN(en_out) = 0.0;
         PIN(timer) = 0.0;
         PIN(et) = PIN(ld) / PIN(r);
+        PIN(en) = 0;
   }
 }
 
