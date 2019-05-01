@@ -35,8 +35,10 @@ HAL_PIN(dac);
 
 // process data to LS
 HAL_PIN(dc_volt);
-HAL_PIN(d_fb);
-HAL_PIN(q_fb);
+HAL_PIN(id_fb);
+HAL_PIN(iq_fb);
+HAL_PIN(ud_fb);
+HAL_PIN(uq_fb);
 
 // state data to LS
 HAL_PIN(hv_temp);
@@ -290,8 +292,10 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
     // fill tx struct
     ctx->packet_from_hv.fault             = (uint8_t)PIN(fault_in);
-    ctx->packet_from_hv.d_fb              = PIN(d_fb);
-    ctx->packet_from_hv.q_fb              = PIN(q_fb);
+    ctx->packet_from_hv.id_fb              = PIN(id_fb);
+    ctx->packet_from_hv.iq_fb              = PIN(iq_fb);
+    ctx->packet_from_hv.ud_fb              = PIN(ud_fb);
+    ctx->packet_from_hv.uq_fb              = PIN(uq_fb);
     ctx->packet_from_hv.header.conf_addr  = ctx->tx_addr;
     ctx->packet_from_hv.header.config.f32 = state.data[ctx->tx_addr++];
     ctx->tx_addr %= sizeof(state) / 4;
