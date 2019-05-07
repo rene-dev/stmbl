@@ -18,7 +18,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct pos_filter_ctx_t *ctx      = (struct pos_filter_ctx_t *)ctx_ptr;
   struct pos_filter_pin_ctx_t *pins = (struct pos_filter_pin_ctx_t *)pin_ptr;
 
-  float ki = 2.0 * PIN(bandwidth);
+  float ki = 2.0 * MIN(PIN(bandwidth), 1.0 / period / 2.0);
   float kp = 0.25 * ki * ki;
 
   float pos_error = minus(PIN(pos_in), PIN(pos_out));
