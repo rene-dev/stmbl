@@ -1,4 +1,5 @@
 #include "hal.h"
+#include "angle.h"
 
 HAL_COMP(pos_filter);
 
@@ -17,17 +18,17 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   //struct pos_filter_ctx_t *ctx      = (struct pos_filter_ctx_t *)ctx_ptr;
   struct pos_filter_pin_ctx_t *pins = (struct pos_filter_pin_ctx_t *)pin_ptr;
 
-  float ki = 2.0 * PIN(bandwidth);
+  float ki = 2.0 * MIN(PIN(bandwidth), 1.0 / period / 2.0);
   float kp = 0.25 * ki * ki;
 
-  float pos_error = PIN(pos_in) - PIN(pos_out);
+  float pos_error = minus(PIN(pos_in), PIN(pos_out));
   float vel_error = PIN(vel_in) - PIN(vel_out);
   
 
   if(PIN(en) > 0.0){
     PIN(acc_out) = kp * pos_error + ki * vel_error;
     PIN(vel_out) += period * PIN(acc_out);
-    PIN(pos_out) += period * PIN(vel_out);
+    PIN(pos_out) = mod(PIN(pos_out) + period * PIN(vel_out));
   }
   else{
     PIN(acc_out) = 0;
