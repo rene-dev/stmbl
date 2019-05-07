@@ -1,5 +1,6 @@
 #include "hal.h"
 #include "angle.h"
+#include "defines.h"
 
 HAL_COMP(pos_filter);
 
