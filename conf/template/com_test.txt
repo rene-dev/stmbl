@@ -8,3 +8,4 @@ term0.gain3 = 20.000000
 hv0.pos = sim0.vel
 hv0.d_cmd = 1.000000
 hv0.en = 1.000000
+conf0.max_pos_error = 0
