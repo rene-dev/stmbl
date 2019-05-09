@@ -13,14 +13,18 @@ HAL_PIN(torque_n);
 HAL_PIN(cur_n);
 HAL_PIN(slip_n);
 HAL_PIN(polecount);
+HAL_PIN(freq_n);
+HAL_PIN(u_n);
+HAL_PIN(u_boost);
 
 // torque cmd in
 HAL_PIN(torque);
 HAL_PIN(vel);
 
 // cur cmd out
-HAL_PIN(id);
-HAL_PIN(iq);
+HAL_PIN(d_cmd);
+HAL_PIN(q_cmd);
+HAL_PIN(cmd_mode);
 HAL_PIN(freq);
 HAL_PIN(slip)
 HAL_PIN(pos);
@@ -35,35 +39,51 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   float slip_n   = PIN(slip_n);
   float torque_n = MAX(PIN(torque_n), 0.001);
   float cur_n    = PIN(cur_n);
+  float freq_n   = MAX(PIN(freq_n), 1.0);
+  float u_n      = PIN(u_n);
+  float u_boost  = PIN(u_boost);
 
-  float id   = 0.0;
-  float iq   = 0.0;
+  float d_cmd   = 0.0;
+  float q_cmd   = 0.0;
   float freq = vel * poles / 2.0 / M_PI;
   float slip = 0.0;
+  float cmd_mode = 0;
 
   switch((int)PIN(mode)) {
-    case 0:                       // slip control
-      id   = cur_n / sqrtf(2.0);  // constant flux
-      iq   = cur_n / sqrtf(2.0) / torque_n * torque;
+    case 0: // slip control
+      cmd_mode = 1.0; // cur cmd
+      d_cmd   = cur_n / sqrtf(2.0);  // constant flux
+      q_cmd   = cur_n / sqrtf(2.0) / torque_n * torque;
       slip = slip_n / torque_n * torque;
       break;
 
-    case 1:  // mtpa
-      id   = 0.0;
-      iq   = cur_n / torque_n * torque;
+    case 1: // mtpa
+      cmd_mode = 1.0; // cur cmd
+      d_cmd   = 0.0;
+      q_cmd   = cur_n / torque_n * torque;
       slip = slip_n * SIGN(torque);  // constant slip
       break;
 
+    case 2: // u/f
+      cmd_mode = 0; // volt cmd
+      slip = slip_n / torque_n * torque;
+      d_cmd = MAX(u_n / freq_n * ABS(freq), u_boost);
+      q_cmd = 0.0;
+      break;
+
     default:
-      id   = 0;
-      iq   = 0;
+      cmd_mode = 1.0; // cur cmd
+      d_cmd   = 0;
+      q_cmd   = 0;
       slip = 0.0;
   }
 
+  slip = LIMIT(slip, slip_n * 4.0);
   freq += slip;
 
-  PIN(id)   = id;
-  PIN(iq)   = iq;
+  PIN(cmd_mode) = cmd_mode;
+  PIN(d_cmd)   = d_cmd;
+  PIN(q_cmd)   = q_cmd;
   PIN(freq) = freq;
   PIN(slip) = slip;
   PIN(pos)  = mod(PIN(pos) + freq * period * 2.0 * M_PI);

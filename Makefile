@@ -102,6 +102,7 @@ COMPS += shared/comps/wobl.c
 COMPS += shared/comps/debounce.c
 COMPS += shared/comps/pos_filter.c
 COMPS += shared/comps/rl.c
+COMPS += shared/comps/mad.c
 
 SOURCES += $(COMPS)
 
