@@ -627,22 +627,15 @@ The STMBL PID works differnt than common PID loops. Understand the https://githu
 
 #### Limits ####
 Exceeding a limit results in an action.
-* conf0.max_dc_volt voltage limit (V)
-  * disable drive
-* conf0.high_dc_volt brake resistor limit (V)
-  * activate brake resistor (Note: there is no build in brake resistor in STMBL V3 or V4)
-* conf0.low_dc_volt voltage limit (V)
-  * disable drive
-* conf0.max_hv_temp temperature limit (°C)
-  * disable drive
-* conf0.high_hv_temp temperature limit (°C)
-  * reduce max current
-* conf0.fan_hv_temp temperature limit (°C)
-  * activate fan
-* conf0.max_pos_error max positon error (rad)
-  * disable drive
-* conf0.max_sat max saturation time (s)
-  * disable drive
+
+* conf0.max_dc_volt voltage limit (V):  disable drive
+* conf0.high_dc_volt brake resistor limit (V) : activate brake resistor (Note: there is no build in brake resistor in STMBL V3 or V4)
+* conf0.low_dc_volt voltage limit (V): disable drive
+* conf0.max_hv_temp temperature limit (°C): disable drive
+* conf0.high_hv_temp temperature limit (°C): reduce max current
+* conf0.fan_hv_temp temperature limit (°C): activate fan
+* conf0.max_pos_error max positon error (rad): disable drive
+* conf0.max_sat max saturation time (s): disable drive
 
 == Pinouts
 
