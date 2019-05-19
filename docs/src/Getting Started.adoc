@@ -643,6 +643,29 @@ Exceeding a limit results in an action.
   * disable drive
 * conf0.max_sat max saturation time (s)
   * disable drive
+  
+# Sample Motor settings
+
+|===
+| Motor  Make         | Baldor   |
+| Model               | BSM100B-3150AA    |
+| FeedBack            | Resolver |
+| Voltage             | 300 V    |
+| Continous Current   | 14.06  |
+| Continous Torque    | 17Nm/150 Lb-in |
+| Speed               | 2000 RPM |
+| conf0.R             | .45      |
+| conf0.L             | .00302   |
+| conf0.J             | .0065    |
+| conf0.max_ac_cur    | 14.06 A  |
+| conf0.max_force     | 17 Nm    |
+| conf0.polecount     | 4 Pairs  |
+| conf0.psi           | .3       |
+| conf0.Mot_fb_offset | .1       |
+| Res.freq            | 5000     |
+| Res.phase           | .8       |
+
+|===
 
 == Pinouts
 
