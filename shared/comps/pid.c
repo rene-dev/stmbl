@@ -241,6 +241,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     acc_sat         = 0.0;
     torque_sat      = 0.0;
     ctx->sat        = 0.0;
+    PIN(torque_cmd) = 0.0;
   }
 
   PIN(pos_error)      = pos_error;
