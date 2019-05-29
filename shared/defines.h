@@ -43,6 +43,8 @@ extern "C" {
 #define MIN3(a, b, c) MIN(a, MIN(b, c))
 #define MAX3(a, b, c) MAX(a, MAX(b, c))
 
+#define SIGN2(a, b) (CLAMP((a) / (b), -1, 1))
+
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 #define FIELD_SIZEOF(t, f) (sizeof(((t *)0)->f))
 
