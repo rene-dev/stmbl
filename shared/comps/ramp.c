@@ -50,7 +50,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     PIN(at_speed) = 0;
   }
 
-  if(ABS(PIN(vel_cmd)) > 0.01 | ABS(PIN(vel_ext_cmd)) > 0.01){
+  if((ABS(PIN(vel_cmd)) > 0.01) | (ABS(PIN(vel_ext_cmd)) > 0.01)){
     PIN(en_out) = 1;
   }
   else{
