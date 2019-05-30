@@ -104,6 +104,7 @@ COMPS += shared/comps/pos_filter.c
 COMPS += shared/comps/rl.c
 COMPS += shared/comps/mad.c
 COMPS += shared/comps/sensorless.c
+COMPS += shared/comps/field.c
 
 SOURCES += $(COMPS)
 

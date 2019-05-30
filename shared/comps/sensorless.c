@@ -37,6 +37,7 @@ HAL_PIN(kb);
 HAL_PIN(kl);
 HAL_PIN(min_vel);
 HAL_PIN(vel_boost);
+HAL_PIN(max_vel);
 
 HAL_PIN(id);
 HAL_PIN(iq);
@@ -67,6 +68,7 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(min_vel) = 3.0 * 2.0 * M_PI;
   PIN(vel_boost) = 0.2;
   PIN(drop) = 1.5;
+  PIN(max_vel) = 500.0 * 2.0 * M_PI * 1.1;
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -113,6 +115,8 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   if(ABS(vel) < PIN(min_vel)){
     vel += SIGN2(id * iq, 0.1) * PIN(vel_boost);
   }
+
+  vel = LIMIT(vel, PIN(max_vel));
 
   pos += vel * period;
   
