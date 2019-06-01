@@ -674,8 +674,8 @@ Exceeding a limit results in an action.
 |===
 |Pin |Colour|RS485 |RS422 |UART |USART |UART HD |USART HD |SPI |SPI HD
 
-|1 |Orange Stripe |    |A   |RX+ |RX+  |       |       |MISO+ |     
-|2 |Orange        |    |B   |RX- |RX-  |       |       |MISO- |     
+|1 |Orange Stripe |    |A   |RX+ |RX+  |       |       |MISO+ |CS+ 
+|2 |Orange        |    |B   |RX- |RX-  |       |       |MISO- |CS- 
 |3 |Green Stripe  |    |    |    |CLK+ |       |CLK+   |CLK+  |CLK+ 
 |4 |Blue          |B   |Z   |TX- |TX-  |TX/RX- |TX/RX- |MOSI- |MOSI-
 |5 |Blue Stripe   |A   |Y   |TX+ |TX+  |TX/RX+ |TX/RX+ |MOSI+ |MOSI+
