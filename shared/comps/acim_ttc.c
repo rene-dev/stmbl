@@ -12,7 +12,7 @@ HAL_PIN(sensorless);
 // motor values
 HAL_PIN(torque_n);
 HAL_PIN(cur_n);
-// HAL_PIN(slip_n);
+HAL_PIN(slip_n);
 HAL_PIN(polecount);
 HAL_PIN(freq_n);
 HAL_PIN(vel_n);
@@ -125,7 +125,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     t_max = -t_min * t_boost;
   }
 
-  slip = LIMIT(slip, slip_n * PIN(s_boost));
+  slip = LIMIT(slip, (slip_n * PIN(s_boost)));
 
   if(PIN(sensorless) > 0.0){
     vel -= slip;
@@ -143,6 +143,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(d_cmd)   = d_cmd;
   PIN(q_cmd)   = q_cmd;
 
+  PIN(slip_n) = slip_n;
   PIN(slip) = slip;
   PIN(pos)  = mod(PIN(pos) + vel * period);
 }
