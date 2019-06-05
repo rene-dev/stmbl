@@ -33,7 +33,7 @@ HAL_PIN(cmd_mode);
 HAL_PIN(pos);
 HAL_PIN(vel_e);
 HAL_PIN(slip);
-
+HAL_PIN(scale);
 HAL_PIN(t_min);
 HAL_PIN(t_max);
 
@@ -61,7 +61,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   float vel_n    = PIN(vel_n) * poles;
   float t_n      = MAX(PIN(torque_n), 0.001);
   float freq_n   = MAX(PIN(freq_n), 1.0);
-  float slip_n   = vel_n - freq_n * 2.0 * M_PI;
+  float slip_n   = freq_n * 2.0 * M_PI - vel_n;
   float cur_n    = PIN(cur_n);
   float u_n      = PIN(u_n);
   float u_boost  = PIN(u_boost);
@@ -83,12 +83,14 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   float cmd_mode = 0;
 
   float id_n = cur_n / sqrtf(2.0);
+  float scale = 1.0;
 
   switch((int)PIN(mode)) {
     case 0: // slip control
       cmd_mode = 1.0; // cur cmd
-      d_cmd = MIN(id_n, id_n * freq_n * 2.0 * M_PI * v_boost / vel); // constant flux
-      q_cmd   = id_n / t_n * torque;
+      scale = MIN(1.0, freq_n * 2.0 * M_PI * v_boost / ABS(vel));
+      d_cmd = scale * id_n; // constant flux
+      q_cmd = id_n / t_n * torque;
       slip = slip_n / t_n * torque;
       break;
 
@@ -117,12 +119,12 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   float t_max = 0;
 
   if(PIN(vel_m) > 0.0){
-    t_max = t_n * MIN(t_boost, vel_n * v_boost / vel);
-    t_min = -t_max * t_boost;
+    t_max = t_n * MIN(t_boost, scale);
+    t_min = -t_max;
   }
   else{
-    t_min = -t_n * MIN(t_boost, vel_n * v_boost / vel);
-    t_max = -t_min * t_boost;
+    t_min = -t_n * MIN(t_boost, scale);
+    t_max = -t_min;
   }
 
   slip = LIMIT(slip, (slip_n * PIN(s_boost)));
@@ -146,6 +148,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(slip_n) = slip_n;
   PIN(slip) = slip;
   PIN(pos)  = mod(PIN(pos) + vel * period);
+  PIN(scale) = scale;
 }
 
 hal_comp_t acim_ttc_comp_struct = {
