@@ -3,3 +3,4 @@ enc_cmd0.rt_prio = 2
 enc_cmd0.res = conf0.cmd_res
 rev0.in = enc_cmd0.pos
 fault0.cmd_error = 0
+io0.cmdg = 1
