@@ -37,6 +37,11 @@ HAL_PIN(slip);
 HAL_PIN(t_min);
 HAL_PIN(t_max);
 
+HAL_PIN(scale);
+HAL_PIN(ki);
+HAL_PIN(duty);
+HAL_PIN(duty_setpoint);
+
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct acim_ttc_pin_ctx_t *pins = (struct acim_ttc_pin_ctx_t *)pin_ptr;
   PIN(polecount) = 2;
@@ -47,10 +52,12 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(u_n) = 80.0;
   PIN(u_boost) = 7.0;
   PIN(t_boost) = 1.3;
-  PIN(v_boost) = 1.15;
   PIN(s_boost) = 2.5;
   PIN(mode) = 0;
   PIN(sensorless) = 0;
+  PIN(scale) = 1.0;
+  PIN(ki) = 50.0;
+  PIN(duty_setpoint) = 0.9;
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -61,12 +68,11 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   float vel_n    = PIN(vel_n) * poles;
   float t_n      = MAX(PIN(torque_n), 0.001);
   float freq_n   = MAX(PIN(freq_n), 1.0);
-  float slip_n   = vel_n - freq_n * 2.0 * M_PI;
+  float slip_n   = freq_n * 2.0 * M_PI - vel_n;
   float cur_n    = PIN(cur_n);
   float u_n      = PIN(u_n);
   float u_boost  = PIN(u_boost);
   float t_boost  = PIN(t_boost);
-  float v_boost  = PIN(v_boost);
 
   float torque   = PIN(torque);
   float vel      = 0.0;
@@ -84,18 +90,35 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
   float id_n = cur_n / sqrtf(2.0);
 
+  PIN(scale) += (PIN(duty_setpoint) - PIN(duty)) * PIN(ki) * period;
+  PIN(scale) = CLAMP(PIN(scale), 0.01, 1);
+
   switch((int)PIN(mode)) {
     case 0: // slip control
       cmd_mode = 1.0; // cur cmd
-      d_cmd = MIN(id_n, id_n * freq_n * 2.0 * M_PI * v_boost / vel); // constant flux
-      q_cmd   = id_n / t_n * torque;
-      slip = slip_n / t_n * torque;
+      // d_cmd = MIN(id_n, id_n * freq_n * 2.0 * M_PI * v_boost / vel); // constant flux
+      d_cmd = id_n * PIN(scale);
+      q_cmd = id_n / t_n * torque / PIN(scale);
+      slip = slip_n * q_cmd / d_cmd;
+
+      // id = id_n
+      // slip = slip_n * iq / id
+      // torque = 3/2 * p * K * iq * id
+
+      // id = id_n * scale
+      // // iq = toruqe / t_n * id_n * id_n / id
+      // iq = toruqe / t_n * id_n / scale
+      // slip = slip_n * iq / id
+
+      // torque = 3/2 * p * K * iq * id
+      // torque = t_n / id_n / id_n * id * iq
+      // iq = toruqe / t_n * id_n * id_n / id
       break;
 
     case 1: // mtpa
       cmd_mode = 1.0; // cur cmd
-      d_cmd   = 0.0;
-      q_cmd   = cur_n / t_n * torque;
+      d_cmd = 0.0;
+      q_cmd = cur_n / t_n * torque;
       slip = slip_n * SIGN(torque);  // constant slip
       break;
 
@@ -108,8 +131,8 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
     default:
       cmd_mode = 1.0; // cur cmd
-      d_cmd   = 0;
-      q_cmd   = 0;
+      d_cmd = 0;
+      q_cmd = 0;
       slip = 0.0;
   }
 
@@ -117,15 +140,15 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   float t_max = 0;
 
   if(PIN(vel_m) > 0.0){
-    t_max = t_n * MIN(t_boost, vel_n * v_boost / vel);
+    t_max = t_n * t_boost * PIN(scale);
     t_min = -t_max * t_boost;
   }
   else{
-    t_min = -t_n * MIN(t_boost, vel_n * v_boost / vel);
+    t_min = -t_n * t_boost * PIN(scale);
     t_max = -t_min * t_boost;
   }
 
-  slip = LIMIT(slip, (slip_n * PIN(s_boost)));
+  slip = LIMIT(slip, slip_n * PIN(s_boost));
 
   if(PIN(sensorless) > 0.0){
     vel -= slip;

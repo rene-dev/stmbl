@@ -39,6 +39,8 @@ HAL_PIN(iq_fb);
 HAL_PIN(ud_fb);
 HAL_PIN(uq_fb);
 HAL_PIN(abs_cur);
+HAL_PIN(abs_volt);
+HAL_PIN(duty);
 
 // state data to LS
 HAL_PIN(hv_temp);
@@ -257,6 +259,10 @@ static void frt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
                 PIN(uq_fb)    = ctx->from_hv.packet_from_hv.uq_fb;
                 PIN(fault)   = ctx->from_hv.packet_from_hv.fault;
                 PIN(abs_cur) = sqrtf(PIN(id_fb) * PIN(id_fb) + PIN(iq_fb) * PIN(iq_fb));
+                PIN(abs_volt) = sqrtf(PIN(ud_fb) * PIN(ud_fb) + PIN(uq_fb) * PIN(uq_fb));
+                if(PIN(pwm_volt) > 0.0){
+                  PIN(duty) = PIN(abs_volt) / PIN(pwm_volt);
+                }
 
                 uint16_t a         = ctx->from_hv.packet_from_hv.header.conf_addr;
                 a                  = CLAMP(a, 0, sizeof(f3_state_data_t) / 4);
