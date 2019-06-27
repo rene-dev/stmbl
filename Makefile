@@ -105,6 +105,7 @@ COMPS += shared/comps/rl.c
 COMPS += shared/comps/mad.c
 COMPS += shared/comps/sensorless.c
 COMPS += shared/comps/field.c
+COMPS += shared/comps/gain.c
 
 SOURCES += $(COMPS)
 
