@@ -33,7 +33,7 @@ HAL_PIN(cmd_mode);
 HAL_PIN(pos);
 HAL_PIN(vel_e);
 HAL_PIN(slip);
-
+HAL_PIN(scale);
 HAL_PIN(t_min);
 HAL_PIN(t_max);
 
@@ -89,6 +89,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   float cmd_mode = 0;
 
   float id_n = cur_n / sqrtf(2.0);
+  float scale = 1.0;
 
   PIN(scale) += (PIN(duty_setpoint) - PIN(duty)) * PIN(ki) * period;
   PIN(scale) = CLAMP(PIN(scale), 0.01, 1);
@@ -96,6 +97,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   switch((int)PIN(mode)) {
     case 0: // slip control
       cmd_mode = 1.0; // cur cmd
+<<<<<<< HEAD
       // d_cmd = MIN(id_n, id_n * freq_n * 2.0 * M_PI * v_boost / vel); // constant flux
       d_cmd = id_n * PIN(scale);
       q_cmd = id_n / t_n * torque / PIN(scale);
@@ -113,6 +115,12 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       // torque = 3/2 * p * K * iq * id
       // torque = t_n / id_n / id_n * id * iq
       // iq = toruqe / t_n * id_n * id_n / id
+=======
+      scale = MIN(1.0, freq_n * 2.0 * M_PI * v_boost / ABS(vel));
+      d_cmd = scale * id_n; // constant flux
+      q_cmd = id_n / t_n * torque;
+      slip = slip_n / t_n * torque;
+>>>>>>> b391edf8b185d238a1d7f496a5acc53d9e64e7e2
       break;
 
     case 1: // mtpa
@@ -140,12 +148,21 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   float t_max = 0;
 
   if(PIN(vel_m) > 0.0){
+<<<<<<< HEAD
     t_max = t_n * t_boost * PIN(scale);
     t_min = -t_max * t_boost;
   }
   else{
     t_min = -t_n * t_boost * PIN(scale);
     t_max = -t_min * t_boost;
+=======
+    t_max = t_n * MIN(t_boost, scale);
+    t_min = -t_max;
+  }
+  else{
+    t_min = -t_n * MIN(t_boost, scale);
+    t_max = -t_min;
+>>>>>>> b391edf8b185d238a1d7f496a5acc53d9e64e7e2
   }
 
   slip = LIMIT(slip, slip_n * PIN(s_boost));
@@ -169,6 +186,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(slip_n) = slip_n;
   PIN(slip) = slip;
   PIN(pos)  = mod(PIN(pos) + vel * period);
+  PIN(scale) = scale;
 }
 
 hal_comp_t acim_ttc_comp_struct = {
