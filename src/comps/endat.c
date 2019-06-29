@@ -12,14 +12,18 @@ HAL_COMP(endat);
 HAL_PIN(req);
 HAL_PIN(pos_len);
 HAL_PIN(mpos_len);
+HAL_PIN(bytes);
 
 HAL_PIN(pos);
 HAL_PIN(mpos);
 
 HAL_PIN(f1);
-HAL_PIN(f2);
+HAL_PIN(crc);
 HAL_PIN(shift);
+HAL_PIN(timer);
+HAL_PIN(swap);
 
+HAL_PIN(scip);
 
 HAL_PINA(byte, 6);
 
@@ -69,8 +73,17 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
   GPIO_SetBits(GPIOD, GPIO_Pin_10);  //clock tx enable
   PIN(req) = 224;
-  PIN(pos_len) = 32;
+  PIN(pos_len) = 18; // 17
+  PIN(mpos_len) = 12; // 15
+  PIN(swap) = 1;
+  PIN(scip) = 9;
+  PIN(bytes) = 7;
 }
+
+union{
+    uint64_t data;
+    uint8_t dataa[8];
+  } df;
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct endat_ctx_t *ctx      = (struct endat_ctx_t *)ctx_ptr;
@@ -88,53 +101,44 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   SPI3->DR = PIN(req);
   while(!(SPI3->SR & SPI_SR_TXE));
   while(SPI3->SR & SPI_SR_BSY);
+
   SPI3->CR1 &= ~SPI_CR1_BIDIOE;//disable output, this activates the clock
   GPIO_ResetBits(GPIOD, GPIO_Pin_15);//tx disable
-  
-  SPI3->CR1 &= ~SPI_CR1_SPE;//disable spi
-  SPI3->CR1 |= SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_CPOL | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BaudRatePrescaler_32;
-  SPI3->CR1 |= SPI_CR1_SPE;//enable spi
 
+  if(PIN(swap) > 0.0){ 
+    SPI3->CR1 &= ~SPI_CR1_SPE;//disable spi
+    SPI3->CR1 |= SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_CPOL | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BaudRatePrescaler_32;
+    SPI3->CR1 |= SPI_CR1_SPE;//enable spi
+  }
 
-  //volatile uint32_t foo = SPI3->DR;//dummy read to clear flags
-  //for(int i = 0;i<6;i++){
-  //  while(!(SPI3->SR & SPI_SR_RXNE));
-  //  PINA(byte,i) = SPI3->DR;
- // }
-
-union{
-    uint64_t data;
-    uint8_t dataa[8];
-  } df;
-
-  for(int i = 0; i < sizeof(df.data); i++){
+  for(int i = 0; i < MIN(sizeof(df.data), PIN(bytes)); i++){
     while(!(SPI3->SR & SPI_SR_RXNE));
     df.dataa[i] = SPI3->DR;
   }
-  df.data = df.data >> 4;
-  PIN(shift) = 4;
-  while((df.data & 1) == 0){
+
+  df.data = df.data >> (int)PIN(scip);
+  PIN(shift) = PIN(scip);
+  while((df.data & 1) == 0 && PIN(shift) < 32.0){
     df.data = df.data >> 1;
     PIN(shift)++;
   }
 
   uint8_t start_bit = (df.data & 1);
   uint8_t f1_bit = (df.data & 2);
-  uint8_t f2_bit = (df.data & 3);
-  df.data = df.data >> 3;
+  // uint8_t f2_bit = (df.data & 3);
+  df.data = df.data >> 2;
 
   uint32_t pos_len = PIN(pos_len);
   uint32_t mpos_len = PIN(mpos_len);
 
   uint32_t pos = df.data << (32 - pos_len);
-  uint8_t crc = df.data >> (pos_len + mpos_len);
+  uint8_t crc = (df.data >> (pos_len + mpos_len)) & 31;
   uint32_t mpos = (df.data << (sizeof(df.data) * 8 - pos_len - mpos_len)) >> (64 - mpos_len);
 
   PIN(pos) = mod(pos * 2.0 * M_PI / 4294967295.0);
   PIN(mpos) = mpos;
-  //PIN(crc) = crc;
   PIN(f1) = f1_bit;
-  PIN(f2) = f2_bit;
+  PIN(crc) = crc;
 
   PINA(byte,0) = df.dataa[0];
   PINA(byte,1) = df.dataa[1];
@@ -146,11 +150,62 @@ union{
 
   //TODO: wait for busy flag?
   SPI3->CR1 &= ~SPI_CR1_SPE;//disable spi
+
+  PIN(timer) += period;
+}
+
+static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
+  struct endat_pin_ctx_t *pins = (struct endat_pin_ctx_t *)pin_ptr;
+  uint64_t data = df.data;
+  if(PIN(timer) > 0.2) {
+    PIN(timer) = 0.0;
+    int i = 0;
+    for(; i < PIN(pos_len); i++) {
+      if(data & 1){
+        printf("1");
+      }
+      else{
+        printf("0");
+      }
+      data = data >> 1;
+    }
+    printf(" ");
+    for(; i < PIN(pos_len) + PIN(mpos_len); i++) {
+      if(data & 1){
+        printf("1");
+      }
+      else{
+        printf("0");
+      }
+      data = data >> 1;
+    }
+    printf(" ");
+    for(; i < PIN(pos_len) + PIN(mpos_len) + 5; i++) {
+      if(data & 1){
+        printf("1");
+      }
+      else{
+        printf("0");
+      }
+      data = data >> 1;
+    }
+     printf(" ");
+    for(; i < PIN(bytes) * 8; i++) {
+      if(data & 1){
+        printf("1");
+      }
+      else{
+        printf("0");
+      }
+      data = data >> 1;
+    }
+    printf("\n");
+  }
 }
 
 hal_comp_t endat_comp_struct = {
     .name      = "endat",
-    .nrt       = 0,
+    .nrt       = nrt_func,
     .rt        = rt_func,
     .frt       = 0,
     .nrt_init  = nrt_init,
