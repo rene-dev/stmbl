@@ -1,0 +1,68 @@
+link pid
+link acim
+link enc_fb0
+link misc
+
+link sserial_uf
+load idx_home
+load linrev
+linrev0.rt_prio = 2.1
+idx_home0.rt_prio = 2.3
+linrev0.fb_in = idx_home0.pos_out
+linrev0.fb_d_in = vel1.vel
+idx_home0.fb = enc_fb0.pos
+idx_home0.fb_abs = enc_fb0.abs_pos
+idx_home0.mot_state = enc_fb0.state
+enc_fb0.amp = 5
+
+idx_home0.index_en = sserial0.index_out
+idx_home0.mot_state = fb_switch0.mot_state
+sserial0.index_clear = idx_home0.index_clear
+linrev0.rev_clear = sserial0.index_clear
+sserial0.pos_fb = linrev0.fb_out
+sserial0.vel_fb = linrev0.fb_d_out
+linrev0.scale = -1
+
+conf0.r = 1.4
+conf0.l = 0.0013
+conf0.j = 0.015
+conf0.max_force = 50
+conf0.max_ac_cur = 25
+acim_ttc0.cur_n = 20
+acim_ttc0.torque_n = 19
+acim_ttc0.freq_n = 50
+acim_ttc0.slip_n = 1.8
+acim_ttc0.u_n = 230
+acim_ttc0.u_boost = 5
+conf0.polecount = 2
+conf0.vel_p = 500
+conf0.vel_i = 1
+conf0.max_sat = 0.5
+iit0.cur_boost = 2
+iit0.max_time = 60
+conf0.max_pos_error = 0
+conf0.max_vel = 900
+conf0.max_acc = 9000
+conf0.mot_fb_res = 2000
+conf0.max_dc_volt = 390
+conf0.high_dc_volt = 375
+
+pid0.max_vel = conf0.max_vel
+pid0.max_torque = 50
+pid0.min_torque = -50
+
+load ramp
+ramp0.rt_prio = 1.95
+ramp0.vel_ext_cmd = sserial0.pos_cmd_d
+ramp0.en = sserial0.out3
+ramp0.max_vel = 837
+ramp0.max_acc = 837
+
+load not
+not0.rt_prio = 2
+not0.in = sserial0.out3
+
+pid0.vel_ext_cmd = ramp0.vel_cmd
+pid0.pos_en = not0.out
+
+acim_ttc0.mode = 2

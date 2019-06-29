@@ -34,8 +34,7 @@ curpid0.id_cmd = fb_switch0.id
 curpid0.iq_cmd = pmsm_ttc0.cur
 curpid0.dc_volt = hv0.dc_volt
 curpid0.ac_volt = hv0.ac_volt
-curpid0.rd = conf0.r
-curpid0.rq = conf0.r
+curpid0.r = conf0.r
 curpid0.ld = conf0.l
 curpid0.lq = conf0.l
 curpid0.ff = conf0.cur_ff
@@ -57,15 +56,3 @@ fb_switch0.phase_time = conf0.phase_time
 
 pid0.min_torque = pmsm_limits0.next_min_torque
 pid0.max_torque = pmsm_limits0.next_max_torque
-
-
-
-curpid0.max_cur = 5
-
-
-pid0.max_vel = conf0.
-pid0.max_torque = 5.000000
-pid0.min_torque = -5.000000
-pmsm0.vel = 
-curpid0.cmd_mode = 1 ? CURRENT_MODE
-
