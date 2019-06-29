@@ -30,7 +30,6 @@ HAL_COMP(sensorless);
 //in
 HAL_PIN(r);
 HAL_PIN(l);
-HAL_PIN(drop);
 
 HAL_PIN(ki);
 HAL_PIN(kb);
@@ -43,8 +42,11 @@ HAL_PIN(id);
 HAL_PIN(iq);
 HAL_PIN(ud);
 HAL_PIN(uq);
-HAL_PIN(udd);
-HAL_PIN(uqd);
+HAL_PIN(ud1);
+HAL_PIN(uq1);
+HAL_PIN(ud2);
+HAL_PIN(uq2);
+
 
 //out
 HAL_PIN(vel);
@@ -62,12 +64,11 @@ HAL_PIN(delta_iq);
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct sensorless_ctx_t *ctx      = (struct sensorless_ctx_t *)ctx_ptr;
   struct sensorless_pin_ctx_t *pins = (struct sensorless_pin_ctx_t *)pin_ptr;
-  PIN(ki) = 0.1;
+  PIN(ki) = 1500.0;
   PIN(kb) = 1;
   PIN(kl) = 0.75;
   PIN(min_vel) = 3.0 * 2.0 * M_PI;
   PIN(vel_boost) = 0.2;
-  PIN(drop) = 1.5;
   PIN(max_vel) = 500.0 * 2.0 * M_PI * 1.1;
 }
 
@@ -78,24 +79,22 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   float l = MAX(PIN(l), 0.00001);
   float r = MAX(PIN(r), 0.01);
 
-  float ud = PIN(ud);
-  float uq = PIN(uq);
+  float ud = PIN(ud2);
+  float uq = PIN(uq2);
+  PIN(ud2) = PIN(ud1);
+  PIN(uq2) = PIN(uq1);
+  PIN(ud1) = PIN(ud);
+  PIN(uq1) = PIN(uq);
+  
   float id = PIN(id);
   float iq = PIN(iq);
 
   float kb = CLAMP(PIN(kb), 0, 1);
-  float ki = CLAMP(PIN(ki), 0, 1);
+  float ki = CLAMP(PIN(ki), 0, 1.0 / period);
   float kl = CLAMP(PIN(kl), 0, 1);
 
   float vel = PIN(vel);
   float pos = PIN(pos);
-
-  // drop compensation
-  ud -= SIGN2(id, 0.1) * PIN(drop);
-  uq -= SIGN2(iq, 0.1) * PIN(drop);
-
-  PIN(udd) = ud;
-  PIN(uqd) = uq;
 
   // lowpass current change
   PIN(delta_id) = PIN(delta_id) * kl + (id - PIN(old_id)) * (1 - kl);
@@ -108,8 +107,8 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   float ed = ud - r * id - PIN(delta_id) * l / period + vel * l * iq * kb;
   float eq = uq - r * iq - PIN(delta_iq) * l / period - vel * l * id * kb;
 
-  // velocity compensation, bemf_d => 0
-  vel -= SIGN2(eq, 1.0) * ed * ki;
+  // velocity compensation, bemf_d -> 0
+  vel -= SIGN2(eq, 1.0) * ed * ki * period;
 
   // startup boost
   if(ABS(vel) < PIN(min_vel)){

@@ -42,6 +42,7 @@ else
 	COMPS += src/comps/yaskawa.c
 	COMPS += src/comps/encs.c
 	COMPS += src/comps/encf.c
+	COMPS += src/comps/endat.c
 	CFLAGS += -DV4
 endif
 
@@ -106,6 +107,7 @@ COMPS += shared/comps/mad.c
 COMPS += shared/comps/sensorless.c
 COMPS += shared/comps/field.c
 COMPS += shared/comps/gain.c
+COMPS += shared/comps/rlpsij.c
 
 SOURCES += $(COMPS)
 
