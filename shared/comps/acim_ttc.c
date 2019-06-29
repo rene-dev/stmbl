@@ -139,11 +139,11 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
   if(PIN(vel_m) > 0.0){
     t_max = t_n * t_boost * PIN(scale);
-    t_min = -t_max * t_boost;
+    t_min = -t_max;
   }
   else{
     t_min = -t_n * t_boost * PIN(scale);
-    t_max = -t_min * t_boost;
+    t_max = -t_min;
   }
 
   slip = LIMIT(slip, slip_n * PIN(s_boost));
