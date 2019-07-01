@@ -13,10 +13,6 @@ uint32_t endat_tx(endat_cmd_t cmd, uint8_t p1, uint16_t p2, uint8_t* buf, endat_
   buf[2] = p2 & 0xff;
   buf[3] = (p2 >> 8) & 0xff;
 
-  // buf[1] = p1 & 0xff;
-  // buf[2] = (p2 >> 8) & 0xff;
-  // buf[3] = p2 & 0xff;
-
   data->current_cmd = cmd;
   data->current_addr = p1;
   data->current_value = p2;
@@ -156,11 +152,13 @@ uint32_t endat_rx(uint8_t* buf, uint32_t max_len, endat_data_t* data){
         case ENDAT_MEM_STATE:
           switch(p1){
             case 0: // error register
-              data->state.error = *((endat_state_error_t*) &p2);
+              // data->error = *((endat_state_error_t*) &p2);
+              data->error.reg = p2;
             break;
 
             case 1: // warning register
-              data->state.warning = *((endat_state_warning_t*) &p2);
+              // data->warning = *((endat_state_warning_t*) &p2);
+              data->warning.reg = p2;
             break;
 
             default:

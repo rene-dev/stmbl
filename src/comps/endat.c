@@ -10,14 +10,7 @@
 
 HAL_COMP(endat);
 
-HAL_PIN(req);
-HAL_PIN(pos_len);
-HAL_PIN(mpos_len);
-HAL_PIN(bytes);
-HAL_PIN(tx_bits);
-HAL_PIN(tx_bytes);
-HAL_PIN(p1);
-HAL_PIN(p2);
+
 
 HAL_PIN(pos);
 HAL_PIN(mpos);
@@ -27,8 +20,22 @@ HAL_PIN(crc);
 HAL_PIN(shift);
 HAL_PIN(timer);
 HAL_PIN(swap);
-HAL_PIN(scip);
+HAL_PIN(skip);
+HAL_PIN(bytes);
 
+HAL_PIN(error);
+HAL_PIN(state);
+
+HAL_PIN(endat_error);
+HAL_PIN(endat_warning);
+HAL_PIN(endat_state);
+HAL_PIN(pos_len);
+HAL_PIN(mpos_len);
+HAL_PIN(pos_res);
+HAL_PIN(type);
+HAL_PIN(max_vel);
+
+HAL_PIN(print_time);
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct endat_ctx_t *ctx = (struct endat_ctx_t *)ctx_ptr;
@@ -75,11 +82,11 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   GPIO_SetBits(GPIOD, GPIO_Pin_10);  //clock tx enable
-  PIN(req) = ENDAT_READ_POS;
-  PIN(pos_len) = 18; // 17
-  PIN(mpos_len) = 12; // 15
+
+  // PIN(pos_len) = 18; // 17
+  // PIN(mpos_len) = 12; // 15
   PIN(swap) = 1;
-  PIN(scip) = 10;
+  PIN(skip) = 10;
   PIN(bytes) = 7;
 }
 
@@ -97,19 +104,85 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct endat_ctx_t *ctx      = (struct endat_ctx_t *)ctx_ptr;
   struct endat_pin_ctx_t *pins = (struct endat_pin_ctx_t *)pin_ptr;
 
-  SPI3->CR1 &= ~SPI_CR1_SPE;//disable spi
+  endat_cmd_t req = 0;
+  uint8_t addr = 0; 
 
+  switch((int)PIN(endat_state)){
+    case 0: // select mem state
+      req = ENDAT_SELECT_MEM;
+      addr = ENDAT_MEM_STATE;
+    break;
+
+    case 1: // read error
+      req = ENDAT_READ_ADDR;
+      addr = ENDAT_ADDR_ERROR;
+    break;
+
+    case 2: // read warning
+      req = ENDAT_READ_ADDR;
+      addr = ENDAT_ADDR_WARNING;
+    break;
+
+    case 3: // select mem 0
+      req = ENDAT_SELECT_MEM;
+      addr = ENDAT_MEM_PARAM0;
+    break;
+
+    case 4: // read len
+      req = ENDAT_READ_ADDR;
+      addr = ENDAT_ADDR_POS_LEN;
+    break;
+
+    case 5: // read type
+      req = ENDAT_READ_ADDR;
+      addr = ENDAT_ADDR_TYPE;
+    break;
+
+    case 6: // select mem 1
+      req = ENDAT_SELECT_MEM;
+      addr = ENDAT_MEM_PARAM1;
+    break;
+
+    case 7: // read multi
+      req = ENDAT_READ_ADDR;
+      addr = ENDAT_ADDR_MULTITURN;
+    break;
+
+    case 8: // read res low
+      req = ENDAT_READ_ADDR;
+      addr = ENDAT_ADDR_RES_LOW;
+    break;
+
+    case 9: // read res high
+      req = ENDAT_READ_ADDR;
+      addr = ENDAT_ADDR_RES_HIGH;
+    break;
+
+    case 10: // select mem 2
+      req = ENDAT_SELECT_MEM;
+      addr = ENDAT_MEM_PARAM2;
+    break;
+
+    case 11: // read max vel
+      req = ENDAT_READ_ADDR;
+      addr = ENDAT_ADDR_MAX_VEL;
+    break;
+
+    case 12: // read pos
+      req = ENDAT_READ_POS;
+    break;
+  }
+
+  SPI3->CR1 &= ~SPI_CR1_SPE;//disable spi
   SPI3->CR1 = SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_CPOL | SPI_CR1_CPHA | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BaudRatePrescaler_32;
 
-  uint32_t bits = endat_tx((uint8_t) PIN(req), (uint8_t) PIN(p1), (uint16_t) PIN(p2), df.dataa, &(ctx->data));
-  PIN(tx_bits) = bits;
-  PIN(tx_bytes) = (bits + 7) / 8;
+  uint32_t bits = endat_tx(req, addr, 0, df.dataa, &(ctx->data));
 
   GPIO_SetBits(GPIOD, GPIO_Pin_15);//tx enable
   SPI3->CR1 |= SPI_CR1_BIDIOE;//enable output
   SPI3->CR1 |= SPI_CR1_SPE;//enable spi
 
-  for(int i = 0; i < (int)PIN(tx_bytes); i++){
+  for(int i = 0; i < (bits + 7) / 8; i++){
     SPI3->DR = df.dataa[i];
     while(!(SPI3->SR & SPI_SR_TXE));
     while(SPI3->SR & SPI_SR_BSY);
@@ -133,21 +206,49 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     df.dataa[i] = SPI3->DR;
   }
 
-  df1.data = df.data >> (int)PIN(scip);
-  PIN(shift) = PIN(scip);
+  df1.data = df.data >> (int)PIN(skip);
+  PIN(shift) = PIN(skip);
   while((df1.data & 1) == 0 && PIN(shift) < 32.0){
     df1.data = df1.data >> 1;
     PIN(shift)++;
   }
 
-  ctx->data.pos_bits = PIN(pos_len); // todo
-  ctx->data.mpos_bits = PIN(mpos_len);
+  uint32_t ret = endat_rx(df1.dataa, MIN(sizeof(df1.data), PIN(bytes)) * 8, &(ctx->data));
 
-  endat_rx(df1.dataa, MIN(sizeof(df1.data), PIN(bytes)) * 8, &(ctx->data));
+  switch((int) PIN(endat_state)){
+    case 12:
+      if(ctx->data.error_bit){
+        PIN(endat_state) = 0;
+        PIN(error) = 1;
+        PIN(state) = 0;
+      }
+      else{
+        PIN(state) = 1;
+        PIN(error) = 0;
+      }
+
+      if(ret){
+        PIN(endat_state) = 0;
+        PIN(error) = 1;
+        PIN(state) = 0;
+      }
+    break;
+
+    default:
+      PIN(endat_state)++;
+      PIN(state) = 0;
+  }
 
   PIN(mpos) = ctx->data.mpos;
   PIN(f1) = ctx->data.error_bit;
   PIN(crc) = ctx->data.crc;
+  PIN(pos_len) = ctx->data.pos_bits;
+  PIN(mpos_len) = ctx->data.mpos_bits;
+  PIN(pos_res) = ctx->data.pos_res;
+  PIN(type) = ctx->data.fb_type;
+  PIN(endat_error) = ctx->data.error.reg;
+  PIN(endat_warning) = ctx->data.warning.reg;
+  PIN(max_vel) = ctx->data.max_vel;
 
   if(ctx->data.pos_bits){
     PIN(pos) = mod(ctx->data.pos * 2.0 * M_PI / (1 << ctx->data.pos_bits));
@@ -156,16 +257,17 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //TODO: wait for busy flag?
   SPI3->CR1 &= ~SPI_CR1_SPE;//disable spi
 
-  PIN(timer) += period;
+  if(PIN(print_time) > 0.0){
+    PIN(timer) += period;
+  }
 }
 
 static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct endat_ctx_t *ctx      = (struct endat_ctx_t *)ctx_ptr;
   struct endat_pin_ctx_t *pins = (struct endat_pin_ctx_t *)pin_ptr;
 
-  if(PIN(timer) > 0.5) {
+  if(PIN(timer) > PIN(print_time)) {
     PIN(timer) = 0.0;
-    int i = 0;
 
     uint64_t data = df.data;
     uint64_t pos1 = ctx->data.pos;

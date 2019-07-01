@@ -19,24 +19,41 @@ typedef enum{
   // ENDAT_MEM_PARAM_3 = 0b10100111,
 } endat_mem_t;
 
+typedef enum{
+  ENDAT_ADDR_ERROR = 0,
+  ENDAT_ADDR_WARNING = 1,
+  ENDAT_ADDR_POS_LEN = 13,
+  ENDAT_ADDR_TYPE = 14,
+  ENDAT_ADDR_MULTITURN = 1,
+  ENDAT_ADDR_RES_LOW = 4,
+  ENDAT_ADDR_RES_HIGH = 5,
+  ENDAT_ADDR_MAX_VEL = 0,
+} endat_mem_addr_t;
+
 extern const uint64_t bitmask[];
 
-typedef struct{
-  uint16_t ilumination : 1;
-  uint16_t amplitude : 1;
-  uint16_t pos : 1;
-  uint16_t over_voltage : 1;
-  uint16_t under_voltage : 1;
-  uint16_t over_current : 1;
-  uint16_t battery : 1;
+typedef union{
+  struct{
+    uint16_t ilumination : 1;
+    uint16_t amplitude : 1;
+    uint16_t pos : 1;
+    uint16_t over_voltage : 1;
+    uint16_t under_voltage : 1;
+    uint16_t over_current : 1;
+    uint16_t battery : 1;
+  };
+  uint16_t reg;
 } endat_state_error_t;
 
-typedef struct{
-  uint16_t freq : 1;
-  uint16_t temp : 1;
-  uint16_t ilumination : 1;
-  uint16_t battery : 1;
-  uint16_t ref : 1;
+typedef union{
+  struct{
+    uint16_t freq : 1;
+    uint16_t temp : 1;
+    uint16_t ilumination : 1;
+    uint16_t battery : 1;
+    uint16_t ref : 1;
+  };
+  uint16_t reg;
 } endat_state_warning_t;
 
 typedef struct{
@@ -49,13 +66,10 @@ typedef struct{
   uint32_t pos_res; // param 20, 21
   uint32_t max_vel; // param 32
   uint32_t error_bit; // error bit
-  struct endat_state_t{
   // state mem 0
   endat_state_error_t error;
-
   // state mem 1
   endat_state_warning_t warning;
-  } state;
 
   endat_mem_t current_mem;
   endat_cmd_t current_cmd;
