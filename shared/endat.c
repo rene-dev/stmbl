@@ -4,14 +4,12 @@
 uint32_t endat_tx(endat_cmd_t cmd, uint8_t p1, uint16_t p2, uint8_t* buf, endat_data_t* data){
   uint32_t len = 0;
 
-  buf[0] = cmd;
+  buf[0] = flip8(cmd);
 
-  p1 = flip8(p1);
-  buf[1] = p1;
+  buf[1] = flip8(p1);
 
-  p2 = flip16(p2);
-  buf[2] = p2 & 0xff;
-  buf[3] = (p2 >> 8) & 0xff;
+  buf[2] = flip16(p2) & 0xff;
+  buf[3] = (flip16(p2) >> 8) & 0xff;
 
   data->current_cmd = cmd;
   data->current_addr = p1;
@@ -24,6 +22,7 @@ uint32_t endat_tx(endat_cmd_t cmd, uint8_t p1, uint16_t p2, uint8_t* buf, endat_
 
     case ENDAT_SELECT_MEM:
       len = 2 + 6 + 8 + 16;
+      data->current_mem = p1;
     break;
 
     case ENDAT_READ_ADDR:
@@ -128,6 +127,7 @@ uint32_t endat_rx(uint8_t* buf, uint32_t max_len, endat_data_t* data){
     case ENDAT_SELECT_MEM:
       p1 = (df.data16[0] >> 1) & 0xff;
       data->crc = (df.data8[3] >> 1) & 0b11111;
+      p1 = flip8(p1);
 
       //check crc
       if(data->current_mem != p1){
@@ -140,14 +140,14 @@ uint32_t endat_rx(uint8_t* buf, uint32_t max_len, endat_data_t* data){
       p1 = (df.data16[0] >> 1) & 0xff;
       p2 = (df.data32[0] >> (1 + 8)) & 0xffff;
       data->crc = (df.data8[3] >> 1) & 0b11111;
+      p1 = flip8(p1);
+      p2 = flip16(p2);
 
       //check crc
       if(addr != p1){
         return(0);
       }
 
-      p1 = flip8(p1);
-      p2 = flip16(p2);
       switch(data->current_mem){
         case ENDAT_MEM_STATE:
           switch(p1){
@@ -168,12 +168,12 @@ uint32_t endat_rx(uint8_t* buf, uint32_t max_len, endat_data_t* data){
 
         case ENDAT_MEM_PARAM0:
           switch(p1){
-            case 13:
+            case ENDAT_ADDR_POS_LEN:
               data->pos_len = p2;
               data->pos_bits = data->pos_len - data->mpos_bits;
             break;
 
-            case 14:
+            case ENDAT_ADDR_TYPE:
               data->fb_type = p2;
             break;
 
@@ -184,16 +184,16 @@ uint32_t endat_rx(uint8_t* buf, uint32_t max_len, endat_data_t* data){
 
         case ENDAT_MEM_PARAM1:
           switch(p1){
-            case 17 - 16:
+            case ENDAT_ADDR_MULTITURN:
               data->mpos_bits = log2f(p2) + 0.99;
               data->pos_bits = data->pos_len - data->mpos_bits;
             break;
 
-            case 20 - 16:
+            case ENDAT_ADDR_RES_LOW:
               data->pos_res = (data->pos_res & 0xffff0000) | p2;
             break;
 
-            case 21 - 16:
+            case ENDAT_ADDR_RES_HIGH:
               data->pos_res = (data->pos_res & 0xffff) | (p2 << 16);
             break;
 
@@ -204,7 +204,7 @@ uint32_t endat_rx(uint8_t* buf, uint32_t max_len, endat_data_t* data){
 
         case ENDAT_MEM_PARAM2:
           switch(p1){
-            case 32 - 16 * 2:
+            case ENDAT_ADDR_MAX_VEL:
               data->max_vel = p2;
             break;
 
@@ -223,6 +223,8 @@ uint32_t endat_rx(uint8_t* buf, uint32_t max_len, endat_data_t* data){
       p1 = (df.data16[0] >> 1) & 0xff;
       p2 = (df.data32[0] >> (1 + 8)) & 0xffff;
       data->crc = (df.data8[3] >> 1) & 0b11111;
+      p1 = flip8(p1);
+      p2 = flip16(p2);
 
       //check crc
       if(addr != p1){

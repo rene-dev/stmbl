@@ -35,6 +35,8 @@ HAL_PIN(pos_res);
 HAL_PIN(type);
 HAL_PIN(max_vel);
 
+HAL_PIN(req);
+
 HAL_PIN(print_time);
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -91,10 +93,11 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 }
 
 union{
-    uint64_t data;
-    uint8_t dataa[8];
-  } df, df1;
+  uint64_t data;
+  uint8_t dataa[8];
+} df, df1, df2;
 
+endat_cmd_t req;
 
 struct endat_ctx_t {
   endat_data_t data;
@@ -104,79 +107,88 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct endat_ctx_t *ctx      = (struct endat_ctx_t *)ctx_ptr;
   struct endat_pin_ctx_t *pins = (struct endat_pin_ctx_t *)pin_ptr;
 
-  endat_cmd_t req = 0;
+  req = 0;
   uint8_t addr = 0; 
 
   switch((int)PIN(endat_state)){
-    case 0: // select mem state
+    case 0: // reset error
+      req = ENDAT_RESET;
+    break;
+
+    case 1: // select mem state
       req = ENDAT_SELECT_MEM;
       addr = ENDAT_MEM_STATE;
     break;
 
-    case 1: // read error
+    case 2: // read error
       req = ENDAT_READ_ADDR;
       addr = ENDAT_ADDR_ERROR;
     break;
 
-    case 2: // read warning
+    case 3: // read warning
       req = ENDAT_READ_ADDR;
       addr = ENDAT_ADDR_WARNING;
     break;
 
-    case 3: // select mem 0
+    case 4: // select mem 0
       req = ENDAT_SELECT_MEM;
       addr = ENDAT_MEM_PARAM0;
     break;
 
-    case 4: // read len
+    case 5: // read len
       req = ENDAT_READ_ADDR;
       addr = ENDAT_ADDR_POS_LEN;
     break;
 
-    case 5: // read type
+    case 6: // read type
       req = ENDAT_READ_ADDR;
       addr = ENDAT_ADDR_TYPE;
     break;
 
-    case 6: // select mem 1
+    case 7: // select mem 1
       req = ENDAT_SELECT_MEM;
       addr = ENDAT_MEM_PARAM1;
     break;
 
-    case 7: // read multi
+    case 8: // read multi
       req = ENDAT_READ_ADDR;
       addr = ENDAT_ADDR_MULTITURN;
     break;
 
-    case 8: // read res low
+    case 9: // read res low
       req = ENDAT_READ_ADDR;
       addr = ENDAT_ADDR_RES_LOW;
     break;
 
-    case 9: // read res high
+    case 10: // read res high
       req = ENDAT_READ_ADDR;
       addr = ENDAT_ADDR_RES_HIGH;
     break;
 
-    case 10: // select mem 2
+    case 11: // select mem 2
       req = ENDAT_SELECT_MEM;
       addr = ENDAT_MEM_PARAM2;
     break;
 
-    case 11: // read max vel
+    case 12: // read max vel
       req = ENDAT_READ_ADDR;
       addr = ENDAT_ADDR_MAX_VEL;
     break;
 
-    case 12: // read pos
+    case 13: // read pos
       req = ENDAT_READ_POS;
     break;
+  }
+
+  if(PIN(req) > 0){
+    req = PIN(req);
   }
 
   SPI3->CR1 &= ~SPI_CR1_SPE;//disable spi
   SPI3->CR1 = SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_CPOL | SPI_CR1_CPHA | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BaudRatePrescaler_32;
 
   uint32_t bits = endat_tx(req, addr, 0, df.dataa, &(ctx->data));
+  df2.data = df.data;
 
   GPIO_SetBits(GPIOD, GPIO_Pin_15);//tx enable
   SPI3->CR1 |= SPI_CR1_BIDIOE;//enable output
@@ -227,7 +239,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
         PIN(error) = 0;
       }
 
-      if(ret){
+      if(ret == 0){
         PIN(endat_state) = 0;
         PIN(error) = 1;
         PIN(state) = 0;
@@ -235,8 +247,13 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     break;
 
     default:
-      PIN(endat_state)++;
       PIN(state) = 0;
+      if(ret == 0){
+        PIN(endat_state) = 0;
+      }
+      else{
+        PIN(endat_state)++;
+      }
   }
 
   PIN(mpos) = ctx->data.mpos;
@@ -270,14 +287,60 @@ static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     PIN(timer) = 0.0;
 
     uint64_t data = df.data;
+    uint64_t reqdata = df2.data;
     uint64_t pos1 = ctx->data.pos;
     uint64_t pos2 = ctx->data.mpos;
     uint64_t crc = ctx->data.crc;
     uint32_t shift = PIN(shift);
 
+    printf("req: ");
+    switch(req){
+      case ENDAT_SELECT_MEM:
+        printf("ENDAT_SELECT_MEM\n");
+      break;
+
+      case ENDAT_READ_ADDR:
+        printf("ENDAT_READ_ADDR\n");
+      break;
+
+      case ENDAT_WRITE_ADDR:
+        printf("ENDAT_WRITE_ADDR\n");
+      break;
+
+      case ENDAT_READ_POS:
+        printf("ENDAT_READ_POS\n");
+      break;
+
+      default:
+        printf("unkonwn req\n");
+    }
+    
+    printf("req data: ");
+    for(int i = 0; i < 64; i++){
+      if(reqdata & 1){
+        printf("1");
+      }
+      else{
+        printf("0");
+      }
+      reqdata >>= 1;
+      if(i == 8 - 1){
+        printf("-");
+      }
+      if(i == 8 + 8 - 1){
+        printf("-");
+      }
+      if(i == 8 + 8 + 16 - 1){
+        printf("-");
+      }
+      if(i == 8 + 8 + 16 + 5 - 1){
+        printf("-");
+      }
+    }
+    printf("\n");
 
     printf("data: ");
-    for(int i = 0; i < 64; i++){
+    for(int i = 0; i < 32; i++){
       if(data & 1){
         printf("1");
       }
@@ -295,9 +358,6 @@ static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
         printf("-");
       }
       if(i == shift + 2 + ctx->data.pos_bits + ctx->data.mpos_bits - 1){
-        printf("-");
-      }
-      if(i == shift + 2 + ctx->data.pos_bits + ctx->data.mpos_bits + 5 - 1){
         printf("-");
       }
     }

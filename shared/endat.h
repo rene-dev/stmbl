@@ -4,18 +4,18 @@
 #define ENDAT_h
 
 typedef enum{
-  ENDAT_READ_POS   = 0b11100000,// 0b000111,
-  ENDAT_SELECT_MEM = 0b00011100,// 0b001110,
-  ENDAT_READ_ADDR  = 0b00110001,// 0b100011,
-  ENDAT_WRITE_ADDR = 0b00001110,// 0b011100,
-  ENDAT_RESET      = 0b00010101,// 0b101010,
+  ENDAT_READ_POS   = 0b00000111, // 0b11100000,// 0b000111,
+  ENDAT_SELECT_MEM = 0b00001110, // 0b01110000,// 0b001110,
+  ENDAT_READ_ADDR  = 0b00100011, // 0b11000100,// 0b100011,
+  ENDAT_WRITE_ADDR = 0b00011100, // 0b00111000,// 0b011100,
+  ENDAT_RESET      = 0b00101010, // 0b01010100,// 0b101010,
 } endat_cmd_t; 
 
 typedef enum{
-  ENDAT_MEM_STATE  = 0b10011101,// 0b10111001,
-  ENDAT_MEM_PARAM0 = 0b10000101,// 0b10100001,
-  ENDAT_MEM_PARAM1 = 0b11000101,// 0b10100011,
-  ENDAT_MEM_PARAM2 = 0b10100101,// 0b10100101,
+  ENDAT_MEM_STATE  = 0b10111001, // 0b10011101,// 0b10111001,
+  ENDAT_MEM_PARAM0 = 0b10100001, // 0b10000101,// 0b10100001,
+  ENDAT_MEM_PARAM1 = 0b10100011, // 0b11000101,// 0b10100011,
+  ENDAT_MEM_PARAM2 = 0b10100101, // 0b10100101,// 0b10100101,
   // ENDAT_MEM_PARAM_3 = 0b10100111,
 } endat_mem_t;
 
@@ -82,44 +82,44 @@ uint32_t endat_tx(endat_cmd_t cmd, uint8_t p1, uint16_t p2, uint8_t* buf, endat_
 uint32_t endat_rx(uint8_t* buf, uint32_t max_len, endat_data_t* data);
 
 inline uint8_t flip8(uint8_t d){
-  uint8_t r = 0;
-  for(int i = 0; i < sizeof(r) * 8; i++){
-    r |= d & 1;
+  uint8_t r = d & 1;
+  for(int i = 0; i < sizeof(r) * 8 - 1; i++){
     r <<= 1;
     d >>= 1;
+    r |= d & 1;
   }
 
   return(r);
 }
 
 inline uint16_t flip16(uint16_t d){
-  uint16_t r = 0;
-  for(int i = 0; i < sizeof(r) * 8; i++){
-    r |= d & 1;
+  uint16_t r = d & 1;
+  for(int i = 0; i < sizeof(r) * 8 - 1; i++){
     r <<= 1;
     d >>= 1;
+    r |= d & 1;
   }
 
   return(r);
 }
 
 inline uint32_t flip32(uint32_t d){
-  uint32_t r = 0;
-  for(int i = 0; i < sizeof(r) * 8; i++){
-    r |= d & 1;
+  uint32_t r = d & 1;
+  for(int i = 0; i < sizeof(r) * 8 - 1; i++){
     r <<= 1;
     d >>= 1;
+    r |= d & 1;
   }
 
   return(r);
 }
 
 inline uint64_t flip64(uint64_t d){
-  uint64_t r = 0;
-  for(int i = 0; i < sizeof(r) * 8; i++){
-    r |= d & 1;
+  uint64_t r = d & 1;
+  for(int i = 0; i < sizeof(r) * 8 - 1; i++){
     r <<= 1;
     d >>= 1;
+    r |= d & 1;
   }
 
   return(r);
