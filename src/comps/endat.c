@@ -6,6 +6,7 @@
 #include "stm32f4xx_conf.h"
 #include "hw/hw.h"
 #include <string.h>
+#include <endat.h>
 
 HAL_COMP(endat);
 
@@ -13,6 +14,10 @@ HAL_PIN(req);
 HAL_PIN(pos_len);
 HAL_PIN(mpos_len);
 HAL_PIN(bytes);
+HAL_PIN(tx_bits);
+HAL_PIN(tx_bytes);
+HAL_PIN(p1);
+HAL_PIN(p2);
 
 HAL_PIN(pos);
 HAL_PIN(mpos);
@@ -22,10 +27,8 @@ HAL_PIN(crc);
 HAL_PIN(shift);
 HAL_PIN(timer);
 HAL_PIN(swap);
-
 HAL_PIN(scip);
 
-HAL_PINA(byte, 6);
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct endat_ctx_t *ctx = (struct endat_ctx_t *)ctx_ptr;
@@ -51,7 +54,7 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //SPI3
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3, ENABLE);
   
-  SPI3->CR1 |= SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_CPOL | SPI_CR1_CPHA | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BaudRatePrescaler_32;
+  SPI3->CR1 |= SPI_CR1_MSTR | SPI_CR1_CPOL | SPI_CR1_CPHA | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BaudRatePrescaler_32;
 
   //PC12 spi3 mosi
   //PC10 spi3 clock
@@ -72,81 +75,83 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   GPIO_SetBits(GPIOD, GPIO_Pin_10);  //clock tx enable
-  PIN(req) = 224;
+  PIN(req) = ENDAT_READ_POS;
   PIN(pos_len) = 18; // 17
   PIN(mpos_len) = 12; // 15
   PIN(swap) = 1;
-  PIN(scip) = 9;
+  PIN(scip) = 10;
   PIN(bytes) = 7;
 }
 
 union{
     uint64_t data;
     uint8_t dataa[8];
-  } df;
+  } df, df1;
+
+
+struct endat_ctx_t {
+  endat_data_t data;
+};
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
-  // struct endat_ctx_t *ctx      = (struct endat_ctx_t *)ctx_ptr;
+  struct endat_ctx_t *ctx      = (struct endat_ctx_t *)ctx_ptr;
   struct endat_pin_ctx_t *pins = (struct endat_pin_ctx_t *)pin_ptr;
 
   SPI3->CR1 &= ~SPI_CR1_SPE;//disable spi
 
-  SPI3->CR1 |= SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_CPOL | SPI_CR1_CPHA | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BaudRatePrescaler_32;
+  SPI3->CR1 = SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_CPOL | SPI_CR1_CPHA | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BaudRatePrescaler_32;
 
+  uint32_t bits = endat_tx((uint8_t) PIN(req), (uint8_t) PIN(p1), (uint16_t) PIN(p2), df.dataa, &(ctx->data));
+  PIN(tx_bits) = bits;
+  PIN(tx_bytes) = (bits + 7) / 8;
 
   GPIO_SetBits(GPIOD, GPIO_Pin_15);//tx enable
   SPI3->CR1 |= SPI_CR1_BIDIOE;//enable output
   SPI3->CR1 |= SPI_CR1_SPE;//enable spi
 
-  SPI3->DR = PIN(req);
-  while(!(SPI3->SR & SPI_SR_TXE));
-  while(SPI3->SR & SPI_SR_BSY);
-
+  for(int i = 0; i < (int)PIN(tx_bytes); i++){
+    SPI3->DR = df.dataa[i];
+    while(!(SPI3->SR & SPI_SR_TXE));
+    while(SPI3->SR & SPI_SR_BSY);
+  }
+  
   SPI3->CR1 &= ~SPI_CR1_BIDIOE;//disable output, this activates the clock
   GPIO_ResetBits(GPIOD, GPIO_Pin_15);//tx disable
 
+  SPI3->CR1 &= ~SPI_CR1_SPE;//disable spi
   if(PIN(swap) > 0.0){ 
-    SPI3->CR1 &= ~SPI_CR1_SPE;//disable spi
-    SPI3->CR1 |= SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_CPOL | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BaudRatePrescaler_32;
-    SPI3->CR1 |= SPI_CR1_SPE;//enable spi
+    SPI3->CR1 = SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_CPOL | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BaudRatePrescaler_32;
   }
+  else{
+    SPI3->CR1 = SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BaudRatePrescaler_32;
+  }
+  SPI3->CR1 |= SPI_CR1_SPE;//enable spi
 
+  df.data = 0;
   for(int i = 0; i < MIN(sizeof(df.data), PIN(bytes)); i++){
     while(!(SPI3->SR & SPI_SR_RXNE));
     df.dataa[i] = SPI3->DR;
   }
 
-  df.data = df.data >> (int)PIN(scip);
+  df1.data = df.data >> (int)PIN(scip);
   PIN(shift) = PIN(scip);
-  while((df.data & 1) == 0 && PIN(shift) < 32.0){
-    df.data = df.data >> 1;
+  while((df1.data & 1) == 0 && PIN(shift) < 32.0){
+    df1.data = df1.data >> 1;
     PIN(shift)++;
   }
 
-  uint8_t start_bit = (df.data & 1);
-  uint8_t f1_bit = (df.data & 2);
-  // uint8_t f2_bit = (df.data & 3);
-  df.data = df.data >> 2;
+  ctx->data.pos_bits = PIN(pos_len); // todo
+  ctx->data.mpos_bits = PIN(mpos_len);
 
-  uint32_t pos_len = PIN(pos_len);
-  uint32_t mpos_len = PIN(mpos_len);
+  endat_rx(df1.dataa, MIN(sizeof(df1.data), PIN(bytes)) * 8, &(ctx->data));
 
-  uint32_t pos = df.data << (32 - pos_len);
-  uint8_t crc = (df.data >> (pos_len + mpos_len)) & 31;
-  uint32_t mpos = (df.data << (sizeof(df.data) * 8 - pos_len - mpos_len)) >> (64 - mpos_len);
+  PIN(mpos) = ctx->data.mpos;
+  PIN(f1) = ctx->data.error_bit;
+  PIN(crc) = ctx->data.crc;
 
-  PIN(pos) = mod(pos * 2.0 * M_PI / 4294967295.0);
-  PIN(mpos) = mpos;
-  PIN(f1) = f1_bit;
-  PIN(crc) = crc;
-
-  PINA(byte,0) = df.dataa[0];
-  PINA(byte,1) = df.dataa[1];
-  PINA(byte,2) = df.dataa[2];
-  PINA(byte,3) = df.dataa[3];
-  PINA(byte,4) = df.dataa[4];
-  PINA(byte,5) = df.dataa[5];
-
+  if(ctx->data.pos_bits){
+    PIN(pos) = mod(ctx->data.pos * 2.0 * M_PI / (1 << ctx->data.pos_bits));
+  }
 
   //TODO: wait for busy flag?
   SPI3->CR1 &= ~SPI_CR1_SPE;//disable spi
@@ -155,51 +160,89 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 }
 
 static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
+  struct endat_ctx_t *ctx      = (struct endat_ctx_t *)ctx_ptr;
   struct endat_pin_ctx_t *pins = (struct endat_pin_ctx_t *)pin_ptr;
-  uint64_t data = df.data;
-  if(PIN(timer) > 0.2) {
+
+  if(PIN(timer) > 0.5) {
     PIN(timer) = 0.0;
     int i = 0;
-    for(; i < PIN(pos_len); i++) {
+
+    uint64_t data = df.data;
+    uint64_t pos1 = ctx->data.pos;
+    uint64_t pos2 = ctx->data.mpos;
+    uint64_t crc = ctx->data.crc;
+    uint32_t shift = PIN(shift);
+
+
+    printf("data: ");
+    for(int i = 0; i < 64; i++){
       if(data & 1){
         printf("1");
       }
       else{
         printf("0");
       }
-      data = data >> 1;
-    }
-    printf(" ");
-    for(; i < PIN(pos_len) + PIN(mpos_len); i++) {
-      if(data & 1){
-        printf("1");
+      data >>= 1;
+      if(i == shift - 1){
+        printf("-");
       }
-      else{
-        printf("0");
+      if(i == shift + 2 - 1){
+        printf("-");
       }
-      data = data >> 1;
-    }
-    printf(" ");
-    for(; i < PIN(pos_len) + PIN(mpos_len) + 5; i++) {
-      if(data & 1){
-        printf("1");
+      if(i == shift + 2 + ctx->data.pos_bits - 1){
+        printf("-");
       }
-      else{
-        printf("0");
+      if(i == shift + 2 + ctx->data.pos_bits + ctx->data.mpos_bits - 1){
+        printf("-");
       }
-      data = data >> 1;
-    }
-     printf(" ");
-    for(; i < PIN(bytes) * 8; i++) {
-      if(data & 1){
-        printf("1");
+      if(i == shift + 2 + ctx->data.pos_bits + ctx->data.mpos_bits + 5 - 1){
+        printf("-");
       }
-      else{
-        printf("0");
-      }
-      data = data >> 1;
     }
     printf("\n");
+    printf("pos1: ");
+    for(int i = 0; i < 64; i++){
+      if(pos1 & 1){
+        printf("1");
+      }
+      else{
+        printf("0");
+      }
+      pos1 >>= 1;
+      if(i == ctx->data.pos_bits - 1){
+        printf("-");
+      }
+    }
+    printf("\n");
+    printf("pos2: ");
+    for(int i = 0; i < 64; i++){
+      if(pos2 & 1){
+        printf("1");
+      }
+      else{
+        printf("0");
+      }
+      pos2 >>= 1;
+      if(i == ctx->data.mpos_bits - 1){
+        printf("-");
+      }
+    }
+    printf("\n");
+
+    printf("crc:  ");
+    for(int i = 0; i < 64; i++){
+      if(crc & 1){
+        printf("1");
+      }
+      else{
+        printf("0");
+      }
+      crc >>= 1;
+      if(i == 5 - 1){
+        printf("-");
+      }
+    }
+    printf("\n\n");
   }
 }
 
@@ -213,6 +256,6 @@ hal_comp_t endat_comp_struct = {
     .frt_start = 0,
     .rt_stop   = 0,
     .frt_stop  = 0,
-    .ctx_size  = 0,
+    .ctx_size  = sizeof(struct endat_ctx_t),
     .pin_count = sizeof(struct endat_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
 };
