@@ -30,6 +30,10 @@ HWVERSION = v4
 ifeq ($(HWVERSION),v3)
 	COMPS += src/comps/hw/io3.c
 	COMPS += src/comps/hvf1.c
+	COMPS += shared/comps/pmsm.c
+	COMPS += shared/comps/curpid.c
+	COMPS += shared/comps/dq.c
+	COMPS += shared/comps/idq.c
 	SOURCES += shared/common_f1.c
 	CFLAGS += -DV3
 else
@@ -56,20 +60,17 @@ COMPS += src/comps/hx711.c
 
 COMPS += shared/comps/sim.c
 COMPS += shared/comps/term.c
-COMPS += shared/comps/curpid.c
 COMPS += shared/comps/svm.c
-COMPS += shared/comps/dq.c
-COMPS += shared/comps/idq.c
+
 COMPS += shared/comps/vel.c
 COMPS += shared/comps/rev.c
 COMPS += shared/comps/hal_test.c
-COMPS += shared/comps/dc.c
+# COMPS += shared/comps/dc.c
 COMPS += shared/comps/ypid.c
 COMPS += shared/comps/fault.c
 COMPS += shared/comps/pid.c
 COMPS += shared/comps/spid.c
 COMPS += shared/comps/pe.c
-COMPS += shared/comps/pmsm.c
 COMPS += shared/comps/pmsm_limits.c
 COMPS += shared/comps/pmsm_ttc.c
 COMPS += shared/comps/dc_limits.c
