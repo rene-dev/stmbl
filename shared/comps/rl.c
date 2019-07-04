@@ -40,12 +40,9 @@ HAL_PIN(i1);
 
 HAL_PIN(et);
 
-HAL_PIN(drop);
-
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct rl_pin_ctx_t *pins = (struct rl_pin_ctx_t *)pin_ptr;
 
-  PIN(drop) = 1.3;
   PIN(r_test_cur) = 5;
   PIN(r_test_time) = 0.5;
   PIN(l_test_volt) = 10;
@@ -83,7 +80,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
       if(PIN(timer) > PIN(r_test_time)){
         if(ABS(PIN(id_fb)) > ABS(PIN(r_test_cur)) * 0.1){
-          PIN(ur) = PIN(ur) * 0.99 + (PIN(ud_fb) - SIGN(PIN(id_fb)) * PIN(drop)) * 0.01;
+          PIN(ur) = PIN(ur) * 0.99 + PIN(ud_fb) * 0.01;
           PIN(ir) = PIN(ir) * 0.99 + PIN(id_fb) * 0.01;
           PIN(r) = PIN(ur) / PIN(ir);
         }
