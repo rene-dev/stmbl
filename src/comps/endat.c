@@ -85,8 +85,30 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
   GPIO_SetBits(GPIOD, GPIO_Pin_10);  //clock tx enable
 
-  // PIN(pos_len) = 18; // 17
-  // PIN(mpos_len) = 12; // 15
+  // DMA_InitTypeDef dma_rx_config;
+  // dma_rx_config.DMA_Channel            = DMA_Channel_0;
+  // dma_rx_config.DMA_PeripheralBaseAddr = (uint32_t)&FB0_SPI->DR;
+  // dma_rx_config.DMA_Memory0BaseAddr    = (uint32_t)&tim_data;
+  // dma_rx_config.DMA_DIR                = DMA_DIR_PeripheralToMemory;
+  // dma_rx_config.DMA_BufferSize         = ARRAY_SIZE(tim_data);
+  // dma_rx_config.DMA_PeripheralInc      = DMA_PeripheralInc_Disable;
+  // dma_rx_config.DMA_MemoryInc          = DMA_MemoryInc_Enable;
+  // dma_rx_config.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+  // dma_rx_config.DMA_MemoryDataSize     = DMA_PeripheralDataSize_HalfWord;
+  // dma_rx_config.DMA_Mode               = DMA_Mode_Normal;
+  // dma_rx_config.DMA_Priority           = DMA_Priority_VeryHigh;
+  // dma_rx_config.DMA_FIFOMode           = DMA_FIFOMode_Disable;
+  // dma_rx_config.DMA_FIFOThreshold      = DMA_FIFOThreshold_HalfFull;
+  // dma_rx_config.DMA_MemoryBurst        = DMA_MemoryBurst_Single;
+  // dma_rx_config.DMA_PeripheralBurst    = DMA_PeripheralBurst_Single;
+
+  // DMA_Cmd(DMA1_Stream2, DISABLE);
+  // DMA_DeInit(DMA1_Stream2);
+  // DMA_Init(DMA1_Stream2, &dma_rx_config);
+
+  PIN(pos_len) = 18; // 17
+  PIN(mpos_len) = 12; // 15
+  PIN(endat_state) = 13;
   PIN(swap) = 1;
   PIN(skip) = 10;
   PIN(bytes) = 7;
@@ -109,6 +131,9 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
   req = 0;
   uint8_t addr = 0; 
+
+  ctx->data.pos_bits = PIN(pos_len);
+  ctx->data.mpos_bits = PIN(mpos_len);
 
   switch((int)PIN(endat_state)){
     case 0: // reset error
