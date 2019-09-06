@@ -374,8 +374,10 @@ https://github.com/rene-dev/stmbl
 You can either clone this as a https://git-scm.com[git] archive or just
 download a current snapshot as a zip file. 
 
-For Windows only you will also need the STM Virtual Comport driver
+For Windows only you will also need the STM Virtual Comport driver (So the board will show up as a DFU device) 
+AND DfuSe USB device firmware upgrade STMicroelectronics extension (to actually send the .dfu file to the board)
 http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-stm32102.html
+https://www.st.com/en/development-tools/stsw-stm32080.html
 
 The STM32 chips have a built-in ROM bootloader, this means that it
 should be impossible to "brick" the boards. Each of the two CPUs in the
@@ -446,7 +448,11 @@ you have a self-built or part-assembled board.
 
 Precompiled Binary versions of the firmware can be downloaded from
 https://github.com/rene-dev/stmbl/releases
-But the author of this document has no idea how to use them.
+//# But the author of this document has no idea how to use them #/.
+== To use them you will have to boot the board in DFU Mode(see above) and For Windows only you will also need the STM Virtual Comport driver (So the board will show up as a DFU device) 
+AND DfuSe USB device firmware upgrade STMicroelectronics extension (to actually send the .dfu file to the board)
+http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-stm32102.html
+https://www.st.com/en/development-tools/stsw-stm32080.html
 
 When compiling from the source code firmware flashing is handled by
 specifying a makefile target for each of the firmware sections. 
@@ -762,6 +768,13 @@ different class of faults.
 14. HV Overcurrent RMS
 15. HV Overcurrent Peak
 16. HV Overcurrent HW
+
+### WARNING / CAUTION !!! ######################################################################################################
+6. Saturation Error: saturation error means the output saturates, and it doesnt see any effect on the feedback.DO NOT INCREASE OR DISABLE THE SATURATION SET TIME !!! the output of any stage of any pid satureates for more than a set time
+and ,changing or disabling this will not fix the issue, only burn the motor. its to protect the motor, drive and hardware.
+
+In other words, it means that the STMBL drive is sending power to the motor and the motor is not moving it is either locked or the encoder feedback is failing so, the drive will stop sending power to the motor after the max stauration time in order to avoid burning the motor windings...etc.
+################################################################################################################################
 
 === F3 Board
 1. Normal operation
