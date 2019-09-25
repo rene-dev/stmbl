@@ -364,18 +364,19 @@ In order for the STMBL Makefiles to be able to find the gcc binaries
 you may need to create the file toolchain-user.mak to point to the correct
 folder and version number.
 
-To flash the boards with USB you will need the dfu-utils package. 
-http://dfu-util.sourceforge.net
+To flash the boards with USB you will need the dfu-utils package http://dfu-util.sourceforge.net
 
-stlink https://github.com/texane/stlink
+To flash the boards over SWD from the Makefile you will need the stlink package https://github.com/texane/stlink
 
 You will also need the STMBL source code, available from
 https://github.com/rene-dev/stmbl
 You can either clone this as a https://git-scm.com[git] archive or just
 download a current snapshot as a zip file. 
 
-For Windows only you will also need the STM Virtual Comport driver
-http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-stm32102.html
+For Windows only you will also need the STM Virtual Comport driver to connect with Servoterm http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-stm32102.html   
+
+And the DfuSe USB device firmware upgrade STMicroelectronics extension to flash the firmware over USB https://www.st.com/en/development-tools/stsw-stm32080.html
+
 
 The STM32 chips have a built-in ROM bootloader, this means that it
 should be impossible to "brick" the boards. Each of the two CPUs in the
