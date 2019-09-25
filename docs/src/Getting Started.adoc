@@ -355,33 +355,34 @@ https://github.com/rene-dev/stmbl/wiki/Development[]
 
 = Flashing Firmware
 
-=== Requirements to build/flash firmware
-
+=== Requirements to build firmware
 The GCC cross-compiler for Arm:
 gcc-arm-none-eabi-gcc https://launchpad.net/gcc-arm-embedded/+download
-
-In order for the STMBL Makefiles to be able to find the gcc binaries
-you may need to create the file toolchain-user.mak to point to the correct
-folder and version number.
-
-To flash the boards with USB you will need the dfu-utils package http://dfu-util.sourceforge.net
-
-To flash the boards over SWD from the Makefile you will need the stlink package https://github.com/texane/stlink
 
 You will also need the STMBL source code, available from
 https://github.com/rene-dev/stmbl
 You can either clone this as a https://git-scm.com[git] archive or just
 download a current snapshot as a zip file. 
 
-For Windows only you will also need the STM Virtual Comport driver to connect with Servoterm http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-stm32102.html   
+In order for the STMBL Makefiles to be able to find the gcc binaries
+you may need to create the file toolchain-user.mak to point to the correct
+folder and version number.
 
-And the DfuSe USB device firmware upgrade STMicroelectronics extension to flash the firmware over USB https://www.st.com/en/development-tools/stsw-stm32080.html
-
-
+=== Requirements to flash firmware
 The STM32 chips have a built-in ROM bootloader, this means that it
 should be impossible to "brick" the boards. Each of the two CPUs in the
 STMBL drive needs both a dedicated bootloader to start the STMBL firmware
-and the firmware itself. 
+and the firmware itself.
+
+==== Linux/Unix
+To flash the boards with USB you will need the dfu-utils package http://dfu-util.sourceforge.net
+
+To flash the boards with a stlink programmer over SWD you will need the stlink package https://github.com/texane/stlink
+
+==== Windows
+You will need the STM Virtual Comport driver to connect with Servoterm http://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-stm32102.html   
+
+And the DfuSe USB device firmware upgrade STMicroelectronics extension to flash the firmware over USB https://www.st.com/en/development-tools/stsw-stm32080.html
 
 === Checking for Existing Firmware - F4 board
 
@@ -447,7 +448,6 @@ you have a self-built or part-assembled board.
 
 Precompiled Binary versions of the firmware can be downloaded from
 https://github.com/rene-dev/stmbl/releases
-But the author of this document has no idea how to use them.
 
 When compiling from the source code firmware flashing is handled by
 specifying a makefile target for each of the firmware sections. 
