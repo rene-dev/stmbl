@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L power:GND #PWR06
+L 11ua-rescue:GND-power #PWR06
 U 1 1 592E06DB
 P 10100 5800
 F 0 "#PWR06" H 10100 5550 50  0001 C CNN
@@ -26,7 +26,7 @@ F 3 "" H 10100 5800 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L power:+5V #PWR08
+L 11ua-rescue:+5V-power #PWR08
 U 1 1 592E0780
 P 10100 5700
 F 0 "#PWR08" H 10100 5550 50  0001 C CNN
@@ -232,7 +232,7 @@ F 3 "" H 11950 6850 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L power:+5V #PWR011
+L 11ua-rescue:+5V-power #PWR011
 U 1 1 592E1BD2
 P 11950 6100
 F 0 "#PWR011" H 11950 5950 50  0001 C CNN
@@ -243,7 +243,7 @@ F 3 "" H 11950 6100 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR012
+L 11ua-rescue:GND-power #PWR012
 U 1 1 592E1BD8
 P 11950 7100
 F 0 "#PWR012" H 11950 6850 50  0001 C CNN
@@ -323,7 +323,7 @@ Wire Wire Line
 Wire Wire Line
 	8350 7100 8350 7500
 $Comp
-L power:GND #PWR0101
+L 11ua-rescue:GND-power #PWR0101
 U 1 1 5C724DA8
 P 14450 7000
 F 0 "#PWR0101" H 14450 6750 50  0001 C CNN
@@ -334,7 +334,7 @@ F 3 "" H 14450 7000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+5V #PWR0102
+L 11ua-rescue:+5V-power #PWR0102
 U 1 1 5C724DAE
 P 14450 6300
 F 0 "#PWR0102" H 14450 6150 50  0001 C CNN
@@ -469,7 +469,7 @@ Wire Wire Line
 Wire Wire Line
 	14450 6300 14450 6350
 $Comp
-L power:+5V #PWR0106
+L 11ua-rescue:+5V-power #PWR0106
 U 1 1 5C74EC95
 P 13200 5250
 F 0 "#PWR0106" H 13200 5100 50  0001 C CNN
@@ -580,7 +580,7 @@ Connection ~ 12800 5700
 Wire Wire Line
 	12800 5700 13100 5700
 $Comp
-L power:GND #PWR0107
+L 11ua-rescue:GND-power #PWR0107
 U 1 1 5C78530D
 P 13200 5700
 F 0 "#PWR0107" H 13200 5450 50  0001 C CNN
@@ -643,7 +643,7 @@ F 3 "" H 13750 6900 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L power:GND #PWR0103
+L 11ua-rescue:GND-power #PWR0103
 U 1 1 5D7977A3
 P 13750 7150
 F 0 "#PWR0103" H 13750 6900 50  0001 C CNN
@@ -677,7 +677,7 @@ Wire Wire Line
 Wire Wire Line
 	5350 5200 6150 5200
 $Comp
-L power:GND #PWR05
+L 11ua-rescue:GND-power #PWR05
 U 1 1 592E067C
 P 5550 5800
 F 0 "#PWR05" H 5550 5550 50  0001 C CNN
@@ -688,7 +688,7 @@ F 3 "" H 5550 5800 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L power:+5V #PWR07
+L 11ua-rescue:+5V-power #PWR07
 U 1 1 592E071C
 P 5550 5700
 F 0 "#PWR07" H 5550 5550 50  0001 C CNN
@@ -766,7 +766,7 @@ Wire Wire Line
 Wire Wire Line
 	8950 5500 8950 5900
 $Comp
-L power:GND #PWR0104
+L 11ua-rescue:GND-power #PWR0104
 U 1 1 5D872060
 P 10700 6150
 F 0 "#PWR0104" H 10700 5900 50  0001 C CNN
@@ -777,7 +777,7 @@ F 3 "" H 10700 6150 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0105
+L 11ua-rescue:GND-power #PWR0105
 U 1 1 5D872536
 P 3900 6150
 F 0 "#PWR0105" H 3900 5900 50  0001 C CNN
