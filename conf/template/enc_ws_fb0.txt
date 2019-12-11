@@ -13,4 +13,18 @@ io0.fb0y = enc_fb0.error
 io0.fb0g = 1
 enc_fb0.vel = vel1.vel
 enc_fb0.amp = adc0.amp0
-enc_fb0.en_index = 1
+
+load uvw
+uvw0.rt_prio = 2
+uvw0.u = io0.fb0a
+uvw0.v = io0.fb0b
+uvw0.w = io0.fb0z
+fb_switch0.com_pos = uvw0.pos
+fb_switch0.com_abs_pos = uvw0.pos
+fb_switch0.com_state = uvw0.state
+fb_switch0.com_polecount = conf0.com_fb_polecount
+conf0.com_fb_polecount = conf0.polecount
+uvw0.amp = adc0.amp0
+fault0.com_fb_error = uvw0.error
+enc_fb0.en_index = uvw0.state
+uvw0.mode = 1

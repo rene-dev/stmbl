@@ -1,0 +1,63 @@
+link pid
+link pmsm
+link enc_fb0
+enc_fb0.en_index = 0
+link jog_cmd
+link misc
+conf0.r = 2
+conf0.l = 0.007
+conf0.j = 0.000067
+conf0.j_load = 0.00005
+conf0.polecount = 5
+conf0.max_ac_cur = 5
+conf0.mot_fb_res = 20000
+
+load hx
+hx0.rt_prio = 9
+hx0.gain = 1
+
+load en
+en0.rt_prio = 2
+en0.en_in = 1
+fault0.en = en0.en_out0
+en0.fault = fault0.fault
+en0.time = 3
+conf0.phase_cur = 3
+conf0.phase_time = 1
+
+load home
+home0.rt_prio = 9
+home0.en_in = en0.en_out1
+rev0.in = home0.pos_out
+home0.home_in = io0.ind0n
+home0.home_vel = -12
+
+load fmove
+fmove0.rt_prio = 10
+fmove0.en = home0.en_out
+fmove0.force_in = hx0.out
+home0.pos_in = fmove0.mpos
+fmove0.max_usr_vel = 0.1
+fmove0.max_usr_acc = 0.1
+term0.wave0 = fmove0.mpos
+hx0.gain = 60
+
+fmove0.damping = 1
+fmove0.real_mass = 0
+fmove0.virtual_mass = 1
+fmove0.friction = 0.1
+fmove0.min_pos = 0
+fmove0.max_pos = 0.5
+fmove0.scale = 500
+fmove0.max_vel = 0.1
+fmove0.max_acc = 0.5
+fmove0.max_usr_vel = 0.25
+fmove0.max_usr_acc = 2
+fmove0.force_th = 0.2
+term0.send_step = 0
+fmove0.print_freq = 1
+fmove0.force_offset = -0.1129
+fmove0.force_offset_lpf = 0.0001
+
+term0.send_step = 50
+fmove0.print_freq = 0

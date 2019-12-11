@@ -47,7 +47,7 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(min_on)  = 0.000005;
   PIN(min_off) = 0.000005;
   PIN(arr)     = PWM_RES;
-  PIN(drop) = 1.6;
+  PIN(drop) = 0;
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {

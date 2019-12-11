@@ -109,6 +109,11 @@ COMPS += shared/comps/sensorless.c
 COMPS += shared/comps/field.c
 COMPS += shared/comps/gain.c
 COMPS += shared/comps/rlpsij.c
+COMPS += shared/comps/veltime.c
+COMPS += shared/comps/mpid.c
+COMPS += shared/comps/fmove.c
+COMPS += shared/comps/home.c
+COMPS += shared/comps/en.c
 
 SOURCES += $(COMPS)
 

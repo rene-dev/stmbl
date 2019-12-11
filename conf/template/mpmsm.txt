@@ -1,0 +1,11 @@
+load pmsm_ttc
+pmsm_ttc0.rt_prio = 9
+pmsm_ttc0.psi = conf0.psi
+pmsm_ttc0.polecount = conf0.polecount
+pmsm_ttc0.pos_in = vel0.pos_out
+pmsm_ttc0.torque = mpid0.torque_cmd
+hv0.d_cmd = fb_switch0.id
+hv0.q_cmd = pmsm_ttc0.cur
+hv0.cmd_mode = 1
+hv0.phase_mode = 2
+hv0.pos = pmsm_ttc0.pos_out
