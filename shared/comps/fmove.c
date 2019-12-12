@@ -84,6 +84,8 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     PIN(mode) = 0;
   }
 
+  PIN(target) = CLAMP(PIN(target), PIN(min_pos), PIN(max_pos));
+
   switch((int) PIN(mode)){
     case 0: // auto move
       PIN(vel) = SIGN(PIN(target) - PIN(pos)) * sqrtf(ABS(PIN(target) - PIN(pos)) * 2.0 * PIN(max_acc));
@@ -92,14 +94,14 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     break;
     case 1: // force move
       PIN(acc) = PIN(force) / PIN(virtual_mass);
-      PIN(acc) = LIMIT(PIN(acc), PIN(max_acc));
+      PIN(acc) = LIMIT(PIN(acc), PIN(max_usr_acc));
       PIN(vel) += PIN(acc) * period;
       PIN(vel) = CLAMP(PIN(vel), PIN(vel_old) - PIN(max_usr_acc) * period, PIN(vel_old) + PIN(max_usr_acc) * period);
       PIN(vel) = LIMIT(PIN(vel), PIN(max_usr_vel));
     break;
   }
 
-  PIN(vel) = CLAMP(PIN(vel), -sqrtf(ABS(PIN(pos) - PIN(min_pos)) * 2.0 * PIN(max_acc)), sqrtf(ABS(PIN(pos) - PIN(max_pos)) * 2.0 * PIN(max_acc)));
+  PIN(vel) = CLAMP(PIN(vel), -sqrtf(ABS(PIN(pos) - PIN(min_pos)) * 2.0 * MAX(PIN(max_acc), PIN(max_usr_acc))), sqrtf(ABS(PIN(pos) - PIN(max_pos)) * 2.0 * MAX(PIN(max_acc), PIN(max_usr_acc))));
   PIN(acc) = (PIN(vel) - PIN(vel_old)) / period;
 
   PIN(pos) += PIN(vel) * period;
@@ -114,7 +116,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   }
 }
 
-static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct fmove_pin_ctx_t *pins = (struct fmove_pin_ctx_t *)pin_ptr;
   if(PIN(print_freq) > 0.0){
     if(PIN(print_timer) > 1.0 / PIN(print_freq)){
