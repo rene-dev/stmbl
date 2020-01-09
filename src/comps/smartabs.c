@@ -115,6 +115,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 
   //TODO: irq here will cause problems
+  __disable_irq();
   GPIO_SetBits(GPIOD, GPIO_Pin_15);  //tx enable
   USART_SendData(USART6, 0x02);
   while(USART_GetFlagStatus(USART6, USART_FLAG_TC) == RESET)
@@ -124,6 +125,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   DMA_Cmd(DMA2_Stream1, DISABLE);
   DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
   DMA_Cmd(DMA2_Stream1, ENABLE);
+  __enable_irq();
 }
 
 hal_comp_t smartabs_comp_struct = {
