@@ -42,3 +42,4 @@ fault0.brake_release = sserial0.out3
 term0.wave2 = linrev0.cmd_d_out
 sserial0.current = hv0.iq_fb
 linrev0.scale = sserial0.scale
+io0.clock_scale = sserial0.clock_scale
