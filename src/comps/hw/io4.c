@@ -76,6 +76,9 @@ HAL_PIN(fb1z);
 
 HAL_PIN(fbsd);  //fb shutdown
 
+HAL_PIN(master_arr);
+HAL_PIN(clock_scale);
+
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
   PIN(th0)                  = 12.0;
@@ -83,6 +86,8 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(fbth0)                = 2.5;
   PIN(fbth1)                = 2.5;
   PIN(out_freq)             = 15000;
+  PIN(master_arr) = TIM3->ARR;
+  PIN(clock_scale) = 1.0;
 }
 
 static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -252,6 +257,19 @@ static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 #include "../shared/hw_math.h"
 #define ARES 4096.0
 #define AREF 3.3
+
+static void frt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
+  struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
+  if(PIN(clock_scale) > 1.01){
+    TIM3->ARR = PIN(master_arr) + 1;
+  }
+  else if(PIN(clock_scale) < 0.99){
+    TIM3->ARR = PIN(master_arr) - 1;
+  }
+  else{
+    TIM3->ARR = PIN(master_arr);
+  }
+}
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct io_ctx_t * ctx = (struct io_ctx_t *)ctx_ptr;
@@ -502,7 +520,7 @@ hal_comp_t io_comp_struct = {
     .name      = "io",
     .nrt       = 0,
     .rt        = rt_func,
-    .frt       = 0,
+    .frt       = frt_func,
     .nrt_init  = nrt_init,
     .hw_init   = hw_init,
     .rt_start  = 0,
