@@ -24,7 +24,7 @@ struct velbuf_ctx_t {
   float frt_period;
 };
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct velbuf_ctx_t *ctx      = (struct velbuf_ctx_t *)ctx_ptr;
   struct velbuf_pin_ctx_t *pins = (struct velbuf_pin_ctx_t *)pin_ptr;
   
@@ -38,7 +38,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 }
 
 
-static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void frt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct velbuf_ctx_t *ctx      = (struct velbuf_ctx_t *)ctx_ptr;
   struct velbuf_pin_ctx_t *pins = (struct velbuf_pin_ctx_t *)pin_ptr;
 
@@ -48,7 +48,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
 }
 
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct velbuf_ctx_t *ctx      = (struct velbuf_ctx_t *)ctx_ptr;
   struct velbuf_pin_ctx_t *pins = (struct velbuf_pin_ctx_t *)pin_ptr;
 
@@ -68,13 +68,13 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
         break;
     }
   }
-   
-   float diff_pos = minus(pos, old_pos);
-   PIN(diff_pos) = diff_pos;
-   PIN(diff_time) = diff_time;
-   PIN(vel) = diff_pos / diff_time;
+  
+  float diff_pos = minus(pos, old_pos);
+  PIN(diff_pos) = diff_pos;
+  PIN(diff_time) = diff_time;
+  PIN(vel) = diff_pos / diff_time;
 
-   PIN(vel_lp) = PIN(vel) * LP_HZ(PIN(lpf)) + PIN(vel_lp) * (1.0 - LP_HZ(PIN(lpf)));
+  PIN(vel_lp) = PIN(vel) * LP_HZ(PIN(lpf)) + PIN(vel_lp) * (1.0 - LP_HZ(PIN(lpf)));
 }
 
 hal_comp_t velbuf_comp_struct = {

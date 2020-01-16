@@ -37,7 +37,7 @@ hal_comp_t *comp_by_name(NAME name) {
   return (0);
 }
 
-volatile hal_comp_inst_t *comp_inst_by_name(NAME name, uint32_t instance) {
+hal_comp_inst_t *comp_inst_by_name(NAME name, uint32_t instance) {
   hal_comp_t *comp = comp_by_name(name);
   if(comp) {
     for(int i = 0; i < hal.comp_inst_count; i++) {
@@ -63,8 +63,8 @@ pin_t *pin_by_name(NAME comp_name, NAME pin_name) {
   return (0);
 }
 
-volatile hal_pin_inst_t *pin_inst_by_name(NAME comp_name, uint32_t instance, NAME pin_name) {
-  volatile hal_comp_inst_t *comp = comp_inst_by_name(comp_name, instance);
+hal_pin_inst_t *pin_inst_by_name(NAME comp_name, uint32_t instance, NAME pin_name) {
+  hal_comp_inst_t *comp = comp_inst_by_name(comp_name, instance);
   if(comp) {
     for(int i = 0; i < comp->comp->pin_count; i++) {
       if(!strncmp(pin_name, comp->pins[i], sizeof(NAME))) {
@@ -75,7 +75,7 @@ volatile hal_pin_inst_t *pin_inst_by_name(NAME comp_name, uint32_t instance, NAM
   return (0);
 }
 
-pin_t *pin_by_pin_inst(volatile hal_pin_inst_t *p) {
+pin_t *pin_by_pin_inst(hal_pin_inst_t *p) {
   for(int i = 0; i < hal.comp_inst_count; i++) {
     for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++) {
       if(&(hal.comp_insts[i].pin_insts[j]) == p) {
@@ -86,7 +86,7 @@ pin_t *pin_by_pin_inst(volatile hal_pin_inst_t *p) {
   return (0);
 }
 
-volatile hal_comp_inst_t *comp_inst_by_pin_inst(volatile hal_pin_inst_t *p) {
+hal_comp_inst_t *comp_inst_by_pin_inst(hal_pin_inst_t *p) {
   for(int i = 0; i < hal.comp_inst_count; i++) {
     for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++) {
       if(&(hal.comp_insts[i].pin_insts[j]) == p) {
@@ -554,7 +554,7 @@ void list(char *ptr) {
         printf("unknown\n");
     }
     for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++) {
-      volatile hal_comp_inst_t *comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
+      hal_comp_inst_t *comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
       printf("-  %s <= %s%lu.%s = %f\n", hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
     }
   }
@@ -564,7 +564,7 @@ COMMAND("list", list, "show comp instances");
 void show_hal(char *ptr) {
   for(int i = 0; i < hal.comp_inst_count; i++) {
     for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++) {
-      volatile hal_comp_inst_t *comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
+      hal_comp_inst_t *comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
       printf("%s%lu.%s <= %s%lu.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
     }
   }
@@ -736,14 +736,14 @@ void hal_init(float rt_period, float frt_period) {
   hal.nrt_max_ticks = 0.0;
 }
 
-void hal_print_pin(volatile hal_pin_inst_t *p) {
+void hal_print_pin(hal_pin_inst_t *p) {
   pin_t *pin                     = pin_by_pin_inst(p);
-  volatile hal_comp_inst_t *comp = comp_inst_by_pin_inst(p);
+  hal_comp_inst_t *comp = comp_inst_by_pin_inst(p);
 
   pin_t *pin2;
-  volatile hal_comp_inst_t *comp2;
+  hal_comp_inst_t *comp2;
   pin_t *pin3;
-  volatile hal_comp_inst_t *comp3;
+  hal_comp_inst_t *comp3;
 
   if(p && pin && comp) {
     if(p == p->source) {  //if pin is not linked
@@ -808,8 +808,8 @@ uint32_t hal_parse_(char *cmd) {
   int32_t sourcei = 0;
   char sourcep[64];
 
-  volatile hal_pin_inst_t *sink;
-  volatile hal_pin_inst_t *source;
+  hal_pin_inst_t *sink;
+  hal_pin_inst_t *source;
 
   uint32_t found = 0;
 
@@ -844,7 +844,7 @@ uint32_t hal_parse_(char *cmd) {
       for(int i = 0; i < hal.comp_inst_count; i++) {
         if(hal.comp_insts[i].instance == sinki && !strcmp(hal.comp_insts[i].comp->name, sinkc)) {
           for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++) {
-            //volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
+            //hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
             //printf("%s%lu.%s <= %s%lu.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
             hal_print_pin(&(hal.comp_insts[i].pin_insts[j]));
             found = 1;
@@ -895,7 +895,7 @@ uint32_t hal_parse_(char *cmd) {
         for(int i = 0; i < hal.comp_inst_count; i++) {
           if(hal.comp_insts[i].instance == sinki && !strcmp(hal.comp_insts[i].comp->name, sinkc)) {
             for(int j = 0; j < hal.comp_insts[i].comp->pin_count; j++) {
-              //volatile hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
+              //hal_comp_inst_t * comp = comp_inst_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source);
               if(!strncmp(hal.comp_insts[i].pins[j], sinkp, strlen(sinkp))) {
                 hal_print_pin(&(hal.comp_insts[i].pin_insts[j]));
                 //printf("%s%lu.%s <= %s%lu.%s = %f\n", hal.comp_insts[i].comp->name, hal.comp_insts[i].instance, hal.comp_insts[i].pins[j], comp->comp->name, comp->instance, (char *)pin_by_pin_inst(hal.comp_insts[i].pin_insts[j].source->source), hal.comp_insts[i].pin_insts[j].source->source->value);
@@ -944,7 +944,7 @@ void hal_error(uint32_t error_handler) {
 
 void fault(char *ptr) {
   printf("trigger fault handler\n");
-  volatile uint32_t *p = (uint32_t *)0x08010000;
+  uint32_t *p = (uint32_t *)0x08010000;
   p[0]                 = 1;
 }
 

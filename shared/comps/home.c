@@ -6,57 +6,56 @@
 
 HAL_COMP(home);
 
-HAL_PIN(en);
-
 HAL_PIN(home_vel);
 HAL_PIN(home_acc);
-HAL_PIN(home_pos);
 
 HAL_PIN(pos_in);
 HAL_PIN(pos_out);
-HAL_PIN(vel_cmd);
+HAL_PIN(vel);
 
 HAL_PIN(home_in);
 HAL_PIN(home_polarity);
 
-HAL_PIN(limit_in0);
-HAL_PIN(limit_in1);
-HAL_PIN(limit_polarity);
-
-HAL_PIN(state);
-HAL_PIN(en_out);
-HAL_PIN(target);
+HAL_PIN(offset);
 HAL_PIN(home_offset);
 
-HAL_PIN(re_home);
-HAL_PIN(limit_fault);
+HAL_PIN(state);
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr){
+HAL_PIN(en_in);
+HAL_PIN(en_out);
+
+HAL_PIN(re_home);
+
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr){
   struct home_pin_ctx_t *pins = (struct home_pin_ctx_t *)pin_ptr;
   PIN(state) = 0;
   PIN(re_home) = 1;
   PIN(home_polarity) = 1.0;
+  PIN(home_vel) = 2.0 * M_PI;
+  PIN(home_acc) = 2.0 * M_PI / 0.1;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct home_ctx_t *ctx      = (struct home_ctx_t *)ctx_ptr;
   struct home_pin_ctx_t *pins = (struct home_pin_ctx_t *)pin_ptr;
 
   float vel = 0.0;
 
-  if(PIN(en) <= 0.0){
+  if(PIN(en_in) <= 0.0){
     if(PIN(re_home) > 0.0){
       PIN(state) = 0;
     }
     PIN(en_out) = 0;
-    PIN(limit_fault) = 0;
   }
 
   switch((int)PIN(state)){
     case 0: // not homed
-      if(PIN(en) > 0.0){
+      if(PIN(en_in) > 0.0){
         PIN(state) = 1;
         PIN(en_out) = 0;
+        PIN(offset) = 0.0;
+        PIN(home_offset) = 0.0;
+        PIN(vel) = 0.0;
       }
     break;
 
@@ -75,9 +74,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     case 2: // search home falling
       if(PIN(home_polarity) <= 0.0 && PIN(home_in) > 0.0){
         PIN(state) = 3;
+        PIN(home_offset) = PIN(offset);
       }
       else if(PIN(home_polarity) > 0.0 && PIN(home_in) <= 0.0){
         PIN(state) = 3;
+        PIN(home_offset) = PIN(offset);
       }
       else{
         vel = -PIN(home_vel);
@@ -85,47 +86,27 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     break;
 
     case 3: // set home pos
-      PIN(target) = PIN(home_pos);
-      PIN(state) = 4;
-    break;
+      vel = SIGN(PIN(home_offset) - PIN(offset)) * sqrtf(ABS(PIN(home_offset) - PIN(offset)) * 2.0 * PIN(home_acc));
 
-
-    case 4: // go to home pos
-      vel = PIN(target) * 10;
-      if(ABS(PIN(target)) < 0.0001){
-        PIN(state) = 5;
+      if(ABS(PIN(offset) - PIN(home_offset)) < 0.0001 && PIN(vel) < PIN(home_vel) * 0.001){
+        PIN(state) = 4;
       }
     break;
 
-    case 5: // homed
+    case 4: // homed
       PIN(en_out) = 1;
-
-      if(PIN(limit_polarity) > 0.0 && (PIN(limit_in0) > 0.0 || PIN(limit_in1) > 0.0)){
-        PIN(state) = 6;
-        PIN(en_out) = 0;
-        PIN(limit_fault) = 1;
-      }
-      else if(PIN(limit_polarity) <= 0.0 && (PIN(limit_in0) <= 0.0 || PIN(limit_in1) <= 0.0)){
-        PIN(state) = 6;
-        PIN(en_out) = 0;
-        PIN(limit_fault) = 1;
-      }
-    break;
-
-    case 6: // fault
-      PIN(en_out) = 0;
-      PIN(limit_fault) = 1;
+      PIN(offset) = PIN(home_offset);
+      PIN(vel) = 0.0;
     break;
   }
 
   vel = LIMIT(vel, ABS(PIN(home_vel)));
-  PIN(vel_cmd) = CLAMP(vel, PIN(vel_cmd) - PIN(home_acc) * period, PIN(vel_cmd) + PIN(home_acc) * period);
+  PIN(vel) = CLAMP(vel, PIN(vel) - PIN(home_acc) * period, PIN(vel) + PIN(home_acc) * period);
 
-  PIN(target) -= PIN(vel_cmd) * period;
-  PIN(home_offset) += PIN(vel_cmd) * period;
-  PIN(pos_out) = PIN(pos_in) + PIN(home_offset);
-  PIN(pos_out) = mod(PIN(pos_out));
-  
+  PIN(offset) += PIN(vel) * period;
+  PIN(offset) = mod(PIN(offset));
+
+  PIN(pos_out) = mod(PIN(pos_in) + PIN(offset));
 }
 
 hal_comp_t home_comp_struct = {

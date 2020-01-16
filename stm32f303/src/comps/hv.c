@@ -8,6 +8,13 @@
 
 HAL_COMP(hv);
 
+HAL_PIN(drop);
+
+//IU IV IW input in amp
+HAL_PIN(iu);
+HAL_PIN(iv);
+HAL_PIN(iw);
+
 //U V W input in Volt
 HAL_PIN(u);
 HAL_PIN(v);
@@ -30,7 +37,7 @@ struct hv_ctx_t {
   int32_t pwm_res;
 };
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct hv_ctx_t * ctx = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
@@ -40,9 +47,10 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(min_on)  = 0.000005;
   PIN(min_off) = 0.000005;
   PIN(arr)     = PWM_RES;
+  PIN(drop) = 0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
@@ -50,10 +58,15 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   TIM8->ARR    = ctx->pwm_res;
 
   float udc = MAX(PIN(udc), 0.1);
+
+  // drop compensation
+  float uu = PIN(u) + PIN(drop) * SIGN2(PIN(iu), 0.1);
+  float uv = PIN(v) + PIN(drop) * SIGN2(PIN(iv), 0.1);
+  float uw = PIN(w) + PIN(drop) * SIGN2(PIN(iw), 0.1);
   //convert voltages to PWM output compare values
-  int32_t u = (int32_t)(CLAMP(PIN(u), 0.0, udc) / udc * (float)(ctx->pwm_res));
-  int32_t v = (int32_t)(CLAMP(PIN(v), 0.0, udc) / udc * (float)(ctx->pwm_res));
-  int32_t w = (int32_t)(CLAMP(PIN(w), 0.0, udc) / udc * (float)(ctx->pwm_res));
+  int32_t u = (int32_t)(CLAMP(uu, 0.0, udc) / udc * (float)(ctx->pwm_res));
+  int32_t v = (int32_t)(CLAMP(uv, 0.0, udc) / udc * (float)(ctx->pwm_res));
+  int32_t w = (int32_t)(CLAMP(uw, 0.0, udc) / udc * (float)(ctx->pwm_res));
   //convert on and off times to PWM output compare values
   int32_t min_on  = (int32_t)((float)(ctx->pwm_res) * 15000.0 * PIN(min_on) + 0.5);
   int32_t min_off = (int32_t)((float)(ctx->pwm_res) * 15000.0 * PIN(min_off) + 0.5);

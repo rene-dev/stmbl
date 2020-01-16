@@ -1,25 +1,15 @@
-load pmsm_limits
 load acim_ttc
-pmsm_limits0.rt_prio = 7
 acim_ttc0.rt_prio = 9
-pmsm_limits0.r = conf0.r
-pmsm_limits0.ld = conf0.l
-pmsm_limits0.lq = conf0.l
-pmsm_limits0.psi = conf0.psi
-pmsm_limits0.j = conf0.j
-pmsm_limits0.polecount = conf0.polecount
-pmsm_limits0.ac_volt = hv0.pwm_volt
-pmsm_limits0.iq = hv0.q_fb
-pmsm_limits0.id = hv0.d_fb
-pid0.max_torque = pmsm_limits0.max_torque
-pid0.min_torque = pmsm_limits0.min_torque
-pid0.max_vel = pmsm_limits0.abs_max_vel
+pid0.max_torque = acim_ttc0.t_max
+pid0.min_torque = acim_ttc0.t_min
+pid0.max_vel = conf0.max_vel
 acim_ttc0.torque = pid0.torque_cor_cmd
 acim_ttc0.polecount = conf0.polecount
-acim_ttc0.vel = vel1.vel
+acim_ttc0.vel_m = vel1.vel
 acim_ttc0.mode = 0
-hv0.q_cmd = acim_ttc0.iq
-hv0.d_cmd = acim_ttc0.id
-hv0.cmd_mode = 1
+acim_ttc0.sensorless = 0
+hv0.q_cmd = acim_ttc0.q_cmd
+hv0.d_cmd = acim_ttc0.d_cmd
+hv0.cmd_mode = acim_ttc0.cmd_mode
 hv0.phase_mode = 2
 hv0.pos = acim_ttc0.pos

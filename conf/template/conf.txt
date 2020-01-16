@@ -35,5 +35,5 @@ conf0.vel_p = 2000
 conf0.vel_i = 5
 conf0.vel_g = 1
 conf0.cur_p = 0.2
-conf0.cur_i = 0.0001
+conf0.cur_i = 1.5
 conf0.max_sat = 0.2

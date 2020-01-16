@@ -48,7 +48,7 @@ struct adc_ctx_t {
   volatile uint32_t send;  //send buffer state 0=filling, 1=sending
 };
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
   struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
   PINA(gain, 0)              = 150;
@@ -63,7 +63,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   ctx->send                  = 0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
   struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
 
@@ -177,7 +177,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
 }
 
 
-static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct adc_ctx_t *ctx      = (struct adc_ctx_t *)ctx_ptr;
   struct adc_pin_ctx_t *pins = (struct adc_pin_ctx_t *)pin_ptr;
 

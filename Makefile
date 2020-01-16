@@ -30,6 +30,10 @@ HWVERSION = v4
 ifeq ($(HWVERSION),v3)
 	COMPS += src/comps/hw/io3.c
 	COMPS += src/comps/hvf1.c
+	COMPS += shared/comps/pmsm.c
+	COMPS += shared/comps/curpid.c
+	COMPS += shared/comps/dq.c
+	COMPS += shared/comps/idq.c
 	SOURCES += shared/common_f1.c
 	CFLAGS += -DV3
 else
@@ -42,6 +46,7 @@ else
 	COMPS += src/comps/yaskawa.c
 	COMPS += src/comps/encs.c
 	COMPS += src/comps/encf.c
+	COMPS += src/comps/endat.c
 	CFLAGS += -DV4
 endif
 
@@ -55,20 +60,17 @@ COMPS += src/comps/hx711.c
 
 COMPS += shared/comps/sim.c
 COMPS += shared/comps/term.c
-COMPS += shared/comps/curpid.c
 COMPS += shared/comps/svm.c
-COMPS += shared/comps/dq.c
-COMPS += shared/comps/idq.c
+
 COMPS += shared/comps/vel.c
 COMPS += shared/comps/rev.c
 COMPS += shared/comps/hal_test.c
-COMPS += shared/comps/dc.c
+# COMPS += shared/comps/dc.c
 COMPS += shared/comps/ypid.c
 COMPS += shared/comps/fault.c
 COMPS += shared/comps/pid.c
 COMPS += shared/comps/spid.c
 COMPS += shared/comps/pe.c
-COMPS += shared/comps/pmsm.c
 COMPS += shared/comps/pmsm_limits.c
 COMPS += shared/comps/pmsm_ttc.c
 COMPS += shared/comps/dc_limits.c
@@ -98,9 +100,20 @@ COMPS += shared/comps/velbuf.c
 COMPS += shared/comps/avg.c
 COMPS += shared/comps/mux.c
 COMPS += shared/comps/veltopos.c
-COMPS += shared/comps/wobl.c
+# COMPS += shared/comps/wobl.c
 COMPS += shared/comps/debounce.c
 COMPS += shared/comps/pos_filter.c
+COMPS += shared/comps/rl.c
+COMPS += shared/comps/mad.c
+COMPS += shared/comps/sensorless.c
+COMPS += shared/comps/field.c
+COMPS += shared/comps/gain.c
+COMPS += shared/comps/rlpsij.c
+COMPS += shared/comps/veltime.c
+COMPS += shared/comps/mpid.c
+COMPS += shared/comps/fmove.c
+COMPS += shared/comps/home.c
+COMPS += shared/comps/en.c
 
 SOURCES += $(COMPS)
 
@@ -111,6 +124,7 @@ SOURCES += src/syscalls.c
 
 SOURCES += shared/crc8.c
 SOURCES += shared/yaskawa_crc16.c
+SOURCES += shared/endat.c
 SOURCES += shared/angle.c
 SOURCES += shared/hal.c
 SOURCES += shared/commands.c

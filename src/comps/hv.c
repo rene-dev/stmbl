@@ -34,9 +34,13 @@ HAL_PIN(dac);
 
 // process data to LS
 HAL_PIN(dc_volt);
-HAL_PIN(d_fb);
-HAL_PIN(q_fb);
+HAL_PIN(id_fb);
+HAL_PIN(iq_fb);
+HAL_PIN(ud_fb);
+HAL_PIN(uq_fb);
 HAL_PIN(abs_cur);
+HAL_PIN(abs_volt);
+HAL_PIN(duty);
 
 // state data to LS
 HAL_PIN(hv_temp);
@@ -107,7 +111,7 @@ void hv_send(char *ptr) {
 }
 COMMAND("hv", hv_send, "send command to hv board");
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
 
@@ -208,12 +212,12 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(ignore_fault_pin) = 1;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx = (struct hv_ctx_t *)ctx_ptr;
   ctx->frt_slot        = 0;
 }
 
-static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void frt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx      = (struct hv_ctx_t *)ctx_ptr;
   struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
   ctx->frt_slot++;
@@ -249,10 +253,16 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
             case SLAVE_IN_APP:
               if(ctx->from_hv.packet_from_hv.header.slave_addr == 0 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_from_hv_t) - sizeof(stmbl_talk_header_t)) / 4) {
                 // from f3 app
-                PIN(d_fb)    = ctx->from_hv.packet_from_hv.d_fb;
-                PIN(q_fb)    = ctx->from_hv.packet_from_hv.q_fb;
+                PIN(id_fb)    = ctx->from_hv.packet_from_hv.id_fb;
+                PIN(iq_fb)    = ctx->from_hv.packet_from_hv.iq_fb;
+                PIN(ud_fb)    = ctx->from_hv.packet_from_hv.ud_fb;
+                PIN(uq_fb)    = ctx->from_hv.packet_from_hv.uq_fb;
                 PIN(fault)   = ctx->from_hv.packet_from_hv.fault;
-                PIN(abs_cur) = sqrtf(PIN(d_fb) * PIN(d_fb) + PIN(q_fb) * PIN(q_fb));
+                PIN(abs_cur) = sqrtf(PIN(id_fb) * PIN(id_fb) + PIN(iq_fb) * PIN(iq_fb));
+                PIN(abs_volt) = sqrtf(PIN(ud_fb) * PIN(ud_fb) + PIN(uq_fb) * PIN(uq_fb));
+                if(PIN(pwm_volt) > 0.0){
+                  PIN(duty) = PIN(abs_volt) / PIN(pwm_volt);
+                }
 
                 uint16_t a         = ctx->from_hv.packet_from_hv.header.conf_addr;
                 a                  = CLAMP(a, 0, sizeof(f3_state_data_t) / 4);
@@ -524,7 +534,7 @@ void send_boot(char *ptr) {
 }
 COMMAND("hv_update", send_boot, "try hv update");
 
-static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct hv_ctx_t *ctx = (struct hv_ctx_t *)ctx_ptr;
   // struct hv_pin_ctx_t *pins = (struct hv_pin_ctx_t *)pin_ptr;
   char c;

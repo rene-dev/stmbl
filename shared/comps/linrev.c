@@ -41,7 +41,7 @@ struct linrev_ctx_t {
   int32_t rev;  //current multiturn
 };
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct linrev_ctx_t *ctx      = (struct linrev_ctx_t *)ctx_ptr;
   struct linrev_pin_ctx_t *pins = (struct linrev_pin_ctx_t *)pin_ptr;
 

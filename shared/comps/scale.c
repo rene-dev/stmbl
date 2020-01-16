@@ -12,7 +12,7 @@ HAL_PIN(in1);
 HAL_PIN(out1);
 HAL_PIN(scale);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct scale_ctx_t * ctx = (struct scale_ctx_t *)ctx_ptr;
   struct scale_pin_ctx_t *pins = (struct scale_pin_ctx_t *)pin_ptr;
 

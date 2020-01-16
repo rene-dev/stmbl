@@ -15,7 +15,7 @@ HAL_PIN(C8);
 //rotor position output
 HAL_PIN(pos);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct fanuc_ctx_t * ctx = (struct fanuc_ctx_t *)ctx_ptr;
   struct fanuc_pin_ctx_t *pins = (struct fanuc_pin_ctx_t *)pin_ptr;
 

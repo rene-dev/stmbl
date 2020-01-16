@@ -95,7 +95,7 @@ uint8_t print_buf[10];
 int32_t pos_offset;
 uint32_t state_counter;
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx = (struct encf_ctx_t *)ctx_ptr;
   struct encf_pin_ctx_t *pins = (struct encf_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -177,7 +177,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   state_counter = 0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx      = (struct encf_ctx_t *)ctx_ptr;
   struct encf_pin_ctx_t *pins = (struct encf_pin_ctx_t *)pin_ptr;
 
@@ -282,7 +282,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   DMA_Cmd(DMA1_Stream0, ENABLE);
 }
 
-static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx = (struct encf_ctx_t *)ctx_ptr;
   struct encf_pin_ctx_t *pins = (struct encf_pin_ctx_t *)pin_ptr;
 

@@ -18,7 +18,7 @@ struct encm_ctx_t {
   uint8_t rxbuf[15];
 };
 
-static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct encm_ctx_t *ctx = (struct encm_ctx_t *)ctx_ptr;
   // struct encm_pin_ctx_t * pins = (struct encm_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -86,7 +86,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   USART_DMACmd(USART6, USART_DMAReq_Rx, ENABLE);
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct encm_ctx_t *ctx      = (struct encm_ctx_t *)ctx_ptr;
   struct encm_pin_ctx_t *pins = (struct encm_pin_ctx_t *)pin_ptr;
   PIN(dma)                    = DMA_GetCurrDataCounter(DMA2_Stream1);

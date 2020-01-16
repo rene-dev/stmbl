@@ -135,18 +135,6 @@
 #define ADC_TIMER_FREQ 84000000
 #define RES_TIMER_FREQ 20000
 
-#define FB0_SIN_ADC ADC1
-#define FB0_SIN_ADC_RCC RCC_APB2Periph_ADC1
-#define FB0_SIN_ADC_CHAN ADC_Channel_6
-#define FB0_SIN_PIN GPIO_Pin_6
-#define FB0_SIN_PORT GPIOA
-
-#define FB0_COS_ADC ADC2
-#define FB0_COS_ADC_RCC RCC_APB2Periph_ADC2
-#define FB0_COS_ADC_CHAN ADC_Channel_7
-#define FB0_COS_PIN GPIO_Pin_7
-#define FB0_COS_PORT GPIOA
-
 #define FB1
 
 #define FB1_SIN_ADC ADC1
@@ -170,7 +158,66 @@
 #define OP_R_OUT_HIGH 22.0     //opamp out high
 #define OP_REF 1.83            //opamp reference voltage
 
-//FB UART
+// FB0 ADC
+#define FB0_SIN_ADC ADC1
+#define FB0_SIN_ADC_RCC RCC_APB2Periph_ADC1
+#define FB0_SIN_ADC_CHAN ADC_Channel_6
+#define FB0_SIN_PIN GPIO_Pin_6
+#define FB0_SIN_PORT GPIOA
+
+#define FB0_COS_ADC ADC2
+#define FB0_COS_ADC_RCC RCC_APB2Periph_ADC2
+#define FB0_COS_ADC_CHAN ADC_Channel_7
+#define FB0_COS_PIN GPIO_Pin_7
+#define FB0_COS_PORT GPIOA
+
+// FB0 TX EN
+#define FB0_A_EN_PIN GPIO_Pin_11
+#define FB0_A_EN_PORT GPIOD
+
+#define FB0_B_EN_PIN GPIO_Pin_10
+#define FB0_B_EN_PORT GPIOD
+
+#define FB0_Z_TXEN_PIN GPIO_Pin_15
+#define FB0_Z_TXEN_PORT GPIOD
+
+// FB0 TIM4
+#define FB0_A_PIN GPIO_Pin_12
+#define FB0_A_PIN_SOURCE GPIO_PinSource12
+#define FB0_A_PORT GPIOD
+
+#define FB0_B_PIN GPIO_Pin_13
+#define FB0_B_PIN_SOURCE GPIO_PinSource13
+#define FB0_B_PORT GPIOD
+
+#define FB0_Z_PIN GPIO_Pin_14
+#define FB0_Z_PIN_SOURCE GPIO_PinSource14
+#define FB0_Z_PORT GPIOD
+
+#define FB0_RES_REF_PIN GPIO_Pin_14
+#define FB0_RES_REF_PIN_SOURCE GPIO_PinSource14
+#define FB0_RES_REF_PORT GPIOD
+
+#define FB0_RES_REF_TIM_AF GPIO_AF_TIM4
+#define FB0_RES_REF_TIM TIM4
+
+#define FB0_ENC_TIM TIM4
+#define FB0_ENC_TIM_AF GPIO_AF_TIM4
+#define FB0_ENC_TIM_RCC RCC_APB1Periph_TIM4
+
+#define FB0_TIM_A_DMA DMA1_Stream0
+#define FB0_TIM_A_DMA_CHAN DMA_Channel_2
+#define FB0_TIM_A_DMA_TCIF DMA_FLAG_TCIF0
+
+#define FB0_TIM_B_DMA DMA1_Stream3
+#define FB0_TIM_B_DMA_CHAN DMA_Channel_2
+#define FB0_TIM_B_DMA_TCIF DMA_FLAG_TCIF3
+
+#define FB0_TIM_Z_DMA DMA1_Stream7
+#define FB0_TIM_Z_DMA_CHAN DMA_Channel_2
+#define FB0_TIM_Z_DMA_TCIF DMA_FLAG_TCIF7
+
+// FB0 UART
 #define FB0_UART USART6
 #define FB0_UART_RCC RCC_APB2Periph_USART6
 #define FB0_UART_CLOCK_COMMAND RCC_APB2PeriphClockCmd
@@ -183,16 +230,49 @@
 #define FB0_UART_TX_DMA_CHAN DMA_Channel_5
 #define FB0_UART_TX_DMA_TCIF DMA_FLAG_TCIF6
 
-//v4 does not have dedicated rx pin, use pc6 as rx and tx.
-//#define FB0_UART_RX_PIN GPIO_Pin_11
-//#define FB0_UART_RX_PORT GPIOB
-//#define FB0_UART_RX_PIN_SOURCE GPIO_PinSource11
-//#define FB0_UART_RX_AF_SOURCE GPIO_AF_USART3
+#define FB0_UART_RX_PIN GPIO_Pin_7
+#define FB0_UART_RX_PORT GPIOC
+#define FB0_UART_RX_PIN_SOURCE GPIO_PinSource7
+#define FB0_UART_RX_AF_SOURCE GPIO_AF_USART6
 
 #define FB0_UART_TX_PIN GPIO_Pin_6
 #define FB0_UART_TX_PORT GPIOC
 #define FB0_UART_TX_PIN_SOURCE GPIO_PinSource6
 #define FB0_UART_TX_AF_SOURCE GPIO_AF_USART6
+
+#define FB0_UART_CLK_PIN GPIO_Pin_8
+#define FB0_UART_CLK_PORT GPIOC
+#define FB0_UART_CLK_PIN_SOURCE GPIO_PinSource8
+#define FB0_UART_CLK_AF_SOURCE GPIO_AF_USART6
+
+// FB0 SPI
+#define FB0_SPI SPI3
+#define FB0_SPI_RCC RCC_APB2Perip_SPI3
+#define FB0_SPI_CLOCK_COMMAND RCC_APB1PeriphClockCmd
+
+#define FB0_SPI_RX_DMA DMA1_Stream2
+#define FB0_SPI_RX_DMA_CHAN DMA_Channel_0
+#define FB0_SPI_RX_DMA_TCIF DMA_FLAG_TCIF2
+
+#define FB0_SPI_TX_DMA DMA1_Stream7
+#define FB0_SPI_TX_DMA_CHAN DMA_Channel_0
+#define FB0_SPI_TX_DMA_TCIF DMA_FLAG_TCIF7
+
+#define FB0_SPI_RX_PIN GPIO_Pin_11
+#define FB0_SPI_RX_PORT GPIOC
+#define FB0_SPI_RX_PIN_SOURCE GPIO_PinSource11
+#define FB0_SPI_RX_AF_SOURCE GPIO_AF_SPI3
+
+#define FB0_SPI_TX_PIN GPIO_Pin_12
+#define FB0_SPI_TX_PORT GPIOC
+#define FB0_SPI_TX_PIN_SOURCE GPIO_PinSource12
+#define FB0_SPI_TX_AF_SOURCE GPIO_AF_SPI3
+
+#define FB0_SPI_CLK_PIN GPIO_Pin_10
+#define FB0_SPI_CLK_PORT GPIOC
+#define FB0_SPI_CLK_PIN_SOURCE GPIO_PinSource10
+#define FB0_SPI_CLK_AF_SOURCE GPIO_AF_SPI3
+
 
 //HV UART
 #define UART_DRV USART2
@@ -253,41 +333,6 @@
 #define CMD_D_EN_PIN GPIO_Pin_2
 #define CMD_D_EN_PIN_SOURCE GPIO_PinSource2
 #define CMD_D_EN_PORT GPIOB
-
-//FB0 TIM4
-#define FB0_A_PIN GPIO_Pin_12
-#define FB0_A_PIN_SOURCE GPIO_PinSource12
-#define FB0_A_PORT GPIOD
-
-#define FB0_B_PIN GPIO_Pin_13
-#define FB0_B_PIN_SOURCE GPIO_PinSource13
-#define FB0_B_PORT GPIOD
-
-#define FB0_Z_PIN GPIO_Pin_14
-#define FB0_Z_PIN_SOURCE GPIO_PinSource14
-#define FB0_Z_PORT GPIOD
-
-#define FB0_RES_REF_PIN GPIO_Pin_14
-#define FB0_RES_REF_PIN_SOURCE GPIO_PinSource14
-#define FB0_RES_REF_PORT GPIOD
-
-#define FB0_RES_REF_TIM_AF GPIO_AF_TIM4
-#define FB0_RES_REF_TIM TIM4
-
-#define FB0_A_EN_PIN GPIO_Pin_11
-#define FB0_A_EN_PIN_SOURCE GPIO_PinSource11
-#define FB0_A_EN_PORT GPIOD
-
-#define FB0_B_EN_PIN GPIO_Pin_10
-#define FB0_B_EN_PIN_SOURCE GPIO_PinSource10
-#define FB0_B_EN_PORT GPIOD
-
-#define FB0_Z_TXEN_PIN GPIO_Pin_15
-#define FB0_Z_TXEN_PORT GPIOD
-
-#define FB0_ENC_TIM TIM4
-#define FB0_ENC_TIM_AF GPIO_AF_TIM4
-#define FB0_ENC_TIM_RCC RCC_APB1Periph_TIM4
 
 //FB1, TIM1
 #define FB1_A_PIN GPIO_Pin_9

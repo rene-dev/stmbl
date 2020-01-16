@@ -60,6 +60,11 @@ HAL_PIN(vel_p);  // (1/s)
 HAL_PIN(vel_i);
 HAL_PIN(vel_g);
 
+HAL_PIN(scale);
+HAL_PIN(pos_p_scale);
+HAL_PIN(vel_p_scale);
+HAL_PIN(vel_i_scale);
+
 HAL_PIN(j_lpf);
 
 HAL_PIN(acc_g);
@@ -91,7 +96,7 @@ struct pid_ctx_t {
   float acc_cmd_lp;
 };
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct pid_ctx_t *ctx      = (struct pid_ctx_t *)ctx_ptr;
   struct pid_pin_ctx_t *pins = (struct pid_pin_ctx_t *)pin_ptr;
 
@@ -108,9 +113,14 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(vel_g)      = 1.0;
   PIN(acc_g)      = 1.0;
   PIN(g)          = 0.99;  // model limit scaling
+
+  PIN(scale) = 1.0;
+  PIN(pos_p_scale) = 1.0;
+  PIN(vel_p_scale) = 1.0;
+  PIN(vel_i_scale) = 1.0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct pid_ctx_t *ctx      = (struct pid_ctx_t *)ctx_ptr;
   struct pid_pin_ctx_t *pins = (struct pid_pin_ctx_t *)pin_ptr;
 
@@ -150,6 +160,10 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   float vel_g = CLAMP(PIN(vel_g), 0.0, 1.0);
   float acc_g = CLAMP(PIN(acc_g), 0.0, 1.0);
 
+  float scale = CLAMP(PIN(scale), 0, 1);
+  pos_p *= scale + (1 - scale) * PIN(pos_p_scale);
+  vel_p *= scale + (1 - scale) * PIN(vel_p_scale);
+  vel_i *= scale + (1 - scale) * PIN(vel_i_scale);  
 
   float pos_en    = PIN(pos_en);
   float vel_en    = PIN(vel_en);
@@ -241,6 +255,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     acc_sat         = 0.0;
     torque_sat      = 0.0;
     ctx->sat        = 0.0;
+    PIN(torque_cmd) = 0.0;
   }
 
   PIN(pos_error)      = pos_error;

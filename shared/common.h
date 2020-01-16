@@ -51,13 +51,15 @@ _Static_assert(sizeof(packet_bootloader_t) == 24, "packet_bootloader_t size erro
 //process data from f3 to f4
 typedef struct {
   stmbl_talk_header_t header;
-  float d_fb;
-  float q_fb;
+  float id_fb;
+  float iq_fb;
+  float ud_fb;
+  float uq_fb;
   uint8_t fault;
   uint8_t buf;
   uint16_t padding;
 } packet_from_hv_t;
-_Static_assert(sizeof(packet_from_hv_t) == 24, "packet_from_hv_t size error");
+_Static_assert(sizeof(packet_from_hv_t) == 32, "packet_from_hv_t size error");
 
 //process data from f4 to f3
 typedef struct {

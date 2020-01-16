@@ -9,7 +9,7 @@ HAL_PIN(vel_ext_cmd);
 
 HAL_PIN(en);
 
-HAL_PIN(load);
+HAL_PIN(scale);
 
 HAL_PIN(max_vel);
 HAL_PIN(max_acc);
@@ -20,16 +20,19 @@ HAL_PIN(vel_cmd);
 
 HAL_PIN(at_speed);
 HAL_PIN(en_out);
+HAL_PIN(en_timer);
+HAL_PIN(en_delay);
 
-
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct ramp_ctx_t *ctx      = (struct ramp_ctx_t *)ctx_ptr;
   struct ramp_pin_ctx_t *pins = (struct ramp_pin_ctx_t *)pin_ptr;
 
   PIN(at_speed_th) = 0.01;
+  PIN(en_delay) = 0.25;
+  PIN(scale) = 1.0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct ramp_ctx_t *ctx      = (struct ramp_ctx_t *)ctx_ptr;
   struct ramp_pin_ctx_t *pins = (struct ramp_pin_ctx_t *)pin_ptr;
   
@@ -40,8 +43,11 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 
   float vel_error = vel_ext_cmd - PIN(vel_cmd);
-
-  PIN(vel_cmd) += LIMIT(vel_error, PIN(max_acc) * period * (1 - CLAMP(ABS(PIN(load)), 0, 1)));
+  float max_acc = PIN(max_acc) * PIN(scale);
+  
+  if(PIN(en_timer) >= PIN(en_delay) * 0.9){
+    PIN(vel_cmd) += LIMIT(vel_error, max_acc * period);
+  }
 
   if(ABS(PIN(vel_ext_cmd) - PIN(vel_cmd)) < PIN(max_vel) * PIN(at_speed_th)){
     PIN(at_speed) = 1;
@@ -50,7 +56,13 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     PIN(at_speed) = 0;
   }
 
-  if(ABS(PIN(vel_cmd)) > 0.1){
+  if((ABS(PIN(vel_cmd)) > 0.01) | (ABS(PIN(vel_ext_cmd)) > 0.01)){
+	PIN(en_timer) = CLAMP(PIN(en_timer) + period, 0, PIN(en_delay));
+  }
+  else{
+	PIN(en_timer) = CLAMP(PIN(en_timer) - period, 0, PIN(en_delay));
+  }
+  if(PIN(en_timer) > 0.0){
     PIN(en_out) = 1;
   }
   else{

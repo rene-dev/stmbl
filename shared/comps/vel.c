@@ -27,7 +27,7 @@ struct vel_ctx_t {
   float vel_sum;
 };
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct vel_ctx_t * ctx = (struct vel_ctx_t *)ctx_ptr;
   struct vel_pin_ctx_t *pins = (struct vel_pin_ctx_t *)pin_ptr;
 
@@ -40,7 +40,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(en) = 1.0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct vel_ctx_t *ctx      = (struct vel_ctx_t *)ctx_ptr;
   struct vel_pin_ctx_t *pins = (struct vel_pin_ctx_t *)pin_ptr;
 

@@ -1,0 +1,30 @@
+load enc_fb
+enc_fb0.rt_prio = 2
+enc_fb0.res = conf0.mot_fb_res
+enc_fb0.sin = adc0.sin0l
+enc_fb0.cos = adc0.cos0l
+enc_fb0.quad = adc0.quad
+fb_switch0.mot_pos = enc_fb0.pos
+fb_switch0.mot_abs_pos = enc_fb0.abs_pos
+fb_switch0.mot_polecount = 1
+fb_switch0.mot_state = enc_fb0.state
+fault0.mot_fb_error = enc_fb0.error
+io0.fb0y = enc_fb0.error
+io0.fb0g = 1
+enc_fb0.vel = vel1.vel
+enc_fb0.amp = adc0.amp0
+
+load uvw
+uvw0.rt_prio = 2
+uvw0.u = io0.fb0a
+uvw0.v = io0.fb0b
+uvw0.w = io0.fb0z
+fb_switch0.com_pos = uvw0.pos
+fb_switch0.com_abs_pos = uvw0.pos
+fb_switch0.com_state = uvw0.state
+fb_switch0.com_polecount = conf0.com_fb_polecount
+conf0.com_fb_polecount = conf0.polecount
+uvw0.amp = adc0.amp0
+fault0.com_fb_error = uvw0.error
+enc_fb0.en_index = uvw0.state
+uvw0.mode = 1

@@ -10,3 +10,5 @@ fb_switch0.com_polecount = conf0.com_fb_polecount
 io0.fb1g = 1
 io0.fb1y = uvw0.led
 conf0.com_fb_polecount = conf0.polecount
+uvw0.amp = adc0.amp1
+fault0.com_fb_error = uvw0.error

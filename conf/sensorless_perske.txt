@@ -1,0 +1,38 @@
+link pid
+link acim
+link jog_cmd
+link misc
+conf0.r = 4.3
+conf0.l = 0.008
+conf0.max_ac_cur = 2
+load sensorless
+sensorless0.rt_prio = 5
+sensorless0.r = conf0.r
+sensorless0.l = conf0.l
+sensorless0.ud = hv0.ud_fb
+sensorless0.uq = hv0.uq_fb
+sensorless0.id = hv0.id_fb
+sensorless0.iq = hv0.iq_fb
+term0.wave0 = sensorless0.udd
+term0.wave1 = sensorless0.udd
+term0.wave2 = sensorless0.ed
+term0.wave3 = sensorless0.eq
+term0.wave4 = sensorless0.vel
+term0.gain0 = 10
+term0.gain1 = 10
+term0.gain2 = 10
+term0.gain3 = 10
+term0.gain4 = 0.5
+term0.gain5 = 0.5
+term0.gain6 = 0.5
+#link rl
+hv0.d_cmd = 0.55
+hv0.q_cmd = 0
+hv0.pos = sensorless0.pos
+sensorless0.drop = 1.5
+sensorless0.ki = 0.5
+sensorless0.min_vel = 20
+sensorless0.vel_boost = 0.2
+conf0.r = 4
+conf0.max_ac_cur = 6
+sensorless0.kb = 1

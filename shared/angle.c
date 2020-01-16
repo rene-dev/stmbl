@@ -114,6 +114,10 @@ inline float mod(float a) {
   }
 }
 
+inline int modi(int v, int m){
+  return(SIGN(v) * (ABS(v) % m));
+}
+
 int quadrant(float a) {
   if(a >= 0) {
     if(a < M_PI / 2.0) {

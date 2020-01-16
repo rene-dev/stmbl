@@ -29,8 +29,8 @@ extern "C" {
 #define NO 0
 #define YES 1
 #define ABS(a) (((a) < 0.0) ? -(a) : (a))
-#define LIMIT(x, lowhigh) (((x) > (lowhigh)) ? (lowhigh) : (((x) < (-lowhigh)) ? (-lowhigh) : (x)))
-#define SAT(x, lowhigh) (((x) > (lowhigh)) ? (1.0) : (((x) < (-lowhigh)) ? (-1.0) : (0.0)))
+#define LIMIT(x, lowhigh) (((x) > (lowhigh)) ? (lowhigh) : (((x) < (-(lowhigh))) ? (-(lowhigh)) : (x)))
+#define SAT(x, lowhigh) (((x) > (lowhigh)) ? (1.0) : (((x) < (-(lowhigh))) ? (-1.0) : (0.0)))
 #define SAT2(x, low, high) (((x) > (high)) ? (1.0) : (((x) < (low)) ? (-1.0) : (0.0)))
 #define STEP(from, to, step) (((from) < (to)) ? (MIN((from) + (step), (to))) : (MAX((from) - (step), (to))))
 #define DEG(a) ((a)*M_PI / 180.0)
@@ -42,6 +42,8 @@ extern "C" {
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MIN3(a, b, c) MIN(a, MIN(b, c))
 #define MAX3(a, b, c) MAX(a, MAX(b, c))
+
+#define SIGN2(a, b) (CLAMP((a) / (b), -1, 1))
 
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 #define FIELD_SIZEOF(t, f) (sizeof(((t *)0)->f))

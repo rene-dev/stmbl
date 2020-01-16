@@ -9,10 +9,10 @@ HAL_PIN(mux);
 
 
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct mux_pin_ctx_t *pins = (struct mux_pin_ctx_t *)pin_ptr;
   for(int i = 0; i < 10; i++){
-    PINA(out, i) = PINA(in, i + (int)MIN(MAX(PIN(mux), 0.0), 8.0 - 1.0));
+    PINA(out, i) = PINA(in, i + (int)MIN(MAX(PIN(mux), 0.0), 7.0) * 10);
   }
 }
 

@@ -27,6 +27,7 @@ HAL_PIN(error);
 HAL_PIN(amp);
 HAL_PIN(vel);
 HAL_PIN(ccr3);
+HAL_PIN(en_index);
 HAL_PIN(indexprint);
 
 
@@ -38,7 +39,7 @@ struct enc_fb_ctx_t {
 int indexpos   = 0;
 int indexprint = 0;
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;
   struct enc_fb_pin_ctx_t *pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
   ctx->e_res                    = 0;
@@ -47,7 +48,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(ires)                     = 1024.0;
 }
 
-static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;
   struct enc_fb_pin_ctx_t *pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -98,7 +99,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 }
 
 
-// static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+// static void frt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 //   struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;
 //   struct enc_fb_pin_ctx_t *pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
 
@@ -115,7 +116,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 //   PIN(abs_pos) = mod(p + ctx->absoffset);
 // }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;
   struct enc_fb_pin_ctx_t *pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
 
@@ -186,7 +187,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   p        = mod(tim * 2.0f * M_PI / (float)ctx->e_res);
   PIN(pos) = p;
 
-  if(FB0_ENC_TIM->SR & TIM_SR_CC3IF) {
+  if(PIN(en_index) > 0.0 & FB0_ENC_TIM->SR & TIM_SR_CC3IF) {
     int cc         = FB0_ENC_TIM->CCR3;
     PIN(state)     = 3.0;
     ctx->absoffset = mod(cc * 2.0f * M_PI / (float)ctx->e_res);
@@ -213,7 +214,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 }
 
-static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;
   // struct enc_fb_pin_ctx_t *pins = (struct enc_fb_pin_ctx_t *)pin_ptr;
   if(indexprint == 1) {

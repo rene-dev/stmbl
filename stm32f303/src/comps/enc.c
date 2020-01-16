@@ -13,7 +13,7 @@ HAL_PIN(b);
 
 TIM_HandleTypeDef htim1;
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct enc_ctx_t * ctx = (struct enc_ctx_t *)ctx_ptr;
   // struct enc_pin_ctx_t * pins = (struct enc_pin_ctx_t *)pin_ptr;
   __HAL_RCC_TIM1_CLK_ENABLE();
@@ -59,7 +59,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_1 | TIM_CHANNEL_2);
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct enc_ctx_t * ctx = (struct enc_ctx_t *)ctx_ptr;
   struct enc_pin_ctx_t *pins = (struct enc_pin_ctx_t *)pin_ptr;
 

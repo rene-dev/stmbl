@@ -36,7 +36,7 @@ HAL_PIN(abs_max_vel);
 HAL_PIN(iq);
 HAL_PIN(vel);
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct dc_limits_ctx_t * ctx = (struct dc_limits_ctx_t *)ctx_ptr;
   struct dc_limits_pin_ctx_t *pins = (struct dc_limits_pin_ctx_t *)pin_ptr;
 
@@ -46,7 +46,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(lq)  = 0.001;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct dc_limits_ctx_t * ctx = (struct dc_limits_ctx_t *)ctx_ptr;
   struct dc_limits_pin_ctx_t *pins = (struct dc_limits_pin_ctx_t *)pin_ptr;
 
