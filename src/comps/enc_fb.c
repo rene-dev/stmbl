@@ -187,7 +187,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   p        = mod(tim * 2.0f * M_PI / (float)ctx->e_res);
   PIN(pos) = p;
 
-  if(PIN(en_index) > 0.0 & FB0_ENC_TIM->SR & TIM_SR_CC3IF) {
+  if((PIN(en_index) > 0.0) && (FB0_ENC_TIM->SR & TIM_SR_CC3IF)) {
     int cc         = FB0_ENC_TIM->CCR3;
     PIN(state)     = 3.0;
     ctx->absoffset = mod(cc * 2.0f * M_PI / (float)ctx->e_res);
