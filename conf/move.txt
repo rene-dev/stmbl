@@ -58,3 +58,6 @@ fmove0.force_th = 2.5
 term0.send_step = 0
 fmove0.print_freq = 10
 fmove0.force_offset_lpf = 0.05
+conf0.j = 0.00003
+conf0.vel_p = 1500
+conf0.pos_p = 10
