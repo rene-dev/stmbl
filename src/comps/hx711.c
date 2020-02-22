@@ -35,6 +35,7 @@ HAL_PIN(sleep);
 HAL_PIN(clk_inv);
 HAL_PIN(data_inv);
 HAL_PIN(timer);
+HAL_PIN(time);
 
 struct hx_ctx_t {
   uint32_t error;
@@ -70,6 +71,7 @@ static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   GPIO_Init(FB1_Z_PORT, &GPIO_InitStruct);
 
   PIN(sleep) = 20;
+  PIN(time) = 1.0 / 80.0;
 }
 
 //TODO: plausibility, saturation, channel/gain config, 2 chips
@@ -80,9 +82,9 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   uint32_t value0 = 0;
   uint32_t value1 = 0;
 
-  int sleep = CLAMP(PIN(sleep), 1, 100);
+  int sleep = CLAMP(PIN(sleep), 1, 50);
 
-  if(PIN(timer) > 0.005){
+  if(PIN(timer) > PIN(time)){
     if((PIN(data_inv) > 0.0) ? (GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN)) : (!GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN))){//data line low = conversion ready
       for(int i = 0 ; i < 24;i++){
         if(PIN(clk_inv) > 0.0){

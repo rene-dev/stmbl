@@ -110,6 +110,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(print_timer) += period;
 
   if(PIN(en) <= 0.0){
+    PIN(force_offset) += PIN(force) * 0.1 * period;
     PIN(pos) = 0.0;
     PIN(mpos) = 0.0;
     PIN(vel) = 0.0;

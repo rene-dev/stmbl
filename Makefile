@@ -50,6 +50,7 @@ else
 	CFLAGS += -DV4
 endif
 
+COMPS += src/comps/usart.c
 COMPS += src/comps/encm.c
 COMPS += src/comps/smartabs.c
 COMPS += src/comps/adc.c
