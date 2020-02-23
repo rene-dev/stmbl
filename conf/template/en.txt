@@ -1,0 +1,6 @@
+load en
+en0.rt_prio = 2
+en0.en_in = 1
+fault0.en = en0.en_out0
+en0.fault = fault0.fault
+en0.time = 1
