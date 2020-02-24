@@ -59,7 +59,7 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
 static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct hx_ctx_t *ctx = (struct hx_ctx_t *)ctx_ptr;
-  struct hx_pin_ctx_t * pins = (struct hx_pin_ctx_t *)pin_ptr;
+  //struct hx_pin_ctx_t * pins = (struct hx_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
 
   //TX enable Z

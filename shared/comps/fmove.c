@@ -58,7 +58,7 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(scale) = 1000.0 / 25.0 * 2.0 * M_PI * 2.0;
   PIN(force_th) = 0.1;
   PIN(gravity) = 0.0;
-  PIN(force_offset_lpf) = 0.001;
+  PIN(force_offset_lpf) = 0.01;
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -125,7 +125,7 @@ static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       if(PIN(mode) > 0.0){
         printf("force_move %f\n", PIN(pos));
       }
-      else if(ABS(PIN(target) - PIN(pos)) < 0.01 & ABS(PIN(vel)) < PIN(max_vel) * 0.1){
+      else if(ABS(PIN(target) - PIN(pos)) < 0.01 && ABS(PIN(vel)) < PIN(max_vel) * 0.1){
         printf("on_target %f\n", PIN(pos));
       }
       else{

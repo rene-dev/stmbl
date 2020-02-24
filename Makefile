@@ -115,6 +115,7 @@ COMPS += shared/comps/mpid.c
 COMPS += shared/comps/fmove.c
 COMPS += shared/comps/home.c
 COMPS += shared/comps/en.c
+COMPS += shared/comps/th.c
 
 SOURCES += $(COMPS)
 
