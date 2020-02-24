@@ -18,6 +18,7 @@ HAL_PIN(home_polarity);
 
 HAL_PIN(offset);
 HAL_PIN(home_offset);
+HAL_PIN(home_pos);
 
 HAL_PIN(state);
 
@@ -74,11 +75,11 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     case 2: // search home falling
       if(PIN(home_polarity) <= 0.0 && PIN(home_in) > 0.0){
         PIN(state) = 3;
-        PIN(home_offset) = PIN(offset);
+        PIN(home_offset) = PIN(offset) + PIN(home_pos);
       }
       else if(PIN(home_polarity) > 0.0 && PIN(home_in) <= 0.0){
         PIN(state) = 3;
-        PIN(home_offset) = PIN(offset);
+        PIN(home_offset) = PIN(offset) + PIN(home_pos);
       }
       else{
         vel = -PIN(home_vel);
