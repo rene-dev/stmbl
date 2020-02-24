@@ -65,7 +65,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   t[6]      = PIN(p6);
   t[7]      = PIN(p7);
   PIN(rpos) = rpos;
-  if(PIN(amp) < 0.75){
+  if(PIN(amp) < 0.75){ // fix wire saving
     PIN(error) = 1.0;
     PIN(state) = 0.0;
     PIN(timer) = 0.0;

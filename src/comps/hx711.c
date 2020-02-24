@@ -48,6 +48,15 @@ static void nopsleep(uint32_t t){
   }
 }
 
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
+  //struct hx_ctx_t *ctx = (struct hx_ctx_t *)ctx_ptr;
+  struct hx_pin_ctx_t * pins = (struct hx_pin_ctx_t *)pin_ptr;
+
+  PIN(sleep) = 20;
+  PIN(time) = 0.01;
+  PIN(gain) = 1;
+}
+
 static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct hx_ctx_t *ctx = (struct hx_ctx_t *)ctx_ptr;
   struct hx_pin_ctx_t * pins = (struct hx_pin_ctx_t *)pin_ptr;
@@ -69,9 +78,6 @@ static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(FB1_Z_PORT, &GPIO_InitStruct);
-
-  PIN(sleep) = 20;
-  PIN(time) = 1.0 / 80.0;
 }
 
 //TODO: plausibility, saturation, channel/gain config, 2 chips
@@ -144,7 +150,7 @@ hal_comp_t hx_comp_struct = {
     .nrt       = 0,
     .rt        = rt_func,
     .frt       = 0,
-    .nrt_init  = 0,
+    .nrt_init  = nrt_init,
     .hw_init   = hw_init,
     .rt_start  = 0,
     .frt_start = 0,
