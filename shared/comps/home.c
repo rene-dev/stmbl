@@ -86,10 +86,10 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       }
     break;
 
-    case 3: // set home pos
+    case 3: // go to home pos
       vel = SIGN(PIN(home_offset) - PIN(offset)) * sqrtf(ABS(PIN(home_offset) - PIN(offset)) * 2.0 * PIN(home_acc));
 
-      if(ABS(PIN(offset) - PIN(home_offset)) < 0.0001 && PIN(vel) < PIN(home_vel) * 0.001){
+      if(ABS(PIN(offset) - PIN(home_offset)) < 0.01 && PIN(vel) < PIN(home_vel) * 0.01){
         PIN(state) = 4;
       }
     break;
@@ -105,9 +105,8 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(vel) = CLAMP(vel, PIN(vel) - PIN(home_acc) * period, PIN(vel) + PIN(home_acc) * period);
 
   PIN(offset) += PIN(vel) * period;
-  PIN(offset) = mod(PIN(offset));
 
-  PIN(pos_out) = mod(PIN(pos_in) + PIN(offset));
+  PIN(pos_out) = mod(PIN(pos_in) + mod(PIN(offset)));
 }
 
 hal_comp_t home_comp_struct = {
