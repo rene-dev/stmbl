@@ -262,6 +262,9 @@ launch the application.
 [.thumb]
 image::images/Extensions2.png[]
 
+If you do not get the option to launch servoterm you can visit
+chrome://apps[chrome://apps] and click on the servoterm logo.
+
 To connect to the STMBL you will need a mini-USB B cable.
 
 WARNING:Be sure that the 24V PSU is floating or shares a ground
