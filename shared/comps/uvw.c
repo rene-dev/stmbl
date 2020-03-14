@@ -45,7 +45,7 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(p5)    = 5;  //u + w  = -1.047198
   PIN(p6)    = 3;  //v + w  = -3.141593
   PIN(p7)    = -1;  //fault
-  PIN(en_time) = 0.02;
+  PIN(en_time) = 0.01;
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -65,7 +65,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   t[6]      = PIN(p6);
   t[7]      = PIN(p7);
   PIN(rpos) = rpos;
-  if(rpos < 0 | PIN(amp) < 0.5){
+  if(PIN(amp) < 0.75){ // fix wire saving
     PIN(error) = 1.0;
     PIN(state) = 0.0;
     PIN(timer) = 0.0;
@@ -73,20 +73,24 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   else{
     switch((int) PIN(mode)){
       case 0:
-        PIN(state) = 3.0;
-        PIN(error) = 0.0;
-        PIN(pos)  = mod((float)t[rpos] / 6.0 * 2.0 * M_PI);
+        if(t[rpos] < 0.0){
+          PIN(state) = 3.0;
+          PIN(error) = 0.0;
+          PIN(pos)  = mod((float)t[rpos] / 6.0 * 2.0 * M_PI);
+        }
+        else{
+          PIN(error) = 1.0;
+          PIN(state) = 0.0;
+        }
         break;
       case 1:
         if(PIN(timer) < PIN(en_time) / 2.0){
           PIN(pos)  = mod((float)t[rpos] / 6.0 * 2.0 * M_PI);
-        }
-        if(PIN(timer) > PIN(en_time)){
-          PIN(state) = 2.0;
-          PIN(error) = 0.0;
+          PIN(timer) += period;
         }
         else{
-          PIN(timer) += period;
+          PIN(state) = 2.0;
+          PIN(error) = 0.0;
         }
     }
   }
