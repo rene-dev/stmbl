@@ -73,7 +73,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   else{
     switch((int) PIN(mode)){
       case 0:
-        if(t[rpos] < 0.0){
+        if(t[rpos] >= 0.0){
           PIN(state) = 3.0;
           PIN(error) = 0.0;
           PIN(pos)  = mod((float)t[rpos] / 6.0 * 2.0 * M_PI);
