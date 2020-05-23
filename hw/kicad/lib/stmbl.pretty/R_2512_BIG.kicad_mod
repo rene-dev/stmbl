@@ -22,7 +22,7 @@
     (solder_mask_margin 0.1))
   (pad 2 smd rect (at 2.5 0) (size 2.7 3.5) (layers F.Cu F.Paste F.Mask)
     (solder_mask_margin 0.1))
-  (model Resistors_SMD.3dshapes/R_2512.wrl
+  (model Resistor_SMD.3dshapes/R_2512_6332Metric.wrl
     (at (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 0))

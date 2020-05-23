@@ -20,7 +20,7 @@
   (fp_line (start 2.3 -1) (end 2.3 1) (layer F.CrtYd) (width 0.05))
   (pad 2 smd roundrect (at 1.5 0) (size 1 1.6) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25))
   (pad 1 smd roundrect (at -1.5 0) (size 1 1.6) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25))
-  (model Resistors_SMD.3dshapes/R_1206.wrl
+  (model Resistor_SMD.3dshapes/R_1206_3216Metric.wrl
     (at (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 0))
