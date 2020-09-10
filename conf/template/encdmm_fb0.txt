@@ -1,0 +1,9 @@
+load dmm
+dmm0.rt_prio = 2
+fb_switch0.mot_pos = dmm0.pos
+fb_switch0.mot_abs_pos = dmm0.pos
+fb_switch0.mot_polecount = conf0.mot_fb_polecount
+fb_switch0.mot_state = 3
+fault0.mot_fb_error = dmm0.error
+io0.fb0y = dmm0.error
+io0.fb0g = 1

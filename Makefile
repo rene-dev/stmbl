@@ -52,6 +52,7 @@ endif
 
 COMPS += src/comps/usart.c
 COMPS += src/comps/encm.c
+COMPS += src/comps/dmm.c
 COMPS += src/comps/smartabs.c
 COMPS += src/comps/adc.c
 COMPS += src/comps/enc_fb.c
