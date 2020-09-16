@@ -201,7 +201,7 @@ tbl:
 	@echo Generating tables
 	@$(PYTHON) tools/create_hal_tbl.py stm32f303/ $(COMPS)
 	#shared/comps/*.c src/comps/hw/*.c src/comps/*.c
-	@$(PYTHON) tools/create_cmd.py $(SOURCES) > stm32f303/inc/commandslist.h
+	@$(PYTHON) tools/create_cmd.py stm32f303/inc/commandslist.h $(SOURCES)
 
 # Target: clean project
 #

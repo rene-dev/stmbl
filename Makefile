@@ -295,8 +295,8 @@ src/conf_templates.c: tbl
 tbl:
 	@echo Generating tables
 	@$(PYTHON) tools/create_hal_tbl.py . $(COMPS)
-	@$(PYTHON) tools/create_config.py conf/template/* > src/conf_templates.c
-	@$(PYTHON) tools/create_cmd.py $(SOURCES) > inc/commandslist.h
+	@$(PYTHON) tools/create_config.py src/conf_templates.c conf/template/*
+	@$(PYTHON) tools/create_cmd.py inc/commandslist.h $(SOURCES)
 
 #build f4 bootloader
 boot:
