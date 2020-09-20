@@ -74,7 +74,7 @@ showsize: build
 
 # Flash the device
 #
-btburn: build showsize $(TARGET).dfu
+btburn: tools/bootloader.py build showsize $(TARGET).dfu
 	@$(PYTHON) tools/bootloader.py
 	@sleep 1
 	@$(DFU-UTIL) -d 0483:df11 -a 0 -s $(ADDRESS):leave -D $(TARGET).dfu

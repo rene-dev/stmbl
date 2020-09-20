@@ -196,11 +196,11 @@ sym: $(TARGET).sym
 # Display compiler version information
 #
 
-stm32f303/inc/commandslist.h: $(SOURCES)
+stm32f303/inc/commandslist.h: tools/create_cmd.py $(SOURCES)
 	@echo Generating commands list
 	@$(PYTHON) tools/create_cmd.py stm32f303/inc/commandslist.h $(SOURCES)
 
-stm32f303/inc/hal_tbl.h stm32f303/src/hal_tbl.c &: $(COMPS)
+stm32f303/inc/hal_tbl.h stm32f303/src/hal_tbl.c &: tools/create_hal_tbl.py $(COMPS)
 	@echo Generating HAL table
 	@$(PYTHON) tools/create_hal_tbl.py stm32f303/ $(COMPS)
 	@#shared/comps/*.c src/comps/hw/*.c src/comps/*.c

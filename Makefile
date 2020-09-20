@@ -288,35 +288,37 @@ bin: tbl $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-inc/commandslist.h: $(SOURCES)
+inc/commandslist.h: tools/create_cmd.py $(SOURCES)
 	@echo Generating commands list
 	@$(PYTHON) tools/create_cmd.py inc/commandslist.h $(SOURCES)
 
-inc/hal_tbl.h src/hal_tbl.c &: $(COMPS)
+inc/hal_tbl.h src/hal_tbl.c &: tools/create_hal_tbl.py $(COMPS)
 	@echo Generating HAL table
 	@$(PYTHON) tools/create_hal_tbl.py . $(COMPS)
 
-src/conf_templates.c: $(CONFIG_TEMPLATES)
+src/conf_templates.c: tools/create_config.py $(CONFIG_TEMPLATES)
 	@echo Generating config
 	@$(PYTHON) tools/create_config.py src/conf_templates.c $(CONFIG_TEMPLATES)
 
 tbl: inc/commandslist.h inc/hal_tbl.h src/hal_tbl.c src/conf_templates.c
 
-#build f4 bootloader
-boot:
+obj_boot/blboot.bin: force_look
 	$(MAKE) -f bootloader/Makefile
 
+#build f4 bootloader
+boot: obj_boot/blboot.bin
+
 #flash f4 bootloader using stlink
-boot_flash: boot
+boot_flash:
 	$(MAKE) -f bootloader/Makefile flash
 
 #flash f4 bootloader using df-util
-boot_btburn: boot
+boot_btburn:
 	$(MAKE) -f bootloader/Makefile btburn
 
 
 #build f3 bootloader
-f3_boot:
+f3_boot: force_look
 	$(MAKE) -f f3_boot/Makefile
 
 #flash f3 bootloader using stlink
@@ -329,7 +331,7 @@ f3_boot_btburn:
 
 
 #build f3 firmware
-f3:
+f3: force_look
 	$(MAKE) -f stm32f303/Makefile
 
 #flash f3 firmware using stlink
@@ -342,39 +344,52 @@ f3_btburn:
 
 
 #generate f3 firmware object from f3 bin
-hv_firmware.o:
+hv_firmware.o: force_look
 	$(MAKE) -f stm32f303/Makefile all
 
 #build f103 firmware for V3 hardware
-f1:
+f1: force_look
 	$(MAKE) -f stm32f103/Makefile
 
 #flash f103 firmware for V3 hardware using stlink
 f1_flash: boot
 	$(MAKE) -f stm32f103/Makefile flash
 
-f3_all_btburn:
+f3_all_btburn: f3.bin
 	@$(DFU-UTIL) -d 0483:df11 -a 0 -s 0x08000000:leave -D f3.bin
-all_btburn:
+all_btburn: tools/bootloader.py f4.bin
 	@$(PYTHON) tools/bootloader.py
 	@sleep 1
 	@$(DFU-UTIL) -d 0483:df11 -a 0 -s 0x08000000:leave -D f4.bin
-all_flash:
+all_flash: f4.bin
 	@$(ST-FLASH) --reset write f4.bin 0x08000000
-f3_all_flash:
+f3_all_flash: f3.bin
 	@$(ST-FLASH) --reset write f3.bin 0x08000000
 
 deploy: f3_boot f3 boot build binall
 
-binall:
+f4.bin: obj_boot/blboot.bin conf/festo.txt obj_app/stmbl.bin
 	cat obj_boot/blboot.bin /dev/zero | head -c 32768 > f4.bin
 	cat conf/festo.txt /dev/zero | head -c 32768 >> f4.bin
 	cat obj_app/stmbl.bin >> f4.bin
+
+f3.bin: obj_f3_boot/f3_boot.bin obj_hvf3/hvf3.bin
 	cat obj_f3_boot/f3_boot.bin /dev/zero | head -c 16384 > f3.bin
 	cat obj_hvf3/hvf3.bin >> f3.bin
+
+# TODO: consolidate these two rules into a wildcard version?
+f4.dfu: tools/dfu-convert.py f4.bin
+	@echo Running special f4.bin DFU command
 	$(PYTHON) tools/dfu-convert.py -b 0x08000000:f4.bin f4.dfu
+
+f3.dfu: tools/dfu-convert.py f3.bin
+	@echo Running special f3.bin DFU command
 	$(PYTHON) tools/dfu-convert.py -b 0x08000000:f3.bin f3.dfu
-	$(PYTHON) tools/dfu-convert.py -b 0x08010000:obj_app/stmbl.bin stmbl.dfu
+
+stmbl.dfu: tools/dfu-convert.py $(TARGET).bin
+	$(PYTHON) tools/dfu-convert.py -b 0x08010000:$(TARGET).bin stmbl.dfu
+
+binall: f4.dfu f3.dfu stmbl.dfu
 
 format:
 	find src/ f3_boot/ bootloader/ stm32f103/ stm32f303/ shared/ inc/ tools/ -iname '*.h' -o -iname '*.c' | xargs clang-format -i
@@ -384,7 +399,7 @@ format:
 clean:
 	@echo Cleaning project:
 	rm -rf hv_firmware.o
-	rm -rf f3.bin f4.bin f3.dfu f4.dfu stmbl.dfu 
+	rm -rf f3.bin f4.bin f3.dfu f4.dfu stmbl.dfu
 	rm -rf $(OBJDIR)
 	rm -rf inc/commandslist.h
 	rm -rf src/conf_templates.c
@@ -401,6 +416,9 @@ include base.mak
 #
 -include $(OBJECTS:.o=.d)
 
+force_look:
+	@true
+
 # Listing of phony targets
 #
 .PHONY: all build clean \
@@ -411,4 +429,5 @@ include base.mak
         f1 f1_flash \
         f3_all_btburn all_btburn all_flash f3_all_flash \
         deploy \
-        format
+        format \
+        force_look
