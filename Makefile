@@ -368,10 +368,10 @@ f3_all_flash: f3.bin
 
 deploy: f3_boot f3 boot build binall
 
-f4.bin: obj_boot/blboot.bin conf/festo.txt obj_app/stmbl.bin
+f4.bin: obj_boot/blboot.bin conf/festo.txt $(TARGET).bin
 	cat obj_boot/blboot.bin /dev/zero | head -c 32768 > f4.bin
 	cat conf/festo.txt /dev/zero | head -c 32768 >> f4.bin
-	cat obj_app/stmbl.bin >> f4.bin
+	cat $(TARGET).bin >> f4.bin
 
 f3.bin: obj_f3_boot/f3_boot.bin obj_hvf3/hvf3.bin
 	cat obj_f3_boot/f3_boot.bin /dev/zero | head -c 16384 > f3.bin
@@ -379,11 +379,9 @@ f3.bin: obj_f3_boot/f3_boot.bin obj_hvf3/hvf3.bin
 
 # TODO: consolidate these two rules into a wildcard version?
 f4.dfu: tools/dfu-convert.py f4.bin
-	@echo Running special f4.bin DFU command
 	$(PYTHON) tools/dfu-convert.py -b 0x08000000:f4.bin f4.dfu
 
 f3.dfu: tools/dfu-convert.py f3.bin
-	@echo Running special f3.bin DFU command
 	$(PYTHON) tools/dfu-convert.py -b 0x08000000:f3.bin f3.dfu
 
 stmbl.dfu: tools/dfu-convert.py $(TARGET).bin
