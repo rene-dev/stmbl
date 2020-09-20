@@ -155,5 +155,4 @@ include toolchain.mak
 # Listing of phony targets
 #
 .PHONY: all build flash clean \
-        elf lss sym \
-        showsize gccversion
+        elf hex bin lss sym

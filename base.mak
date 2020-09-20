@@ -89,3 +89,5 @@ flash: $(TARGET).bin
 
 include toolchain.mak
 -include toolchain-user.mak
+
+.PHONY: gccversion showsize btburn flash

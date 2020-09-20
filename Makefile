@@ -399,7 +399,12 @@ include base.mak
 
 # Listing of phony targets
 #
-.PHONY: all build flash clean \
-        boot boot_clean boot_flash btburn boot_btflash boot_flash\
-        elf lss sym \
-        showsize gccversion tbl f3_boot binall deploy format f3_all_btburn all_btburn f3_all_flash all_flash
+.PHONY: all build clean \
+        elf hex bin lss sym tbl \
+        boot boot_flash boot_brburn \
+        f3_boot f3_boot_flash f3_boot_btburn \
+        f3 f3_flash f3_btburn \
+        f1 f1_flash \
+        f3_all_btburn all_btburn all_flash f3_all_flash \
+        deploy \
+        format

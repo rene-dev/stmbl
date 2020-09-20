@@ -175,7 +175,5 @@ include base.mak
 
 # Listing of phony targets
 #
-.PHONY: all build flash clean \
-        boot boot_clean boot_flash btburn boot_btflash boot_flash\
-        elf lss sym \
-        showsize gccversion
+.PHONY: all build clean \
+        elf hex bin lss sym
