@@ -136,6 +136,8 @@ SOURCES += src/conf_templates.c
 
 SOURCES += shared/ringbuf.c
 
+CONFIG_TEMPLATES = $(wildcard conf/template/*.txt)
+
 USB_VCP_DIR = lib/STM32_USB_Device_VCP-1.2.0
 
 CPPFLAGS += -DUSBD_PRODUCT_STRING='"STMBL Virtual ComPort"'
@@ -286,17 +288,19 @@ bin: tbl $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-inc/commandslist.h: tbl
-inc/hal_tbl.h: tbl
-src/hal_tbl.c: tbl
-src/conf_templates.c: tbl
-
-#generate hal and command tables
-tbl:
-	@echo Generating tables
-	@$(PYTHON) tools/create_hal_tbl.py . $(COMPS)
-	@$(PYTHON) tools/create_config.py src/conf_templates.c conf/template/*
+inc/commandslist.h: $(SOURCES)
+	@echo Generating commands list
 	@$(PYTHON) tools/create_cmd.py inc/commandslist.h $(SOURCES)
+
+inc/hal_tbl.h src/hal_tbl.c &: $(COMPS)
+	@echo Generating HAL table
+	@$(PYTHON) tools/create_hal_tbl.py . $(COMPS)
+
+src/conf_templates.c: $(CONFIG_TEMPLATES)
+	@echo Generating config
+	@$(PYTHON) tools/create_config.py src/conf_templates.c $(CONFIG_TEMPLATES)
+
+tbl: inc/commandslist.h inc/hal_tbl.h src/hal_tbl.c src/conf_templates.c
 
 #build f4 bootloader
 boot:
