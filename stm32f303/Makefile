@@ -93,7 +93,7 @@ CPPFLAGS += $(addprefix -I,$(INCDIRS))
 #  -g             generate debugging information
 #  -save-temps    preserve .s and .i-files
 #
-#CPPFLAGS += 
+#CPPFLAGS +=
 # CPPFLAGS += -g
 # CPPFLAGS += -save-temps=obj
 
@@ -181,8 +181,11 @@ ADDRESS = 0x8004000
 #
 all: gccversion build showsize
 
-build: tbl elf hex bin lss sym
+hv_firmware.o: obj_hvf3/hvf3.bin
 	$(OBJCOPY) --rename-section .data=.hv_firmware -I binary obj_hvf3/hvf3.bin -B arm -O elf32-littlearm hv_firmware.o
+
+build: tbl elf hex bin lss sym hv_firmware.o
+
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
@@ -193,15 +196,16 @@ sym: $(TARGET).sym
 # Display compiler version information
 #
 
-stm32f303/inc/commandslist.h: tbl
-stm32f303/inc/hal_tbl.h: tbl
-stm32f303/src/hal_tbl.c: tbl
-
-tbl:
-	@echo Generating tables
-	@$(PYTHON) tools/create_hal_tbl.py stm32f303/ $(COMPS)
-	#shared/comps/*.c src/comps/hw/*.c src/comps/*.c
+stm32f303/inc/commandslist.h: $(SOURCES)
+	@echo Generating commands list
 	@$(PYTHON) tools/create_cmd.py stm32f303/inc/commandslist.h $(SOURCES)
+
+stm32f303/inc/hal_tbl.h stm32f303/src/hal_tbl.c &: $(COMPS)
+	@echo Generating HAL table
+	@$(PYTHON) tools/create_hal_tbl.py stm32f303/ $(COMPS)
+	@#shared/comps/*.c src/comps/hw/*.c src/comps/*.c
+
+tbl: stm32f303/inc/hal_tbl.h stm32f303/src/hal_tbl.c stm32f303/inc/commandslist.h
 
 # Target: clean project
 #
