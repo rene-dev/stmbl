@@ -9,7 +9,7 @@ def copyIfDifferent(src, dst_path):
         dst = open(dst_path, 'r+')
         src.seek(0)
         if src.read() == dst.read():
-            return
+            pass#return
         dst.seek(0)
     except:
         pass
