@@ -196,7 +196,9 @@ sym: $(TARGET).sym
 # Display compiler version information
 #
 
-$(OBJECTS): stm32f303/inc/hal_tbl.h stm32f303/inc/commandslist.h
+$(OBJECTS): stm32f303/inc/hal_tbl.h
+
+$(OBJDIR)/shared/commands.o: stm32f303/inc/commandslist.h
 
 stm32f303/inc/commandslist.h: tools/create_cmd.py $(SOURCES)
 	@echo Generating commands list

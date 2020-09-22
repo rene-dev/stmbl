@@ -288,7 +288,9 @@ bin: tbl $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-$(OBJECTS): inc/hal_tbl.h inc/commandslist.h
+$(OBJECTS): inc/hal_tbl.h
+
+$(OBJDIR)/shared/commands.o: inc/commandslist.h
 
 inc/commandslist.h: tools/create_cmd.py $(SOURCES)
 	@echo Generating commands list
