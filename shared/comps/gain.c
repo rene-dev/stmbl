@@ -1,4 +1,4 @@
-#include "comps/gain_comp.h"
+#include "gain_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

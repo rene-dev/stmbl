@@ -1,4 +1,4 @@
-#include "comps/idq_comp.h"
+#include "idq_comp.h"
 #include "commands.h"
 #include "common.h"
 #include "hal.h"

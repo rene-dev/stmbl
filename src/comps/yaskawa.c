@@ -1,4 +1,4 @@
-#include "comps/yaskawa_comp.h"
+#include "yaskawa_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

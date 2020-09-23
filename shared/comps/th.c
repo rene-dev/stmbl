@@ -1,4 +1,4 @@
-#include "comps/th_comp.h"
+#include "th_comp.h"
 #include "hal.h"
 
 HAL_COMP(th);

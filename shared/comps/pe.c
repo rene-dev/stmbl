@@ -1,4 +1,4 @@
-#include "comps/pe_comp.h"
+#include "pe_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

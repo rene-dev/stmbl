@@ -1,4 +1,4 @@
-#include "comps/fb_switch_comp.h"
+#include "fb_switch_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

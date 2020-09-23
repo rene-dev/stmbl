@@ -1,4 +1,4 @@
-#include "comps/pos_filter_comp.h"
+#include "pos_filter_comp.h"
 #include "hal.h"
 #include "angle.h"
 #include "defines.h"

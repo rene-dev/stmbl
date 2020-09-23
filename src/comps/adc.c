@@ -1,4 +1,4 @@
-#include "comps/adc_comp.h"
+#include "adc_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

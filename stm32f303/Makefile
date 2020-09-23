@@ -15,6 +15,7 @@ TARGET = $(OBJDIR)/hvf3
 # Define all C source files (dependencies are generated automatically)
 INCDIRS += stm32f303/inc
 INCDIRS += stm32f303/inc/comps
+INCDIRS += stm32f303/inc/shared_comps
 SOURCES += stm32f303/src/main.c
 SOURCES += stm32f303/src/adc.c
 SOURCES += stm32f303/src/dac.c
@@ -28,23 +29,24 @@ SOURCES += stm32f303/src/version.c
 SOURCES += stm32f303/src/hal_tbl.c
 
 CFLAGS += -DHAL_MAX_CTX=1024
-COMPS += stm32f303/src/comps/hv.c
-COMPS += stm32f303/src/comps/io.c
-COMPS += stm32f303/src/comps/ls.c
-#COMPS += stm32f303/src/comps/enc.c
+SRC_COMPS += stm32f303/src/comps/hv.c
+SRC_COMPS += stm32f303/src/comps/io.c
+SRC_COMPS += stm32f303/src/comps/ls.c
+#SRC_COMPS += stm32f303/src/comps/enc.c
 
-COMPS += shared/comps/sim.c
-COMPS += shared/comps/term.c
-COMPS += shared/comps/curpid.c
-COMPS += shared/comps/svm.c
-COMPS += shared/comps/dq.c
-COMPS += shared/comps/idq.c
-COMPS += shared/comps/sensorless.c
-# COMPS += shared/comps/vel.c
-# COMPS += shared/comps/hal_test.c
-# COMPS += shared/comps/dc.c
-# COMPS += shared/comps/ypid.c
+SHARED_COMPS += shared/comps/sim.c
+SHARED_COMPS += shared/comps/term.c
+SHARED_COMPS += shared/comps/curpid.c
+SHARED_COMPS += shared/comps/svm.c
+SHARED_COMPS += shared/comps/dq.c
+SHARED_COMPS += shared/comps/idq.c
+SHARED_COMPS += shared/comps/sensorless.c
+# SHARED_COMPS += shared/comps/vel.c
+# SHARED_COMPS += shared/comps/hal_test.c
+# SHARED_COMPS += shared/comps/dc.c
+# SHARED_COMPS += shared/comps/ypid.c
 
+COMPS = $(SRC_COMPS) $(SHARED_COMPS)
 SOURCES += $(COMPS)
 
 INCDIRS += shared
@@ -86,6 +88,8 @@ SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_uart_ex.c
 LDSCRIPT = stm32f303/STM32F303CBTx_FLASH.ld
 
 #============================================================================
+SRC_COMP_OBJECTS = $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SRC_COMPS))))
+SHARED_COMP_OBJECTS = $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SHARED_COMPS))))
 OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
 CPPFLAGS += $(addprefix -I,$(INCDIRS))
 
@@ -197,18 +201,27 @@ sym: $(TARGET).sym
 # Display compiler version information
 #
 
-$(OBJECTS): stm32f303/src/hal_tbl.c
-
 $(OBJDIR)/shared/commands.o: stm32f303/inc/commandslist.h
 
 stm32f303/inc/commandslist.h: tools/create_cmd.py $(SOURCES)
 	@echo Generating commands list
 	@$(PYTHON) tools/create_cmd.py stm32f303/inc/commandslist.h $(SOURCES)
 
-stm32f303/src/hal_tbl.c &: tools/create_hal_tbl.py $(COMPS)
+stm32f303/src/hal_tbl.c: tools/create_hal_tbl.py $(COMPS)
 	@echo Generating HAL table
-	@$(PYTHON) tools/create_hal_tbl.py stm32f303 $(COMPS)
-	@$(PYTHON) tools/inc_comps.py . $(COMPS)
+	@$(PYTHON) tools/create_hal_tbl.py stm32f303/src/hal_tbl.c $(COMPS)
+
+$(SRC_COMP_OBJECTS): $(OBJDIR)/stm32f303/src/comps/%.o: stm32f303/inc/comps/%_comp.h
+
+$(SHARED_COMP_OBJECTS): $(OBJDIR)/shared/comps/%.o: stm32f303/inc/shared_comps/%_comp.h
+
+stm32f303/inc/comps/%_comp.h: stm32f303/src/comps/%.c
+	@echo Generating H: $<
+	@$(PYTHON) tools/create_comp_h.py $@ $<
+
+stm32f303/inc/shared_comps/%_comp.h: shared/comps/%.c
+	@echo Generating H: $<
+	@$(PYTHON) tools/create_comp_h.py $@ $<
 
 tbl: stm32f303/src/hal_tbl.c stm32f303/inc/commandslist.h
 
@@ -219,6 +232,7 @@ clean:
 	rm -rf $(OBJDIR)
 	rm -rf stm32f303/inc/commandslist.h
 	rm -rf stm32f303/inc/comps/*
+	rm -rf stm32f303/inc/shared_comps/*
 	rm -rf stm32f303/src/hal_tbl.c
 	rm -rf hv_firmware.o
 

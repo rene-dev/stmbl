@@ -1,4 +1,4 @@
-#include "comps/dc_limits_comp.h"
+#include "dc_limits_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

@@ -1,4 +1,4 @@
-#include "comps/acim_ttc_comp.h"
+#include "acim_ttc_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

@@ -1,4 +1,4 @@
-#include "comps/move_comp.h"
+#include "move_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

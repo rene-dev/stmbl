@@ -1,4 +1,4 @@
-#include "comps/ls_comp.h"
+#include "ls_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

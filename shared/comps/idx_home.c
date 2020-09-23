@@ -1,4 +1,4 @@
-#include "comps/idx_home_comp.h"
+#include "idx_home_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
