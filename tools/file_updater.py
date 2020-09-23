@@ -2,6 +2,7 @@
 import shutil
 import tempfile
 import filecmp
+import os
 
 def copyIfDifferent(src, dst_path):
     dst = None
@@ -20,6 +21,7 @@ def copyIfDifferent(src, dst_path):
 
 class FileUpdater:
     def __init__(self, path):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         self.filePath = path
         self.tempFile = tempfile.TemporaryFile(mode='r+')
 

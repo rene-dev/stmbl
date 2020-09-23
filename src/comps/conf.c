@@ -1,4 +1,4 @@
-#include "comps/conf_comp.h"
+#include "conf_comp.h"
 #include <stdio.h>
 #include "main.h"  // for Wait
 #include "commands.h"

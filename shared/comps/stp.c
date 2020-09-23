@@ -1,4 +1,4 @@
-#include "comps/stp_comp.h"
+#include "stp_comp.h"
 #include "hal.h"
 #include "math.h"
 #include "defines.h"

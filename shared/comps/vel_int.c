@@ -1,4 +1,4 @@
-#include "comps/vel_int_comp.h"
+#include "vel_int_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

@@ -15,6 +15,8 @@ TARGET = $(OBJDIR)/stmbl
 # Define all C source files (dependencies are generated automatically)
 INCDIRS += inc
 INCDIRS += inc/comps
+INCDIRS += inc/comps/hw
+INCDIRS += inc/shared_comps
 INCDIRS += shared
 
 SOURCES += src/main.c
@@ -29,96 +31,97 @@ SOURCES += src/hal_tbl.c
 HWVERSION = v4
 
 ifeq ($(HWVERSION),v3)
-	COMPS += src/comps/hw/io3.c
-	COMPS += src/comps/hvf1.c
-	COMPS += shared/comps/pmsm.c
-	COMPS += shared/comps/curpid.c
-	COMPS += shared/comps/dq.c
-	COMPS += shared/comps/idq.c
-	SOURCES += shared/common_f1.c
+	SRC_COMPS += src/comps/hw/io3.c
+	SRC_COMPS += src/comps/hvf1.c
+	SHARED_COMPS += shared/comps/pmsm.c
+	SHARED_COMPS += shared/comps/curpid.c
+	SHARED_COMPS += shared/comps/dq.c
+	SHARED_COMPS += shared/comps/idq.c
+	SHARED_COMPS += shared/common_f1.c
 	CFLAGS += -DV3
 else
-	COMPS += src/comps/hw/io4.c
-	COMPS += src/comps/hv.c
+	SRC_COMPS += src/comps/hw/io4.c
+	SRC_COMPS += src/comps/hv.c
 	#TODO: need backport to v3
-	COMPS += src/comps/enc_cmd.c
-	COMPS += src/comps/o_fb.c
-	COMPS += src/comps/sserial.c
-	COMPS += src/comps/yaskawa.c
-	COMPS += src/comps/encs.c
-	COMPS += src/comps/encf.c
-	COMPS += src/comps/endat.c
+	SRC_COMPS += src/comps/enc_cmd.c
+	SRC_COMPS += src/comps/o_fb.c
+	SRC_COMPS += src/comps/sserial.c
+	SRC_COMPS += src/comps/yaskawa.c
+	SRC_COMPS += src/comps/encs.c
+	SRC_COMPS += src/comps/encf.c
+	SRC_COMPS += src/comps/endat.c
 	CFLAGS += -DV4
 endif
 
-COMPS += src/comps/usart.c
-COMPS += src/comps/encm.c
-COMPS += src/comps/dmm.c
-COMPS += src/comps/smartabs.c
-COMPS += src/comps/adc.c
-COMPS += src/comps/enc_fb.c
-COMPS += src/comps/conf.c
-COMPS += src/comps/res.c
-COMPS += src/comps/hx711.c
+SRC_COMPS += src/comps/usart.c
+SRC_COMPS += src/comps/encm.c
+SRC_COMPS += src/comps/dmm.c
+SRC_COMPS += src/comps/smartabs.c
+SRC_COMPS += src/comps/adc.c
+SRC_COMPS += src/comps/enc_fb.c
+SRC_COMPS += src/comps/conf.c
+SRC_COMPS += src/comps/res.c
+SRC_COMPS += src/comps/hx711.c
 
-COMPS += shared/comps/sim.c
-COMPS += shared/comps/term.c
-COMPS += shared/comps/svm.c
+SHARED_COMPS += shared/comps/sim.c
+SHARED_COMPS += shared/comps/term.c
+SHARED_COMPS += shared/comps/svm.c
 
-COMPS += shared/comps/vel.c
-COMPS += shared/comps/rev.c
-COMPS += shared/comps/hal_test.c
-# COMPS += shared/comps/dc.c
-COMPS += shared/comps/ypid.c
-COMPS += shared/comps/fault.c
-COMPS += shared/comps/pid.c
-COMPS += shared/comps/spid.c
-COMPS += shared/comps/pe.c
-COMPS += shared/comps/pmsm_limits.c
-COMPS += shared/comps/pmsm_ttc.c
-COMPS += shared/comps/dc_limits.c
-COMPS += shared/comps/dc_ttc.c
-COMPS += shared/comps/acim_ttc.c
-COMPS += shared/comps/uvw.c
-COMPS += shared/comps/fanuc.c
-COMPS += shared/comps/fb_switch.c
-COMPS += shared/comps/reslimit.c
-COMPS += shared/comps/iit.c
-COMPS += shared/comps/vel_int.c
-COMPS += shared/comps/linrev.c
-COMPS += shared/comps/psi.c
-COMPS += shared/comps/stp.c
-#COMPS += shared/comps/uf.c
-COMPS += shared/comps/uf2.c
-COMPS += shared/comps/ramp.c
-COMPS += shared/comps/scale.c
-COMPS += shared/comps/idx_home.c
-COMPS += shared/comps/move.c
-# COMPS += shared/comps/ac.c
-COMPS += shared/comps/not.c
-COMPS += shared/comps/and.c
-COMPS += shared/comps/or.c
-COMPS += shared/comps/jog.c
-COMPS += shared/comps/velbuf.c
-COMPS += shared/comps/avg.c
-COMPS += shared/comps/mux.c
-COMPS += shared/comps/veltopos.c
-# COMPS += shared/comps/wobl.c
-COMPS += shared/comps/debounce.c
-COMPS += shared/comps/pos_filter.c
-COMPS += shared/comps/rl.c
-COMPS += shared/comps/mad.c
-COMPS += shared/comps/sensorless.c
-COMPS += shared/comps/field.c
-COMPS += shared/comps/gain.c
-COMPS += shared/comps/rlpsij.c
-COMPS += shared/comps/veltime.c
-COMPS += shared/comps/mpid.c
-COMPS += shared/comps/fmove.c
-COMPS += shared/comps/home.c
-COMPS += shared/comps/en.c
-COMPS += shared/comps/th.c
+SHARED_COMPS += shared/comps/vel.c
+SHARED_COMPS += shared/comps/rev.c
+SHARED_COMPS += shared/comps/hal_test.c
+# SHARED_COMPS += shared/comps/dc.c
+SHARED_COMPS += shared/comps/ypid.c
+SHARED_COMPS += shared/comps/fault.c
+SHARED_COMPS += shared/comps/pid.c
+SHARED_COMPS += shared/comps/spid.c
+SHARED_COMPS += shared/comps/pe.c
+SHARED_COMPS += shared/comps/pmsm_limits.c
+SHARED_COMPS += shared/comps/pmsm_ttc.c
+SHARED_COMPS += shared/comps/dc_limits.c
+SHARED_COMPS += shared/comps/dc_ttc.c
+SHARED_COMPS += shared/comps/acim_ttc.c
+SHARED_COMPS += shared/comps/uvw.c
+SHARED_COMPS += shared/comps/fanuc.c
+SHARED_COMPS += shared/comps/fb_switch.c
+SHARED_COMPS += shared/comps/reslimit.c
+SHARED_COMPS += shared/comps/iit.c
+SHARED_COMPS += shared/comps/vel_int.c
+SHARED_COMPS += shared/comps/linrev.c
+SHARED_COMPS += shared/comps/psi.c
+SHARED_COMPS += shared/comps/stp.c
+#SHARED_COMPS += shared/comps/uf.c
+SHARED_COMPS += shared/comps/uf2.c
+SHARED_COMPS += shared/comps/ramp.c
+SHARED_COMPS += shared/comps/scale.c
+SHARED_COMPS += shared/comps/idx_home.c
+SHARED_COMPS += shared/comps/move.c
+# SHARED_COMPS += shared/comps/ac.c
+SHARED_COMPS += shared/comps/not.c
+SHARED_COMPS += shared/comps/and.c
+SHARED_COMPS += shared/comps/or.c
+SHARED_COMPS += shared/comps/jog.c
+SHARED_COMPS += shared/comps/velbuf.c
+SHARED_COMPS += shared/comps/avg.c
+SHARED_COMPS += shared/comps/mux.c
+SHARED_COMPS += shared/comps/veltopos.c
+# SHARED_COMPS += shared/comps/wobl.c
+SHARED_COMPS += shared/comps/debounce.c
+SHARED_COMPS += shared/comps/pos_filter.c
+SHARED_COMPS += shared/comps/rl.c
+SHARED_COMPS += shared/comps/mad.c
+SHARED_COMPS += shared/comps/sensorless.c
+SHARED_COMPS += shared/comps/field.c
+SHARED_COMPS += shared/comps/gain.c
+SHARED_COMPS += shared/comps/rlpsij.c
+SHARED_COMPS += shared/comps/veltime.c
+SHARED_COMPS += shared/comps/mpid.c
+SHARED_COMPS += shared/comps/fmove.c
+SHARED_COMPS += shared/comps/home.c
+SHARED_COMPS += shared/comps/en.c
+SHARED_COMPS += shared/comps/th.c
 
+COMPS = $(SRC_COMPS) $(SHARED_COMPS)
 SOURCES += $(COMPS)
 
 # SOURCES += src/eeprom.c
@@ -194,6 +197,8 @@ CPPFLAGS += -DHSE_VALUE=8000000
 LDSCRIPT = stm32_flash.ld
 
 #============================================================================
+SRC_COMP_OBJECTS = $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SRC_COMPS))))
+SHARED_COMP_OBJECTS = $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SHARED_COMPS))))
 OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
 OBJECTS += hv_firmware.o
 CPPFLAGS += $(addprefix -I,$(INCDIRS))
@@ -289,18 +294,27 @@ bin: tbl $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-$(OBJECTS): src/hal_tbl.c
-
 $(OBJDIR)/shared/commands.o: inc/commandslist.h
 
 inc/commandslist.h: tools/create_cmd.py $(SOURCES)
 	@echo Generating commands list
 	@$(PYTHON) tools/create_cmd.py inc/commandslist.h $(SOURCES)
 
-src/hal_tbl.c &: tools/create_hal_tbl.py $(COMPS)
+src/hal_tbl.c: tools/create_hal_tbl.py $(COMPS)
 	@echo Generating HAL table
-	@$(PYTHON) tools/create_hal_tbl.py . $(COMPS)
-	@$(PYTHON) tools/inc_comps.py . $(COMPS)
+	@$(PYTHON) tools/create_hal_tbl.py src/hal_tbl.c $(COMPS)
+
+$(SRC_COMP_OBJECTS): $(OBJDIR)/src/comps/%.o: inc/comps/%_comp.h
+
+$(SHARED_COMP_OBJECTS): $(OBJDIR)/shared/comps/%.o: inc/shared_comps/%_comp.h
+
+inc/comps/%_comp.h: src/comps/%.c
+	@echo Generating H: $<
+	@$(PYTHON) tools/create_comp_h.py $@ $<
+
+inc/shared_comps/%_comp.h: shared/comps/%.c
+	@echo Generating H: $<
+	@$(PYTHON) tools/create_comp_h.py $@ $<
 
 src/conf_templates.c: tools/create_config.py $(CONFIG_TEMPLATES)
 	@echo Generating config
@@ -407,6 +421,7 @@ clean:
 	rm -rf $(OBJDIR)
 	rm -rf inc/commandslist.h
 	rm -rf inc/comps/*
+	rm -rf inc/shared_comps/*
 	rm -rf src/conf_templates.c
 	rm -rf src/hal_tbl.c
 	@$(MAKE) -f bootloader/Makefile clean

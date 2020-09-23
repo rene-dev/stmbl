@@ -1,4 +1,4 @@
-#include "comps/not_comp.h"
+#include "not_comp.h"
 #include "hal.h"
 
 HAL_COMP(not);

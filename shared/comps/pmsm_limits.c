@@ -1,4 +1,4 @@
-#include "comps/pmsm_limits_comp.h"
+#include "pmsm_limits_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

@@ -1,4 +1,4 @@
-#include "comps/io4_comp.h"
+#include "io4_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "defines.h"

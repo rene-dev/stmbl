@@ -1,4 +1,4 @@
-#include "comps/uf2_comp.h"
+#include "uf2_comp.h"
 #include "hal.h"
 #include "defines.h"
 #include "angle.h"

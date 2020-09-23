@@ -1,4 +1,4 @@
-#include "comps/pid_comp.h"
+#include "pid_comp.h"
 /*
 * This file is part of the stmbl project.
 *

@@ -1,4 +1,4 @@
-#include "comps/mad_comp.h"
+#include "mad_comp.h"
 #include "hal.h"
 
 HAL_COMP(mad);

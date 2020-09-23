@@ -1,4 +1,4 @@
-#include "comps/svm_comp.h"
+#include "svm_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
