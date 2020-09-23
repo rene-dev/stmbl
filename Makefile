@@ -14,6 +14,7 @@ TARGET = $(OBJDIR)/stmbl
 
 # Define all C source files (dependencies are generated automatically)
 INCDIRS += inc
+INCDIRS += inc/comps
 INCDIRS += shared
 
 SOURCES += src/main.c
@@ -288,7 +289,7 @@ bin: tbl $(TARGET).bin
 lss: $(TARGET).lss
 sym: $(TARGET).sym
 
-$(OBJECTS): inc/hal_tbl.h
+$(OBJECTS): src/hal_tbl.c
 
 $(OBJDIR)/shared/commands.o: inc/commandslist.h
 
@@ -296,15 +297,16 @@ inc/commandslist.h: tools/create_cmd.py $(SOURCES)
 	@echo Generating commands list
 	@$(PYTHON) tools/create_cmd.py inc/commandslist.h $(SOURCES)
 
-inc/hal_tbl.h src/hal_tbl.c &: tools/create_hal_tbl.py $(COMPS)
+src/hal_tbl.c &: tools/create_hal_tbl.py $(COMPS)
 	@echo Generating HAL table
 	@$(PYTHON) tools/create_hal_tbl.py . $(COMPS)
+	@$(PYTHON) tools/inc_comps.py . $(COMPS)
 
 src/conf_templates.c: tools/create_config.py $(CONFIG_TEMPLATES)
 	@echo Generating config
 	@$(PYTHON) tools/create_config.py src/conf_templates.c $(CONFIG_TEMPLATES)
 
-tbl: inc/commandslist.h inc/hal_tbl.h src/hal_tbl.c src/conf_templates.c
+tbl: inc/commandslist.h src/hal_tbl.c src/conf_templates.c
 
 obj_boot/blboot.bin: force_look
 	$(MAKE) -f bootloader/Makefile
@@ -404,7 +406,9 @@ clean:
 	rm -rf f3.bin f4.bin f3.dfu f4.dfu stmbl.dfu
 	rm -rf $(OBJDIR)
 	rm -rf inc/commandslist.h
+	rm -rf inc/comps/*
 	rm -rf src/conf_templates.c
+	rm -rf src/hal_tbl.c
 	@$(MAKE) -f bootloader/Makefile clean
 	@$(MAKE) -f f3_boot/Makefile clean
 	@$(MAKE) -f stm32f103/Makefile clean

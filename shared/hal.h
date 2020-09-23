@@ -191,4 +191,13 @@ uint32_t hal_parse(char *cmd);
 void hal_error(uint32_t error_handler);
 void hal_set_debug_level(uint32_t debug_level);
 
-#include "hal_tbl.h"
+//#include "hal_tbl.h"
+struct pin_ctx_t{
+   hal_pin_inst_t rt_prio;
+   hal_pin_inst_t frt_prio;
+};
+
+extern const hal_comp_t * comps[];
+extern const pin_t pins[];
+extern const uint32_t comp_count;
+extern const uint32_t pin_count;

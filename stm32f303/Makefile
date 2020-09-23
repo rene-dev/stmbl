@@ -14,6 +14,7 @@ TARGET = $(OBJDIR)/hvf3
 
 # Define all C source files (dependencies are generated automatically)
 INCDIRS += stm32f303/inc
+INCDIRS += stm32f303/inc/comps
 SOURCES += stm32f303/src/main.c
 SOURCES += stm32f303/src/adc.c
 SOURCES += stm32f303/src/dac.c
@@ -196,7 +197,7 @@ sym: $(TARGET).sym
 # Display compiler version information
 #
 
-$(OBJECTS): stm32f303/inc/hal_tbl.h
+$(OBJECTS): stm32f303/src/hal_tbl.c
 
 $(OBJDIR)/shared/commands.o: stm32f303/inc/commandslist.h
 
@@ -204,12 +205,12 @@ stm32f303/inc/commandslist.h: tools/create_cmd.py $(SOURCES)
 	@echo Generating commands list
 	@$(PYTHON) tools/create_cmd.py stm32f303/inc/commandslist.h $(SOURCES)
 
-stm32f303/inc/hal_tbl.h stm32f303/src/hal_tbl.c &: tools/create_hal_tbl.py $(COMPS)
+stm32f303/src/hal_tbl.c &: tools/create_hal_tbl.py $(COMPS)
 	@echo Generating HAL table
-	@$(PYTHON) tools/create_hal_tbl.py stm32f303/ $(COMPS)
-	@#shared/comps/*.c src/comps/hw/*.c src/comps/*.c
+	@$(PYTHON) tools/create_hal_tbl.py stm32f303 $(COMPS)
+	@$(PYTHON) tools/inc_comps.py . $(COMPS)
 
-tbl: stm32f303/inc/hal_tbl.h stm32f303/src/hal_tbl.c stm32f303/inc/commandslist.h
+tbl: stm32f303/src/hal_tbl.c stm32f303/inc/commandslist.h
 
 # Target: clean project
 #
@@ -217,7 +218,7 @@ clean:
 	@echo Cleaning project:
 	rm -rf $(OBJDIR)
 	rm -rf stm32f303/inc/commandslist.h
-	rm -rf stm32f303/inc/hal_tbl.h
+	rm -rf stm32f303/inc/comps/*
 	rm -rf stm32f303/src/hal_tbl.c
 	rm -rf hv_firmware.o
 
