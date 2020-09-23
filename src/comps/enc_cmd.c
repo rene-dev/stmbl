@@ -1,3 +1,4 @@
+#include "comps/enc_cmd_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

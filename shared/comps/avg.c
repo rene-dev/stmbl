@@ -1,3 +1,4 @@
+#include "comps/avg_comp.h"
 #include "hal.h"
 #include "defines.h"
 

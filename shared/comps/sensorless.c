@@ -1,3 +1,4 @@
+#include "comps/sensorless_comp.h"
 /*
 * This file is part of the stmbl project.
 *

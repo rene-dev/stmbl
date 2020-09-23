@@ -1,3 +1,4 @@
+#include "comps/field_comp.h"
 /*
 * This file is part of the stmbl project.
 *

@@ -1,3 +1,4 @@
+#include "comps/scale_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

@@ -1,3 +1,4 @@
+#include "comps/curpid_comp.h"
 #include "commands.h"
 #include "common.h"
 #include "hal.h"

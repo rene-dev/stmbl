@@ -1,3 +1,4 @@
+#include "comps/pmsm_ttc_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

@@ -1,3 +1,4 @@
+#include "comps/smartabs_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

@@ -1,3 +1,4 @@
+#include "comps/dq_comp.h"
 #include "commands.h"
 #include "common.h"
 #include "hal.h"

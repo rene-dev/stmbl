@@ -1,3 +1,4 @@
+#include "comps/mux_comp.h"
 #include "hal.h"
 #include "defines.h"
 
