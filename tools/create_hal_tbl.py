@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 import re
 import sys
-import file_updater
 
 comps = []
 
-code = file_updater.FileUpdater(sys.argv[1])
+code = open(sys.argv[1], 'w')
 
 for infile in sys.argv[2:]:
     with open(infile) as f:
