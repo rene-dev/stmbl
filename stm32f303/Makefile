@@ -205,11 +205,13 @@ $(OBJDIR)/shared/commands.o: stm32f303/inc/commandslist.h
 
 stm32f303/inc/commandslist.h: tools/create_cmd.py $(SOURCES)
 	@echo Generating commands list
-	@$(PYTHON) tools/create_cmd.py stm32f303/inc/commandslist.h $(SOURCES)
+	@$(MKDIR) -p $(dir $@)
+	@$(PYTHON) tools/create_cmd.py $@ $(SOURCES)
 
 stm32f303/src/hal_tbl.c: tools/create_hal_tbl.py $(COMPS)
 	@echo Generating HAL table
-	@$(PYTHON) tools/create_hal_tbl.py stm32f303/src/hal_tbl.c $(COMPS)
+	@$(MKDIR) -p $(dir $@)
+	@$(PYTHON) tools/create_hal_tbl.py $@ $(COMPS)
 
 $(SRC_COMP_OBJECTS): $(OBJDIR)/stm32f303/src/comps/%.o: stm32f303/inc/comps/%_comp.h
 
@@ -217,10 +219,12 @@ $(SHARED_COMP_OBJECTS): $(OBJDIR)/shared/comps/%.o: stm32f303/inc/shared_comps/%
 
 stm32f303/inc/comps/%_comp.h: stm32f303/src/comps/%.c
 	@echo Generating H: $<
+	@$(MKDIR) -p $(dir $@)
 	@$(PYTHON) tools/create_comp_h.py $@ $<
 
 stm32f303/inc/shared_comps/%_comp.h: shared/comps/%.c
 	@echo Generating H: $<
+	@$(MKDIR) -p $(dir $@)
 	@$(PYTHON) tools/create_comp_h.py $@ $<
 
 tbl: stm32f303/src/hal_tbl.c stm32f303/inc/commandslist.h

@@ -298,11 +298,13 @@ $(OBJDIR)/shared/commands.o: inc/commandslist.h
 
 inc/commandslist.h: tools/create_cmd.py $(SOURCES)
 	@echo Generating commands list
-	@$(PYTHON) tools/create_cmd.py inc/commandslist.h $(SOURCES)
+	@$(MKDIR) -p $(dir $@)
+	@$(PYTHON) tools/create_cmd.py $@ $(SOURCES)
 
 src/hal_tbl.c: tools/create_hal_tbl.py $(COMPS)
 	@echo Generating HAL table
-	@$(PYTHON) tools/create_hal_tbl.py src/hal_tbl.c $(COMPS)
+	@$(MKDIR) -p $(dir $@)
+	@$(PYTHON) tools/create_hal_tbl.py $@ $(COMPS)
 
 $(SRC_COMP_OBJECTS): $(OBJDIR)/src/comps/%.o: inc/comps/%_comp.h
 
@@ -310,14 +312,17 @@ $(SHARED_COMP_OBJECTS): $(OBJDIR)/shared/comps/%.o: inc/shared_comps/%_comp.h
 
 inc/comps/%_comp.h: src/comps/%.c
 	@echo Generating H: $<
+	@$(MKDIR) -p $(dir $@)
 	@$(PYTHON) tools/create_comp_h.py $@ $<
 
 inc/shared_comps/%_comp.h: shared/comps/%.c
 	@echo Generating H: $<
+	@$(MKDIR) -p $(dir $@)
 	@$(PYTHON) tools/create_comp_h.py $@ $<
 
 src/conf_templates.c: tools/create_config.py $(CONFIG_TEMPLATES)
 	@echo Generating config
+	@$(MKDIR) -p $(dir $@)
 	@$(PYTHON) tools/create_config.py src/conf_templates.c $(CONFIG_TEMPLATES)
 
 tbl: inc/commandslist.h src/hal_tbl.c src/conf_templates.c
