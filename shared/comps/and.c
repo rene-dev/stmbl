@@ -1,3 +1,4 @@
+#include "and_comp.h"
 #include "hal.h"
 
 HAL_COMP(and);

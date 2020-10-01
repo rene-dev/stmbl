@@ -1,3 +1,4 @@
+#include "comps/iit_old_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

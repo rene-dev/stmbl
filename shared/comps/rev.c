@@ -1,3 +1,4 @@
+#include "rev_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

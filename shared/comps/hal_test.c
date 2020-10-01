@@ -1,3 +1,4 @@
+#include "hal_test_comp.h"
 #include "hal.h"
 
 HAL_COMP(hal_test);

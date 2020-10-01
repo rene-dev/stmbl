@@ -1,3 +1,4 @@
+#include "rl_comp.h"
 #include "hal.h"
 #include "angle.h"
 #include "defines.h"

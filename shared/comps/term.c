@@ -1,3 +1,4 @@
+#include "term_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "defines.h"

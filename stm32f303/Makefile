@@ -14,6 +14,8 @@ TARGET = $(OBJDIR)/hvf3
 
 # Define all C source files (dependencies are generated automatically)
 INCDIRS += stm32f303/inc
+INCDIRS += stm32f303/inc/comps
+INCDIRS += stm32f303/inc/shared_comps
 SOURCES += stm32f303/src/main.c
 SOURCES += stm32f303/src/adc.c
 SOURCES += stm32f303/src/dac.c
@@ -27,23 +29,24 @@ SOURCES += stm32f303/src/version.c
 SOURCES += stm32f303/src/hal_tbl.c
 
 CFLAGS += -DHAL_MAX_CTX=1024
-COMPS += stm32f303/src/comps/hv.c
-COMPS += stm32f303/src/comps/io.c
-COMPS += stm32f303/src/comps/ls.c
-#COMPS += stm32f303/src/comps/enc.c
+SRC_COMPS += stm32f303/src/comps/hv.c
+SRC_COMPS += stm32f303/src/comps/io.c
+SRC_COMPS += stm32f303/src/comps/ls.c
+#SRC_COMPS += stm32f303/src/comps/enc.c
 
-COMPS += shared/comps/sim.c
-COMPS += shared/comps/term.c
-COMPS += shared/comps/curpid.c
-COMPS += shared/comps/svm.c
-COMPS += shared/comps/dq.c
-COMPS += shared/comps/idq.c
-COMPS += shared/comps/sensorless.c
-# COMPS += shared/comps/vel.c
-# COMPS += shared/comps/hal_test.c
-# COMPS += shared/comps/dc.c
-# COMPS += shared/comps/ypid.c
+SHARED_COMPS += shared/comps/sim.c
+SHARED_COMPS += shared/comps/term.c
+SHARED_COMPS += shared/comps/curpid.c
+SHARED_COMPS += shared/comps/svm.c
+SHARED_COMPS += shared/comps/dq.c
+SHARED_COMPS += shared/comps/idq.c
+SHARED_COMPS += shared/comps/sensorless.c
+# SHARED_COMPS += shared/comps/vel.c
+# SHARED_COMPS += shared/comps/hal_test.c
+# SHARED_COMPS += shared/comps/dc.c
+# SHARED_COMPS += shared/comps/ypid.c
 
+COMPS = $(SRC_COMPS) $(SHARED_COMPS)
 SOURCES += $(COMPS)
 
 INCDIRS += shared
@@ -85,6 +88,8 @@ SOURCES += $(HAL_DRV_DIR)/Src/stm32f3xx_hal_uart_ex.c
 LDSCRIPT = stm32f303/STM32F303CBTx_FLASH.ld
 
 #============================================================================
+SRC_COMP_OBJECTS = $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SRC_COMPS))))
+SHARED_COMP_OBJECTS = $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SHARED_COMPS))))
 OBJECTS += $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(SOURCES))))
 CPPFLAGS += $(addprefix -I,$(INCDIRS))
 
@@ -93,7 +98,7 @@ CPPFLAGS += $(addprefix -I,$(INCDIRS))
 #  -g             generate debugging information
 #  -save-temps    preserve .s and .i-files
 #
-#CPPFLAGS += 
+#CPPFLAGS +=
 # CPPFLAGS += -g
 # CPPFLAGS += -save-temps=obj
 
@@ -181,8 +186,11 @@ ADDRESS = 0x8004000
 #
 all: gccversion build showsize
 
-build: tbl elf hex bin lss sym
+hv_firmware.o: obj_hvf3/hvf3.bin
 	$(OBJCOPY) --rename-section .data=.hv_firmware -I binary obj_hvf3/hvf3.bin -B arm -O elf32-littlearm hv_firmware.o
+
+build: tbl elf hex bin lss sym hv_firmware.o
+
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
@@ -193,15 +201,33 @@ sym: $(TARGET).sym
 # Display compiler version information
 #
 
-stm32f303/inc/commandslist.h: tbl
-stm32f303/inc/hal_tbl.h: tbl
-stm32f303/src/hal_tbl.c: tbl
+$(OBJDIR)/shared/commands.o: stm32f303/inc/commandslist.h
 
-tbl:
-	@echo Generating tables
-	@$(PYTHON) tools/create_hal_tbl.py stm32f303/ $(COMPS)
-	#shared/comps/*.c src/comps/hw/*.c src/comps/*.c
-	@$(PYTHON) tools/create_cmd.py $(SOURCES) > stm32f303/inc/commandslist.h
+stm32f303/inc/commandslist.h: tools/create_cmd.py $(SOURCES)
+	@echo Generating commands list
+	@$(MKDIR) -p $(dir $@)
+	@$(PYTHON) tools/create_cmd.py $@ $(SOURCES)
+
+stm32f303/src/hal_tbl.c: tools/create_hal_tbl.py $(COMPS)
+	@echo Generating HAL table
+	@$(MKDIR) -p $(dir $@)
+	@$(PYTHON) tools/create_hal_tbl.py $@ $(COMPS)
+
+$(SRC_COMP_OBJECTS): $(OBJDIR)/stm32f303/src/comps/%.o: stm32f303/inc/comps/%_comp.h
+
+$(SHARED_COMP_OBJECTS): $(OBJDIR)/shared/comps/%.o: stm32f303/inc/shared_comps/%_comp.h
+
+stm32f303/inc/comps/%_comp.h: stm32f303/src/comps/%.c
+	@echo Generating H: $<
+	@$(MKDIR) -p $(dir $@)
+	@$(PYTHON) tools/create_comp_h.py $@ $<
+
+stm32f303/inc/shared_comps/%_comp.h: shared/comps/%.c
+	@echo Generating H: $<
+	@$(MKDIR) -p $(dir $@)
+	@$(PYTHON) tools/create_comp_h.py $@ $<
+
+tbl: stm32f303/src/hal_tbl.c stm32f303/inc/commandslist.h
 
 # Target: clean project
 #
@@ -209,7 +235,8 @@ clean:
 	@echo Cleaning project:
 	rm -rf $(OBJDIR)
 	rm -rf stm32f303/inc/commandslist.h
-	rm -rf stm32f303/inc/hal_tbl.h
+	rm -rf stm32f303/inc/comps/*
+	rm -rf stm32f303/inc/shared_comps/*
 	rm -rf stm32f303/src/hal_tbl.c
 	rm -rf hv_firmware.o
 
@@ -223,7 +250,5 @@ include base.mak
 
 # Listing of phony targets
 #
-.PHONY: all build flash clean \
-        boot boot_clean boot_flash btburn boot_btflash boot_flash\
-        elf lss sym \
-        showsize gccversion tbl
+.PHONY: all build clean \
+        elf hex bin lss sym tbl

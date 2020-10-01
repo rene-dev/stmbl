@@ -1,3 +1,4 @@
+#include "psi_comp.h"
 #include "hal.h"
 #include "math.h"
 #include "defines.h"

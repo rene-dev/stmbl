@@ -1,3 +1,4 @@
+#include "comps/auto_ac_comp.h"
 #include "hal.h"
 #include "defines.h"
 

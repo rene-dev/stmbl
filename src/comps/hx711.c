@@ -1,3 +1,4 @@
+#include "hx711_comp.h"
 /*
 * This file is part of the stmbl project.
 *

@@ -1,3 +1,4 @@
+#include "linrev_comp.h"
 //Calculate motor angle from position in machine units
 
 /*

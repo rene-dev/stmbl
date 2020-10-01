@@ -1,3 +1,4 @@
+#include "sserial_comp.h"
 /*
 * This file is part of the stmbl project.
 *

@@ -1,3 +1,4 @@
+#include "enc_fb_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
