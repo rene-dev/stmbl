@@ -5,7 +5,7 @@ ifneq (,$(findstring STM32F4, $(CPU)))
     $(info using LIB: $(LIBPATH))
 
     # cpu define
-    ifneq (,$(findstring STM32F40 ,$(CPU)))
+    ifneq (,$(findstring STM32F40, $(CPU)))
       CPUDEF = STM32F40_41xxx
     endif
 

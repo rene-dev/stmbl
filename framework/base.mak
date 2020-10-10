@@ -147,7 +147,7 @@ endif
 
 # Link: create ELF output file from object files
 #
-build/fw.elf: $(OBJECTS) $(LDSCRIPT) $(GENINCS) $(GENSOURCES)
+build/fw.elf: $(OBJECTS) $(LDSCRIPT)
 	@echo Linking: $@
 	@$(MKDIR) -p $(dir $@)
 	$(Q)$(CC) $(OBJECTS) $(LDFLAGS) --output $(basename $@).tmp
@@ -185,17 +185,17 @@ build/fw.bin: build/fw.elf
 
 # Compile: create object files from C source files
 
-build/gen/%.o : build/gen/src/%.c
+build/gen/%.o : build/gen/src/%.c $(GENINCS)
 	@echo Compiling gen C: $<
 	@$(MKDIR) -p $(dir $@)
 	$(Q)$(CC) -c $(CPPFLAGS) $(CFLAGS) $(GENDEPFLAGS) $< -o $@ 
 
-build/libs/%.o : ../../framework/libs/%.c
+build/libs/%.o : ../../framework/libs/%.c $(GENINCS)
 	@echo Compiling lib C: $<
 	@$(MKDIR) -p $(dir $@)
 	$(Q)$(CC) -c $(CPPFLAGS) $(CFLAGS) $(GENDEPFLAGS) $< -o $@ 
 
-build/%.o : src/%.c
+build/%.o : src/%.c $(GENINCS)
 	@echo Compiling C: $<
 	@$(MKDIR) -p $(dir $@)
 	$(Q)$(CC) -c $(CPPFLAGS) $(CFLAGS) $(GENDEPFLAGS) $< -o $@ 
@@ -207,12 +207,12 @@ build/%.o : src/%.c
 
 # Assemble: create object files from assembler source files
 #
-build/%.o : %.s
+build/%.o : %.s $(GENINCS)
 	@echo Assembling: $<
 	@$(MKDIR) -p $(dir $@)
 	$(Q)$(CC) -c $(CPPFLAGS) $(ASFLAGS) $(GENDEPFLAGS) $< -o $@
 
-build/libs/%.o : ../../framework/libs/%.s
+build/libs/%.o : ../../framework/libs/%.s  $(GENINCS)
 	@echo Assembling: $<
 	@$(MKDIR) -p $(dir $@)
 	$(Q)$(CC) -c $(CPPFLAGS) $(ASFLAGS) $(GENDEPFLAGS) $< -o $@
