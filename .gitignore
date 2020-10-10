@@ -71,13 +71,8 @@ eagle.epf
 
 *.eps
 obj_*
-inc/commandslist.h
-inc/comps/*
-inc/shared_comps/*
-src/hal_tbl.c
-src/conf_templates.c
-stm32f303/inc/commandslist.h
-stm32f303/inc/comps/*
-stm32f303/inc/shared_comps/*
-stm32f303/src/hal_tbl.c
+conf_templates.c
+commandslist.h
+hal_tbl.c
 toolchain-user.mak
+build/
