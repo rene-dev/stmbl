@@ -5,7 +5,7 @@
 #include "defines.h"
 #include "angle.h"
 #include "tim.h"
-#include "f3hw.h"
+#include "hw.h"
 
 HAL_COMP(hv);
 

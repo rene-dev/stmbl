@@ -33,10 +33,13 @@ PERIPH += DMA
 
 SOURCES += $(wildcard src/*.c)
 
-SRC_COMPS += $(wildcard src/comps/*.c)
+INCDIRS += ../shared/inc/
+SHAREDSOURCES += $(wildcard ../shared/src/*.c)
 
-SHARED_COMPS += $(wildcard ../../framework/comps/curpid/*.c)
-SHARED_COMPS += $(wildcard ../../framework/comps/misc/*.c)
+SRC_COMPS += $(wildcard src/comps/*.c)
+SHARED_COMPS += $(wildcard ../shared/src/comps/*.c)
+LIB_COMPS += $(wildcard ../../framework/comps/curpid/*.c)
+LIB_COMPS += $(wildcard ../../framework/comps/misc/*.c)
 
 #CONFIG_TEMPLATES += $(wildcard conf/template/*.txt)
 

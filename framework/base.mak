@@ -12,9 +12,6 @@ FRAMEWORK_DIR = ../../framework
 INCDIRS += inc/
 # SOURCES += $(wildcard src/*.c)
 
-INCDIRS += ../shared/inc/
-SHAREDSOURCES += $(wildcard ../shared/src/*.c)
-
 INCDIRS += build/gen/inc/
 
 CPPFLAGS += -D$(CPUDEF)
@@ -119,7 +116,7 @@ endif
 #
 all: generate build showsize
 
-build: generate elf hex bin lss sym
+build: elf hex bin lss sym
 
 elf: build/fw.elf
 hex: build/fw.hex
@@ -150,7 +147,7 @@ endif
 
 # Link: create ELF output file from object files
 #
-build/fw.elf: $(OBJECTS) $(LDSCRIPT)
+build/fw.elf: $(OBJECTS) $(LDSCRIPT) $(GENINCS) $(GENSOURCES)
 	@echo Linking: $@
 	@$(MKDIR) -p $(dir $@)
 	$(Q)$(CC) $(OBJECTS) $(LDFLAGS) --output $(basename $@).tmp

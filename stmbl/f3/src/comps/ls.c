@@ -6,7 +6,7 @@
 #include "angle.h"
 #include "stm32f3xx_hal.h"
 #include "common.h"
-#include "f3hw.h"
+#include "hw.h"
 #include "ringbuf.h"
 
 extern CRC_HandleTypeDef hcrc;
