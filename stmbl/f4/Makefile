@@ -11,10 +11,13 @@ HWVERSION = v4
 LIBS = ST_SPL
 LIBS += CMSIS
 LIBS += ST_USB
+LIBS += ST_VCP
+LIBS += ST_OTG
 LIBS += HAL
 LIBS += STMBLTALK
 LIBS += CONF
 LIBS += CMD
+LIBS += MISC
 
 PERIPH += TIM
 PERIPH += UART
@@ -30,7 +33,18 @@ PERIPH += DMA
 
 SOURCES += $(wildcard src/*.c)
 
-SHARED_COMPS += $(wildcard ../../framework/comps/*.c)
+INCDIRS += ../shared/inc/
+SHAREDSOURCES += $(wildcard ../shared/src/*.c)
+
+LIB_COMPS += $(wildcard ../../framework/comps/*.c)
+
+SRC_COMPS += $(wildcard src/comps/*.c)
+
+LIB_COMPS += $(wildcard ../../framework/comps/motor_ctr/*.c)
+LIB_COMPS += $(wildcard ../../framework/comps/motor_model/*.c)
+LIB_COMPS += $(wildcard ../../framework/comps/fb/*.c)
+LIB_COMPS += $(wildcard ../../framework/comps/misc/*.c)
+
 
 ifeq ($(HWVERSION),v3)
 	SRC_COMPS += src/comps/hw/io3.c
@@ -55,25 +69,19 @@ else
 	CFLAGS += -DV4
 endif
 
-SRC_COMPS += $(wildcard src/comps/*.c)
-
-SHARED_COMPS += $(wildcard ../../framework/comps/motor_ctr/*.c)
-SHARED_COMPS += $(wildcard ../../framework/comps/motor_model/*.c)
-SHARED_COMPS += $(wildcard ../../framework/comps/fb/*.c)
-SHARED_COMPS += $(wildcard ../../framework/comps/misc/*.c)
 
 CONFIG_TEMPLATES += $(wildcard conf/template/*.txt)
 
-OBJECTS += ../f3/build/fw.o
+# OBJECTS += ../f3/build/fw.o
 
-../f3/build/fw.o: force_look
-	$(MAKE) -C ../f3/
-	$(OBJCOPY) --rename-section .data=.hv_firmware -I binary ../f3/build/fw.bin -B arm -O elf32-littlearm ../f3/build/fw.o
+# ../f3/build/fw.o: force_look
+# 	$(MAKE) -C ../f3/
+# 	$(OBJCOPY) --rename-section .data=.hv_firmware -I binary ../f3/build/fw.bin -B arm -O elf32-littlearm ../f3/build/fw.o
 
-build/fw_all.bin: f4_boot/build/fw.bin conf/festo.txt build/fw.bin
-	cat f4_boot/build/fw.bin /dev/zero | head -c 32768 > build/fw_all.bin
-	cat conf/festo.txt /dev/zero | head -c 32768 >> build/fw_all.bin
-	cat build/fw.bin >> build/fw_all.bin
+# build/fw_all.bin: f4_boot/build/fw.bin conf/festo.txt build/fw.bin
+# 	cat f4_boot/build/fw.bin /dev/zero | head -c 32768 > build/fw_all.bin
+# 	cat conf/festo.txt /dev/zero | head -c 32768 >> build/fw_all.bin
+# 	cat build/fw.bin >> build/fw_all.bin
 
 # Include the base rules
 #

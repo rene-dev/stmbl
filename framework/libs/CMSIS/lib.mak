@@ -27,8 +27,8 @@ ifneq (,$(findstring CMSIS, $(LIBS)))
     # peripheral include
     INCDIRS := $(INCDIRS) $(LIBPATH)/Device/ST/STM32F4xx/Include
 
-    LIBSOURCES := $(LIBSOURCES) $(LIBPATH)/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
-    LIBSOURCES := $(LIBSOURCES) $(LIBPATH)/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f40_41xxx.s
+    LIBSOURCES := $(LIBSOURCES) $(LIBPATH)/Device/ST/STM32F4xx/Source/system_stm32f4xx.c
+    LIBSOURCES := $(LIBSOURCES) $(LIBPATH)/Device/ST/STM32F4xx/Source/startup_stm32f40_41xxx.s
   endif
 
   # check cpu define
