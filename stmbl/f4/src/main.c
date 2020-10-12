@@ -178,6 +178,7 @@ int main(void) {
   SCB->VTOR = (uint32_t)&g_pfnVectors;
 
   setup();
+
   hal_init(0.0002, 0.00005);
   // hal load comps
   load_comp(comp_by_name("term"));
@@ -185,6 +186,7 @@ int main(void) {
   hal_parse("loadconf");
   hal_parse("relink");
   hal_parse("start");
+  
 
   TIM_Cmd(TIM_MASTER, ENABLE);
   TIM_ITConfig(TIM_SLAVE, TIM_IT_Update, ENABLE);

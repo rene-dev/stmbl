@@ -5,7 +5,7 @@ before_install:
 - sudo apt-get -qq update
 - sudo apt-get install gcc-arm-embedded
 script:
-- make deploy
+- make -C stmbl
 notifications:
   irc:
     channels:

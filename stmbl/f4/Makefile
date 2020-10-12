@@ -8,6 +8,10 @@ ADDRESS = 0x08010000
 
 HWVERSION = v4
 
+CFLAGS += -DHAL_MAX_PINS=1024
+CFLAGS += -DHAL_MAX_COMPS=16
+CFLAGS += -DHAL_MAX_CTX=16384
+
 LIBS = ST_SPL
 LIBS += CMSIS
 LIBS += ST_USB
@@ -46,6 +50,8 @@ LIB_COMPS += $(wildcard ../../framework/comps/motor_model/*.c)
 LIB_COMPS += $(wildcard ../../framework/comps/fb/*.c)
 LIB_COMPS += $(wildcard ../../framework/comps/misc/*.c)
 
+# LIB_COMPS += $(wildcard ../../framework/comps/term.c)
+
 INCDIRS += build/gen/inc/src_comps/hw/
 
 ifeq ($(HWVERSION),v3)
@@ -72,7 +78,10 @@ else
 endif
 
 
-CONFIG_TEMPLATES += $(wildcard conf/template/*.txt)
+CONFIG_TEMPLATES += $(wildcard ../../framework/conf/template/fb/*.txt)
+CONFIG_TEMPLATES += $(wildcard ../../framework/conf/template/misc/*.txt)
+CONFIG_TEMPLATES += $(wildcard ../../framework/conf/template/motor_ctr/*.txt)
+CONFIG_TEMPLATES += $(wildcard ../../framework/conf/template/motor_model/*.txt)
 
 OBJECTS += ../f3/build/fw.o
 

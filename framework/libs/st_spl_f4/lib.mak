@@ -6,11 +6,6 @@ ifneq (,$(findstring STM32F4, $(CPU)))
     
     CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 
-    # cpu define
-    ifneq (,$(findstring STM32F40, $(CPU)))
-      CPUDEF = STM32F40_41xxx
-    endif
-
     # check cpu define
     ifeq (, $(CPUDEF))
       $(error missing CPU definition for $(CPU))

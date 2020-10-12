@@ -8,7 +8,7 @@ ifneq (,$(findstring CMD, $(LIBS)))
   GENINCS += build/gen/inc/commandslist.h
 endif
 
-build/gen/inc/commandslist.h: $(FRAMEWORK_DIR)/tools/create_cmd.py $(SOURCES)
+build/gen/inc/commandslist.h: $(FRAMEWORK_DIR)/tools/create_cmd.py $(SOURCES) $(LIBSOURCES) $(COMPS) $(SHAREDSOURCES)
 	@echo Generating commands list
 	@$(MKDIR) -p $(dir $@)
-	@$(PYTHON) $(FRAMEWORK_DIR)/tools/create_cmd.py $@ $(SOURCES) $(LIBSOURCES) $(SHAREDSOURCES)
+	@$(PYTHON) $(FRAMEWORK_DIR)/tools/create_cmd.py $@ $(SOURCES) $(LIBSOURCES) $(COMPS) $(SHAREDSOURCES)

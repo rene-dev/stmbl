@@ -21,6 +21,7 @@ endif
 SRC_COMP_OBJECTS = $(subst src/comps/,,$(addprefix build/src_comps/,$(addsuffix .o,$(basename $(SRC_COMPS)))))
 SHARED_COMP_OBJECTS = $(subst ../shared/src/comps/,,$(addprefix build/shared_comps/,$(addsuffix .o,$(basename $(SHARED_COMPS)))))
 LIB_COMP_OBJECTS = $(subst ../../framework/comps/,,$(addprefix build/lib_comps/,$(addsuffix .o,$(basename $(LIB_COMPS)))))
+COMPS = $(SRC_COMPS) $(SHARED_COMPS) $(LIB_COMPS)
 
 INCDIRS += $(subst ../shared/src/comps/,,$(addprefix build/gen/inc/shared_comps/,$(dir $(SHARED_COMPS))))
 INCDIRS += $(subst ../../framework/comps/,,$(addprefix build/gen/inc/lib_comps/,$(dir $(LIB_COMPS))))

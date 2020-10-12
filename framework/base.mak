@@ -85,7 +85,7 @@ LDFLAGS += -Wl,-Map=build/fw.map,--cref
 LDFLAGS += -Wl,--gc-sections
 
 # LDFLAGS += -specs=nano.specs -u _printf_float -u _scanf_float
-LDFLAGS += -lc -specs=nosys.specs
+# LDFLAGS += -lc -specs=nosys.specs
 LDFLAGS += -T$(LDSCRIPT)
 
 #============================================================================

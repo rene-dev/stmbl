@@ -3,10 +3,6 @@ ifneq (,$(findstring STM32F3, $(CPU)))
     # lib path
     LIBPATH = $(FRAMEWORK_DIR)/libs/st_hal_f3
     $(info using LIB: $(LIBPATH))
-    # cpu define
-    ifneq (,$(findstring STM32F303, $(CPU)))
-      CPUDEF = STM32F303xC
-    endif
 
     # check cpu define
     ifeq (, $(CPUDEF))
