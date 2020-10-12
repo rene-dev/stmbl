@@ -232,22 +232,22 @@ showsize: build
 
 # Flash the device
 #
-btburn: $(FRAMEWORK_DIR)/tools/bootloader.py build showsize build/fw.dfu
+btburn: $(FRAMEWORK_DIR)/tools/bootloader.py build showsize build/fw.bin
 	@$(PYTHON) $(FRAMEWORK_DIR)/tools/bootloader.py
 	@sleep 1
-	@$(DFU-UTIL) -d 0483:df11 -a 0 -s $(ADDRESS):leave -D build/fw.dfu
+	@$(DFU-UTIL) -d 0483:df11 -a 0 -s $(ADDRESS):leave -D build/fw.bin
 
 flash: build/fw.bin
 	@$(ST-FLASH) --reset write build/fw.bin $(ADDRESS)
 
 # Create a DFU file from bin file
-%.dfu: %.bin
+%.dfu: fw.bin
 	@cp $< $@
 	@$(DFU-SUFFIX) -v 0483 -p df11 -a $@
 
 # TODO: consolidate these two rules into a wildcard version?
 build/fw.dfu: $(FRAMEWORK_DIR)/tools/dfu-convert.py build/fw.bin
-	$(PYTHON) $(FRAMEWORK_DIR)/tools/dfu-convert.py -b 0x08000000:f4/build/f4.bin build/f4.dfu
+	$(PYTHON) $(FRAMEWORK_DIR)/tools/dfu-convert.py -b 0x08000000:build/fw.bin build/fw.dfu
 
 include ../../framework/toolchain.mak
 -include ../../framework/toolchain-user.mak

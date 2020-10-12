@@ -20,9 +20,9 @@ ifneq (,$(findstring CMSIS, $(LIBS)))
 
   ifneq (,$(findstring STM32F4, $(CPU))) 
     # cpu define
-    ifneq (,$(findstring STM32F40, $(CPU)))
-      CPUDEF = STM32F405xG
-    endif
+    #ifneq (,$(findstring STM32F40, $(CPU)))
+    #  CPUDEF = STM32F405xG
+    #endif
 
     # peripheral include
     INCDIRS := $(INCDIRS) $(LIBPATH)/Device/ST/STM32F4xx/Include
