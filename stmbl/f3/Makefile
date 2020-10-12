@@ -41,6 +41,7 @@ SRC_COMPS += $(wildcard src/comps/*.c)
 SHARED_COMPS += $(wildcard ../shared/src/comps/*.c)
 LIB_COMPS += $(wildcard ../../framework/comps/curpid/*.c)
 LIB_COMPS += $(wildcard ../../framework/comps/misc/*.c)
+LIB_COMPS += ../../framework/comps/term.c
 
 #CONFIG_TEMPLATES += $(wildcard conf/template/*.txt)
 
