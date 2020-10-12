@@ -255,7 +255,7 @@ static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   }
 }
 
-#include "../shared/hw_math.h"
+#include "hw_math.h"
 #define ARES 4096.0
 #define AREF 3.3
 

@@ -1,4 +1,4 @@
-#include "comps/dmm_comp.h"
+#include "dmm_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"

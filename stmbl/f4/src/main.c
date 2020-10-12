@@ -139,10 +139,10 @@ void about(char *ptr) {
       bt_version_info->minor,
       bt_version_info->patch,
       bt_version_info->git_version);
-  extern uint8_t _binary_obj_hvf3_hvf3_bin_start;
-  extern uint8_t _binary_obj_hvf3_hvf3_bin_size;
-  extern uint8_t _binary_obj_hvf3_hvf3_bin_end;
-  volatile const version_info_t *hv_version_info = (void *)(&_binary_obj_hvf3_hvf3_bin_start + 0x188);
+  extern uint8_t _binary____f3_build_fw_bin_start;
+  extern uint8_t _binary____f3_build_fw_bin_size;
+  extern uint8_t _binary____f3_build_fw_bin_end;
+  volatile const version_info_t *hv_version_info = (void *)(&_binary____f3_build_fw_bin_start + 0x188);
   printf("######## HV info ########\n");
   printf(
       "%s v%i.%i.%i %s\n",
@@ -156,7 +156,7 @@ void about(char *ptr) {
   // printf("by %s on %s\n",bt_version_info->build_user, bt_version_info->build_host);
   //
 
-  printf("hv start:%p ,size:%p ,end%p \n", &_binary_obj_hvf3_hvf3_bin_start, &_binary_obj_hvf3_hvf3_bin_size, &_binary_obj_hvf3_hvf3_bin_end);
+  printf("hv start:%p ,size:%p ,end%p \n", &_binary____f3_build_fw_bin_start, &_binary____f3_build_fw_bin_size, &_binary____f3_build_fw_bin_end);
 }
 
 COMMAND("about", about, "show system infos");

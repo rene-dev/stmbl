@@ -96,9 +96,9 @@ flash_state_t flash_state;
 
 uint32_t send_to_bootloader;
 
-extern uint8_t _binary_obj_hvf3_hvf3_bin_start;
-extern uint8_t _binary_obj_hvf3_hvf3_bin_size;
-extern uint8_t _binary_obj_hvf3_hvf3_bin_end;
+extern uint8_t _binary____f3_build_fw_bin_start;
+extern uint8_t _binary____f3_build_fw_bin_size;
+extern uint8_t _binary____f3_build_fw_bin_end;
 
 struct ringbuf hv_rx_buf = RINGBUF(128);
 struct ringbuf hv_tx_buf = RINGBUF(128);
@@ -300,11 +300,11 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
           case SEND_APP:
             if(ctx->from_hv.packet_from_hv.header.slave_addr == 255 && ctx->from_hv.packet_from_hv.header.len == (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4) {
               // from f3 bootloader
-              if(ctx->from_hv.packet_from_hv_bootloader.state == BOOTLOADER_STATE_OK && ctx->from_hv.packet_from_hv_bootloader.cmd == BOOTLOADER_OPCODE_WRITE && ctx->from_hv.packet_from_hv_bootloader.addr == 0x08004000 + ctx->addr * 4 && ctx->from_hv.packet_from_hv_bootloader.value == ((uint32_t *)&(_binary_obj_hvf3_hvf3_bin_start))[ctx->addr]) {
+              if(ctx->from_hv.packet_from_hv_bootloader.state == BOOTLOADER_STATE_OK && ctx->from_hv.packet_from_hv_bootloader.cmd == BOOTLOADER_OPCODE_WRITE && ctx->from_hv.packet_from_hv_bootloader.addr == 0x08004000 + ctx->addr * 4 && ctx->from_hv.packet_from_hv_bootloader.value == ((uint32_t *)&(_binary____f3_build_fw_bin_start))[ctx->addr]) {
                 ctx->timeout = 0;
                 ctx->addr++;
               }
-              if(ctx->addr > ((uint32_t) & (_binary_obj_hvf3_hvf3_bin_size)) / 4) {
+              if(ctx->addr > ((uint32_t) & (_binary____f3_build_fw_bin_size)) / 4) {
                 flash_state = CRC_CHECK;
                 // flash_state = SEND_TO_APP;
               }
@@ -446,7 +446,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       ctx->to_hv.packet_to_hv.header.flags.counter++;
       ctx->to_hv.packet_to_hv.header.len       = (sizeof(packet_bootloader_t) - sizeof(stmbl_talk_header_t)) / 4;
       ctx->to_hv.packet_to_hv_bootloader.addr  = 0x08004000 + ctx->addr * 4;
-      ctx->to_hv.packet_to_hv_bootloader.value = ((uint32_t *)&_binary_obj_hvf3_hvf3_bin_start)[ctx->addr];
+      ctx->to_hv.packet_to_hv_bootloader.value = ((uint32_t *)&_binary____f3_build_fw_bin_start)[ctx->addr];
       ctx->to_hv.packet_to_hv_bootloader.cmd   = BOOTLOADER_OPCODE_WRITE;
 
       tx_size = sizeof(packet_bootloader_t);
@@ -539,7 +539,7 @@ static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   static uint32_t last_addr             = 0;
 
   if(ctx->addr >= last_addr + 1024) {
-    printf("hv_update: status: %i%%\n", (int)(100.0 * ctx->addr * 4. / (float)((uint32_t) & (_binary_obj_hvf3_hvf3_bin_size))));
+    printf("hv_update: status: %i%%\n", (int)(100.0 * ctx->addr * 4. / (float)((uint32_t) & (_binary____f3_build_fw_bin_size))));
     last_addr = ctx->addr;
   }
 

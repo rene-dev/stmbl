@@ -3,6 +3,8 @@ ifneq (,$(findstring STM32F4, $(CPU)))
     # lib path
     LIBPATH = $(FRAMEWORK_DIR)/libs/st_spl_f4
     $(info using LIB: $(LIBPATH))
+    
+    CPPFLAGS += -DUSE_STDPERIPH_DRIVER
 
     # cpu define
     ifneq (,$(findstring STM32F40, $(CPU)))
@@ -15,7 +17,7 @@ ifneq (,$(findstring STM32F4, $(CPU)))
     endif
 
     # peripheral include
-    INCDIRS := $(INCDIRS) $(LIBPATH)/inc
+    INCDIRS := $(INCDIRS) $(LIBPATH)/inc/
     LIBSOURCES := $(LIBSOURCES) $(LIBPATH)/src/misc.c
 
     ifneq (,$(findstring UART, $(PERIPH)))
@@ -61,10 +63,6 @@ ifneq (,$(findstring STM32F4, $(CPU)))
     ifneq (,$(findstring SPI, $(PERIPH)))
       LIBSOURCES := $(LIBSOURCES) $(LIBPATH)/src/stm32f4xx_spi.c
     endif
-
-    $(info libsrc: $(LIBSOURCES))
-    $(info inc: $(INCDIRS))
-
   endif
 endif
 

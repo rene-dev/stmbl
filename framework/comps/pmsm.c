@@ -1,4 +1,4 @@
-#include "comps/pmsm_comp.h"
+#include "pmsm_comp.h"
 /*
 * This file is part of the stmbl project.
 *
