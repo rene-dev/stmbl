@@ -5,12 +5,7 @@ ifneq (,$(findstring STM32F4, $(CPU)))
     $(info using LIB: $(LIBPATH))
     
     CPPFLAGS += -DUSE_STDPERIPH_DRIVER
-
-    # check cpu define
-    ifeq (, $(CPUDEF))
-      $(error missing CPU definition for $(CPU))
-    endif
-
+    
     # peripheral include
     INCDIRS := $(INCDIRS) $(LIBPATH)/inc/
     LIBSOURCES := $(LIBSOURCES) $(LIBPATH)/src/misc.c

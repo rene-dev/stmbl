@@ -4,11 +4,6 @@ ifneq (,$(findstring STM32F3, $(CPU)))
     LIBPATH = $(FRAMEWORK_DIR)/libs/st_hal_f3
     $(info using LIB: $(LIBPATH))
 
-    # check cpu define
-    ifeq (, $(CPUDEF))
-      $(error missing CPU definition for $(CPU))
-    endif
-
     # peripheral include
     INCDIRS := $(INCDIRS) $(LIBPATH)/inc
     LIBSOURCES := $(LIBSOURCES) $(LIBPATH)/src/stm32f3xx_hal.c
