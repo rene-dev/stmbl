@@ -4,9 +4,8 @@
 CONF_SIZE = 16
 CPU = STM32F405VG
 XTAL_FREQ = 8000000
-ADDRESS = 0x08010000
 
-HWVERSION = v4
+#HWVERSION = v4
 
 CFLAGS += -DHAL_MAX_PINS=1024
 CFLAGS += -DHAL_MAX_COMPS=32
@@ -90,7 +89,7 @@ OBJECTS += ../f3/build/fw.o
 include ../../framework/base.mak
 
 ../f3/build/fw.o: force_look
-	$(MAKE) -C ../f3/
+	$(MAKE) -C ../ f3
 	$(OBJCOPY) --rename-section .data=.hv_firmware -I binary ../f3/build/fw.bin -B arm -O elf32-littlearm ../f3/build/fw.o
 
 build/fw_all.bin: f4_boot/build/fw.bin conf/festo.txt build/fw.bin

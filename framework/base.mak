@@ -108,10 +108,6 @@ CXXFLAGS += $(CPUFLAGS)
 ASFLAGS  += $(CPUFLAGS)
 LDFLAGS  += $(CPUFLAGS)
 
-ifndef ADDRESS
-	ADDRESS = 0x08000000
-endif
-
 # Default target
 #
 all: generate build showsize

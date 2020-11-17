@@ -2,79 +2,82 @@
 
 HWVERSION = v4
 
+F1_ADDRESS = 0x08000000
+F3_ADDRESS = 0x08004000
+F4_ADDRESS = 0x08010000
 
 #build f4 firmware
 f4: force_look
-	$(MAKE) -C f4/ 
+	$(MAKE) -C f4/ ADDRESS=$(F4_ADDRESS)
 
 #build f4 bootloader
-f4_boot:
-	$(MAKE) -C f4_boot/ 
+f4_boot: force_look
+	$(MAKE) -C f4_boot/ APP_ADDRESS=$(F4_ADDRESS)
 
 #flash f4 bootloader using stlink
-f4_boot_flash:
-	$(MAKE) -C bootloader/ flash
+f4_boot_flash: force_look
+	$(MAKE) -C f4_boot/ APP_ADDRESS=$(F4_ADDRESS) flash
 
 #flash f4 bootloader using df-util
-f4_boot_btburn:
-	$(MAKE) -C bootloader/ btburn
+f4_boot_btburn: force_look
+	$(MAKE) -C f4_boot/ APP_ADDRESS=$(F4_ADDRESS) btburn
 
 #flash f4 firmware using stlink
-f4_flash:
-	$(MAKE) -C f4/ flash
+f4_flash: force_look
+	$(MAKE) -C f4/ ADDRESS=$(F4_ADDRESS) flash
 
 #flash f4 firmware using df-util
-f4_btburn:
-	$(MAKE) -C f4/ btburn
+f4_btburn: force_look
+	$(MAKE) -C f4/ ADDRESS=$(F4_ADDRESS) btburn
 
 #flash f4 firmware + bootloader using df-util
-f4_all_btburn:
-	$(MAKE) -C f4/ all_btburn
+f4_all_btburn: force_look
+	$(MAKE) -C f4/ ADDRESS=$(F4_ADDRESS) all_btburn
 
-f4_all_flash:
-	$(MAKE) -C f4/ all_flash
+f4_all_flash: force_look
+	$(MAKE) -C f4/ ADDRESS=$(F4_ADDRESS) all_flash
 
 #build f3 firmware
-f3:
-	$(MAKE) -C f3/ 
+f3: force_look
+	$(MAKE) -C f3/ ADDRESS=$(F3_ADDRESS)
 
 #build f3 bootloader
-f3_boot:
-	$(MAKE) -C f3_boot/ 
+f3_boot: force_look
+	$(MAKE) -C f3_boot/ APP_ADDRESS=$(F3_ADDRESS)
 
 #flash f3 bootloader using stlink
-f3_boot_flash:
-	$(MAKE) -C f3_boot/ flash
+f3_boot_flash: force_look
+	$(MAKE) -C f3_boot/ APP_ADDRESS=$(F3_ADDRESS) flash 
 
 #flash f3 bootloader using df-util
-f3_boot_btburn:
-	$(MAKE) -C f3_boot/ btburn
+f3_boot_btburn: force_look
+	$(MAKE) -C f3_boot/ APP_ADDRESS=$(F3_ADDRESS) btburn
 
 #flash f3 firmware using stlink
-f3_flash:
-	$(MAKE) -C f3/ flash
+f3_flash: force_look
+	$(MAKE) -C f3/ ADDRESS=$(F3_ADDRESS) flash
 
 #flash f3 firmware using df-util
-f3_btburn:
-	$(MAKE) -C f3/ btburn
+f3_btburn: force_look
+	$(MAKE) -C f3/ ADDRESS=$(F3_ADDRESS) btburn
 
-f3_all_btburn:
-	$(MAKE) -C f3/ all_btburn
+f3_all_btburn: force_look
+	$(MAKE) -C f3/ ADDRESS=$(F3_ADDRESS) all_btburn
 
-f3_all_flash:
-	$(MAKE) -C f3/ all_flash
+f3_all_flash: force_look
+	$(MAKE) -C f3/ ADDRESS=$(F3_ADDRESS) all_flash
 
 #build f1 firmware
 f1: force_look
-	$(MAKE) -C f1/ 
+	$(MAKE) -C f1/  ADDRESS=$(F1_ADDRESS)
 
 #flash f1 firmware for V3 hardware using stlink
-f1_flash:
-	$(MAKE) -C f1/ flash
+f1_flash: force_look
+	$(MAKE) -C f1/  ADDRESS=$(F1_ADDRESS) flash
 
-all:
-	$(MAKE) -C f4/
-	$(MAKE) -C f3/
+all: f4
+	#$(MAKE) -C f4/ ADDRESS=$(F4_ADDRESS)
+	#$(MAKE) -C f3/ ADDRESS=$(F3_ADDRESS)
 	#$(MAKE) -C f1/
 	#$(MAKE) -C f4_boot/
 	#$(MAKE) -C f3_boot/
@@ -83,7 +86,7 @@ all:
 
 # Target: clean project
 #
-clean:
+clean: force_look
 	@echo Cleaning project:
 	rm -rf build
 	#@$(MAKE) -C f4_boot/ clean
