@@ -1,6 +1,11 @@
 #!/usr/bin/env python
-import serial.tools.list_ports
 import time
+import sys
+try:
+  import serial.tools.list_ports
+except ImportError:
+  print("missing pyserial, run sudo apt install python3-serial")
+  sys.exit(-1)
 
 for i in range(0, 20):
   done = False
