@@ -1,4 +1,0 @@
-link enc_fb0
-link uvw_fb0
-uvw0.mode = 1
-enc_fb0.en_index = 0

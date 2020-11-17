@@ -1,8 +1,0 @@
-term0.wave0 = reslimit0.pos_out
-term0.wave1 = fb_switch0.plot_fb_pos
-term0.wave2 = vel0.vel
-term0.wave3 = vel1.vel
-term0.gain0 = 20
-term0.gain1 = 20
-term0.gain2 = 1
-term0.gain3 = 1

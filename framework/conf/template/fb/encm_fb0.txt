@@ -1,9 +1,0 @@
-load encm
-encm0.rt_prio = 2
-fb_switch0.mot_pos = encm0.pos
-fb_switch0.mot_abs_pos = encm0.pos
-fb_switch0.mot_polecount = conf0.mot_fb_polecount
-fb_switch0.mot_state = encm0.state
-fault0.mot_fb_error = encm0.error
-io0.fb0y = encm0.error
-io0.fb0g = 1

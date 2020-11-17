@@ -1,9 +1,0 @@
-load smartabs
-smartabs0.rt_prio = 0.8
-fb_switch0.mot_pos = smartabs0.pos
-fb_switch0.mot_abs_pos = smartabs0.pos
-fb_switch0.mot_polecount = conf0.mot_fb_polecount
-fb_switch0.mot_state = smartabs0.state
-fault0.mot_fb_error = smartabs0.error
-io0.fb0y = smartabs0.error
-io0.fb0g = 1

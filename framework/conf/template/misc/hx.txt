@@ -1,3 +1,0 @@
-load hx
-hx0.rt_prio = 1.5
-hx0.gain = 100

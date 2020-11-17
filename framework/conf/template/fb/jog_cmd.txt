@@ -1,7 +1,0 @@
-load jog
-load stp
-jog0.rt_prio = 2
-stp0.rt_prio = 2.1
-stp0.jog = jog0.jog
-rev0.in = stp0.mpos
-fault0.cmd_error = 0
