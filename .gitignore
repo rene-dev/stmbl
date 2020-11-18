@@ -21,6 +21,7 @@
 .vscode/*
 
 tools/pycrc*
+tools/__pycache__/
 
 sim/sim
 sim/plot
