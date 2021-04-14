@@ -326,7 +326,7 @@ F 7 "" H 3100 4350 30  0001 C CNN "Voltage"
 F 8 "" H 3100 4350 30  0001 C CNN "Source"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
-F 11 " C22787" H 3100 4350 50  0001 C CNN "LCSC"
+F 11 "C22787" H 3100 4350 50  0001 C CNN "LCSC"
 	1    3100 4350
 	1    0    0    -1  
 $EndComp

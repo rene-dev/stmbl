@@ -93,7 +93,7 @@ F 7 "" H 7600 1250 30  0001 C CNN "Source"
 F 8 "1%" H 7600 1250 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
-F 11 " C22787" H 7600 1250 50  0001 C CNN "LCSC"
+F 11 "C22787" H 7600 1250 50  0001 C CNN "LCSC"
 	1    7600 1250
 	1    0    0    -1  
 $EndComp
@@ -174,7 +174,7 @@ F 7 "" H 7600 2650 30  0001 C CNN "Source"
 F 8 "1%" H 7600 2650 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
-F 11 " C22787" H 7600 2650 50  0001 C CNN "LCSC"
+F 11 "C22787" H 7600 2650 50  0001 C CNN "LCSC"
 	1    7600 2650
 	1    0    0    -1  
 $EndComp
@@ -255,7 +255,7 @@ F 7 "" H 7600 4050 30  0001 C CNN "Source"
 F 8 "1%" H 7600 4050 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
-F 11 " C22787" H 7600 4050 50  0001 C CNN "LCSC"
+F 11 "C22787" H 7600 4050 50  0001 C CNN "LCSC"
 	1    7600 4050
 	1    0    0    -1  
 $EndComp
@@ -736,7 +736,7 @@ F 7 "" H 2500 5900 30  0001 C CNN "Source"
 F 8 "1%" H 2500 5900 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
-F 11 " C22787" H 2500 5900 50  0001 C CNN "LCSC"
+F 11 "C22787" H 2500 5900 50  0001 C CNN "LCSC"
 	1    2500 5900
 	1    0    0    -1  
 $EndComp
@@ -757,7 +757,7 @@ F 7 "" H 2500 6800 30  0001 C CNN "Source"
 F 8 "1%" H 2500 6800 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
-F 11 " C22787" H 2500 6800 50  0001 C CNN "LCSC"
+F 11 "C22787" H 2500 6800 50  0001 C CNN "LCSC"
 	1    2500 6800
 	1    0    0    -1  
 $EndComp
@@ -1397,7 +1397,7 @@ F 7 "" H 2500 5500 30  0001 C CNN "Source"
 F 8 "1%" H 2500 5500 30  0001 C CNN "Tolerance"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
-F 11 " C22787" H 2500 5500 50  0001 C CNN "LCSC"
+F 11 "C22787" H 2500 5500 50  0001 C CNN "LCSC"
 	1    2500 5500
 	1    0    0    -1  
 $EndComp
