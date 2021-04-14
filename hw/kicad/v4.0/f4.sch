@@ -1,5 +1,4 @@
 EESchema Schematic File Version 4
-LIBS:stmbl_4.0-cache
 EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
@@ -907,7 +906,7 @@ F 7 "" H 650 6650 30  0001 C CNN "Voltage"
 F 8 "" H 650 6650 30  0001 C CNN "Source"
 F 9 "" H 0   0   50  0001 C CNN "Description"
 F 10 "" H 0   0   50  0001 C CNN "Manufacturer"
-F 11 "C22765" H 650 6650 50  0001 C CNN "LCSC"
+F 11 " C22787" H 650 6650 50  0001 C CNN "LCSC"
 	1    650  6650
 	1    0    0    -1  
 $EndComp

@@ -1,5 +1,4 @@
 EESchema Schematic File Version 4
-LIBS:stmbl_4.0-cache
 EELAYER 30 0
 EELAYER END
 $Descr User 19685 7874
