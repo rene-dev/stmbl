@@ -151,7 +151,7 @@ void hal_term_print_state() {
       printf("HAL state:  NAN_ERROR\n");
       break;
     default:
-      printf("HAL state:  unkonwn error\n");
+      printf("HAL state:  unknown error\n");
   }
 }
 
