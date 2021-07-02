@@ -250,6 +250,10 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
               PIN(iq_fb)    = ctx->from_hv.packet_from_hv.iq_fb;
               PIN(ud_fb)    = ctx->from_hv.packet_from_hv.ud_fb;
               PIN(uq_fb)    = ctx->from_hv.packet_from_hv.uq_fb;
+              if(PIN(rev) > 0.0) {
+                PIN(uq_fb) *= -1.0;
+                PIN(iq_fb) *= -1.0;
+              }
               PIN(fault)   = ctx->from_hv.packet_from_hv.fault;
               PIN(abs_cur) = sqrtf(PIN(id_fb) * PIN(id_fb) + PIN(iq_fb) * PIN(iq_fb));
               PIN(abs_volt) = sqrtf(PIN(ud_fb) * PIN(ud_fb) + PIN(uq_fb) * PIN(uq_fb));
