@@ -120,6 +120,9 @@ SHARED_COMPS += shared/comps/fmove.c
 SHARED_COMPS += shared/comps/home.c
 SHARED_COMPS += shared/comps/en.c
 SHARED_COMPS += shared/comps/th.c
+#SHARED_COMPS += shared/comps/asm.c
+SHARED_COMPS += shared/comps/id.c
+SHARED_COMPS += shared/comps/motsim.c
 
 COMPS = $(SRC_COMPS) $(SHARED_COMPS)
 SOURCES += $(COMPS)
