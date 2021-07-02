@@ -160,7 +160,12 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       case 65:
         cmd = 0x32; // request singel turn data
         expected_bytes = 9;
-      break;        
+      break;
+      
+      default:
+        cmd = 0x32;
+        expected_bytes = 9;
+      break;
     }
   }
 
