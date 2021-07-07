@@ -794,7 +794,7 @@
       (net 50 /ctrl/RX))
     (pad 1 thru_hole roundrect (at 0 0 270) (size 2.032 1.7272) (drill 1.016) (layers *.Cu *.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model ${KISYS3DMOD}/Pin_Headers.3dshapes/Pin_Header_Angled_1x04_Pitch2.54mm.step
+    (model Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x04_P2.54mm_Horizontal.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -829,7 +829,7 @@
       (net 2 GND))
     (pad 1 thru_hole roundrect (at 0 0 180) (size 1.3 1.3) (drill 0.8) (layers *.Cu *.Mask B.SilkS) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model ${KISYS3DMOD}/Capacitors_THT.3dshapes/CP_Radial_D5.0mm_P2.00mm.step
+    (model Capacitor_THT.3dshapes/CP_Radial_D5.0mm_P2.00mm.wrl
       (offset (xyz 0 -2.5 2.5))
       (scale (xyz 1 1 1.8))
       (rotate (xyz -90 0 0))
@@ -854,7 +854,7 @@
       (net 12 VPP))
     (pad 2 thru_hole circle (at 5 0 135) (size 3.3 3.3) (drill 2) (layers *.Cu *.Mask B.SilkS)
       (net 4 GNDPWR) (zone_connect 2))
-    (model ${KISYS3DMOD}/Capacitors_THT.3dshapes/CP_Radial_D26.0mm_P10.00mm_SnapIn.step
+    (model Capacitor_THT.3dshapes/CP_Radial_D26.0mm_P10.00mm_SnapIn.step
       (offset (xyz -5 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -879,7 +879,7 @@
       (net 12 VPP))
     (pad 2 thru_hole circle (at 5 0 45) (size 3.3 3.3) (drill 2) (layers *.Cu *.Mask B.SilkS)
       (net 4 GNDPWR) (zone_connect 2))
-    (model ${KISYS3DMOD}/Capacitors_THT.3dshapes/CP_Radial_D26.0mm_P10.00mm_SnapIn.step
+    (model Capacitor_THT.3dshapes/CP_Radial_D26.0mm_P10.00mm_SnapIn.step
       (offset (xyz -5 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1584,7 +1584,7 @@
       (net 66 /hv/driver/CUH) (solder_mask_margin 0.1) (zone_connect 2))
     (pad 2 smd roundrect (at 2.75 0 270) (size 1.5 3.2) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
-    (model Resistors_SMD.3dshapes/R_2512.wrl
+    (model Resistor_SMD.3dshapes/R_2512_6332Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1617,7 +1617,7 @@
       (net 84 /hv/driver/CWH) (solder_mask_margin 0.1) (zone_connect 2))
     (pad 2 smd roundrect (at 2.75 0 270) (size 1.5 3.2) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
-    (model Resistors_SMD.3dshapes/R_2512.wrl
+    (model Resistor_SMD.3dshapes/R_2512_6332Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1650,7 +1650,7 @@
       (net 83 /hv/driver/CVH) (solder_mask_margin 0.1) (zone_connect 2))
     (pad 2 smd roundrect (at 2.75 0 270) (size 1.5 3.2) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
-    (model Resistors_SMD.3dshapes/R_2512.wrl
+    (model Resistor_SMD.3dshapes/R_2512_6332Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1685,7 +1685,7 @@
       (net 7 +5V))
     (pad 1 smd roundrect (at -3.25 -2.25 180) (size 1 2) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND) (zone_connect 2))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-223.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-223.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1919,7 +1919,7 @@
       (net 2 GND))
     (pad 100 smd roundrect (at -6 -7.9 90) (size 1.5 0.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 10 +3V3))
-    (model Housings_QFP.3dshapes/LQFP-100_14x14mm_Pitch0.5mm.wrl
+    (model Package_QFP.3dshapes/LQFP-100_14x14mm_P0.5mm.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1957,7 +1957,7 @@
       (net 195 /hv/f3/IO_TX))
     (pad 5 smd roundrect (at 1.2 0 270) (size 1 0.475) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 3 +3.3VP))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23-6.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23-6.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1995,7 +1995,7 @@
       (net 143 /ctrl/FB1/A78))
     (pad 5 smd roundrect (at 1.2 0 180) (size 1 0.475) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 10 +3V3))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23-6.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23-6.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2033,7 +2033,7 @@
       (net 105 /ctrl/f4/CMD_45))
     (pad 5 smd roundrect (at 1.2 0 90) (size 1 0.475) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 7 +5V))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23-6.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23-6.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2070,7 +2070,7 @@
       (net 148 /hv/f3/NRST))
     (pad 5 smd roundrect (at 1.2 0 270) (size 1 0.475) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 3 +3.3VP))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23-6.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23-6.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2108,7 +2108,7 @@
       (net 168 /ctrl/IO/CAN_TX))
     (pad 5 smd roundrect (at 1.2 0 90) (size 1 0.475) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 7 +5V))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23-6.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23-6.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2144,7 +2144,7 @@
     (pad 6 smd roundrect (at 1.2 -0.95 270) (size 1 0.475) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25))
     (pad 5 smd roundrect (at 1.2 0 270) (size 1 0.475) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 10 +3V3))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23-6.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23-6.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2181,7 +2181,7 @@
       (net 119 "Net-(C15-Pad1)"))
     (pad 5 smd roundrect (at 1.2 0 90) (size 1 0.475) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (zone_connect 2))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23-6.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23-6.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2218,7 +2218,7 @@
       (net 124 "Net-(C105-Pad1)"))
     (pad 5 smd roundrect (at 1.2 0) (size 1 0.475) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23-6.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23-6.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2255,7 +2255,7 @@
       (net 126 "Net-(C106-Pad1)"))
     (pad 5 smd roundrect (at 1.2 0) (size 1 0.475) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23-6.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23-6.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2293,7 +2293,7 @@
       (net 139 "Net-(C121-Pad1)"))
     (pad 5 smd roundrect (at 1.2 0 180) (size 1 0.475) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23-6.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23-6.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2626,7 +2626,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -1.00076 -0.95) (size 0.8001 0.8001) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 53 "Net-(Q3-Pad1)"))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2660,7 +2660,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -1.00076 -0.95) (size 0.8001 0.8001) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 51 "Net-(Q1-Pad1)"))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2694,7 +2694,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -1.00076 -0.95) (size 0.8001 0.8001) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 52 "Net-(Q2-Pad1)"))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -2728,7 +2728,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -1.00076 -0.95 180) (size 0.8001 0.8001) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 54 "Net-(Q4-Pad1)"))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3819,7 +3819,7 @@
       (net 31 /hv/back-emf/U))
     (pad 2 smd roundrect (at 1.5 0 270) (size 1 1.6) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 56 "Net-(R27-Pad2)"))
-    (model Resistors_SMD.3dshapes/R_1206.wrl
+    (model Resistor_SMD.3dshapes/R_1206_3216Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3852,7 +3852,7 @@
       (net 56 "Net-(R27-Pad2)"))
     (pad 2 smd roundrect (at 1.5 0 270) (size 1 1.6) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 8 /hv/f3/A_U))
-    (model Resistors_SMD.3dshapes/R_1206.wrl
+    (model Resistor_SMD.3dshapes/R_1206_3216Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3885,7 +3885,7 @@
       (net 29 /hv/back-emf/V))
     (pad 2 smd roundrect (at 1.5 0 270) (size 1 1.6) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 57 "Net-(R32-Pad2)"))
-    (model Resistors_SMD.3dshapes/R_1206.wrl
+    (model Resistor_SMD.3dshapes/R_1206_3216Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3918,7 +3918,7 @@
       (net 57 "Net-(R32-Pad2)"))
     (pad 2 smd roundrect (at 1.5 0 270) (size 1 1.6) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 11 /hv/f3/A_V))
-    (model Resistors_SMD.3dshapes/R_1206.wrl
+    (model Resistor_SMD.3dshapes/R_1206_3216Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3951,7 +3951,7 @@
       (net 27 /hv/back-emf/W))
     (pad 2 smd roundrect (at 1.5 0 270) (size 1 1.6) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 67 "Net-(R51-Pad2)"))
-    (model Resistors_SMD.3dshapes/R_1206.wrl
+    (model Resistor_SMD.3dshapes/R_1206_3216Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -3984,7 +3984,7 @@
       (net 67 "Net-(R51-Pad2)"))
     (pad 2 smd roundrect (at 1.5 0 270) (size 1 1.6) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 13 /hv/f3/A_W))
-    (model Resistors_SMD.3dshapes/R_1206.wrl
+    (model Resistor_SMD.3dshapes/R_1206_3216Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4017,7 +4017,7 @@
       (net 12 VPP))
     (pad 2 smd roundrect (at 1.5 0 90) (size 1 1.6) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 82 "Net-(R77-Pad2)"))
-    (model Resistors_SMD.3dshapes/R_1206.wrl
+    (model Resistor_SMD.3dshapes/R_1206_3216Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4050,7 +4050,7 @@
       (net 82 "Net-(R77-Pad2)"))
     (pad 2 smd roundrect (at 1.5 0 90) (size 1 1.6) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 25 /hv/f3/A_HV))
-    (model Resistors_SMD.3dshapes/R_1206.wrl
+    (model Resistor_SMD.3dshapes/R_1206_3216Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4281,7 +4281,7 @@
       (net 3 +3.3VP) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0 90) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4314,7 +4314,7 @@
       (net 3 +3.3VP) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0 90) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4347,7 +4347,7 @@
       (net 225 "Net-(C51-Pad1)") (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0 180) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 224 "Net-(C41-Pad2)") (solder_mask_margin 0.1))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4380,7 +4380,7 @@
       (net 39 +15V) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4413,7 +4413,7 @@
       (net 39 +15V) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0 90) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4446,7 +4446,7 @@
       (net 7 +5V) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND) (solder_mask_margin 0.1))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4479,7 +4479,7 @@
       (net 128 +12V) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND) (solder_mask_margin 0.1))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4512,7 +4512,7 @@
       (net 7 +5V) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND) (solder_mask_margin 0.1))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4545,7 +4545,7 @@
       (net 136 +5F) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0 180) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND) (solder_mask_margin 0.1))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4578,7 +4578,7 @@
       (net 136 +5F) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0 180) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND) (solder_mask_margin 0.1))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4611,7 +4611,7 @@
       (net 10 +3V3) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0 90) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND) (solder_mask_margin 0.1))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4644,7 +4644,7 @@
       (net 128 +12V) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND) (solder_mask_margin 0.1))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4677,7 +4677,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0 90) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 39 +15V) (solder_mask_margin 0.1))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4710,7 +4710,7 @@
       (net 39 +15V) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4743,7 +4743,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 13 /hv/f3/A_W))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4776,7 +4776,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 120 "Net-(C53-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4809,7 +4809,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 214 "Net-(C139-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4842,7 +4842,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 214 "Net-(C139-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4875,7 +4875,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 214 "Net-(C139-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4908,7 +4908,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 214 "Net-(C139-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4941,7 +4941,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 215 "Net-(C101-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -4974,7 +4974,7 @@
       (net 151 /hv/f3/A_T_MOT))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5007,7 +5007,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5040,7 +5040,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 128 +12V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5073,7 +5073,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 7 +5V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5106,7 +5106,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 136 +5F))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5139,7 +5139,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5172,7 +5172,7 @@
       (net 4 GNDPWR) (zone_connect 2))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 3 +3.3VP))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5205,7 +5205,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 10 +3V3))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5238,7 +5238,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 7 +5V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5271,7 +5271,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5304,7 +5304,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5337,7 +5337,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5370,7 +5370,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5403,7 +5403,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 7 +5V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5436,7 +5436,7 @@
       (net 39 +15V))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5469,7 +5469,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 39 +15V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5502,7 +5502,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 3 +3.3VP))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5535,7 +5535,7 @@
       (net 151 /hv/f3/A_T_MOT))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5568,7 +5568,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 136 +5F))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5601,7 +5601,7 @@
       (net 140 "Net-(C121-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 139 "Net-(C121-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5634,7 +5634,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5667,7 +5667,7 @@
       (net 121 "Net-(C119-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5700,7 +5700,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 136 +5F))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5733,7 +5733,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 128 +12V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5766,7 +5766,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 7 +5V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5799,7 +5799,7 @@
       (net 127 "Net-(C106-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 126 "Net-(C106-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5832,7 +5832,7 @@
       (net 125 "Net-(C105-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 124 "Net-(C105-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5865,7 +5865,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5898,7 +5898,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5931,7 +5931,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5964,7 +5964,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 215 "Net-(C101-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5997,7 +5997,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6030,7 +6030,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 10 +3V3))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6063,7 +6063,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 179 "Net-(C98-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6096,7 +6096,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 7 +5V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6129,7 +6129,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 41 "Net-(C90-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6162,7 +6162,7 @@
       (net 10 +3V3))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6195,7 +6195,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 40 "Net-(C88-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6228,7 +6228,7 @@
       (net 10 +3V3))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6261,7 +6261,7 @@
       (net 10 +3V3))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6294,7 +6294,7 @@
       (net 10 +3V3))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6327,7 +6327,7 @@
       (net 10 +3V3))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6360,7 +6360,7 @@
       (net 226 "Net-(C141-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6393,7 +6393,7 @@
       (net 3 +3.3VP))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6426,7 +6426,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 201 /ctrl/f4/A_5V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6459,7 +6459,7 @@
       (net 10 +3V3))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6492,7 +6492,7 @@
       (net 3 +3.3VP))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6525,7 +6525,7 @@
       (net 3 +3.3VP))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6558,7 +6558,7 @@
       (net 10 +3V3))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6591,7 +6591,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 10 +3V3))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6624,7 +6624,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 7 +5V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6657,7 +6657,7 @@
       (net 121 "Net-(C119-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6690,7 +6690,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 200 /ctrl/f4/A_24V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6723,7 +6723,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 39 +15V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6756,7 +6756,7 @@
       (net 4 GNDPWR) (zone_connect 2))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 3 +3.3VP))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6789,7 +6789,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 145 /ctrl/f4/IO_AIN1))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6822,7 +6822,7 @@
       (net 4 GNDPWR) (zone_connect 2))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 39 +15V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6855,7 +6855,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 38 /hv/cur/A_IW))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6888,7 +6888,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 120 "Net-(C53-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6921,7 +6921,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 120 "Net-(C53-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6954,7 +6954,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 120 "Net-(C53-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -6987,7 +6987,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 33 /hv/cur/A_IV))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7020,7 +7020,7 @@
       (net 32 "Net-(C44-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 31 /hv/back-emf/U))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7053,7 +7053,7 @@
       (net 30 "Net-(C43-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 29 /hv/back-emf/V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7086,7 +7086,7 @@
       (net 28 "Net-(C42-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 27 /hv/back-emf/W))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7119,7 +7119,7 @@
       (net 224 "Net-(C41-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 26 "Net-(C41-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7152,7 +7152,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 25 /hv/f3/A_HV))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7185,7 +7185,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 24 /hv/cur/A_IU))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7218,7 +7218,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 23 "Net-(C32-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7251,7 +7251,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 22 "Net-(C31-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7284,7 +7284,7 @@
       (net 3 +3.3VP))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7317,7 +7317,7 @@
       (net 135 /ctrl/IO/NRST))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7350,7 +7350,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 11 /hv/f3/A_V))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7383,7 +7383,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 10 +3V3))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7416,7 +7416,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 156 GNDD))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7449,7 +7449,7 @@
       (net 10 +3V3))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7482,7 +7482,7 @@
       (net 9 "Net-(C15-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 119 "Net-(C15-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7515,7 +7515,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 8 /hv/f3/A_U))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7548,7 +7548,7 @@
       (net 3 +3.3VP))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7581,7 +7581,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 3 +3.3VP))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7614,7 +7614,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 148 /hv/f3/NRST))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7647,7 +7647,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 6 "Net-(C6-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7680,7 +7680,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 5 "Net-(C5-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7713,7 +7713,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 3 +3.3VP))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7746,7 +7746,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 1 "Net-(C1-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7779,7 +7779,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 143 /ctrl/FB1/A78))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7812,7 +7812,7 @@
       (net 136 +5F))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7845,7 +7845,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 138 "Net-(C117-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7878,7 +7878,7 @@
       (net 213 +5VA))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7911,7 +7911,7 @@
       (net 136 +5F))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7944,7 +7944,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 137 "Net-(C114-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7977,7 +7977,7 @@
       (net 213 +5VA))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8010,7 +8010,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 122 "Net-(C71-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8043,7 +8043,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 123 "Net-(C72-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8076,7 +8076,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 123 "Net-(C72-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8109,7 +8109,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 122 "Net-(C71-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8142,7 +8142,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 123 "Net-(C72-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8175,7 +8175,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 122 "Net-(C71-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8208,7 +8208,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 37 /ctrl/FB1/A35))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8241,7 +8241,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 36 /ctrl/FB0/A35))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8274,7 +8274,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 35 /ctrl/FB0/A12))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8307,7 +8307,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 34 /ctrl/FB1/A12))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8340,7 +8340,7 @@
       (net 149 "Net-(C36-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8373,7 +8373,7 @@
       (net 21 "Net-(C27-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 20 "Net-(C27-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8406,7 +8406,7 @@
       (net 19 "Net-(C26-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 18 "Net-(C26-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8439,7 +8439,7 @@
       (net 17 "Net-(C25-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 16 "Net-(C25-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8472,7 +8472,7 @@
       (net 15 "Net-(C24-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 14 "Net-(C24-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8505,7 +8505,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 178 "Net-(C13-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8538,7 +8538,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 177 "Net-(C12-Pad1)"))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8571,7 +8571,7 @@
       (net 150 "Net-(C37-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8604,7 +8604,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 144 /ctrl/f4/IO_AIN0))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8637,7 +8637,7 @@
       (net 2 GND))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 142 /ctrl/FB0/A78))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8670,7 +8670,7 @@
       (net 4 GNDPWR))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 93 /hv/f3/A_T_HV))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8703,7 +8703,7 @@
       (net 226 "Net-(C141-Pad2)"))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR))
-    (model Capacitors_SMD.3dshapes/C_0603.wrl
+    (model Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8736,7 +8736,7 @@
       (net 60 "Net-(J1-Pad6)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 59 "Net-(J1-Pad3)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8769,7 +8769,7 @@
       (net 136 +5F) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 120 "Net-(C53-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8802,7 +8802,7 @@
       (net 80 "Net-(J3-Pad8)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 79 "Net-(J3-Pad7)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8835,7 +8835,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 216 /hv/driver/itirp) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8868,7 +8868,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 39 +15V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8901,7 +8901,7 @@
       (net 214 "Net-(C139-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8934,7 +8934,7 @@
       (net 215 "Net-(C101-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -8967,7 +8967,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9000,7 +9000,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9033,7 +9033,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9066,7 +9066,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9099,7 +9099,7 @@
       (net 214 "Net-(C139-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9132,7 +9132,7 @@
       (net 23 "Net-(C32-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 205 "Net-(R153-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9165,7 +9165,7 @@
       (net 6 "Net-(C6-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 204 "Net-(R118-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9198,7 +9198,7 @@
       (net 203 "Net-(P11-Pad3)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 198 /hv/f3/USB_DP) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9231,7 +9231,7 @@
       (net 202 "Net-(P11-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 197 /hv/f3/USB_DM) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9264,7 +9264,7 @@
       (net 3 +3.3VP) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 203 "Net-(P11-Pad3)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9297,7 +9297,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 185 "Net-(D24-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9330,7 +9330,7 @@
       (net 172 "Net-(R148-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 177 "Net-(C12-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9363,7 +9363,7 @@
       (net 171 "Net-(R147-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 178 "Net-(C13-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9396,7 +9396,7 @@
       (net 175 "Net-(R146-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 128 +12V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9429,7 +9429,7 @@
       (net 173 "Net-(R145-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 7 +5V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9462,7 +9462,7 @@
       (net 176 "Net-(R133-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 136 +5F) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9495,7 +9495,7 @@
       (net 174 "Net-(R143-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 223 "Net-(R143-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9528,7 +9528,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 166 "Net-(D20-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9561,7 +9561,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 165 "Net-(D19-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9594,7 +9594,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 164 "Net-(D18-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9627,7 +9627,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 163 "Net-(D17-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9660,7 +9660,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 162 "Net-(D16-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9693,7 +9693,7 @@
       (net 47 "Net-(D5-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 161 "Net-(D15-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9726,7 +9726,7 @@
       (net 46 "Net-(D3-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 160 "Net-(D14-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9759,7 +9759,7 @@
       (net 45 "Net-(D2-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 159 "Net-(D4-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9792,7 +9792,7 @@
       (net 39 +15V) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 152 "Net-(P2-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9825,7 +9825,7 @@
       (net 151 /hv/f3/A_T_MOT) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 152 "Net-(P2-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9858,7 +9858,7 @@
       (net 136 +5F) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 138 "Net-(C117-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9891,7 +9891,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 143 /ctrl/FB1/A78) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9924,7 +9924,7 @@
       (net 143 /ctrl/FB1/A78) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 138 "Net-(C117-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9957,7 +9957,7 @@
       (net 136 +5F) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 137 "Net-(C114-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -9990,7 +9990,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 142 /ctrl/FB0/A78) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10023,7 +10023,7 @@
       (net 142 /ctrl/FB0/A78) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 137 "Net-(C114-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10056,7 +10056,7 @@
       (net 141 "Net-(R132-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 176 "Net-(R133-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10089,7 +10089,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 141 "Net-(R132-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10122,7 +10122,7 @@
       (net 130 "Net-(R131-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 150 "Net-(C37-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10155,7 +10155,7 @@
       (net 131 "Net-(R130-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 149 "Net-(C36-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10188,7 +10188,7 @@
       (net 118 "Net-(R129-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 100 /hv/f3/HV_EN) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10221,7 +10221,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 99 /ctrl/FB0/E45) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10254,7 +10254,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 98 /ctrl/FB1/E45) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10287,7 +10287,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 97 /ctrl/FB1/E36) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10320,7 +10320,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 96 /ctrl/FB0/E36) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10353,7 +10353,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 95 /ctrl/FB1/E12) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10386,7 +10386,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 94 /ctrl/FB0/E12) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10419,7 +10419,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 201 /ctrl/f4/A_5V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10452,7 +10452,7 @@
       (net 201 /ctrl/f4/A_5V) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 213 +5VA) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10485,7 +10485,7 @@
       (net 145 /ctrl/f4/IO_AIN1) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 10 +3V3) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10518,7 +10518,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 200 /ctrl/f4/A_24V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10551,7 +10551,7 @@
       (net 200 /ctrl/f4/A_24V) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 44 +24V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10584,7 +10584,7 @@
       (net 93 /hv/f3/A_T_HV) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 3 +3.3VP) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10617,7 +10617,7 @@
       (net 92 "Net-(J2-Pad4)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 91 "Net-(J2-Pad5)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10650,7 +10650,7 @@
       (net 90 "Net-(J1-Pad4)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 89 "Net-(J1-Pad5)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10683,7 +10683,7 @@
       (net 61 "Net-(J2-Pad6)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 58 "Net-(J2-Pad3)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10716,7 +10716,7 @@
       (net 64 "Net-(J1-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 62 "Net-(J1-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10749,7 +10749,7 @@
       (net 65 "Net-(J2-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 63 "Net-(J2-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10782,7 +10782,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 145 /ctrl/f4/IO_AIN1) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10815,7 +10815,7 @@
       (net 3 +3.3VP) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 38 /hv/cur/A_IW) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10848,7 +10848,7 @@
       (net 145 /ctrl/f4/IO_AIN1) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 146 "Net-(P9-Pad5)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10881,7 +10881,7 @@
       (net 144 /ctrl/f4/IO_AIN0) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 10 +3V3) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10914,7 +10914,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 88 /ctrl/f4/CMD_78E) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10947,7 +10947,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 87 /ctrl/f4/CMD_45E) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -10980,7 +10980,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 86 /ctrl/f4/CMD_36E) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11013,7 +11013,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 85 /ctrl/f4/CMD_12E) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11046,7 +11046,7 @@
       (net 84 /hv/driver/CWH) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 38 /hv/cur/A_IW) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11079,7 +11079,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 144 /ctrl/f4/IO_AIN0) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11112,7 +11112,7 @@
       (net 144 /ctrl/f4/IO_AIN0) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 147 "Net-(P9-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11145,7 +11145,7 @@
       (net 155 "Net-(R59-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 175 "Net-(R146-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11178,7 +11178,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 37 /ctrl/FB1/A35) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11211,7 +11211,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 36 /ctrl/FB0/A35) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11244,7 +11244,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 34 /ctrl/FB1/A12) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11277,7 +11277,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 35 /ctrl/FB0/A12) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11310,7 +11310,7 @@
       (net 225 "Net-(C51-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 174 "Net-(R143-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11343,7 +11343,7 @@
       (net 158 "Net-(R16-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 224 "Net-(C41-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11376,7 +11376,7 @@
       (net 3 +3.3VP) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 33 /hv/cur/A_IV) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11409,7 +11409,7 @@
       (net 70 "Net-(R56-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 36 /ctrl/FB0/A35) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11442,7 +11442,7 @@
       (net 71 "Net-(R57-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 37 /ctrl/FB1/A35) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11475,7 +11475,7 @@
       (net 68 "Net-(R54-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 34 /ctrl/FB1/A12) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11508,7 +11508,7 @@
       (net 69 "Net-(R55-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 35 /ctrl/FB0/A12) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11541,7 +11541,7 @@
       (net 83 /hv/driver/CVH) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 33 /hv/cur/A_IV) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11574,7 +11574,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 25 /hv/f3/A_HV) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11607,7 +11607,7 @@
       (net 49 "Net-(D8-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 132 "Net-(R30-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11640,7 +11640,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 80 "Net-(J3-Pad8)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11673,7 +11673,7 @@
       (net 79 "Net-(J3-Pad7)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 120 "Net-(C53-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11706,7 +11706,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 78 "Net-(J3-Pad4)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11739,7 +11739,7 @@
       (net 78 "Net-(J3-Pad4)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 77 "Net-(J3-Pad5)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11772,7 +11772,7 @@
       (net 77 "Net-(J3-Pad5)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 120 "Net-(C53-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11805,7 +11805,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 76 "Net-(J3-Pad6)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11838,7 +11838,7 @@
       (net 76 "Net-(J3-Pad6)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 75 "Net-(J3-Pad3)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11871,7 +11871,7 @@
       (net 75 "Net-(J3-Pad3)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 120 "Net-(C53-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11904,7 +11904,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 74 "Net-(J3-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11937,7 +11937,7 @@
       (net 74 "Net-(J3-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 73 "Net-(J3-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -11970,7 +11970,7 @@
       (net 73 "Net-(J3-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 120 "Net-(C53-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12003,7 +12003,7 @@
       (net 72 "Net-(JP9-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 2 GND) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12036,7 +12036,7 @@
       (net 133 "Net-(R35-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 173 "Net-(R145-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12069,7 +12069,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 155 "Net-(R59-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12102,7 +12102,7 @@
       (net 3 +3.3VP) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 24 /hv/cur/A_IU) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12135,7 +12135,7 @@
       (net 15 "Net-(C24-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 71 "Net-(R57-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12168,7 +12168,7 @@
       (net 17 "Net-(C25-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 70 "Net-(R56-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12201,7 +12201,7 @@
       (net 21 "Net-(C27-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 69 "Net-(R55-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12234,7 +12234,7 @@
       (net 19 "Net-(C26-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 68 "Net-(R54-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12267,7 +12267,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 13 /hv/f3/A_W) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12300,7 +12300,7 @@
       (net 16 "Net-(C25-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 178 "Net-(C13-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12333,7 +12333,7 @@
       (net 14 "Net-(C24-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 177 "Net-(C12-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12366,7 +12366,7 @@
       (net 18 "Net-(C26-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 177 "Net-(C12-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12399,7 +12399,7 @@
       (net 20 "Net-(C27-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 178 "Net-(C13-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12432,7 +12432,7 @@
       (net 66 /hv/driver/CUH) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 24 /hv/cur/A_IU) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12465,7 +12465,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 54 "Net-(Q4-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12498,7 +12498,7 @@
       (net 65 "Net-(J2-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 21 "Net-(C27-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12531,7 +12531,7 @@
       (net 64 "Net-(J1-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 19 "Net-(C26-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12564,7 +12564,7 @@
       (net 63 "Net-(J2-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 20 "Net-(C27-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12597,7 +12597,7 @@
       (net 62 "Net-(J1-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 18 "Net-(C26-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12630,7 +12630,7 @@
       (net 194 /ctrl/IO/IO_FAN) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 54 "Net-(Q4-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12663,7 +12663,7 @@
       (net 61 "Net-(J2-Pad6)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 17 "Net-(C25-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12696,7 +12696,7 @@
       (net 60 "Net-(J1-Pad6)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 15 "Net-(C24-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12729,7 +12729,7 @@
       (net 59 "Net-(J1-Pad3)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 14 "Net-(C24-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12762,7 +12762,7 @@
       (net 58 "Net-(J2-Pad3)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 16 "Net-(C25-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12795,7 +12795,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 133 "Net-(R35-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12828,7 +12828,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 11 /hv/f3/A_V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12861,7 +12861,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 156 GNDD) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12894,7 +12894,7 @@
       (net 132 "Net-(R30-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 39 +15V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12927,7 +12927,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 8 /hv/f3/A_U) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12960,7 +12960,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 172 "Net-(R148-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -12993,7 +12993,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 171 "Net-(R147-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13026,7 +13026,7 @@
       (net 178 "Net-(C13-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 131 "Net-(R130-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13059,7 +13059,7 @@
       (net 177 "Net-(C12-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 130 "Net-(R131-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13092,7 +13092,7 @@
       (net 129 "Net-(R19-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 3 +3.3VP) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13125,7 +13125,7 @@
       (net 157 "Net-(R15-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 129 "Net-(R19-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13158,7 +13158,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 211 "Net-(J3-Pad9)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13191,7 +13191,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 212 "Net-(J3-Pad11)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13224,7 +13224,7 @@
       (net 223 "Net-(R143-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 158 "Net-(R16-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13257,7 +13257,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 157 "Net-(R15-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13290,7 +13290,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 53 "Net-(Q3-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13323,7 +13323,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 52 "Net-(Q2-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13356,7 +13356,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 51 "Net-(Q1-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13389,7 +13389,7 @@
       (net 190 /ctrl/IO/IO_OUT0) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 53 "Net-(Q3-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13422,7 +13422,7 @@
       (net 191 /ctrl/IO/IO_OUT1) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 52 "Net-(Q2-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13455,7 +13455,7 @@
       (net 206 /ctrl/IO/IO_OUT2) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 51 "Net-(Q1-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13488,7 +13488,7 @@
       (net 43 "Net-(D1-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13521,7 +13521,7 @@
       (net 151 /hv/f3/A_T_MOT) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13554,7 +13554,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 209 "Net-(J2-Pad9)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13587,7 +13587,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 207 "Net-(J1-Pad9)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13620,7 +13620,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 208 "Net-(J1-Pad11)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13653,7 +13653,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 210 "Net-(J2-Pad11)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13686,7 +13686,7 @@
       (net 4 GNDPWR) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 55 "Net-(JP1-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13719,7 +13719,7 @@
       (net 2 GND) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 1 "Net-(C1-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13752,7 +13752,7 @@
       (net 122 "Net-(C71-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 136 +5F) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13785,7 +13785,7 @@
       (net 150 "Net-(C37-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 213 +5VA) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13818,7 +13818,7 @@
       (net 123 "Net-(C72-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 136 +5F) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13851,7 +13851,7 @@
       (net 149 "Net-(C36-Pad2)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 213 +5VA) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13884,7 +13884,7 @@
       (net 10 +3V3) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 121 "Net-(C119-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -13917,7 +13917,7 @@
       (net 3 +3.3VP) (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 226 "Net-(C141-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -14655,10 +14655,10 @@
       (net 44 +24V))
     (pad 12 thru_hole oval (at 12.7 -2.54) (size 1.7272 1.7272) (drill 1.016) (layers *.Cu *.Mask B.SilkS)
       (net 7 +5V))
-    (model Socket_Strips.3dshapes/Socket_Strip_Angled_2x06.wrl
-      (offset (xyz 6.349999904632568 -1.269999980926514 0))
+    (model Connector_PinSocket_2.54mm.3dshapes/PinSocket_2x06_P2.54mm_Horizontal.wrl
+      (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 180))
+      (rotate (xyz 0 0 -90))
     )
   )
 
@@ -14860,7 +14860,7 @@
       (net 4 GNDPWR))
     (pad 48 smd roundrect (at -2.75 -4.35 90) (size 1.3 0.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 3 +3.3VP))
-    (model Housings_QFP.3dshapes/LQFP-48_7x7mm_Pitch0.5mm.wrl
+    (model Package_QFP.3dshapes/LQFP-48_7x7mm_P0.5mm.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -14893,7 +14893,7 @@
       (net 39 +15V) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0 90) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -14926,7 +14926,7 @@
       (net 39 +15V) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 1 0 90) (size 1 1.25) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1) (zone_connect 2))
-    (model Capacitors_SMD.3dshapes/C_0805.wrl
+    (model Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -15026,7 +15026,7 @@
       (net 44 +24V))
     (pad 6 smd roundrect (at 17.5 0 90) (size 2.5 2.5) (layers F.Cu F.Mask) (roundrect_rratio 0.25)
       (net 47 "Net-(D5-Pad2)"))
-    (model ${KIPRJMOD}/../lib/../lib/stmbl.pretty/akl182_6.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/akl182_6.wrl
       (offset (xyz 20.04999969887921 3.199999951940823 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 180))
@@ -15070,7 +15070,7 @@
       (net 146 "Net-(P9-Pad5)"))
     (pad 6 thru_hole circle (at 17.5 0) (size 1.5 1.5) (drill 1.2) (layers *.Cu *.Mask)
       (net 2 GND))
-    (model ${KIPRJMOD}/../lib/../lib/stmbl.pretty/akl182_6.wrl
+    (model ${KIPRJMOD}/../lib/stmbl.pretty/akl182_6.wrl
       (offset (xyz 20.04999969887921 3.199999951940823 0))
       (scale (xyz 0.394 0.394 0.394))
       (rotate (xyz 0 0 180))
@@ -15132,7 +15132,7 @@
       (net 4 GNDPWR))
     (pad 3 smd roundrect (at 0.99822 0 90) (size 0.8001 0.8001) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 230 "Net-(Q5-Pad3)"))
-    (model TO_SOT_Packages_SMD.3dshapes/SOT-23.wrl
+    (model Package_TO_SOT_SMD.3dshapes/SOT-23.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -15165,7 +15165,7 @@
       (net 228 /hv/f3/BRK) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 0.75 0 90) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 227 "Net-(Q5-Pad1)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -15198,7 +15198,7 @@
       (net 227 "Net-(Q5-Pad1)") (solder_mask_margin 0.1))
     (pad 1 smd roundrect (at -0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 39 +15V) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -15231,7 +15231,7 @@
       (net 227 "Net-(Q5-Pad1)") (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 4 GNDPWR) (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -15264,7 +15264,7 @@
       (net 39 +15V) (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 0.75 0 180) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 230 "Net-(Q5-Pad3)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -15297,7 +15297,7 @@
       (net 230 "Net-(Q5-Pad3)") (solder_mask_margin 0.1))
     (pad 2 smd roundrect (at 0.75 0 270) (size 0.59 0.8) (layers F.Cu F.Paste F.Mask) (roundrect_rratio 0.25)
       (net 229 "Net-(P2-Pad2)") (solder_mask_margin 0.1))
-    (model Resistors_SMD.3dshapes/R_0603.wrl
+    (model Resistor_SMD.3dshapes/R_0603_1608Metric.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
