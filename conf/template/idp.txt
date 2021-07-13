@@ -1,0 +1,27 @@
+
+load idp
+idp0.rt_prio = 4
+
+idp0.en = fault0.en_out
+fault0.pos_error = 0
+pid0.enable = 0
+hv0.en = idp0.en_out
+hv0.cur_bw = idp0.cur_bw
+hv0.cmd_mode = idp0.cmd_mode
+hv0.d_cmd = idp0.d_cmd
+hv0.q_cmd = idp0.q_cmd
+hv0.pos = idp0.com_pos
+hv0.rev = idp0.out_rev
+hv0.r = idq0.r
+hv0.l = idq0.l
+idp0.ud_fb = hv0.ud_fb
+idp0.uq_fb = hv0.uq_fb
+idp0.id_fb = hv0.id_fb
+idp0.iq_fb = hv0.iq_fb
+idp0.pwm_volt = hv0.pwm_volt
+
+idp0.pos_fb = fb_switch0.pos_fb
+idp0.vel_fb = vel1.vel
+
+vel0.pos_in = fb_switch0.pos_fb
+idp0.vel_fb = vel1.vel

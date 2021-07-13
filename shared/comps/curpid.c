@@ -39,8 +39,7 @@ HAL_PIN(lq);
 HAL_PIN(psi);
 
 HAL_PIN(ff);  // r feed forward
-HAL_PIN(kp);
-HAL_PIN(ki);
+HAL_PIN(cur_bw);
 HAL_PIN(ksp); // predictor
 HAL_PIN(kind);  // bemf feed forward
 HAL_PIN(kci);
@@ -66,8 +65,7 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(ld)  = 0.01;
   PIN(lq)  = 0.01;
   PIN(psi) = 0.05;
-  PIN(kp)  = 0.1;
-  PIN(ki)  = 0.005;
+  PIN(cur_bw)  = 250.0;
   PIN(kci)  = 500.0;
   PIN(ksp)  = 1.0;
   PIN(scale) = 1.0;
@@ -83,10 +81,6 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
   float ff   = PIN(ff);
   float kind = PIN(kind);
-  float kpd  = ld * PIN(kp) / period / 2.0;
-  float kid  = r * PIN(ki) / ld;
-  float kpq  = lq * PIN(kp) / period / 2.0;
-  float kiq  = r * PIN(ki) / lq;
 
   float max_cur = MAX(PIN(max_cur), 0.01);
   float idc     = PIN(id_cmd);
@@ -132,12 +126,12 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   float id_error = idc - id;
   float iq_error = iqc - iq;
 
-  float ud = LIMIT(ff * r * idc - kind * indd + kpd * id_error, max_volt);
-  float uq = LIMIT(ff * r * iqc + kind * indq + kpq * iq_error, max_volt);
+  float ud = LIMIT(ff * r * idc - kind * indd + PIN(cur_bw) * ld * id_error, max_volt);
+  float uq = LIMIT(ff * r * iqc + kind * indq + PIN(cur_bw) * lq * iq_error, max_volt);
 
-  if(kpd * kid > 0.0 && kpq * kiq > 0.0) {
-    ctx->id_error_sum = LIMIT(ctx->id_error_sum + kpd * kid * id_error * period, max_volt - ud);
-    ctx->iq_error_sum = LIMIT(ctx->iq_error_sum + kpq * kiq * iq_error * period, max_volt - uq);
+  if(PIN(cur_bw) * r > 0.0) {
+    ctx->id_error_sum = LIMIT(ctx->id_error_sum + PIN(cur_bw) * r * id_error * period, max_volt - ud);
+    ctx->iq_error_sum = LIMIT(ctx->iq_error_sum + PIN(cur_bw) * r * iq_error * period, max_volt - uq);
   } else {
     ctx->id_error_sum = 0.0;
     ctx->iq_error_sum = 0.0;

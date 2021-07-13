@@ -96,8 +96,7 @@ typedef union {
     float r;
     float l;
     float psi;
-    float cur_p;
-    float cur_i;
+    float cur_bw;
     float cur_ff;
     float cur_ind;
     float max_y;

@@ -57,8 +57,7 @@ HAL_PIN(pos_p); // position loop proportional gain [rad/s/rad]
 HAL_PIN(vel_p); // velocity loop proportional gain [rad/s^2/(rad/s)]
 HAL_PIN(vel_i); // velocity loop integral gain [Nm*s/(rad/s)]
 HAL_PIN(vel_g); // velocity loop proportional limit scaling
-HAL_PIN(cur_p); // current loop proportional gain [V/A]
-HAL_PIN(cur_i); // current loop integral gain [Vs/A]
+HAL_PIN(cur_bw); // current loop bandwidth [V/A]
 HAL_PIN(cur_ff); // current loop resistance feedforward gain
 HAL_PIN(cur_ind); // current loop BEMF feedforward gain
 HAL_PIN(max_sat); // max velocity, acceleration and torque saturation time [s]

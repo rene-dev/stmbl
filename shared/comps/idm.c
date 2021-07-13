@@ -1,9 +1,9 @@
-#include "id_comp.h"
+#include "idm_comp.h"
 #include "hal.h"
 #include "defines.h"
 #include "angle.h"
 
-HAL_COMP(id);
+HAL_COMP(idm);
 
 HAL_PIN(d_cmd);
 HAL_PIN(q_cmd);
@@ -82,8 +82,8 @@ HAL_PIN(tmp3);
 HAL_PIN(avg_test_volt);
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
-  //struct id_ctx_t * ctx = (struct id_ctx_t *)ctx_ptr;
-  struct id_pin_ctx_t *pins = (struct id_pin_ctx_t *)pin_ptr;
+  //struct idm_ctx_t * ctx = (struct idm_ctx_t *)ctx_ptr;
+  struct idm_pin_ctx_t *pins = (struct idm_pin_ctx_t *)pin_ptr;
   PIN(test_cur) = 4.0;
   PIN(max_torque) = 3.0;
   PIN(test_vel) = 50.0;
@@ -104,8 +104,8 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 }
 
 static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
-  //struct id_ctx_t * ctx = (struct id_ctx_t *)ctx_ptr;
-  struct id_pin_ctx_t *pins = (struct id_pin_ctx_t *)pin_ptr;
+  //struct idm_ctx_t * ctx = (struct idm_ctx_t *)ctx_ptr;
+  struct idm_pin_ctx_t *pins = (struct idm_pin_ctx_t *)pin_ptr;
 
   switch((int)(PIN(state) * 10.0 + 0.5)){
     case 0:
@@ -225,8 +225,8 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
-  //struct id_ctx_t * ctx = (struct id_ctx_t *)ctx_ptr;
-  struct id_pin_ctx_t *pins = (struct id_pin_ctx_t *)pin_ptr;
+  //struct idm_ctx_t * ctx = (struct idm_ctx_t *)ctx_ptr;
+  struct idm_pin_ctx_t *pins = (struct idm_pin_ctx_t *)pin_ptr;
 
   // if(ABS(PIN(id_fb)) + ABS(PIN(iq_fb)) > 5.0 * PIN(test_cur)){
   //   PIN(state) = 0;
@@ -243,137 +243,6 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(timer) = 0.0;
       PIN(d_cmd) = 0.0;
       PIN(q_cmd) = 0.0;
-    break;
-
-    case 12: // r
-      PIN(en) = 1.0;
-      PIN(d_cmd) += PIN(ki) * period * PIN(r) * (PIN(test_cur) - PIN(id_fb));
-      PIN(d_cmd) = LIMIT(PIN(d_cmd), PIN(pwm_volt));
-      PIN(r) = PIN(r) * 0.99 + PIN(ud_fb) / MAX(PIN(id_fb), 0.01) * 0.01;
-
-      PIN(timer) += period;
-      if(PIN(timer) >= 2.0){
-        PIN(timer) = 0.0;
-        PIN(state) = 1.3;
-        //PIN(d_cmd) = 0.0;
-        //PIN(en) = 0.0;
-        PIN(tmp0) = 0.0;
-        PIN(tmp1) = 0.0;
-
-        PIN(avg_test_volt) = PIN(test_cur) * MAX(PIN(r), 0.01);
-        PIN(avg_test_volt) = LIMIT(PIN(avg_test_volt), PIN(pwm_volt) / 2.0);
-      }
-    break;
-
-    case 13: // l
-      PIN(en) = 1.0;
-
-      //PIN(l) = PIN(l) * 0.995 + ABS(PIN(ud_fb) - avg_test_volt / 2.0) / MAX(ABS(PIN(id_fb) - PIN(test_cur)), 0.001) * period * 0.005;
-      if(PIN(d_cmd) < PIN(avg_test_volt)){
-        PIN(tmp0) = PIN(tmp0) * 0.99 + PIN(id_fb) * 0.01;
-        PIN(tmp1) = PIN(tmp1) * 0.99 + PIN(ud_fb) * 0.01;
-        PIN(d_cmd) = PIN(avg_test_volt) * 1.5;
-      }
-      else{
-        PIN(tmp2) = PIN(tmp2) * 0.99 + PIN(id_fb) * 0.01;
-        PIN(tmp3) = PIN(tmp3) * 0.99 + PIN(ud_fb) * 0.01;
-        PIN(d_cmd) = PIN(avg_test_volt) * 0.5;
-      }
-
-      PIN(timer) += period;
-      if(PIN(timer) >= 1.0){
-        PIN(l) = ABS(PIN(tmp1) - PIN(tmp3)) / ABS(PIN(tmp0) - PIN(tmp2)) * period;
-        PIN(timer) = 0.0;
-        PIN(state) = 1.4;
-        PIN(d_cmd) = PIN(avg_test_volt);
-        PIN(en) = 0.0;
-        // PIN(tmp0) = 0.0;
-        // PIN(tmp1) = 0.0;
-      }
-    break;
-
-    case 22: // pp, out_rev
-      PIN(en) = 1.0;
-      PIN(d_cmd) += PIN(ki) * period * PIN(r) * (PIN(test_cur) - PIN(id_fb));
-      PIN(d_cmd) = LIMIT(PIN(d_cmd), PIN(pwm_volt));
-      PIN(com_pos) += PIN(test_vel) * period;
-      PIN(com_pos) = mod(PIN(com_pos));
-
-      if(ABS(PIN(vel_fb)) > 0.1){
-        PIN(pp) = PIN(pp) * 0.99 + PIN(test_vel) / PIN(vel_fb) * 0.01;
-      }
-
-      PIN(timer) += period;
-      if(PIN(timer) >= 3.0){
-        PIN(timer) = 0.0;
-        
-        if(PIN(pp) < 0.0){
-          PIN(out_rev) = 1.0;
-          PIN(pp) *= -1.0;
-        }
-        PIN(pp) = (int)(PIN(pp) + 0.5);
-
-        PIN(state) = 2.3;
-      }
-    break;
-
-    case 23:
-      PIN(en) = 1.0;
-      PIN(d_cmd) += PIN(ki) * period * PIN(r) * (PIN(test_cur) - PIN(id_fb));
-      PIN(d_cmd) = LIMIT(PIN(d_cmd), PIN(pwm_volt));
-      PIN(com_pos) = 0.0;
-
-      PIN(com_offset) = PIN(com_offset) * 0.99 + -PIN(pos_fb) * 0.01;
-
-      PIN(timer) += period;
-      if(PIN(timer) >= 2.0){
-        PIN(en) = 0.0;
-        PIN(d_cmd) = 0.0;
-        PIN(state) = 2.5;
-        PIN(timer) = 0.0;
-      }
-
-    break;
-
-    case 32: // psi
-      PIN(en) = 1.0;
-      PIN(com_pos) = mod((PIN(pos_fb) + PIN(com_offset)) * PIN(pp));
-
-      float vel_error = PIN(test_vel) - PIN(vel_fb);
-      PIN(torque_sum) += PIN(ki) * vel_error * period;
-      
-      float id_error = 0.0 - PIN(id_fb);
-      PIN(d_cmd) = PIN(r) * PIN(id_fb) + PIN(cur_bw) * PIN(l) * id_error;
-      PIN(id_error_sum) = PIN(id_error_sum) + PIN(cur_bw) * PIN(r) * id_error * period;
-      PIN(d_cmd) += PIN(id_error_sum);
-      PIN(d_cmd) = LIMIT(PIN(d_cmd), PIN(pwm_volt));
-
-      float iq_error = PIN(vel_bw) * period * vel_error + PIN(torque_sum) - PIN(iq_fb);
-      PIN(q_cmd) = PIN(r) * PIN(iq_fb) + PIN(cur_bw) * PIN(l) * iq_error;
-      PIN(iq_error_sum) = PIN(iq_error_sum) + PIN(cur_bw) * PIN(r) * iq_error * period;
-      PIN(q_cmd) += PIN(iq_error_sum);
-      PIN(q_cmd) = LIMIT(PIN(q_cmd), PIN(pwm_volt));
-
-
-      if(ABS(PIN(vel_fb)) > 0.1){
-        float psi  = (PIN(uq_fb) - PIN(iq_fb) * PIN(r)) / (PIN(vel_fb) * PIN(pp));
-        PIN(psi) = PIN(psi) * (1.0 - period / PIN(pi)) + psi * period / PIN(pi);
-      }
-
-      PIN(psi) = CLAMP(PIN(psi), 0.001, 1.0);
-
-      PIN(timer) += period;
-      if(PIN(timer) >= 5.0){
-        PIN(timer) = 0.0;
-        PIN(en) = 0.0;
-        PIN(d_cmd) = 0.0;
-        PIN(q_cmd) = 0.0;
-        PIN(id_error_sum) = 0.0;
-        PIN(iq_error_sum) = 0.0;
-        PIN(torque_sum) = 0.0;
-
-        PIN(state) = 3.3;
-      }
     break;
 
     case 42: // j, d, f
@@ -411,15 +280,15 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       float vel_p = PIN(vel_bw);
       float vel_i = PIN(vel_bw) * PIN(vel_bw);
 
-      float pos_error = minus(mod(PIN(pos)), PIN(pos_fb));
-      float vel_cmd = pos_p * pos_error + PIN(vel);
-      vel_error = vel_cmd - PIN(vel_fb);
-      PIN(fb_torque) = LIMIT(vel_p * vel_error * PIN(inertia), PIN(max_torque));
-      PIN(torque_sum) = LIMIT(PIN(torque_sum) + vel_i * vel_error * period * PIN(inertia), PIN(max_torque) - PIN(fb_torque));
-      PIN(acc_torque) = PIN(inertia) * PIN(acc);
-      PIN(fb_torque) += PIN(torque_sum);
-      PIN(ff_torque) = PIN(load) + PIN(damping) * vel_cmd + PIN(friction) * SIGN2(vel_cmd, PIN(max_vel) * 0.001) + PIN(acc_torque);
-      PIN(torque) = LIMIT(PIN(fb_torque) + PIN(ff_torque), PIN(max_torque));
+      // float pos_error = minus(mod(PIN(pos)), PIN(pos_fb));
+      // float vel_cmd = pos_p * pos_error + PIN(vel);
+      // vel_error = vel_cmd - PIN(vel_fb);
+      // PIN(fb_torque) = LIMIT(vel_p * vel_error * PIN(inertia), PIN(max_torque));
+      // PIN(torque_sum) = LIMIT(PIN(torque_sum) + vel_i * vel_error * period * PIN(inertia), PIN(max_torque) - PIN(fb_torque));
+      // PIN(acc_torque) = PIN(inertia) * PIN(acc);
+      // PIN(fb_torque) += PIN(torque_sum);
+      // PIN(ff_torque) = PIN(load) + PIN(damping) * vel_cmd + PIN(friction) * SIGN2(vel_cmd, PIN(max_vel) * 0.001) + PIN(acc_torque);
+      // PIN(torque) = LIMIT(PIN(fb_torque) + PIN(ff_torque), PIN(max_torque));
 
       //PIN(load) += period / PIN(li) * PIN(fb_torque) * period;
       PIN(damping) += period / PIN(di) * PIN(fb_torque) * PIN(vel) * period;
@@ -432,20 +301,20 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(inertia) = CLAMP(PIN(inertia), 0.000005, 50.0);
 
       PIN(en) = 1.0;
-      PIN(com_pos) = mod((PIN(pos_fb) + PIN(com_offset)) * PIN(pp));
+      // PIN(com_pos) = mod((PIN(pos_fb) + PIN(com_offset)) * PIN(pp));
 
-      id_error = 0.0 - PIN(id_fb);
-      PIN(d_cmd) = PIN(r) * PIN(id_fb) + PIN(cur_bw) * PIN(l) * id_error;
-      PIN(id_error_sum) = PIN(id_error_sum) + PIN(cur_bw) * PIN(r) * id_error * period;
-      PIN(d_cmd) += PIN(id_error_sum);
-      PIN(d_cmd) = LIMIT(PIN(d_cmd), PIN(pwm_volt));
+      // id_error = 0.0 - PIN(id_fb);
+      // PIN(d_cmd) = PIN(r) * PIN(id_fb) + PIN(cur_bw) * PIN(l) * id_error;
+      // PIN(id_error_sum) = PIN(id_error_sum) + PIN(cur_bw) * PIN(r) * id_error * period;
+      // PIN(d_cmd) += PIN(id_error_sum);
+      // PIN(d_cmd) = LIMIT(PIN(d_cmd), PIN(pwm_volt));
 
-      float q_cmd = PIN(torque) / 3.0 * 2.0 / PIN(psi) / PIN(pp);
-      iq_error = q_cmd - PIN(iq_fb);
-      PIN(q_cmd) = PIN(r) * PIN(iq_fb) + PIN(cur_bw) * PIN(l) * iq_error;
-      PIN(iq_error_sum) = PIN(iq_error_sum) + PIN(cur_bw) * PIN(r) * iq_error * period;
-      PIN(q_cmd) += PIN(iq_error_sum);
-      PIN(q_cmd) = LIMIT(PIN(q_cmd), PIN(pwm_volt));
+      // float q_cmd = PIN(torque) / 3.0 * 2.0 / PIN(psi) / PIN(pp);
+      // iq_error = q_cmd - PIN(iq_fb);
+      // PIN(q_cmd) = PIN(r) * PIN(iq_fb) + PIN(cur_bw) * PIN(l) * iq_error;
+      // PIN(iq_error_sum) = PIN(iq_error_sum) + PIN(cur_bw) * PIN(r) * iq_error * period;
+      // PIN(q_cmd) += PIN(iq_error_sum);
+      // PIN(q_cmd) = LIMIT(PIN(q_cmd), PIN(pwm_volt));
       
       PIN(timer) += period;
       if(PIN(timer) > 180.0){
@@ -469,8 +338,8 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 }
 
 
-hal_comp_t id_comp_struct = {
-    .name      = "id",
+hal_comp_t idm_comp_struct = {
+    .name      = "idm",
     .nrt       = nrt,
     .rt        = rt_func,
     .frt       = 0,
@@ -479,6 +348,6 @@ hal_comp_t id_comp_struct = {
     .frt_start = 0,
     .rt_stop   = 0,
     .frt_stop  = 0,
-    .ctx_size  = 0,//sizeof(struct id_ctx_t),
-    .pin_count = sizeof(struct id_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+    .ctx_size  = 0,//sizeof(struct idm_ctx_t),
+    .pin_count = sizeof(struct idm_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
 };

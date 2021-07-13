@@ -329,8 +329,7 @@ int main(void) {
   hal_parse("curpid0.ld = ls0.l");
   hal_parse("curpid0.lq = ls0.l");
   hal_parse("curpid0.psi = ls0.psi");
-  hal_parse("curpid0.kp = ls0.cur_p");
-  hal_parse("curpid0.ki = ls0.cur_i");
+  hal_parse("curpid0.cur_bw = ls0.cur_bw");
   hal_parse("curpid0.ff = ls0.cur_ff");
   hal_parse("curpid0.kind = ls0.cur_ind");
   hal_parse("curpid0.max_cur = ls0.max_cur");
