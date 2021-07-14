@@ -121,7 +121,7 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
     case 25: // pp, out_rev, com_offset
       printf("conf0.polecount = %f\n", PIN(pp));
-      printf("conf0.com_offset = %f\n", PIN(com_offset));
+      printf("conf0.mot_fb_offset = %f\n", PIN(com_offset));
       if(PIN(out_rev) > 0.0){
         printf("conf0.out_rev = 1\n");
       }
@@ -184,7 +184,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(cur_bw) = 1.0;
       PIN(q_cmd) = 0.0;
       PIN(com_pos) = 0.0;
-      
+
       PIN(d_cmd) = PIN(test_cur);
 
       PIN(r) = PIN(r) * 0.99 + PIN(ud_fb) / MAX(PIN(id_fb), 0.01) * 0.01;
@@ -193,8 +193,8 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       if(PIN(timer) >= 2.0){
         PIN(timer) = 0.0;
         PIN(state) = 1.3;
-        //PIN(d_cmd) = 0.0;
-        //PIN(en) = 0.0;
+        PIN(d_cmd) = 0.0;
+        PIN(en_out) = 0.0;
         PIN(tmp0) = 0.0;
         PIN(tmp1) = 0.0;
 
@@ -289,7 +289,6 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(cur_bw) = 250.0;
       PIN(d_cmd) = 0.0;
       PIN(com_pos) = mod((PIN(pos_fb) + PIN(com_offset)) * PIN(pp));
-
 
       float vel_error = PIN(test_vel) - PIN(vel_fb);
       PIN(cur_sum) += PIN(ki) * vel_error * period;

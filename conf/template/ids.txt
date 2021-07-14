@@ -1,0 +1,9 @@
+
+link idm
+
+idm0.sys = 1
+pid0.j_mot = conf0.j
+pid0.j_sys = idm0.inertia
+pid0.d = idm0.damping
+pid0.f = idm0.friction
+pid0.l = idm0.load

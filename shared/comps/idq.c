@@ -16,7 +16,7 @@ HAL_PIN(q);
 
 //rotor position
 HAL_PIN(pos);
-HAL_PIN(polecount);  //1
+HAL_PIN(polecount);
 
 //a,b output
 HAL_PIN(a);

@@ -5,37 +5,10 @@
 
 HAL_COMP(idm);
 
-HAL_PIN(d_cmd);
-HAL_PIN(q_cmd);
-HAL_PIN(com_pos);
-HAL_PIN(com_mode);
-HAL_PIN(cmd_mode);
 HAL_PIN(en);
-
-HAL_PIN(id_fb);
-HAL_PIN(iq_fb);
-HAL_PIN(ud_fb);
-HAL_PIN(uq_fb);
-HAL_PIN(pos_fb);
-HAL_PIN(vel_fb);
-HAL_PIN(acc_fb);
 
 HAL_PIN(state);
 HAL_PIN(timer);
-
-HAL_PIN(r);
-HAL_PIN(l);
-HAL_PIN(lm);
-HAL_PIN(t);
-
-HAL_PIN(pp);
-HAL_PIN(com_offset);
-HAL_PIN(out_rev);
-
-HAL_PIN(max_torque);
-HAL_PIN(test_cur);
-HAL_PIN(test_vel);
-HAL_PIN(ki);
 
 HAL_PIN(freq);
 HAL_PIN(amp);
@@ -43,64 +16,52 @@ HAL_PIN(min_pos);
 HAL_PIN(max_pos);
 HAL_PIN(max_vel);
 HAL_PIN(max_acc);
-HAL_PIN(pos);
-HAL_PIN(vel);
-HAL_PIN(acc);
 
-HAL_PIN(pi);
-HAL_PIN(fi);
-HAL_PIN(li);
+HAL_PIN(pos);
+HAL_PIN(pos_cmd);
+HAL_PIN(vel_cmd);
+HAL_PIN(acc_cmd);
+
+HAL_PIN(pos_error);
+HAL_PIN(vel_error);
+
 HAL_PIN(ji);
+HAL_PIN(fi);
 HAL_PIN(di);
+HAL_PIN(li);
 
 HAL_PIN(fb_torque);
-HAL_PIN(ff_torque);
-HAL_PIN(acc_torque);
-HAL_PIN(torque);
 
-HAL_PIN(pwm_volt);
-
-HAL_PIN(psi);
-HAL_PIN(friction);
-HAL_PIN(load);
 HAL_PIN(inertia);
 HAL_PIN(damping);
+HAL_PIN(friction);
+HAL_PIN(load);
 
 HAL_PIN(pos_bw);
 HAL_PIN(vel_bw);
-HAL_PIN(cur_bw);
-HAL_PIN(torque_sum);
-HAL_PIN(id_error_sum);
-HAL_PIN(iq_error_sum);
+HAL_PIN(vel_d);
+
+HAL_PIN(sys);
+
 HAL_PIN(target);
 HAL_PIN(auto_step);
-
-HAL_PIN(tmp0);
-HAL_PIN(tmp1);
-HAL_PIN(tmp2);
-HAL_PIN(tmp3);
-HAL_PIN(avg_test_volt);
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct idm_ctx_t * ctx = (struct idm_ctx_t *)ctx_ptr;
   struct idm_pin_ctx_t *pins = (struct idm_pin_ctx_t *)pin_ptr;
-  PIN(test_cur) = 4.0;
-  PIN(max_torque) = 3.0;
-  PIN(test_vel) = 50.0;
-  PIN(ki) = 1.0;
-  PIN(pi) = 1.0;
   PIN(fi) = 0.001;
-  PIN(li) = 5.0;
+  PIN(li) = 10.0;
   PIN(ji) = 200.0;
   PIN(di) = 10.0;
   PIN(pos_bw) = 5.0;
-  PIN(vel_bw) = 20.0;
-  PIN(cur_bw) = 250.0;
+  PIN(vel_bw) = 25.0;
+  PIN(vel_d) = 1.0;
   PIN(max_vel) = 50.0;
   PIN(max_acc) = 1000.0;
   PIN(min_pos) = -10.0;
   PIN(max_pos) = 10.0;
-  PIN(auto_step) = 4.2;
+  PIN(auto_step) = 1.4;
+  PIN(inertia) = 0.0001;
 }
 
 static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -109,116 +70,35 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
   switch((int)(PIN(state) * 10.0 + 0.5)){
     case 0:
-      PIN(r) = 0.1;
-      PIN(l) = 0.001;
-      PIN(lm) = 0.0;
-      PIN(t) = 0.0;
-      PIN(psi) = 0.055;
-      PIN(pp) = 3.0;
-      PIN(com_offset) = 0.0;
-      PIN(out_rev) = 0.0;
-      PIN(inertia) = 0.0001;
+      //PIN(inertia) = 0.0001;
     break;
-
-    case 10: // r
-      printf("Measure r, l\n");
-      printf("the motor can move a bit\n");
-      printf("id0.state = 1.2 to start\n");
-      
+    
+    case 10:
       PIN(state) = 1.1;
       PIN(timer) = 0.0;
-      PIN(d_cmd) = 0.0;
-      PIN(q_cmd) = 0.0;
-      PIN(com_pos) = 0.0;
-      PIN(cmd_mode) = 0.0;
+      PIN(target) = PIN(min_pos);
 
       if(PIN(auto_step) >= 1){
         PIN(state) = 1.2;
       }
-    break;
-
-    case 14:
-      printf("conf0.r = %f\n", PIN(r));
-      printf("conf0.l = %f\n", PIN(l));
-      PIN(state) = 2.0;
-    break;
-
-    case 20: // pp, out_rev, com_offset
-      printf("Measure com_offset, polepairs, out_rev\n");
-      printf("the motor will move\n");
-      printf("id0.state = 2.2 to start\n");
-
-      PIN(state) = 2.1;
-      PIN(timer) = 0.0;
-      //PIN(d_cmd) = 0.0;
-      PIN(q_cmd) = 0.0;
-      PIN(com_pos) = 0.0;
-      PIN(cmd_mode) = 0.0;
-
-      if(PIN(auto_step) >= 2){
-        PIN(state) = 2.2;
+      else{
+        printf("Measure friction, damping and inertia\n");
+        printf("the motor will move\n");
+        printf("id0.state = 1.2 to start\n");
       }
     break;
 
-    case 25: // pp, out_rev, com_offset
-      printf("conf0.polepairs = %f\n", PIN(pp));
-      printf("conf0.com_offset = %f\n", PIN(com_offset));
-      if(PIN(out_rev) > 0.0){
-        printf("conf0.out_rev = 1\n");
+    case 13:
+      if(PIN(sys) > 0.0){
+        printf("conf0.j_sys = %f\n", PIN(inertia));
       }
-      PIN(state) = 3.0;
-    break;
-
-    case 30:
-      printf("Measure torque constant\n");
-      printf("the motor will move\n");
-      printf("id0.state = 3.2 to start\n");
-
-      PIN(state) = 3.1;
-      PIN(timer) = 0.0;
-      PIN(d_cmd) = 0.0;
-      PIN(q_cmd) = 0.0;
-      PIN(torque_sum) = 0.0;
-      PIN(id_error_sum) = 0.0;
-      PIN(iq_error_sum) = 0.0;
-      PIN(cmd_mode) = 0.0;
-
-      if(PIN(auto_step) >= 3){
-        PIN(state) = 3.2;
+      else{
+        printf("conf0.j = %f\n", PIN(inertia));
       }
-    break;
-
-    case 33:
-      printf("conf0.psi = %f\n", PIN(psi));
-
-      PIN(state) = 4.0;
-    break;
-    
-    case 40:
-      printf("Measure friction, damping and inertia\n");
-      printf("the motor will move\n");
-      printf("id0.state = 4.2 to start\n");
-
-      PIN(state) = 4.1;
-      PIN(timer) = 0.0;
-      PIN(d_cmd) = 0.0;
-      PIN(q_cmd) = 0.0;
-      PIN(torque_sum) = 0.0;
-      PIN(id_error_sum) = 0.0;
-      PIN(iq_error_sum) = 0.0;
-      PIN(cmd_mode) = 0.0;
-      PIN(target) = PIN(min_pos);
-
-      if(PIN(auto_step) >= 4){
-        PIN(state) = 4.2;
-      }
-    break;
-
-    case 43:
-      printf("conf0.j = %f\n", PIN(inertia));
-      printf("conf0.friction = %f\n", PIN(friction));
-      printf("conf0.damping = %f\n", PIN(damping));
-      PIN(state) = 4.4;
+      printf("conf0.d = %f\n", PIN(damping));
+      printf("conf0.f = %f\n", PIN(friction));
+      printf("pid0.l = %f\n", PIN(load));
+      PIN(state) = 1.4;
     break;
   }
  
@@ -228,45 +108,44 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct idm_ctx_t * ctx = (struct idm_ctx_t *)ctx_ptr;
   struct idm_pin_ctx_t *pins = (struct idm_pin_ctx_t *)pin_ptr;
 
-  // if(ABS(PIN(id_fb)) + ABS(PIN(iq_fb)) > 5.0 * PIN(test_cur)){
-  //   PIN(state) = 0;
-  //   PIN(d_cmd) = 0.0;
-  //   PIN(q_cmd) = 0.0;
-  //   PIN(com_pos) = 0.0;
-  //   PIN(cmd_mode) = 0.0;
-  //   PIN(en) = 0.0;
-  // }
+  if(PIN(en) <= 0.0){
+    PIN(state) = 0.0;
+  }
 
   switch((int)(PIN(state) * 10.0 + 0.5)){
     case 0:
-      PIN(en) = 0;
       PIN(timer) = 0.0;
-      PIN(d_cmd) = 0.0;
-      PIN(q_cmd) = 0.0;
+      PIN(acc_cmd) = 0.0;
+      PIN(vel_cmd) = 0.0;
+      PIN(amp) = 0.0;
+
+      if(PIN(en) > 0.0){
+        PIN(state) = 1.0;
+      }
     break;
 
-    case 42: // j, d, f
+    case 12: // j, d, f
       if(PIN(timer) < 120.0){
         PIN(freq) = PIN(max_vel) / (ABS(PIN(max_pos) - PIN(min_pos)) / 2.0 * 2.0 * M_PI);
         PIN(freq) = MIN(PIN(freq), sqrtf(PIN(max_acc) / (ABS(PIN(max_pos) - PIN(min_pos)) / 2.0 * 4.0 * M_PI * M_PI)));
 
         float phase = mod(PIN(timer) * 2.0 * M_PI * PIN(freq));
         PIN(pos) = PIN(amp) * sinf(phase);
-        PIN(vel) = PIN(amp) * 2.0 * M_PI * PIN(freq) * cosf(phase);
-        PIN(acc) = -PIN(amp) * 4.0 * M_PI * M_PI * PIN(freq) * PIN(freq) * sinf(phase);
+        PIN(vel_cmd) = PIN(amp) * 2.0 * M_PI * PIN(freq) * cosf(phase);
+        PIN(acc_cmd) = -PIN(amp) * 4.0 * M_PI * M_PI * PIN(freq) * PIN(freq) * sinf(phase);
 
         PIN(amp) = LIMIT(PIN(amp) + (PIN(max_pos) - PIN(min_pos)) / 2.0 / 30.0 * period, (PIN(max_pos) - PIN(min_pos)) / 2.0);
       }
       else{
-        PIN(pos) += PIN(vel) * period + PIN(acc) * period * period / 2.0;
-        PIN(vel) += PIN(acc) * period;
+        PIN(pos) += PIN(vel_cmd) * period + PIN(acc_cmd) * period * period / 2.0;
+        PIN(vel_cmd) += PIN(acc_cmd) * period;
         float to_go = PIN(target) - PIN(pos);
         float time_to_go = sqrtf(2.0 * ABS(to_go) / PIN(max_acc));
         float acc = PIN(max_acc) * SIGN(to_go);
         float vel = acc * time_to_go;
         vel = LIMIT(vel, PIN(max_vel));
-        acc = (vel - PIN(vel)) / period;
-        PIN(acc) = LIMIT(acc, PIN(max_acc));
+        acc = (vel - PIN(vel_cmd)) / period;
+        PIN(acc_cmd) = LIMIT(acc, PIN(max_acc));
 
         if(ABS(PIN(max_pos) - PIN(pos)) < 0.1){
           PIN(target) = PIN(min_pos);
@@ -275,65 +154,31 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
           PIN(target) = PIN(max_pos);
         }
       }
+
+      PIN(pos_cmd) = mod(PIN(pos));
       
-      float pos_p = PIN(pos_bw);
-      float vel_p = PIN(vel_bw);
-      float vel_i = PIN(vel_bw) * PIN(vel_bw);
 
-      // float pos_error = minus(mod(PIN(pos)), PIN(pos_fb));
-      // float vel_cmd = pos_p * pos_error + PIN(vel);
-      // vel_error = vel_cmd - PIN(vel_fb);
-      // PIN(fb_torque) = LIMIT(vel_p * vel_error * PIN(inertia), PIN(max_torque));
-      // PIN(torque_sum) = LIMIT(PIN(torque_sum) + vel_i * vel_error * period * PIN(inertia), PIN(max_torque) - PIN(fb_torque));
-      // PIN(acc_torque) = PIN(inertia) * PIN(acc);
-      // PIN(fb_torque) += PIN(torque_sum);
-      // PIN(ff_torque) = PIN(load) + PIN(damping) * vel_cmd + PIN(friction) * SIGN2(vel_cmd, PIN(max_vel) * 0.001) + PIN(acc_torque);
-      // PIN(torque) = LIMIT(PIN(fb_torque) + PIN(ff_torque), PIN(max_torque));
+      PIN(inertia) += period / PIN(ji) * PIN(fb_torque) * PIN(acc_cmd) * period;
+      PIN(damping) += period / PIN(di) * PIN(fb_torque) * PIN(vel_cmd) * period;
+      PIN(friction) += period / PIN(fi) * PIN(fb_torque) * SIGN(PIN(vel_cmd)) * period;
+      PIN(load) += period / PIN(li) * PIN(fb_torque) * period;
 
-      //PIN(load) += period / PIN(li) * PIN(fb_torque) * period;
-      PIN(damping) += period / PIN(di) * PIN(fb_torque) * PIN(vel) * period;
-      PIN(friction) += period / PIN(fi) * PIN(fb_torque) * SIGN(PIN(vel)) * period;
-      PIN(inertia) += period / PIN(ji) * PIN(fb_torque) * PIN(acc) * period;
-
-      //PIN(load) = CLAMP(PIN(load), -100.0, 100.0);
+      PIN(inertia) = CLAMP(PIN(inertia), 0.000005, 50.0);
       PIN(damping) = CLAMP(PIN(damping), 0.0, 100.0);
       PIN(friction) = CLAMP(PIN(friction), 0.0, 100.0);
-      PIN(inertia) = CLAMP(PIN(inertia), 0.000005, 50.0);
-
-      PIN(en) = 1.0;
-      // PIN(com_pos) = mod((PIN(pos_fb) + PIN(com_offset)) * PIN(pp));
-
-      // id_error = 0.0 - PIN(id_fb);
-      // PIN(d_cmd) = PIN(r) * PIN(id_fb) + PIN(cur_bw) * PIN(l) * id_error;
-      // PIN(id_error_sum) = PIN(id_error_sum) + PIN(cur_bw) * PIN(r) * id_error * period;
-      // PIN(d_cmd) += PIN(id_error_sum);
-      // PIN(d_cmd) = LIMIT(PIN(d_cmd), PIN(pwm_volt));
-
-      // float q_cmd = PIN(torque) / 3.0 * 2.0 / PIN(psi) / PIN(pp);
-      // iq_error = q_cmd - PIN(iq_fb);
-      // PIN(q_cmd) = PIN(r) * PIN(iq_fb) + PIN(cur_bw) * PIN(l) * iq_error;
-      // PIN(iq_error_sum) = PIN(iq_error_sum) + PIN(cur_bw) * PIN(r) * iq_error * period;
-      // PIN(q_cmd) += PIN(iq_error_sum);
-      // PIN(q_cmd) = LIMIT(PIN(q_cmd), PIN(pwm_volt));
+      PIN(load) = CLAMP(PIN(load), -100.0, 100.0);
       
+
       PIN(timer) += period;
       if(PIN(timer) > 180.0){
         PIN(timer) = 0.0;
-        PIN(en) = 0.0;
-        PIN(d_cmd) = 0.0;
-        PIN(q_cmd) = 0.0;
-        PIN(id_error_sum) = 0.0;
-        PIN(iq_error_sum) = 0.0;
-        PIN(acc) = 0.0;
-        PIN(vel) = 0.0;
+        PIN(acc_cmd) = 0.0;
+        PIN(vel_cmd) = 0.0;
         PIN(amp) = 0.0;
 
-        PIN(state) = 4.3;
+        PIN(state) = 1.3;
       }
     break;
-
-    case 100:
-      PIN(com_pos) = mod((PIN(pos_fb) + PIN(com_offset)) * PIN(pp));
   }
 }
 

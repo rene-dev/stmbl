@@ -1,23 +1,9 @@
-load pmsm_limits
 load pmsm_ttc
-pmsm_limits0.rt_prio = 7
 pmsm_ttc0.rt_prio = 9
-pmsm_limits0.r = conf0.r
-pmsm_limits0.ld = conf0.l
-pmsm_limits0.lq = conf0.l
-pmsm_limits0.psi = conf0.psi
-pmsm_limits0.j = conf0.j
-pmsm_limits0.polecount = conf0.polecount
 pmsm_ttc0.psi = conf0.psi
 pmsm_ttc0.polecount = conf0.polecount
-pmsm_limits0.ac_volt = hv0.pwm_volt
-pmsm_limits0.iq = hv0.iq_fb
-pmsm_limits0.id = hv0.id_fb
 pmsm_ttc0.pos_in = vel2.pos_out
-pid0.max_torque = pmsm_limits0.max_torque
-pid0.min_torque = pmsm_limits0.min_torque
-pid0.max_vel = pmsm_limits0.abs_max_vel
-pmsm_ttc0.torque = pid0.torque_cor_cmd
+pmsm_ttc0.torque = pid0.torque_cmd
 hv0.d_cmd = fb_switch0.id
 hv0.q_cmd = pmsm_ttc0.cur
 hv0.cmd_mode = 1

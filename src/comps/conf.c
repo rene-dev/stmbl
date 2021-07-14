@@ -9,7 +9,9 @@ HAL_COMP(conf);
 HAL_PIN(r); // phase resistance [ohm]
 HAL_PIN(l); // phase inductance [H]
 HAL_PIN(j); // motor inertia [kg*m^2]
-HAL_PIN(j_load); // load inertia [kg*m^2]
+HAL_PIN(d); // motor damping [Nm/rad/s]
+HAL_PIN(f); // motor friction [Nm]
+HAL_PIN(j_sys); // system inertia [kg*m^2]
 HAL_PIN(j_lpf); // motor to load bandwidth [Hz]
 HAL_PIN(psi); // electrical torque constant [V*s/rad]
 HAL_PIN(polecount); // #motor pole pairs
@@ -53,10 +55,11 @@ HAL_PIN(fan_hv_temp); // driver fan threshold [°C]
 HAL_PIN(fan_mot_temp); // motor fan threshold [°C]
 
 HAL_PIN(g); // motor model limit scaling
-HAL_PIN(pos_p); // position loop proportional gain [rad/s/rad]
-HAL_PIN(vel_p); // velocity loop proportional gain [rad/s^2/(rad/s)]
-HAL_PIN(vel_i); // velocity loop integral gain [Nm*s/(rad/s)]
+HAL_PIN(pos_bw); // position loop bandwidth [rad/s/rad]
+HAL_PIN(vel_bw); // velocity loop bandwidth [rad/s^2/(rad/s)]
+HAL_PIN(vel_d); // velocity loop damping
 HAL_PIN(vel_g); // velocity loop proportional limit scaling
+HAL_PIN(torque_g); // torque loop proportional limit scaling
 HAL_PIN(cur_bw); // current loop bandwidth [V/A]
 HAL_PIN(cur_ff); // current loop resistance feedforward gain
 HAL_PIN(cur_ind); // current loop BEMF feedforward gain

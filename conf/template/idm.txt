@@ -1,0 +1,32 @@
+
+load idm
+idm0.rt_prio = 4
+
+idm0.en = fault0.en_out
+pid0.pos_ext_cmd = idm0.pos_cmd
+pid0.vel_ext_cmd = idm0.vel_cmd
+pid0.acc_ext_cmd = idm0.acc_cmd
+
+pid0.j_mot = idm0.inertia
+pid0.d = idm0.damping
+pid0.f = idm0.friction
+pid0.l = idm0.load
+
+pid0.pos_bw = idm0.pos_bw
+pid0.vel_bw = idm0.vel_bw
+pid0.vel_d = idm0.vel_d
+
+idm0.fb_torque = pid0.fb_torque_cmd
+idm0.pos_error = pid0.pos_error
+idm0.vel_error = pid0.vel_error
+
+conf0.max_pos_error = 0
+conf0.max_sat = 10
+conf0.vel_g = 1
+
+term0.wave0 = idm0.pos_cmd
+term0.wave2 = idm0.vel_cmd
+term0.wave4 = pid0.fb_torque_cmd
+term0.gain4 = 100
+
+term0.send_step = 21
