@@ -9,7 +9,7 @@ script:
 notifications:
   irc:
     channels:
-    - irc.hackint.org#stmbl
+    - irc.hackint.org#stmbl1
     on_success: never
     on_failure: always
 before_deploy: git fetch --tags
