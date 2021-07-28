@@ -1,3 +1,4 @@
+#include "comps/uf_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -15,7 +16,7 @@ HAL_PIN(ud);
 HAL_PIN(max_acc);
 HAL_PIN(min_acc);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct uf_ctx_t * ctx = (struct uf_ctx_t *)ctx_ptr;
   struct uf_pin_ctx_t *pins = (struct uf_pin_ctx_t *)pin_ptr;
 

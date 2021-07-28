@@ -1,3 +1,4 @@
+#include "term_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "defines.h"
@@ -25,7 +26,7 @@ struct term_ctx_t {
 };
 
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct term_ctx_t * ctx = (struct sim_ctx_t *)ctx_ptr;
   struct term_pin_ctx_t *pins = (struct term_pin_ctx_t *)pin_ptr;
 
@@ -35,7 +36,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   }
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct term_ctx_t *ctx      = (struct term_ctx_t *)ctx_ptr;
   struct term_pin_ctx_t *pins = (struct term_pin_ctx_t *)pin_ptr;
 
@@ -50,7 +51,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 }
 
-static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct term_ctx_t *ctx      = (struct term_ctx_t *)ctx_ptr;
   struct term_pin_ctx_t *pins = (struct term_pin_ctx_t *)pin_ptr;
 

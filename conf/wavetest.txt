@@ -1,0 +1,26 @@
+link pid
+term0.wave0 = sim0.sin
+term0.wave0 = sim0.sin
+term0.wave1 = sim0.sin
+term0.wave2 = sim0.sin
+term0.wave3 = sim0.sin
+term0.wave4 = sim0.sin
+term0.wave5 = sim0.sin
+term0.wave6 = sim0.sin
+term0.wave7 = sim0.sin
+term0.offset0 = 60.000000
+term0.offset1 = 50.000000
+term0.offset2 = 40.000000
+term0.offset3 = 30.000000
+term0.offset4 = 20.000000
+term0.offset5 = 10.000000
+term0.offset6 = 0.000000
+term0.offset7 = -10.000000
+term0.gain0 = 2.000000
+term0.gain1 = 2.000000
+term0.gain2 = 2.000000
+term0.gain3 = 2.000000
+term0.gain4 = 2.000000
+term0.gain5 = 2.000000
+term0.gain6 = 2.000000
+term0.gain7 = 2.000000

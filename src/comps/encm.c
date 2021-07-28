@@ -1,3 +1,4 @@
+#include "encm_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -10,17 +11,28 @@ HAL_COMP(encm);
 
 HAL_PIN(pos);
 HAL_PIN(error);
+HAL_PIN(cmd_error);
+HAL_PIN(crc_error);
+HAL_PIN(dma_error);
 HAL_PIN(state);
-HAL_PIN(dma);  //dma transfers left
+
+HAL_PIN(cmd);
+HAL_PIN(req);
+HAL_PIN(full_duplex);
+HAL_PIN(bytes);
+HAL_PIN(id);
+
+HAL_PINA(buf, 15);
+
 
 struct encm_ctx_t {
   uint32_t error;
   uint8_t rxbuf[15];
 };
 
-static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct encm_ctx_t *ctx = (struct encm_ctx_t *)ctx_ptr;
-  // struct encm_pin_ctx_t * pins = (struct encm_pin_ctx_t *)pin_ptr;
+  struct encm_pin_ctx_t * pins = (struct encm_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
   USART_InitTypeDef USART_InitStruct;
   DMA_InitTypeDef DMA_InitStructure;
@@ -44,11 +56,6 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_UP;
   GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  //USART RX
-  // GPIO_PinAFConfig(GPIOB, GPIO_PinSource11, GPIO_AF_USART6);
-  // GPIO_InitStruct.GPIO_Pin = GPIO_Pin_11;
-  // GPIO_Init(GPIOB, &GPIO_InitStruct);
-
   USART_InitStruct.USART_BaudRate            = 2500000;
   USART_InitStruct.USART_WordLength          = USART_WordLength_8b;
   USART_InitStruct.USART_StopBits            = USART_StopBits_1;
@@ -59,7 +66,20 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 
   /* Enable the USART */
   USART_Cmd(USART6, ENABLE);
-  USART_HalfDuplexCmd(USART6, ENABLE);
+
+  if(PIN(full_duplex) > 0.0){
+    //USART RX
+    GPIO_PinAFConfig(GPIOC, GPIO_PinSource7, GPIO_AF_USART6);
+    GPIO_InitStruct.GPIO_Pin   = GPIO_Pin_7;
+    GPIO_InitStruct.GPIO_Mode  = GPIO_Mode_AF;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_UP;
+    GPIO_Init(GPIOC, &GPIO_InitStruct);
+  }
+  else{
+    USART_HalfDuplexCmd(USART6, ENABLE);
+  }
 
   // DMA-Disable
   DMA_Cmd(DMA2_Stream1, DISABLE);
@@ -86,10 +106,9 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   USART_DMACmd(USART6, USART_DMAReq_Rx, ENABLE);
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct encm_ctx_t *ctx      = (struct encm_ctx_t *)ctx_ptr;
   struct encm_pin_ctx_t *pins = (struct encm_pin_ctx_t *)pin_ptr;
-  PIN(dma)                    = DMA_GetCurrDataCounter(DMA2_Stream1);
   // for(int i = 0; i < ARRAY_SIZE(ctx->rxbuf); i++){
   //    PIN_ARRAY(d,i) = ctx->rxbuf[i];
   // }
@@ -104,34 +123,113 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   //6: 255 turns... how many bits?
   //7: unknown
   //8: checksum: xor byte 0-8 = 0
-  if((sizeof(ctx->rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream1)) > 7) {
-    int offset = -1;
-    for(int i = 0; i < 3; i++) {
-      if(ctx->rxbuf[i] == 0x32) {
-        offset = i;
-        break;
+
+  //request: 0x02
+  //0: request
+  //1: unknown
+  //2: low 8 bit
+  //3: mid 8 bit 
+  //4: hi 1 + 7 bit mt
+  //5: crc
+
+  //request: 0x92
+  //0: request
+  //1: unknown
+  //2: id
+  //3: crc or id ...
+
+  uint8_t cmd = 0;
+  uint8_t expected_bytes = 0;
+
+  if(PIN(cmd) > 0){ // cmd overwrite
+    cmd = PIN(cmd);
+  }
+  else{
+    switch((int) PIN(id)){
+      case 0: // no id
+        cmd = 0x92; // request id
+        expected_bytes = 0;
+      break;
+
+      case 32:
+        cmd = 0x2; // request singel turn data
+        expected_bytes = 7;
+      break;
+
+      case 61:
+      case 65:
+        cmd = 0x32; // request singel turn data
+        expected_bytes = 9;
+      break;
+      
+      default:
+        cmd = 0x32;
+        expected_bytes = 9;
+      break;
+    }
+  }
+
+  PIN(req) = cmd;
+
+  PIN(error) = 0;
+  PIN(crc_error) = 0;
+  PIN(dma_error) = 0;
+  PIN(cmd_error) = 0;  
+  PIN(state) = 0;
+
+  // number of received bytes
+  uint8_t bytes = sizeof(ctx->rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream1);
+  PIN(bytes) = bytes;
+
+  // check crc (xor all == 0)
+  uint8_t crc = 0;
+  for(int i = 0; i < bytes; i++){
+    crc = crc ^ ctx->rxbuf[i];
+    PINA(buf, i) = ctx->rxbuf[i];
+  }
+  
+  if(crc){
+    PIN(error) = 1;
+    PIN(crc_error) = 1;
+  }
+  else{
+    // check #bytes
+    if(bytes < 3 || ((expected_bytes > 0) & (bytes != expected_bytes))){
+      PIN(error) = 1;
+      PIN(dma_error) = 1;
+    }
+    else{
+      // check cmd
+      if(ctx->rxbuf[0] != cmd){
+        PIN(error) = 1;
+        PIN(cmd_error) = 1;
+      }
+      else{
+        uint32_t ipos = 0;
+        switch(cmd){
+          case 0x2: // single turn data
+            ipos = (ctx->rxbuf[2] << 11) + ((ctx->rxbuf[3] & 0x1f) << 19); // 13 bit
+            PIN(state) = 3;
+          break;
+
+          case 0x32: // single turn data
+            ipos = (ctx->rxbuf[2] & 0x80) + (ctx->rxbuf[3] << 8) + (ctx->rxbuf[4] << 16); // 17 bit
+            PIN(state) = 3;
+          break;
+
+          case 0x92: // encoder id
+            PIN(id) = ctx->rxbuf[2];
+          break;
+        }
+        PIN(pos) = (ipos * M_PI * 2.0 / 16777216.0) - M_PI;
       }
     }
-
-    if(offset >= 0 && ctx->rxbuf[0 + offset] == 0x32 && ((ctx->rxbuf[0 + offset] ^ ctx->rxbuf[1 + offset] ^ ctx->rxbuf[2 + offset] ^ ctx->rxbuf[3 + offset] ^ ctx->rxbuf[4 + offset] ^ ctx->rxbuf[5 + offset] ^ ctx->rxbuf[6 + offset] ^ ctx->rxbuf[7 + offset] ^ ctx->rxbuf[8 + offset]) == 0)) {
-      uint32_t tpos = ((ctx->rxbuf[2 + offset] & 0x80) >> 7) + ctx->rxbuf[3 + offset] * 2 + ctx->rxbuf[4 + offset] * 512;  // 17 bit single turn position
-      PIN(pos)      = (tpos * M_PI * 2.0 / 131072.0) - M_PI;                                                               // convert to +-PI
-      PIN(error)    = 0.0;
-      PIN(state)    = 3.0;
-    } else {
-      ctx->error++;  //TODO: overflow...
-      PIN(error) = ctx->error;
-      PIN(state) = 0.0;
-    }
-  } else {
-    ctx->error++;  //TODO: overflow...
-    PIN(error) = ctx->error;
-    PIN(state) = 0.0;
   }
+
 
   //TODO: irq here will cause problems
   GPIO_SetBits(GPIOD, GPIO_Pin_15);  //tx enable
-  USART_SendData(USART6, 0x32);
+  USART_SendData(USART6, cmd);
   while(USART_GetFlagStatus(USART6, USART_FLAG_TC) == RESET)
     ;
   GPIO_ResetBits(GPIOD, GPIO_Pin_15);  //tx disable

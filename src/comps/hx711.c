@@ -1,3 +1,4 @@
+#include "hx711_comp.h"
 /*
 * This file is part of the stmbl project.
 *
@@ -27,10 +28,15 @@
 
 HAL_COMP(hx);
 
-HAL_PIN(out);
+HAL_PIN(out0);
+HAL_PIN(out1);
 HAL_PIN(gain);
 HAL_PIN(offset);
 HAL_PIN(sleep);
+HAL_PIN(clk_inv);
+HAL_PIN(data_inv);
+HAL_PIN(timer);
+HAL_PIN(time);
 
 struct hx_ctx_t {
   uint32_t error;
@@ -43,9 +49,18 @@ static void nopsleep(uint32_t t){
   }
 }
 
-static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct hx_ctx_t *ctx = (struct hx_ctx_t *)ctx_ptr;
   struct hx_pin_ctx_t * pins = (struct hx_pin_ctx_t *)pin_ptr;
+
+  PIN(sleep) = 20;
+  PIN(time) = 0.01;
+  PIN(gain) = 1;
+}
+
+static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
+  //struct hx_ctx_t *ctx = (struct hx_ctx_t *)ctx_ptr;
+  //struct hx_pin_ctx_t * pins = (struct hx_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
 
   //TX enable Z
@@ -64,42 +79,71 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_InitStruct.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStruct.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(FB1_Z_PORT, &GPIO_InitStruct);
-
-  PIN(sleep) = 20;
 }
 
 //TODO: plausibility, saturation, channel/gain config, 2 chips
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct hx_ctx_t *ctx      = (struct hx_ctx_t *)ctx_ptr;
   struct hx_pin_ctx_t *pins = (struct hx_pin_ctx_t *)pin_ptr;
-  uint32_t value = 0;
+  uint32_t value0 = 0;
+  uint32_t value1 = 0;
 
-  int sleep = CLAMP(PIN(sleep), 1, 100);
+  int sleep = CLAMP(PIN(sleep), 1, 50);
 
-  if(!GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN)){//data line low = conversion ready
-    for(int i = 0 ; i < 24;i++){
-      nopsleep(sleep);
-      GPIO_SetBits(FB1_Z_PORT, FB1_Z_PIN);
-      nopsleep(sleep);
-      GPIO_ResetBits(FB1_Z_PORT, FB1_Z_PIN);
-      if(GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN)){//dout = 1
-        value++;
+  if(PIN(timer) > PIN(time)){
+    if((PIN(data_inv) > 0.0) ? (GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN)) : (!GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN))){//data line low = conversion ready
+      for(int i = 0 ; i < 24;i++){
+        if(PIN(clk_inv) > 0.0){
+          nopsleep(sleep);
+          GPIO_ResetBits(FB1_Z_PORT, FB1_Z_PIN);
+          nopsleep(sleep);
+          GPIO_SetBits(FB1_Z_PORT, FB1_Z_PIN);
+        }
+        else{
+          nopsleep(sleep);
+          GPIO_SetBits(FB1_Z_PORT, FB1_Z_PIN);
+          nopsleep(sleep);
+          GPIO_ResetBits(FB1_Z_PORT, FB1_Z_PIN);
+        }
+        if((PIN(data_inv) > 0.0) ? (GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN)) : (!GPIO_ReadInputDataBit(FB1_A_PORT, FB1_A_PIN))){//dout = 1
+          value0++;
+        }
+        value0 = value0 << 1;
+        if((PIN(data_inv) > 0.0) ? (GPIO_ReadInputDataBit(FB1_B_PORT, FB1_B_PIN)) : (!GPIO_ReadInputDataBit(FB1_B_PORT, FB1_B_PIN))){//dout = 1
+          value1++;
+        }
+        value1 = value1 << 1;
       }
-      value = value << 1;
-    }
-    //clock additional config bits
-    nopsleep(sleep);
-    GPIO_SetBits(FB1_Z_PORT, FB1_Z_PIN);
-    nopsleep(sleep);
-    GPIO_ResetBits(FB1_Z_PORT, FB1_Z_PIN);
+      //clock additional config bits
+      if(PIN(clk_inv) > 0.0){
+        nopsleep(sleep);
+        GPIO_ResetBits(FB1_Z_PORT, FB1_Z_PIN);
+        nopsleep(sleep);
+        GPIO_SetBits(FB1_Z_PORT, FB1_Z_PIN);
+      }
+      else{
+        nopsleep(sleep);
+        GPIO_SetBits(FB1_Z_PORT, FB1_Z_PIN);
+        nopsleep(sleep);
+        GPIO_ResetBits(FB1_Z_PORT, FB1_Z_PIN);
+      }
 
-    if(value & 0x800000){//if 24th bit is set, pad others, to get 2 complement number
-      value |= 0xff000000;
+      if(value0 & 0x800000){//if 24th bit is set, pad others, to get 2 complement number
+        value0 |= 0xff000000;
+      }
+      int32_t sint = *((int32_t*)(&value0));
+      PIN(out0) = ((float)sint/(float)0x7fffff)*PIN(gain)+PIN(offset);
+
+      if(value1 & 0x800000){//if 24th bit is set, pad others, to get 2 complement number
+        value1 |= 0xff000000;
+      }
+      sint = *((int32_t*)(&value1));
+      PIN(out1) = ((float)sint/(float)0x7fffff)*PIN(gain)+PIN(offset);
+      PIN(timer) = 0.0;
     }
-    int32_t sint = *((int32_t*)(&value));
-    PIN(out) = ((float)sint/(float)0x7fffff)*PIN(gain)+PIN(offset);
   }
+  PIN(timer) += period;
 }
 
 hal_comp_t hx_comp_struct = {
@@ -107,7 +151,7 @@ hal_comp_t hx_comp_struct = {
     .nrt       = 0,
     .rt        = rt_func,
     .frt       = 0,
-    .nrt_init  = 0,
+    .nrt_init  = nrt_init,
     .hw_init   = hw_init,
     .rt_start  = 0,
     .frt_start = 0,

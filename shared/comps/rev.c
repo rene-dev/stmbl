@@ -1,3 +1,4 @@
+#include "rev_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -12,7 +13,7 @@ HAL_PIN(in_d);
 HAL_PIN(out_d);
 HAL_PIN(rev);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct rev_ctx_t * ctx = (struct rev_ctx_t *)ctx_ptr;
   struct rev_pin_ctx_t *pins = (struct rev_pin_ctx_t *)pin_ptr;
 

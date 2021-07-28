@@ -13,7 +13,6 @@ load io
 load iit
 link conf
 hv0.rt_prio = 0.9
-hv0.frt_prio = 1
 adc0.rt_prio = 1
 reslimit0.rt_prio = 3
 rev0.rt_prio = 4
@@ -22,6 +21,7 @@ vel0.rt_prio = 6
 vel1.rt_prio = 6
 vel2.rt_prio = 6
 io0.rt_prio = 7
+io0.frt_prio = 3
 pid0.rt_prio = 8
 fault0.rt_prio = 10
 iit0.rt_prio = 13
@@ -115,8 +115,8 @@ pe0.udc = hv0.dc_volt
 pe0.idc = 0
 pe0.ud = 0
 pe0.uq = 0
-pe0.id = hv0.d_fb
-pe0.iq = hv0.q_fb
+pe0.id = hv0.id_fb
+pe0.iq = hv0.iq_fb
 pe0.torque = pid0.torque_cor_cmd
 pe0.vel = vel1.vel
 pe0.r = conf0.r

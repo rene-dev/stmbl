@@ -1,3 +1,4 @@
+#include "sserial_comp.h"
 /*
 * This file is part of the stmbl project.
 *
@@ -45,6 +46,10 @@ HAL_PIN(vel_fb);
 HAL_PIN(current);
 HAL_PIN(scale);
 
+HAL_PIN(clock_scale);
+HAL_PIN(available);
+HAL_PIN(phase);
+
 HAL_PIN(in0);
 HAL_PIN(in1);
 HAL_PIN(in2);
@@ -62,7 +67,7 @@ HAL_PIN(pos_advance);
 
 //TODO: move to ctx
 struct sserial_ctx_t {
-  uint32_t foo;
+  uint32_t phase;
 };
 
 volatile uint8_t rxbuf[128];  //rx dma buffer
@@ -217,7 +222,7 @@ static void send(uint8_t len, uint8_t docrc) {
 
 //TODO: lbp command 0xe6 to set mode
 
-static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct sserial_ctx_t * ctx = (struct sserial_ctx_t *)ctx_ptr;
   struct sserial_pin_ctx_t *pins = (struct sserial_pin_ctx_t *)pin_ptr;
 
@@ -327,15 +332,40 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   block_bytes = 5;
   //calculate timeout in systicks for block_bytes
   max_waste_ticks = (1.0 / 2500000.0) * 11.0 * (float)block_bytes / (1.0f / (float)hal_get_systick_freq());
+
+  PIN(clock_scale) = 1.0;
+  PIN(phase) = 0;
 }
 
+// static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
+//   struct sserial_pin_ctx_t *pins = (struct sserial_pin_ctx_t *)pin_ptr;
+//   //struct sserial_ctx_t *mem = (struct sserial_ctx_t *)ctx_ptr;
+//   PIN(phase) = 0;
+// }
 
-static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void frt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct sserial_pin_ctx_t *pins = (struct sserial_pin_ctx_t *)pin_ptr;
+  //struct sserial_ctx_t *mem = (struct sserial_ctx_t *)ctx_ptr;
   //next received packet will be written to bufferpos
   uint32_t bufferpos = sizeof(rxbuf) - DMA_GetCurrDataCounter(DMA2_Stream5);
   //how many packets we have the the rx buffer for processing
   uint32_t available = (bufferpos - rxpos + sizeof(rxbuf)) % sizeof(rxbuf);
+
+  PIN(phase) += 1.0;
+  
+  uint32_t goal = 5;
+  PIN(clock_scale) = 1.0;
+  if(PIN(phase) > 3){
+    PIN(phase) = 0;
+    if(available > goal){
+    PIN(clock_scale) = 0.9;
+    }
+    else if(available < goal && available > 0){
+      PIN(clock_scale) = 1.1;
+    }
+  }
+
+  PIN(available) = available;
 
   if(available >= 1) {
     lbp.byte = rxbuf[rxpos];
@@ -436,6 +466,7 @@ static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst
           //send(discovery.input, 1);
           timeout = 0;
           //set output pins
+
           PIN(pos_cmd)   = data_out.pos_cmd;
           PIN(pos_cmd_d) = data_out.vel_cmd;
           PIN(out0)      = data_out.out_0;

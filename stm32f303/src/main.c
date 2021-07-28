@@ -315,16 +315,17 @@ int main(void) {
   hal_parse("svm0.udc = io0.udc");
   hal_parse("curpid0.id_fb = dq0.d");
   hal_parse("curpid0.iq_fb = dq0.q");
-  hal_parse("ls0.d_fb = dq0.d");
-  hal_parse("ls0.q_fb = dq0.q");
+  hal_parse("ls0.id_fb = dq0.d");
+  hal_parse("ls0.iq_fb = dq0.q");
+  hal_parse("ls0.ud_fb = curpid0.ud");
+  hal_parse("ls0.uq_fb = curpid0.uq");
   hal_parse("ls0.y = dq0.y");
   hal_parse("ls0.u_fb = io0.u");
   hal_parse("ls0.v_fb = io0.v");
   hal_parse("ls0.w_fb = io0.w");
   hal_parse("idq0.d = curpid0.ud");
   hal_parse("idq0.q = curpid0.uq");
-  hal_parse("curpid0.rd = ls0.r");
-  hal_parse("curpid0.rq = ls0.r");
+  hal_parse("curpid0.r = ls0.r");
   hal_parse("curpid0.ld = ls0.l");
   hal_parse("curpid0.lq = ls0.l");
   hal_parse("curpid0.psi = ls0.psi");
@@ -339,6 +340,18 @@ int main(void) {
   hal_parse("curpid0.cmd_mode = ls0.cmd_mode");
   hal_parse("hv0.arr = ls0.arr");
   hal_parse("io0.ignore_fault_pin = ls0.ignore_fault_pin");
+  // hal_parse("load sensorless");
+  // hal_parse("sensorless0.rt_prio = 7");
+  // hal_parse("sensorless0.r = ls0.r");
+  // hal_parse("sensorless0.l = ls0.l");
+  // hal_parse("sensorless0.id = dq0.d");
+  // hal_parse("sensorless0.iq = dq0.q");
+  // hal_parse("sensorless0.ud = curpid0.ud");
+  // hal_parse("sensorless0.uq = curpid0.uq");
+  hal_parse("hv0.iu = io0.iu");
+  hal_parse("hv0.iv = io0.iv");
+  hal_parse("hv0.iw = io0.iw");
+  
   hal_parse("debug_level 0");
 
   // hal parse config

@@ -1,3 +1,4 @@
+#include "ypid_comp.h"
 /*
 * This file is part of the stmbl project.
 *
@@ -59,7 +60,7 @@ struct ypid_ctx_t {
   float vel_error_sum;
 };
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct ypid_ctx_t *ctx      = (struct ypid_ctx_t *)ctx_ptr;
   struct ypid_pin_ctx_t *pins = (struct ypid_pin_ctx_t *)pin_ptr;
 

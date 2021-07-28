@@ -1,3 +1,4 @@
+#include "iit_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -22,7 +23,7 @@ struct iit_ctx_t {
   float e;
 };
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct iit_ctx_t *ctx      = (struct iit_ctx_t *)ctx_ptr;
   struct iit_pin_ctx_t *pins = (struct iit_pin_ctx_t *)pin_ptr;
   PIN(amb_temp) = 30.0;
@@ -33,7 +34,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   ctx->e = 0.0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct iit_ctx_t *ctx      = (struct iit_ctx_t *)ctx_ptr;
   struct iit_pin_ctx_t *pins = (struct iit_pin_ctx_t *)pin_ptr;
 

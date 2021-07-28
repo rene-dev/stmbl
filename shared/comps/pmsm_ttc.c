@@ -1,3 +1,4 @@
+#include "pmsm_ttc_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -33,7 +34,7 @@ HAL_PIN(torque);
 // cur cmd out
 HAL_PIN(cur);
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct sim_ctx_t * ctx = (struct sim_ctx_t *)ctx_ptr;
   struct pmsm_ttc_pin_ctx_t *pins = (struct pmsm_ttc_pin_ctx_t *)pin_ptr;
 
@@ -42,7 +43,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(block_gain) = 0.0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct pmsm_ttc_ctx_t * ctx = (struct pmsm_ttc_ctx_t *)ctx_ptr;
   struct pmsm_ttc_pin_ctx_t *pins = (struct pmsm_ttc_pin_ctx_t *)pin_ptr;
 

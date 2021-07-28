@@ -26,7 +26,7 @@ void setup() {
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-
+  
   //fan
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_0;
   GPIO_Init(GPIOD, &GPIO_InitStructure);
@@ -80,7 +80,7 @@ void setup_res() {
   TIM_SelectSlaveMode(TIM_SLAVE, TIM_SlaveMode_External1);  //Rising edges of the selected trigger (TRGI) clock the counter
   TIM_ITRxExternalClockConfig(TIM_SLAVE, TIM_SLAVE_ITR);    // clk = TIM_MASTER trigger out
   TIM_ARRPreloadConfig(TIM_SLAVE, ENABLE);
-
+  TIM_SLAVE->CNT = (TIM_SLAVE->ARR + 1) / 2;
   TIM_Cmd(TIM_SLAVE, ENABLE);
 
   /* ADC clock enable */

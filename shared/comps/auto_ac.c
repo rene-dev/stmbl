@@ -1,3 +1,4 @@
+#include "comps/auto_ac_comp.h"
 #include "hal.h"
 #include "defines.h"
 
@@ -9,7 +10,7 @@ HAL_PIN(lpf);
 HAL_PIN(th);
 HAL_PIN(offset);
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct auto_ac_ctx_t * ctx = (struct auto_ac_ctx_t *)ctx_ptr;
   struct auto_ac_pin_ctx_t *pins = (struct auto_ac_pin_ctx_t *)pin_ptr;
   PIN(lpf) = 1.0;
@@ -18,7 +19,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
 }
 
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct auto_ac_pin_ctx_t *pins = (struct auto_ac_pin_ctx_t *)pin_ptr;
 
   if(ABS(PIN(in)) <= PIN(th)){

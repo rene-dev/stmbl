@@ -1,3 +1,4 @@
+#include "uf2_comp.h"
 #include "hal.h"
 #include "defines.h"
 #include "angle.h"
@@ -26,7 +27,7 @@ struct uf_ctx_t {
   float cur;
 };
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct uf_ctx_t *ctx      = (struct uf_ctx_t *)ctx_ptr;
   struct uf_pin_ctx_t *pins = (struct uf_pin_ctx_t *)pin_ptr;
 
@@ -37,7 +38,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   ctx->cur = 0.0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct uf_ctx_t *ctx      = (struct uf_ctx_t *)ctx_ptr;
   struct uf_pin_ctx_t *pins = (struct uf_pin_ctx_t *)pin_ptr;
 

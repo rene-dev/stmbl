@@ -1,0 +1,6 @@
+link pid
+load sim
+sim1.rt_prio = 1
+term0.wave0 = sim0.sin
+term0.wave1 = sim1.sin
+sim1.freq = 2

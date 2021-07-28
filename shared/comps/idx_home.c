@@ -1,3 +1,4 @@
+#include "idx_home_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -19,7 +20,7 @@ struct idx_home_ctx_t {
   int waitabs;
 };
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct idx_home_ctx_t *ctx      = (struct idx_home_ctx_t *)ctx_ptr;
   struct idx_home_pin_ctx_t *pins = (struct idx_home_pin_ctx_t *)pin_ptr;
 

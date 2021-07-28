@@ -1,3 +1,4 @@
+#include "encf_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -23,6 +24,9 @@ HAL_PIN(req_len);
 HAL_PIN(send_step);
 HAL_PIN(crc_ok);
 HAL_PIN(crc_er);
+
+HAL_PIN(freq);
+HAL_PIN(bit_ticks);
 
 volatile uint32_t sendf;
 uint32_t send_counterf;
@@ -95,7 +99,7 @@ uint8_t print_buf[10];
 int32_t pos_offset;
 uint32_t state_counter;
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx = (struct encf_ctx_t *)ctx_ptr;
   struct encf_pin_ctx_t *pins = (struct encf_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -175,9 +179,10 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   pos_offset    = 0;
   PIN(req_len)  = 2046;
   state_counter = 0;
+  PIN(freq) = 1024000;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx      = (struct encf_ctx_t *)ctx_ptr;
   struct encf_pin_ctx_t *pins = (struct encf_pin_ctx_t *)pin_ptr;
 
@@ -188,13 +193,15 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
     data.enc_data[i] = 0;
   }
 
+  //1 bit = 80 ticks 82e6/1.024e6
+  PIN(bit_ticks) = 82000000 / PIN(freq);
+
   uint8_t bits_sum = 0;
   for(int i = 1; i < count; i++) {  //each capture form dma
-    //1 bit = 80 ticks 82e6/1.024e6
     //calculate time between edges
     uint16_t diff = tim_data[i] - tim_data[i - 1];
     //number of bits to set
-    int bits = (float)diff / (float)81;
+    int bits = (float)diff / PIN(bit_ticks) + 0.5;
     if(i % 2 == 0) {  //line starts high, set every even numbered captures to 1
       for(int j = bits_sum; j < bits + bits_sum; j++) {
         data.enc_data[j / 8] |= (1 << j % 8);
@@ -230,40 +237,36 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
       oldcrc[4]   = crc[4];
     }
     if(crc[0] == 0 && crc[1] == 0 && crc[2] == 0 && crc[3] == 0 && crc[4] == 0) {
-      PIN(crc_ok)
-      ++;
+      PIN(crc_ok)++;
+      int32_t pos = data.fanuc.pos_lo + (data.fanuc.pos_hi << 6);
+      PIN(index) = data.fanuc.no_index;
+
+      PIN(abs_pos) = mod((float)pos * 2.0 * M_PI / (1 << 22));
+
+      if(PIN(index) > 0.0) {
+        pos_offset    = pos;
+        PIN(pos)      = PIN(abs_pos);
+        PIN(state)    = 1;
+        state_counter = 1;
+      } else if(state_counter == 1) {
+        state_counter = 2;
+        pos_offset    = pos;
+        PIN(pos)      = PIN(abs_pos);
+      } else {
+        state_counter = 3;
+        PIN(pos)      = mod((float)(pos + pos_offset) * 2.0 * M_PI / (1 << 22));
+        PIN(state)    = 3;
+      }
+
+      PIN(turns)   = data.fanuc.turns;
+      pos          = data.fanuc.com_pos;
+      PIN(com_pos) = mod(pos * 2.0 * M_PI / 1024);
+      PIN(error)   = 0;
     } else {
-      PIN(crc_er)
-      ++;
+      PIN(crc_er)++;
+      PIN(state) = 1;
+      PIN(error) = 1;
     }
-
-    int32_t pos;
-
-    pos        = data.fanuc.pos_lo + (data.fanuc.pos_hi << 6);
-    PIN(index) = data.fanuc.no_index;
-
-    PIN(abs_pos) = mod((float)pos * 2.0 * M_PI / (1 << 22));
-
-    if(PIN(index) > 0.0) {
-      pos_offset    = pos;
-      PIN(pos)      = PIN(abs_pos);
-      PIN(state)    = 1;
-      state_counter = 1;
-    } else if(state_counter == 1) {
-      state_counter = 2;
-      pos_offset    = pos;
-      PIN(pos)      = PIN(abs_pos);
-    } else {
-      state_counter = 3;
-      PIN(pos)      = mod((float)(pos + pos_offset) * 2.0 * M_PI / (1 << 22));
-      PIN(state)    = 3;
-    }
-
-
-    PIN(turns)   = data.fanuc.turns;
-    pos          = data.fanuc.com_pos;
-    PIN(com_pos) = mod(pos * 2.0 * M_PI / 1024);
-    PIN(error)   = 0;
   } else {
     PIN(error)    = 1;
     PIN(state)    = 1;
@@ -282,7 +285,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   DMA_Cmd(DMA1_Stream0, ENABLE);
 }
 
-static void nrt_func(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx = (struct encf_ctx_t *)ctx_ptr;
   struct encf_pin_ctx_t *pins = (struct encf_pin_ctx_t *)pin_ptr;
 

@@ -1,0 +1,45 @@
+link pid
+link acim
+link enc_fb0
+link misc
+
+link sserial
+linrev0.scale = 1
+
+conf0.r = 0.5
+conf0.l = 0.005
+conf0.j = 0.015
+conf0.max_force = 30
+conf0.max_ac_cur = 25
+conf0.polecount = 2
+conf0.vel_p = 100
+conf0.vel_i = 5
+conf0.max_sat = 1
+conf0.max_pos_error = 0
+conf0.max_vel = 840
+conf0.max_acc = 2000
+conf0.mot_fb_res = 2000
+conf0.max_dc_volt = 390
+conf0.high_dc_volt = 375
+conf0.mot_fb_rev = 1
+
+iit0.cur_boost = 1.3
+iit0.max_time = 60
+
+acim_ttc0.vel_n = 182.7
+acim_ttc0.torque_n = 23.0
+acim_ttc0.cur_n = 17.0
+acim_ttc0.freq_n = 60.0
+acim_ttc0.u_n = 80.0
+acim_ttc0.u_boost = 7.0
+acim_ttc0.t_boost = 1.3
+
+load ramp
+ramp0.rt_prio = 1.95
+ramp0.vel_ext_cmd = rev0.out_d
+ramp0.en = sserial0.en
+ramp0.max_vel = 838
+ramp0.max_acc = 500
+
+fault0.en = ramp0.en_out
+pid0.pos_en = 0

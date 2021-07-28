@@ -1,3 +1,4 @@
+#include "res_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -33,7 +34,7 @@ struct res_ctx_t {
   int abspos;  // multiturn position
 };
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
   PIN(poles)                 = 1.0;
@@ -41,7 +42,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(min_amp)               = 0.15;
   PIN(freq)                  = 10000;
 }
-static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct res_ctx_t *ctx = (struct res_ctx_t *)ctx_ptr;
   // struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
 
@@ -113,7 +114,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   GPIO_SetBits(FB0_Z_TXEN_PORT, FB0_Z_TXEN_PIN);
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct res_ctx_t *ctx      = (struct res_ctx_t *)ctx_ptr;
   struct res_pin_ctx_t *pins = (struct res_pin_ctx_t *)pin_ptr;
   //TODO: arr can change!

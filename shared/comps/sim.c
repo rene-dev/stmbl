@@ -1,3 +1,4 @@
+#include "sim_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -26,7 +27,7 @@ struct sim_ctx_t {
   float vel;
 };
 
-static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct sim_ctx_t * ctx = (struct sim_ctx_t *)ctx_ptr;
   struct sim_pin_ctx_t *pins = (struct sim_pin_ctx_t *)pin_ptr;
 
@@ -35,7 +36,7 @@ static void nrt_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   PIN(res)  = 100000.0;
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct sim_ctx_t *ctx      = (struct sim_ctx_t *)ctx_ptr;
   struct sim_pin_ctx_t *pins = (struct sim_pin_ctx_t *)pin_ptr;
 

@@ -1,3 +1,4 @@
+#include "not_comp.h"
 #include "hal.h"
 
 HAL_COMP(not);
@@ -5,7 +6,7 @@ HAL_COMP(not);
 HAL_PIN(in);
 HAL_PIN(out);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct not_pin_ctx_t *pins = (struct not_pin_ctx_t *)pin_ptr;
 
   PIN(out) = PIN(in) <= 0.0;

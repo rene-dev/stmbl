@@ -1,3 +1,4 @@
+#include "pos_filter_comp.h"
 #include "hal.h"
 #include "angle.h"
 #include "defines.h"
@@ -15,7 +16,7 @@ HAL_PIN(bandwidth);
 
 HAL_PIN(en);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct pos_filter_ctx_t *ctx      = (struct pos_filter_ctx_t *)ctx_ptr;
   struct pos_filter_pin_ctx_t *pins = (struct pos_filter_pin_ctx_t *)pin_ptr;
 

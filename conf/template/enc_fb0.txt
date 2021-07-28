@@ -13,3 +13,4 @@ io0.fb0y = enc_fb0.error
 io0.fb0g = 1
 enc_fb0.vel = vel1.vel
 enc_fb0.amp = adc0.amp0
+enc_fb0.en_index = 1

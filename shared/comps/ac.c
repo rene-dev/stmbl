@@ -1,3 +1,4 @@
+#include "comps/ac_comp.h"
 #include "hal.h"
 
 HAL_COMP(ac);
@@ -10,7 +11,7 @@ struct ac_ctx_t {
   float avg;
 };
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct ac_ctx_t *ctx      = (struct ac_ctx_t *)ctx_ptr;
   struct ac_pin_ctx_t *pins = (struct ac_pin_ctx_t *)pin_ptr;
 

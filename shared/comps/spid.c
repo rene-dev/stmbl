@@ -1,3 +1,4 @@
+#include "spid_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -37,7 +38,7 @@ struct spid_ctx_t {
   float last_cmd;
 };
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct spid_ctx_t *ctx      = (struct spid_ctx_t *)ctx_ptr;
   struct spid_pin_ctx_t *pins = (struct spid_pin_ctx_t *)pin_ptr;
 

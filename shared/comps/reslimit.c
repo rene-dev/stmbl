@@ -1,3 +1,4 @@
+#include "reslimit_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -11,7 +12,7 @@ HAL_PIN(pos_out);
 
 HAL_PIN(res);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct reslimit_ctx_t * ctx = (struct reslimit_ctx_t *)ctx_ptr;
   struct reslimit_pin_ctx_t *pins = (struct reslimit_pin_ctx_t *)pin_ptr;
   //TODO: offset at zerocross

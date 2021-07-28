@@ -1,0 +1,22 @@
+link pid
+link pmsm
+conf0.max_ac_cur = 15
+load rl
+rl0.rt_prio = 6
+hv0.en = rl0.en_out
+hv0.d_cmd = rl0.ud_cmd
+hv0.q_cmd = rl0.uq_cmd
+rl0.id_fb = hv0.id_fb
+rl0.iq_fb = hv0.iq_fb
+rl0.ud_fb = hv0.ud_fb
+rl0.uq_fb = hv0.uq_fb
+hv0.cmd_mode = 0
+hv0.pos = 0
+term0.wave0 = rl0.ud_cmd
+term0.wave1 = hv0.id_fb
+term0.wave2 = rl0.r
+term0.wave3 = rl0.ld
+term0.gain0 = 5
+term0.gain1 = 5
+term0.gain2 = 30
+term0.gain3 = 3000

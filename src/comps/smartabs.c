@@ -1,3 +1,4 @@
+#include "smartabs_comp.h"
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
@@ -25,7 +26,7 @@ struct smartabs_ctx_t {
   uint8_t rxbuf[15];
 };
 
-static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct smartabs_ctx_t *ctx = (struct smartabs_ctx_t *)ctx_ptr;
   // struct smartabs_pin_ctx_t * pins = (struct smartabs_pin_ctx_t *)pin_ptr;
   GPIO_InitTypeDef GPIO_InitStruct;
@@ -93,7 +94,7 @@ static void hw_init(volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
   USART_DMACmd(USART6, USART_DMAReq_Rx, ENABLE);
 }
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct smartabs_ctx_t *ctx      = (struct smartabs_ctx_t *)ctx_ptr;
   struct smartabs_pin_ctx_t *pins = (struct smartabs_pin_ctx_t *)pin_ptr;
   PIN(dma)                    = DMA_GetCurrDataCounter(DMA2_Stream1);
@@ -115,6 +116,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 
   //TODO: irq here will cause problems
+  __disable_irq();
   GPIO_SetBits(GPIOD, GPIO_Pin_15);  //tx enable
   USART_SendData(USART6, 0x02);
   while(USART_GetFlagStatus(USART6, USART_FLAG_TC) == RESET)
@@ -124,6 +126,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   DMA_Cmd(DMA2_Stream1, DISABLE);
   DMA_ClearFlag(DMA2_Stream1, DMA_FLAG_TCIF1);
   DMA_Cmd(DMA2_Stream1, ENABLE);
+  __enable_irq();
 }
 
 hal_comp_t smartabs_comp_struct = {

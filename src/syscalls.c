@@ -31,6 +31,14 @@ int _open(const char *name, int flags, int mode) {
   return -1;
 }
 
+int _kill_r(struct _reent *r, int pid, int sig){
+  return -1;
+}
+
+int _getpid_r (struct _reent *r){
+  return -1;
+}
+
 /* Register name faking - works in collusion with the linker.  */
 register char *stack_ptr asm("sp");
 

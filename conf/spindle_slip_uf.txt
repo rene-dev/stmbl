@@ -1,0 +1,81 @@
+link pid
+link acim
+link res_fb0
+link enc_cmd
+link misc
+conf0.r = 2
+conf0.l = 0.016
+conf0.j = 0.0003
+conf0.max_force = 20
+conf0.max_ac_cur = 12
+acim_ttc0.cur_n = 3
+acim_ttc0.torque_n = 1.9
+acim_ttc0.freq_n = 100
+acim_ttc0.u_n = 160
+acim_ttc0.u_boost = 5
+conf0.polecount = 2
+conf0.mot_fb_rev = 1
+conf0.vel_p = 300
+conf0.vel_i = 2
+conf0.max_sat = 0.2
+iit0.cur_boost = 4
+iit0.max_time = 60
+pid0.max_vel = conf0.max_vel
+pid0.max_torque = 20
+pid0.min_torque = -20
+conf0.max_pos_error = 0
+conf0.max_vel = 1100
+conf0.mot_fb_res = 8000
+
+load mad
+mad0.rt_prio = 1.9
+mad0.in = io0.in1
+mad0.mult = 84
+
+load ramp
+ramp0.rt_prio = 1.95
+ramp0.vel_ext_cmd = mad0.out
+ramp0.en = io0.ind0
+ramp0.max_vel = 1050
+ramp0.max_acc = 500
+
+load mux
+mux0.rt_prio = 2
+pid0.pos_en = mux0.out0
+mux0.in0 = 1
+mux0.in10 = 0
+
+pid0.vel_ext_cmd = mux0.out1
+mux0.in1 = vel0.vel
+mux0.in11 = ramp0.vel_cmd
+
+acim_ttc0.mode = mux0.out2
+mux0.in2 = 0
+mux0.in12 = 2
+
+acim_ttc0.slip_n = mux0.out3
+mux0.in3 = 1
+mux0.in13 = 2
+
+fault0.max_sat = mux0.out4
+mux0.in4 = conf0.max_sat
+mux0.in14 = 2
+
+mux0.mux = io0.ind0
+
+res0.freq = 5000
+res0.phase = 0.89
+
+enc_cmd0.mode = 1
+enc_cmd0.remap = 3
+
+load not
+not0.rt_prio = 2
+not0.in = io0.C12
+fault0.en = not0.out
+
+enc_cmd0.fault = fault0.fault
+term0.wave2 = mux0.out1
+term0.gain2 = 0.1
+term0.gain3 = 0.1
+conf0.max_dc_volt = 390

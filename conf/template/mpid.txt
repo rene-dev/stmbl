@@ -1,0 +1,118 @@
+load adc
+load reslimit
+load rev
+load fb_switch
+load veltime
+load veltime
+load vel
+load mpid
+load fault
+load hv
+load sim
+load io
+load iit
+link conf
+hv0.rt_prio = 0.9
+hv0.frt_prio = 1
+adc0.rt_prio = 1
+reslimit0.rt_prio = 3
+rev0.rt_prio = 4
+fb_switch0.rt_prio = 5
+veltime0.frt_prio = 6
+veltime1.frt_prio = 6
+vel0.rt_prio = 6
+io0.rt_prio = 7
+mpid0.rt_prio = 8
+fault0.rt_prio = 10
+iit0.rt_prio = 13
+sim0.rt_prio = 13
+term0.rt_prio = 16
+rev0.rev = conf0.cmd_rev
+fb_switch0.mot_rev = conf0.mot_fb_rev
+fb_switch0.com_rev = conf0.com_fb_rev
+fb_switch0.joint_rev = conf0.joint_fb_rev
+reslimit0.res = conf0.mot_fb_res
+mpid0.j = conf0.j
+mpid0.pos_p = conf0.pos_p
+mpid0.vel_p = conf0.vel_p
+mpid0.vel_i = conf0.vel_i
+mpid0.max_vel = conf0.max_vel
+mpid0.max_acc = conf0.max_acc
+mpid0.max_torque = conf0.max_force
+fault0.max_sat = conf0.max_sat
+fault0.max_pos_error = conf0.max_pos_error
+fault0.max_vel_error = conf0.max_vel_error
+fault0.max_dc_cur = conf0.max_dc_cur
+fault0.max_ac_cur = conf0.max_ac_cur
+fault0.max_dc_volt = conf0.max_dc_volt
+fault0.high_dc_volt = conf0.max_dc_volt
+fault0.min_dc_volt = conf0.min_dc_volt
+fault0.max_hv_temp = conf0.max_hv_temp
+fault0.max_mot_temp = conf0.max_mot_temp
+fault0.high_hv_temp = conf0.high_hv_temp
+fault0.high_mot_temp = conf0.high_mot_temp
+fault0.fan_hv_temp = conf0.fan_hv_temp
+fault0.fan_mot_temp = conf0.fan_mot_temp
+fault0.ac_cur = hv0.abs_cur
+hv0.rev = conf0.out_rev
+hv0.r = conf0.r
+hv0.l = conf0.l
+hv0.psi = conf0.psi
+hv0.cur_p = conf0.cur_p
+hv0.cur_i = conf0.cur_i
+hv0.cur_ff = conf0.cur_ff
+hv0.cur_ind = conf0.cur_ind
+hv0.max_cur = conf0.max_ac_cur
+reslimit0.pos_in = rev0.out
+fb_switch0.cmd_pos = reslimit0.pos_out
+fb_switch0.polecount = conf0.polecount
+fb_switch0.en = fault0.en_fb
+fb_switch0.mot_polecount = conf0.mot_fb_polecount
+fb_switch0.joint_polecount = conf0.joint_fb_polecount
+fb_switch0.com_polecount = conf0.com_fb_polecount
+fb_switch0.mot_offset = conf0.mot_fb_offset
+fb_switch0.joint_offset = conf0.joint_fb_offset
+fb_switch0.com_offset = conf0.com_fb_offset
+fb_switch0.phase_time = conf0.phase_time
+fb_switch0.phase_cur = conf0.phase_cur
+veltime0.pos = rev0.out
+veltime1.pos = fb_switch0.vel_fb
+vel0.pos_in = fb_switch0.com_fb
+vel0.en = fault0.en_fb
+vel0.torque = mpid0.torque_cor_cmd
+mpid0.en = fault0.en_pid
+mpid0.pos_ext_cmd = reslimit0.pos_out
+mpid0.vel_ext_cmd = veltime0.vel_lp
+mpid0.pos_fb = fb_switch0.pos_fb
+mpid0.vel_fb = veltime1.vel_lp
+rev0.in_d = veltime0.vel_lp
+fault0.pos_error = mpid0.pos_error
+fault0.vel_error = mpid0.vel_error
+fault0.dc_volt = hv0.dc_volt
+fault0.hv_temp = hv0.hv_temp
+fault0.dc_cur = hv0.dc_cur
+fault0.hv_error = hv0.fault
+fault0.fb_ready = fb_switch0.state
+hv0.en = fault0.en_out
+hv0.pos = vel2.pos_out
+hv0.vel = vel2.vel
+hv0.scale = fault0.scale
+io0.fan = fault0.hv_fan
+io0.fault = fault0.fault
+io0.state = fault0.state
+pe0.udc = hv0.dc_volt
+pe0.idc = 0
+pe0.ud = 0
+pe0.uq = 0
+pe0.id = hv0.id_fb
+pe0.iq = hv0.iq_fb
+pe0.torque = mpid0.torque_cmd
+pe0.vel = vel1.vel
+pe0.r = conf0.r
+pe0.j = conf0.j
+pe0.cap = 0.00054
+iit0.max_temp = conf0.max_mot_temp
+iit0.high_temp = conf0.high_mot_temp
+iit0.max_cur = conf0.max_ac_cur
+fault0.mot_temp = iit0.temp
+iit0.cur = hv0.abs_cur

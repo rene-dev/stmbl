@@ -1,3 +1,4 @@
+#include "hal_test_comp.h"
 #include "hal.h"
 
 HAL_COMP(hal_test);
@@ -5,7 +6,7 @@ HAL_COMP(hal_test);
 HAL_PIN(rt_wait);
 HAL_PIN(frt_wait);
 
-static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct rev_ctx_t * ctx = (struct rev_ctx_t *)ctx_ptr;
   struct hal_test_pin_ctx_t *pins = (struct hal_test_pin_ctx_t *)pin_ptr;
 
@@ -16,7 +17,7 @@ static void rt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_
   }
 }
 
-static void frt_func(float period, volatile void *ctx_ptr, volatile hal_pin_inst_t *pin_ptr) {
+static void frt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct rev_ctx_t * ctx = (struct rev_ctx_t *)ctx_ptr;
   struct hal_test_pin_ctx_t *pins = (struct hal_test_pin_ctx_t *)pin_ptr;
 
