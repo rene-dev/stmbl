@@ -425,17 +425,17 @@ format:
 clean:
 	@echo Cleaning project:
 	rm -rf hv_firmware.o
-#	rm -rf f3.bin f4.bin f3.dfu f4.dfu stmbl.dfu
-#	rm -rf $(OBJDIR)
+	rm -rf f3.bin f4.bin f3.dfu f4.dfu stmbl.dfu
+	rm -rf $(OBJDIR)
 	rm -rf inc/commandslist.h
-#	rm -rf inc/comps/*
-#	rm -rf inc/shared_comps/*
+	rm -rf inc/comps/*
+	rm -rf inc/shared_comps/*
 	rm -rf src/conf_templates.c
 	rm -rf src/hal_tbl.c
-#	@$(MAKE) -f bootloader/Makefile clean
-#	@$(MAKE) -f f3_boot/Makefile clean
-#	@$(MAKE) -f stm32f103/Makefile clean
-#	@$(MAKE) -f stm32f303/Makefile clean
+	@$(MAKE) -f bootloader/Makefile clean
+	@$(MAKE) -f f3_boot/Makefile clean
+	@$(MAKE) -f stm32f103/Makefile clean
+	@$(MAKE) -f stm32f303/Makefile clean
 
 # Include the base rules
 #
