@@ -27,5 +27,6 @@ deploy:
      - f4.bin
      - f4.dfu
   on:
+    repo: prometeus1/stmbl
     tags: true
     all_branches: true
