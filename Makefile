@@ -363,7 +363,7 @@ format:
 clean:
 	@echo Cleaning project:
 	rm -rf hv_firmware.o
-#	rm -rf f3.bin f4.bin f3.dfu f4.dfu stmbl.dfu 
+	rm -rf f3.bin f4.bin f3.dfu f4.dfu stmbl.dfu 
 	rm -rf $(OBJDIR)
 	rm -rf inc/commandslist.h
 	rm -rf src/conf_templates.c
