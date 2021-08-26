@@ -89,8 +89,8 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     break;
 
     case 14:
-      printf("conf0.r = %f\n", PIN(r));
-      printf("conf0.l = %f\n", PIN(l));
+      printf("conf0.r = %f # append to config\n", PIN(r));
+      printf("conf0.l = %f # append to config\n", PIN(l));
       PIN(state) = 2.0;
     break;
 
@@ -104,12 +104,14 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(cur_bw) = 250.0;
 
       printf("Measure torque constant\n");
+      printf("unblock the rotor\n");
       printf("the motor will move\n");
       printf("id0.state = 2.2 to start\n");
     break;
 
     case 23:
-      printf("conf0.psi = %f\n", PIN(psi));
+      printf("conf0.psi = %f # append to config\n", PIN(psi));
+      printf("done\n");
 
       PIN(state) = 2.4;
     break;

@@ -32,6 +32,7 @@ HAL_PIN(vel_error);
 HAL_PIN(pos_bw);
 HAL_PIN(vel_bw);
 HAL_PIN(vel_d);
+HAL_PIN(cur_bw);
 
 HAL_PIN(ff);
 HAL_PIN(kp);
@@ -47,6 +48,8 @@ HAL_PIN(target);
 HAL_PIN(cost);
 HAL_PIN(min_cost);
 HAL_PIN(auto_step);
+
+HAL_PIN(timer);
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct ids_ctx_t * ctx = (struct ids_ctx_t *)ctx_ptr;
@@ -75,7 +78,7 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(step) = 0.25;
   PIN(rep) = 2.0;
 
-  PIN(auto_step) = 0.0;
+  PIN(auto_step) = 1.0;
 }
 
 static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -101,9 +104,10 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     break;
 
     case 13:
-      printf("conf0.pos_bw = %f\n", PIN(pos_bw));
-      printf("conf0.vel_bw = %f\n", PIN(vel_bw));
-      printf("conf0.vel_d = %f\n", PIN(vel_d));
+      printf("conf0.pos_bw = %f # append to config\n", PIN(pos_bw));
+      printf("conf0.vel_bw = %f # append to config\n", PIN(vel_bw));
+      printf("conf0.vel_d = %f # append to config\n", PIN(vel_d));
+      printf("done\n");
       PIN(state) = 1.4;
     break;
   }
@@ -135,7 +139,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PINA(params, 1) = 1.0 / PIN(vel_d);
       PINA(params, 2) = PIN(pos_bw);
 
-      PINA(max_params, 0) = 1.0 / period / 2.0;
+      PINA(max_params, 0) = PIN(cur_bw) / 2.0;
       PINA(max_params, 1) = 1.0;
 
       PIN(min_cost) = (PIN(max_pos) - PIN(min_pos)) * (PIN(max_pos) - PIN(min_pos)) / PIN(max_vel) * 100.0;
@@ -155,6 +159,17 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       float vel = acc * time_to_go;
       vel = LIMIT(vel, PIN(max_vel));
       acc = (vel - PIN(vel)) / period;
+
+      if(time_to_go < period / 2.0){
+        time_to_go = 0.0;
+        to_go = 0.0;
+        vel = 0.0;
+        acc = 0.0;
+        PIN(pos) = PIN(target);
+        PIN(vel) = 0.0;
+        PIN(acc) = 0.0;
+      }
+
       PIN(acc) = LIMIT(acc, PIN(max_acc));
 
       PIN(pos_cmd) = mod(PIN(pos));
@@ -165,34 +180,38 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(cost) += PIN(pos_error) * PIN(pos_error) * PIN(ks) * period;
       PIN(cost) += PIN(vel_error) * PIN(vel_error) * PIN(kv) * period;
       
-      if(ABS(PIN(max_pos) - PIN(pos)) < 0.01){
+
+      PIN(timer) += period;
+      if(PIN(timer) < (ABS(PIN(max_pos) - PIN(min_pos)) / PIN(max_vel) + 2.0 * PIN(max_vel) / PIN(max_acc))){
+        PIN(target) = PIN(max_pos);
+      }
+      else{
         PIN(target) = PIN(min_pos);
       }
-      else if(ABS(PIN(min_pos) - PIN(pos)) < 0.01){
+      if(PIN(timer) > 2.0 * (ABS(PIN(max_pos) - PIN(min_pos)) / PIN(max_vel) + 2.0 * PIN(max_vel) / PIN(max_acc))){
+        PIN(timer) = 0.0;
+      }
+      
+      if(PIN(timer) == 0.0){
+        PIN(min_cost) = MIN(PIN(cost), PIN(min_cost));
 
-        if(ABS(PIN(target) - PIN(pos)) < 0.01){
-          PIN(min_cost) = MIN(PIN(cost), PIN(min_cost));
+        PINA(max_params, 2) = PINA(params, 0) / 2.0;
 
-          PINA(max_params, 2) = PINA(params, 0) / 2.0;
-
-          if(PINA(params, (int)PIN(param)) > PINA(max_params, (int)PIN(param))){
-            PINA(params, (int)PIN(param)) = PINA(max_params, (int)PIN(param));
-            PIN(min_cost) = PIN(cost) * 10.0;
-            PIN(param)++;
-          }
-          else if(PIN(cost) > PIN(min_cost) * PIN(kt)){
-            PINA(params, (unsigned int)PIN(param)) *= PIN(kd);
-            PIN(min_cost) = PIN(cost) * 10.0;
-            PIN(param)++;
-          }
-          else{
-            PINA(params, (unsigned int)PIN(param)) *= 1.0 + PIN(step);
-          }
-
-          PIN(cost) = 0.0;
+        if(PINA(params, (int)PIN(param)) > PINA(max_params, (int)PIN(param))){
+          PINA(params, (int)PIN(param)) = PINA(max_params, (int)PIN(param));
+          PIN(min_cost) = PIN(cost) * 10.0;
+          PIN(param)++;
+        }
+        else if(PIN(cost) > PIN(min_cost) * PIN(kt)){
+          PINA(params, (unsigned int)PIN(param)) *= PIN(kd);
+          PIN(min_cost) = PIN(cost) * 10.0;
+          PIN(param)++;
+        }
+        else{
+          PINA(params, (unsigned int)PIN(param)) *= 1.0 + PIN(step);
         }
 
-        PIN(target) = PIN(max_pos);
+        PIN(cost) = 0.0;
       }
       
       PIN(pos_bw) = PINA(params, 2);

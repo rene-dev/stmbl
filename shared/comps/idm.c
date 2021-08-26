@@ -90,13 +90,14 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
     case 13:
       if(PIN(sys) > 0.0){
-        printf("conf0.j_sys = %f\n", PIN(inertia));
+        printf("conf0.j_sys = %f # append to config\n", PIN(inertia));
       }
       else{
-        printf("conf0.j = %f\n", PIN(inertia));
+        printf("conf0.j = %f # append to config\n", PIN(inertia));
       }
-      printf("conf0.d = %f\n", PIN(damping));
-      printf("conf0.f = %f\n", PIN(friction));
+      printf("conf0.d = %f # append to config\n", PIN(damping));
+      printf("conf0.f = %f # append to config\n", PIN(friction));
+      printf("done\n");
       //printf("pid0.l = %f\n", PIN(load));
       PIN(state) = 1.4;
     break;

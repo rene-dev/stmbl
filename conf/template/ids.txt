@@ -14,6 +14,8 @@ pid0.vel_d = ids0.vel_d
 ids0.pos_error = pid0.pos_error
 ids0.vel_error = pid0.vel_error
 
+ids0.cur_bw = conf0.cur_bw
+
 conf0.max_pos_error = 0
 conf0.max_sat = 10
 conf0.vel_g = 1

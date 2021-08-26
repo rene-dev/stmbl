@@ -96,8 +96,8 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     break;
 
     case 14:
-      printf("conf0.r = %f\n", PIN(r));
-      printf("conf0.l = %f\n", PIN(l));
+      printf("conf0.r = %f # append to config\n", PIN(r));
+      printf("conf0.l = %f # append to config\n", PIN(l));
       PIN(state) = 2.0;
     break;
 
@@ -120,10 +120,10 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     break;
 
     case 25: // pp, out_rev, com_offset
-      printf("conf0.polecount = %f\n", PIN(pp));
-      printf("conf0.mot_fb_offset = %f\n", PIN(com_offset));
+      printf("conf0.polecount = %f # append to config\n", PIN(pp));
+      printf("conf0.mot_fb_offset = %f # append to config\n", PIN(com_offset));
       if(PIN(out_rev) > 0.0){
-        printf("conf0.out_rev = 1\n");
+        printf("conf0.out_rev = 1 # append to config\n");
       }
       PIN(state) = 3.0;
     break;
@@ -148,7 +148,8 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     break;
 
     case 33:
-      printf("conf0.psi = %f\n", PIN(psi));
+      printf("conf0.psi = %f # append to config\n", PIN(psi));
+      printf("done\n");
 
       PIN(state) = 3.4;
     break;

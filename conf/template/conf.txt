@@ -34,5 +34,5 @@ conf0.vel_bw = 250
 conf0.vel_d = 5
 conf0.vel_g = 0.1
 conf0.torque_g = 1
-conf0.cur_bw = 1500
+conf0.cur_bw = 1000
 conf0.max_sat = 0.2
