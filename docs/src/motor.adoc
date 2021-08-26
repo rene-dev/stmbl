@@ -1,0 +1,18 @@
+:lang :en
+
+= Motor
+== DC
+=== pinout
+=== config
+[source]
+link dc
+
+== PMSM
+=== pinout
+=== config
+[source]
+link pmsm
+
+== ASYNC
+=== pinout
+=== config

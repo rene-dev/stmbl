@@ -1,0 +1,36 @@
+:lang :en
+
+= Feedback
+== incremental Encoder
+=== pinout
+=== config
+[source]
+link enc_fb0
+conf0.mot_fb_res = 4096
+
+== sin/cos Encoder
+=== pinout
+=== config
+[source]
+link enc_fb0
+conf0.mot_fb_res = 4096
+fb_switch0.mot_pos = enc_fb0.ipos
+
+
+== Resolver
+=== pinout
+=== config
+[source]
+link res_fb0
+
+== Tamagawa smartabs
+=== pinout
+=== config
+[source]
+link smartabs_fb0
+
+== Mitsubishi
+=== pinout
+=== config
+[source]
+link encm_fb0

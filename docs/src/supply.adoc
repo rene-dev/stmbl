@@ -1,0 +1,6 @@
+= Supply
+
+== LV supply
+24V 0.5A
+
+== HV supply
