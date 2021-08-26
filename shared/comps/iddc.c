@@ -1,9 +1,9 @@
-#include "idp_comp.h"
+#include "iddc_comp.h"
 #include "hal.h"
 #include "defines.h"
 #include "angle.h"
 
-HAL_COMP(idp);
+HAL_COMP(iddc);
 
 HAL_PIN(d_cmd);
 HAL_PIN(q_cmd);
@@ -42,7 +42,6 @@ HAL_PIN(psi);
 
 HAL_PIN(cur_bw);
 HAL_PIN(cur_sum);
-HAL_PIN(auto_step);
 
 HAL_PIN(tmp0);
 HAL_PIN(tmp1);
@@ -51,20 +50,19 @@ HAL_PIN(tmp3);
 HAL_PIN(avg_test_volt);
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
-  //struct idp_ctx_t * ctx = (struct idp_ctx_t *)ctx_ptr;
-  struct idp_pin_ctx_t *pins = (struct idp_pin_ctx_t *)pin_ptr;
+  //struct iddc_ctx_t * ctx = (struct iddc_ctx_t *)ctx_ptr;
+  struct iddc_pin_ctx_t *pins = (struct iddc_pin_ctx_t *)pin_ptr;
   PIN(test_cur) = 4.0;
   PIN(test_vel) = 50.0;
   PIN(ki) = 1.0;
   PIN(pi) = 1.0;
   PIN(vel_bw) = 20.0;
   PIN(cur_bw) = 1.0;
-  PIN(auto_step) = 4.2;
 }
 
 static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
-  //struct idp_ctx_t * ctx = (struct idp_ctx_t *)ctx_ptr;
-  struct idp_pin_ctx_t *pins = (struct idp_pin_ctx_t *)pin_ptr;
+  //struct iddc_ctx_t * ctx = (struct iddc_ctx_t *)ctx_ptr;
+  struct iddc_pin_ctx_t *pins = (struct iddc_pin_ctx_t *)pin_ptr;
 
   switch((int)(PIN(state) * 10.0 + 0.5)){
     case 0:
@@ -85,14 +83,9 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(com_pos) = 0.0;
       PIN(cmd_mode) = 0.0;
 
-      if(PIN(auto_step) >= 1){
-        PIN(state) = 1.2;
-      }
-      else{
-        printf("Measure r, l\n");
-        printf("the motor can move a bit\n");
-        printf("id0.state = 1.2 to start\n");
-      }
+      printf("Measure r, l\n");
+      printf("block the rotor\n");
+      printf("id0.state = 1.2 to start\n");
     break;
 
     case 14:
@@ -101,34 +94,7 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(state) = 2.0;
     break;
 
-    case 20: // pp, out_rev, com_offset
-      PIN(state) = 2.1;
-      PIN(timer) = 0.0;
-      //PIN(d_cmd) = 0.0;
-      PIN(q_cmd) = 0.0;
-      PIN(com_pos) = 0.0;
-      PIN(cmd_mode) = 0.0;
-
-      if(PIN(auto_step) >= 2){
-        PIN(state) = 2.2;
-      }
-      else{
-        printf("Measure com_offset, polepairs, out_rev\n");
-        printf("the motor will move\n");
-        printf("id0.state = 2.2 to start\n");
-      }
-    break;
-
-    case 25: // pp, out_rev, com_offset
-      printf("conf0.polecount = %f\n", PIN(pp));
-      printf("conf0.mot_fb_offset = %f\n", PIN(com_offset));
-      if(PIN(out_rev) > 0.0){
-        printf("conf0.out_rev = 1\n");
-      }
-      PIN(state) = 3.0;
-    break;
-
-    case 30:
+    case 20:
       PIN(state) = 3.1;
       PIN(timer) = 0.0;
       PIN(d_cmd) = 0.0;
@@ -137,28 +103,23 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(cmd_mode) = 0.0;
       PIN(cur_bw) = 250.0;
 
-      if(PIN(auto_step) >= 3){
-        PIN(state) = 3.2;
-      }
-      else{
-        printf("Measure torque constant\n");
-        printf("the motor will move\n");
-        printf("id0.state = 3.2 to start\n");
-      }
+      printf("Measure torque constant\n");
+      printf("the motor will move\n");
+      printf("id0.state = 2.2 to start\n");
     break;
 
-    case 33:
+    case 23:
       printf("conf0.psi = %f\n", PIN(psi));
 
-      PIN(state) = 3.4;
+      PIN(state) = 2.4;
     break;
   }
  
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
-  //struct idp_ctx_t * ctx = (struct idp_ctx_t *)ctx_ptr;
-  struct idp_pin_ctx_t *pins = (struct idp_pin_ctx_t *)pin_ptr;
+  //struct iddc_ctx_t * ctx = (struct iddc_ctx_t *)ctx_ptr;
+  struct iddc_pin_ctx_t *pins = (struct iddc_pin_ctx_t *)pin_ptr;
 
   if(PIN(en) <= 0.0){
     PIN(state) = 0.0;
@@ -233,62 +194,11 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       }
     break;
 
-    case 22: // pp, out_rev
-      PIN(en_out) = 1.0;
-      PIN(cmd_mode) = 0.0;
-      PIN(cur_bw) = 1.0;
-      PIN(q_cmd) = 0.0;
-
-      PIN(d_cmd) = PIN(test_cur);
-
-      PIN(com_pos) += PIN(test_vel) * period;
-      PIN(com_pos) = mod(PIN(com_pos));
-
-      if(ABS(PIN(vel_fb)) > 0.1){
-        PIN(pp) = PIN(pp) * 0.99 + PIN(test_vel) / PIN(vel_fb) * 0.01;
-      }
-
-      PIN(timer) += period;
-      if(PIN(timer) >= 3.0){
-        PIN(timer) = 0.0;
-        
-        if(PIN(pp) < 0.0){
-          PIN(out_rev) = 1.0;
-          PIN(pp) *= -1.0;
-        }
-        PIN(pp) = (int)(PIN(pp) + 0.5);
-
-        PIN(state) = 2.3;
-      }
-    break;
-
-    case 23:
-      PIN(en_out) = 1.0;
-      PIN(cmd_mode) = 0.0;
-      PIN(cur_bw) = 1.0;
-      PIN(q_cmd) = 0.0;
-
-      PIN(d_cmd) += PIN(ki) * period * PIN(r) * (PIN(test_cur) - PIN(id_fb));
-      PIN(d_cmd) = LIMIT(PIN(d_cmd), PIN(pwm_volt));
-      PIN(com_pos) = 0.0;
-
-      PIN(com_offset) = PIN(com_offset) * 0.99 + -PIN(pos_fb) * 0.01;
-
-      PIN(timer) += period;
-      if(PIN(timer) >= 2.0){
-        PIN(en) = 0.0;
-        PIN(d_cmd) = 0.0;
-        PIN(state) = 2.5;
-        PIN(timer) = 0.0;
-      }
-    break;
-
-    case 32: // psi
+    case 22: // psi
       PIN(en_out) = 1.0;
       PIN(cmd_mode) = 1.0;
       PIN(cur_bw) = 250.0;
       PIN(d_cmd) = 0.0;
-      PIN(com_pos) = mod((PIN(pos_fb) + PIN(com_offset)) * PIN(pp));
 
       float vel_error = PIN(test_vel) - PIN(vel_fb);
       PIN(cur_sum) += PIN(ki) * vel_error * period;
@@ -311,18 +221,15 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
         PIN(cur_sum) = 0.0;
         PIN(cmd_mode) = 0.0;
 
-        PIN(state) = 3.3;
+        PIN(state) = 2.3;
       }
     break;
-
-    case 100:
-      PIN(com_pos) = mod((PIN(pos_fb) + PIN(com_offset)) * PIN(pp));
   }
 }
 
 
-hal_comp_t idp_comp_struct = {
-    .name      = "idp",
+hal_comp_t iddc_comp_struct = {
+    .name      = "iddc",
     .nrt       = nrt,
     .rt        = rt_func,
     .frt       = 0,
@@ -331,6 +238,6 @@ hal_comp_t idp_comp_struct = {
     .frt_start = 0,
     .rt_stop   = 0,
     .frt_stop  = 0,
-    .ctx_size  = 0,//sizeof(struct idp_ctx_t),
-    .pin_count = sizeof(struct idp_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
+    .ctx_size  = 0,//sizeof(struct iddc_ctx_t),
+    .pin_count = sizeof(struct iddc_pin_ctx_t) / sizeof(struct hal_pin_inst_t),
 };

@@ -1,0 +1,28 @@
+
+load iddc
+iddc0.rt_prio = 4
+
+iddc0.en = fault0.en_out
+fault0.pos_error = 0
+pid0.enable = 0
+hv0.en = iddc0.en_out
+hv0.cur_bw = iddc0.cur_bw
+hv0.cmd_mode = iddc0.cmd_mode
+hv0.d_cmd = iddc0.d_cmd
+hv0.q_cmd = iddc0.q_cmd
+hv0.pos = iddc0.com_pos
+hv0.rev = iddc0.out_rev
+hv0.r = idq0.r
+hv0.l = idq0.l
+hv0.phase_mode = 3
+iddc0.ud_fb = hv0.ud_fb
+iddc0.uq_fb = hv0.uq_fb
+iddc0.id_fb = hv0.id_fb
+iddc0.iq_fb = hv0.iq_fb
+iddc0.pwm_volt = hv0.pwm_volt
+
+iddc0.pos_fb = fb_switch0.pos_fb
+iddc0.vel_fb = vel1.vel
+
+vel0.pos_in = fb_switch0.pos_fb
+iddc0.vel_fb = vel1.vel

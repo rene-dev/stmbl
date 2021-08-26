@@ -121,8 +121,10 @@ SHARED_COMPS += shared/comps/home.c
 SHARED_COMPS += shared/comps/en.c
 SHARED_COMPS += shared/comps/th.c
 #SHARED_COMPS += shared/comps/asm.c
-SHARED_COMPS += shared/comps/idp.c
+SHARED_COMPS += shared/comps/idpmsm.c
+SHARED_COMPS += shared/comps/iddc.c
 SHARED_COMPS += shared/comps/idm.c
+SHARED_COMPS += shared/comps/ids.c
 #SHARED_COMPS += shared/comps/motsim.c
 
 COMPS = $(SRC_COMPS) $(SHARED_COMPS)

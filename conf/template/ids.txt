@@ -1,9 +1,35 @@
 
-link idm
+load ids
+ids0.rt_prio = 4
 
-idm0.sys = 1
-pid0.j_mot = conf0.j
-pid0.j_sys = idm0.inertia
-pid0.d = idm0.damping
-pid0.f = idm0.friction
-pid0.l = idm0.load
+ids0.en = fault0.en_out
+pid0.pos_ext_cmd = ids0.pos_cmd
+pid0.vel_ext_cmd = ids0.vel_cmd
+pid0.acc_ext_cmd = ids0.acc_cmd
+
+pid0.pos_bw = ids0.pos_bw
+pid0.vel_bw = ids0.vel_bw
+pid0.vel_d = ids0.vel_d
+
+ids0.pos_error = pid0.pos_error
+ids0.vel_error = pid0.vel_error
+
+conf0.max_pos_error = 0
+conf0.max_sat = 10
+conf0.vel_g = 1
+
+term0.wave0 = ids0.pos_cmd
+term0.wave2 = ids0.vel_cmd
+term0.wave4 = ids0.min_cost
+term0.gain4 = 20
+#term0.wave1 = ids0.cost
+#term0.gain1 = 20
+
+term0.wave5 = ids0.pos_bw
+term0.gain5 = 1.0;
+term0.wave6 = ids0.vel_bw
+term0.gain6 = 0.1
+term0.wave7 = ids0.vel_d
+term0.gain7 = 10.0
+
+term0.send_step = 21

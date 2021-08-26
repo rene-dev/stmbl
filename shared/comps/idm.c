@@ -97,11 +97,10 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       }
       printf("conf0.d = %f\n", PIN(damping));
       printf("conf0.f = %f\n", PIN(friction));
-      printf("pid0.l = %f\n", PIN(load));
+      //printf("pid0.l = %f\n", PIN(load));
       PIN(state) = 1.4;
     break;
   }
- 
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {

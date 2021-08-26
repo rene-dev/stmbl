@@ -20,7 +20,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct dc_ttc_ctx_t * ctx = (struct dc_ttc_ctx_t *)ctx_ptr;
   struct dc_ttc_pin_ctx_t *pins = (struct dc_ttc_pin_ctx_t *)pin_ptr;
 
-  float psi_m  = MAX(PIN(psi), 0.01);
+  float psi_m  = MAX(PIN(psi), 0.001);
   float torque = PIN(torque);
 
   PIN(cur) = torque / psi_m;

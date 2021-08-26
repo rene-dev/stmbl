@@ -96,6 +96,19 @@ struct fault_ctx_t {
   float mot_temp_error;
 };
 
+void enable(char *ptr) {
+  hal_parse("fault0.en = 1");
+}
+
+COMMAND("enable", enable, "enable");
+
+void disable(char *ptr) {
+  hal_parse("fault0.en = 0");
+}
+
+COMMAND("disable", disable, "disable");
+
+
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct fault_ctx_t *ctx      = (struct fault_ctx_t *)ctx_ptr;
   struct fault_pin_ctx_t *pins = (struct fault_pin_ctx_t *)pin_ptr;

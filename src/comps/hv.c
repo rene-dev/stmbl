@@ -221,7 +221,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   ctx->config.pins.r       = PIN(r);
   ctx->config.pins.l       = PIN(l);
   ctx->config.pins.psi     = PIN(psi);
-  ctx->config.pins.cur_bw      = PIN(cur_bw);
+  ctx->config.pins.cur_bw  = PIN(cur_bw);
   ctx->config.pins.cur_ff  = PIN(cur_ff);
   ctx->config.pins.cur_ind = PIN(cur_ind);
   ctx->config.pins.max_y   = PIN(max_y);
