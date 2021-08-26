@@ -3,10 +3,10 @@
 = Parameter tuning
 
 == Requirements
-- <<supply>>
-- <<servoterm>>
-- <<feedback>>
-- <<motor>>
+- link:supply[supply]
+- link:servoterm[servoterm]
+- link:feedback[feedback]
+- link:motor[motor]
 
 == electrical parameters
 disconnect the motor from the load
