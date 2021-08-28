@@ -84,13 +84,13 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(cmd_mode) = 0.0;
 
       printf("Measure r, l\n");
-      printf("block the rotor\n");
-      printf("id0.state = 1.2 to start\n");
+      printf("<font color='green'>block the rotor</font>\n");
+      printf("id0.state = 1.2 <font color='green'>to start</font>\n");
     break;
 
     case 14:
-      printf("conf0.r = %f # append to config\n", PIN(r));
-      printf("conf0.l = %f # append to config\n", PIN(l));
+      printf("conf0.r = %f <font color='green'># append to config</font>\n", PIN(r));
+      printf("conf0.l = %f <font color='green'># append to config</font>\n", PIN(l));
       PIN(state) = 2.0;
     break;
 
@@ -104,13 +104,16 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(cur_bw) = 250.0;
 
       printf("Measure torque constant\n");
-      printf("unblock the rotor\n");
+      printf("<font color='green'>unblock the rotor</font>\n");
       printf("the motor will move\n");
-      printf("id0.state = 2.2 to start\n");
+      printf("id0.state = 2.2 <font color='green'>to start</font>\n");
     break;
 
     case 23:
-      printf("conf0.psi = %f # append to config\n", PIN(psi));
+      printf("conf0.psi = %f <font color='green'># append to config</font>\n", PIN(psi));
+      if(PIN(out_rev) > 0.0){
+        printf("conf0.out_rev = 1 <font color='green'># append to config</font>\n");
+      }
       printf("done\n");
 
       PIN(state) = 2.4;
@@ -202,7 +205,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(cur_bw) = 250.0;
       PIN(d_cmd) = 0.0;
 
-      float vel_error = PIN(test_vel) - PIN(vel_fb);
+      float vel_error = PIN(test_vel) - ABS(PIN(vel_fb));
       PIN(cur_sum) += PIN(ki) * vel_error * period;
 
       PIN(q_cmd) = PIN(vel_bw) * period * vel_error + PIN(cur_sum);
@@ -212,10 +215,15 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
         PIN(psi) = PIN(psi) * (1.0 - period / PIN(pi)) + psi * period / PIN(pi);
       }
 
-      PIN(psi) = CLAMP(PIN(psi), 0.001, 1.0);
+      //PIN(psi) = CLAMP(PIN(psi), 0.001, 1.0);
 
       PIN(timer) += period;
       if(PIN(timer) >= 5.0){
+        if(PIN(psi) < 0.0){
+          PIN(psi) *= -1.0;
+          PIN(out_rev) = 1.0;
+        }
+
         PIN(timer) = 0.0;
         PIN(en_out) = 0.0;
         PIN(d_cmd) = 0.0;

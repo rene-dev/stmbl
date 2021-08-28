@@ -9,21 +9,21 @@
 - link:motor.adoc[motor]
 
 == electrical parameters
-disconnect the motor from the load
-
 === dc motor
 ==== manual tuning
 [source]
 conf0.r // motor phase resistance
 conf0.l // motor phase inductance
 conf0.psi // torque constant [Nm/A] or [V/rad/s]
+conf0.mot_fb_rev
 
 ==== auto tuning
-this takes about 20 seconds
-the motor will move
-follow the instructions in Servoterm
+this takes about 20 seconds +
+disconnect the motor from the load +
+the motor will move +
+follow the green instructions in Servoterm
 
-config:
+- set your config to
 [source]
 link pid
 link dc
@@ -31,26 +31,24 @@ link <your_feedback_type>
 link misc
 link iddc
 
-start:
+- reset stmbl by typing
+[source]
+reset
+
+- start the tuning by typing
 [source]
 fault0.en = 1
 
-example output:
+- lock the rotor and type
 [source]
-OK fault0.en = 1.000000
-INFO: Enabled
-Measure r, l
-block the rotor
-id0.state = 1.2 to start
-OK id0.state = 1.200000
-conf0.r = 1.898350
-conf0.l = 0.013483
-Measure torque constant
-unblock the rotor
-the motor will move
-id0.state = 2.2 to start
-OK id0.state = 2.200000
-conf0.psi = 0.063680
+iddc0.state = 1.2
+
+- unlock the rotor and type
+[source]
+iddc0.state = 2.2
+
+- append the result (conf0.r, conf0.l, conf0.psi, opt. conf0.out_rev) to your config
+- go to <<mechanical parameters>>
 
 === pmsm motor
 ==== manual tuning
@@ -59,34 +57,33 @@ conf0.r // motor phase resistance
 conf0.l // motor phase inductance
 conf0.polecount // number of pole pairs
 conf0.mot_fb_offset
-conf0.mot_fb_rev
+conf0.out_rev
 conf0.psi // torque constant [Nm/A] or [V/rad/s]
 
 ==== auto tuning
-this takes about 20 seconds
-the motor will move
+this takes about 20 seconds +
+disconnect the motor from the load +
+the motor will move +
+follow the green instructions in Servoterm
 
-config:
+- set your config to
 [source]
 link pid
-link pmsm
+link dc
 link <your_feedback_type>
 link misc
 link idpmsm
 
-start:
+- reset stmbl by typing
+[source]
+reset
+
+- start the tuning by typing
 [source]
 fault0.en = 1
 
-example output:
-[source]
-OK fault0.en = 1.000000
-INFO: Enabled
-conf0.r = 1.898350
-conf0.l = 0.013483
-conf0.polecount = 4.000000
-conf0.mot_fb_offset = -0.258811
-conf0.psi = 0.063680
+- append the result (conf0.r, conf0.l, conf0.psi, conf0.polecount, conf0.mot_fb_offset, opt. conf0.out_rev) to your config
+- go to <<mechanical parameters>>
 
 == mechanical parameters
 connect the motor to the load
@@ -97,10 +94,12 @@ conf0.j
 conf0.j_load
 
 === auto tuning
-this takes about 3 minutes
-the motor will move
+this takes about 3 minutes +
+connect the motor to the load +
+the motor will move +
+follow the green instructions in Servoterm
 
-config:
+- set your config to
 [source]
 link pid
 link <your_motor_type>
@@ -109,17 +108,16 @@ link misc
 link idm
 <your_electrical_parameters>
 
-start:
+- reset stmbl by typing
+[source]
+reset
+
+- start the tuning by typing
 [source]
 fault0.en = 1
 
-example output:
-[source]
-OK fault0.en = 1.000000
-INFO: Enabled
-conf0.j = 0.000085
-conf0.d = 0.000022
-conf0.f = 0.057124
+- append the result (conf0.j, conf0.d, conf0.f) to your config
+- go to <<control loop tuning>>
 
 == control loop tuning
 === manual tuning
@@ -129,10 +127,12 @@ conf0.vel_bw
 conf0.vel_d
 
 === auto tuning
-this takes about 2 minutes
-the motor will move
+this takes about 2 minutes +
+connect the motor to the load +
+the motor will move +
+follow the green instructions in Servoterm
 
-config:
+- set your config to
 [source]
 link pid
 link <your_motor_type>
@@ -142,14 +142,14 @@ link ids
 <your_electrical_parameters>
 <your_mechanical_parameters>
 
-start:
+- reset stmbl by typing
+[source]
+reset
+
+- start the tuning by typing
 [source]
 fault0.en = 1
 
-example output:
-[source]
-OK fault0.en = 1.000000
-INFO: Enabled
-conf0.pos_bw = 24.165899
-conf0.vel_bw = 450.000000
-conf0.vel_d = 6.058537
+- append the result (conf0.pos_bw, conf0.vel_bw, conf0.vel_d) to your config
+- go to link:cmd.adoc[cmd]
+

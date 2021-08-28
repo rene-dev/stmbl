@@ -84,19 +84,19 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       else{
         printf("Measure friction, damping and inertia\n");
         printf("the motor will move\n");
-        printf("id0.state = 1.2 to start\n");
+        printf("id0.state = 1.2 <font color='green'>to start</font>\n");
       }
     break;
 
     case 13:
       if(PIN(sys) > 0.0){
-        printf("conf0.j_sys = %f # append to config\n", PIN(inertia));
+        printf("conf0.j_sys = %f <font color='green'># append to config</font>\n", PIN(inertia));
       }
       else{
-        printf("conf0.j = %f # append to config\n", PIN(inertia));
+        printf("conf0.j = %f <font color='green'># append to config</font>\n", PIN(inertia));
       }
-      printf("conf0.d = %f # append to config\n", PIN(damping));
-      printf("conf0.f = %f # append to config\n", PIN(friction));
+      printf("conf0.d = %f <font color='green'># append to config</font>\n", PIN(damping));
+      printf("conf0.f = %f <font color='green'># append to config</font>\n", PIN(friction));
       printf("done\n");
       //printf("pid0.l = %f\n", PIN(load));
       PIN(state) = 1.4;

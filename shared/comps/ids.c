@@ -99,14 +99,14 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       else{
         printf("Tune PPI bandwidth and damping\n");
         printf("the motor will move\n");
-        printf("ids0.state = 1.2 to start\n");
+        printf("ids0.state = 1.2 <font color='green'>to start</font>\n");
       }
     break;
 
     case 13:
-      printf("conf0.pos_bw = %f # append to config\n", PIN(pos_bw));
-      printf("conf0.vel_bw = %f # append to config\n", PIN(vel_bw));
-      printf("conf0.vel_d = %f # append to config\n", PIN(vel_d));
+      printf("conf0.pos_bw = %f <font color='green'># append to config</font>\n", PIN(pos_bw));
+      printf("conf0.vel_bw = %f <font color='green'># append to config</font>\n", PIN(vel_bw));
+      printf("conf0.vel_d = %f <font color='green'># append to config</font>\n", PIN(vel_d));
       printf("done\n");
       PIN(state) = 1.4;
     break;
