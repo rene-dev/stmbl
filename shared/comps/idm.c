@@ -84,7 +84,7 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       else{
         printf("Measure friction, damping and inertia\n");
         printf("the motor will move\n");
-        printf("id0.state = 1.2 <font color='green'>to start</font>\n");
+        printf("idm0.state = 1.2 <font color='green'>to start</font>\n");
       }
     break;
 

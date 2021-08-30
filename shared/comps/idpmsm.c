@@ -91,7 +91,7 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       else{
         printf("Measure r, l\n");
         printf("the motor can move a bit\n");
-        printf("id0.state = 1.2 <font color='green'>to start</font>\n");
+        printf("idpmsm0.state = 1.2 <font color='green'>to start</font>\n");
       }
     break;
 
@@ -115,7 +115,7 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       else{
         printf("Measure com_offset, polepairs, out_rev\n");
         printf("the motor will move\n");
-        printf("id0.state = 2.2 <font color='green'>to start</font>\n");
+        printf("idpmsm0.state = 2.2 <font color='green'>to start</font>\n");
       }
     break;
 
