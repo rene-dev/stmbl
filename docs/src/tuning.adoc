@@ -69,7 +69,7 @@ follow the green instructions in Servoterm
 - set your config to
 [source]
 link pid
-link dc
+link pmsm
 link <your_feedback_type>
 link misc
 link idpmsm
