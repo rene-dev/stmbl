@@ -154,8 +154,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(torque_sat) = MAX(PIN(torque_sat) - period, 0.0);
     }
 
-    PIN(ff_torque_cmd) = PIN(torque_ext_cmd);
-    PIN(ff_torque_cmd) += PIN(acc_ext_cmd) * (PIN(j_mot) + PIN(j_sys));
+    PIN(ff_torque_cmd) = PIN(acc_ext_cmd) * (PIN(j_mot) + PIN(j_sys));
     PIN(ff_torque_cmd) += PIN(d) * PIN(vel_cmd);
     PIN(ff_torque_cmd) += PIN(f) * SIGN2(PIN(vel_cmd), PIN(max_vel) * 0.001);
     PIN(ff_torque_cmd) += PIN(l);
