@@ -7,3 +7,5 @@ hv0.pos = 0
 hv0.phase_mode = 3
 hv0.q_cmd = dc_ttc0.cur
 hv0.cmd_mode = 1
+conf0.phase_time = 0
+conf0.phase_cur = 0
