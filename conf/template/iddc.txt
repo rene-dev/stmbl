@@ -23,7 +23,6 @@ iddc0.pwm_volt = hv0.pwm_volt
 iddc0.pos_fb = fb_switch0.pos_fb
 iddc0.vel_fb = vel1.vel
 
-vel0.pos_in = fb_switch0.pos_fb
 iddc0.vel_fb = vel1.vel
 
 iddc0.test_cur = conf0.max_ac_cur

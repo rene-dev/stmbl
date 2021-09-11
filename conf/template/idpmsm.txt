@@ -13,8 +13,8 @@ hv0.d_cmd = idpmsm0.d_cmd
 hv0.q_cmd = idpmsm0.q_cmd
 hv0.pos = idpmsm0.com_pos
 hv0.rev = idpmsm0.out_rev
-hv0.r = idq0.r
-hv0.l = idq0.l
+hv0.r = idpmsm0.r
+hv0.l = idpmsm0.l
 idpmsm0.ud_fb = hv0.ud_fb
 idpmsm0.uq_fb = hv0.uq_fb
 idpmsm0.id_fb = hv0.id_fb
@@ -24,7 +24,6 @@ idpmsm0.pwm_volt = hv0.pwm_volt
 idpmsm0.pos_fb = fb_switch0.mot_abs_fb_no_offset
 idpmsm0.vel_fb = vel1.vel
 
-vel0.pos_in = fb_switch0.pos_fb
 idpmsm0.vel_fb = vel1.vel
 
 idpmsm0.test_cur = conf0.max_ac_cur

@@ -236,8 +236,8 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
     case 22: // pp, out_rev
       PIN(en_out) = 1.0;
-      PIN(cmd_mode) = 0.0;
-      PIN(cur_bw) = 1.0;
+      PIN(cmd_mode) = 1.0;
+      PIN(cur_bw) = 100.0;
       PIN(q_cmd) = 0.0;
 
       PIN(d_cmd) = PIN(test_cur);
@@ -246,7 +246,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(com_pos) = mod(PIN(com_pos));
 
       if(ABS(PIN(vel_fb)) > 0.1){
-        PIN(pp) = PIN(pp) * 0.99 + PIN(test_vel) / PIN(vel_fb) * 0.01;
+        PIN(pp) = PIN(pp) * 0.995 + PIN(test_vel) / PIN(vel_fb) * 0.005;
       }
 
       PIN(timer) += period;
@@ -263,17 +263,17 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       }
     break;
 
-    case 23:
+    case 23: // mot_fb_offset
       PIN(en_out) = 1.0;
-      PIN(cmd_mode) = 0.0;
-      PIN(cur_bw) = 1.0;
+      PIN(cmd_mode) = 1.0;
+      PIN(cur_bw) = 100.0;
       PIN(q_cmd) = 0.0;
 
-      PIN(d_cmd) += PIN(ki) * period * PIN(r) * (PIN(test_cur) - PIN(id_fb));
-      PIN(d_cmd) = LIMIT(PIN(d_cmd), PIN(pwm_volt));
+      PIN(d_cmd) = PIN(test_cur);
+
       PIN(com_pos) = 0.0;
 
-      PIN(com_offset) = PIN(com_offset) * 0.95 - PIN(pos_fb) * 0.05;
+      PIN(com_offset) = PIN(com_offset) * 0.99 - PIN(pos_fb) * 0.01;
 
       PIN(timer) += period;
       if(PIN(timer) >= 2.0){
