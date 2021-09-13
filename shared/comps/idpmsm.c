@@ -53,7 +53,7 @@ HAL_PIN(avg_test_volt);
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   //struct idpmsm_ctx_t * ctx = (struct idpmsm_ctx_t *)ctx_ptr;
   struct idpmsm_pin_ctx_t *pins = (struct idpmsm_pin_ctx_t *)pin_ptr;
-  PIN(test_cur) = 4.0;
+  PIN(test_cur) = 3.0;
   PIN(test_vel) = 50.0;
   PIN(ki) = 1.0;
   PIN(pi) = 1.0;

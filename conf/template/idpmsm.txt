@@ -25,5 +25,3 @@ idpmsm0.pos_fb = fb_switch0.mot_abs_fb_no_offset
 idpmsm0.vel_fb = vel1.vel
 
 idpmsm0.vel_fb = vel1.vel
-
-idpmsm0.test_cur = conf0.max_ac_cur
