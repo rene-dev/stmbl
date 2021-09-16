@@ -292,6 +292,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(com_pos) = mod((PIN(pos_fb) + PIN(com_offset)) * PIN(pp));
 
       float vel_error = PIN(test_vel) - PIN(vel_fb);
+      vel_error = LIMIT(vel_error, PIN(test_vel) / 100.0);
       PIN(cur_sum) += PIN(ki) * vel_error * period;
 
       PIN(q_cmd) = PIN(vel_bw) * period * vel_error + PIN(cur_sum);

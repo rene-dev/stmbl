@@ -195,7 +195,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       if(PIN(timer) == 0.0){
         PIN(min_cost) = MIN(PIN(cost), PIN(min_cost));
 
-        PINA(max_params, 2) = PINA(params, 0) / 2.0;
+        PINA(max_params, 2) = PINA(params, 0) * 2.0;
 
         if(PINA(params, (int)PIN(param)) > PINA(max_params, (int)PIN(param))){
           PINA(params, (int)PIN(param)) = PINA(max_params, (int)PIN(param));

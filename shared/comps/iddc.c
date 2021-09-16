@@ -22,7 +22,6 @@ HAL_PIN(timer);
 HAL_PIN(r);
 HAL_PIN(l);
 
-HAL_PIN(pp);
 HAL_PIN(com_offset);
 HAL_PIN(out_rev);
 
@@ -66,7 +65,6 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(r) = 0.1;
       PIN(l) = 0.001;
       PIN(psi) = 0.055;
-      PIN(pp) = 3.0;
       PIN(com_offset) = 0.0;
       PIN(out_rev) = 0.0;
       PIN(cur_bw) = 1.0;
@@ -196,14 +194,14 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       PIN(cur_bw) = 250.0;
 
       float vel_error = PIN(test_vel) - ABS(PIN(vel_fb));
-      vel_error = LIMIT(vel_error, PIN(test_vel) / 10.0);
+      vel_error = LIMIT(vel_error, PIN(test_vel) / 100.0);
 
       PIN(cur_sum) += PIN(ki) * vel_error * period;
 
       PIN(q_cmd) = PIN(vel_bw) * period * vel_error + PIN(cur_sum);
       
       if(ABS(PIN(vel_fb)) > 0.1){
-        float psi  = (PIN(uq_fb) - PIN(iq_fb) * PIN(r)) / (PIN(vel_fb) * PIN(pp));
+        float psi  = (PIN(uq_fb) - PIN(iq_fb) * PIN(r)) / (PIN(vel_fb));
         PIN(psi) = PIN(psi) * (1.0 - period / PIN(pi)) + psi * period / PIN(pi);
       }
 
