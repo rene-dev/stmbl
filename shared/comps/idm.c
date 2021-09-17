@@ -37,12 +37,12 @@ HAL_PIN(fb_torque);
 HAL_PIN(inertia_sum);
 HAL_PIN(friction_sum);
 HAL_PIN(damping_sum);
-HAL_PIN(load_sum);
+HAL_PIN(offset_sum);
 
 HAL_PIN(inertia);
 HAL_PIN(damping);
 HAL_PIN(friction);
-HAL_PIN(load);
+HAL_PIN(offset);
 
 HAL_PIN(pos_bw);
 HAL_PIN(vel_bw);
@@ -98,11 +98,11 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     case 14:
       if(PIN(sys) > 0.0){
         printf("conf0.j_sys = %f <font color='green'># append to config</font>\n", PIN(inertia));
-        //printf("conf0.l = %f <font color='green'># append to config</font>\n", PIN(load));
       }
       else{
         printf("conf0.j = %f <font color='green'># append to config</font>\n", PIN(inertia));
       }
+      printf("conf0.o = %f <font color='green'># append to config</font>\n", PIN(offset));
       printf("conf0.d = %f <font color='green'># append to config</font>\n", PIN(damping));
       printf("conf0.f = %f <font color='green'># append to config</font>\n", PIN(friction));
       printf("done\n");
@@ -147,7 +147,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
         PIN(inertia_sum) = 0.0;
         PIN(friction_sum) = 0.0;
         PIN(damping_sum) = 0.0;
-        PIN(load_sum) = 0.0;
+        PIN(offset_sum) = 0.0;
         PIN(acc_time) = 0.0;
         PIN(vel_time) = 0.0;
         PIN(time) = 0.0;
@@ -169,20 +169,12 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       acc = (vel - PIN(vel_cmd)) / period;
       PIN(acc_cmd) = LIMIT(acc, max_acc);
 
-
-      if(time_to_go < period / 2.0){
+      if(time_to_go < period){
         time_to_go = 0.0;
         to_go = 0.0;
         PIN(acc_cmd) = 0.0;
         PIN(pos) = PIN(target);
         PIN(vel_cmd) = 0.0;
-      }
-      else{
-        // PIN(time) += period;
-        // PIN(friction_sum) += SIGN(PIN(vel_cmd)) * PIN(fb_torque) * period;
-        // PIN(inertia_sum) += PIN(acc_cmd) * PIN(fb_torque) * period;
-        // PIN(damping_sum) += PIN(vel_cmd) * PIN(fb_torque) * period;
-        // PIN(load_sum) += PIN(fb_torque) * period;
       }
 
       if(ABS(PIN(acc_cmd)) > 0.0){
@@ -197,18 +189,22 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       }
 
       PIN(time) += period;
-      PIN(load_sum) += PIN(torque) * period;
+      PIN(offset_sum) += PIN(torque) * period;
       
-
       PIN(inertia) += period / PIN(ji) * PIN(fb_torque) * PIN(acc_cmd) * period;
       PIN(damping) += period / PIN(di) * PIN(fb_torque) * PIN(vel_cmd) * period;
       PIN(friction) += period / PIN(fi) * PIN(fb_torque) * SIGN(PIN(vel_cmd)) * period;
-      PIN(load) += period / PIN(li) * PIN(fb_torque) * period;
+      PIN(offset) += period / PIN(li) * PIN(fb_torque) * period;
 
-      PIN(inertia) = CLAMP(PIN(inertia), 0.000005, 50.0);
+      if(PIN(sys) > 0.0){
+        PIN(inertia) = CLAMP(PIN(inertia), 0.0, 50.0);
+      }
+      else{
+        PIN(inertia) = CLAMP(PIN(inertia), 0.000005, 50.0);
+      }
       PIN(damping) = CLAMP(PIN(damping), 0.0, 100.0);
       PIN(friction) = CLAMP(PIN(friction), 0.0, 100.0);
-      PIN(load) = CLAMP(PIN(load), -100.0, 100.0);
+      PIN(offset) = CLAMP(PIN(offset), -100.0, 100.0);
     
       PIN(timer) += period;
       if(PIN(timer) < (ABS(PIN(max_pos) - PIN(min_pos)) / max_vel + 2.0 * max_vel / max_acc)){
@@ -219,49 +215,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       }
       if(PIN(timer) > 2.0 * (ABS(PIN(max_pos) - PIN(min_pos)) / max_vel + 2.0 * max_vel / max_acc)){
         PIN(timer) = 0.0;
-      }
-
-      if(PIN(timer) == 0.0){
         PIN(sub_state)++;
-        // if(PIN(acc_time) > period){
-        //   PIN(inertia) += PIN(inertia_sum) / PIN(acc_time);
-        // }
-
-        // if(PIN(vel_time) > period){
-        //   PIN(friction) += PIN(friction_sum) / PIN(vel_time);
-        //   PIN(damping) += PIN(damping_sum) / PIN(vel_time);
-        // }
-
-        // if(PIN(time) > period){
-        //   PIN(load) += PIN(load_sum) / PIN(time);
-        // }
-        // PIN(inertia_sum) /= 0.0;
-        // PIN(friction_sum) = 0.0;
-        // PIN(damping_sum) = 0.0;
-        // PIN(load_sum) = 0.0;
-        // PIN(acc_time) = 0.0;
-        // PIN(vel_time) = 0.0;
-        // PIN(time) = 0.0;
-
-        // PIN(inertia) = CLAMP(PIN(inertia), 0.000005, 50.0);
-        // PIN(damping) = CLAMP(PIN(damping), 0.0, 100.0);
-        // PIN(friction) = CLAMP(PIN(friction), 0.0, 100.0);
-        // PIN(load) = CLAMP(PIN(load), -100.0, 100.0);
-
-        //   PIN(friction) += PIN(friction_sum) / PIN(time);
-        //   PIN(damping) += PIN(damping_sum) / PIN(time);
-        //   PIN(load) += PIN(load_sum) / PIN(time);
-
-        //   PIN(inertia) = CLAMP(PIN(inertia), 0.000005, 50.0);
-        //   PIN(damping) = CLAMP(PIN(damping), 0.0, 100.0);
-        //   PIN(friction) = CLAMP(PIN(friction), 0.0, 100.0);
-        //   PIN(load) = CLAMP(PIN(load), -100.0, 100.0);
-        // }
-        // PIN(time) = 0.0;
-        // PIN(friction_sum) = 0.0;
-        // PIN(inertia_sum) = 0.0;
-        // PIN(damping_sum) = 0.0;
-        // PIN(load_sum) = 0.0;
       }
 
       if(PIN(sub_state) > 5.0){
@@ -277,24 +231,12 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
         }
 
         if(PIN(time) > period){
-          PIN(load_sum) /= PIN(time);
+          PIN(offset_sum) /= PIN(time);
         }
       }
     break;
 
     case 13: // j, d, f
-      // if(PIN(timer) < 120.0){
-      //   PIN(freq) = PIN(max_vel) / (ABS(PIN(max_pos) - PIN(min_pos)) / 2.0 * 2.0 * M_PI);
-      //   PIN(freq) = MIN(PIN(freq), sqrtf(PIN(max_acc) / (ABS(PIN(max_pos) - PIN(min_pos)) / 2.0 * 4.0 * M_PI * M_PI)));
-
-      //   float phase = mod(PIN(timer) * 2.0 * M_PI * PIN(freq));
-      //   PIN(pos) = PIN(amp) * sinf(phase);
-      //   PIN(vel_cmd) = PIN(amp) * 2.0 * M_PI * PIN(freq) * cosf(phase);
-      //   PIN(acc_cmd) = -PIN(amp) * 4.0 * M_PI * M_PI * PIN(freq) * PIN(freq) * sinf(phase);
-
-      //   PIN(amp) = LIMIT(PIN(amp) + (PIN(max_pos) - PIN(min_pos)) / 2.0 / 30.0 * period, (PIN(max_pos) - PIN(min_pos)) / 2.0);
-      // }
-      // else{
       PIN(pos) += PIN(vel_cmd) * period + PIN(acc_cmd) * period * period / 2.0;
       PIN(pos_cmd) = mod(PIN(pos));
       PIN(vel_cmd) += PIN(acc_cmd) * period;
@@ -312,17 +254,16 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       else if(ABS(PIN(min_pos) - PIN(pos)) < 0.1){
         PIN(target) = PIN(max_pos);
       }
-      // }
 
       PIN(inertia) += period / PIN(ji) * PIN(fb_torque) * PIN(acc_cmd) * period;
       PIN(damping) += period / PIN(di) * PIN(fb_torque) * PIN(vel_cmd) * period;
       PIN(friction) += period / PIN(fi) * PIN(fb_torque) * SIGN(PIN(vel_cmd)) * period;
-      PIN(load) += period / PIN(li) * PIN(fb_torque) * period;
+      PIN(offset) += period / PIN(li) * PIN(fb_torque) * period;
 
       PIN(inertia) = CLAMP(PIN(inertia), 0.000005, 50.0);
       PIN(damping) = CLAMP(PIN(damping), 0.0, 100.0);
       PIN(friction) = CLAMP(PIN(friction), 0.0, 100.0);
-      PIN(load) = CLAMP(PIN(load), -100.0, 100.0);
+      PIN(offset) = CLAMP(PIN(offset), -100.0, 100.0);
       
 
       PIN(timer) += period;

@@ -68,7 +68,7 @@ HAL_PIN(j_mot); // motor inertia (kgm^2)
 HAL_PIN(f); // (Nm)
 HAL_PIN(d); // (Nm/rad/s)
 HAL_PIN(j_sys); // system inertia(kgm^2)
-HAL_PIN(l); // (Nm)
+HAL_PIN(o); // (Nm)
 
 // user limits
 HAL_PIN(max_vel);     // (rad/s)
@@ -157,7 +157,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     PIN(ff_torque_cmd) = PIN(acc_ext_cmd) * (PIN(j_mot) + PIN(j_sys));
     PIN(ff_torque_cmd) += PIN(d) * PIN(vel_cmd);
     PIN(ff_torque_cmd) += PIN(f) * SIGN2(PIN(vel_cmd), PIN(max_vel) * 0.001);
-    PIN(ff_torque_cmd) += PIN(l);
+    PIN(ff_torque_cmd) += PIN(o);
     
     PIN(torque_cmd) = CLAMP(PIN(torque_ext_cmd) + PIN(ff_torque_cmd) + PIN(fb_torque_cmd), -PIN(neg_min_torque), PIN(max_torque));
 

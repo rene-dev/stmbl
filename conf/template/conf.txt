@@ -3,7 +3,6 @@ conf0.r = 1
 conf0.l = 0.01
 conf0.l_ratio = 1
 conf0.j = 0.000025
-conf0.j_sys = 0.0
 conf0.j_lpf = 100.0
 conf0.psi = 0.055
 conf0.polecount = 2

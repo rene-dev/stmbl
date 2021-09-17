@@ -114,7 +114,7 @@ reset
 [source]
 fault0.en = 1
 
-- append the result (conf0.j, conf0.d, conf0.f) to your config
+- append the result (conf0.j, conf0.d, conf0.f, conf0.o) to your config
 - go to <<system mechanical parameters>>
 
 == system mechanical parameters
@@ -149,7 +149,7 @@ reset
 [source]
 fault0.en = 1
 
-- append the result (conf0.j_sys, conf0.d, conf0.f) to your config
+- append the result (conf0.j_sys, conf0.d, conf0.f, conf0.o) to your config
 - go to <<control loop tuning>>
 
 == control loop tuning

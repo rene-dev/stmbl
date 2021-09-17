@@ -37,6 +37,7 @@ vel2.j = conf0.j
 pid0.j_mot = conf0.j
 pid0.d = conf0.d
 pid0.f = conf0.f
+pid0.o = conf0.o
 pid0.j_sys = conf0.j_sys
 pid0.j_lpf = conf0.j_lpf
 pid0.pos_bw = conf0.pos_bw
