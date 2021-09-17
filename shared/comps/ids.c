@@ -160,7 +160,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
       vel = LIMIT(vel, PIN(max_vel));
       acc = (vel - PIN(vel)) / period;
 
-      if(time_to_go < period / 2.0){
+      if(time_to_go < period){
         time_to_go = 0.0;
         to_go = 0.0;
         vel = 0.0;
