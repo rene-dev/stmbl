@@ -29,7 +29,7 @@ link pid
 link dc
 link <your_feedback_type>
 link misc
-link iddc
+link id_dc
 
 - reset stmbl by typing
 [source]
@@ -72,7 +72,7 @@ link pid
 link pmsm
 link <your_feedback_type>
 link misc
-link idpmsm
+link id_pmsm
 
 - reset stmbl by typing
 [source]
@@ -83,19 +83,17 @@ reset
 fault0.en = 1
 
 - append the result (conf0.r, conf0.l, conf0.psi, conf0.polecount, conf0.mot_fb_offset, opt. conf0.out_rev) to your config
-- go to <<mechanical parameters>>
+- go to <<motor mechanical parameters>>
 
-== mechanical parameters
-connect the motor to the load
+== motor mechanical parameters
 
 === manual tuning
 [source]
 conf0.j
-conf0.j_load
 
 === auto tuning
-this takes about 3 minutes +
-connect the motor to the load +
+this takes about 2 minutes +
+disconnect the motor from the load +
 the motor will move between idm0.min_pos (rad) and idm0.max_pos (rad) with a max velocity of idm0.max_vel (rad/s) and a max acceleration of idm0.max_acc (rad/s^2) +
 follow the green instructions in Servoterm
 
@@ -105,7 +103,7 @@ link pid
 link <your_motor_type>
 link <your_feedback_type>
 link misc
-link idm
+link id_mot
 <your_electrical_parameters>
 
 - reset stmbl by typing
@@ -117,6 +115,41 @@ reset
 fault0.en = 1
 
 - append the result (conf0.j, conf0.d, conf0.f) to your config
+- go to <<system mechanical parameters>>
+
+== system mechanical parameters
+you can skip this step if you want to tune the motor without load +
+
+=== manual tuning
+[source]
+conf0.j_sys
+conf0.j_lpf
+
+=== auto tuning
+this takes about 2 minutes +
+connect the motor to the load +
+the motor will move between idm0.min_pos (rad) and idm0.max_pos (rad) with a max velocity of idm0.max_vel (rad/s) and a max acceleration of idm0.max_acc (rad/s^2) +
+follow the green instructions in Servoterm
+
+- set your config to
+[source]
+link pid
+link <your_motor_type>
+link <your_feedback_type>
+link misc
+link id_sys
+<your_electrical_parameters>
+<your_mechanical_parameters>
+
+- reset stmbl by typing
+[source]
+reset
+
+- start the tuning by typing
+[source]
+fault0.en = 1
+
+- append the result (conf0.j_sys, conf0.d, conf0.f) to your config
 - go to <<control loop tuning>>
 
 == control loop tuning
@@ -138,7 +171,7 @@ link pid
 link <your_motor_type>
 link <your_feedback_type>
 link misc
-link ids
+link id_pid
 <your_electrical_parameters>
 <your_mechanical_parameters>
 

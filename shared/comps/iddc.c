@@ -108,6 +108,7 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
         printf("conf0.out_rev = 1 <font color='green'># append to config</font>\n");
       }
       printf("done\n");
+      printf("continue with id_mot\n");
 
       PIN(state) = 2.4;
     break;

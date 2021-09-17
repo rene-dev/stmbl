@@ -150,6 +150,7 @@ static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     case 33:
       printf("conf0.psi = %f <font color='green'># append to config</font>\n", PIN(psi));
       printf("done\n");
+      printf("continue with id_mot\n");
 
       PIN(state) = 3.4;
     break;

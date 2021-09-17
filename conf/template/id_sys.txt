@@ -1,0 +1,5 @@
+
+link id_mot
+pid0.j_mot = conf0.j
+pid0.j_sys = idm0.inertia
+idm0.sys = 1
