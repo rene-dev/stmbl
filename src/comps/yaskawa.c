@@ -34,15 +34,15 @@ HAL_PIN(crc_ok);
 HAL_PIN(crc_error);
 
 //TODO: use context
-volatile uint32_t txbuf[128];
-int pos;
-int dfdf;
-volatile char m_data[150];
-volatile char m_data2[150];
-volatile uint16_t tim_data[300];
-DMA_InitTypeDef DMA_InitStructuretx;
-DMA_InitTypeDef DMA_InitStructurerx;
-uint8_t yaskawa_reply[14];
+static volatile uint32_t txbuf[128];
+static int pos;
+static int dfdf;
+static volatile char m_data[150];
+static volatile char m_data2[150];
+static volatile uint16_t tim_data[300];
+static DMA_InitTypeDef DMA_InitStructuretx;
+static DMA_InitTypeDef DMA_InitStructurerx;
+static uint8_t yaskawa_reply[14];
 //uint8_t yaskara_reply_len;
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {

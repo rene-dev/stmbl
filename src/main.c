@@ -28,6 +28,8 @@
 #include "main.h"
 #include "commands.h"
 
+extern RCC_ClocksTypeDef RCC_Clocks;
+
 uint32_t hal_get_systick_value() {
   return (SysTick->VAL);
 }
