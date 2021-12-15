@@ -37,8 +37,8 @@ struct enc_fb_ctx_t {
   float absoffset;
 };
 
-int indexpos   = 0;
-int indexprint = 0;
+static int indexpos   = 0;
+static int indexprint = 0;
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct enc_fb_ctx_t *ctx      = (struct enc_fb_ctx_t *)ctx_ptr;

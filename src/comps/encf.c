@@ -28,9 +28,9 @@ HAL_PIN(crc_er);
 HAL_PIN(freq);
 HAL_PIN(bit_ticks);
 
-volatile uint32_t sendf;
-uint32_t send_counterf;
-volatile uint16_t tim_data[160];
+static volatile uint32_t sendf;
+static uint32_t send_counterf;
+static volatile uint16_t tim_data[160];
 
 #pragma pack(push, 1)
 typedef struct {
@@ -90,14 +90,14 @@ data regardless of the index status. Note that the commutation track
 seems to be interpolated so is not better than maybe 1% accuracy
 */
 
-union {
+static union {
   uint8_t enc_data[10];
   fanuc_t fanuc;
 } data;
-uint8_t print_buf[10];
+static uint8_t print_buf[10];
 
-int32_t pos_offset;
-uint32_t state_counter;
+static int32_t pos_offset;
+static uint32_t state_counter;
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct encf_ctx_t *ctx = (struct encf_ctx_t *)ctx_ptr;

@@ -35,8 +35,8 @@ HAL_PIN(pos);
 HAL_PIN(error);
 HAL_PIN(state);
 
-volatile uint32_t request_buf[24];
-volatile uint16_t tim_data[300];
+static volatile uint32_t request_buf[24];
+static volatile uint16_t tim_data[300];
 
 #pragma pack(push, 1)
 typedef union {

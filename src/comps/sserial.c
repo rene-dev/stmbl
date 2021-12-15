@@ -70,16 +70,16 @@ struct sserial_ctx_t {
   uint32_t phase;
 };
 
-volatile uint8_t rxbuf[128];  //rx dma buffer
-volatile uint8_t txbuf[128];  //tx dma buffer
-uint16_t address;             //current address pointer
-int rxpos;                    //read pointer for rx ringbuffer
-uint32_t timeout;
-lbp_t lbp;
-const char name[] = LBPCardName;
-unit_no_t unit;
-uint32_t max_waste_ticks;
-uint32_t block_bytes;
+static volatile uint8_t rxbuf[128];  //rx dma buffer
+static volatile uint8_t txbuf[128];  //tx dma buffer
+static uint16_t address;             //current address pointer
+static int rxpos;                    //read pointer for rx ringbuffer
+static uint32_t timeout;
+static lbp_t lbp;
+static const char name[] = LBPCardName;
+static unit_no_t unit;
+static uint32_t max_waste_ticks;
+static uint32_t block_bytes;
 
 #pragma pack(push, 1)
 //*****************************************************************************

@@ -2,6 +2,7 @@
 #include "commands.h"
 #include "hal.h"
 #include "math.h"
+#include "crc.h"
 #include "defines.h"
 #include "angle.h"
 #include "stm32f4xx_conf.h"

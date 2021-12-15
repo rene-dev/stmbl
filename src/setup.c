@@ -10,6 +10,10 @@
 #include "usbd_cdc_if.h"
 #include "defines.h"
 
+RCC_ClocksTypeDef RCC_Clocks;
+volatile uint32_t ADC_DMA_Buffer0[ADC_SAMPLES_IN_RT];  //240
+volatile uint32_t ADC_DMA_Buffer1[ADC_SAMPLES_IN_RT];
+
 void setup() {
   //Enable clocks
   //TODO: small f4 does not have GPIOE

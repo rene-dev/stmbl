@@ -13,6 +13,9 @@
 
 #define TERM_NUM_WAVES 8
 
+extern volatile uint32_t ADC_DMA_Buffer0[ADC_SAMPLES_IN_RT];  //240
+extern volatile uint32_t ADC_DMA_Buffer1[ADC_SAMPLES_IN_RT];
+
 HAL_COMP(adc);
 
 HAL_PIN(sin0);   //sin output
