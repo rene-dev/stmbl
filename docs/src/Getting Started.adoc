@@ -611,7 +611,7 @@ It's also possible to measure psi directly with STMBL. Maybe even automatically 
 psi = 60.0 / #POLE_PAIRS / sqrt(3) / 2.0 / PI / KV
 
 #### Nm/A ####
-psi = (Nm/A) / 2.0 * 3.0 / #POLE_PAIRS
+psi = (Nm/A) / 3.0 * 2.0 / #POLE_PAIRS
 
 #### PID ####
 The default values work for most motors. Normaly you don't have to tune this.
