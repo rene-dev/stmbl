@@ -21,7 +21,7 @@
   (pad 3 smd roundrect (at -3.25 2.25 270) (size 1 2) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25))
   (pad 2 smd roundrect (at -3.25 0 270) (size 1 2) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25))
   (pad 2 smd roundrect (at 3.25 0 270) (size 3.5 2) (layers F.Cu F.Paste F.Mask)(roundrect_rratio 0.25))
-  (model TO_SOT_Packages_SMD.3dshapes/SOT-223.wrl
+  (model Package_TO_SOT_SMD.3dshapes/SOT-223.wrl
     (at (xyz 0 0 0))
     (scale (xyz 1 1 1))
     (rotate (xyz 0 0 0))
