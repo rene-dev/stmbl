@@ -62,13 +62,13 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(ji) = 10.0;
   PIN(pos_bw) = 5.0;
   PIN(vel_bw) = 40.0;
-  PIN(vel_d) = 2.0;
+  PIN(vel_d) = 4.0;
   PIN(max_vel) = 25.0;
   PIN(max_acc) = 250.0;
   PIN(min_pos) = -10.0;
   PIN(max_pos) = 10.0;
   PIN(auto_step) = 1.4;
-  PIN(inertia) = 0.0001;
+  PIN(inertia) = 0.0002;
 }
 
 static void nrt(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
