@@ -63,6 +63,9 @@ HAL_PIN(print);
 
 HAL_PIN(brake_release);
 
+HAL_PIN(warn_timer);
+HAL_PIN(error_timer);
+
 //fault strings for fault_t form common.h
 static const char* fault_string[] = {
   "no error",
@@ -289,12 +292,32 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   if(PIN(brake_release) > 0.0) {
     PIN(mot_brake) = 1.0;
   }
+
+  PIN(warn_timer) = MAX(PIN(warn_timer) - period, 0.0);
+  PIN(error_timer) = MAX(PIN(error_timer) - period, 0.0);
 }
 
 
 static void nrt_func(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct fault_ctx_t *ctx      = (struct fault_ctx_t *)ctx_ptr;
   struct fault_pin_ctx_t *pins = (struct fault_pin_ctx_t *)pin_ptr;
+
+  if(PIN(warn_timer) <= 0.0){
+    if(PIN(dc_volt) > PIN(high_dc_volt)){
+      printf("<font color='orange'>WARNING:</font> over voltage current clamping active\n");
+      PIN(warn_timer) = 1.0;
+    }
+
+    if(PIN(mot_temp) > PIN(high_mot_temp)){
+      printf("<font color='orange'>WARNING:</font> over temperature (motor) current clamping active\n");
+      PIN(warn_timer) = 1.0;
+    }
+
+    if(PIN(hv_temp) > PIN(high_hv_temp)){
+      printf("<font color='orange'>WARNING:</font> over temperature (driver) current clamping active\n");
+      PIN(warn_timer) = 1.0;
+    }
+  }
 
   //TODO: fix EDGE
   if(EDGE(ctx->state) || PIN(print) > 0.0) {
